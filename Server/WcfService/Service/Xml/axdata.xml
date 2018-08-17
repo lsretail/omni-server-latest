@@ -1,0 +1,533 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<MobileMenu MobileMenu="MobileMenu" Version="123">
+    <Menus>
+        <Menu Id="5637144576">
+            <Description>ArbTest</Description>
+            <ValidDescription></ValidDescription>
+            <Image></Image>
+            <MenuNodes>
+                <MenuNode Id="5637144576" DisplayOrder="">
+                    <Description>Base</Description>
+                    <Image></Image>
+                    <Lines>
+                        <Line Id="52565547727" Type="Product" DisplayOrder="    1.000000" />
+                    </Lines>
+                    <MenuNodes>
+                        <MenuNode Id="5637144577" DisplayOrder="">
+                            <Description>Sandwiches</Description>
+                            <Image></Image>
+                            <Lines>
+                                <Line Id="52565427052" Type="Category" DisplayOrder="    1.000000" />
+                            </Lines>
+                            <MenuNodes />
+                        </MenuNode>
+                        <MenuNode Id="5637144578" DisplayOrder="">
+                            <Description>Deals</Description>
+                            <Image></Image>
+                            <Lines>
+                                <Line Id="35637145592" Type="Deal" DisplayOrder="    1.000000" />
+                                <Line Id="35637145593" Type="Deal" DisplayOrder="    2.000000" />
+                            </Lines>
+                            <MenuNodes />
+                        </MenuNode>
+                        <MenuNode Id="5637145326" DisplayOrder="">
+                            <Description>Beverages</Description>
+                            <Image></Image>
+                            <Lines />
+                            <MenuNodes>
+                                <MenuNode Id="5637145327" DisplayOrder="">
+                                    <Description>Cold</Description>
+                                    <Image></Image>
+                                    <Lines>
+                                        <Line Id="52565427055" Type="Category" DisplayOrder="    1.000000" />
+                                    </Lines>
+                                    <MenuNodes />
+                                </MenuNode>
+                                <MenuNode Id="5637145328" DisplayOrder="">
+                                    <Description>Hot</Description>
+                                    <Image></Image>
+                                    <Lines>
+                                        <Line Id="52565427056" Type="Category" DisplayOrder="    1.000000" />
+                                    </Lines>
+                                    <MenuNodes />
+                                </MenuNode>
+                            </MenuNodes>
+                        </MenuNode>
+                        <MenuNode Id="5637145330" DisplayOrder="">
+                            <Description>Food</Description>
+                            <Image></Image>
+                            <Lines />
+                            <MenuNodes>
+                                <MenuNode Id="5637145331" DisplayOrder="">
+                                    <Description>Sandwichs</Description>
+                                    <Image></Image>
+                                    <Lines>
+                                        <Line Id="52565427052" Type="Category" DisplayOrder="    1.000000" />
+                                    </Lines>
+                                    <MenuNodes />
+                                </MenuNode>
+                                <MenuNode Id="5637145332" DisplayOrder="">
+                                    <Description>Side\Al A Carte</Description>
+                                    <Image></Image>
+                                    <Lines>
+                                        <Line Id="52565427053" Type="Category" DisplayOrder="    1.000000" />
+                                    </Lines>
+                                    <MenuNodes />
+                                </MenuNode>
+                                <MenuNode Id="5637145333" DisplayOrder="">
+                                    <Description>Wraps</Description>
+                                    <Image></Image>
+                                    <Lines>
+                                        <Line Id="52565427794" Type="Category" DisplayOrder="    1.000000" />
+                                    </Lines>
+                                    <MenuNodes />
+                                </MenuNode>
+                                <MenuNode Id="5637145334" DisplayOrder="">
+                                    <Description>Specialties</Description>
+                                    <Image></Image>
+                                    <Lines>
+                                        <Line Id="52565427054" Type="Category" DisplayOrder="    1.000000" />
+                                    </Lines>
+                                    <MenuNodes />
+                                </MenuNode>
+                            </MenuNodes>
+                        </MenuNode>
+                    </MenuNodes>
+                </MenuNode>
+            </MenuNodes>
+        </Menu>
+    </Menus>
+    <Offers>
+        <Offer Id="35637145592" Type="Deal">
+            <Description>Roast Beef and Drink</Description>
+            <Details></Details>
+            <Name>Roast Beef and Drink</Name>
+            <Price>        3.50</Price>
+            <Image></Image>
+            <Lines>
+                <Line Id="35637145601" DisplayOrder="-1.00">
+                    <Description></Description>
+                    <Caption></Caption>
+                    <Name>Vanilla Shake Small</Name>
+                    <Image></Image>
+                    <DefaultItem Id="0" />
+                    <Category Id="0" />
+                    <Items>
+                        <Item Id="52565547727">
+                            <Qty>        1.00</Qty>
+                            <UOM>22565421199</UOM>
+                        </Item>
+                    </Items>
+                    <DealModGroups />
+                </Line>
+                <Line Id="35637145600" DisplayOrder="1.00">
+                    <Description></Description>
+                    <Caption></Caption>
+                    <Name>Roast Beef Gyro</Name>
+                    <Image></Image>
+                    <DefaultItem Id="0" />
+                    <Category Id="0" />
+                    <Items>
+                        <Item Id="52565547711">
+                            <Qty>        1.00</Qty>
+                            <UOM>22565421199</UOM>
+                        </Item>
+                    </Items>
+                    <DealModGroups />
+                </Line>
+            </Lines>
+        </Offer>
+        <Offer Id="35637145593" Type="Deal">
+            <Description>Roast Turkey Mega Meal</Description>
+            <Details>Turkey and Bacon with sides and dessert</Details>
+            <Name>Roast Turkey Mega Meal</Name>
+            <Price>        9.99</Price>
+            <Image></Image>
+            <Lines>
+                <Line Id="35637145604" DisplayOrder="-2.00">
+                    <Description></Description>
+                    <Caption></Caption>
+                    <Name>Roast Turkey Ranch &amp; Bacon Wrap</Name>
+                    <Image></Image>
+                    <DefaultItem Id="0" />
+                    <Category Id="0" />
+                    <Items>
+                        <Item Id="52565549224">
+                            <Qty>        1.00</Qty>
+                            <UOM></UOM>
+                        </Item>
+                    </Items>
+                    <DealModGroups>
+                        <DealModGroup Id="ARSand" />
+                    </DealModGroups>
+                </Line>
+                <Line Id="35637145603" DisplayOrder="-1.00">
+                    <Description></Description>
+                    <Caption></Caption>
+                    <Name>Sides\Al A Carte</Name>
+                    <Image></Image>
+                    <DefaultItem Id="0" />
+                    <Category Id="52565427053" />
+                    <DealModGroups />
+                </Line>
+                <Line Id="35637145602" DisplayOrder="-0.50">
+                    <Description></Description>
+                    <Caption></Caption>
+                    <Name>Cherry Turnover</Name>
+                    <Image></Image>
+                    <DefaultItem Id="0" />
+                    <Category Id="0" />
+                    <Items>
+                        <Item Id="52565547730">
+                            <Qty>        1.00</Qty>
+                            <UOM>22565421199</UOM>
+                        </Item>
+                    </Items>
+                    <DealModGroups />
+                </Line>
+                <Line Id="35637145605" DisplayOrder="1.00">
+                    <Description></Description>
+                    <Caption></Caption>
+                    <Name>Cold</Name>
+                    <Image></Image>
+                    <DefaultItem Id="0" />
+                    <Category Id="52565427055" />
+                    <DealModGroups />
+                </Line>
+            </Lines>
+        </Offer>
+    </Offers>
+    <DealModGroups>
+        <DealModGroup Id="ARSand">
+            <Caption>Sandwiches</Caption>
+            <Description>Arby's Sandwich Modifiers</Description>
+            <Lines>
+                <Line Id="52565547711" DisplayOrder="1">
+                    <Price>        3.45</Price>
+                </Line>
+                <Line Id="52565547726" DisplayOrder="2">
+                    <Price>        3.55</Price>
+                </Line>
+                <Line Id="52565547725" DisplayOrder="3">
+                    <Price>        2.75</Price>
+                </Line>
+                <Line Id="52565549204" DisplayOrder="4">
+                    <Price>        4.15</Price>
+                </Line>
+                <Line Id="52565549205" DisplayOrder="5">
+                    <Price>        0.00</Price>
+                </Line>
+                <Line Id="52565549212" DisplayOrder="6">
+                    <Price>        0.00</Price>
+                </Line>
+                <Line Id="52565549217" DisplayOrder="7">
+                    <Price>        0.00</Price>
+                </Line>
+                <Line Id="52565549218" DisplayOrder="8">
+                    <Price>        0.00</Price>
+                </Line>
+                <Line Id="52565549219" DisplayOrder="9">
+                    <Price>        0.00</Price>
+                </Line>
+                <Line Id="52565549220" DisplayOrder="10">
+                    <Price>        0.00</Price>
+                </Line>
+            </Lines>
+        </DealModGroup>
+    </DealModGroups>
+    <Categories>
+        <Category Id="52565427052">
+            <Caption>Sandwich</Caption>
+            <Qty>        1.00</Qty>
+            <Lines>
+                <Item Id="52565547711" />
+                <Item Id="52565547725" />
+                <Item Id="52565547726" />
+                <Item Id="52565549204" />
+                <Item Id="52565549205" />
+                <Item Id="52565549212" />
+                <Item Id="52565549217" />
+                <Item Id="52565549218" />
+                <Item Id="52565549219" />
+                <Item Id="52565549220" />
+            </Lines>
+        </Category>
+        <Category Id="52565427053">
+            <Caption>Sides\Al A Carte</Caption>
+            <Qty>        1.00</Qty>
+            <Lines>
+                <Item Id="52565547719" />
+                <Item Id="52565547720" />
+                <Item Id="52565547721" />
+                <Item Id="52565547731" />
+                <Item Id="52565549960" />
+                <Item Id="52565549961" />
+            </Lines>
+        </Category>
+        <Category Id="52565427054">
+            <Caption>Specialty</Caption>
+            <Qty>        1.00</Qty>
+            <Lines>
+                <Item Id="52565547738" />
+                <Item Id="52565547740" />
+            </Lines>
+        </Category>
+        <Category Id="52565427055">
+            <Caption>Cold</Caption>
+            <Qty>        1.00</Qty>
+            <Lines>
+                <Item Id="52565547727" />
+                <Item Id="52565547728" />
+                <Item Id="52565547729" />
+                <Item Id="52565547741" />
+                <Item Id="52565547742" />
+                <Item Id="52565547743" />
+                <Item Id="52565549954" />
+                <Item Id="52565549955" />
+                <Item Id="52565549956" />
+                <Item Id="52565549957" />
+                <Item Id="52565549958" />
+                <Item Id="52565549959" />
+            </Lines>
+        </Category>
+        <Category Id="52565427056">
+            <Caption>Hot</Caption>
+            <Qty>        1.00</Qty>
+            <Lines />
+        </Category>
+        <Category Id="52565427794">
+            <Caption>Wraps</Caption>
+            <Qty>        1.00</Qty>
+            <Lines>
+                <Item Id="52565549224" />
+            </Lines>
+        </Category>
+    </Categories>
+    <ProdModGroups />
+    <Items>
+        <Item Id="52565547711" Type="Product">
+            <Name>Roast Beef Gyro</Name>
+            <Description></Description>
+            <Image>52565448074</Image>
+            <Price>        3.45</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547719" Type="Product">
+            <Name>Curly Fries Snack</Name>
+            <Description></Description>
+            <Image>52565448101</Image>
+            <Price>        1.99</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547720" Type="Product">
+            <Name>Mozzarella Sticks</Name>
+            <Description></Description>
+            <Image>52565448103</Image>
+            <Price>        1.99</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547721" Type="Product">
+            <Name>Jalapeno Bites</Name>
+            <Description></Description>
+            <Image>52565448105</Image>
+            <Price>        1.99</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547725" Type="Product">
+            <Name>JR Ham &amp; Cheddar Melt</Name>
+            <Description></Description>
+            <Image>52565448077</Image>
+            <Price>        2.75</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547726" Type="Product">
+            <Name>Turkey Gyro</Name>
+            <Description></Description>
+            <Image>52565448075</Image>
+            <Price>        3.55</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547727" Type="Product">
+            <Name>Vanilla Shake Small</Name>
+            <Description></Description>
+            <Image>52565448113</Image>
+            <Price>        3.50</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547728" Type="Product">
+            <Name>Vanilla Shake Medium</Name>
+            <Description></Description>
+            <Image>52565448115</Image>
+            <Price>        3.50</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547729" Type="Product">
+            <Name>Vanilla Shake Large</Name>
+            <Description></Description>
+            <Image>52565448117</Image>
+            <Price>        3.50</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547730" Type="Product">
+            <Name>Cherry Turnover</Name>
+            <Description></Description>
+            <Image></Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547731" Type="Product">
+            <Name>Chopped Side Salad</Name>
+            <Description></Description>
+            <Image>52565448107</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547738" Type="Product">
+            <Name>Crispy Chicken Farmhouse Salad</Name>
+            <Description></Description>
+            <Image>52565448080</Image>
+            <Price>        3.75</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547740" Type="Product">
+            <Name>Roast Turkey Farmhouse Salad</Name>
+            <Description></Description>
+            <Image>52565448082</Image>
+            <Price>        4.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547741" Type="Product">
+            <Name>Chocholate Shake Small</Name>
+            <Description></Description>
+            <Image>52565448119</Image>
+            <Price>        3.50</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547742" Type="Product">
+            <Name>Chocholate Shake Medium</Name>
+            <Description></Description>
+            <Image>52565448121</Image>
+            <Price>        3.50</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565547743" Type="Product">
+            <Name>Chocholate Shake Large</Name>
+            <Description></Description>
+            <Image>52565448123</Image>
+            <Price>        3.50</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549204" Type="Product">
+            <Name>Smokehouse Brisket</Name>
+            <Description></Description>
+            <Image>52565448085</Image>
+            <Price>        4.15</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549205" Type="Product">
+            <Name>Angus Philly</Name>
+            <Description></Description>
+            <Image>52565448087</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549212" Type="Product">
+            <Name>Angus Three Cheese &amp; Bacon</Name>
+            <Description></Description>
+            <Image>52565448089</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549217" Type="Product">
+            <Name>King's Hawaiian Brown Sugar Bacon Turkey</Name>
+            <Description></Description>
+            <Image>52565448091</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549218" Type="Product">
+            <Name>King's Hawaiian Brown Sugar Bacon BLT</Name>
+            <Description></Description>
+            <Image>52565448093</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549219" Type="Product">
+            <Name>King's Hawaiian Half-Pound Club</Name>
+            <Description></Description>
+            <Image>52565448095</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549220" Type="Product">
+            <Name>Roast Turkey Ranch &amp; Bacon Sandwich</Name>
+            <Description></Description>
+            <Image>52565448097</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549224" Type="Product">
+            <Name>Roast Turkey Ranch &amp; Bacon Wrap</Name>
+            <Description></Description>
+            <Image>52565448099</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549954" Type="Product">
+            <Name>Pepsi Small</Name>
+            <Description></Description>
+            <Image>52565448125</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549955" Type="Product">
+            <Name>Pepsi Medium</Name>
+            <Description></Description>
+            <Image>52565448127</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549956" Type="Product">
+            <Name>Pepsi Large</Name>
+            <Description></Description>
+            <Image>52565448130</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549957" Type="Product">
+            <Name>Dr. Pepper Small</Name>
+            <Description></Description>
+            <Image>52565448132</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549958" Type="Product">
+            <Name>Dr. Pepper Medium</Name>
+            <Description></Description>
+            <Image>52565448134</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549959" Type="Product">
+            <Name>Dr. Pepper Large</Name>
+            <Description></Description>
+            <Image>52565448136</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549960" Type="Product">
+            <Name>Steakhouse Onion Rings</Name>
+            <Description></Description>
+            <Image>52565448109</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+        <Item Id="52565549961" Type="Product">
+            <Name>Potato Cakes</Name>
+            <Description></Description>
+            <Image>52565448111</Image>
+            <Price>        0.00</Price>
+            <UOM>ea</UOM>
+        </Item>
+    </Items>
+</MobileMenu>

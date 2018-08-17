@@ -1,0 +1,35 @@
+OmniServer Setup Parameters and default values
+-----------------------------------------------------
+-Cmd 		false			User Command line mode (true)
+-NavX 		true			Create LS Nav SQL objects
+-NavSrv 	localhost		NAV SQL Server instance
+-NavDb					NAV Database name
+-NavComp				NAV Company name
+-NavUsr 	LSOmniUser		NAV SQL User name
+-NavPwd 	LSOmniUser		NAV SQL User password
+-NavWaun 	false			Use Windows Authentication
+-NavSau 	true			Use SQL Server Authentication
+
+-SqlX 		true			Create LSOmni SQL Server database
+-SqlDb 		LSOmni			SQL Database name
+-SqlSrv 	localhost		SQL Server name
+-SqlUsr 	LSOmniUser		User name
+-SqlPwd 	LSOmniUser		User password
+-SqlWau 	false			Use Windows Authentication
+-SqlSau 	true			Use SQL Server Authentication
+
+-IisX 		true			Create LSOmniService WCF service under IIS
+-IisSite 	Default Web Site	Web Site name
+-IisSrv 	LSOmniService		Web Service name
+-IisUrl 	http://localhost:7047/DynamicsNAV90/WS/CRONUS LS 90004 W1 Demo/Codeunit/RetailWebServices	NAV Web Services Url
+-IisUsr					NAV WS User name
+-IisPwd					NAV WS User password
+
+Sampes
+----------------------
+LSOmni.Server.Setup.2.3.0.exe /VERYSILENT /SUPPRESSMSGBOXES -Cmd true -SqlSrv OMNISRV -SqlUsr sa -SqlPwd xxxx -NavSrv OMNISRV -NavDb NAVDB -NavComp "CRONUS LS 90004 W1 Demo" -NavUsr sa -NavPwd xxxx -IisUsr nav -IisPwd xxx
+
+LSOmni.Server.Setup.2.3.0.exe /VERYSILENT /SUPPRESSMSGBOXES -Cmd true -NavX false -SqlX false -IisUsr dd -IisPwd dd.12345
+
+LSOmni.Server.Setup.2.3.0.exe /VERYSILENT /SUPPRESSMSGBOXES -Cmd true -NavX false -SqlX false -IisX false
+

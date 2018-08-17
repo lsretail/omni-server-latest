@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="LSRetail.Mobile.POS.Core.Domain.Items.Item">
+    <Position X="3.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACABIRAAASEwEAAgIFBAAACCUAAAABAAAECIIACgCCA=</HashCode>
+      <FileName>Items\Item.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="barcode" />
+      <Field Name="price" />
+      <Field Name="unitOfMeasure" />
+      <Field Name="selectedVariant" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Field Name="images" />
+      <Field Name="variants" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="LSRetail.Mobile.POS.Core.Domain.Items.Barcode">
+    <Position X="8.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAQCgBAEAoABAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Items\Barcode.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LSRetail.Mobile.POS.Core.Domain.Items.UnitOfMeasure">
+    <Position X="0.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAggAAAAIEAAAABAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Items\UnitOfMeasure.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LSRetail.Mobile.POS.Core.Domain.Items.Variant">
+    <Position X="1" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAABAAAABAIAAAAACAUAAAEBAAKAAAACgAEAAA=</HashCode>
+      <FileName>Items\Variant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LSRetail.Mobile.POS.Core.Domain.Items.ItemImage">
+    <Position X="6.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAgAAAAIAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Items\ItemImage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LSRetail.Mobile.POS.Core.Domain.Items.Money">
+    <Position X="6.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEQAEAQIAACAkAAAAAAADgAAIAAAA=</HashCode>
+      <FileName>Items\Money.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

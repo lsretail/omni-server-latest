@@ -1,0 +1,704 @@
+﻿<?xml version="1.0" encoding="utf-8"?> 
+<MobileMenu Version="123">
+	<Menus>
+		<Menu Id="1">
+			<Description>Main menu</Description>
+			<ValidDescription></ValidDescription>
+			<Image>kfc-main-menu</Image>
+			<MenuNodes>
+			  <MenuNode Id="1" DisplayOrder="1">
+			    <Description>To share</Description>
+			    <Image>kfc_to_share</Image>
+			    <Lines> 
+			      <Line Type="Offer" Id="OFFERDIPSBOX"  DisplayOrder="1"/>
+			      <Line Type="Offer" Id="OFFERWICKEDVARIETYBUCKET"  DisplayOrder="2"/>
+			    </Lines>
+          <MenuNodes>
+            <MenuNode Id="110" DisplayOrder="1">
+              <Description>To share next level</Description>
+              <Image>kfc_to_share</Image>
+              <Lines>
+                <Line Type="Offer" Id="OFFERDIPSBOX"  DisplayOrder="1"/>
+                <Line Type="Offer" Id="OFFERWICKEDVARIETYBUCKET"  DisplayOrder="2"/>
+              </Lines>
+            </MenuNode>
+          </MenuNodes>
+			  </MenuNode>
+			  <MenuNode Id="2" DisplayOrder="2">
+			    <Description>Meals</Description>
+			    <Image>kfc_meals</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="3" DisplayOrder="3">
+			    <Description>Box meals</Description>
+			    <Image>kfc_box_meals</Image>
+					<Lines></Lines>
+			  </MenuNode> 
+			  <MenuNode Id="4" DisplayOrder="4">
+			    <Description>Burgers</Description>
+			    <Image>kfc_burgers</Image>
+			    <Lines>
+			    	<Line Type="Item" Id="GRILLEDBBQRANCHERBURGER"  DisplayOrder="1"/>
+			    	<Line Type="Item" Id="BIGDADDYBURGER"  DisplayOrder="2"/>
+			    </Lines>
+			  </MenuNode>
+			  <MenuNode Id="5" DisplayOrder="5">
+			    <Description>Salads</Description>
+			    <Image>kfc_salads</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="6" DisplayOrder="6">
+			    <Description>Streetwise snacks</Description>
+			    <Image>kfc_streetwise_snacks</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="7" DisplayOrder="7">
+			    <Description>Drinks</Description>
+			    <Image>kfc_drinks</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="8" DisplayOrder="8">
+			    <Description>Kids' choice</Description>
+			    <Image>kfc_kids_choice</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="9" DisplayOrder="9">
+			    <Description>Deli delux range</Description>
+			    <Image>kfc_deli_deluxe_range</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="10" DisplayOrder="10">
+			    <Description>Grilled BBQ rancher range</Description>
+			    <Image>kfc_grilled_bbq_racher_range</Image>
+			    <Lines></Lines>
+			  </MenuNode>
+			  <MenuNode Id="11" DisplayOrder="11">
+			    <Description>Desserts</Description>
+			    <Image>kfc_desserts</Image>
+			    <Lines>
+			      <Line Type="Item" Id="KREAMBALCARAMELFUDGE" DisplayOrder="1"/>
+			      <Line Type="Item" Id="STREETWISESUNDAESTRAWBERRY" DisplayOrder="2"/>
+			    </Lines>
+			  </MenuNode>
+			</MenuNodes>
+		</Menu>  
+		<Menu Id="2" Version="112">
+			<Description>Lunch menu</Description>
+			<ValidDescription>11am - 2pm</ValidDescription>
+			<Image>kfc-lunch-menu</Image>
+			<MenuNodes>
+			  <MenuNode Id="1" DisplayOrder="1">
+			    <Description>Desserts</Description>
+			    <Image>kfc_desserts</Image>
+			    <Lines>
+			      <Line Type="Item" Id="KREAMBALCARAMELFUDGE" DisplayOrder="1"/>
+			      <Line Type="Item" Id="STREETWISESUNDAESTRAWBERRY" DisplayOrder="2"/>
+			    </Lines>
+			  </MenuNode>
+			</MenuNodes>
+		</Menu>
+	</Menus>
+	
+	<Items>
+	  <Item Id="KREAMBALCARAMELFUDGE" Type="Product">
+	    <Name>Kream Ball Caramel Fudge</Name>
+	    <Description>Enjoy caramel fudge pieces covered in dairy ice cream and topped with caramel sauce. The ultimate treat in one neat package.</Description>
+	    <Image>kfc_kream_ball_caramel_fudge</Image>
+	    <Price>4.99</Price>
+	  </Item>
+	  <Item Id="STREETWISESUNDAESTRAWBERRY" Type="Product">
+	    <Name>Streetwise Sundae Strawberry</Name>
+	    <Description>Need something a little sweet to finish off your meal? Got a few coins rattling around your pocket? Well the Strawberry Streetwise Sundae combines smooth ice cream with strawberry sauce to put a fruity full stop at the end of your meal.</Description>
+	    <Image>kfc_streetwise_sundae_strawberry</Image>
+	    <Price>3.97</Price>
+	  </Item>
+	  <Item Id="LETTUCE" Type="Product">
+	    <Name>Lettuce</Name>
+	    <Description>Green Leaf Lettuce</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="TOMATOES" Type="Product">
+	    <Name>Tomatoes</Name> 
+	    <Description>Red ripe tomatoes</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="ONION" Type="Product">
+	    <Name>Onion</Name> 
+	    <Description>Red Onions</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="GREENPEPPER" Type="Product">
+	    <Name>Green Pepper</Name>
+	    <Description>Crisp green bell pepper</Description> 
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="GRILLEDMUSHROOMS" Type="Product">
+	    <Name>Grilled Mushrooms</Name> 
+	    <Description>Best mushrooms available</Description> 
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="HASHBROWN" Type="Product">
+	    <Name>Hash Brown</Name>
+	    <Description>Crispy Hash Brown Potatoes </Description> 
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="LIGHT-MAYONNAISE" Type="Product">
+	    <Name>Light-Mayonnaise</Name>
+	    <Description>Made with 100% certified cage-free eggs and 3.5g fat per serving</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="CHICKENBURGERRECIPE" Type="Recipe">
+	    <Name>Zinger Burger</Name>
+	    <Description>What does the Zinger Burger taste like? Picture a disco mirrorball hanging from the roof of your mouth and instead of light, it's taste bouncing around your mouth like a tingle wave. And that's what the Zinger Burger tastes like.
+	    </Description>
+	    <Image>kfc-zinger-burger</Image>
+	    <Price>4.99</Price>
+	    <UOM>ea</UOM>
+	    <DrillDown>Yes</DrillDown>
+	    <Lines>
+	      <Line Id="LETTUCE" DisplayOrder="1">
+	        <Qty>22</Qty>
+	        <UOM>gr</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	      <Line Id="LIGHT-MAYONNAISE" DisplayOrder="2">
+	        <Qty>11</Qty>
+	        <UOM>ml</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	    </Lines>
+	    <ProdModGroup>
+	      <Group Id="BItemMods"/>
+	      <Group Id="BSauces"/>
+	    </ProdModGroup>
+	  </Item>
+	  <Item Id="GRILLEDBBQRANCHERBURGER" Type="Recipe">
+	    <Name>Grilled BBQ Rancher Burger</Name>
+	    <Description>Being good doesn’t mean ditching flavour when you bite into our delicious oven grilled burger. A marinated, oven grilled 100% chicken breast fillet, BBQ sauce, light mayo and crisp salad in a fresh deli roll.
+	    </Description>
+	    <Image>kfc-grilled-bbq-rancher-burger</Image>
+	    <Price>5.99</Price>
+	    <UOM>ea</UOM>
+	    <DrillDown>Yes</DrillDown>
+	    <Lines>
+	      <Line Id="LETTUCE" DisplayOrder="1">
+	        <Qty>22</Qty>
+	        <UOM>gr</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	      <Line Id="PEPPERMAYONNAISE" DisplayOrder="2">
+	        <Qty>11</Qty>
+	        <UOM>ml</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	    </Lines>
+	    <ProdModGroup>
+	      <Group Id="BItemMods"/>
+	      <Group Id="BSauces"/>
+	    </ProdModGroup>
+	  </Item>
+	  <Item Id="BIGDADDYBURGER" Type="Recipe">
+	    <Name>Big Daddy Burger</Name>
+	    <Description>Bring a big appetite because with a whole chicken breast fillet, hash brown, bacon and slice of cheese barely contained between the toasted sesame bun, you're going to have to be hungry. Oh, and there's Daddies Ketchup and our signature mayonnaise in there too.
+	    </Description>
+	    <Image>kfc-big-daddy-burger</Image>
+	    <Price>5.99</Price>
+	    <UOM>ea</UOM>
+	    <DrillDown>Yes</DrillDown>
+	    <Lines>
+	      <Line Id="LETTUCE" DisplayOrder="1">
+	        <Qty>22</Qty>
+	        <UOM>gr</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	      <Line Id="PEPPERMAYONNAISE" DisplayOrder="2">
+	        <Qty>11</Qty>
+	        <UOM>ml</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	    </Lines>
+	    <ProdModGroup>
+	      <Group Id="BItemMods"/>
+	      <Group Id="BSauces"/>
+	    </ProdModGroup>
+	  </Item>
+	  
+	  <Item Id="ULTIMATEDIPSBOX" Type="Recipe">
+	  	<Description>The whole family can get their dip on with 100% chicken mini fillets, fries and a choice of dips including Tomato Ketchup, Classic Mayo, Kentucky BBQ, Sweet Chilli, Spicy Mayo and (for the spice lovers) 2 Hot 4 U. There's a choice of 12 and 16 mini fillets to share those dips around.
+	  	</Description> 	
+	    <Name>Ultimate Dips Box</Name>
+	    <Image>kfc_ultimate_dips_box</Image>
+	    <Price>5.99</Price>
+	    <UOM>ea</UOM>
+	    <DrillDown>Yes</DrillDown>
+	    <Lines>
+	      <Line Id="LETTUCE" DisplayOrder="1">
+	        <Qty>22</Qty>
+	        <UOM>gr</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	      <Line Id="PEPPERMAYONNAISE" DisplayOrder="2">
+	        <Qty>11</Qty>
+	        <UOM>ml</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	    </Lines>
+	    <ProdModGroup>
+	      <Group Id="BItemMods"/>
+	      <Group Id="BSauces"/>
+	    </ProdModGroup>
+	  </Item>
+	  <Item Id="WICKEDVARIETYBUCKET" Type="Recipe">
+	  	<Description>Can you please all of the family some of the time? Enter the Variety meal - it's a little bit of everything. Original Recipe Chicken, Mini Fillets, Hot Wings, dips and fries. Now make your mind up, should you get a 10 or 6 piece bucket?
+	  	</Description> 	
+	    <Name>Ultimate Dips Box</Name>
+	    <Image>kfc_wicked_variety_bucket</Image>
+	    <Price>5.99</Price>
+	    <UOM>ea</UOM>
+	    <DrillDown>Yes</DrillDown>
+	    <Lines>
+	      <Line Id="LETTUCE" DisplayOrder="1">
+	        <Qty>22</Qty>
+	        <UOM>gr</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	      <Line Id="PEPPERMAYONNAISE" DisplayOrder="2">
+	        <Qty>11</Qty>
+	        <UOM>ml</UOM>
+	        <MinQty>0</MinQty>
+	      </Line>
+	    </Lines>
+	    <ProdModGroup>
+	      <Group Id="BItemMods"/>
+	      <Group Id="BSauces"/>
+	    </ProdModGroup>
+	  </Item>
+	  <Item Id="FRENCHFRIESSMALL" Type="Product">
+	    <Name>French Fries - Small</Name>
+	    <Description>French fries, small portion size</Description>
+	    <Image></Image> 
+	    <Price>0.99</Price>
+	    <UOM>ea</UOM>
+	  </Item>
+	  <Item Id="FRENCHFRIESMEDIUM" Type="Product">
+	    <Name>French Fries - Medium</Name>
+	    <Description>French fries, medium portion size</Description>
+	    <Image></Image>  
+	    <Price>1.39</Price>
+	    <UOM>ea</UOM>
+	  </Item>
+	  <Item Id="FRENCHFRIESLARGE" Type="Product">
+	    <Name>French Fries - Large</Name>
+	    <Description>French fries, large portion size</Description>
+	    <Image></Image> 
+	    <Price>1.69</Price>
+	    <UOM>ea</UOM>
+	  </Item>
+	  <Item Id="COLESLAWSMALL" Type="Product">
+	    <Name>Coleslaw - Small</Name>
+	    <Description>Coleslaw, small portion size</Description>
+	    <Image></Image> 
+	    <Price>0.99</Price>
+	    <UOM>ea</UOM>
+	  </Item>
+	  <Item Id="MAYONNAISE" Type="Product">
+	    <Name>Mayonnaise</Name>  
+	    <Description>Mayonnaise</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="PEPPERMAYONNAISE" Type="Product">
+	    <Name>Pepper Mayonnaise</Name>
+	    <Description>Tasty roasted red pepper mayonnaise</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="KETCHUP" Type="Product">
+	    <Name>Ketchup</Name>  
+	    <Description>Heinz Ketchup</Description>
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="MUSTARD" Type="Product">
+	    <Name>Mustard</Name> 
+	    <Description>Yellow mustard</Description> 
+	    <Image></Image>
+	    <Price></Price>
+	  </Item>
+	  <Item Id="BBQSAUCE" Type="Product">
+	    <Name>BBQ Sauce</Name> 
+	    <Description>Hot BBQ Sauce</Description>
+	    <Image></Image>
+	    <Price>0.49</Price>
+	    <UOM>ea</UOM>
+	  </Item>
+	  <Item Id="TEXANBBQSAUCE" Type="Product">
+	    <Name>Texan BBQ Sauce</Name>
+	    <Description>Hot Texan BBQ Sauce</Description>
+	    <Image></Image> 
+	    <Price></Price>
+	  </Item>
+	  <Item Id="MEXICANBBQSAUCE" Type="Product">
+	    <Name>Mexican BBQ Sauce</Name>
+	    <Description>Hot Mexican BBQ Sauce</Description>
+	    <Image></Image> 
+	    <Price></Price>
+	  </Item>
+	  <Item Id="COLASMALL" Type="Product">
+	    <Name>Cola - Small</Name>
+	    <Description>Cola, small size</Description>
+	    <Image></Image>  
+	    <Price>0.99</Price>
+	  </Item>
+	  <Item Id="COLAMEDIUM" Type="Product">
+	    <Name>Cola - Medium</Name>
+	    <Description>Cola, medium size</Description>
+	    <Image></Image>
+	    <Price>1.29</Price>
+	  </Item>
+	  <Item Id="COLALARGE" Type="Product">
+	    <Name>Cola - Large</Name>
+	    <Description></Description>
+	    <Image></Image>  
+	    <Price>1.49</Price>
+	  </Item>
+	  <Item Id="COLALIGHTSMALL" Type="Product">
+	    <Name>Cola Light - Small</Name>
+	    <Description>Cola Light, small size</Description>
+	    <Image></Image>
+	    <Price>0.99</Price>
+	  </Item>
+	  <Item Id="COLALIGHTMEDIUM" Type="Product">
+	    <Name>Cola Light - Medium</Name>
+	    <Description>Cola Light, medium size</Description>
+	    <Image></Image>
+	    <Price>1.29</Price>
+	  </Item>
+	  <Item Id="COLALIGHTLARGE" Type="Product">
+	    <Name>Cola Light - Large</Name>
+	    <Description>Cola Light, large size</Description>
+	    <Image></Image>
+	    <Price>1.49</Price>
+	  </Item>
+	  <Item Id="ORANGESMALL" Type="Product">
+	    <Name>Orange - Small</Name>
+	    <Description>Orange, small size</Description>
+	    <Image></Image>
+	    <Price>0.99</Price>
+	  </Item>
+	  <Item Id="ORANGEMEDIUM" Type="Product">
+	    <Name>Orange - Medium</Name>
+	    <Description>Orange, medium size</Description>
+	    <Image></Image>
+	    <Price>1.29</Price>
+	  </Item>
+	  <Item Id="ORANGELARGE" Type="Product">
+	    <Name>Orange - Large</Name>
+	    <Description>Orange, large size</Description>
+	    <Image></Image>
+	    <Price>1.49</Price>
+	  </Item>
+	  <Item Id="LEMONADESMALL" Type="Product">
+	    <Name>Lemonade - Small</Name>
+	    <Description>Lemonade, small size</Description>
+	    <Image></Image> 
+	    <Price>0.99</Price>
+	  </Item>
+	  <Item Id="LEMONADEMEDIUM" Type="Product">
+	    <Name>Lemonade - Medium</Name>
+	    <Description>Lemonade, medium size</Description>
+	    <Image></Image>
+	    <Price>1.29</Price>
+	  </Item>
+	  <Item Id="LEMONADELARGE" Type="Product">
+	    <Name>Lemonade - Large</Name>
+	    <Description>Lemonade, large size</Description>
+	    <Image></Image>
+	    <Price>1.49</Price>
+	  </Item>
+	</Items>
+	
+	<ProdModGroups>
+	  <ProdModGroup Id="BItemMods">
+	  	<Caption>Green food</Caption>  
+	  	<Lines> 
+	    <Line Id="LETTUCE" DisplayOrder="1">
+	      <Price>0.49</Price>
+	      <Qty>22</Qty>
+	      <UOM>gr</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="TOMATOES" DisplayOrder="2">
+	      <Price>0.49</Price>
+	      <Qty>41</Qty>
+	      <UOM>gr</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="ONION" DisplayOrder="3">
+	      <Price>0.49</Price>
+	      <Qty>15</Qty>
+	      <UOM>gr</UOM>
+	      <MinSelection>0</MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="GREENPEPPER" DisplayOrder="4">
+	      <Price>0.49</Price>
+	      <Qty>20</Qty>
+	      <UOM>gr</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="GRILLEDMUSHROOMS" DisplayOrder="4">
+	      <Price>0.49</Price>
+	      <Qty>35</Qty>
+	      <UOM>gr</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="HASHBROWN" DisplayOrder="5">
+	      <Price>0.79</Price>
+	      <Qty>22</Qty>
+	      <UOM>gr</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    </Lines>
+	  </ProdModGroup>
+	  <ProdModGroup Id="BSauces">
+	  	<Caption>Sauces</Caption>  
+	  	<Lines>    
+	    <Line Id="LIGHT-MAYONNAISE" DisplayOrder="1">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="MAYONNAISE" DisplayOrder="2">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="PEPPERMAYONNAISE" DisplayOrder="3">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="KETCHUP" DisplayOrder="4">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="MUSTARD" DisplayOrder="5">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="BBQSAUCE" DisplayOrder="6">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="TEXANBBQSAUCE" DisplayOrder="7">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    <Line Id="MEXICANBBQSAUCE" DisplayOrder="8">
+	      <Price>0.29</Price>
+	      <Qty>11</Qty>
+	      <UOM>ml</UOM>
+	      <MinSelection></MinSelection>
+	      <MaxSelection></MaxSelection>
+	    </Line>
+	    </Lines>
+		</ProdModGroup>
+	</ProdModGroups>
+	
+	<DealModGroups>
+	  <DealModGroup Id="DM-MEDIUMSODAS">
+	    <Caption>Medium Sodas</Caption>
+	    <Lines>
+	    <Line Id ="COLAMEDIUM" DisplayOrder="1">
+	      <Price>0.19</Price>
+	    </Line>
+	    <Line Id ="COLALIGHTMEDIUM" DisplayOrder="2">
+	      <Price>0.19</Price>
+	    </Line>
+	    <Line Id ="ORANGEMEDIUM"  DisplayOrder="3">
+	      <Price>0.19</Price>
+	    </Line>
+	    <Line Id ="LEMONADEMEDIUM"  DisplayOrder="4">
+	      <Price>0.19</Price>
+	    </Line>
+	    </Lines>
+	  </DealModGroup>
+	  <DealModGroup Id="DM-LARGESODAS">
+	    <Caption>Large Sodas</Caption>
+	    <Lines>
+	    <Line Id ="COLALARGE"  DisplayOrder="1">
+	      <Price>0.29</Price>
+	    </Line>
+	    <Line Id ="COLALIGHTLARGE" DisplayOrder="2">
+	      <Price>0.29</Price>
+	    </Line>
+	    <Line Id ="ORANGELARGE" DisplayOrder="3">
+	      <Price>0.29</Price>
+	    </Line>
+	    <Line Id ="LEMONADELARGE" DisplayOrder="4">
+	      <Price>0.29</Price>
+	    </Line>
+	    </Lines>
+	  </DealModGroup>
+	  <DealModGroup Id="DM-MEDIUMSIDES">
+	    <Caption>Medium Sides</Caption>
+	    <Lines>
+	    <Line Id ="FRENCHFRIESMEDIUM" DisplayOrder="1">
+	      <Price>0.25</Price>
+	    </Line>
+	    </Lines>
+	  </DealModGroup>
+	  <DealModGroup Id="DM-LARGESIDES">
+	    <Caption>Large Sides</Caption>
+	    <Lines>
+	    <Line Id ="FRENCHFRIESLARGE" DisplayOrder="2">
+	      <Price>0.49</Price>
+	    </Line>
+	    </Lines>
+	  </DealModGroup>
+	</DealModGroups>
+	
+	<Categories>
+	  <Category Id="Sides - Small">
+	    <Caption>Sides</Caption>
+	    <Qty>1</Qty>
+	    <Lines>
+	      <Item Id="FRENCHFRIESSMALL"/>
+	      <Item Id="COLESLAWSMALL"/>
+	    </Lines>
+	  </Category>
+	  <Category Id="Sodas - Small">
+	    <Caption>Drinks</Caption>
+	    <Qty>1</Qty>
+	    <Lines>
+	      <Item Id="COLASMALL"/>
+	      <Item Id="COLALIGHTSMALL"/>
+	      <Item Id="ORANGESMALL"/>
+	      <Item Id="LEMONADESMALL"/>
+	    </Lines>
+	  </Category>
+	</Categories>
+	
+	
+	<Offers>
+	  <Offer Id="OFFERDIPSBOX" Type="Deal">
+	  	<Description>Dips Box</Description>
+	  	<Details>Dips Box are the best</Details>
+	  	<Price>5.97</Price>
+	  	<Image>kfc_ultimate_dips_box</Image>
+	    <Lines>
+	      <Line Id="1" DisplayOrder="1">
+          <Description>Dips Box</Description>
+          <DefaultItem Id="ULTIMATEDIPSBOX"/>
+          <Image>kfc_ultimate_dips_box</Image> 
+          <UOM>gr</UOM>
+          <Qty>1</Qty>          
+	        <Items>
+	          <Item Id="ULTIMATEDIPSBOX" />
+	        </Items>
+	        <Category Id=""/>
+	        <DealModGroups/>
+	      </Line>
+	      <Line Id="2" DisplayOrder="2">
+	        <Description>Sides</Description>
+	        <DefaultItem Id="FRENCHFRIESSMALL"/>
+	        <Image></Image>
+          <UOM>gm</UOM>
+          <Qty>1</Qty>          
+	        <Items>
+	        </Items>		        
+	        <Category Id="Sides - Small"/>
+	        <DealModGroups>
+	          <DealModGroup Id="DM-MEDIUMSIDES"/>
+	          <DealModGroup Id="DM-LARGESIDES"/>
+	        </DealModGroups>
+	      </Line>
+	      <Line Id="3" DisplayOrder="3">
+	        <Description>Drinks</Description>
+	        <DefaultItem Id="COLASMALL"/>
+	        <Image></Image>
+          <UOM>gr</UOM>
+          <Qty>1</Qty>          
+	        <Items>
+	        </Items>	  	        
+	        <Category Id="Sodas - Small"/>
+	        <DealModGroups>
+	          <DealModGroup Id="DM-MEDIUMSODAS"/>
+	          <DealModGroup Id="DM-LARGESODAS"/>
+	        </DealModGroups>
+	      </Line>
+	    </Lines>
+	  </Offer>
+	  <Offer Id="OFFERWICKEDVARIETYBUCKET" Type="Deal">
+	  	<Description>Buckets</Description>
+	  	<Details>Dips Box</Details>
+	  	<Price>5.97</Price>
+	  	<Image>kfc_wicked_variety_bucket</Image>
+	    <Lines>
+	      <Line Id="1" DisplayOrder="1">
+	        <Description>Buckets</Description>
+	        <Image>kfc_wicked_variety_bucket</Image>
+	        <Items>
+	          <Item Id="WICKEDVARIETYBUCKET">  
+	            <Qty>1</Qty>
+	          </Item>
+	        </Items>
+	      </Line>
+	      <Line Id="2" DisplayOrder="2">
+	        <Description>Sides</Description>
+	        <Image></Image>
+	        <DefaultItem Id="FRENCHFRIESSMALL"/>
+	        <Category Id="Sides - Small"/>
+	        <DealModGroups>
+	          <DealModGroup Id="DM-MEDIUMSIDES"/>
+	          <DealModGroup Id="DM-LARGESIDES"/>
+	        </DealModGroups>
+	      </Line>
+	      <Line Id="3" DisplayOrder="3">
+	        <Description>Drinks</Description>
+	        <Image></Image>
+	        <DefaultItem Id="COLASMALL"/>
+	        <Category Id="Sodas - Small"/>
+	        <DealModGroups>
+	          <DealModGroup Id="DM-MEDIUMSODAS"/>
+	          <DealModGroup Id="DM-LARGESODAS"/>
+	        </DealModGroups>
+	      </Line>
+	    </Lines>
+	  </Offer>
+	  <Offer ID="" Type="Periodic">
+	  </Offer>
+	</Offers>
+	
+</MobileMenu>

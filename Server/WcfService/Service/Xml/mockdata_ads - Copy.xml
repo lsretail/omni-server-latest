@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?> 
+<Advertisements Version="">
+	<Advertisement>
+	  <Id>home</Id>
+		<Description>20% off a chickenburger</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>kfc-zinger-burger</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">1</AdType>
+		<AdValue>CHICKENBURGERRECIPE</AdValue> 
+	</Advertisement>
+	<Advertisement>
+	  <Id>home2</Id>
+		<Description>Offers</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>kfc_to_share</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">3</AdType>
+		<AdValue>110</AdValue>
+	</Advertisement>
+	<Advertisement>
+	  <Id>home3</Id>
+		<Description>Visit our new web site</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>32060</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">2</AdType>
+		<AdValue>http://www.kfc.is</AdValue>
+	</Advertisement>
+	<Advertisement>
+	  <Id>home4</Id>
+		<Description>5% off everything today</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>kfc-big-daddy-burger</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">0</AdType>
+		<AdValue></AdValue>
+	</Advertisement>	
+</Advertisements>

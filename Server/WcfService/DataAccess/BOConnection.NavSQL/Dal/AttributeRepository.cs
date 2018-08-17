@@ -1,0 +1,131 @@
+﻿using System.Collections.Generic;
+using System.Data.SqlClient;
+
+using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+
+namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
+{
+    public class AttributeRepository : BaseRepository
+    {
+        // Key: Code
+        const int TABLEID = 10000784;
+
+        private string sqlcolumns = string.Empty;
+        private string sqlfrom = string.Empty;
+
+        public AttributeRepository() : base()
+        {
+            sqlcolumns = "mt.[Code],mt.[Description],mt.[Value Type],mt.[Default Value]";
+
+            sqlfrom = " FROM [" + navCompanyName + "Attribute] mt";
+        }
+
+        public List<ReplAttribute> ReplicateEcommAttribute(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
+
+            List<JscKey> keys = GetPrimaryKeys("Attribute");
+
+            // get records remaining
+            string sql = string.Empty;
+            if (fullReplication)
+            {
+                sql = "SELECT COUNT(*)";
+                if (batchSize > 0)
+                {
+                    sql += sqlfrom + GetWhereStatement(true, keys, false);
+                }
+            }
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+
+            List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+            List<ReplAttribute> list = new List<ReplAttribute>();
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
+
+            TraceIt(sql);
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    if (fullReplication)
+                    {
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int cnt = 0;
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToEcommAttribute(reader, out lastKey));
+                                cnt++;
+                            }
+                            reader.Close();
+                            recordsRemaining -= cnt;
+                        }
+                        if (recordsRemaining <= 0)
+                            lastKey = maxKey;   // this should be the highest PreAction id;
+                    }
+                    else
+                    {
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                list.Add(new ReplAttribute()
+                                {
+                                    Code = act.ParamValue,
+                                    IsDeleted = true
+                                });
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToEcommAttribute(reader, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                        if (string.IsNullOrEmpty(maxKey))
+                            maxKey = lastKey;
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            return list;
+        }
+
+        private ReplAttribute ReaderToEcommAttribute(SqlDataReader reader, out string timestamp)
+        {
+            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+
+            return new ReplAttribute()
+            {
+                Code = SQLHelper.GetString(reader["Code"]),
+                DefaultValue = SQLHelper.GetString(reader["Default Value"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                ValueType = SQLHelper.GetInt32(reader["Value Type"])
+            };
+        }
+    }
+}

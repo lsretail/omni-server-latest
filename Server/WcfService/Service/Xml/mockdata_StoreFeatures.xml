@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8"?> 
+<StoreServices Version="">
+	<StoreService>
+	  <StoreId>S0001</StoreId>
+		<Description>Free Wi-Fi</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">2</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0001</StoreId>
+		<Description>PlayPlaces. Super-fun for the kids, stress-free for you!</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">5</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0001</StoreId>
+		<Description>Drive thru window</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">3</StoreServiceType>
+	</StoreService>	
+	<StoreService>
+	  <StoreId>S0001</StoreId>
+		<Description>Free refill</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">6</StoreServiceType>
+	</StoreService>		
+
+	<StoreService>
+	  <StoreId>S0002</StoreId>
+		<Description>Free Wi-Fi</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">2</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0002</StoreId>
+		<Description>PlayPlaces. Super-fun for the kids, stress-free for you!</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">5</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0002</StoreId>
+		<Description>Drive thru window</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">3</StoreServiceType>
+	</StoreService>	
+	<StoreService>
+	  <StoreId>S0002</StoreId>
+		<Description>Free refill</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">6</StoreServiceType>
+	</StoreService>		
+		
+	<StoreService>
+	  <StoreId>S0003</StoreId>
+		<Description>Free Wi-Fi</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">2</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0003</StoreId>
+		<Description>PlayPlaces. Super-fun for the kids, stress-free for you!</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">5</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0003</StoreId>
+		<Description>Drive thru window</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">3</StoreServiceType>
+	</StoreService>	
+	<StoreService>
+	  <StoreId>S0003</StoreId>
+		<Description>Free refill</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">6</StoreServiceType>
+	</StoreService>		
+			
+	<StoreService>
+	  <StoreId>S0004</StoreId>
+		<Description>Free Wi-Fi</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">2</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0004</StoreId>
+		<Description>PlayPlaces. Super-fun for the kids, stress-free for you!</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">5</StoreServiceType>
+	</StoreService>
+	<StoreService>
+	  <StoreId>S0004</StoreId>
+		<Description>Drive thru window</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">3</StoreServiceType>
+	</StoreService>	
+	<StoreService>
+	  <StoreId>S0004</StoreId>
+		<Description>Free refill</Description>
+		<StoreServiceType enum="none=0,FreeWiFi=2,DriveThruWindow=3,GiftCard=4,PlayPlace=5,FreeRefill=6">6</StoreServiceType>
+	</StoreService>					
+</StoreServices>
+
+<!-- 
+2 Ókeypis Wi-Fi
+5 Leikland.  Super-fun for the kids, stress-free for you!
+3  Bílalúga
+6  Frí áfylling 
+-->

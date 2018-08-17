@@ -1,0 +1,57 @@
+<!-- http://www.w3schools.com/xsl/tryxslt.asp?xmlfile=cdcatalog&xsltfile=cdcatalog -->
+<!-- Status: Ready, Canceled -->
+
+<Order>
+  <Status>Ready</Status>
+  <FirstName>John</FirstName>
+  <LastName>Brown</LastName>
+  <StoreName>Cronus Smáralind</StoreName>
+  <StoreAddress>Smáralind 2, Kópavogur</StoreAddress>
+<Disclaimer>TEST</Disclaimer>
+  
+                <DocID>CO00000287</DocID>
+                <DocDate>2014-10-30T16:05:52.54Z</DocDate>
+                <MemberCardNo>10008</MemberCardNo>
+                <StoreToCollect>S0009</StoreToCollect>
+                <CollectTimeLimit>2014-11-08T17:00:00Z</CollectTimeLimit>
+                <OrderLinesToCollect>
+                    <Line>
+                        <ItemDescription>Briefcase, Leather</ItemDescription>
+                        <VariantCode></VariantCode>
+                        <UOM></UOM>
+                        <Quantity>1</Quantity>
+                        <Amount>800</Amount>
+                    </Line>
+                    <Line>
+                        <ItemDescription>Briefcase, Leather</ItemDescription>
+                        <VariantCode></VariantCode>
+                        <UOM></UOM>
+                        <Quantity>1</Quantity>
+                        <Amount>800</Amount>
+                    </Line>
+                    <Line>
+                        <ItemDescription>Briefcase, Leather</ItemDescription>
+                        <VariantCode></VariantCode>
+                        <UOM></UOM>
+                        <Quantity>1</Quantity>
+                        <Amount>800</Amount>
+                    </Line>
+                    <Line>
+                        <ItemDescription>Briefcase, Leather</ItemDescription>
+                        <VariantCode></VariantCode>
+                        <UOM></UOM>
+                        <Quantity>1</Quantity>
+                        <Amount>800</Amount>
+                    </Line>
+                </OrderLinesToCollect>
+                <OrderLinesOutOfStock>
+                  <Line>
+                    <ItemDescription>Wireless Mouse</ItemDescription>
+                    <VariantCode></VariantCode>
+                    <UOM>PCS</UOM>
+                    <Quantity>1</Quantity>
+                    <Amount>8</Amount>
+                  </Line>
+                </OrderLinesOutOfStock>
+  <EstimatedTotalAmount>3200</EstimatedTotalAmount>
+            </Order>

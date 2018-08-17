@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{CE9DC60A-A725-4DC0-9E55-3B77AB0E1AF0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LSOmni.DataAccess.BOConnection.NavSQL</RootNamespace>
+    <AssemblyName>LSOmni.DataAccess.BOConnection.NavSQL</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.4.4.12\lib\net45\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlClient, Version=4.2.0.2, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SqlClient.4.4.3\lib\net461\System.Data.SqlClient.dll</HintPath>
+    </Reference>
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
+      <Link>Properties\Version.cs</Link>
+    </Compile>
+    <Compile Include="Dal\AttributeOptionValueRepository.cs" />
+    <Compile Include="Dal\AttributeRepository.cs" />
+    <Compile Include="Dal\AttributeValueRepository.cs" />
+    <Compile Include="Dal\BarcodeMaskRepository.cs" />
+    <Compile Include="Dal\BarcodeMaskSegmentRepository.cs" />
+    <Compile Include="Dal\BarcodeRepository.cs" />
+    <Compile Include="Dal\BaseRepository.cs" />
+    <Compile Include="Dal\ContactRepository.cs" />
+    <Compile Include="Dal\CurrencyExchRateRepository.cs" />
+    <Compile Include="Dal\CurrencyRepository.cs" />
+    <Compile Include="Dal\CustomerRepository.cs" />
+    <Compile Include="Dal\DataTranslationRepository.cs" />
+    <Compile Include="Dal\DiscountOfferRepository.cs" />
+    <Compile Include="Dal\ExtendedVariantValuesRepository.cs" />
+    <Compile Include="Dal\HierarchyNodeRepository.cs" />
+    <Compile Include="Dal\HierarchyRepository.cs" />
+    <Compile Include="Dal\ImageRepository.cs" />
+    <Compile Include="Dal\ItemCategoryRepository.cs" />
+    <Compile Include="Dal\ItemRepository.cs" />
+    <Compile Include="Dal\ItemUOMRepository.cs" />
+    <Compile Include="Dal\ItemVariantRegistrationRepository.cs" />
+    <Compile Include="Dal\NavWSRepository.cs" />
+    <Compile Include="Dal\NotificationRepository.cs" />
+    <Compile Include="Dal\OfferRepository.cs" />
+    <Compile Include="Dal\OrderRepository.cs" />
+    <Compile Include="Dal\PluRepository.cs" />
+    <Compile Include="Dal\PriceRepository.cs" />
+    <Compile Include="Dal\ProductGroupRepository.cs" />
+    <Compile Include="Dal\ShippingRepository.cs" />
+    <Compile Include="Dal\StaffRepository.cs" />
+    <Compile Include="Dal\StaffStoreLinkRepository.cs" />
+    <Compile Include="Dal\StoreRepository.cs" />
+    <Compile Include="Dal\StoreTenderTypeCurrencyRepository.cs" />
+    <Compile Include="Dal\StoreTenderTypeRepository.cs" />
+    <Compile Include="Dal\TaxSetupRepository.cs" />
+    <Compile Include="Dal\TenderTypeRepository.cs" />
+    <Compile Include="Dal\TerminalRepository.cs" />
+    <Compile Include="Dal\TransactionRepository.cs" />
+    <Compile Include="Dal\UnitOfMeasureRepository.cs" />
+    <Compile Include="Dal\VendorItemMappingRepository.cs" />
+    <Compile Include="Dal\VendorRepository.cs" />
+    <Compile Include="Mapping\BaseMapping.cs" />
+    <Compile Include="Mapping\ContactMapping.cs" />
+    <Compile Include="Mapping\LoyTransactionMapping.cs" />
+    <Compile Include="Mapping\OrderMapping.cs" />
+    <Compile Include="Mapping\TransactionMapping.cs" />
+    <Compile Include="Mapping\TransactionMapping1.cs" />
+    <Compile Include="MemCache..cs" />
+    <Compile Include="NavApps.cs" />
+    <Compile Include="NavBase.cs" />
+    <Compile Include="NavCustom.cs" />
+    <Compile Include="NavLoyalty.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\NavWebReference\Reference.cs" />
+    <Compile Include="Web References\NavWS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="XmlMapping\BaseXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\AdvertisementXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\BasketXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\ClickCollectXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\HierarchyXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\MemberCardXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\StoreServicesXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\ContactXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\ItemInventoryXml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings1.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\NavWebReference\Reference.map" />
+    <None Include="Web References\NavWebReference\RetailWebServices.wsdl" />
+    <None Include="Web References\NavWS\OmniWrapper.wsdl" />
+    <None Include="Web References\NavWS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\NavWS\Root1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root10.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root121.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root131.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root141.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root15.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root2.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root21.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root3.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root4.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root5.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root6.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root7.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root8.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\Root9.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMemberContactCreate.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMemberContactCreate1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootSendTransaction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootSendTransactionHeader.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="XmlMapping\Inventory\NAV_XML_Protocol\MenuLineFiltering.xlsx" />
+    <None Include="XmlMapping\Inventory\NAV_XML_Protocol\XML-Content.xlsx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
+      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
+      <Name>DiscountEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
+      <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
+      <Name>Domain.DataModel.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
+      <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>
+      <Name>Domain.DataModel.Loyalty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Pos\Domain.DataModel.Pos\Domain.DataModel.Pos.csproj">
+      <Project>{769b2d21-1164-46f9-a5dc-b812be3cf58d}</Project>
+      <Name>Domain.DataModel.Pos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>
+      <Name>Common</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{8436968a-e89d-4470-9c90-bd4b448fd4c9}</Project>
+      <Name>Interfaces</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://navhost:7047/DynamicsNAV110/WS/Codeunit/OmniWrapper">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\NavWS\</RelPath>
+      <UpdateFromURL>http://navhost:7047/DynamicsNAV110/WS/Codeunit/OmniWrapper</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_NavSQL_NavWS_OmniWrapper</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

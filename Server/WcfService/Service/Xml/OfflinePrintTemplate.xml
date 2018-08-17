@@ -1,0 +1,109 @@
+<MPOSPrint id="england" language="en" linewidth="40">
+	<Receipt>
+		<lines>
+			<line no="1" align="center" fontsize="large" fontstyle="bold">RECEIPT: [RN]</line>
+			<line no="2" align="center" fontsize="normal" fontstyle="normal" dateformat="dd.MM.yyyy HH:mm:ss">[DT]</line>
+			<line no="3" align="center">[SN] - [ST]</line>
+			<line no="4" align="center">Payment method: [TTN]</line>  
+			<line no="5"></line>
+			<line no="6">[HL]</line>
+			<line no="7"/>
+			<line no="8" fontstyle="bold">
+				<cols>
+					<col no="1" align="left" width="30">Tour</col>
+					<col no="2" align="right" width="10">Price</col>
+				</cols>
+			</line>
+			<line no="9" type="translines">
+				<cols>
+					<col no="1" align="left" width="30">[TLD]</col>
+					<col no="2" align="right" width="10">[TLP]</col>
+				</cols>
+			</line>
+			<line no="10"/>
+		
+			<line no="12" fontstyle="normal">
+				<cols>
+					<col no="1" align="left" width="20">Amount to pay</col>
+					<col no="2" align="right" width="20">[CC] [TAMT]</col>
+				</cols>
+			</line>
+			<line no="13" fontstyle="normal">
+				<cols>
+					<col no="1" align="left" width="20">Amount paid</col>
+					<col no="2" align="right" width="20">[CC] [TPAMT]</col>
+				</cols>
+			</line>
+			<line no="14"/>
+			<line no="15" fontstyle="normal">
+				<cols>
+					<col no="1" align="right" width="14">DISCOUNT</col>
+					<col no="2" align="right" width="13">NET</col>
+					<col no="3" align="right" width="13">VAT [VATP]%</col>
+				</cols>
+			</line>
+			<line no="16" fontstyle="normal">
+				<cols>
+					<col no="1" align="right" width="14">[DAMT]</col>
+					<col no="2" align="right" width="13">[NAMT]</col>
+					<col no="3" align="right" width="13">[VAMT]</col>
+				</cols>
+			</line>
+			<line no="17"></line>
+			<line no="18">[HL]</line>
+			<line no="19">Cronus</line>
+			<line no="20">80  Main Street</line>
+			<line no="21">London</line>
+			<line no="22">Phone: +44 7899 1255</line>
+			<line no="23">E-mail: info@cronus.com</line>
+			<line no="24"></line>
+			<line no="25">[HL]</line>
+			<line no="26"></line>
+			<line no="27" align="center" fontsize="large">Welcome back!</line>
+			<line no="28"/>
+			<line no="29"/>
+		</lines>
+	</Receipt>
+ 
+</MPOSPrint>
+<!-- 
+Supported XML tag attributes, leftmost is default so can be skipped in xml
+
+Supported both in "line" and "col" tags:
+   no:					is the line number, processed in this order. OK to skip a number in lines
+   							but only 3 columns supported and must be no="1","2" or "3". Left, center, right
+   							and align in column is used for text-align. Defaults to right 
+   align:				"left", center, right   
+
+Supported in "line" tag only:
+   fontstyle:  "normal", bold  
+   fontsize:  "normal", small, large, extralarge, huge   (ca. 40 chars, 60, 32, 24, 16)
+   dateformat:	"" .Net DateTime string format yyyy-MM-dd HH:mm  
+   type:	"translines", indicator of more processing like translines needs to loop thru the transaction lines
+   				"qrcode",    a qrcode will be printed. Leave empty then no qr code is printed
+
+Supported in "col" tag only:
+   width:  "40"   defaults to linewidth, sum of width should not be greater than linewidth)
+
+
+Text to be replaced. Keep short since easier to replace    
+[RN]		= Receipt number
+[SN]		= Store name
+[ST]		= Staff
+[TTN]		= Tender type name
+[HL]		= Solid horizontal line 
+[TLD]		= Transaction line description
+[TLP]		= Transaction line price
+[CC]		= Currency code
+[TAMT]	= Total amount 
+[TPAMT]	= Total paid amout
+[VATP]	= VAT percentage
+[DAMT]	= Discount amount 
+[NAMT]	= NET aoumt 
+[VAMT]	= VAT amount
+ 
+[DT] :  current datetime. Only supported on a line tag
+ 
+ 
+ -->
+ 

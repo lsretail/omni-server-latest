@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="LSOmni.DataAccess.BOConnection.NavSQL.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LSRetail_Mobile_WebService_MemberMgt_DataAccess_BOConnection_Nav_NavWebReference_RetailWebServices" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://172.22.1.48:7047/DynamicsNAV70/WS/Mobile%20NOP%202013/Codeunit/RetailWebServices</Value>
+    </Setting>
+    <Setting Name="LSOmni_DataAccess_BOConnection_NavSQL_NavWS_OmniWrapper" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://hq-lsotest-d01:8047/Release/WS/CRONUS%20LS%20XXXXX%20W1%20Demo/Codeunit/OmniWrapper</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

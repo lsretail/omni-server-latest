@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?> 
+<Advertisements Version="">
+	<Advertisement>
+	  <Id>home</Id>
+		<Description>20% off</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>40020</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">1</AdType>
+		<AdValue>40020</AdValue> 
+	</Advertisement>
+	<Advertisement>
+	  <Id>home2</Id>
+		<Description>30% off</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>40030</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">1</AdType>
+		<AdValue>40030</AdValue>
+	</Advertisement>
+	<Advertisement>
+	  <Id>home3</Id>
+		<Description>40% off</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>40040</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">1</AdType>
+		<AdValue>40040</AdValue>
+	</Advertisement>
+	<Advertisement>
+	  <Id>home4</Id>
+		<Description>Visit our new web site</Description>
+		<ExpirationDate>2015-07-01</ExpirationDate>
+		<ImageId>32060</ImageId>
+		<AdType enum="none=0,itemid=1,url=2,MenuNodeId=3">2</AdType>
+		<AdValue>http://www.lsretail.com</AdValue>
+	</Advertisement>	
+</Advertisements>

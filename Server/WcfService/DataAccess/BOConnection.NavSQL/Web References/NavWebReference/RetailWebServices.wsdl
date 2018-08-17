@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="WebRequest">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pxmlRequest" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pxmlResponse" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="WebRequest_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pxmlRequest" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pxmlResponse" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="WebRequest">
+    <part name="parameters" element="tns:WebRequest" />
+  </message>
+  <message name="WebRequest_Result">
+    <part name="parameters" element="tns:WebRequest_Result" />
+  </message>
+  <portType name="RetailWebServices_Port">
+    <operation name="WebRequest">
+      <input name="WebRequest" message="tns:WebRequest" />
+      <output name="WebRequest_Result" message="tns:WebRequest_Result" />
+    </operation>
+  </portType>
+  <binding name="RetailWebServices_Binding" type="tns:RetailWebServices_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="WebRequest">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:WebRequest" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="WebRequest">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="WebRequest_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="RetailWebServices">
+    <port name="RetailWebServices_Port" binding="tns:RetailWebServices_Binding">
+      <address location="http://172.22.1.48:7047/DynamicsNAV70/WS/Mobile%20NOP%202013/Codeunit/RetailWebServices" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

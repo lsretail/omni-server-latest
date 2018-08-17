@@ -1,0 +1,195 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+
+using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+
+namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
+{
+    public class AttributeValueRepository : BaseRepository
+    {
+        // Key: Link Type,Link Field 1,Link Field 2,Link Field 3,Attribute Code,Sequence
+        const int TABLEID = 10000786;
+
+        private string sqlcolumns = string.Empty;
+        private string sqlfrom = string.Empty;
+
+        public AttributeValueRepository() : base()
+        {
+            sqlcolumns = "mt.[Link Type],mt.[Link Field 1],mt.[Link Field 2],mt.[Link Field 3],mt.[Attribute Code],mt.[Attribute Value],mt.[Numeric Value],mt.[Sequence]";
+
+            sqlfrom = " FROM [" + navCompanyName + "Attribute Value] mt";
+        }
+
+        public List<ReplAttributeValue> ReplicateEcommAttributeValue(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
+
+            List<JscKey> keys = GetPrimaryKeys("Attribute Value");
+
+            // get records remaining
+            string sql = string.Empty;
+            if (fullReplication)
+            {
+                sql = "SELECT COUNT(*)";
+                if (batchSize > 0)
+                {
+                    sql += sqlfrom + GetWhereStatement(true, keys, false);
+                }
+            }
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+
+            List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+            List<ReplAttributeValue> list = new List<ReplAttributeValue>();
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
+
+            TraceIt(sql);
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    if (fullReplication)
+                    {
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int cnt = 0;
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToEcommAttributeValue(reader, out lastKey));
+                                cnt++;
+                            }
+                            reader.Close();
+                            recordsRemaining -= cnt;
+                        }
+                        if (recordsRemaining <= 0)
+                            lastKey = maxKey;   // this should be the highest PreAction id;
+                    }
+                    else
+                    {
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                string[] par = act.ParamValue.Split(';');
+                                if (par.Length < 6 || par.Length != keys.Count)
+                                    continue;
+
+                                list.Add(new ReplAttributeValue()
+                                {
+                                    LinkType = Convert.ToInt32(par[0]),
+                                    LinkField1 = par[1],
+                                    LinkField2 = par[2],
+                                    LinkField3 = par[3],
+                                    Code = par[4],
+                                    Sequence = Convert.ToInt32(par[5]),
+                                    IsDeleted = true
+                                });
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToEcommAttributeValue(reader, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                        if (string.IsNullOrEmpty(maxKey))
+                            maxKey = lastKey;
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            return list;
+        }
+
+        public List<RetailAttribute> AttributesGetByItemId(string itemId)
+        {
+            List<RetailAttribute> list = new List<RetailAttribute>();
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+
+                    command.CommandText = "SELECT " + sqlcolumns + ",a.[Description],a.[Value Type],a.[Default Value]" + sqlfrom +
+                        " LEFT OUTER JOIN [" + navCompanyName + "Attribute] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id";
+                    command.Parameters.AddWithValue("@id", itemId);
+
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToRetailAttribute(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        private RetailAttribute ReaderToRetailAttribute(SqlDataReader reader)
+        {
+            RetailAttribute attr = new RetailAttribute()
+            {
+                Code = SQLHelper.GetString(reader["Attribute Code"]),
+                Value = SQLHelper.GetString(reader["Attribute Value"]),
+                NumbericValue = SQLHelper.GetInt32(reader["Numeric Value"]),
+                LinkType = (AttributeLinkType)SQLHelper.GetInt32(reader["Link Type"]),
+                LinkField1 = SQLHelper.GetString(reader["Link Field 1"]),
+                LinkField2 = SQLHelper.GetString(reader["Link Field 2"]),
+                LinkField3 = SQLHelper.GetString(reader["Link Field 3"]),
+                Sequence = SQLHelper.GetInt32(reader["Sequence"]),
+                DefaultValue = SQLHelper.GetString(reader["Default Value"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                ValueType = (AttributeValueType)SQLHelper.GetInt32(reader["Value Type"])
+            };
+
+            AttributeOptionValueRepository rep = new AttributeOptionValueRepository();
+            attr.OptionValues = rep.GetOptionValues(attr.Code);
+            return attr;
+        }
+
+        private ReplAttributeValue ReaderToEcommAttributeValue(SqlDataReader reader, out string timestamp)
+        {
+            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+
+            return new ReplAttributeValue()
+            {
+                Code = SQLHelper.GetString(reader["Attribute Code"]),
+                Value = SQLHelper.GetString(reader["Attribute Value"]),
+                NumbericValue = SQLHelper.GetInt32(reader["Numeric Value"]),
+                LinkType = SQLHelper.GetInt32(reader["Link Type"]),
+                LinkField1 = SQLHelper.GetString(reader["Link Field 1"]),
+                LinkField2 = SQLHelper.GetString(reader["Link Field 2"]),
+                LinkField3 = SQLHelper.GetString(reader["Link Field 3"]),
+                Sequence = SQLHelper.GetInt32(reader["Sequence"])
+            };
+        }
+    }
+}
