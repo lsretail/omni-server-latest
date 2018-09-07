@@ -39,7 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("Hierarchy Node");
+            List<JscKey> keys = GetPrimaryKeys("Hierarchy Nodes");
             string where = string.Format(" AND hd.[Store Code]='{0}' AND hd.[Start Date]<=GETDATE()", storeId);
 
             // get records remaining

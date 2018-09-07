@@ -76,26 +76,6 @@ namespace LSOmni.Service
 
             try
             {
-                if (SecurityBasicAuthUserName == null)
-                {
-                    // connect to db will not work for Inventory and MPOS
-                    // TODO  check connection to LSOmniDB...
-                    AppSettingsBLL bll = new AppSettingsBLL();
-                    // sqlexception is ignored here - but logged
-                    if (bll.DbIsConnected())
-                    {
-                        SecurityBasicAuthValidation = Convert.ToBoolean(bll.AppSettingsGetByKey(AppSettingsKey.Security_BasicAuth_Validation));
-                        SecurityBasicAuthUserName = bll.AppSettingsGetByKey(AppSettingsKey.Security_BasicAuth_UserName);
-                        SecurityBasicAuthPassword = bll.AppSettingsGetByKey(AppSettingsKey.Security_BasicAuth_Pwd);
-                    }
-                    else
-                    {
-                        SecurityBasicAuthValidation = false;
-                        SecurityBasicAuthUserName = "";
-                        SecurityBasicAuthPassword = "";
-                    }
-                }
-
                 if (OperationContext.Current != null)
                 {
                     //get the IPAddress of client
@@ -154,45 +134,6 @@ namespace LSOmni.Service
                 //silverlight must send x instead of empty token!! strip it out
                 if (securityToken.ToLower() == "x")
                     securityToken = "";
-
-                if (SecurityBasicAuthValidation && serverUri.ToLower().Contains("ping") == false && serverUri.ToLower().Contains("version") == false)
-                {
-                    //JIJ added for INVService, must send Authorization header if we want to enforce security check on basicAuth
-                    if (WebOperationContext.Current.IncomingRequest.Headers["Authorization"] == null)
-                    {
-                        string msg = "Basic Authorization validation failed. Authorization header not found";
-                        logger.Error(msg);
-                        throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.AccessNotAllowed, msg), exStatusCode);
-                    }
-                    if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers["Authorization"] != null)
-                    {
-                        string username = string.Empty;
-                        string password = string.Empty;
-                        basicAuthHeader = WebOperationContext.Current.IncomingRequest.Headers["Authorization"].ToString();
-                        basicAuthHeader = basicAuthHeader.Trim();
-                        if (Security.BasicAuthHeader(basicAuthHeader, out username, out password))
-                        {
-                            //validate the username and password
-                            if (username == SecurityBasicAuthUserName && password == SecurityBasicAuthPassword)
-                            {
-                                logger.Debug("basicAuthHeader():{0}  username:{1}", basicAuthHeader, username);
-                            }
-                            else
-                            {
-                                string msg = "Basic Authorization validation failed. Username pwd sent do not match those on server";
-                                logger.Error(msg);
-                                throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.AccessNotAllowed, msg), exStatusCode);
-                            }
-                        }
-                        else
-                        {
-                            logger.Error("SecurityToken:{0} = [{1}] {2} port:{3} - clientIP:[{4}] UserAgent: {5}", HEADER_TOKEN, securityToken, serverUri, port, clientIPAddress, userAgent);
-                            string msg = "Basic AuthHeader parsing check failed";
-                            logger.Error(msg);
-                            throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.AccessNotAllowed, msg), exStatusCode);
-                        }
-                    }
-                }
 
                 //token should be here except for login
                 logger.Info(@"{0}=[{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}] ",

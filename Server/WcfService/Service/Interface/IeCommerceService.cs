@@ -28,7 +28,7 @@ namespace LSOmni.Service
     [ServiceKnownType(typeof(StatusCode))]
     public interface IeCommerceService
     {
-        // COMMON /////////////////////////////////////////////////////////
+        // COMMON ////////////////////////////////////////////////////////////
         #region Helpers Common
 
         [OperationContract]
@@ -128,9 +128,9 @@ namespace LSOmni.Service
         /// Save Basket or Wish List
         /// </summary>
         /// <remarks>
-        /// OneList can be saved both for Registerd Users and Anonymous Users.
+        /// OneList can be saved, for both Registered Users and Anonymous Users.
         /// For Anonymous User, keep CardId and ContactId empty, 
-        /// and OneListSave will return a OneList Id back that should be store with the session for the Anonymous user, 
+        /// and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
         /// as Omni does not store any information for Anonymous Users.  Used OneListGetById to get the OneList back.
         /// </remarks>
         /// <example>
@@ -269,7 +269,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// This function can be used to send in Basket and convert it to Order.
-        /// Basic Order data is then set for finallize it by setting the Order setting,
+        /// Basic Order data is then set for finalize it by setting the Order setting,
         /// Contact Info, Payment and then it can be posted for Creation
         /// </remarks>
         /// <example>
@@ -1337,7 +1337,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// NAV WS: MM_MOBILE_CONTACT_UPDATE<p/><p/>
         /// Contact Id, Username and EMail are required values for the update command to work.<p/>
-        /// Any field left out or sent in empty will wipe out that information, so always fill out all 
+        /// Any field left out or sent in empty will wipe out that information. Always fill out all 
         /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Nav
         /// </remarks>
         /// <example>
@@ -1641,7 +1641,7 @@ namespace LSOmni.Service
 
         /// <summary>
         /// Transaction history in MemberContact Object has Member Sales Entries records, and if the lines are not included, 
-        /// then they can be pulled by calling this function to get detailed information for the Member Sales
+        /// it can be pulled by calling this function to get detailed information for the Member Sales
         /// </summary>
         /// <param name="entryId">Sales Entry ID</param>
         /// <returns>LoyTransaction with Lines</returns>
@@ -1662,7 +1662,7 @@ namespace LSOmni.Service
         /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
         /// <param name="itemId">Item to get status for</param>
         /// <param name="variantId">Item variant</param>
-        /// <param name="arrivingInStockInDays"></param>
+        /// <param name="arrivingInStockInDays">Item Date Filter</param>
         /// <returns></returns>
         [OperationContract]
         List<InventoryResponse> ItemsInStockGet(string storeId, string itemId, string variantId, int arrivingInStockInDays);
@@ -1688,9 +1688,24 @@ namespace LSOmni.Service
 
         #region Profile
 
+        /// <summary>
+        /// Gets all Member Attributes that are available to assign to a Member Contact
+        /// </summary>
+        /// <remarks>
+        /// Only Member Attributes of type Boolean and Lookup Type None and are valid in Default Club will be selected
+        /// </remarks>
+        /// <returns>List of Member Attributes</returns>
         [OperationContract]
         List<Profile> ProfilesGetAll();
 
+        /// <summary>
+        /// Gets all Member Attributes for a Contact
+        /// </summary>
+        /// <remarks>
+        /// Member Attribute Value has to have Value Yes or No, even in other languages as Omni Server uses that Text to determent if the Attribute is selected or not for the Contact
+        /// </remarks>
+        /// <param name="contactId"></param>
+        /// <returns></returns>
         [OperationContract]
         List<Profile> ProfilesGetByContactId(string contactId);
 
@@ -1939,7 +1954,7 @@ namespace LSOmni.Service
         /// Get store by Store Id
         /// </summary>
         /// <remarks>
-        /// Data for Store Hours needs to be generated in LS NAV by running either OMNI_XXXX Scheduler Jobs
+        /// Data for Store Hours needs to be generated in LS NAV by running OMNI_XXXX Scheduler Jobs
         /// </remarks>
         /// <param name="storeId">store Id</param>
         /// <returns>Store</returns>
@@ -1966,7 +1981,7 @@ namespace LSOmni.Service
         /// Get all stores
         /// </summary>
         /// <remarks>
-        /// Data for Store Hours needs to be generated in LS NAV by running either OMNI_XXXX Scheduler Jobs
+        /// Data for Store Hours needs to be generated in LS NAV by running OMNI_XXXX Scheduler Jobs
         /// </remarks>
         /// <returns>List of stores</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
@@ -2516,7 +2531,7 @@ namespace LSOmni.Service
         ReplFullItemResponse ReplEcommFullItem(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Periodic Discounts for Items from WI Discount table in LS NAV (supports Item distribution)<p/>
+        /// Replicate Periodic Discounts and MultiBuy for Items from WI Discount table in LS NAV (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
         /// LS Nav Main Table data: 10012862 - WI Discounts
@@ -2534,6 +2549,26 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of discounts for items</returns>
         [OperationContract]
         ReplDiscountResponse ReplEcommDiscounts(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Mix and Match Offers for Items from WI Mix and Match Offer table in LS NAV (supports Item distribution)<p/>
+        /// </summary>
+        /// <remarks>
+        /// LS Nav Main Table data: 10012863 - WI Mix and Match Offer
+        /// <p/><p/>
+        /// Data for this function needs to be generated in LS NAV by running either OMNI_XXXX Scheduler Jobs<p/><p/>
+        /// All ReplEcommXX web methods work the same.
+        /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
+        /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of discounts for items</returns>
+        [OperationContract]
+        ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Periodic Discounts for Items from WI Discount table in LS NAV (supports Item distribution)<p/>

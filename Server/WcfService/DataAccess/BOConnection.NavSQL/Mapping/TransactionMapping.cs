@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 {
     public class TransactionMapping : BaseMapping
     {
-        public RetailTransaction MapFromRootToRetailTransaction(NavWS.Root1 root)
+        public RetailTransaction MapFromRootToRetailTransaction(NavWS.RootMobileTransaction root)
         {
             NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
             UnknownCurrency transactionCurrency = new UnknownCurrency(header.CurrencyCode);
@@ -32,11 +32,19 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 ReceiptNumber = header.ReceiptNo,
                 TransactionNumber = header.TransactionNo.ToString(),
                 BeginDateTime = header.TransDate,
-                ManualDiscount = (header.ManualTotalDiscAmount > 0) ?
-                    new Discount(transactionCurrency, header.ManualTotalDiscAmount, 0, DiscountEntryType.Amount) :
-                    new Discount(transactionCurrency, 0, header.ManualTotalDiscPercent, DiscountEntryType.Percentage),
                 IncomeExpenseAmount = new Money(header.IncomeExpAmount, transactionCurrency),
+                PointBalance = header.PointBalance,
+                PointsUsedInOrder = header.PointsUsedInBasket,
+                PointsRewarded = header.IssuedPoints,
+                PointAmount = header.BasketInPoints,
+                PointCashAmountNeeded = header.AmountRemaining,
+                RefundedReceiptNo = header.RefundedReceiptNo,
+                RefundedFromStoreNo = header.RefundedFromStoreNo,
+                RefundedFromTerminalNo = header.RefundedFromPOSTermNo,
+                RefundedFromTransNo = header.RefundedFromTransNo.ToString()
             };
+
+            transaction.Id = transaction.Id.Replace("{", "").Replace("}", ""); //strip out the curly brackets
 
             transaction.Terminal = new UnknownTerminal(header.TerminalId);
             transaction.Terminal.Store = new UnknownStore(header.StoreId);
@@ -54,16 +62,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 transaction.LoyaltyContact.Card = new Card(header.MemberCardNo);
             }
 
-            decimal manualDiscPercent = header.ManualTotalDiscPercent;
-            decimal manualDiscAmount = header.ManualTotalDiscAmount;
-
-            if (manualDiscAmount > 0)
+            if (header.ManualTotalDiscAmount > 0)
             {
-                transaction.ManualDiscount = new Discount(transactionCurrency, manualDiscAmount, 0, DiscountEntryType.Amount);
+                transaction.ManualDiscount = new Discount(transactionCurrency, header.ManualTotalDiscAmount, 0, DiscountEntryType.Amount);
             }
-            else if (manualDiscPercent > 0)
+            else if (header.ManualTotalDiscPercent > 0)
             {
-                transaction.ManualDiscount = new Discount(transactionCurrency, 0, manualDiscPercent, DiscountEntryType.Percentage);
+                transaction.ManualDiscount = new Discount(transactionCurrency, 0, header.ManualTotalDiscPercent, DiscountEntryType.Percentage);
             }
             else
             {
@@ -71,17 +76,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             }
 
             transaction.IncomeExpenseAmount = new Money(header.IncomeExpAmount, transactionCurrency);
-
             transaction.GrossAmount = new Money(header.GrossAmount, transactionCurrency);
             transaction.NetAmount = new Money(header.NetAmount, transactionCurrency);
             transaction.PaymentAmount = new Money(header.Payment, transactionCurrency);
             transaction.TotalDiscount = new Money(header.LineDiscount, transactionCurrency);
             transaction.HeadDiscount = new Money(header.TotalDiscount, transactionCurrency);
             transaction.TaxAmount = new Money(transaction.GrossAmount.Value - transaction.NetAmount.Value, transactionCurrency);
-            transaction.RefundedReceiptNo = header.RefundedReceiptNo;
-            transaction.RefundedFromStoreNo = header.RefundedFromStoreNo;
-            transaction.RefundedFromTerminalNo = header.RefundedFromPOSTermNo;
-            transaction.RefundedFromTransNo = header.RefundedFromTransNo.ToString();
 
             //now loop thru the discount lines
             List<DiscountLine> discounts = new List<DiscountLine>();
@@ -107,16 +107,19 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 
             //now loop thru the lines
             transaction.SaleLines = new List<SaleLine>();
-            foreach (NavWS.MobileTransactionLine mobileTransLine in root.MobileTransactionLine)
+            if (root.MobileTransactionLine != null)
             {
-                MobileTransLine(mobileTransLine, ref transaction, discounts, root.MobileReceiptInfo);
+                foreach (NavWS.MobileTransactionLine mobileTransLine in root.MobileTransactionLine)
+                {
+                    MobileTransLine(mobileTransLine, ref transaction, discounts, root.MobileReceiptInfo);
+                }
             }
             return transaction;
         }
 
-        public NavWS.Root1 MapFromRetailTransactionToRoot(RetailTransaction transaction)
+        public NavWS.RootMobileTransaction MapFromRetailTransactionToRoot(RetailTransaction transaction)
         {
-            NavWS.Root1 root = new NavWS.Root1();
+            NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
 
             //MobileTrans
             List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
@@ -605,15 +608,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 
         private NavWS.MobileReceiptInfo ReceiptInfoLine(string id, ReceiptInfo receiptInfo, int lineNumber, string transactionNo)
         {
-            return new NavWS.MobileReceiptInfo()
+            NavWS.MobileReceiptInfo info = new NavWS.MobileReceiptInfo()
             {
                 Id = id,
                 Line_No = LineNumberToNav(lineNumber),
                 Key = receiptInfo.Key,
                 Type = receiptInfo.Type,
-                Transaction_No = string.IsNullOrEmpty(transactionNo) ? 0 : ConvertTo.SafeInt(transactionNo),
-                Value = receiptInfo.ValueAsText
+                Transaction_No = string.IsNullOrEmpty(transactionNo) ? 0 : ConvertTo.SafeInt(transactionNo)
             };
+
+            // TODO, handle large value here.. so far NAV Does not support it
+            if (receiptInfo.ValueAsText.Length > 100)
+                info.Value = receiptInfo.ValueAsText.Substring(0, 99);
+            else
+                info.Value = receiptInfo.ValueAsText;
+
+            return info;
         }
 
         private List<ReceiptInfo> ReceiptInfoLine(NavWS.MobileReceiptInfo[] mobileReceiptInfos, int lineNo)

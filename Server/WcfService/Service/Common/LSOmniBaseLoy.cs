@@ -393,7 +393,7 @@ namespace LSOmni.Service
                 ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
                 string contactId = contactBLL.Login(userName, password, deviceId, clientIPAddress);
 
-                ContactBLL contactWithSecurityTokenBLL = new ContactBLL(contactBLL.SecurityToken, clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
+                ContactBLL contactWithSecurityTokenBLL = new ContactBLL(contactBLL.SecurityToken, clientTimeOutInSeconds);
                 MemberContact contact = contactWithSecurityTokenBLL.ContactGetById(contactId);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
@@ -731,7 +731,7 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug("itemId:{0}  cardId:{1} ", itemId, cardId);
-                OfferBLL bll = new OfferBLL(clientTimeOutInSeconds);
+                OfferBLL bll = new OfferBLL(securityToken, clientTimeOutInSeconds);
                 List<PublishedOffer> list = bll.PublishedOffersGetByCardId(cardId, itemId);
                 foreach (PublishedOffer it in list)
                 {

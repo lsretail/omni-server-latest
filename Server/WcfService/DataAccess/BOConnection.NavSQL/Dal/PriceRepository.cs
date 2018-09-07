@@ -36,14 +36,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             // get all prices for a item that has changed
-            List<JscKey> keys = new List<JscKey>();
-            keys.Add(new JscKey()
+            List<JscKey> keys = new List<JscKey>()
             {
-                FieldName = "Item No_",
-                FieldType = "nvarchar"
-            });
+                new JscKey()
+                {
+                    FieldName = "Item No_",
+                    FieldType = "nvarchar"
+                }
+            };
 
             List<JscActions> actions = new List<JscActions>();
+
+            SQLHelper.CheckForSQLInjection(storeId);
 
             // get records remaining
             string where = string.Format(" AND [Store No_]='{0}'", storeId);

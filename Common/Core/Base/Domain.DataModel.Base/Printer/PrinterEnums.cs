@@ -41,9 +41,6 @@
         CODABAR,
         CODE93,
         CODE128,
-        CODE128_A,
-        CODE128_B,
-        CODE128_C,
         PDF417,
         Unsupported
     }

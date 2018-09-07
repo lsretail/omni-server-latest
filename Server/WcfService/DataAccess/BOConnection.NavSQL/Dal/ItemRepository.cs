@@ -22,8 +22,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[Keying in Price],mt.[Keying in Quantity],mt.[No Discount Allowed]," +
                          "mt.[Product Group Code],mt.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Zero Price Valid]," +
-                         "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],ih.[Html]," +
-                         "(SELECT sl.[Block Sale on POS] FROM[" + navCompanyName + "Item Status Link] sl " +
+                         "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price]," +
+                         "mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Unit Cost],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
+                         "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
                           "WHERE sl.[Item No_]=mt.[No_] AND [Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos";
 
             sqlfrom = " FROM [" + navCompanyName + "Item] mt" +
@@ -456,6 +457,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 SalseUnitOfMeasure = SQLHelper.GetString(reader["Sales Unit of Measure"]),
                 VendorId = SQLHelper.GetString(reader["Vendor No_"]),
                 VendorItemId = SQLHelper.GetString(reader["Vendor Item No_"]),
+
+                SeasonCode = SQLHelper.GetString(reader["Season Code"]),
+                ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
+                ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
+
+                GrossWeight = SQLHelper.GetDecimal(reader["Gross Weight"]),
+                UnitCost = SQLHelper.GetDecimal(reader["Unit Cost"]),
+                UnitsPerParcel = SQLHelper.GetDecimal(reader["Units per Parcel"]),
+                UnitVolume = SQLHelper.GetDecimal(reader["Unit Volume"]),
+
                 MustKeyInComment = 0
             };
         }

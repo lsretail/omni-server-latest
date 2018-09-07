@@ -60,7 +60,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 attr.Add(new NavWS.MemberAttributeValue()
                 {
                     AttributeCode = prof.Id,
-                    AttributeValue = "Yes"
+                    AttributeValue = (prof.ContactValue) ? "Yes" : "No"
                 });
             }
 
@@ -102,26 +102,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 }
             };
 
-            NavWS.RootMemberContactCreate1 root = new NavWS.RootMemberContactCreate1();
-            root.ContactCreateParameters = member.ToArray();
-
             List<NavWS.MemberAttributeValue1> attr = new List<NavWS.MemberAttributeValue1>();
             foreach (Profile prof in contact.Profiles)
             {
                 attr.Add(new NavWS.MemberAttributeValue1()
                 {
                     AttributeCode = prof.Id,
-                    AttributeValue = "Yes"
+                    AttributeValue = (prof.ContactValue) ? "Yes" : "No"
                 });
             }
 
+            NavWS.RootMemberContactCreate1 root = new NavWS.RootMemberContactCreate1();
+            root.ContactCreateParameters = member.ToArray();
             root.MemberAttributeValue = attr.ToArray();
             root.Text = new string[1];
             root.Text[0] = string.Empty;
             return root;
         }
 
-        public MemberContact MapFromRootToContact(NavWS.Root5 root)
+        public MemberContact MapFromRootToContact(NavWS.RootGetMemberContact root)
         {
             NavWS.MemberContact contact = root.MemberContact.FirstOrDefault();
             MemberContact memberContact = new MemberContact()
@@ -167,7 +166,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             return memberContact;
         }
 
-        public List<LoyTransaction> MapFromRootToSalesEntries(NavWS.Root12 root)
+        public List<LoyTransaction> MapFromRootToSalesEntries(NavWS.RootGetMemberSalesHistory root)
         {
             List<LoyTransaction> list = new List<LoyTransaction>();
             foreach (NavWS.MemberSalesEntry trans in root.MemberSalesEntry)
@@ -188,14 +187,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                     tr.ReceiptNumber = trans.DocumentNo;
                 }
 
-                tr.Store = new Store(trans.StoreNo);
-                tr.Store.Description = trans.StoreName;
+                tr.Store = new Store(trans.StoreNo)
+                {
+                    Description = trans.StoreName
+                };
                 list.Add(tr);
             }
             return list;
         }
 
-        public List<PublishedOffer> MapFromRootToPublishedOffers(NavWS.Root13 root)
+        public List<PublishedOffer> MapFromRootToPublishedOffers(NavWS.RootGetDirectMarketingInfo root)
         {
             List<PublishedOffer> list = new List<PublishedOffer>();
             if (root.PublishedOffer == null)
@@ -220,7 +221,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             return list;
         }
 
-        public List<Notification> MapFromRootToNotifications(NavWS.Root13 root)
+        public List<Notification> MapFromRootToNotifications(NavWS.RootGetDirectMarketingInfo root)
         {
             List<Notification> list = new List<Notification>();
 
@@ -262,7 +263,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             return list;
         }
 
-        private List<OfferDetails> GetPublishedOfferDetails(NavWS.Root13 root, string offerId)
+        private List<OfferDetails> GetPublishedOfferDetails(NavWS.RootGetDirectMarketingInfo root, string offerId)
         {
             List<OfferDetails> list = new List<OfferDetails>();
             if (root.PublishedOfferDetailLine == null)

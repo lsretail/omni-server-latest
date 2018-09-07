@@ -550,7 +550,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.Mandatory " +
+                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
                                           "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
                                           "INNER JOIN [" + navCompanyName + "Member Management Setup] mms ON mms.[Mobile Default Club Code]=mt.[Club Code] " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
@@ -562,7 +562,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToProfile(reader));
+                            list.Add(ReaderToProfile(reader, false));
                         }
                         reader.Close();
                     }
@@ -579,7 +579,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.Mandatory " +
+                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory],v.[Attribute Value] " +
                                           "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute Value] v ON v.[Attribute Code]=mt.[Code] " +
@@ -592,7 +592,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            pro.Add(ReaderToProfile(reader));
+                            pro.Add(ReaderToProfile(reader, true));
                         }
                         reader.Close();
                     }
@@ -631,7 +631,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.Mandatory " +
+                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
                                           "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0" + sqlwhere;
@@ -641,7 +641,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToProfile(reader));
+                            list.Add(ReaderToProfile(reader, false));
                         }
                         reader.Close();
                     }
@@ -743,17 +743,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return scheme;
         }
 
-        private Profile ReaderToProfile(SqlDataReader reader)
+        private Profile ReaderToProfile(SqlDataReader reader, bool contactValues)
         {
-            return new Profile()
+            Profile pro = new Profile()
             {
                 Id = SQLHelper.GetString(reader["Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ContactValue = false,
                 DataType = (ProfileDataType)SQLHelper.GetInt32(reader["Attribute Type"]),
                 DefaultValue = SQLHelper.GetString(reader["Default Value"]),
                 Mandatory = SQLHelper.GetBool(reader["Mandatory"])
             };
+            if (contactValues)
+            {
+                pro.ContactValue = (SQLHelper.GetString(reader["Attribute Value"]).Equals("Yes", StringComparison.InvariantCultureIgnoreCase)) ? true : false;
+            }
+            else
+            {
+                pro.ContactValue = false;
+            }
+            return pro;
         }
     }
 }

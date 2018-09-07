@@ -71,6 +71,32 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
         [DataMember]
         public string RefundedFromTransNo { get; set; } = "";
 
+        /// <summary>
+        /// Current Member Contact Point balance 
+        /// </summary>
+        [DataMember]
+        public decimal PointBalance { get; set; }
+        /// <summary>
+        /// Points used as payment in order
+        /// </summary>
+        [DataMember]
+        public decimal PointsUsedInOrder { get; set; }
+        /// <summary>
+        /// Number of points needed to pay full amount
+        /// </summary>
+        [DataMember]
+        public decimal PointAmount { get; set; }
+        /// <summary>
+        /// Cash Needed with points, if Point balance is not enough to pay order in full
+        /// </summary>
+        [DataMember]
+        public decimal PointCashAmountNeeded { get; set; }
+        /// <summary>
+        /// Points Rewarded for this Order
+        /// </summary>
+        [DataMember]
+        public decimal PointsRewarded { get; set; }
+
         [IgnoreDataMember]
         public int NumberOfSaleLines { get { return SaleLines.Count; } }
 

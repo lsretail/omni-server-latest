@@ -132,6 +132,7 @@ end; { AppSettingsChangeScript }
 //Hook into setting up the sql and navsql installation     
 function PrepareToInstall(var NeedsRestart: Boolean): String;
 begin
+  Result := '';
   Log('PrepareToInstall() called');
 end; { PrepareToInstall }
  
@@ -141,18 +142,18 @@ procedure CurStepChanged(CurStep: TSetupStep);
 // with CurStep=ssPostInstall just after the actual installation finishes,
 // and with CurStep=ssDone just before Setup terminates after a successful install.
 begin
-	 
 	case CurStep of
-		ssPostInstall :
-    begin
-		  //Alert(' ssPostInstall after install');
-      //must change the appsettings here because the files have been extracted to app folder
-      AppSettingsChangeScript();
-    end;
-		//ssInstall :
-		//  Alert(' ssInstall before install');
-		//ssDone :
-		//  Alert(' ssDone');
+	   ssPostInstall :
+       begin
+	     //Alert(' ssPostInstall after install');
+         //must change the appsettings here because the files have been extracted to app folder
+         AppSettingsChangeScript();
+       end;
+		
+	   //ssInstall :
+	   //  Alert(' ssInstall before install');
+	   //ssDone :
+       //  Alert(' ssDone');
 	//else
 	//	Alert(' no idea ss');
 	end;
@@ -235,6 +236,7 @@ end;
 function ShouldSkipPage(PageID: Integer): Boolean;
 begin
   // Skip pages that shouldn't be shown 
+  Result := True;
 end;
 
 function InitializeUninstall(): Boolean;

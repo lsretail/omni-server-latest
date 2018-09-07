@@ -8,6 +8,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Printer
         PrintLine,
         PrintBarcode,
         PrintBitmap,
+        LineFeed
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2018")]

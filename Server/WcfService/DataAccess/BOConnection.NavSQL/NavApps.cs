@@ -103,12 +103,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             string respCode = string.Empty;
             string errorText = string.Empty;
             List<InventoryResponse> list = new List<InventoryResponse>();
-            NavWS.Root14 root = new NavWS.Root14();
+            NavWS.RootGetItemInventory root = new NavWS.RootGetItemInventory();
             foreach (string id in locationIds)
             {
                 try
                 {
-                    navWS.GetItemInventory(ref respCode, ref errorText, itemId, variantId, id, string.Empty, string.Empty, string.Empty, string.Empty, ref root);
+                    navWS.GetItemInventory(ref respCode, ref errorText, itemId, variantId, id, string.Empty, string.Empty, string.Empty, string.Empty, arrivingInStockInDays, ref root);
                     if (respCode != "0000")
                         throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
                 }
@@ -260,6 +260,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
             DiscountOfferRepository rep = new DiscountOfferRepository();
             return rep.ReplicateDiscounts(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDiscount> ReplicateMixAndMatch(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            DiscountOfferRepository rep = new DiscountOfferRepository();
+            return rep.ReplicateMixAndMatch(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

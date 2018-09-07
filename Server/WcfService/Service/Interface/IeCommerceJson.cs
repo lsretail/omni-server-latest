@@ -862,6 +862,10 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ReplDiscountValidationResponse ReplEcommDiscountValidations(ReplRequest replRequest);
 
         [OperationContract]

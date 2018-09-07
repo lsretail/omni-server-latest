@@ -118,5 +118,20 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string VendorId { get; set; }
         [DataMember]
         public string VendorItemId { get; set; }
+
+        [DataMember]
+        public decimal GrossWeight { get; set; }
+        [DataMember]
+        public string SeasonCode { get; set; }
+        [DataMember]
+        public string ItemCategoryCode { get; set; }
+        [DataMember]
+        public string ItemFamilyCode { get; set; }
+        [DataMember]
+        public decimal UnitCost { get; set; }
+        [DataMember]
+        public decimal UnitsPerParcel { get; set; }
+        [DataMember]
+        public decimal UnitVolume { get; set; }
     }
 }

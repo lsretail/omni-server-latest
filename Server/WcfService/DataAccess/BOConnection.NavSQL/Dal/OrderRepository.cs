@@ -459,47 +459,55 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 		
         private Order ReaderToOrderOld(SqlDataReader reader, bool includeLines)
         {
-            Order order = new Order();
-            order.Posted = true;
+            Order order = new Order
+            {
+                Posted = true,
 
-            order.DocumentId = SQLHelper.GetString(reader["Order No_"]);
-            order.StoreId = SQLHelper.GetString(reader["Store No_"]);
-            order.Id = SQLHelper.GetString(reader["Web Transaction GUID"]);
-            order.DocumentRegTime = SQLHelper.GetDateTime(reader["Trans_ Date"]);
-            order.SourceType = (SourceType)SQLHelper.GetInt32(reader["Source Type"]);
-            order.ClickAndCollectOrder = SQLHelper.GetBool(reader["Order Collect"]);
-            order.AnonymousOrder = false;
+                DocumentId = SQLHelper.GetString(reader["Order No_"]),
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                Id = SQLHelper.GetString(reader["Web Transaction GUID"]),
+                DocumentRegTime = SQLHelper.GetDateTime(reader["Trans_ Date"]),
+                SourceType = (SourceType)SQLHelper.GetInt32(reader["Source Type"]),
+                ClickAndCollectOrder = SQLHelper.GetBool(reader["Order Collect"]),
+                AnonymousOrder = false,
 
-            order.ReceiptNo = SQLHelper.GetString(reader["Receipt No_"]);
-            order.TransStore = SQLHelper.GetString(reader["Store No_"]);
-            order.TransTerminal = SQLHelper.GetString(reader["POS Terminal No_"]);
-            order.TransId = SQLHelper.GetString(reader["Transaction No_"]);
-            order.CardId = SQLHelper.GetString(reader["Member Card No_"]);
-            order.ContactName = SQLHelper.GetString(reader["Full Name"]);
+                ReceiptNo = SQLHelper.GetString(reader["Receipt No_"]),
+                TransStore = SQLHelper.GetString(reader["Store No_"]),
+                TransTerminal = SQLHelper.GetString(reader["POS Terminal No_"]),
+                TransId = SQLHelper.GetString(reader["Transaction No_"]),
+                CardId = SQLHelper.GetString(reader["Member Card No_"]),
+                ContactName = SQLHelper.GetString(reader["Full Name"]),
 
-            order.ContactAddress = new Address();
-            order.ContactAddress.Address1 = SQLHelper.GetString(reader["Address"]);
-            order.ContactAddress.Address2 = SQLHelper.GetString(reader["Address 2"]);
-            order.ContactAddress.HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]);
-            order.ContactAddress.City = SQLHelper.GetString(reader["City"]);
-            order.ContactAddress.StateProvinceRegion = SQLHelper.GetString(reader["County"]);
-            order.ContactAddress.PostCode = SQLHelper.GetString(reader["Post Code"]);
-            order.ContactAddress.Country = SQLHelper.GetString(reader["Country_Region Code"]);
-            order.PhoneNumber = SQLHelper.GetString(reader["Phone No_"]);
-            order.Email = SQLHelper.GetString(reader["Email"]);
-            order.MobileNumber = SQLHelper.GetString(reader["Mobile Phone No_"]);
-            order.DayPhoneNumber = SQLHelper.GetString(reader["Daytime Phone No_"]);
+                PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                Email = SQLHelper.GetString(reader["Email"]),
+                MobileNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
+                DayPhoneNumber = SQLHelper.GetString(reader["Daytime Phone No_"]),
 
-            order.ShipToName = SQLHelper.GetString(reader["Ship-to First Name"]) + " " + SQLHelper.GetString(reader["Ship-to Last Name"]);
-            order.ShipToAddress = new Address();
-            order.ShipToAddress.Address1 = SQLHelper.GetString(reader["Ship-to Address 1"]);
-            order.ShipToAddress.Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]);
-            order.ShipToAddress.HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]);
-            order.ShipToAddress.City = SQLHelper.GetString(reader["Ship-to City"]);
-            order.ShipToAddress.StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]);
-            order.ShipToAddress.PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]);
-            order.ShipToAddress.Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]);
-            order.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]);
+                ShipToName = SQLHelper.GetString(reader["Ship-to First Name"]) + " " + SQLHelper.GetString(reader["Ship-to Last Name"]),
+                ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]),
+
+                ContactAddress = new Address
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country_Region Code"])
+                },
+
+                ShipToAddress = new Address
+                {
+                    Address1 = SQLHelper.GetString(reader["Ship-to Address 1"]),
+                    Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["Ship-to City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
+                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"])
+                }
+            };
 
             if (includeLines)
             {
@@ -510,19 +518,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private OrderLine ReaderToOrderOldLine(SqlDataReader reader)
         {
-            OrderLine line = new OrderLine();
-            line.LineNumber = SQLHelper.GetInt32(reader["Line No_"]);
-            line.VariantId = SQLHelper.GetString(reader["Variant Code"]);
-            line.UomId = SQLHelper.GetString(reader["Unit of Measure"]);
-            line.Quantity = SQLHelper.GetDecimal(reader["Quantity"]);
+            OrderLine line = new OrderLine
+            {
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                UomId = SQLHelper.GetString(reader["Unit of Measure"]),
+                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
 
-            line.LineType = LineType.Item;
-            line.ItemId = SQLHelper.GetString(reader["Item No_"]);
-            line.NetPrice = SQLHelper.GetDecimal(reader["Net Price"]);
-            line.Price = SQLHelper.GetDecimal(reader["Price"]);
-            line.DiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]);
-            line.NetAmount = SQLHelper.GetDecimal(reader["Net Amount"]);
-            line.TaxAmount = SQLHelper.GetDecimal(reader["VAT Amount"]);
+                LineType = LineType.Item,
+                ItemId = SQLHelper.GetString(reader["Item No_"]),
+                NetPrice = SQLHelper.GetDecimal(reader["Net Price"]),
+                Price = SQLHelper.GetDecimal(reader["Price"]),
+                DiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]),
+                NetAmount = SQLHelper.GetDecimal(reader["Net Amount"]),
+                TaxAmount = SQLHelper.GetDecimal(reader["VAT Amount"])
+            };
+
             line.Amount = line.NetAmount + line.TaxAmount;
             return line;
         }

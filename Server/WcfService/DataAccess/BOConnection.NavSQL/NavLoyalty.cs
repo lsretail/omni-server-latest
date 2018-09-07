@@ -202,10 +202,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             string errorText = string.Empty;
             ContactMapping map = new ContactMapping();
 
-            NavWS.Root5 root5 = new NavWS.Root5();
+            NavWS.RootGetMemberContact rootContact = new NavWS.RootGetMemberContact();
             try
             {
-                navWS.GetMemberContact(ref respCode, ref errorText, card, string.Empty, string.Empty, ref root5);
+                navWS.GetMemberContact(ref respCode, ref errorText, card, string.Empty, string.Empty, ref rootContact);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.MemberCardNotFound, errorText);
             }
@@ -217,14 +217,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     throw;
             }
 
-            contact = map.MapFromRootToContact(root5);
+            contact = map.MapFromRootToContact(rootContact);
 
-            NavWS.Root4 root4 = new NavWS.Root4();
+            NavWS.RootGetMemberCard rootCard = new NavWS.RootGetMemberCard();
             decimal remainingPoints = 0;
 
             try
             {
-                navWS.GetMemberCard(ref respCode, ref errorText, card, ref remainingPoints, ref root4);
+                navWS.GetMemberCard(ref respCode, ref errorText, card, ref remainingPoints, ref rootCard);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
             }
@@ -238,7 +238,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
             contact.Profiles = new List<Profile>();
-            foreach (NavWS.MemberAttributeList list in root4.MemberAttributeList)
+            foreach (NavWS.MemberAttributeList list in rootCard.MemberAttributeList)
             {
                 if (list.Type != "0")
                     continue;
@@ -251,10 +251,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 });
             }
 
-            NavWS.Root13 root13 = new NavWS.Root13();
+            NavWS.RootGetDirectMarketingInfo rootMarket = new NavWS.RootGetDirectMarketingInfo();
             try
             {
-                navWS.GetDirectMarketingInfo(ref respCode, ref errorText, card, string.Empty, string.Empty, ref root13);
+                navWS.GetDirectMarketingInfo(ref respCode, ref errorText, card, string.Empty, string.Empty, ref rootMarket);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
             }
@@ -266,12 +266,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     throw;
             }
 
-            contact.PublishedOffers = map.MapFromRootToPublishedOffers(root13);
+            contact.PublishedOffers = map.MapFromRootToPublishedOffers(rootMarket);
 
-            NavWS.Root12 root12 = new NavWS.Root12();
+            NavWS.RootGetMemberSalesHistory rootHistory = new NavWS.RootGetMemberSalesHistory();
             try
             {
-                navWS.GetMemberSalesHistory(ref respCode, ref errorText, string.Empty, string.Empty, card, numberOfTrans, ref root12);
+                navWS.GetMemberSalesHistory(ref respCode, ref errorText, string.Empty, string.Empty, card, numberOfTrans, ref rootHistory);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
             }
@@ -283,7 +283,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     throw;
             }
 
-            contact.Transactions = map.MapFromRootToSalesEntries(root12);
+            contact.Transactions = map.MapFromRootToSalesEntries(rootHistory);
             return contact;
         }
 
@@ -522,7 +522,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             string respCode = string.Empty;
             string errorText = string.Empty;
-            NavWS.Root4 root = new NavWS.Root4();
+            NavWS.RootGetMemberCard root = new NavWS.RootGetMemberCard();
             decimal remainingPoints = 0;
 
             try
@@ -593,7 +593,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
                     string respCode = string.Empty;
                     string errorText = string.Empty;
-                    NavWS.Root13 root = new NavWS.Root13();
+                    NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
                     try
                     {
                         navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
@@ -750,11 +750,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             {
                 string respCode = string.Empty;
                 string errorText = string.Empty;
-                NavWS.Root3 navroot = new NavWS.Root3();
+                NavWS.RootGetHierarchy rootRoot = new NavWS.RootGetHierarchy();
 
                 try
                 {
-                    navWS.GetHierarchy(ref respCode, ref errorText, storeId, ref navroot);
+                    navWS.GetHierarchy(ref respCode, ref errorText, storeId, ref rootRoot);
                     if (respCode != "0000")
                         throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
                 }
@@ -766,7 +766,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                         throw;
                 }
 
-                foreach (NavWS.Hierarchy top in navroot.Hierarchy)
+                foreach (NavWS.Hierarchy top in rootRoot.Hierarchy)
                 {
                     list.Add(new Hierarchy()
                     {
@@ -776,7 +776,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     });
                 }
 
-                foreach (NavWS.HierarchyNodes val in navroot.HierarchyNodes)
+                foreach (NavWS.HierarchyNodes val in rootRoot.HierarchyNodes)
                 {
                     HierarchyNode node = new HierarchyNode()
                     {
@@ -790,12 +790,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     };
                     nodes.Add(node);
 
-                    NavWS.Root11 navroot1 = new NavWS.Root11();
-                    NavWS.Root21 navroot2 = new NavWS.Root21();
+                    NavWS.RootGetHierarchyNodeIn rootNodeIn = new NavWS.RootGetHierarchyNodeIn();
+                    NavWS.RootGetHierarchyNodeOut rootNodeOut = new NavWS.RootGetHierarchyNodeOut();
 
                     try
                     {
-                        navWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, navroot1, ref navroot2);
+                        navWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, rootNodeIn, ref rootNodeOut);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
                     }
@@ -807,10 +807,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                             throw;
                     }
 
-                    if (navroot2.HierarchyNodeLink == null)
+                    if (rootNodeOut.HierarchyNodeLink == null)
                         continue;
 
-                    foreach (NavWS.HierarchyNodeLink lnk in navroot2.HierarchyNodeLink)
+                    foreach (NavWS.HierarchyNodeLink lnk in rootNodeOut.HierarchyNodeLink)
                     {
                         node.Leafs.Add(new HierarchyLeaf()
                         {
@@ -920,7 +920,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             OrderMapping map = new OrderMapping();
             string respCode = string.Empty;
             string errorText = string.Empty;
-            NavWS.Root1 root = map.MapFromRetailTransactionToRoot(list);
+            NavWS.RootMobileTransaction root = map.MapFromRetailTransactionToRoot(list);
 
             try
             {
@@ -1095,40 +1095,38 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     xmlResponse = RunOperation(xmlRequest);
                     HandleResponseCode(ref xmlResponse);
                 }
+                return;
             }
-            else
+
+            if (request.ShipToAddress == null)
             {
-                if (request.ShipToAddress == null)
+                if (request.ClickAndCollectOrder)
                 {
-                    if (request.ClickAndCollectOrder)
-                    {
-                        request.ShipToAddress = new Address();
-                    }
-                    else
-                    {
-                        throw new ApplicationException("ShipToAddress can not be null if ClickAndCollectOrder is false");
-                    }
+                    request.ShipToAddress = new Address();
                 }
+                else
+                {
+                    throw new ApplicationException("ShipToAddress can not be null if ClickAndCollectOrder is false");
+                }
+            }
 
-                // new nav v2 web services
-                OrderMapping map = new OrderMapping();
-                string respCode = string.Empty;
-                string errorText = string.Empty;
-                NavWS.Root root = map.MapFromOrderToRoot(request);
+            OrderMapping map = new OrderMapping();
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            NavWS.RootCustomerOrder root = map.MapFromOrderToRoot(request);
 
-                try
-                {
-                    navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
-                    if (respCode != "0000")
-                        throw new LSOmniServiceException(StatusCode.TransactionCalc, errorText);
-                }
-                catch (SoapException e)
-                {
-                    if (e.Message.Contains("Method"))
-                        throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
-                    else
-                        throw;
-                }
+            try
+            {
+                navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
+                if (respCode != "0000")
+                    throw new LSOmniServiceException(StatusCode.TransactionCalc, errorText);
+            }
+            catch (SoapException e)
+            {
+                if (e.Message.Contains("Method"))
+                    throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
+                else
+                    throw;
             }
         }
 
@@ -1305,7 +1303,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     string respCode = string.Empty;
                     string errorText = string.Empty;
                     ContactMapping map = new ContactMapping();
-                    NavWS.Root13 root = new NavWS.Root13();
+                    NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
 
                     try
                     {

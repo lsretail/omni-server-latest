@@ -11,7 +11,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 {
     public class LoyTransactionMapping : BaseMapping
     {
-        public LoyTransaction MapFromRootToLoyTransaction(NavWS.Root7 root)
+        public LoyTransaction MapFromRootToLoyTransaction(NavWS.RootGetTransaction root)
         {
             NavWS.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
             UnknownCurrency transactionCurrency = new UnknownCurrency(header.TransCurrency);

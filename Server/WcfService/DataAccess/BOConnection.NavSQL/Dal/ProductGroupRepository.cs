@@ -242,10 +242,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             ImageRepository imgrepo = new ImageRepository();
 
-            ProductGroup prgr = new ProductGroup();
-            prgr.Id = SQLHelper.GetString(reader["Code"]);
-            prgr.Description = SQLHelper.GetString(reader["Description"]);
-            prgr.ItemCategoryId = SQLHelper.GetString(reader["Item Category Code"]);
+            ProductGroup prgr = new ProductGroup()
+            {
+                Id = SQLHelper.GetString(reader["Code"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                ItemCategoryId = SQLHelper.GetString(reader["Item Category Code"])
+            };
+
             prgr.Images = imgrepo.ImageGetByKey("Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 1, false);
 
             if (includeItems)

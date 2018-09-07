@@ -42,7 +42,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public List<ReplDiscount> Discounts { get; set; }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplDiscount : IDisposable
     {
         public ReplDiscount()
@@ -62,7 +62,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             DiscountValue = 0M;
             OfferNo = string.Empty;
             StoreId = string.Empty;
-            Type = PeriodicDiscType.Unknown; //Disc. Offer, Multibuy
+            Type = ReplDiscountType.Unknown; //Disc. Offer, Multibuy
         }
 
         public void Dispose()
@@ -109,7 +109,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public DateTime ModifyDate { get; set; }
         [DataMember]
-        public PeriodicDiscType Type { get; set; }
+        public ReplDiscountType Type { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string Details { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -148,7 +152,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public List<ReplDiscountValidation> DiscountValidations { get; set; }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplDiscountValidation : IDisposable
     {
         public ReplDiscountValidation()
@@ -278,5 +282,26 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public bool SaturdayEndAfterMidnight { get; set; }
         [DataMember]
         public bool SundayEndAfterMidnight { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum ReplDiscountType
+    {
+        [EnumMember]
+        Multibuy = 0,
+        [EnumMember]
+        MixAndMatch = 1,
+        [EnumMember]
+        DiscOffer = 2,
+        [EnumMember]
+        TotalDiscount = 3,
+        [EnumMember]
+        TenderType = 4,
+        [EnumMember]
+        ItemPoint = 5,
+        [EnumMember]
+        LineDiscount = 6,
+        [EnumMember]
+        Unknown = 99
     }
 }

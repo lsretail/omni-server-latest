@@ -11,7 +11,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 {
     public class OrderMapping : BaseMapping
     {
-        public Order MapFromRootTransactionToOrder(NavWS.Root1 root)
+        public Order MapFromRootTransactionToOrder(NavWS.RootMobileTransaction root)
         {
             NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
             UnknownCurrency transactionCurrency = new UnknownCurrency(header.CurrencyCode);
@@ -87,9 +87,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             return order;
         }
 
-        public NavWS.Root MapFromOrderToRoot(Order order)
+        public NavWS.RootCustomerOrder MapFromOrderToRoot(Order order)
         {
-            NavWS.Root root = new NavWS.Root();
+            NavWS.RootCustomerOrder root = new NavWS.RootCustomerOrder();
 
             List<NavWS.CustomerOrderHeader> header = new List<NavWS.CustomerOrderHeader>();
             header.Add(new NavWS.CustomerOrderHeader()
@@ -197,9 +197,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             return root;
         }
 
-        public NavWS.Root1 MapFromRetailTransactionToRoot(OneList list)
+        public NavWS.RootMobileTransaction MapFromRetailTransactionToRoot(OneList list)
         {
-            NavWS.Root1 root = new NavWS.Root1();
+            NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
 
             //MobileTrans
             List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();

@@ -418,6 +418,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(clientTimeOutInSeconds);
+                return bll.ReplEcommMixAndMatch(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                return null; //never gets here
+            }
+        }
+
         public virtual ReplDiscountValidationResponse ReplEcommDiscountValidations(ReplRequest replRequest)
         {
             try

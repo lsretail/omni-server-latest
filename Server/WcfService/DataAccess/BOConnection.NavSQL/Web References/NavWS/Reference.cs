@@ -199,7 +199,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderCreate(ref string responseCode, ref string errorText, Root customerOrderCreateXML) {
+        public void CustomerOrderCreate(ref string responseCode, ref string errorText, RootCustomerOrder customerOrderCreateXML) {
             object[] results = this.Invoke("CustomerOrderCreate", new object[] {
                         responseCode,
                         errorText,
@@ -209,12 +209,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public void CustomerOrderCreateAsync(string responseCode, string errorText, Root customerOrderCreateXML) {
+        public void CustomerOrderCreateAsync(string responseCode, string errorText, RootCustomerOrder customerOrderCreateXML) {
             this.CustomerOrderCreateAsync(responseCode, errorText, customerOrderCreateXML, null);
         }
         
         /// <remarks/>
-        public void CustomerOrderCreateAsync(string responseCode, string errorText, Root customerOrderCreateXML, object userState) {
+        public void CustomerOrderCreateAsync(string responseCode, string errorText, RootCustomerOrder customerOrderCreateXML, object userState) {
             if ((this.CustomerOrderCreateOperationCompleted == null)) {
                 this.CustomerOrderCreateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCreateOperationCompleted);
             }
@@ -233,23 +233,23 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:EcomCalculateBasket", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="EcomCalculateBasket_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void EcomCalculateBasket(ref string responseCode, ref string errorText, ref Root1 mobileTransactionXML) {
+        public void EcomCalculateBasket(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
             object[] results = this.Invoke("EcomCalculateBasket", new object[] {
                         responseCode,
                         errorText,
                         mobileTransactionXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            mobileTransactionXML = ((Root1)(results[2]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
         }
         
         /// <remarks/>
-        public void EcomCalculateBasketAsync(string responseCode, string errorText, Root1 mobileTransactionXML) {
+        public void EcomCalculateBasketAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
             this.EcomCalculateBasketAsync(responseCode, errorText, mobileTransactionXML, null);
         }
         
         /// <remarks/>
-        public void EcomCalculateBasketAsync(string responseCode, string errorText, Root1 mobileTransactionXML, object userState) {
+        public void EcomCalculateBasketAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
             if ((this.EcomCalculateBasketOperationCompleted == null)) {
                 this.EcomCalculateBasketOperationCompleted = new System.Threading.SendOrPostCallback(this.OnEcomCalculateBasketOperationCompleted);
             }
@@ -268,7 +268,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetCrossSelling", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetCrossSelling_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetCrossSelling(ref string responseCode, ref string errorText, string storeNo, string itemNo, ref Root2 getCrossSellingXML) {
+        public void GetCrossSelling(ref string responseCode, ref string errorText, string storeNo, string itemNo, ref RootGetCrossSelling getCrossSellingXML) {
             object[] results = this.Invoke("GetCrossSelling", new object[] {
                         responseCode,
                         errorText,
@@ -277,16 +277,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getCrossSellingXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getCrossSellingXML = ((Root2)(results[2]));
+            getCrossSellingXML = ((RootGetCrossSelling)(results[2]));
         }
         
         /// <remarks/>
-        public void GetCrossSellingAsync(string responseCode, string errorText, string storeNo, string itemNo, Root2 getCrossSellingXML) {
+        public void GetCrossSellingAsync(string responseCode, string errorText, string storeNo, string itemNo, RootGetCrossSelling getCrossSellingXML) {
             this.GetCrossSellingAsync(responseCode, errorText, storeNo, itemNo, getCrossSellingXML, null);
         }
         
         /// <remarks/>
-        public void GetCrossSellingAsync(string responseCode, string errorText, string storeNo, string itemNo, Root2 getCrossSellingXML, object userState) {
+        public void GetCrossSellingAsync(string responseCode, string errorText, string storeNo, string itemNo, RootGetCrossSelling getCrossSellingXML, object userState) {
             if ((this.GetCrossSellingOperationCompleted == null)) {
                 this.GetCrossSellingOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetCrossSellingOperationCompleted);
             }
@@ -307,7 +307,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetHierarchy", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetHierarchy_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetHierarchy(ref string responseCode, ref string errorText, string storeNo, ref Root3 getHierarchyXML) {
+        public void GetHierarchy(ref string responseCode, ref string errorText, string storeNo, ref RootGetHierarchy getHierarchyXML) {
             object[] results = this.Invoke("GetHierarchy", new object[] {
                         responseCode,
                         errorText,
@@ -315,16 +315,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getHierarchyXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getHierarchyXML = ((Root3)(results[2]));
+            getHierarchyXML = ((RootGetHierarchy)(results[2]));
         }
         
         /// <remarks/>
-        public void GetHierarchyAsync(string responseCode, string errorText, string storeNo, Root3 getHierarchyXML) {
+        public void GetHierarchyAsync(string responseCode, string errorText, string storeNo, RootGetHierarchy getHierarchyXML) {
             this.GetHierarchyAsync(responseCode, errorText, storeNo, getHierarchyXML, null);
         }
         
         /// <remarks/>
-        public void GetHierarchyAsync(string responseCode, string errorText, string storeNo, Root3 getHierarchyXML, object userState) {
+        public void GetHierarchyAsync(string responseCode, string errorText, string storeNo, RootGetHierarchy getHierarchyXML, object userState) {
             if ((this.GetHierarchyOperationCompleted == null)) {
                 this.GetHierarchyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyOperationCompleted);
             }
@@ -344,7 +344,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetHierarchyNode", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetHierarchyNode_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetHierarchyNode(ref string responseCode, ref string errorText, string hierarchyCode, string nodeID, string storeNo, Root11 getHierarchyNodeInXML, ref Root21 getHierarchyNodeOutXML) {
+        public void GetHierarchyNode(ref string responseCode, ref string errorText, string hierarchyCode, string nodeID, string storeNo, RootGetHierarchyNodeIn getHierarchyNodeInXML, ref RootGetHierarchyNodeOut getHierarchyNodeOutXML) {
             object[] results = this.Invoke("GetHierarchyNode", new object[] {
                         responseCode,
                         errorText,
@@ -355,16 +355,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getHierarchyNodeOutXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getHierarchyNodeOutXML = ((Root21)(results[2]));
+            getHierarchyNodeOutXML = ((RootGetHierarchyNodeOut)(results[2]));
         }
         
         /// <remarks/>
-        public void GetHierarchyNodeAsync(string responseCode, string errorText, string hierarchyCode, string nodeID, string storeNo, Root11 getHierarchyNodeInXML, Root21 getHierarchyNodeOutXML) {
+        public void GetHierarchyNodeAsync(string responseCode, string errorText, string hierarchyCode, string nodeID, string storeNo, RootGetHierarchyNodeIn getHierarchyNodeInXML, RootGetHierarchyNodeOut getHierarchyNodeOutXML) {
             this.GetHierarchyNodeAsync(responseCode, errorText, hierarchyCode, nodeID, storeNo, getHierarchyNodeInXML, getHierarchyNodeOutXML, null);
         }
         
         /// <remarks/>
-        public void GetHierarchyNodeAsync(string responseCode, string errorText, string hierarchyCode, string nodeID, string storeNo, Root11 getHierarchyNodeInXML, Root21 getHierarchyNodeOutXML, object userState) {
+        public void GetHierarchyNodeAsync(string responseCode, string errorText, string hierarchyCode, string nodeID, string storeNo, RootGetHierarchyNodeIn getHierarchyNodeInXML, RootGetHierarchyNodeOut getHierarchyNodeOutXML, object userState) {
             if ((this.GetHierarchyNodeOperationCompleted == null)) {
                 this.GetHierarchyNodeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyNodeOperationCompleted);
             }
@@ -387,7 +387,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberCard", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberCard_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetMemberCard(ref string responseCode, ref string errorText, string cardNo, ref decimal totalRemainingPoints, ref Root4 getMemberCardXML) {
+        public void GetMemberCard(ref string responseCode, ref string errorText, string cardNo, ref decimal totalRemainingPoints, ref RootGetMemberCard getMemberCardXML) {
             object[] results = this.Invoke("GetMemberCard", new object[] {
                         responseCode,
                         errorText,
@@ -397,16 +397,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
             totalRemainingPoints = ((decimal)(results[2]));
-            getMemberCardXML = ((Root4)(results[3]));
+            getMemberCardXML = ((RootGetMemberCard)(results[3]));
         }
         
         /// <remarks/>
-        public void GetMemberCardAsync(string responseCode, string errorText, string cardNo, decimal totalRemainingPoints, Root4 getMemberCardXML) {
+        public void GetMemberCardAsync(string responseCode, string errorText, string cardNo, decimal totalRemainingPoints, RootGetMemberCard getMemberCardXML) {
             this.GetMemberCardAsync(responseCode, errorText, cardNo, totalRemainingPoints, getMemberCardXML, null);
         }
         
         /// <remarks/>
-        public void GetMemberCardAsync(string responseCode, string errorText, string cardNo, decimal totalRemainingPoints, Root4 getMemberCardXML, object userState) {
+        public void GetMemberCardAsync(string responseCode, string errorText, string cardNo, decimal totalRemainingPoints, RootGetMemberCard getMemberCardXML, object userState) {
             if ((this.GetMemberCardOperationCompleted == null)) {
                 this.GetMemberCardOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemberCardOperationCompleted);
             }
@@ -427,7 +427,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberContact", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberContact_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetMemberContact(ref string responseCode, ref string errorText, string cardNo, string accountNo, string contactNo, ref Root5 getMemberContactXML) {
+        public void GetMemberContact(ref string responseCode, ref string errorText, string cardNo, string accountNo, string contactNo, ref RootGetMemberContact getMemberContactXML) {
             object[] results = this.Invoke("GetMemberContact", new object[] {
                         responseCode,
                         errorText,
@@ -437,16 +437,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getMemberContactXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getMemberContactXML = ((Root5)(results[2]));
+            getMemberContactXML = ((RootGetMemberContact)(results[2]));
         }
         
         /// <remarks/>
-        public void GetMemberContactAsync(string responseCode, string errorText, string cardNo, string accountNo, string contactNo, Root5 getMemberContactXML) {
+        public void GetMemberContactAsync(string responseCode, string errorText, string cardNo, string accountNo, string contactNo, RootGetMemberContact getMemberContactXML) {
             this.GetMemberContactAsync(responseCode, errorText, cardNo, accountNo, contactNo, getMemberContactXML, null);
         }
         
         /// <remarks/>
-        public void GetMemberContactAsync(string responseCode, string errorText, string cardNo, string accountNo, string contactNo, Root5 getMemberContactXML, object userState) {
+        public void GetMemberContactAsync(string responseCode, string errorText, string cardNo, string accountNo, string contactNo, RootGetMemberContact getMemberContactXML, object userState) {
             if ((this.GetMemberContactOperationCompleted == null)) {
                 this.GetMemberContactOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemberContactOperationCompleted);
             }
@@ -468,7 +468,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberInfoForPos", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberInfoForPos_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetMemberInfoForPos(ref string responseCode, ref string errorText, string cardNo, string storeNo, ref Root6 getMemberInfoForPosXML) {
+        public void GetMemberInfoForPos(ref string responseCode, ref string errorText, string cardNo, string storeNo, ref RootGetMemberInfoForPos getMemberInfoForPosXML) {
             object[] results = this.Invoke("GetMemberInfoForPos", new object[] {
                         responseCode,
                         errorText,
@@ -477,16 +477,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getMemberInfoForPosXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getMemberInfoForPosXML = ((Root6)(results[2]));
+            getMemberInfoForPosXML = ((RootGetMemberInfoForPos)(results[2]));
         }
         
         /// <remarks/>
-        public void GetMemberInfoForPosAsync(string responseCode, string errorText, string cardNo, string storeNo, Root6 getMemberInfoForPosXML) {
+        public void GetMemberInfoForPosAsync(string responseCode, string errorText, string cardNo, string storeNo, RootGetMemberInfoForPos getMemberInfoForPosXML) {
             this.GetMemberInfoForPosAsync(responseCode, errorText, cardNo, storeNo, getMemberInfoForPosXML, null);
         }
         
         /// <remarks/>
-        public void GetMemberInfoForPosAsync(string responseCode, string errorText, string cardNo, string storeNo, Root6 getMemberInfoForPosXML, object userState) {
+        public void GetMemberInfoForPosAsync(string responseCode, string errorText, string cardNo, string storeNo, RootGetMemberInfoForPos getMemberInfoForPosXML, object userState) {
             if ((this.GetMemberInfoForPosOperationCompleted == null)) {
                 this.GetMemberInfoForPosOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemberInfoForPosOperationCompleted);
             }
@@ -507,7 +507,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetTransaction", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetTransaction_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetTransaction(ref string responseCode, ref string errorText, string receiptNo, string storeNo, string posTerminalNo, int transactionNo, ref Root7 getTransactionXML) {
+        public void GetTransaction(ref string responseCode, ref string errorText, string receiptNo, string storeNo, string posTerminalNo, int transactionNo, ref RootGetTransaction getTransactionXML) {
             object[] results = this.Invoke("GetTransaction", new object[] {
                         responseCode,
                         errorText,
@@ -518,16 +518,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getTransactionXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getTransactionXML = ((Root7)(results[2]));
+            getTransactionXML = ((RootGetTransaction)(results[2]));
         }
         
         /// <remarks/>
-        public void GetTransactionAsync(string responseCode, string errorText, string receiptNo, string storeNo, string posTerminalNo, int transactionNo, Root7 getTransactionXML) {
+        public void GetTransactionAsync(string responseCode, string errorText, string receiptNo, string storeNo, string posTerminalNo, int transactionNo, RootGetTransaction getTransactionXML) {
             this.GetTransactionAsync(responseCode, errorText, receiptNo, storeNo, posTerminalNo, transactionNo, getTransactionXML, null);
         }
         
         /// <remarks/>
-        public void GetTransactionAsync(string responseCode, string errorText, string receiptNo, string storeNo, string posTerminalNo, int transactionNo, Root7 getTransactionXML, object userState) {
+        public void GetTransactionAsync(string responseCode, string errorText, string receiptNo, string storeNo, string posTerminalNo, int transactionNo, RootGetTransaction getTransactionXML, object userState) {
             if ((this.GetTransactionOperationCompleted == null)) {
                 this.GetTransactionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetTransactionOperationCompleted);
             }
@@ -550,7 +550,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosCalculate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosCalculate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosCalculate(ref string responseCode, ref string errorText, string staffId, ref Root1 mobileTransactionXML) {
+        public void MobilePosCalculate(ref string responseCode, ref string errorText, string staffId, ref RootMobileTransaction mobileTransactionXML) {
             object[] results = this.Invoke("MobilePosCalculate", new object[] {
                         responseCode,
                         errorText,
@@ -558,16 +558,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         mobileTransactionXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            mobileTransactionXML = ((Root1)(results[2]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
         }
         
         /// <remarks/>
-        public void MobilePosCalculateAsync(string responseCode, string errorText, string staffId, Root1 mobileTransactionXML) {
+        public void MobilePosCalculateAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML) {
             this.MobilePosCalculateAsync(responseCode, errorText, staffId, mobileTransactionXML, null);
         }
         
         /// <remarks/>
-        public void MobilePosCalculateAsync(string responseCode, string errorText, string staffId, Root1 mobileTransactionXML, object userState) {
+        public void MobilePosCalculateAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML, object userState) {
             if ((this.MobilePosCalculateOperationCompleted == null)) {
                 this.MobilePosCalculateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosCalculateOperationCompleted);
             }
@@ -587,7 +587,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosPost", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosPost_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosPost(ref string responseCode, ref string errorText, string staffId, ref Root1 mobileTransactionXML) {
+        public void MobilePosPost(ref string responseCode, ref string errorText, string staffId, ref RootMobileTransaction mobileTransactionXML) {
             object[] results = this.Invoke("MobilePosPost", new object[] {
                         responseCode,
                         errorText,
@@ -595,16 +595,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         mobileTransactionXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            mobileTransactionXML = ((Root1)(results[2]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
         }
         
         /// <remarks/>
-        public void MobilePosPostAsync(string responseCode, string errorText, string staffId, Root1 mobileTransactionXML) {
+        public void MobilePosPostAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML) {
             this.MobilePosPostAsync(responseCode, errorText, staffId, mobileTransactionXML, null);
         }
         
         /// <remarks/>
-        public void MobilePosPostAsync(string responseCode, string errorText, string staffId, Root1 mobileTransactionXML, object userState) {
+        public void MobilePosPostAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML, object userState) {
             if ((this.MobilePosPostOperationCompleted == null)) {
                 this.MobilePosPostOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosPostOperationCompleted);
             }
@@ -624,7 +624,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSuspend", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosSuspend_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosSuspend(ref string responseCode, ref string errorText, string searchKey, Root1 mobileTransactionXML, ref string receiptNo) {
+        public void MobilePosSuspend(ref string responseCode, ref string errorText, string searchKey, RootMobileTransaction mobileTransactionXML, ref string receiptNo) {
             object[] results = this.Invoke("MobilePosSuspend", new object[] {
                         responseCode,
                         errorText,
@@ -637,12 +637,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public void MobilePosSuspendAsync(string responseCode, string errorText, string searchKey, Root1 mobileTransactionXML, string receiptNo) {
+        public void MobilePosSuspendAsync(string responseCode, string errorText, string searchKey, RootMobileTransaction mobileTransactionXML, string receiptNo) {
             this.MobilePosSuspendAsync(responseCode, errorText, searchKey, mobileTransactionXML, receiptNo, null);
         }
         
         /// <remarks/>
-        public void MobilePosSuspendAsync(string responseCode, string errorText, string searchKey, Root1 mobileTransactionXML, string receiptNo, object userState) {
+        public void MobilePosSuspendAsync(string responseCode, string errorText, string searchKey, RootMobileTransaction mobileTransactionXML, string receiptNo, object userState) {
             if ((this.MobilePosSuspendOperationCompleted == null)) {
                 this.MobilePosSuspendOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosSuspendOperationCompleted);
             }
@@ -742,7 +742,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosPrint", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosPrint_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosPrint(ref string responseCode, ref string errorText, ref string printMethod, ref string mailRecipient, ref string externalPrinterID, string storeNo, string terminalNo, int transactionNo, ref Root8 mobilePosPrintXML) {
+        public void MobilePosPrint(ref string responseCode, ref string errorText, ref string printMethod, ref string mailRecipient, ref string externalPrinterID, string storeNo, string terminalNo, int transactionNo, ref RootMobilePosPrint mobilePosPrintXML) {
             object[] results = this.Invoke("MobilePosPrint", new object[] {
                         responseCode,
                         errorText,
@@ -758,16 +758,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             printMethod = ((string)(results[2]));
             mailRecipient = ((string)(results[3]));
             externalPrinterID = ((string)(results[4]));
-            mobilePosPrintXML = ((Root8)(results[5]));
+            mobilePosPrintXML = ((RootMobilePosPrint)(results[5]));
         }
         
         /// <remarks/>
-        public void MobilePosPrintAsync(string responseCode, string errorText, string printMethod, string mailRecipient, string externalPrinterID, string storeNo, string terminalNo, int transactionNo, Root8 mobilePosPrintXML) {
+        public void MobilePosPrintAsync(string responseCode, string errorText, string printMethod, string mailRecipient, string externalPrinterID, string storeNo, string terminalNo, int transactionNo, RootMobilePosPrint mobilePosPrintXML) {
             this.MobilePosPrintAsync(responseCode, errorText, printMethod, mailRecipient, externalPrinterID, storeNo, terminalNo, transactionNo, mobilePosPrintXML, null);
         }
         
         /// <remarks/>
-        public void MobilePosPrintAsync(string responseCode, string errorText, string printMethod, string mailRecipient, string externalPrinterID, string storeNo, string terminalNo, int transactionNo, Root8 mobilePosPrintXML, object userState) {
+        public void MobilePosPrintAsync(string responseCode, string errorText, string printMethod, string mailRecipient, string externalPrinterID, string storeNo, string terminalNo, int transactionNo, RootMobilePosPrint mobilePosPrintXML, object userState) {
             if ((this.MobilePosPrintOperationCompleted == null)) {
                 this.MobilePosPrintOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosPrintOperationCompleted);
             }
@@ -832,7 +832,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosCalculateV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosCalculateV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosCalculateV2(ref string responseCode, ref string errorText, string staffId, ref Root9 mobileTransactionXMLV2) {
+        public void MobilePosCalculateV2(ref string responseCode, ref string errorText, string staffId, ref Root mobileTransactionXMLV2) {
             object[] results = this.Invoke("MobilePosCalculateV2", new object[] {
                         responseCode,
                         errorText,
@@ -840,16 +840,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         mobileTransactionXMLV2});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            mobileTransactionXMLV2 = ((Root9)(results[2]));
+            mobileTransactionXMLV2 = ((Root)(results[2]));
         }
         
         /// <remarks/>
-        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root9 mobileTransactionXMLV2) {
+        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root mobileTransactionXMLV2) {
             this.MobilePosCalculateV2Async(responseCode, errorText, staffId, mobileTransactionXMLV2, null);
         }
         
         /// <remarks/>
-        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root9 mobileTransactionXMLV2, object userState) {
+        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root mobileTransactionXMLV2, object userState) {
             if ((this.MobilePosCalculateV2OperationCompleted == null)) {
                 this.MobilePosCalculateV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosCalculateV2OperationCompleted);
             }
@@ -869,7 +869,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosZReport", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosZReport_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosZReport(ref string responseCode, ref string errorText, string storeNo, string posTerminal, string staffID, string xZReport, ref string zReportID, ref Root10 mobilePosZReportXML) {
+        public void MobilePosZReport(ref string responseCode, ref string errorText, string storeNo, string posTerminal, string staffID, string xZReport, ref string zReportID, ref RootMobilePosZReport mobilePosZReportXML) {
             object[] results = this.Invoke("MobilePosZReport", new object[] {
                         responseCode,
                         errorText,
@@ -882,16 +882,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
             zReportID = ((string)(results[2]));
-            mobilePosZReportXML = ((Root10)(results[3]));
+            mobilePosZReportXML = ((RootMobilePosZReport)(results[3]));
         }
         
         /// <remarks/>
-        public void MobilePosZReportAsync(string responseCode, string errorText, string storeNo, string posTerminal, string staffID, string xZReport, string zReportID, Root10 mobilePosZReportXML) {
+        public void MobilePosZReportAsync(string responseCode, string errorText, string storeNo, string posTerminal, string staffID, string xZReport, string zReportID, RootMobilePosZReport mobilePosZReportXML) {
             this.MobilePosZReportAsync(responseCode, errorText, storeNo, posTerminal, staffID, xZReport, zReportID, mobilePosZReportXML, null);
         }
         
         /// <remarks/>
-        public void MobilePosZReportAsync(string responseCode, string errorText, string storeNo, string posTerminal, string staffID, string xZReport, string zReportID, Root10 mobilePosZReportXML, object userState) {
+        public void MobilePosZReportAsync(string responseCode, string errorText, string storeNo, string posTerminal, string staffID, string xZReport, string zReportID, RootMobilePosZReport mobilePosZReportXML, object userState) {
             if ((this.MobilePosZReportOperationCompleted == null)) {
                 this.MobilePosZReportOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosZReportOperationCompleted);
             }
@@ -915,7 +915,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberSalesHistory", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberSalesHistory_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetMemberSalesHistory(ref string responseCode, ref string errorText, string accountNo, string contactNo, string cardNo, int maxNoOfHeaders, ref Root12 getMemberSalesHistoryXML) {
+        public void GetMemberSalesHistory(ref string responseCode, ref string errorText, string accountNo, string contactNo, string cardNo, int maxNoOfHeaders, ref RootGetMemberSalesHistory getMemberSalesHistoryXML) {
             object[] results = this.Invoke("GetMemberSalesHistory", new object[] {
                         responseCode,
                         errorText,
@@ -926,16 +926,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         getMemberSalesHistoryXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getMemberSalesHistoryXML = ((Root12)(results[2]));
+            getMemberSalesHistoryXML = ((RootGetMemberSalesHistory)(results[2]));
         }
         
         /// <remarks/>
-        public void GetMemberSalesHistoryAsync(string responseCode, string errorText, string accountNo, string contactNo, string cardNo, int maxNoOfHeaders, Root12 getMemberSalesHistoryXML) {
+        public void GetMemberSalesHistoryAsync(string responseCode, string errorText, string accountNo, string contactNo, string cardNo, int maxNoOfHeaders, RootGetMemberSalesHistory getMemberSalesHistoryXML) {
             this.GetMemberSalesHistoryAsync(responseCode, errorText, accountNo, contactNo, cardNo, maxNoOfHeaders, getMemberSalesHistoryXML, null);
         }
         
         /// <remarks/>
-        public void GetMemberSalesHistoryAsync(string responseCode, string errorText, string accountNo, string contactNo, string cardNo, int maxNoOfHeaders, Root12 getMemberSalesHistoryXML, object userState) {
+        public void GetMemberSalesHistoryAsync(string responseCode, string errorText, string accountNo, string contactNo, string cardNo, int maxNoOfHeaders, RootGetMemberSalesHistory getMemberSalesHistoryXML, object userState) {
             if ((this.GetMemberSalesHistoryOperationCompleted == null)) {
                 this.GetMemberSalesHistoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemberSalesHistoryOperationCompleted);
             }
@@ -958,7 +958,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetDirectMarketingInfo", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetDirectMarketingInfo_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetDirectMarketingInfo(ref string responseCode, ref string errorText, string cardId, string itemNo, string storeNo, ref Root13 loadMemberDirMarkInfoXML) {
+        public void GetDirectMarketingInfo(ref string responseCode, ref string errorText, string cardId, string itemNo, string storeNo, ref RootGetDirectMarketingInfo loadMemberDirMarkInfoXML) {
             object[] results = this.Invoke("GetDirectMarketingInfo", new object[] {
                         responseCode,
                         errorText,
@@ -968,16 +968,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         loadMemberDirMarkInfoXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            loadMemberDirMarkInfoXML = ((Root13)(results[2]));
+            loadMemberDirMarkInfoXML = ((RootGetDirectMarketingInfo)(results[2]));
         }
         
         /// <remarks/>
-        public void GetDirectMarketingInfoAsync(string responseCode, string errorText, string cardId, string itemNo, string storeNo, Root13 loadMemberDirMarkInfoXML) {
+        public void GetDirectMarketingInfoAsync(string responseCode, string errorText, string cardId, string itemNo, string storeNo, RootGetDirectMarketingInfo loadMemberDirMarkInfoXML) {
             this.GetDirectMarketingInfoAsync(responseCode, errorText, cardId, itemNo, storeNo, loadMemberDirMarkInfoXML, null);
         }
         
         /// <remarks/>
-        public void GetDirectMarketingInfoAsync(string responseCode, string errorText, string cardId, string itemNo, string storeNo, Root13 loadMemberDirMarkInfoXML, object userState) {
+        public void GetDirectMarketingInfoAsync(string responseCode, string errorText, string cardId, string itemNo, string storeNo, RootGetDirectMarketingInfo loadMemberDirMarkInfoXML, object userState) {
             if ((this.GetDirectMarketingInfoOperationCompleted == null)) {
                 this.GetDirectMarketingInfoOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDirectMarketingInfoOperationCompleted);
             }
@@ -999,7 +999,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetItemInventory", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetItemInventory_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetItemInventory(ref string responseCode, ref string errorText, string itemNo, string variantCode, string storeNo, string locationCode, string colour, string size, string style, ref Root14 getItemInventoryXML) {
+        public void GetItemInventory(ref string responseCode, ref string errorText, string itemNo, string variantCode, string storeNo, string locationCode, string colour, string size, string style, int stockDays, ref RootGetItemInventory getItemInventoryXML) {
             object[] results = this.Invoke("GetItemInventory", new object[] {
                         responseCode,
                         errorText,
@@ -1010,19 +1010,20 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         colour,
                         size,
                         style,
+                        stockDays,
                         getItemInventoryXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getItemInventoryXML = ((Root14)(results[2]));
+            getItemInventoryXML = ((RootGetItemInventory)(results[2]));
         }
         
         /// <remarks/>
-        public void GetItemInventoryAsync(string responseCode, string errorText, string itemNo, string variantCode, string storeNo, string locationCode, string colour, string size, string style, Root14 getItemInventoryXML) {
-            this.GetItemInventoryAsync(responseCode, errorText, itemNo, variantCode, storeNo, locationCode, colour, size, style, getItemInventoryXML, null);
+        public void GetItemInventoryAsync(string responseCode, string errorText, string itemNo, string variantCode, string storeNo, string locationCode, string colour, string size, string style, int stockDays, RootGetItemInventory getItemInventoryXML) {
+            this.GetItemInventoryAsync(responseCode, errorText, itemNo, variantCode, storeNo, locationCode, colour, size, style, stockDays, getItemInventoryXML, null);
         }
         
         /// <remarks/>
-        public void GetItemInventoryAsync(string responseCode, string errorText, string itemNo, string variantCode, string storeNo, string locationCode, string colour, string size, string style, Root14 getItemInventoryXML, object userState) {
+        public void GetItemInventoryAsync(string responseCode, string errorText, string itemNo, string variantCode, string storeNo, string locationCode, string colour, string size, string style, int stockDays, RootGetItemInventory getItemInventoryXML, object userState) {
             if ((this.GetItemInventoryOperationCompleted == null)) {
                 this.GetItemInventoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemInventoryOperationCompleted);
             }
@@ -1036,6 +1037,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         colour,
                         size,
                         style,
+                        stockDays,
                         getItemInventoryXML}, this.GetItemInventoryOperationCompleted, userState);
         }
         
@@ -1048,7 +1050,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSalesHistory", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosSalesHistory_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosSalesHistory(ref string responseCode, ref string errorText, string searchType, string searchKey, string storeFilter, string terminalFilter, string transactionNoFilter, string dateFilter, string itemFilter, string descriptionFilter, string itemProductGrFilter, string itemCatFilter, ref Root15 mobilePosSalesHistoryXML) {
+        public void MobilePosSalesHistory(ref string responseCode, ref string errorText, string searchType, string searchKey, string storeFilter, string terminalFilter, string transactionNoFilter, string dateFilter, string itemFilter, string descriptionFilter, string itemProductGrFilter, string itemCatFilter, ref RootMobilePosSalesHistory mobilePosSalesHistoryXML) {
             object[] results = this.Invoke("MobilePosSalesHistory", new object[] {
                         responseCode,
                         errorText,
@@ -1065,16 +1067,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                         mobilePosSalesHistoryXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            mobilePosSalesHistoryXML = ((Root15)(results[2]));
+            mobilePosSalesHistoryXML = ((RootMobilePosSalesHistory)(results[2]));
         }
         
         /// <remarks/>
-        public void MobilePosSalesHistoryAsync(string responseCode, string errorText, string searchType, string searchKey, string storeFilter, string terminalFilter, string transactionNoFilter, string dateFilter, string itemFilter, string descriptionFilter, string itemProductGrFilter, string itemCatFilter, Root15 mobilePosSalesHistoryXML) {
+        public void MobilePosSalesHistoryAsync(string responseCode, string errorText, string searchType, string searchKey, string storeFilter, string terminalFilter, string transactionNoFilter, string dateFilter, string itemFilter, string descriptionFilter, string itemProductGrFilter, string itemCatFilter, RootMobilePosSalesHistory mobilePosSalesHistoryXML) {
             this.MobilePosSalesHistoryAsync(responseCode, errorText, searchType, searchKey, storeFilter, terminalFilter, transactionNoFilter, dateFilter, itemFilter, descriptionFilter, itemProductGrFilter, itemCatFilter, mobilePosSalesHistoryXML, null);
         }
         
         /// <remarks/>
-        public void MobilePosSalesHistoryAsync(string responseCode, string errorText, string searchType, string searchKey, string storeFilter, string terminalFilter, string transactionNoFilter, string dateFilter, string itemFilter, string descriptionFilter, string itemProductGrFilter, string itemCatFilter, Root15 mobilePosSalesHistoryXML, object userState) {
+        public void MobilePosSalesHistoryAsync(string responseCode, string errorText, string searchType, string searchKey, string storeFilter, string terminalFilter, string transactionNoFilter, string dateFilter, string itemFilter, string descriptionFilter, string itemProductGrFilter, string itemCatFilter, RootMobilePosSalesHistory mobilePosSalesHistoryXML, object userState) {
             if ((this.MobilePosSalesHistoryOperationCompleted == null)) {
                 this.MobilePosSalesHistoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosSalesHistoryOperationCompleted);
             }
@@ -1290,7 +1292,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class Root {
+    public partial class RootCustomerOrder {
         
         private CustomerOrderHeader[] customerOrderHeaderField;
         
@@ -16780,8 +16782,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033005")]
-    public partial class Root15 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033005")]
+    public partial class RootMobilePosSalesHistory {
         
         private MobileTransactionLine2[] mobileTransactionLineField;
         
@@ -16838,10 +16840,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private string styleField;
         
+        private string baseUnitofMeasureField;
+        
+        private decimal expectedStockField;
+        
+        private decimal reorderPointField;
+        
         public WSInventoryBuffer() {
             this.inventoryField = ((decimal)(0m));
             this.qtySoldnotPostedField = ((decimal)(0m));
             this.actualInventoryField = ((decimal)(0m));
+            this.expectedStockField = ((decimal)(0m));
+            this.reorderPointField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -16943,6 +16953,38 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                 this.styleField = value;
             }
         }
+        
+        /// <remarks/>
+        public string BaseUnitofMeasure {
+            get {
+                return this.baseUnitofMeasureField;
+            }
+            set {
+                this.baseUnitofMeasureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal ExpectedStock {
+            get {
+                return this.expectedStockField;
+            }
+            set {
+                this.expectedStockField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal ReorderPoint {
+            get {
+                return this.reorderPointField;
+            }
+            set {
+                this.reorderPointField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -16950,8 +16992,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032988")]
-    public partial class Root14 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032988")]
+    public partial class RootGetItemInventory {
         
         private WSInventoryBuffer[] wSInventoryBufferField;
         
@@ -17675,8 +17717,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032993")]
-    public partial class Root13 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032993")]
+    public partial class RootGetDirectMarketingInfo {
         
         private PublishedOffer[] publishedOfferField;
         
@@ -17976,8 +18018,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032998")]
-    public partial class Root12 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032998")]
+    public partial class RootGetMemberSalesHistory {
         
         private MemberSalesEntry[] memberSalesEntryField;
         
@@ -18213,8 +18255,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033008")]
-    public partial class Root10 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033008")]
+    public partial class RootMobilePosZReport {
         
         private PosPrintBuffer[] posPrintBufferField;
         
@@ -20297,8 +20339,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x99009613")]
-    public partial class Root9 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009613")]
+    public partial class Root {
         
         private MobileTransaction1[] mobileTransactionField;
         
@@ -20586,8 +20628,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033003")]
-    public partial class Root8 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033003")]
+    public partial class RootMobilePosPrint {
         
         private POSPrintBuffer[] pOSPrintBufferField;
         
@@ -26143,8 +26185,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032999")]
-    public partial class Root7 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032999")]
+    public partial class RootGetTransaction {
         
         private TransactionHeader[] transactionHeaderField;
         
@@ -27764,6 +27806,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private string limitationTypeField;
         
+        private string attributeTypeField;
+        
         /// <remarks/>
         public string Type {
             get {
@@ -27821,6 +27865,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             }
             set {
                 this.limitationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeType {
+            get {
+                return this.attributeTypeField;
+            }
+            set {
+                this.attributeTypeField = value;
             }
         }
     }
@@ -28809,8 +28863,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032992")]
-    public partial class Root6 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032992")]
+    public partial class RootGetMemberInfoForPos {
         
         private MembershipCard2[] membershipCardField;
         
@@ -30120,8 +30174,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032991")]
-    public partial class Root5 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032991")]
+    public partial class RootGetMemberContact {
         
         private MembershipCard1[] membershipCardField;
         
@@ -30196,6 +30250,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private string limitationTypeField;
         
+        private string attributeTypeField;
+        
         /// <remarks/>
         public string Type {
             get {
@@ -30253,6 +30309,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             }
             set {
                 this.limitationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeType {
+            get {
+                return this.attributeTypeField;
+            }
+            set {
+                this.attributeTypeField = value;
             }
         }
     }
@@ -30428,8 +30494,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032989")]
-    public partial class Root4 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032989")]
+    public partial class RootGetMemberCard {
         
         private MembershipCard[] membershipCardField;
         
@@ -30545,8 +30611,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root2", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032987")]
-    public partial class Root21 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032987")]
+    public partial class RootGetHierarchyNodeOut {
         
         private HierarchyNodeLink[] hierarchyNodeLinkField;
         
@@ -30613,8 +30679,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root1", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032986")]
-    public partial class Root11 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032986")]
+    public partial class RootGetHierarchyNodeIn {
         
         private HierarchyAttributeFilter[] hierarchyAttributeFilterField;
         
@@ -30898,8 +30964,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
-    public partial class Root3 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
+    public partial class RootGetHierarchy {
         
         private Hierarchy[] hierarchyField;
         
@@ -30993,8 +31059,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032995")]
-    public partial class Root2 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032995")]
+    public partial class RootGetCrossSelling {
         
         private CrossSellingItems[] crossSellingItemsField;
         
@@ -33077,8 +33143,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x99009610")]
-    public partial class Root1 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009610")]
+    public partial class RootMobileTransaction {
         
         private MobileTransaction[] mobileTransactionField;
         
@@ -33474,6 +33540,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private string orderReferenceField;
         
+        private bool inventoryTransferField;
+        
         public CustomerOrderLine() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -33484,6 +33552,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             this.netAmountField = ((decimal)(0m));
             this.vatAmountField = ((decimal)(0m));
             this.amountField = ((decimal)(0m));
+            this.inventoryTransferField = false;
         }
         
         /// <remarks/>
@@ -33645,6 +33714,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
                 this.orderReferenceField = value;
             }
         }
+        
+        /// <remarks/>
+        public bool InventoryTransfer {
+            get {
+                return this.inventoryTransferField;
+            }
+            set {
+                this.inventoryTransferField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -33715,10 +33794,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root1 mobileTransactionXML {
+        public RootMobileTransaction mobileTransactionXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root1)(this.results[2]));
+                return ((RootMobileTransaction)(this.results[2]));
             }
         }
     }
@@ -33757,10 +33836,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root2 getCrossSellingXML {
+        public RootGetCrossSelling getCrossSellingXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root2)(this.results[2]));
+                return ((RootGetCrossSelling)(this.results[2]));
             }
         }
     }
@@ -33799,10 +33878,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root3 getHierarchyXML {
+        public RootGetHierarchy getHierarchyXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root3)(this.results[2]));
+                return ((RootGetHierarchy)(this.results[2]));
             }
         }
     }
@@ -33841,10 +33920,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root21 getHierarchyNodeOutXML {
+        public RootGetHierarchyNodeOut getHierarchyNodeOutXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root21)(this.results[2]));
+                return ((RootGetHierarchyNodeOut)(this.results[2]));
             }
         }
     }
@@ -33891,10 +33970,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root4 getMemberCardXML {
+        public RootGetMemberCard getMemberCardXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root4)(this.results[3]));
+                return ((RootGetMemberCard)(this.results[3]));
             }
         }
     }
@@ -33933,10 +34012,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root5 getMemberContactXML {
+        public RootGetMemberContact getMemberContactXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root5)(this.results[2]));
+                return ((RootGetMemberContact)(this.results[2]));
             }
         }
     }
@@ -33975,10 +34054,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root6 getMemberInfoForPosXML {
+        public RootGetMemberInfoForPos getMemberInfoForPosXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root6)(this.results[2]));
+                return ((RootGetMemberInfoForPos)(this.results[2]));
             }
         }
     }
@@ -34017,10 +34096,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root7 getTransactionXML {
+        public RootGetTransaction getTransactionXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root7)(this.results[2]));
+                return ((RootGetTransaction)(this.results[2]));
             }
         }
     }
@@ -34059,10 +34138,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root1 mobileTransactionXML {
+        public RootMobileTransaction mobileTransactionXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root1)(this.results[2]));
+                return ((RootMobileTransaction)(this.results[2]));
             }
         }
     }
@@ -34101,10 +34180,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root1 mobileTransactionXML {
+        public RootMobileTransaction mobileTransactionXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root1)(this.results[2]));
+                return ((RootMobileTransaction)(this.results[2]));
             }
         }
     }
@@ -34301,10 +34380,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root8 mobilePosPrintXML {
+        public RootMobilePosPrint mobilePosPrintXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root8)(this.results[5]));
+                return ((RootMobilePosPrint)(this.results[5]));
             }
         }
     }
@@ -34377,10 +34456,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root9 mobileTransactionXMLV2 {
+        public Root mobileTransactionXMLV2 {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root9)(this.results[2]));
+                return ((Root)(this.results[2]));
             }
         }
     }
@@ -34427,10 +34506,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root10 mobilePosZReportXML {
+        public RootMobilePosZReport mobilePosZReportXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root10)(this.results[3]));
+                return ((RootMobilePosZReport)(this.results[3]));
             }
         }
     }
@@ -34469,10 +34548,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root12 getMemberSalesHistoryXML {
+        public RootGetMemberSalesHistory getMemberSalesHistoryXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root12)(this.results[2]));
+                return ((RootGetMemberSalesHistory)(this.results[2]));
             }
         }
     }
@@ -34511,10 +34590,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root13 loadMemberDirMarkInfoXML {
+        public RootGetDirectMarketingInfo loadMemberDirMarkInfoXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root13)(this.results[2]));
+                return ((RootGetDirectMarketingInfo)(this.results[2]));
             }
         }
     }
@@ -34553,10 +34632,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root14 getItemInventoryXML {
+        public RootGetItemInventory getItemInventoryXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root14)(this.results[2]));
+                return ((RootGetItemInventory)(this.results[2]));
             }
         }
     }
@@ -34595,10 +34674,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         }
         
         /// <remarks/>
-        public Root15 mobilePosSalesHistoryXML {
+        public RootMobilePosSalesHistory mobilePosSalesHistoryXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root15)(this.results[2]));
+                return ((RootMobilePosSalesHistory)(this.results[2]));
             }
         }
     }

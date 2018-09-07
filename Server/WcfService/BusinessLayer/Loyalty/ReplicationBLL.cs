@@ -349,6 +349,21 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplDiscountResponse rs = new ReplDiscountResponse();
+            rs.Discounts = BOAppConnection.ReplicateMixAndMatch(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(string.Format("Records {0} LastKey {1} RecRemain {2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining));
+            return rs;
+        }
+
         public virtual ReplDiscountValidationResponse ReplEcommDiscountValidation(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;

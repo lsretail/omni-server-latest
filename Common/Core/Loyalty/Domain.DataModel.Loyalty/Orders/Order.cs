@@ -48,12 +48,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             }
         }
 
+        /// <summary>
+        /// Order Number
+        /// </summary>
         [DataMember]
         public string DocumentId { get; set; }
         [DataMember]
         public DateTime DocumentRegTime { get; set; }
         [DataMember]
         public string StoreId { get; set; }
+        /// <summary>
+        /// Member Contact Card Id
+        /// </summary>
         [DataMember]
         public string CardId { get; set; }
         /// <summary>
@@ -96,10 +102,13 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public bool AnonymousOrder { get; set; }
+        /// <summary>
+        /// Store to collect Click And Collect Order from
+        /// </summary>
         [DataMember]
         public string CollectLocation { get; set; }
         /// <summary>
-        /// Click And Collect order should be shipped after store processing
+        /// Click And Collect Order should be shipped after store processing
         /// </summary>
         [DataMember]
         public bool ShipClickAndCollect { get; set; }
@@ -111,7 +120,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public List<OrderPayment> OrderPayments { get; set; }
 
-        // billing contact
+        /// <summary>
+        /// Member Contact Id
+        /// </summary>
         [DataMember]
         public string ContactId { get; set; }
         [DataMember]
@@ -141,15 +152,29 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string ShippingAgentServiceCode { get; set; }
 
-        // Point information
+        /// <summary>
+        /// Current Member Contact Point balance 
+        /// </summary>
         [DataMember]
         public decimal PointBalance { get; set; }
+        /// <summary>
+        /// Points used as payment in order
+        /// </summary>
         [DataMember]
         public decimal PointsUsedInOrder { get; set; }
+        /// <summary>
+        /// Number of points needed to pay full amount
+        /// </summary>
         [DataMember]
         public decimal PointAmount { get; set; }
+        /// <summary>
+        /// Cash Needed with points, if Point balance is not enough to pay order in full
+        /// </summary>
         [DataMember]
         public decimal PointCashAmountNeeded { get; set; }
+        /// <summary>
+        /// Points Rewarded for this Order
+        /// </summary>
         [DataMember]
         public decimal PointsRewarded { get; set; }
 

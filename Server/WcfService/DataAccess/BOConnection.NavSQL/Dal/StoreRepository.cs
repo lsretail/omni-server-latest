@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     public class StoreRepository : BaseRepository
     {
         // Key: Store No.
-        const int TABLEID = 10012866;
+        const int TABLEID = 99001470;
 
         private string sqlcolumns = string.Empty;
         private string sqlcolumnsinv = string.Empty;

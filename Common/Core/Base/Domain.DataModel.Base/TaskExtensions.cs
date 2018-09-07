@@ -14,5 +14,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base
             else
                 throw new TimeoutException();
         }
+
+        public static async Task<bool> TimeoutWithSuccessAfter(this Task<bool> task, int millisecondsTimeout)
+        {
+            if (task == await Task.WhenAny(task, Task.Delay(millisecondsTimeout)))
+                return await task;
+            else
+                return true;
+        }
     }
 }
