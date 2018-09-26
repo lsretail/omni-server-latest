@@ -56,7 +56,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -68,6 +67,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -105,6 +105,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -179,8 +180,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         sqlcolumns, sqlfrom, where,
                         (string.IsNullOrWhiteSpace(order)) ? string.Empty : " ORDER BY " + order);
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -459,8 +460,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                           "LEFT OUTER JOIN [" + navCompanyName + "Member Scheme] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1";
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -556,8 +557,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                           "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0";
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -586,8 +587,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0 AND v.[Contact No_]=@id";
 
                     command.Parameters.AddWithValue("@id", id);
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

@@ -48,7 +48,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Item No_]", storeId, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -60,6 +59,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -92,6 +92,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -125,8 +126,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE mt.[Barcode No_]=@id";
                     command.Parameters.AddWithValue("@id", code);
-                    TraceSqlCommand(command);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())

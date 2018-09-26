@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         // Key: Item No., Sales Type, Sales Code, Starting Date, Currency Code, Variant Code, Unit of Measure Code, Minimum Quantity
         const int TABLEID = 7002;
         // Key: StoreId, ItemId, VariantId, UomId, CustomerDiscountGroup, LoyaltySchemeCode
-        const int TABLEMOBILEID = 99009258;
+        const int TABLEMOBILEID = 10012861;
 
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
@@ -50,7 +50,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             SQLHelper.CheckForSQLInjection(storeId);
 
             // get records remaining
-            string where = string.Format(" AND [Store No_]='{0}'", storeId);
+            string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
             string sql = string.Empty;
             string tmplastkey = "0";
             if (fullReplication)
@@ -96,7 +96,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlMcolumns + sqlMfrom + GetWhereStatement(fullReplication, keys, where, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -108,6 +107,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -144,6 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -195,7 +196,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + ",spg.[Priority]" + 
                 sqlfrom + ",[" + navCompanyName + "Store Price Group] spg" + GetWhereStatementWithStoreDist(fullReplication, keys, where, "mt.[Item No_]", storeId, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -207,6 +207,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -250,6 +251,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -295,8 +297,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     
                     //TODO: check for correct variant and currency
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -333,8 +335,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                            string.Format(" AND (mt.[Unit of Measure Code]='' OR mt.[Unit of Measure Code]='{0}')", uomId) +
                            string.Format(" AND mt.[Starting Date]<'{0}' AND (mt.[Ending Date]>='{0}' OR mt.[Ending Date]='{1}') ORDER BY spg.[Priority] DESC", GetSQLNAVDate(dateValid), GetSQLNAVDate(DateTime.MinValue));
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -365,8 +367,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         command.Parameters.AddWithValue("@Sid", storeId);
                     }
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -409,8 +411,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         command.Parameters.AddWithValue("Uid", uomId);
                     }
 
-                    TraceIt(command.CommandText);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())

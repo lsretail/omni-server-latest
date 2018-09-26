@@ -39,8 +39,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.CommandText = "SELECT mt.[Code] as [Image Id], 0 as [Display Order], mt.[Type],mt.[Image Location],mt.[Image Blob]" + sqlimgfrom +
                                          " WHERE mt.[Code]=@id";     //must return lowest displayorder first
                     command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -144,7 +144,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlimgfields + sqlimgfrom + GetWhereStatement(fullReplication, keys, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -156,6 +155,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -188,6 +188,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -255,7 +256,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqllinkfields + sqllinkfrom + GetWhereStatement(fullReplication, keys, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -267,6 +267,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -288,9 +289,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
+                                string[] par = act.ParamValue.Split(';');
+                                if (par.Length < 2 || par.Length != keys.Count)
+                                    continue;
+
+                                string[] recid = par[0].Split(':');
+
                                 list.Add(new ReplImageLink()
                                 {
-                                    ImageId = act.ParamValue,
+                                    TableName = recid[0].Trim(),
+                                    KeyValue = recid[1].Trim(),
+                                    ImageId = par[1],
                                     IsDeleted = true
                                 });
                                 continue;
@@ -299,6 +308,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())

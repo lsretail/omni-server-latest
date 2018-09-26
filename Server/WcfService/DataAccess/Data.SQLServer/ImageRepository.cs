@@ -68,6 +68,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f0", tableName);
                                 command.Parameters.AddWithValue("@f1", keyValue);
                                 command.Parameters.AddWithValue("@f2", imgId);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText =
@@ -81,6 +82,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f3", imgId);
                                 command.Parameters.AddWithValue("@f4", displayOrder);
                                 command.Parameters.AddWithValue("@f5", DateTime.Now);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
                             trans.Commit();
@@ -113,6 +115,7 @@ namespace LSOmni.DataAccess.Dal
 
                     command.Parameters.AddWithValue("@id", itemId);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -147,6 +150,7 @@ namespace LSOmni.DataAccess.Dal
 
                     command.Parameters.AddWithValue("@id", notificationId);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

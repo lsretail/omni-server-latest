@@ -24,8 +24,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT mt.[Code],mt.[Name],mt.[Internet Address],mt.[Account No_]" +
                                           " FROM [" + navCompanyName + "Shipping Agent] mt";
-                    TraceSqlCommand(command);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -70,8 +70,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT [Code],[Name] FROM [" + navCompanyName + "Country_Region]";
-                    TraceSqlCommand(command);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

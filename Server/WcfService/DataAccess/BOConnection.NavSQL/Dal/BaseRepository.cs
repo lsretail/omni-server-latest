@@ -200,6 +200,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         using (SqlCommand command = connection.CreateCommand())
                         {
                             command.CommandText = sql;
+                            TraceSqlCommand(command);
                             connection.Open();
                             dbCollation = "COLLATE " + command.ExecuteScalar().ToString().Replace("_CS_", "_CI_"); // make it case sensitive;
                             connection.Close();
@@ -262,6 +263,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     if (string.IsNullOrWhiteSpace(fullreplsql))
                     {
                         command.CommandText = "SELECT COUNT(*)" + GetSQLAction(tableid, lastkey, false);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
@@ -290,6 +292,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         command.CommandText = string.Format("SELECT MAX([Entry No_]) FROM [{0}Preaction] WHERE [Table No_]='{1}'",
                             navCompanyName, tableid);
+                        TraceSqlCommand(command);
                         var ret = command.ExecuteScalar();
                         maxkey = (ret == DBNull.Value) ? "0" : ret.ToString();
                     }
@@ -346,6 +349,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                         "[Table No_],[Key], MAX([Entry No_]) AS EntryNo, MAX([Action]) AS Action" +
                                         GetSQLAction(tableid, lastkey, true);
 
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -388,6 +392,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                           " AND K.TABLE_NAME = '" + navCompanyName + table + "' AND K.TABLE_SCHEMA = 'dbo'" +
                                           " ORDER BY K.ORDINAL_POSITION";
 
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

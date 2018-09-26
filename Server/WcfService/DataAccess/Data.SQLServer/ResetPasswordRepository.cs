@@ -28,6 +28,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f3", true);
                     command.Parameters.AddWithValue("@f4", DateTime.Now);
                     command.Parameters.AddWithValue("@code", resetCode);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

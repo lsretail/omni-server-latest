@@ -28,6 +28,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "SELECT * FROM AppSettings";
                     command.CommandTimeout = 3;
                     connection.Open();
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -224,6 +225,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "DELETE FROM [OrderQueue] WHERE [DateCreated]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysQueue * -1));
+                            TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
                             logger.Log(LogLevel.Info, "OrderQueue Cleanup, removed {0} records", cnt);
                         }
@@ -232,6 +234,7 @@ namespace LSOmni.DataAccess.Dal
                         command.Parameters.Clear();
                         command.Parameters.AddWithValue("@f1", string.Format("StatusChange to 3"));
                         command.Parameters.AddWithValue("@f2", DateTime.Now.AddMinutes(-(60 * 24 * 2)));
+                        TraceSqlCommand(command);
                         command.ExecuteNonQuery();
                     }
                     catch (Exception ex)
@@ -246,6 +249,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "DELETE FROM [LoginLog] WHERE [CreateDate]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
+                            TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
                             logger.Log(LogLevel.Info, "LoginLog Cleanup, removed {0} records", cnt);
                         }
@@ -259,6 +263,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "DELETE FROM [TaskLog] WHERE [ModifyTime]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
+                            TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
                             logger.Log(LogLevel.Info, "TaskLog Cleanup, removed {0} records", cnt);
                         }
@@ -272,6 +277,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "DELETE FROM [TaskLogLine] WHERE [ModifyTime]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
+                            TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
                             logger.Log(LogLevel.Info, "TaskLogLine Cleanup, removed {0} records", cnt);
                         }
@@ -288,6 +294,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "DELETE FROM [PushNotification] WHERE [DateSent]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysNotify * -1));
+                            TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
                             logger.Log(LogLevel.Info, "Notification Cleanup, removed {0} records", cnt);
                         }
@@ -305,6 +312,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "SELECT [UserId] FROM [User] WHERE [LastAccessed]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysUser * -1));
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 if (reader.Read())
@@ -335,6 +343,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "SELECT [Id],[ListType] FROM [OneList] WHERE [LastAccessed]<@f1";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysOneList * -1));
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 if (reader.Read())

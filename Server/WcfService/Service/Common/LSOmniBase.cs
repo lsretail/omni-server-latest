@@ -54,9 +54,6 @@ namespace LSOmni.Service
         private int clientTimeOutInSeconds = 0;
         protected string clientIPAddress = string.Empty;
 
-        private static bool SecurityBasicAuthValidation = false;
-        private static string SecurityBasicAuthUserName = null;
-        private static string SecurityBasicAuthPassword = null;
         private static object ConfigValidationRunOnce = null; //
 
         private string serverUri = string.Empty; //absoluteUri

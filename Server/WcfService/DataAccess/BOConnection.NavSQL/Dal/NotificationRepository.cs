@@ -47,8 +47,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                          "ORDER BY mt.[Created] DESC";
 
                     command.Parameters.AddWithValue("@id", contactId);
-                    TraceSqlCommand(command);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())

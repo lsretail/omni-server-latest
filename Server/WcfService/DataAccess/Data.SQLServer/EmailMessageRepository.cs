@@ -48,6 +48,7 @@ namespace LSOmni.DataAccess.Dal
 
                                 command.CommandText = "DELETE FROM [EmailMessage] WHERE [Guid]=@guid ";
                                 command.Parameters.AddWithValue("@guid", new Guid(email.Guid));
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText =
@@ -70,6 +71,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f12", email.ExternalId);
                                 command.Parameters.AddWithValue("@f13", email.DateCreated);
                                 command.Parameters.AddWithValue("@f14", email.DateLastModified);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
                             trans.Commit();

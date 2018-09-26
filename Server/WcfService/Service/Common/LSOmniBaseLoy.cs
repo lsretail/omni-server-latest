@@ -868,11 +868,11 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug("contactId:{0}   lastChecked:{1} - NO LONGER SUPPORTED, use Pushnotification", contactId, lastChecked.ToString());
-
-                NotificationUnread unread = new NotificationUnread();
-                unread.Created = DateTime.Now;
-                unread.Count = 0;
-                return unread;
+                return new NotificationUnread
+                {
+                    Created = DateTime.Now,
+                    Count = 0
+                };
             }
             catch (Exception ex)
             {

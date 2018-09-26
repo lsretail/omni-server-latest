@@ -163,6 +163,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f11", DateTime.Now);
                                 command.Parameters.AddWithValue("@f12", DateTime.Now);
                                 command.Parameters.AddWithValue("@f13", NullToString(list.StoreId, 50));
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -198,22 +199,26 @@ namespace LSOmni.DataAccess.Dal
                             command.Transaction = trans;
                             command.CommandText = "DELETE FROM [OneListItemDiscount] WHERE [OneListId]=@id";
                             command.Parameters.AddWithValue("@id", oneListId);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
 
                             command.CommandText = "DELETE FROM [OneListItem] WHERE [OneListId]=@id";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@id", oneListId);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
 
                             command.CommandText = "DELETE FROM [OneListOffer] WHERE [OneListId]=@id";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@id", oneListId);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
 
                             command.CommandText = "DELETE FROM [OneList] WHERE [Id]=@id AND [ListType]=@type";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@id", oneListId);
                             command.Parameters.AddWithValue("@type", (int)listType);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
                             trans.Commit();
                         }
@@ -275,6 +280,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "UPDATE [OneList] SET [LastAccessed]=GETDATE() WHERE [Id]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     connection.Open();
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                     connection.Close();
                 }
@@ -417,6 +423,7 @@ namespace LSOmni.DataAccess.Dal
 
                 command.CommandText = "DELETE FROM [OneListItem] WHERE [OneListId]=@id";
                 command.Parameters.AddWithValue("@id", oneListId);
+                TraceSqlCommand(command);
                 command.ExecuteNonQuery();
 
                 if (calculate)
@@ -424,6 +431,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "DELETE FROM [OneListItemDiscount] WHERE [OneListId]=@id";
                     command.Parameters.Clear();
                     command.Parameters.AddWithValue("@id", oneListId);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
 
@@ -479,6 +487,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters["@f13"].Value = line.DiscountAmount;
                     command.Parameters["@f14"].Value = line.DiscountPercent;
                     command.Parameters["@f15"].Value = DateTime.Now;
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 
                     if (calculate && (line.OnelistItemDiscounts != null && line.OnelistItemDiscounts.Count > 0))
@@ -541,6 +550,7 @@ namespace LSOmni.DataAccess.Dal
 
                 command.CommandText = "DELETE FROM [OneListOffer] WHERE [OneListId]=@id";
                 command.Parameters.AddWithValue("@id", oneListId);
+                TraceSqlCommand(command);
                 command.ExecuteNonQuery();
 
                 command.CommandText = "INSERT INTO [OneListOffer] " +
@@ -564,6 +574,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters["@f1"].Value = oneListId;
                     command.Parameters["@f2"].Value = displayOrderId;
                     command.Parameters["@f3"].Value = DateTime.Now;
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
             }

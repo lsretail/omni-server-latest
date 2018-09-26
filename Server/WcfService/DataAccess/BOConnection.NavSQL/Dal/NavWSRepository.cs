@@ -25,6 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT COUNT(*) " + sqlfrom + " WHERE mt.[Request ID]=@id";
                     command.Parameters.AddWithValue("@id", requestId);
+                    TraceSqlCommand(command);
                     cnt = (int)command.ExecuteScalar();
                 }
                 connection.Close();
@@ -41,6 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '" + navCompanyName + "WS Request'";
+                    TraceSqlCommand(command);
                     cnt = (int)command.ExecuteScalar();
                 }
                 connection.Close();
@@ -59,6 +61,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT mt.[Definition Url] FROM [" + navCompanyName + "Web Request] mt WHERE mt.[Request Id]=@id";
                     command.Parameters.AddWithValue("@id", requestId);
+                    TraceSqlCommand(command);
                     ret = (string)command.ExecuteScalar();
                 }
                 connection.Close();

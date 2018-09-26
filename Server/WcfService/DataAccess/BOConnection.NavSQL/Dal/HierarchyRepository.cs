@@ -51,7 +51,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, where, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -63,6 +62,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -95,6 +95,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())

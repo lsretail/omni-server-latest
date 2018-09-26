@@ -42,6 +42,7 @@ namespace LSOmni.DataAccess.Dal
                                 // delete previous data
                                 command.CommandText = "DELETE FROM [OrderMessage] WHERE [Guid]=@id";
                                 command.Parameters.AddWithValue("@id", order.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText = "INSERT INTO [OrderMessage] ([Guid],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified]" +
@@ -54,6 +55,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f4", NullToString(order.Details));
                                 command.Parameters.AddWithValue("@f5", (order.DateCreated == DateTime.MinValue) ? MinDate : order.DateCreated);
                                 command.Parameters.AddWithValue("@f6", (order.DateLastModified == DateTime.MinValue) ? MinDate : order.DateLastModified);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 trans.Commit();
@@ -90,7 +92,7 @@ namespace LSOmni.DataAccess.Dal
                                           "FROM [OrderMessage] WHERE [Guid]=@id";
 
                     command.Parameters.AddWithValue("@id", guid);
-                    command.ExecuteNonQuery();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -152,7 +154,7 @@ namespace LSOmni.DataAccess.Dal
                     sql += " ORDER BY [Id] ASC";
 
                     command.CommandText = sql;
-                    command.ExecuteNonQuery();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -186,6 +188,7 @@ namespace LSOmni.DataAccess.Dal
                         command.Parameters.AddWithValue("@f1", status);
                         command.Parameters.AddWithValue("@f2", DateTime.Now);
                         command.Parameters.AddWithValue("@id", guid);
+                        TraceSqlCommand(command);
                         command.ExecuteNonQuery();
                     }
                 }
@@ -204,6 +207,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "SELECT [NotificationId] FROM [OrderMessageNotification] WHERE [OrderMessageId]=@id";
 
                     command.Parameters.AddWithValue("@id", orderMessageId);
+                    TraceSqlCommand(command);
                     notificationId = (string)command.ExecuteScalar();
                 }
                 db.Close();
@@ -249,6 +253,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f13", NullToString(qrText));
                                 command.Parameters.AddWithValue("@f14", 1); //0 = BO, 1 = OrderMessage 
                                 command.Parameters.AddWithValue("@f15", 0); //Status 0 = New
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 trans.Commit();

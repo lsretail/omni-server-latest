@@ -643,7 +643,7 @@ namespace LSOmni.Service
         ///                <ns1:ItemId>40020</ns1:ItemId>
         ///                <ns1:LineNumber>1</ns1:LineNumber>
         ///                <ns1:LineType>Item</ns1:LineType>
-        ///                <ns1:NetAmount>115.20</ns1:NetAmount>
+        ///                <ns1:NetAmount>128.00</ns1:NetAmount>
         ///                <ns1:NetPrice>64.00</ns1:NetPrice>
         ///                <ns1:OrderId/>
         ///                <ns1:Price>80.00</ns1:Price>
@@ -651,7 +651,7 @@ namespace LSOmni.Service
         ///                <ns1:QuantityOutstanding>0</ns1:QuantityOutstanding>
         ///                <ns1:QuantityToInvoice>0</ns1:QuantityToInvoice>
         ///                <ns1:QuantityToShip>0</ns1:QuantityToShip>
-        ///                <ns1:TaxAmount>28.80</ns1:TaxAmount>
+        ///                <ns1:TaxAmount>32.00</ns1:TaxAmount>
         ///                <ns1:UomId/>
         ///                <ns1:VariantDescription>YELLOW/38</ns1:VariantDescription>
         ///                <ns1:VariantId>002</ns1:VariantId>
@@ -661,16 +661,16 @@ namespace LSOmni.Service
         ///          <ns1:OrderPayments>
         ///             <!--Zero or more repetitions:-->
         ///             <ns1:OrderPayment>
-        ///                <ns1:AuthorisationCode></ns1:AuthorisationCode>
-        ///                <ns1:CardNumber></ns1:CardNumber>
-        ///                <ns1:CardType></ns1:CardType>
+        ///                <ns1:AuthorisationCode>123456</ns1:AuthorisationCode>
+        ///                <ns1:CardNumber>45XX..5555</ns1:CardNumber>
+        ///                <ns1:CardType>VISA</ns1:CardType>
         ///                <ns1:CurrencyCode></ns1:CurrencyCode>
         ///                <ns1:CurrencyFactor>1</ns1:CurrencyFactor>
         ///                <ns1:FinalizedAmount>0</ns1:FinalizedAmount>
         ///                <ns1:LineNumber>1</ns1:LineNumber>
         ///                <ns1:No></ns1:No>
         ///                <ns1:OrderId></ns1:OrderId>
-        ///                <ns1:PreApprovedAmount>12</ns1:PreApprovedAmount>
+        ///                <ns1:PreApprovedAmount>160.00</ns1:PreApprovedAmount>
         ///                <ns1:PreApprovedValidDate>2030-01-01</ns1:PreApprovedValidDate>
         ///                <ns1:TenderType>1</ns1:TenderType>
         ///             </ns1:OrderPayment>
@@ -689,16 +689,16 @@ namespace LSOmni.Service
         ///             <ns:HouseNo></ns:HouseNo>
         ///             <ns:Id></ns:Id>
         ///             <ns:PhoneNumber></ns:PhoneNumber>
-        ///             <ns:PostCode></ns:PostCode>
+        ///             <ns:PostCode>999</ns:PostCode>
         ///             <ns:StateProvinceRegion></ns:StateProvinceRegion>
         ///             <ns:Type>Residential</ns:Type>
         ///          </ns1:ShipToAddress>
         ///          <ns1:ShippingStatus>NotYetShipped</ns1:ShippingStatus>
         ///          <ns1:SourceType>eCommerce</ns1:SourceType>
         ///          <ns1:StoreId>S0013</ns1:StoreId>
-        ///          <ns1:TotalAmount>12</ns1:TotalAmount>
+        ///          <ns1:TotalAmount>160</ns1:TotalAmount>
         ///          <ns1:TotalDiscount>0</ns1:TotalDiscount>
-        ///          <ns1:TotalNetAmount>10</ns1:TotalNetAmount>
+        ///          <ns1:TotalNetAmount>128</ns1:TotalNetAmount>
         ///       </ser:request>
         ///    </ser:OrderCreate>
         /// </soapenv:Body>

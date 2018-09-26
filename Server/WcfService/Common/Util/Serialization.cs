@@ -35,6 +35,28 @@ namespace LSOmni.Common.Util
             }
         }
 
+        public static string SerializeToXmlPrint(object value)
+        {
+            string xml = SerializeToXml(value);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                XmlDocument xmlDoc = new XmlDocument();
+                xmlDoc.LoadXml(xml);
+
+                XmlTextWriter writer = new XmlTextWriter(ms, Encoding.Unicode);
+                writer.Formatting = Formatting.Indented;
+                xmlDoc.WriteContentTo(writer);
+                writer.Flush();
+                ms.Flush();
+                ms.Position = 0;
+                StreamReader reader = new StreamReader(ms);
+                string formatted = reader.ReadToEnd();
+                writer.Dispose();
+                reader.Dispose();
+                return formatted;
+            }
+        }
+
         public static bool TestXmlSerialize(Type classname, object classdata)
         {
             try

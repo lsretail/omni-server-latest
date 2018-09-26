@@ -64,9 +64,7 @@ namespace LSRetail.Omni.DiscountEngine
             return list;
         }
 
-        #region Private
-
-        private bool OfferIsValid(string offerId)
+        public bool OfferIsValid(string offerId)
         {
             DiscountValidation discval = discRepo.GetDiscountValidationByOfferId(offerId);
 
@@ -152,7 +150,6 @@ namespace LSRetail.Omni.DiscountEngine
 
             return false;
         }
-        #endregion
 
     }
 }

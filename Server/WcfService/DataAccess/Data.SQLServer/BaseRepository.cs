@@ -83,6 +83,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue(prname, arg);
                         }
                     }
+                    TraceSqlCommand(command);
                     cnt = (int)command.ExecuteScalar();
                 }
                 connection.Close();
@@ -171,13 +172,13 @@ namespace LSOmni.DataAccess.Dal
             CacheState state = CacheState.NotExist;//in case nothing got returned default this to notexist
             try
             {
-                TraceIt(sql);
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))
                 {
                     connection.Open();
                     using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = sql;
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             if (reader.Read())

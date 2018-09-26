@@ -39,6 +39,7 @@ namespace LSOmni.DataAccess.Dal
                                 // delete previous data
                                 command.CommandText = "DELETE FROM [OrderQueue] WHERE [Guid]=@id";
                                 command.Parameters.AddWithValue("@id", order.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText = "INSERT INTO [OrderQueue] (" +
@@ -63,6 +64,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f13", NullToString(order.StoreId, 50));
                                 command.Parameters.AddWithValue("@f14", NullToString(order.TerminalId, 50));
                                 command.Parameters.AddWithValue("@f15", NullToString(order.StatusChange));
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 trans.Commit();
@@ -103,6 +105,7 @@ namespace LSOmni.DataAccess.Dal
                         command.Parameters.AddWithValue("@f1", (int)status);
                         command.Parameters.AddWithValue("@f2", string.Format("StatusChange - {0}", status));
                         command.Parameters.AddWithValue("@id", guid);
+                        TraceSqlCommand(command);
                         command.ExecuteNonQuery();
                     }
                 }
@@ -176,7 +179,7 @@ namespace LSOmni.DataAccess.Dal
                     sql += " ORDER BY [Id] ASC";
 
                     command.CommandText = sql;
-                    command.ExecuteNonQuery();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -209,7 +212,7 @@ namespace LSOmni.DataAccess.Dal
                                           "FROM [OrderQueue] WHERE [Guid]=@id";
 
                     command.Parameters.AddWithValue("@id", guid);
-                    command.ExecuteNonQuery();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())

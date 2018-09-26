@@ -56,6 +56,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "SELECT * FROM [UserDevice] WHERE [DeviceId]=@dId AND [UserId]=@uId";
                             command.Parameters.AddWithValue("@dId", deviceId);
                             command.Parameters.AddWithValue("@uId", contact.UserName);
+                            TraceSqlCommand(command);
                             codevalue = (string)command.ExecuteScalar();
                         }
 
@@ -68,6 +69,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.Clear();
                                 command.Parameters.AddWithValue("dId", deviceId);
                                 command.Parameters.AddWithValue("uId", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -79,6 +81,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.Clear();
                                 command.Parameters.AddWithValue("@cId", cardId);
                                 command.Parameters.AddWithValue("@uId", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -90,6 +93,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.Clear();
                                 command.Parameters.AddWithValue("@cId", cardId);
                                 command.Parameters.AddWithValue("@cont", contact.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
                         }
@@ -105,6 +109,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@dId", deviceId);
                             command.Parameters.AddWithValue("@cId", contact.Id);
                             command.Parameters.AddWithValue("@tok", securityToken);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
                         }
 
@@ -114,6 +119,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "UPDATE [User] SET [LastAccessed]=GETDATE() WHERE [UserId]=@uId";
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("uId", contact.UserName);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
                         }
 
@@ -321,6 +327,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f6", DateTime.Now);
                                 command.Parameters.AddWithValue("@f7", DBNull.Value);
                                 command.Parameters.AddWithValue("@f8", DBNull.Value);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -334,6 +341,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f1", contact.Account.PointBalance);
                                 command.Parameters.AddWithValue("@f2", contact.Account.Id);
                                 command.Parameters.AddWithValue("@f3", contact.Account.Scheme.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -352,6 +360,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f4", -999);
                                 command.Parameters.AddWithValue("@f5", contact.Account.Scheme.PointsNeeded);
                                 command.Parameters.AddWithValue("@f6", (contact.Account.Scheme.NextScheme == null) ? string.Empty : contact.Account.Scheme.NextScheme.Perks);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -363,6 +372,7 @@ namespace LSOmni.DataAccess.Dal
 
                                 command.Parameters.AddWithValue("@f1", contact.Account.Scheme.Club.Id);
                                 command.Parameters.AddWithValue("@f2", NullToString(contact.Account.Scheme.Club.Name, 30));
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -385,6 +395,7 @@ namespace LSOmni.DataAccess.Dal
                                     command.Parameters.AddWithValue("@f6", 0);
                                     command.Parameters.AddWithValue("@f7", 0); // 0=active, 1=closed
                                     command.Parameters.AddWithValue("@f8", DateTime.Now);
+                                    TraceSqlCommand(command);
                                     command.ExecuteNonQuery();
                                 }
                             }
@@ -396,6 +407,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f0", contact.UserName);
                                 command.Parameters.AddWithValue("@f1", Security.NAVHash(contact.Password));
                                 command.Parameters.AddWithValue("@f2", 0);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -413,6 +425,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f4", DBNull.Value);
                                 command.Parameters.AddWithValue("@f5", DBNull.Value);
                                 command.Parameters.AddWithValue("@f6", DBNull.Value);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -422,6 +435,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.CommandText = "INSERT INTO [UserDevice] ([DeviceId],[UserId]) VALUES (@f0,@f1)";
                                 command.Parameters.AddWithValue("@f0", deviceId);
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -431,6 +445,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.CommandText = "INSERT INTO  [UserCard] ([CardId],[UserId]) VALUES (@f0,@f1)";
                                 command.Parameters.AddWithValue("@f0", contact.Card.Id);
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -440,6 +455,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = string.Format(@"IF EXISTS(SELECT * FROM sys.columns WHERE [name]=N'CardId' AND [object_id]=OBJECT_ID(N'[DeviceUser]')) EXEC('UPDATE [DeviceUser] SET [CardId]=''{0}'' WHERE [DeviceId]=''{1}'' AND [UserId]=''{2}'' ')",
                                     contact.Card.Id, deviceId, contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -478,6 +494,7 @@ namespace LSOmni.DataAccess.Dal
                                         command.Parameters.AddWithValue("@f8", string.Empty);
                                         command.Parameters.AddWithValue("@f9", string.Empty);
                                     }
+                                    TraceSqlCommand(command);
                                     command.ExecuteNonQuery();
                                 }
                             }
@@ -521,6 +538,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [Contact] WHERE [Id]=@f1";
                                 command.Parameters.AddWithValue("@f1", contact.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -529,6 +547,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [Account] WHERE [Id]=@f1";
                                 command.Parameters.AddWithValue("@f1", contact.Account.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -537,6 +556,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [ContactProfile] WHERE [ContactId]=@f1";
                                 command.Parameters.AddWithValue("@f1", contact.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -545,6 +565,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [Card] WHERE [Id] IN (SELECT [CardId] FROM [UserCard] WHERE [UserId]=@f1)";
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -553,6 +574,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [Device] WHERE [Id] in (SELECT [DeviceId] FROM [UserDevice] WHERE [UserId]=@f1)";
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -561,6 +583,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [User] WHERE [UserId]=@f1";
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -569,6 +592,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [UserCard] WHERE [UserId]=@f1";
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -577,6 +601,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
                                 command.CommandText = "DELETE FROM [UserDevice] WHERE [UserId]=@f1";
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -611,6 +636,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "SELECT [AccountId],[Email] FROM [Contact] WHERE [Id]=@f0";
                     command.Parameters.AddWithValue("@f0", contact.Id);
 
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -670,6 +696,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f4", contact.LastName);
                             command.Parameters.AddWithValue("@f5", contact.Email);
                             command.Parameters.AddWithValue("@id", contact.Id);
+                            TraceSqlCommand(command);
                             command.ExecuteNonQuery();
                         }
 
@@ -681,6 +708,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.CommandText = "DELETE FROM [ContactProfile] WHERE [ContactId] = @f0";
 
                                 command.Parameters.AddWithValue("@f0", contact.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
 
@@ -707,6 +735,7 @@ namespace LSOmni.DataAccess.Dal
                                     command.Parameters.AddWithValue("@f6", 0);
                                     command.Parameters.AddWithValue("@f7", 0); // 0=active, 1=closed
                                     command.Parameters.AddWithValue("@f8", DateTime.Now);
+                                    TraceSqlCommand(command);
                                     command.ExecuteNonQuery();
                                 }
                             }
@@ -778,6 +807,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f0", Security.NAVHash(newPassword));
                     command.Parameters.AddWithValue("@id", userName);
                     connection.Open();
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();
@@ -797,6 +827,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f0", (decimal) balance);
                     command.Parameters.AddWithValue("@id", accountNumber);
                     connection.Open();
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();
@@ -860,6 +891,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@id", contactId);
                     command.Parameters.AddWithValue("@f0", skipThisDeviceId);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -889,6 +921,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "SELECT [ContactId] FROM [Card] WHERE [Id]=@id";
                     command.Parameters.AddWithValue("@id", cardId);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -918,6 +951,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = contactViewSql + " WHERE u.[UserId]=@username AND c.[ContactStatus] IS NULL";
                     command.Parameters.AddWithValue("@username", userName);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -948,6 +982,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f0", deviceId);
                     command.Parameters.AddWithValue("@f1", contactId);
                     connection.Open();
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

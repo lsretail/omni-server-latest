@@ -103,6 +103,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string CurrencyCode { get; set; }
         [DataMember]
+        public DiscountValueType DiscountValueType { get; set; }
+        [DataMember]
         public decimal DiscountValue { get; set; }
         [DataMember]
         public string OfferNo { get; set; }
@@ -114,6 +116,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string Description { get; set; }
         [DataMember]
         public string Details { get; set; }
+        [DataMember]
+        public int ValidationPeriodId { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -303,5 +307,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         LineDiscount = 6,
         [EnumMember]
         Unknown = 99
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum DiscountValueType
+    {
+        [EnumMember]
+        DealPrice = 0,
+        [EnumMember]
+        Percent = 1,
+        [EnumMember]
+        Amount = 2
     }
 }

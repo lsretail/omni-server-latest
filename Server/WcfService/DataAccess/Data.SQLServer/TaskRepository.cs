@@ -100,6 +100,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f13", task.AssignUserName);
                                 command.Parameters.AddWithValue("@f14", task.AssignLocation);
                                 command.Parameters.AddWithValue("@id", task.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 RegisterTaskLog(task, oldtask, connection, trans);
@@ -161,6 +162,7 @@ namespace LSOmni.DataAccess.Dal
                                     command.Parameters["@f10"].Value = line.VariantDescription;
                                     command.Parameters["@f11"].Value = line.Quantity;
                                     command.Parameters["@id"].Value = line.Id;
+                                    TraceSqlCommand(command);
                                     command.ExecuteNonQuery();
 
                                     RegisterTaskLogLine(line, oldline, connection, trans);
@@ -526,6 +528,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f5", (oldtask != null) ? oldtask.Status.ToString() : string.Empty);
                     command.Parameters.AddWithValue("@f7", (oldtask != null) ? oldtask.RequestUser : string.Empty);
                     command.Parameters.AddWithValue("@f9", (oldtask != null) ? oldtask.AssignUser : string.Empty);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
             }
@@ -558,6 +561,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f4", newline.ModifyLocation);
                     command.Parameters.AddWithValue("@f6", newline.Status.ToString());
                     command.Parameters.AddWithValue("@f5", (oldline != null) ? oldline.Status.ToString() : string.Empty);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
             }

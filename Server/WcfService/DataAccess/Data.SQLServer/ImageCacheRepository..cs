@@ -59,6 +59,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.CommandTimeout = 60 * 1000;
                                 command.Transaction = dbTrans;
                                 command.Parameters.AddWithValue("@Id", imgView.Id);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText = sqlIns;
@@ -69,6 +70,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@AvgColor", imgView.AvgColor);
                                 command.Parameters.AddWithValue("@Format", imgView.Format);
                                 command.Parameters.AddWithValue("@Description", description);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
                             dbTrans.Commit();
@@ -114,6 +116,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@ImageId", imgView.Id);
                                 command.Parameters.AddWithValue("@Width", imgView.ImgSize.Width);
                                 command.Parameters.AddWithValue("@Height", imgView.ImgSize.Height);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText = sqlIns;
@@ -124,6 +127,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@Base64", imgView.Image);
                                 command.Parameters.AddWithValue("@URL", imgView.Location);
                                 command.Parameters.AddWithValue("@Format", imgView.Format);
+                                TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
                             dbTrans.Commit();
@@ -157,6 +161,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "SELECT [Id],[Width],[Height],[AvgColor],[Format],[Description] FROM [ImagesCache] WHERE Id=@id";
                     command.Parameters.AddWithValue("@id", id);
 
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
@@ -188,6 +193,7 @@ namespace LSOmni.DataAccess.Dal
                                           "WHERE il.[KeyValue]=@id ORDER BY il.[DisplayOrder]";
 
                     command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
@@ -222,6 +228,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@wid", imgSize.Width);
                     command.Parameters.AddWithValue("@hei", imgSize.Height);
 
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())

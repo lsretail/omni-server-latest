@@ -27,14 +27,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[Store No_],mt.[Priority No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
                          "mt.[To Date],mt.[Minimum Quantity],mt.[Discount _],mt.[Unit of Measure Code],mt.[Currency Code],mt.[Offer No_],mt.[Last Modify Date]," +
-                         "p.[Type],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3]";
+                         "p.[Type],p.[Discount Type],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID]";
 
             sqlfrom = " FROM [" + navCompanyName + "WI Discounts] mt" +
                       " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
             sqlMMcolumns = "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
                            "mt.[To Date],mt.[Offer No_],mt.[Last Modify Date]," +
-                           "p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3]";
+                           "p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID]";
 
             sqlMMfrom = " FROM [" + navCompanyName + "WI Mix & Match Offer] mt" +
                       " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
@@ -68,7 +68,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records remaining
             string sql = string.Empty;
-            string where = string.Format(" AND mt.[Store No_]='{0}'", storeId);
+            string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom;
@@ -87,7 +87,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, where, false);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -99,6 +98,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -135,6 +135,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -178,7 +179,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records remaining
             string sql = string.Empty;
-            string where = string.Format(" AND mt.[Store No_]='{0}'", storeId);
+            string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlMMfrom;
@@ -197,7 +198,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlMMcolumns + sqlMMfrom + GetWhereStatement(fullReplication, keys, where, false);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -209,6 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -245,6 +246,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -294,7 +296,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlVcolumns + sqlVfrom + GetWhereStatement(fullReplication, keys, true);
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -306,6 +307,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             int cnt = 0;
@@ -338,6 +340,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 
+                            TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
                                 while (reader.Read())
@@ -406,6 +409,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 PriorityNo = SQLHelper.GetInt32(reader["Priority No_"]),
                 DiscountValue = SQLHelper.GetDecimal(reader["Discount _"]),
+                DiscountValueType = (DiscountValueType)SQLHelper.GetInt32(reader["Discount Type"]),
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
                 FromDate = SQLHelper.GetDateTime(reader["From Date"]),
@@ -414,8 +418,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 OfferNo = SQLHelper.GetString(reader["Offer No_"]),
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
-                Type = (ReplDiscountType)(SQLHelper.GetInt32(reader["Type"])),
+                Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),
                 Description = SQLHelper.GetString(reader["Description"]),
+                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
             };
 
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
@@ -448,6 +453,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
                 Type = (ReplDiscountType)(SQLHelper.GetInt32(reader["Type"])),
                 Description = SQLHelper.GetString(reader["Description"]),
+                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
             };
 
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);

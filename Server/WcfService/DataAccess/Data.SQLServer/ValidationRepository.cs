@@ -47,6 +47,7 @@ namespace LSOmni.DataAccess.Dal
                         command.Parameters.Clear();
                         command.Parameters.AddWithValue("@id", deviceId);
 
+                        TraceSqlCommand(command);
                         object value = command.ExecuteScalar();
                         if (value != null && value != DBNull.Value)
                         {

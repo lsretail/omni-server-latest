@@ -51,8 +51,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
                     command.Parameters.AddWithValue("@id", receiptNo);
                     command.CommandText = sqlmain + sqlwhere;
-                    TraceSqlCommand(command);
                     connection.Open();
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())

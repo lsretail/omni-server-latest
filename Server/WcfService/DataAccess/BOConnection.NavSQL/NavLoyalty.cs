@@ -98,6 +98,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             NavWS.RootMemberContactCreate root = map.MapToRoot(contact);
             try
             {
+                logger.Debug(Serialization.SerializeToXmlPrint(root));
                 navWS.MemberContactCreate(ref respCode, ref errorText, ref clubId, ref schmId, ref acctId, ref contId, ref cardId, ref point, ref root);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.Error, errorText);
@@ -109,6 +110,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                     throw;
             }
+            logger.Debug("MemberContactCreate Response - ClubId: {0}, SchemeId: {1}, AccountId: {2}, ContactId: {3}, CardId: {4}, PointsRemaining: {5}",
+                clubId, schmId, acctId, contId, cardId, point);
             return contId;
         }
 
@@ -133,6 +136,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             NavWS.RootMemberContactCreate1 root = map.MapToRoot1(contact, accountId);
             try
             {
+                logger.Debug(Serialization.SerializeToXmlPrint(root));
                 navWS.MemberContactUpdate(ref respCode, ref errorText, ref root);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.MemberAccountNotFound, errorText);
@@ -157,7 +161,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 long totalPoints = MemberCardGetPoints(contact.Card.Id);
                 contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
 
-                // get trans history
+                contact.PublishedOffers = PublishedOffersGetByCardId(contact.Card.Id, string.Empty);
                 contact.Transactions = SalesEntriesGetByContactId(contact.Id, numberOfTrans, string.Empty);
             }
             return contact;
@@ -177,7 +181,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     totalPoints = MemberCardGetPoints(contact.Card.Id);
                     contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
 
-                    // get trans history
+                    contact.PublishedOffers = PublishedOffersGetByCardId(contact.Card.Id, string.Empty);
                     contact.Transactions = SalesEntriesGetByContactId(contact.Id, numberOfTrans, string.Empty);
                 }
                 return contact;
@@ -205,6 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             NavWS.RootGetMemberContact rootContact = new NavWS.RootGetMemberContact();
             try
             {
+                logger.Debug("GetMemberContact - CardId: {0}", card);
                 navWS.GetMemberContact(ref respCode, ref errorText, card, string.Empty, string.Empty, ref rootContact);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.MemberCardNotFound, errorText);
@@ -217,6 +222,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     throw;
             }
 
+            logger.Debug("GetMemberContact Response - " + Serialization.SerializeToXmlPrint(rootContact));
+
             contact = map.MapFromRootToContact(rootContact);
 
             NavWS.RootGetMemberCard rootCard = new NavWS.RootGetMemberCard();
@@ -224,6 +231,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             try
             {
+                logger.Debug("GetMemberCard - CardId: {0}", card);
                 navWS.GetMemberCard(ref respCode, ref errorText, card, ref remainingPoints, ref rootCard);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -235,6 +243,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                     throw;
             }
+
+            logger.Debug("GetMemberCard Response - " + Serialization.SerializeToXmlPrint(rootCard));
 
             contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
             contact.Profiles = new List<Profile>();
@@ -254,6 +264,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             NavWS.RootGetDirectMarketingInfo rootMarket = new NavWS.RootGetDirectMarketingInfo();
             try
             {
+                logger.Debug("GetDirectMarketingInfo - CardId: {0}", card);
                 navWS.GetDirectMarketingInfo(ref respCode, ref errorText, card, string.Empty, string.Empty, ref rootMarket);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -266,11 +277,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     throw;
             }
 
+            logger.Debug("GetDirectMarketing Response - " + Serialization.SerializeToXmlPrint(rootMarket));
+
             contact.PublishedOffers = map.MapFromRootToPublishedOffers(rootMarket);
 
             NavWS.RootGetMemberSalesHistory rootHistory = new NavWS.RootGetMemberSalesHistory();
             try
             {
+                logger.Debug("GetMemberSalesHistory - CardId: {0}, MaxNoOfHeaders: {1}", card, numberOfTrans);
                 navWS.GetMemberSalesHistory(ref respCode, ref errorText, string.Empty, string.Empty, card, numberOfTrans, ref rootHistory);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -282,6 +296,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                     throw;
             }
+
+            logger.Debug("GetMemberSalesHistory Response - " + Serialization.SerializeToXmlPrint(rootHistory));
 
             contact.Transactions = map.MapFromRootToSalesEntries(rootHistory);
             return contact;
@@ -527,6 +543,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             try
             {
+                logger.Debug("GetMemberCard - CardId: {0}", cardId);
                 navWS.GetMemberCard(ref respCode, ref errorText, cardId, ref remainingPoints, ref root);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -538,6 +555,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                     throw;
             }
+            logger.Debug("GetMemberCard Response - Remaining points: {0}", Convert.ToInt64(Math.Floor(remainingPoints)));
             return Convert.ToInt64(Math.Floor(remainingPoints));
         }
 
@@ -596,6 +614,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
                     try
                     {
+                        logger.Debug("GetDirectMarketingInfo - CardId: {0}", cardId);
                         navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -607,7 +626,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                         else
                             throw;
                     }
-
+                    logger.Debug("GetDirectMarketingInfo Response - " + Serialization.SerializeToXmlPrint(root));
                     ContactMapping map = new ContactMapping();
                     return map.MapFromRootToNotifications(root);
                 }
@@ -754,6 +773,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
                 try
                 {
+                    logger.Debug("GetHierarchy - StoreId: {0}", storeId);
                     navWS.GetHierarchy(ref respCode, ref errorText, storeId, ref rootRoot);
                     if (respCode != "0000")
                         throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -765,6 +785,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     else
                         throw;
                 }
+
+                logger.Debug("GetHierarchy Response - " + Serialization.SerializeToXmlPrint(rootRoot));
 
                 foreach (NavWS.Hierarchy top in rootRoot.Hierarchy)
                 {
@@ -795,6 +817,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
                     try
                     {
+                        logger.Debug("GetHierarchyNode - HierarchyCode: {0}, NodeId: {1}, StoreId: {2}, NodeIn: {3}",
+                            val.HierarchyCode, val.NodeID, storeId, Serialization.SerializeToXmlPrint(rootNodeIn));
                         navWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, rootNodeIn, ref rootNodeOut);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -806,6 +830,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                         else
                             throw;
                     }
+
+                    logger.Debug("GetHierarchyNode Response - " + Serialization.SerializeToXmlPrint(rootNodeOut));
 
                     if (rootNodeOut.HierarchyNodeLink == null)
                         continue;
@@ -924,6 +950,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             try
             {
+                logger.Debug(Serialization.SerializeToXmlPrint(root));
                 navWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.TransactionCalc, errorText);
@@ -935,6 +962,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                     throw;
             }
+
+            logger.Debug("EcomCalculateBasket Response - " + Serialization.SerializeToXmlPrint(root));
 
             Order order = map.MapFromRootTransactionToOrder(root);
             if (string.IsNullOrEmpty(list.CardId) && string.IsNullOrEmpty(list.ContactId))
@@ -1117,6 +1146,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             try
             {
+                logger.Debug(Serialization.SerializeToXmlPrint(root));
                 navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.TransactionCalc, errorText);
@@ -1192,6 +1222,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             {
                 ContactRepository crepo = new ContactRepository();
                 MemberContact contact = crepo.ContactGet(ContactSearchType.ContactNumber, contactId);
+                if (contact == null)
+                    throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact Not found");
 
                 OrderRepository repo = new OrderRepository(NAVVersion);
                 list = repo.OrderHistoryByCardId(contact.Card.Id, includeLines);
@@ -1307,6 +1339,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
                     try
                     {
+                        logger.Debug("GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
                         navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, string.Empty, ref root);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
@@ -1318,7 +1351,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                         else
                             throw;
                     }
-
+                    logger.Debug("GetDirectMarketingInfo Response - " + Serialization.SerializeToXmlPrint(root));
                     return map.MapFromRootToPublishedOffers(root);
                 }
                 else

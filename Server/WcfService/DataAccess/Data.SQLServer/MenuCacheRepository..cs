@@ -61,6 +61,7 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "DELETE FROM [MenuCache] WHERE [Id]=@Id";
                     command.CommandTimeout = 30 * 1000;
                     command.Parameters.AddWithValue("@Id", id);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 
                     command.CommandText = "INSERT INTO [MenuCache] ([Id],[Version],[XmlData]) VALUES (@f1,@f2,@f3)";
@@ -68,6 +69,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@f1", id);
                     command.Parameters.AddWithValue("@f2", version);
                     command.Parameters.AddWithValue("@f3", xml);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

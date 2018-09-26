@@ -61,9 +61,6 @@ namespace LSOmni.BLL.Loyalty
                 logger.Error(ex.StatusCode.ToString() + " " + ex.Message);
             }
 
-            OfferBLL offerBLL = new OfferBLL(SecurityToken, timeoutInSeconds);
-            contact.PublishedOffers = offerBLL.PublishedOffersGetByCardId(contact.Card.Id, string.Empty);
-
             NotificationBLL notificationBLL = new NotificationBLL(SecurityToken, timeoutInSeconds);
             contact.Notifications = notificationBLL.NotificationsGetByContactId(contact.Id, 5000);
 
@@ -85,16 +82,6 @@ namespace LSOmni.BLL.Loyalty
             device.SecurityToken = SecurityToken;
             contact.LoggedOnToDevice = device;
             return contact;
-        }
-
-        public virtual MemberContact ContactGetByUserName(string userName)
-        {
-            return BOLoyConnection.ContactGetByUserName(userName);
-        }
-
-        public virtual MemberContact ContactGetByEMail(string email)
-        {
-            return BOLoyConnection.ContactGetByEMail(email);
         }
 
         public virtual MemberContact ContactGetByCardId(string cardId)

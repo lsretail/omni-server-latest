@@ -41,7 +41,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             List<ReplPlu> list = new List<ReplPlu>();
 
-            TraceIt(sql);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -49,6 +48,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     command.CommandText = sql;
 
+                    TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         int pid = 1;
