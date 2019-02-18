@@ -39,6 +39,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         OfflinePrintTemplate = 250,
 
+        [EnumMember]
+        GiftCard_DataEntryType = 300,
+
 #if WCFSERVER
         //server only
         PDF_Save_FolderName = 1000,

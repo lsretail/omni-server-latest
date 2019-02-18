@@ -390,7 +390,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 TerminalId = string.Empty,
                 EFTTransactionNo = string.Empty,
                 SalesType = string.Empty,
-                CouponCode = string.Empty,
+                CouponCode = offer.OfferId,
                 ItemDescription = string.Empty,
                 LineKitchenStatusCode = string.Empty,
                 RestMenuTypeCode = string.Empty,
@@ -432,11 +432,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 
             if (paymentLine.Payment.TenderType.Function == TenderTypeFunction.Cards)
             {
-                eftAuthCode = paymentLine.Payment.AuthenticationCode;
-                eftCardNumber = paymentLine.Payment.CardNumber;
-                eftCardName = paymentLine.Payment.CardType;
-                eftMessage = paymentLine.Payment.EFTMessage;
-                eftTransactionId = paymentLine.Payment.EFTTransactionId;
+                eftAuthCode = GetString(paymentLine.Payment.AuthenticationCode);
+                eftCardNumber = GetString(paymentLine.Payment.CardNumber);
+                eftCardName = GetString(paymentLine.Payment.CardType);
+                eftMessage = GetString(paymentLine.Payment.EFTMessage);
+                eftTransactionId = GetString(paymentLine.Payment.EFTTransactionId);
                 eftAuthStatus = paymentLine.Payment.AuthorizationStatus;
                 paymentTransactionType = paymentLine.Payment.TransactionType;
                 verificationMethod = paymentLine.Payment.VerificationMethod;
@@ -469,7 +469,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 EFTAuthCode = eftAuthCode,
                 EFTMessage = eftMessage,
                 EFTVerificationMethod = (int)verificationMethod,
-                EFTTransactionNo = eftTransactionId ?? string.Empty,
+                EFTTransactionNo = eftTransactionId,
                 EFTAuthStatus = (int)eftAuthStatus,
                 EFTTransType = (int)paymentTransactionType,
 

@@ -67,6 +67,8 @@ namespace LSOmni.BLL.Loyalty
             if (request.AnonymousOrder == false && string.IsNullOrEmpty(request.CardId) == false)
             {
                 MemberContact contact = BOLoyConnection.ContactGetByCardId(request.CardId, 0);
+                if (contact == null)
+                    throw new LSOmniServiceException(StatusCode.CardIdInvalid, "Invalid card number");
                 if (string.IsNullOrEmpty(request.ContactId))
                     request.ContactId = contact.Id;
                 if (string.IsNullOrEmpty(request.Email))
@@ -101,6 +103,11 @@ namespace LSOmni.BLL.Loyalty
         public virtual Order OrderGetByWebId(string id, bool includeLines)
         {
             return BOLoyConnection.OrderGetByWebId(id, includeLines, tenderMapping);
+        }
+
+        public virtual Order OrderGetByReceiptId(string id, bool includeLines)
+        {
+            return BOLoyConnection.OrderGetByReceiptId(id, includeLines, tenderMapping);
         }
 
         public virtual List<Order> OrderHistoryByContactId(string contactId, bool includeLines, bool includeTransactions)

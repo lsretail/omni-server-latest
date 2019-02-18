@@ -169,6 +169,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
         public List<LoyTransaction> MapFromRootToSalesEntries(NavWS.RootGetMemberSalesHistory root)
         {
             List<LoyTransaction> list = new List<LoyTransaction>();
+            if (root.MemberSalesEntry == null)
+                return null;
+
             foreach (NavWS.MemberSalesEntry trans in root.MemberSalesEntry)
             {
                 LoyTransaction tr = new LoyTransaction()
@@ -224,6 +227,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
         public List<Notification> MapFromRootToNotifications(NavWS.RootGetDirectMarketingInfo root)
         {
             List<Notification> list = new List<Notification>();
+            if (root.MemberNotification == null)
+                return list;
 
             foreach (var notification in root.MemberNotification)
             {

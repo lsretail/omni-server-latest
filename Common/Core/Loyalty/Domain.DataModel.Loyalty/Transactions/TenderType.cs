@@ -18,36 +18,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Transactions
         [EnumMember]
         WebPay = 4,
 
-        //[EnumMember]
-        //Voucher = 3,
-        //[EnumMember]
-        //GiftCard = 4,
-
-        //// In LS Nav demo company 
-        //[EnumMember]
-        //Cash = 1,
-        //[EnumMember]
-        //Check = 2,
-        //[EnumMember]
-        //Cards = 3,
-        //[EnumMember]
-        //CustomerAccount = 4,
-        //[EnumMember]
-        //Currency = 6,
-        //[EnumMember]
-        //Voucher = 7,
-        //[EnumMember]
-        //GiftCard = 8,
-        //[EnumMember]
-        //TenderRemoveFloat = 9,
-        //[EnumMember]
-        //Coupons = 10,
-        //[EnumMember]
-        //MemberCardPayment = 11,
-        //[EnumMember]
-        //SpecialOrderDeposit = 15,
-        //[EnumMember]
-        //CurrencyRemoveFloat = 19,
     }
 }
  

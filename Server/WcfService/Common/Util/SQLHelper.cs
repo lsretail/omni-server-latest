@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NLog;
+using System;
+using System.Data.SqlClient;
 using System.Globalization;
 
 namespace LSOmni.Common.Util
@@ -89,6 +91,35 @@ namespace LSOmni.Common.Util
                 if (invertValue)
                     return (retvalue * -1);
                 return retvalue;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        /// <summary>
+        /// Get Database Decimal Value
+        /// </summary>
+        /// <param name="value">Database object</param>
+        /// <returns>decimal Value</returns>
+        public static decimal GetDecimal(SqlDataReader reader, string fieldname, bool invertValue = false)
+        {
+            try
+            {
+                if (reader[fieldname] == null || reader[fieldname] == DBNull.Value)
+                    return 0;
+
+                decimal retvalue = Convert.ToDecimal(reader[fieldname]);
+                if (invertValue)
+                    return (retvalue * -1);
+                return retvalue;
+            }
+            catch (OverflowException ex)
+            {
+                Logger logger = LogManager.GetCurrentClassLogger();
+                logger.Warn(ex, "Field: " + fieldname);
+                return 0;
             }
             catch
             {

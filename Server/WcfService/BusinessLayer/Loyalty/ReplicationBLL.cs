@@ -489,25 +489,11 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            List<LoyItem> ids = BOLoyConnection.ReplEcommFullItem(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-
             ReplFullItemResponse resp = new ReplFullItemResponse();
+            resp.Items = BOLoyConnection.ReplEcommFullItem(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
             resp.RecordsRemaining = recordsRemaining;
             resp.LastKey = lastkey;
             resp.MaxKey = maxkey;
-            resp.Items = new List<LoyItem>();
-
-            foreach (LoyItem item in ids)
-            {
-                if (item.IsDeleted)
-                {
-                    resp.Items.Add(item);
-                }
-                else
-                {
-                    resp.Items.Add(BOLoyConnection.ItemGetById(item.Id, replRequest.StoreId, string.Empty, true));
-                }
-            }
             logger.Debug(string.Format("Records {0} LastKey {1} RecRemain {2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining));
             return resp;
         }

@@ -46,6 +46,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
 
             List<JscActions> actions = new List<JscActions>();
+            string prevLastKey = lastKey;
 
             SQLHelper.CheckForSQLInjection(storeId);
 
@@ -68,27 +69,45 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             }
             else
             {
-                // Use actions from Item,Sales Price,Item Variant,Item Unit of Measure tables and as trigger for price update
-                actions = LoadActions(fullReplication, 27, 0, ref lastKey, ref recordsRemaining);
+                tmplastkey = lastKey;
+                string tmpmaxkey = string.Empty;
+                recordsRemaining = 0;
 
+                // Use actions from Item,Sales Price,Item Variant,Item Unit of Measure tables and as trigger for price update
+                recordsRemaining = GetRecordCount(27, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
+                actions = LoadActions(fullReplication, 27, 0, ref lastKey, ref recordsRemaining);
+                bool isdone = tmplastkey.Equals(lastKey);
+
+                recordsRemaining += GetRecordCount(TABLEID, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 List<JscActions> priceact = LoadActions(fullReplication, TABLEID, batchSize, ref tmplastkey, ref recordsRemaining);
+                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 priceact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
+                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 priceact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
+
+                if (isdone)
+                    lastKey = tmplastkey;
+
                 foreach (JscActions act in priceact)
                 {
+                    if (act.Type == DDStatementType.Delete)
+                        continue;       // skip delete actions for extra tables
+
+                    int index = act.ParamValue.IndexOf(';');
                     JscActions newact = new JscActions()
                     {
                         id = act.id,
                         TableId = act.TableId,
                         Type = act.Type,
-                        ParamValue = act.ParamValue.Substring(0, act.ParamValue.IndexOf(';'))
+                        ParamValue = (index < 0) ? act.ParamValue : act.ParamValue.Substring(0, index)
                     };
 
                     JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
                     if (findme == null)
+                    {
                         actions.Add(newact);
+                    }   
                 }
-                recordsRemaining = 0;   // we will process all actions
             }
 
             List<ReplPrice> list = new List<ReplPrice>();
@@ -129,13 +148,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 2 || par.Length != keys.Count)
-                                    continue;
-
                                 list.Add(new ReplPrice()
                                 {
-                                    ItemId = par[0],
+                                    ItemId = act.ParamValue,
                                     IsDeleted = true
                                 });
                                 continue;
@@ -155,6 +170,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             }
                             first = false;
                         }
+
+                        if (actions.Count == 0)
+                        {
+                            lastKey = prevLastKey;
+                            maxKey = prevLastKey;
+                        }
+
                         if (string.IsNullOrEmpty(maxKey))
                             maxKey = lastKey;
                     }
@@ -437,10 +459,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]),
-                UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price Including VAT"]),
+                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price Including VAT"),
                 PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
-                MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]),
+                MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
                 StartingDate = SQLHelper.GetDateTime(reader["Starting Date"]),
                 EndingDate = SQLHelper.GetDateTime(reader["Ending Date"]),
                 VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
@@ -467,10 +489,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]),
+                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price"),
+                PriceInclVat = true,
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
-                QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader["Qty_ per Unit of Measure"]),
-                PriceInclVat = true
+                QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
         }
 
@@ -482,7 +505,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
-                Amt = SQLHelper.GetDecimal(reader["Unit Price"])
+                Amt = SQLHelper.GetDecimal(reader, "Unit Price")
             };
 
             price.Amount = FormatAmount(price.Amt, culture);

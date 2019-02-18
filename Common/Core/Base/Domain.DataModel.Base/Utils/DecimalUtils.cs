@@ -70,5 +70,26 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Utils
 
             return qty;
         }
+
+        public static bool IsNumeric(string s)
+        {
+            try
+            {
+                Decimal.Parse(s, NumberStyles.AllowDecimalPoint);
+            }
+            catch (System.Exception)
+            {
+                try
+                {
+                    Decimal.Parse(s, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture);
+                }
+                catch (System.Exception)
+                {
+                    return false;
+                }
+                return true;
+            }
+            return true;
+        }
     }
 }

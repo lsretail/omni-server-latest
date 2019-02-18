@@ -194,7 +194,7 @@ namespace LSOmni.BLL.Loyalty
             }
             if (string.IsNullOrWhiteSpace(contact.Email))
             {
-                throw new LSOmniServiceException(StatusCode.ParameterInvalid, "EMail is missing.");
+                throw new LSOmniServiceException(StatusCode.ParameterInvalid, "Email is missing.");
             }
 
             if (Validation.IsValidEmail(contact.Email) == false)
@@ -206,6 +206,9 @@ namespace LSOmni.BLL.Loyalty
 
             //get existing contact in db to compare the email and get accountId
             MemberContact ct = BOLoyConnection.ContactGetById(contact.Id, 0);
+            if (ct == null)
+                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact not found with Id: " + contact.Id);
+
             if (ct.Email.Trim().ToLower() != contact.Email.Trim().ToLower())
             {
                 //if the email has changed, check if the new one exists in db
@@ -226,7 +229,6 @@ namespace LSOmni.BLL.Loyalty
             {
                 ContactRs contactRs = null;
                 string msg = "";
-                string cardId = "";
 
                 //some validation
                 if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
@@ -260,8 +262,6 @@ namespace LSOmni.BLL.Loyalty
                     {
                         if (iContactRepository.DoesContactExist(userName) == false)
                             iContactRepository.ContactCreate(contact, deviceId);
-                        else
-                            iContactRepository.ChangePassword(userName, password, "");
 
                         contactRs = BOLoyConnection.Login(userName, password, ""); //TODO, deviceFriendlyName
                     }
@@ -278,22 +278,8 @@ namespace LSOmni.BLL.Loyalty
                     iContactRepository.DeviceSave(deviceId, "", "", "", "", "");
                 }
 
-                if (BOLoyConnection.IsUserLinkedToDeviceId(userName, deviceId, out cardId))
+                if (BOLoyConnection.IsUserLinkedToDeviceId(userName, deviceId) == false)
                 {
-                    cardId = contact.Card.Id;
-                }
-                else
-                {
-                    if (string.IsNullOrWhiteSpace(cardId) && (contactRs == null))
-                    {
-                        throw new ApplicationException("cardId not found during login for user: " + userName);
-                    }
-                    if (string.IsNullOrWhiteSpace(cardId))
-                    {
-                        if (contactRs == null)
-                            cardId = contactRs.CardId;
-                    }
-
                     //CALL NAV web service but dont send in the cardId since that will try and link the card to user 
                     //and we only want to link the device to the user
                     BOLoyConnection.CreateDeviceAndLinkToUser(userName, deviceId, ""); //TODO, deviceFriendlyName
@@ -302,7 +288,7 @@ namespace LSOmni.BLL.Loyalty
                 //finally do the login
                 string securityToken = Security.CreateSecurityToken();
                 base.securityToken = securityToken;
-                string contactId = iContactRepository.Login(contact, deviceId, cardId, securityToken);
+                string contactId = iContactRepository.Login(contact, deviceId, contact.Card.Id, securityToken);
                 this.LoginLog(userName, deviceId, ipAddress, false);
                 return contactId;
             }
@@ -349,7 +335,6 @@ namespace LSOmni.BLL.Loyalty
             BOLoyConnection.ChangePassword(userName, newPassword, oldPassword); //
 
             //simply update our pwd in our db.  If changePassword fails should Data Director update it later..
-            iContactRepository.ChangePassword(userName, newPassword, oldPassword);
             iContactRepository.DeleteSecurityTokens(base.ContactId, base.DeviceId); //remove securitytokens from all but this deviceId
         }
 
@@ -410,9 +395,6 @@ namespace LSOmni.BLL.Loyalty
 
             //CALL NAV web service 
             BOLoyConnection.ResetPassword(userNameOrEmail, newPassword); //
-
-            //simply update our pwd in our db.  If ChangePassword fails should Data Director update it later..
-            iContactRepository.ChangePassword(userNameOrEmail, newPassword, "");
 
             //delete security token and resetpasswordDelete failure is 
             iContactRepository.DeleteSecurityTokens(contact.Id, ""); //remove securitytokens from all devices for this username

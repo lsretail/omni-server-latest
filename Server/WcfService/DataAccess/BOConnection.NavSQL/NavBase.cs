@@ -126,7 +126,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public static string NavVersionToUse(bool forceCallToNav = true)
         {
-            NAVVersion = new Version("11.0");
+            NAVVersion = new Version("13.0");
 
             //this methods is called in PING and in constructor
             try

@@ -146,7 +146,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 BusinessTaxGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Group"]),
                 ProductTaxGroup = SQLHelper.GetString(reader["VAT Prod_ Posting Group"]),
-                TaxPercent = SQLHelper.GetDecimal(reader["VAT _"])
+                TaxPercent = SQLHelper.GetDecimal(reader, "VAT _")
             };
         }
     }

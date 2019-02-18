@@ -23,9 +23,21 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[Keying in Price],mt.[Keying in Quantity],mt.[No Discount Allowed]," +
                          "mt.[Product Group Code],mt.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Zero Price Valid]," +
                          "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price]," +
-                         "mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Unit Cost],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
+                         "mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
-                          "WHERE sl.[Item No_]=mt.[No_] AND [Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos";
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
+                         "(SELECT TOP(1) sl.[Block Discount] FROM [" + navCompanyName + "Item Status Link] sl " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
+                         "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link] sl " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice, " +
+                         "(SELECT TOP(1) sl.[Block Negative Adjustment] FROM [" + navCompanyName + "Item Status Link] sl " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Negative Adjustment]=1) AS BlockNegAdj, " +
+                         "(SELECT TOP(1) sl.[Block Positive Adjustment] FROM [" + navCompanyName + "Item Status Link] sl " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Positive Adjustment]=1) AS BlockPosAdj, " +
+                         "(SELECT TOP(1) sl.[Block Purchase Return] FROM [" + navCompanyName + "Item Status Link] sl " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
+
+
 
             sqlfrom = " FROM [" + navCompanyName + "Item] mt" +
                       " LEFT OUTER JOIN [" + navCompanyName + "Item HTML] ih ON mt.[No_]=ih.[Item No_]";
@@ -37,6 +49,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             List<JscKey> keys = GetPrimaryKeys("Item");
+            List<JscActions> actions = new List<JscActions>();
             string prevLastKey = lastKey;
 
             // get records remaining
@@ -48,15 +61,53 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
                 }
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            else
+            {
+                string tmplastkey = lastKey;
+                string tmpmaxkey = string.Empty;
+                recordsRemaining = 0;
 
-            List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
+                actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+                bool isdone = tmplastkey.Equals(lastKey);
+
+                // get item html and distirbution changes 
+                recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
+                recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
+
+                if (isdone)
+                    lastKey = tmplastkey;
+
+                foreach (JscActions act in itemact)
+                {
+                    if (act.Type == DDStatementType.Delete)
+                        continue;       // skip delete actions for extra tables
+
+                    int index = act.ParamValue.IndexOf(';');
+                    JscActions newact = new JscActions()
+                    {
+                        id = act.id,
+                        TableId = act.TableId,
+                        Type = act.Type,
+                        ParamValue = (index < 0) ? act.ParamValue : act.ParamValue.Substring(0, index)
+                    };
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+            }
+
             List<ReplItem> list = new List<ReplItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom +
-                GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -115,7 +166,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         }
 
                         if (actions.Count == 0)
+                        {
                             lastKey = prevLastKey;
+                            maxKey = prevLastKey;
+                        }
 
                         if (string.IsNullOrEmpty(maxKey))
                             maxKey = lastKey;
@@ -137,6 +191,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             List<JscKey> keys = GetPrimaryKeys("Item");
+            List<JscActions> actions = new List<JscActions>();
+            string prevLastKey = lastKey;
 
             // get records remaining
             string sql = string.Empty;
@@ -147,10 +203,60 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
                 }
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            else
+            {
+                string tmplastkey = lastKey;
+                string tmpmaxkey = string.Empty;
+                recordsRemaining = 0;
 
-            List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+                // get main item actions
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
+                actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+                bool isdone = tmplastkey.Equals(lastKey);
+
+                // Check for actions from Sales Price,Item Variant,Item Unit of Measure,Variant and Distribution tables
+                recordsRemaining += GetRecordCount(7002, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                List<JscActions> itemact = LoadActions(fullReplication, 7002, batchSize, ref tmplastkey, ref recordsRemaining);
+                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
+                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
+                recordsRemaining += GetRecordCount(10001414, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 10001414, batchSize, ref tmplastkey, ref recordsRemaining));
+                recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining));
+                recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
+
+                // if lastkey is same as before, then check for last key from other tables
+                if (isdone)
+                    lastKey = tmplastkey;
+
+                // combine actions
+                foreach (JscActions act in itemact)
+                {
+                    if (act.Type == DDStatementType.Delete)
+                        continue;       // skip delete actions for extra tables
+
+                    int index = act.ParamValue.IndexOf(';');
+                    JscActions newact = new JscActions()
+                    {
+                        id = act.id,
+                        TableId = act.TableId,
+                        Type = act.Type,
+                        ParamValue = (index < 0) ? act.ParamValue : act.ParamValue.Substring(0, index)
+                    };
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+            }
+
             List<LoyItem> list = new List<LoyItem>();
 
             // get records
@@ -212,6 +318,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             }
                             first = false;
                         }
+
+                        if (actions.Count == 0)
+                        {
+                            lastKey = prevLastKey;
+                            maxKey = prevLastKey;
+                        }
+
+                        if (string.IsNullOrEmpty(maxKey))
+                            maxKey = lastKey;
                     }
                     connection.Close();
                 }
@@ -237,7 +352,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.Read())
+                        while (reader.Read())
                         {
                             list.Add(ReaderToLoyItem(reader, string.Empty, culture, includeDetails, false, out string ts));
                         }
@@ -256,10 +371,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 pageSize = 1;
 
             string sql =
-            "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Product Group Code],mt.[Sales Unit of Measure],ih.[Html]," +
-            " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber," +
-            " (SELECT sl.[Block Sale on POS] FROM[" + navCompanyName + "Item Status Link] sl " +
-            "WHERE sl.[Item No_]=mt.[No_] AND [Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos" +
+            "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Product Group Code],mt.[Sales Unit of Measure]," +
+            "mt.[Blocked],mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
+            " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
+            "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
+            "WHERE sl.[Item No_]=mt.[No_] AND [Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
+            "(SELECT TOP(1) sl.[Block Discount] FROM [" + navCompanyName + "Item Status Link] sl " +
+            "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
+            "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link] sl " +
+            "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
             sqlfrom +
             " LEFT OUTER JOIN [" + navCompanyName + "Product Group] pg ON pg.[Code]=mt.[Product Group Code]" +
             " WHERE (1=1)";
@@ -272,7 +392,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 sql += " AND mt.[Description] LIKE '%" + search + "%'" + GetDbCICollation();
 
             sql += GetSQLStoreDist("mt.[No_]", storeId);
-            sql += ") SELECT [No_],[Description],[Product Group Code],[Sales Unit of Measure],[Html],RowNumber,BlockOnPos" +
+            sql += ") SELECT [No_],[Description],[Product Group Code],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
+            sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
+            sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
                   " AND " + (((pageNumber - 1) * pageSize) + pageSize) + " ORDER BY RowNumber";
 
@@ -376,9 +498,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
-
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
@@ -442,7 +561,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return new ReplItem()
             {
                 Id = SQLHelper.GetString(reader["No_"]),
-                BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Details = SQLHelper.GetStringByte(reader["Html"]),
                 KeyingInPrice = SQLHelper.GetInt32(reader["Keying in Price"]),
@@ -454,7 +572,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 BaseUnitOfMeasure = SQLHelper.GetString(reader["Base Unit of Measure"]),
                 ZeroPriceValId = SQLHelper.GetInt32(reader["Zero Price Valid"]),
 
-                UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]),
+                Blocked = SQLHelper.GetInt32(reader["Blocked"]),
+                BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"]),
+                BlockDiscount = SQLHelper.GetInt32(reader["BlockDiscount"]),
+                BlockManualPriceChange = SQLHelper.GetInt32(reader["BlockPrice"]),
+                BlockNegativeAdjustment = SQLHelper.GetInt32(reader["BlockNegAdj"]),
+                BlockPositiveAdjustment = SQLHelper.GetInt32(reader["BlockPosAdj"]),
+                BlockPurchaseReturn = SQLHelper.GetInt32(reader["BlockPurRet"]),
+
+                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
                 PurchUnitOfMeasure = SQLHelper.GetString(reader["Purch_ Unit of Measure"]),
                 SalseUnitOfMeasure = SQLHelper.GetString(reader["Sales Unit of Measure"]),
                 VendorId = SQLHelper.GetString(reader["Vendor No_"]),
@@ -464,10 +590,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
 
-                GrossWeight = SQLHelper.GetDecimal(reader["Gross Weight"]),
-                UnitCost = SQLHelper.GetDecimal(reader["Unit Cost"]),
-                UnitsPerParcel = SQLHelper.GetDecimal(reader["Units per Parcel"]),
-                UnitVolume = SQLHelper.GetDecimal(reader["Unit Volume"]),
+                GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
+                UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
+                UnitVolume = SQLHelper.GetDecimal(reader, "Unit Volume"),
 
                 MustKeyInComment = 0
             };
@@ -480,8 +605,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Details = SQLHelper.GetStringByte(reader["Html"]),
+
                 ProductGroupId = SQLHelper.GetString(reader["Product Group Code"]),
                 SalesUomId = SQLHelper.GetString(reader["Sales Unit of Measure"]),
+                Blocked = SQLHelper.GetBool(reader["Blocked"]),
+                BlockDiscount = SQLHelper.GetBool(reader["BlockDiscount"]),
+                BlockManualPriceChange = SQLHelper.GetBool(reader["BlockPrice"]),
+                SeasonCode = SQLHelper.GetString(reader["Season Code"]),
+                ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
+                ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
+                GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
+                UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
+                UnitVolume = SQLHelper.GetDecimal(reader, "Unit Volume"),
                 QtyNotInDecimal = true
             };
 

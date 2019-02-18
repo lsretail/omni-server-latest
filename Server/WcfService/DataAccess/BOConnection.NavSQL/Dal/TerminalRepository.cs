@@ -21,8 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqltext = "SELECT mt.[No_],mt.[Store No_],mt.[Terminal Type],mt.[Device Type],mt.[Description],mt.[Exit After Each Trans_]," +
                      "mt.[AutoLogoff After (Min_)],mt.[EFT Store No_],mt.[EFT POS Terminal No_],mt.[Hardware Profile]," +
                      "mt.[Interface Profile],mt.[Functionality Profile],mt.[Default Sales Type],mt.[Sales Type Filter]," +
-                     "mt.[Inventory Main Menu],mt.[Show Numberpad],mt.[Device License Key]," +
-                     "mt.[Item Filtering Method],mt.[Vendor Filtering Method],mt.[Customer Filtering Method]";
+                     "mt.[Inventory Main Menu],mt.[Show Numberpad],mt.[Device License Key],mt.[Item Filtering Method]";
             sqlfrom = " FROM [" + navCompanyName + "POS Terminal] mt";
         }
 
@@ -171,9 +170,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 TerminalType = SQLHelper.GetInt32(reader["Terminal Type"]),
                 DeviceType = SQLHelper.GetInt32(reader["Device Type"]),
                 ItemFilterMethod = SQLHelper.GetInt32(reader["Item Filtering Method"]),
-                VendorFilterMethod = SQLHelper.GetInt32(reader["Vendor Filtering Method"]),
-                CustomerFilterMethod = SQLHelper.GetInt32(reader["Customer Filtering Method"]),
-                Store = new Store(SQLHelper.GetString(reader["Store No_"]))
+                AutoLogOffAfterMin = SQLHelper.GetInt32(reader["AutoLogoff After (Min_)"]),
+                Store = new Store(SQLHelper.GetString(reader["Store No_"])),
+                StoreInventory = GetStoreInventoryStatus()
             };
         }
     }

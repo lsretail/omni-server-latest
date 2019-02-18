@@ -56,19 +56,30 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public string Id { get; set; }
         [DataMember]
         public AddressType Type { get; set; }
+        /// <summary>
+        /// Address line 1, street address, po box, company name, c/o
+        /// </summary>
         [DataMember]
-        public string Address1 { get; set; }  //Address line 1, street address, po box, company name, c/o
+        public string Address1 { get; set; }
+        /// <summary>
+        /// Address line 2, Appartment, suite, unit, floor etc
+        /// </summary>
         [DataMember]
-        public string Address2 { get; set; }  //Address line 2, Appartment, suite, unit, floor etc
+        public string Address2 { get; set; }
         [DataMember]
         public string HouseNo { get; set; }  
         [DataMember]
         public string City { get; set; }
         [DataMember]
-        //public string County { get; set; }
         public string PostCode { get; set; }
+        /// <summary>
+        /// State / Province / Region
+        /// </summary>
         [DataMember]
-        public string StateProvinceRegion { get; set; }  //State/Province/Region
+        public string StateProvinceRegion { get; set; }  //
+        /// <summary>
+        /// Country Code, see Countries/Regions in NAV for Codes
+        /// </summary>
         [DataMember]
         public string Country { get; set; }
         [DataMember]

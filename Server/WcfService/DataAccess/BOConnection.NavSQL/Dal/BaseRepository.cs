@@ -107,6 +107,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
                 CurrencyRepository currRep = new CurrencyRepository(NavVersion);
                 CurrencyLocalUnit = currRep.CurrencyLoyGetById(curcode, culture);
+                if (CurrencyLocalUnit == null)
+                    CurrencyLocalUnit = new Currency();
 
                 //using culture to get the correct  group and decimal char. , or .
                 if (string.IsNullOrWhiteSpace(CurrencyLocalUnit.Culture) == false)
@@ -115,12 +117,19 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
             }
 
-            // cannot use string.Format since we must follow what BackOffice tells us about decimal places
-            // BO also determines if we want the symbol ($) as pre of post
-            string amt = amount.ToString("N0" + CurrencyLocalUnit.DecimalPlaces.ToString(), CultInfo);      // N03 has 3 decimal pts
+            if (string.IsNullOrEmpty(CurrencyLocalUnit.Id))
+            {
+                return amount.ToString("N02");
+            }
+            else
+            {
+                // cannot use string.Format since we must follow what BackOffice tells us about decimal places
+                // BO also determines if we want the symbol ($) as pre of post
+                string amt = amount.ToString("N0" + CurrencyLocalUnit.DecimalPlaces.ToString(), CultInfo);      // N03 has 3 decimal pts
 
-            // add the prefix and postfix to the string  e.g. $
-            return string.Format("{0}{1} {2}", CurrencyLocalUnit.Prefix, amt, CurrencyLocalUnit.Postfix).Trim();
+                // add the prefix and postfix to the string  e.g. $
+                return string.Format("{0}{1} {2}", CurrencyLocalUnit.Prefix, amt, CurrencyLocalUnit.Postfix).Trim();
+            }
         }
 
         internal static T CastTo<T>(object value) where T : struct
@@ -233,15 +242,31 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         builder.AppendLine("Stored procedure: " + command.CommandText);
                     else
                         builder.AppendLine("Sql command: " + command.CommandText);
+
                     if (command.Parameters.Count > 0)
                         builder.AppendLine("With the following parameters.");
+
+                    string value;
                     foreach (IDataParameter param in command.Parameters)
                     {
-                        builder.AppendFormat(
-                            "     Paramater {0}: {1}",
-                            param.ParameterName,
-                            (param.Value == null ?
-                            "NULL" : param.Value.ToString())).AppendLine();
+                        if (param.Value == null)
+                        {
+                            value = "NULL";
+                        }
+                        else
+                        {
+                            switch (param.DbType)
+                            {
+                                case DbType.Binary:
+                                    value = BitConverter.ToString((byte[])param.Value);
+                                    break;
+                                default:
+                                    value = param.Value.ToString();
+                                    break;
+
+                            }
+                        }
+                        builder.AppendLine(string.Format(" > Paramater {0}: {1}", param.ParameterName, value));
                     }
                     logger.Trace("\r\n" + builder.ToString());
                 }
@@ -250,6 +275,30 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     logger.Error("\r\n" + ex.Message);
                 }
             }
+        }
+
+        public bool GetStoreInventoryStatus()
+        {
+            bool status = true;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    try
+                    {
+                        command.CommandText = "SELECT [Use Store Inventory] FROM [" + navCompanyName + "Store Inventory Setup]";
+                        TraceSqlCommand(command);
+                        status = SQLHelper.GetBool(command.ExecuteScalar());
+                    }
+                    catch (SqlException ex)
+                    {
+                        status = (ex.Message.Contains("Invalid column name")) ? true : false;
+                    }
+                }
+                connection.Close();
+            }
+            return status;
         }
 
         public int GetRecordCount(int tableid, string lastkey, string fullreplsql, List<JscKey> keys, ref string maxkey)
@@ -429,10 +478,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             SQLHelper.CheckForSQLInjection(storeid);
 
             // add distribution check for item data
-            string where = " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
-                           " LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group]" +
-                           " WHERE id.[Status]=0 AND sg.[Store Code]='" + storeid + "')";
-            return where;
+            return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
+                   " LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group]" +
+                   " WHERE id.[Status]=0 AND sg.[Store Code]='" + storeid + "')";
         }
 
         public string GetWhereStatement(bool fullreplication, List<JscKey> keys, bool includeorder)

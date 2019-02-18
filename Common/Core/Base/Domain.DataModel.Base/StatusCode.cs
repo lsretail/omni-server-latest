@@ -122,6 +122,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         /// </summary>
         [EnumMember]
         OrderQueueIdNotFound  = 23,
+        /// <summary>
+        /// Config not found. 
+        /// </summary>
+        [EnumMember]
+        ConfigNotFound = 24,
 
         [EnumMember]
         OneAccountInvalid = 30,

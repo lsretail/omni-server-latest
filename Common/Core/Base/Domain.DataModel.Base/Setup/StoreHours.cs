@@ -13,6 +13,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum StoreHourOpeningType
+    {
+        [EnumMember]
+        Normal = 0,
+        [EnumMember]
+        Temporary = 1,
+        [EnumMember]
+        Closed = 2,
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class StoreHours : IDisposable
     {
         public StoreHours(string storeId)
@@ -24,6 +35,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             OpenFrom = new DateTime(1900, 1, 1);
             OpenTo = new DateTime(1900, 1, 1);
             StoreHourtype = StoreHourType.MainStore;
+            Type = StoreHourOpeningType.Normal;
         }
 
         public StoreHours()
@@ -58,6 +70,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public DateTime OpenFrom { get; set; }
         [DataMember]
         public DateTime OpenTo { get; set; }
+        [DataMember]
+        public StoreHourOpeningType Type { get; set; }
     }
 }
  

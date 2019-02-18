@@ -67,7 +67,12 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrWhiteSpace(storeId) == false)
                 list.Add(storeId);
 
-            return base.BOAppConnection.ItemsInStockGet(itemId, variantId, arrivingInStockInDays, list, false);
+            return base.BOAppConnection.ItemInStockGet(itemId, variantId, arrivingInStockInDays, list, false);
+        }
+
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId)
+        {
+            return base.BOAppConnection.ItemsInStockGet(items, storeId, string.Empty);
         }
 
         public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)

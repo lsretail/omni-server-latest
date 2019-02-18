@@ -34,7 +34,7 @@ namespace LSOmni.DataAccess.Dal
                             account = new Account()
                             {
                                 Id = SQLHelper.GetString(reader["Id"]),
-                                PointBalance = Convert.ToInt64(SQLHelper.GetDecimal(reader["Balance"])),
+                                PointBalance = Convert.ToInt64(SQLHelper.GetDecimal(reader, "Balance")),
                                 Scheme = SchemeGetById(SQLHelper.GetString(reader["SchemeId"]))
                             };
                         }

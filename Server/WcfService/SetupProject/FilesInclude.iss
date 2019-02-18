@@ -29,7 +29,6 @@ Source: "..\..\3rdPartyComponents\LSRecommends\*.dll"; DestDir: "{app}\{code:Wcf
 Source: "..\Service\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBindings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBehaviors.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
-Source: "..\Service\WebClient.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebServices.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebServices_SSL_NonSSL.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebServices_SSL_Only.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion

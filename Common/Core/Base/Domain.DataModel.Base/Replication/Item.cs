@@ -107,7 +107,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public DateTime DateBlocked { get; set; }
         [DataMember]
+        public int Blocked { get; set; }
+        [DataMember]
         public int BlockedOnPos { get; set; }
+        [DataMember]
+        public int BlockDiscount { get; set; }
+        [DataMember]
+        public int BlockManualPriceChange { get; set; }
+        [DataMember]
+        public int BlockNegativeAdjustment { get; set; }
+        [DataMember]
+        public int BlockPositiveAdjustment { get; set; }
+        [DataMember]
+        public int BlockPurchaseReturn { get; set; }
         [DataMember]
         public DateTime DateToActivateItem { get; set; }
         [DataMember]
@@ -127,8 +139,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string ItemCategoryCode { get; set; }
         [DataMember]
         public string ItemFamilyCode { get; set; }
-        [DataMember]
-        public decimal UnitCost { get; set; }
         [DataMember]
         public decimal UnitsPerParcel { get; set; }
         [DataMember]

@@ -76,11 +76,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     string top = (maxNumberOfTransactions > 0) ? string.Format("TOP({0}) ", maxNumberOfTransactions) : string.Empty;
                     command.CommandText = "SELECT " + top +
-                                          "[Entry No_],COUNT(*) AS CNT,MAX([Source Type]) AS SourceType,MAX([Document No_]) AS DocNo,SUM([Quantity]) AS Qty," +
+                                          "[Member Card No_],[Entry No_],COUNT(*) AS CNT,MAX([Source Type]) AS SourceType,MAX([Document No_]) AS DocNo,SUM([Quantity]) AS Qty," +
                                           "SUM([Net Amount]) AS NetAmt,SUM([Gross Amount]) AS Amt,SUM([Discount Amount]) AS DiscAmt," +
                                           "MAX([Date]) AS RegDate,MAX([Store No_]) AS Store,MAX([POS Terminal No_]) AS Terminal " +
                                           "FROM [" + navCompanyName + "Member Sales Entry] " +
-                                          "WHERE [Member Contact No_]=@id GROUP BY [Entry No_] ORDER BY [Entry No_] DESC";
+                                          "WHERE [Member Contact No_]=@id GROUP BY [Member Card No_], [Entry No_] ORDER BY [Entry No_] DESC";
                     command.Parameters.AddWithValue("@id", contactId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -96,13 +96,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 SaleLinesCount = SQLHelper.GetInt32(reader["CNT"]),
                                 DocumentType = (EntryDocumentType)SQLHelper.GetInt32(reader["SourceType"]),
                                 DocumentNumber = SQLHelper.GetString(reader["DocNo"]),
-                                TotalQty = SQLHelper.GetDecimal(reader["Qty"], true),
-                                NetAmt = SQLHelper.GetDecimal(reader["NetAmt"], true),
-                                Amt = SQLHelper.GetDecimal(reader["Amt"], true),
-                                DiscountAmt = SQLHelper.GetDecimal(reader["DiscAmt"], true),
+                                TotalQty = SQLHelper.GetDecimal(reader, "Qty", true),
+                                NetAmt = SQLHelper.GetDecimal(reader, "NetAmt", true),
+                                Amt = SQLHelper.GetDecimal(reader, "Amt", true),
+                                DiscountAmt = SQLHelper.GetDecimal(reader, "DiscAmt", true),
                                 Date = SQLHelper.GetDateTime(reader["RegDate"]),
                                 Store = strep.StoreLoyGetById(SQLHelper.GetString(reader["Store"]), false),
-                                Terminal = SQLHelper.GetString(reader["Terminal"])
+                                Terminal = SQLHelper.GetString(reader["Terminal"]),
+                                CardId = SQLHelper.GetString(reader["Member Card No_"])
                             };
 
                             trans.ReceiptNumber = (trans.DocumentType == EntryDocumentType.ReceiptNumber) ? trans.DocumentNumber : string.Empty;
@@ -159,11 +160,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 LineNo = SQLHelper.GetInt32(reader["Line No_"]),
                                 Item = irepo.ItemLoyGetById(SQLHelper.GetString(reader["Item No_"]), trans.Store.Id, string.Empty, false),
                                 VariantReg = vrepo.VariantRegGetById(SQLHelper.GetString(reader["Item Variant Code"]), SQLHelper.GetString(reader["Item No_"])),
-                                Quantity = SQLHelper.GetDecimal(reader["Quantity"], true),
-                                NetAmt = SQLHelper.GetDecimal(reader["Net Amount"], true),
-                                Amt = SQLHelper.GetDecimal(reader["Gross Amount"], true),
-                                DiscountAmt = SQLHelper.GetDecimal(reader["Discount Amount"], true),
-                                Price = SQLHelper.GetDecimal(reader["Cost Amount"], true),
+                                Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
+                                NetAmt = SQLHelper.GetDecimal(reader, "Net Amount", true),
+                                Amt = SQLHelper.GetDecimal(reader, "Gross Amount", true),
+                                DiscountAmt = SQLHelper.GetDecimal(reader, "Discount Amount", true),
+                                Price = SQLHelper.GetDecimal(reader, "Cost Amount", true),
                             };
 
                             trans.SaleLines.Add(line);
@@ -217,9 +218,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<LoyTransaction> list = new List<LoyTransaction>();
             if (string.IsNullOrWhiteSpace(search))
                 return list;
-
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
 
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
@@ -295,6 +293,37 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return trans;
         }
 
+        public LoyTransaction LoyTransactionGetByReceiptId(string id, string culture, bool includeLines, out string contactId)
+        {
+            LoyTransaction trans = new LoyTransaction();
+            contactId = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    string sqlmain = "SELECT " + sqltransheadcol+",mt.[Member Card No_],mc.[Contact No_]" + sqltransheadfrom + 
+                        " INNER JOIN [" + navCompanyName + "Membership Card] mc ON mc.[Card No_]=mt.[Member Card No_]";
+                    string sqlwhere = " WHERE mt.[Receipt No_]=@id";
+
+                    command.Parameters.AddWithValue("@id", id);
+                    command.CommandText = sqlmain + sqlwhere;
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            trans = ReaderToLoyTransHeader(reader, culture, includeLines);
+                            contactId = SQLHelper.GetString(reader["Contact No_"]);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return trans;
+        }
+
         public List<LoySaleLine> LoySalesLineGet(string transId, string storeId, string terminalId, string culture)
         {
             List<LoySaleLine> list = new List<LoySaleLine>();
@@ -307,6 +336,32 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.Parameters.AddWithValue("@id", transId);
                     command.Parameters.AddWithValue("@Sid", storeId);
                     command.Parameters.AddWithValue("@Tid", terminalId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToLoySaleLine(reader, culture));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<LoySaleLine> LoySalesLineGetByReceipt(string receiptId, string culture)
+        {
+            List<LoySaleLine> list = new List<LoySaleLine>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " + sqlsalelinecol + sqlsalelinefrom +
+                                          " WHERE ml.[Receipt No_]=@id ";
+                    command.Parameters.AddWithValue("@id", receiptId);
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -374,9 +429,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (reader.Read())
                         {
                             itemCount = SQLHelper.GetInt32(reader["Cnt"], true);
-                            totalAmount = SQLHelper.GetDecimal(reader["Amt"], true);
-                            totalNetAmount = SQLHelper.GetDecimal(reader["NAmt"], true);
-                            totalDiscount = SQLHelper.GetDecimal(reader["Disc"], true);
+                            totalAmount = SQLHelper.GetDecimal(reader, "Amt", true);
+                            totalNetAmount = SQLHelper.GetDecimal(reader, "NAmt", true);
+                            totalDiscount = SQLHelper.GetDecimal(reader, "Disc", true);
                         }
                         reader.Close();
                     }
@@ -393,10 +448,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Terminal = SQLHelper.GetString(reader["POS Terminal No_"]),
                 Staff = SQLHelper.GetString(reader["Staff ID"]),
                 DocumentNumber = SQLHelper.GetString(reader["Receipt No_"]),
-                Amt = SQLHelper.GetDecimal(reader["Gross Amount"], true),
-                NetAmt = SQLHelper.GetDecimal(reader["Net Amount"], true),
-                DiscountAmt = SQLHelper.GetDecimal(reader["Discount Amount"], true),
-                TotalQty = SQLHelper.GetDecimal(reader["No_ of Items"])
+                Amt = SQLHelper.GetDecimal(reader, "Gross Amount", true),
+                NetAmt = SQLHelper.GetDecimal(reader, "Net Amount", true),
+                DiscountAmt = SQLHelper.GetDecimal(reader, "Discount Amount", true),
+                TotalQty = SQLHelper.GetDecimal(reader, "No_ of Items")
             };
 
             string orderno = SQLHelper.GetString(reader["Order No_"]);
@@ -450,13 +505,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 LineNo = SQLHelper.GetInt32(reader["Line No_"]),
-                Quantity = SQLHelper.GetDecimal(reader["Quantity"], true),
-                ReturnQuantity = SQLHelper.GetDecimal(reader["Refund Qty_"], false),
-                Price = SQLHelper.GetDecimal(reader["Price"]),
-                NetPrice = SQLHelper.GetDecimal(reader["Net Price"]),
-                NetAmt = SQLHelper.GetDecimal(reader["Net Amount"], true),
-                DiscountAmt = SQLHelper.GetDecimal(reader["Discount Amount"], true),
-                VatAmt = SQLHelper.GetDecimal(reader["VAT Amount"], true)
+                Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
+                ReturnQuantity = SQLHelper.GetDecimal(reader, "Refund Qty_", false),
+                Price = SQLHelper.GetDecimal(reader, "Price"),
+                NetPrice = SQLHelper.GetDecimal(reader, "Net Price"),
+                NetAmt = SQLHelper.GetDecimal(reader, "Net Amount", true),
+                DiscountAmt = SQLHelper.GetDecimal(reader, "Discount Amount", true),
+                VatAmt = SQLHelper.GetDecimal(reader, "VAT Amount", true)
             };
 
             ItemRepository itemRepo = new ItemRepository();
@@ -498,7 +553,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = SQLHelper.GetString(reader["Tender Type"]),
 
-                Amt = SQLHelper.GetDecimal(reader["Amount Tendered"], true)
+                Amt = SQLHelper.GetDecimal(reader, "Amount Tendered", false)
             };
 
             line.TransactionId = line.Id;

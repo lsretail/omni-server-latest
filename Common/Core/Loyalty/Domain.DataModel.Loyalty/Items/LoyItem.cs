@@ -103,6 +103,25 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public string Price { get; set; }
         [DataMember]
         public bool AllowedToSell { get; set; } // Blocked on POS
+        [DataMember]
+        public bool Blocked { get; set; }
+        [DataMember]
+        public bool BlockDiscount { get; set; }
+        [DataMember]
+        public bool BlockManualPriceChange { get; set; }
+
+        [DataMember]
+        public decimal GrossWeight { get; set; }
+        [DataMember]
+        public string SeasonCode { get; set; }
+        [DataMember]
+        public string ItemCategoryCode { get; set; }
+        [DataMember]
+        public string ItemFamilyCode { get; set; }
+        [DataMember]
+        public decimal UnitsPerParcel { get; set; }
+        [DataMember]
+        public decimal UnitVolume { get; set; }
 
 #if WCFSERVER
         //not all data goes to wcf clients

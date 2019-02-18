@@ -58,7 +58,7 @@ begin
   CheckPage_SQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_SQLCheckBox.Width := CheckPage.SurfaceWidth;
   CheckPage_SQLCheckBox.Height := ScaleY(34);
-  CheckPage_SQLCheckBox.Caption := 'Create LSOmni SQL Server database as part of this installation.';
+  CheckPage_SQLCheckBox.Caption := 'Create LSOmni SQL Server database';
   CheckPage_SQLCheckBox.Checked := True;
   CheckPage_SQLCheckBox.Parent := CheckPage.Surface;
   //CheckPage_SQLCheckBox.OnClick := @ChkOnChange;
@@ -67,7 +67,7 @@ begin
   CheckPage_NavSQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_NavSQLCheckBox.Width := CheckPage.SurfaceWidth;
   CheckPage_NavSQLCheckBox.Height := ScaleY(34);
-  CheckPage_NavSQLCheckBox.Caption := 'Create LS Nav sql objects as part of this installation.';
+  CheckPage_NavSQLCheckBox.Caption := 'Configure LS Nav/Central SQL parameters';
   CheckPage_NavSQLCheckBox.Checked := True;
   CheckPage_NavSQLCheckBox.Parent := CheckPage.Surface;
   CheckPage_NavSQLCheckBox.Enabled := True;
@@ -78,7 +78,7 @@ begin
   CheckPage_IISCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_IISCheckBox.Width := CheckPage.SurfaceWidth;
   CheckPage_IISCheckBox.Height := ScaleY(34);
-  CheckPage_IISCheckBox.Caption := 'Create LSOmniService WCF service under IIS 7+ as part of this installation.';
+  CheckPage_IISCheckBox.Caption := 'Create LSOmniService WCF service under IIS 7+';
   CheckPage_IISCheckBox.Checked := True;
   CheckPage_IISCheckBox.Parent := CheckPage.Surface;
   //CheckPage_IISCheckBox.OnClick := @ChkOnChange;

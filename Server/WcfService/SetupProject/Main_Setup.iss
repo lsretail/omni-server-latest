@@ -186,9 +186,9 @@ begin
     // Check if trying to create tables in the NAV database
     if (Result and ADOCheckIsNavDB()) then
     begin
-      msg := 'You are trying to create the Omni SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
-      msg := msg + 'This database is a NAV database and you are not allowed to create the LSOmni database objects'#13
-      msg := msg + 'in the NAV database'#13
+      msg := 'You are trying to create the LS Omni SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
+      msg := msg + 'This database is a LS Nav/Central database and you are not allowed to create the LSOmni database objects'#13
+      msg := msg + 'in the LS Nav/Central Database'#13
       msg := msg + 'See LS Omni Server Installation doc'#13
       if (not CmdMode) then
         MsgBox(msg, mbConfirmation, MB_OK);
@@ -292,7 +292,7 @@ begin
     // LSOmni database string
     if CheckPage_SQLCheckBox.Checked then
     begin
-      Log('Update Omni SQL Settings');
+      Log('Update LS Omni SQL Settings');
       omniStr := 'Data Source=' + Trim(SQLPage_txtServer.Text);
       omniStr := omniStr + ';Initial Catalog=' + Trim(SQLPage_txtDBname.Text);
       omniStr := omniStr + ';User ID=' + Trim(user);

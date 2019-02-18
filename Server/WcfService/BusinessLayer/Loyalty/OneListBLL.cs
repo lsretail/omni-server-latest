@@ -101,6 +101,11 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
 
+            list.TotalAmount = 0;
+            list.TotalDiscAmount = 0;
+            list.TotalNetAmount = 0;
+            list.TotalTaxAmount = 0;
+
             if (calculate && list.Items.Count > 0)
             {
                 Order calcResp = BOLoyConnection.BasketCalcToOrder(list);

@@ -28,6 +28,13 @@ namespace LSOmni.BLL.Loyalty
         {
             return this.BOLoyConnection.GetPointRate();
         }
+
+        public virtual decimal GiftCardGetBalance(string cardNo)
+        {
+            AppSettingsRepository appRep = new AppSettingsRepository();
+            string entryType = appRep.AppSettingsGetByKey(AppSettingsKey.GiftCard_DataEntryType, "en");
+            return BOLoyConnection.GiftCardGetBalance(cardNo, entryType);
+        }
     }
 }
 

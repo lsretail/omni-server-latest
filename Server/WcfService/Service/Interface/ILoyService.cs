@@ -325,8 +325,5 @@ namespace LSOmni.Service
         OrderAvailabilityResponse OrderCheckAvailability(OneList request);
 
         #endregion Click and Collect
-
-        [OperationContract]
-        string MyCustomFunction(string data);
     }
 }

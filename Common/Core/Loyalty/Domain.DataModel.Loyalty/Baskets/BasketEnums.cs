@@ -182,6 +182,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     public enum ShippingStatus
     {
         [EnumMember]
+        Unknown = 0,
+        [EnumMember]
         ShippigNotRequired = 10,
         [EnumMember]
         NotYetShipped = 20,
@@ -196,6 +198,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public enum PaymentStatus
     {
+        [EnumMember]
+        Unknown = 0,
         [EnumMember]
         PreApproved = 10,
         [EnumMember]

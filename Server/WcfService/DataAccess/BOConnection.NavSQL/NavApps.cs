@@ -62,7 +62,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return itemRep.ItemDetailsGetById(itemId);
         }
 
-        public virtual List<InventoryResponse> ItemsInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
+        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
         {
             if (locationIds.Count == 0)
             {
@@ -129,13 +129,66 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     list.Add(new InventoryResponse()
                     {
                         ItemId = buffer.ItemNo,
+                        VariantId = buffer.VariantCode,
+                        BaseUnitOfMeasure = buffer.BaseUnitofMeasure,
                         QtyActualInventory = buffer.ActualInventory,
                         QtyInventory = buffer.Inventory,
-                        VariantId = buffer.VariantCode,
                         QtySoldNotPosted = buffer.QtySoldnotPosted,
+                        QtyExpectedStock = buffer.ExpectedStock,
+                        ReorderPoint = buffer.ReorderPoint,
                         StoreId = buffer.StoreNo
                     });
                 }
+            }
+            return list;
+        }
+
+        public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+
+            List<NavWS.InventoryBufferIn> lines = new List<NavWS.InventoryBufferIn>();
+            foreach (InventoryRequest item in items)
+            {
+                lines.Add(new NavWS.InventoryBufferIn()
+                {
+                    Number = item.ItemId,
+                    Variant = item.VariantId
+                });
+            }
+
+            NavWS.RootGetInventoryMultipleIn rootin = new NavWS.RootGetInventoryMultipleIn();
+            rootin.InventoryBufferIn = lines.ToArray();
+
+            NavWS.RootGetInventoryMultipleOut rootout = new NavWS.RootGetInventoryMultipleOut();
+
+            List<InventoryResponse> list = new List<InventoryResponse>();
+
+            try
+            {
+                navWS.GetInventoryMultiple(ref respCode, ref errorText, storeId, locationId, rootin, ref rootout);
+                if (respCode != "0000")
+                    throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
+            }
+            catch (SoapException e)
+            {
+                if (e.Message.Contains("Method"))
+                    throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
+            }
+
+            if (rootout.InventoryBufferOut == null)
+                return list;
+
+            foreach (NavWS.InventoryBufferOut buffer in rootout.InventoryBufferOut)
+            {
+                list.Add(new InventoryResponse()
+                {
+                    ItemId = buffer.Number,
+                    VariantId = buffer.Variant,
+                    QtyInventory = buffer.Inventory,
+                    StoreId = buffer.Store
+                });
             }
             return list;
         }

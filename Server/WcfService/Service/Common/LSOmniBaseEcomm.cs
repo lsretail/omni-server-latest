@@ -26,6 +26,20 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual decimal GiftCardGetBalance(string cardNo)
+        {
+            try
+            {
+                CurrencyBLL bll = new CurrencyBLL(clientTimeOutInSeconds);
+                return bll.GiftCardGetBalance(cardNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("CardNo:{0} ", cardNo));
+                return 0;
+            }
+        }
+
         #region Replication
 
         public virtual ReplBarcodeResponse ReplEcommBarcodes(ReplRequest replRequest)

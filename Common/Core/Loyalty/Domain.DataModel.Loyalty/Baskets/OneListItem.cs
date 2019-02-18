@@ -216,14 +216,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public class OneListPublishedOffer : IDisposable
+    public class OneListPublishedOffer : Entity, IDisposable
     {
-        public OneListPublishedOffer()
+        public OneListPublishedOffer() : this(string.Empty)
+        {
+        }
+
+        public OneListPublishedOffer(string id) : base(id)
         {
             OneListId = "";
-            PublishedOffer = null;
             CreateDate = DateTime.Now;
             DisplayOrderId = 1;
+            Type = OfferDiscountType.Unknown;
         }
 
         public void Dispose()
@@ -238,9 +242,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             {
             }
         }
-
-        [DataMember]
-        public PublishedOffer PublishedOffer { get; set; }
         [DataMember]
         public DateTime CreateDate { get; set; }
         [DataMember]
@@ -248,5 +249,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         //not a data member
         public string OneListId { get; set; }
+        
+        [DataMember]
+        public OfferDiscountType Type { get; set; }
     }
 }

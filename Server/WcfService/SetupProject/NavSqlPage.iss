@@ -137,8 +137,8 @@ function NavSQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   NavSQLPage := CreateCustomPage(
     PreviousPageId,
-    'NAV SQL Server database used by the LS Omni Server',
-    'Creates SQL objects and permissions in the NAV database'
+    'LS Nav/Central SQL Server Database used by the LS Omni Server',
+    'Configures SQL parameters and permissions in the LS Nav/Central Database'
   );
  
   { lblServer }
@@ -146,7 +146,7 @@ begin
   with NavSQLPage_lblServer do
   begin
     Parent := NavSQLPage.Surface;
-    Caption :=  'NAV SQL Server instance:';
+    Caption :=  'SQL Server instance:';
     Left := ScaleX(24);
     Top := ScaleY(11);
     Width := ScaleX(130);
@@ -160,7 +160,7 @@ begin
   with NavSQLPage_txtServer do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(170);
+    Left := ScaleX(175);
     Top := ScaleY(8);
     Width := ScaleX(225);
     Height := ScaleY(21);
@@ -176,7 +176,7 @@ begin
   with NavSQLPage_lblDatabase do
   begin
     Parent := NavSQLPage.Surface;
-    Caption := 'NAV Database name:';
+    Caption := 'SQL Database name:';
     Left := ScaleX(24);
     Top := ScaleY(33);
     Width := ScaleX(130);
@@ -188,7 +188,7 @@ begin
   with NavSQLPage_txtDBname do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(170);
+    Left := ScaleX(175);
     Top := ScaleY(30);
     Width := ScaleX(225);
     Height := ScaleY(21);
@@ -202,10 +202,10 @@ begin
   with NavSQLPage_lblNavCompany do
   begin
     Parent := NavSQLPage.Surface;
-    Caption := 'NAV Company name:';
+    Caption := 'Nav/Central Company name:';
     Left := ScaleX(24);
     Top := ScaleY(55);
-    Width := ScaleX(130);
+    Width := ScaleX(140);
     Height := ScaleY(13);
   end;
   { NavSQLPage_txtNavCompany }
@@ -213,7 +213,7 @@ begin
   with NavSQLPage_txtNavCompany do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(170);
+    Left := ScaleX(175);
     Top := ScaleY(52);
     Width := ScaleX(225);
     Height := ScaleY(21);

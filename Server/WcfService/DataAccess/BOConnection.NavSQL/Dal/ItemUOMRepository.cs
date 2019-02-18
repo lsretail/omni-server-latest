@@ -184,7 +184,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 Code = SQLHelper.GetString(reader["Code"]),
-                QtyPrUOM = SQLHelper.GetDecimal(reader["Qty_ per Unit of Measure"])
+                QtyPrUOM = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
         }
 
@@ -196,7 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 ShortDescription = SQLHelper.GetString(reader["Description"]),
-                QtyPerUom = SQLHelper.GetDecimal(reader["Qty_ per Unit of Measure"]),
+                QtyPerUom = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure"),
                 Decimals = 0
             };
         }

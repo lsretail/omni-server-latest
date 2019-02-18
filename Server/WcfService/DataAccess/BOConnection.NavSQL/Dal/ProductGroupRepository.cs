@@ -21,7 +21,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Item Category Code]";
 
             sqlfrom = " FROM [" + navCompanyName + "Product Group] mt";
-            sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[Product Group Code]=mt.[Code]";
         }
 
         public List<ReplProductGroup> ReplicateProductGroups(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -31,6 +30,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             List<JscKey> keys = GetPrimaryKeys("Product Group");
             string prevLastKey = lastKey;
+            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[Product Group Code]=mt.[Code]";
 
             // get records remaining
             string sql = string.Empty;
@@ -39,7 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 sql = "SELECT COUNT(DISTINCT mt.[Code])";
                 if (batchSize > 0)
                 {
-                    sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
+                    sql += sqlfrom2 + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
                 }
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
@@ -48,7 +48,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<ReplProductGroup> list = new List<ReplProductGroup>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize, true, true) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "it.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize, true, true) + sqlcolumns + sqlfrom2 + GetWhereStatementWithStoreDist(fullReplication, keys, "it.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -136,11 +136,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-                    command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + " WHERE EXISTS(" +
-                            " SELECT 1 FROM [" + navCompanyName + "Item] i WHERE i.[Product Group Code]=mt.[Code])" +
-                            " AND mt.[Item Category Code]='" + itemcategoryId + "'" +
-                            " ORDER BY mt.[Description]";
-
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE mt.[Item Category Code]=@id ORDER BY mt.[Description]";
+                    command.Parameters.AddWithValue("@id", itemcategoryId);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -162,28 +159,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
-
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
             string sqlwhere = string.Empty;
             foreach (string si in searchitems)
             {
-                if (string.IsNullOrEmpty(sqlwhere))
+                if (string.IsNullOrEmpty(sqlwhere) == false)
                 {
-                    sqlwhere += string.Format(" AND mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
+                    sqlwhere += " AND";
                 }
+
+                sqlwhere += string.Format(" mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + " WHERE EXISTS(" +
-                            " SELECT 1 FROM [" + navCompanyName + "Item] i WHERE i.[Product Group Code]=mt.[Code])" + 
-                            sqlwhere + " ORDER BY mt.[Description]";
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE" + sqlwhere;
 
                     TraceSqlCommand(command);
                     connection.Open();
@@ -201,24 +195,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public ProductGroup ProductGroupGetById(string id, string culture, bool includeChildren, bool includeItems)
+        public ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail)
         {
             ProductGroup prgroup = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + " WHERE EXISTS(" +
-                            " SELECT 1 FROM [" + navCompanyName + "Item] i WHERE i.[Product Group Code]=mt.[Code]) AND mt.[Code]=@id";
-
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE mt.[Code]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while (reader.Read())
+                        if (reader.Read())
                         {
-                            prgroup = ReaderToLoyProductGroups(reader, culture, includeChildren, includeItems);
+                            prgroup = ReaderToLoyProductGroups(reader, culture, includeItems, includeItemDetail);
                         }
                         reader.Close();
                     }
@@ -240,7 +232,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
         }
 
-        private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeChildren, bool includeItems)
+        private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeItems, bool includeItemDetail)
         {
             ImageRepository imgrepo = new ImageRepository();
 
@@ -256,7 +248,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (includeItems)
             {
                 ItemRepository itrep = new ItemRepository();
-                prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeChildren);
+                prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail);
                 ImageRepository imrep = new ImageRepository();
                 prgr.Images = imrep.ImageGetByKey("Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }

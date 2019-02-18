@@ -58,7 +58,7 @@ namespace LSOmni.Service
 
         #endregion
 
-        #region Discount and Offers
+        #region Discount, Offers and GiftCard
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -79,6 +79,14 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemiIds, string loyaltySchemeCode);
 
+        /// <summary>
+        /// Get balance of a gift card.
+        /// </summary>
+        /// <param name="cardNo">Gift card number</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        decimal GiftCardGetBalance(string cardNo);
         #endregion
 
         #region Notification
@@ -540,6 +548,10 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         LoyItem ItemGetById(string itemId, string storeId);
 
         [OperationContract]
@@ -883,6 +895,7 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ReplStoreTenderTypeResponse ReplEcommStoreTenderTypes(ReplRequest replRequest);
+
         #endregion
 
         #region LS Recommends
@@ -900,10 +913,5 @@ namespace LSOmni.Service
         List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items);
 
         #endregion 
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string MyCustomFunction(string data);
-
     }
 }

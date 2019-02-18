@@ -48,7 +48,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Device
 
         Device DeviceGetById(string id);
-        bool IsUserLinkedToDeviceId(string userName, string deviceId, out string cardId);
+        bool IsUserLinkedToDeviceId(string userName, string deviceId);
         void CreateDeviceAndLinkToUser(string userName, string deviceId, string deviceFriendlyName, string cardId = ""); //JIJ v1.1 it changed
 
         #endregion
@@ -59,6 +59,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         Card CardGetById(string id);
         long MemberCardGetPoints(string cardId);
         decimal GetPointRate();
+        decimal GiftCardGetBalance(string cardNo, string entryType);
 
         #endregion
 
@@ -136,6 +137,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         void OrderCreate(Order request, string tenderMapping);
         Order OrderGetById(string id, bool includeLines, string tenderMapping);
         Order OrderGetByWebId(string id, bool includeLines, string tenderMapping);
+        Order OrderGetByReceiptId(string id, bool includeLines, string tenderMapping);
         List<Order> OrderHistoryByContactId(string contactId, bool includeLines, bool includeTransactions, string tenderMapping);
 
         #endregion
@@ -156,7 +158,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ItemCategory> ItemCategoriesGet(string storeId, string culture);
         ItemCategory ItemCategoriesGetById(string id);
         List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems);
-        ProductGroup ProductGroupGetById(string id, string culture, bool includeChildren, bool includeItems);
+        ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail);
         List<Hierarchy> HierarchyGet(string storeId);
 
         #endregion

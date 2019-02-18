@@ -125,10 +125,10 @@ begin
   with IISPage_lblComment1 do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'NAV web service configuration values. Used to connect to NAV ws';
+    Caption :=  'LS Nav/Central Web Service configuration values';
     Left := ScaleX(15);
     Top := IISPage_txtWcfServiceName.Top + IISPage_txtWcfServiceName.Height + 8;
-    Width := ScaleX(350);
+    Width := ScaleX(450);
     Height := ScaleY(13);
     Enabled := True;
   end;
@@ -138,7 +138,7 @@ begin
   with IISPage_lblNavUrl do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'NAV web service Url:';
+    Caption :=  'Web Service Url:';
     Left := ScaleX(15);
     Top :=IISPage_lblComment1.Top + IISPage_lblComment1.Height + 7;
     Width := ScaleX(108);
@@ -163,10 +163,10 @@ begin
   with IISPage_lblNavAuthentication do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'NAV Web Services Authentication. Uses Windows Credential type.';
+    Caption :=  'LS Nav/Central Web Services Authentication. Uses Windows Credential type.';
     Left := ScaleX(15);
     Top :=  IISPage_txtNavUrl.Top + IISPage_txtNavUrl.Height + 8;
-    Width := ScaleX(330);
+    Width := ScaleX(450);
     Height := ScaleY(13);
     Enabled := True;
 

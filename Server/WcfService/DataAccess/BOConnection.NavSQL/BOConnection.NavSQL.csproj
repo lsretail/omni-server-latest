@@ -107,6 +107,7 @@
     <Compile Include="Mapping\ContactMapping.cs" />
     <Compile Include="Mapping\LoyTransactionMapping.cs" />
     <Compile Include="Mapping\OrderMapping.cs" />
+    <Compile Include="Mapping\StoreMapping.cs" />
     <Compile Include="Mapping\TransactionMapping.cs" />
     <Compile Include="MemCache..cs" />
     <Compile Include="NavApps.cs" />
@@ -155,7 +156,13 @@
     <None Include="Web References\NavWS\Root.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\NavWS\RootCOQtyAvailabilityExtOut.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\NavWS\RootGetCrossSelling.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetDataEntryBalance.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetDirectMarketingInfo.datasource">
@@ -167,7 +174,13 @@
     <None Include="Web References\NavWS\RootGetHierarchyNodeOut.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\NavWS\RootGetInventoryMultipleOut.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\NavWS\RootGetItemInventory.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetItemSalesInfo.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetMemberCard.datasource">
@@ -180,6 +193,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetMemberSalesHistory.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetStoreOpeningHours.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetTransaction.datasource">

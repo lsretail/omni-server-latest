@@ -1,29 +1,29 @@
 OmniServer Setup Parameters and default values
 -----------------------------------------------------
 -Cmd 		false			User Command line mode (true)
--NavX 		true			Create LS Nav SQL objects
--NavSrv 	localhost		NAV SQL Server instance
--NavDb					NAV Database name
--NavComp				NAV Company name
--NavUsr 	LSOmniUser		NAV SQL User name
--NavPwd 	LSOmniUser		NAV SQL User password
--NavWaun 	false			Use Windows Authentication
--NavSau 	true			Use SQL Server Authentication
+-NavX 		true			Configure LS Central SQL parameters
+-NavSrv 	localhost		LS Central SQL Server instance
+-NavDb					LS Central SQL Database name
+-NavComp				LS Central Company name
+-NavUsr 	LSOmniUser		LS Central SQL User name
+-NavPwd 	LSOmniUser		LS Central SQL User password
+-NavWaun 	false			Use Windows Authentication for LS Central SQL
+-NavSau 	true			Use SQL Server Authentication for LS Central
 
 -SqlX 		true			Create LSOmni SQL Server database
--SqlDb 		LSOmni			SQL Database name
--SqlSrv 	localhost		SQL Server name
--SqlUsr 	LSOmniUser		User name
--SqlPwd 	LSOmniUser		User password
--SqlWau 	false			Use Windows Authentication
--SqlSau 	true			Use SQL Server Authentication
+-SqlDb 		LSOmni			LS Omni SQL Database name
+-SqlSrv 	localhost		LS Omni SQL Server name
+-SqlUsr 	LSOmniUser		LS Omni SQL User name
+-SqlPwd 	LSOmniUser		LS Omni SQL User password
+-SqlWau 	false			Use Windows Authentication for LS Omni SQL
+-SqlSau 	true			Use SQL Server Authentication for LS Omni
 
 -IisX 		true			Create LSOmniService WCF service under IIS
 -IisSite 	Default Web Site	Web Site name
 -IisSrv 	LSOmniService		Web Service name
--IisUrl 	http://localhost:7047/DynamicsNAV90/WS/CRONUS LS 90004 W1 Demo/Codeunit/RetailWebServices	NAV Web Services Url
--IisUsr					NAV WS User name
--IisPwd					NAV WS User password
+-IisUrl 	http://localhost:7047/DynamicsNAV90/WS/CRONUS LS 90004 W1 Demo/Codeunit/RetailWebServices	LS Central Web Services Url
+-IisUsr					LS Central WS User name
+-IisPwd					LS Central WS User password
 
 Sampes
 ----------------------

@@ -150,16 +150,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private ReplCurrencyExchRate ReaderToCurrencyExchRate(SqlDataReader reader, out string timestamp, bool getTS)
         {
             decimal exchrate = 0;
-            if (SQLHelper.GetDecimal(reader["POS Exchange Rate Amount"]) != 0)
+            if (SQLHelper.GetDecimal(reader, "POS Exchange Rate Amount") != 0)
             {
-                exchrate = ((1 / SQLHelper.GetDecimal(reader["POS Exchange Rate Amount"])) * SQLHelper.GetDecimal(reader["POS Rel_ Exch_ Rate Amount"]));
+                exchrate = ((1 / SQLHelper.GetDecimal(reader, "POS Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "POS Rel_ Exch_ Rate Amount"));
             }
             else
             {
                 string code = SQLHelper.GetString(reader["Relational Currency Code"]);
                 if (string.IsNullOrWhiteSpace(code))
                 {
-                    exchrate = ((1 / SQLHelper.GetDecimal(reader["Exchange Rate Amount"])) * SQLHelper.GetDecimal(reader["Relational Exch_ Rate Amount"]));
+                    exchrate = ((1 / SQLHelper.GetDecimal(reader, "Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "Relational Exch_ Rate Amount"));
                 }
                 else
                 {

@@ -35,6 +35,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             UniqueId = string.Empty;
             MainMenu = string.Empty;
             ShowNumPad = false;
+            AutoLogOffAfterMin = 0;
+            StoreInventory = true;
         }
 
         [DataMember]
@@ -60,9 +62,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public int ItemFilterMethod { get; set; }
         [DataMember]
-        public int VendorFilterMethod { get; set; }
-        [DataMember]
-        public int CustomerFilterMethod { get; set; }
+        public bool StoreInventory { get; set; }
         [DataMember]
         public string UniqueId { get; set; }
         [DataMember]

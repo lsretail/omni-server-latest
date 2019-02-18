@@ -162,7 +162,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE mt.[Code]=@id";
+                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Item Category] mt WHERE mt.[Code]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -185,9 +185,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
-
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
@@ -208,7 +205,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + sqlwhere;
+                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Item Category] mt" + sqlwhere;
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

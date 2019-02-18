@@ -727,6 +727,8 @@ namespace LSOmni.Service
         {
             if (cardId == null)
                 cardId = string.Empty;
+            if (itemId == null)
+                itemId = string.Empty;
 
             try
             {
@@ -1047,6 +1049,27 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, string.Format("storeId: {0} itemId: {1} variantId: {2} arrivingInStockInDays: {3}",
                     storeId, itemId, variantId, arrivingInStockInDays));
+                return null; //never gets here
+            }
+        }
+
+        /// <summary>
+        /// Get the inventory levels for list of items in store
+        /// </summary>
+        /// <param name="storeId">id of store</param>
+        /// <param name="items">list of items</param>
+        /// <returns></returns>
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId)
+        {
+            try
+            {
+                logger.Debug("storeId: {0} item cnt: {1}", storeId, items.Count);
+                ItemBLL bll = new ItemBLL(clientTimeOutInSeconds);
+                return bll.ItemsInStoreGet(items, storeId);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("storeId: {0} item cnt: {1}", storeId, items.Count));
                 return null; //never gets here
             }
         }
@@ -1996,7 +2019,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "GetShippingAgent");
+                HandleExceptions(ex, "OrderGetById");
                 return null; //never gets here
             }
         }
@@ -2010,7 +2033,21 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "GetShippingAgent");
+                HandleExceptions(ex, "OrderGetByWebId");
+                return null; //never gets here
+            }
+        }
+
+        public virtual Order OrderGetByReceiptId(string id, bool includeLines)
+        {
+            try
+            {
+                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
+                return bll.OrderGetByReceiptId(id, includeLines);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "OrderGetByReceiptId");
                 return null; //never gets here
             }
         }
@@ -2024,7 +2061,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "GetShippingAgent");
+                HandleExceptions(ex, "GetOrderHistory");
                 return null; //never gets here
             }
         }
@@ -2037,12 +2074,17 @@ namespace LSOmni.Service
         {
             try
             {
-                return LSRecommendsBLLStatic.IsLSRecommendsAvail();
+                if (LSRecommendsBLLStatic.IsLSRecommendsAvail())
+                {
+                    // check configuration
+                    LSRecommendsBLL bll = new LSRecommendsBLL(clientTimeOutInSeconds);
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
                 logger.Error(ex);
-                HandleExceptions(ex, string.Empty);
                 return false; //never gets here
             }
         }

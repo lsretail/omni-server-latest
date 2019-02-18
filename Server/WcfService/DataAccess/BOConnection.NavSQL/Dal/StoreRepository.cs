@@ -275,9 +275,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
-
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
@@ -462,8 +459,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Phone = SQLHelper.GetString(reader["Phone No_"]),
                 FunctionalityProfile = SQLHelper.GetString(reader["Functionality Profile"]),
                 TaxGroup = SQLHelper.GetString(reader["Store VAT Bus_ Post_ Gr_"]),
-                Latitute = SQLHelper.GetDecimal(reader["Latitude"]),
-                Longitude = SQLHelper.GetDecimal(reader["Longitude"]),
+                Latitute = SQLHelper.GetDecimal(reader, "Latitude"),
+                Longitude = SQLHelper.GetDecimal(reader, "Longitude"),
                 ClickAndCollect = SQLHelper.GetBool(reader["Click and Collect"]),
 
                 State = string.Empty,

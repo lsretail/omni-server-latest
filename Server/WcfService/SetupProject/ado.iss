@@ -158,7 +158,7 @@ begin
  
       sqlStr := 'IF EXISTS(SELECT * FROM sysobjects WHERE name = N''User Metadata'' and xtype=''U'')' +
        ' Begin;  '  +
-       ' RAISERROR (''You are trying to create the Omni SQL Server objects in the Nav database!!'',  '  +
+       ' RAISERROR (''You are trying to create the LS Omni SQL Server objects in the LS Central database!!'',  '  +
        '  16, 1 ); End ';
 
       //switch out the database name for permission scripts 

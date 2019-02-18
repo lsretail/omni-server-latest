@@ -63,7 +63,7 @@ namespace LSOmni.BLL.Loyalty
                 locationIds.Add(store.Id);
             }
 
-            List<InventoryResponse> storeList = BOAppConnection.ItemsInStockGet(itemId, variantId, 0, locationIds, true);
+            List<InventoryResponse> storeList = BOAppConnection.ItemInStockGet(itemId, variantId, 0, locationIds, true);
             //now add the distance before sending it back to client
             foreach (InventoryResponse store in storeList)
             {

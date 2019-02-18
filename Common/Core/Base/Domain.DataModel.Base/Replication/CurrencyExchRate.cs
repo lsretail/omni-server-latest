@@ -70,5 +70,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public DateTime StartingDate { get; set; }
         [DataMember]
         public decimal CurrencyFactor { get; set; }
+        [DataMember]
+        public string RelationalCurrencyCode { get; set; }
     }
 }

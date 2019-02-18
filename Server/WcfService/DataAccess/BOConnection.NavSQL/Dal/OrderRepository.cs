@@ -11,21 +11,33 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class OrderRepository : BaseRepository
     {
-        private string sqlOrderColumn = string.Empty;
-        private string sqlOrderFrom = string.Empty;
+        private string sql = string.Empty;
 
         public OrderRepository(Version navVersion) : base(navVersion)
         {
-            sqlOrderColumn = "mt.[Document Id],mt.[Store No_],mt.[Web Trans_ GUID],mt.[Document DateTime],mt.[Source Type]," +
-                             "mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name],mt.[Collect Location],mt.[Sales Order No_]," +
-                             "mt.[Full Name] ,mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country Region Code]," +
-                             "mt.[Phone No_],mt.[Email],mt.[House Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
-                             "mt.[Ship To Full Name],mt.[Ship To Address],mt.[Ship To Address 2],mt.[Ship To City],mt.[Ship To County],mt.[Ship To Post Code]," +
-                             "mt.[Ship To Phone No_],mt.[Ship To Email],mt.[Ship To House Apartment No_],mt.[Ship To Country Region Code]," +
-                             "mt.[Click And Collect Order],mt.[Anonymous Order],mt.[Shipping Agent Code],mt.[Shipping Agent Service Code]," +
-                             "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[Document Id]=mt.[Document Id]) AS CoPay";
-
-            sqlOrderFrom = " FROM [" + navCompanyName + "Customer Order Header] mt";
+            sql = "Select * from(" +
+                    "Select mt.[Document Id], mt.[Store No_], mt.[Web Trans_ GUID], mt.[Document DateTime], mt.[Source Type]," +
+                    "mt.[Member Card No_], mt.[Member Contact No_], mt.[Member Contact Name], mt.[Sales Order No_]," +
+                    "mt.[Full Name], mt.[Address], mt.[Address 2], mt.[City], mt.[County], mt.[Post Code], mt.[Country Region Code]," +
+                    "mt.[Phone No_], mt.[Email], mt.[House Apartment No_], mt.[Mobile Phone No_], mt.[Daytime Phone No_]," +
+                    "mt.[Ship To Full Name], mt.[Ship To Address], mt.[Ship To Address 2], mt.[Ship To City], mt.[Ship To County], mt.[Ship To Post Code]," +
+                    "mt.[Ship To Phone No_], mt.[Ship To Email], mt.[Ship To House Apartment No_], mt.[Ship To Country Region Code]," +
+                    "mt.[Click And Collect Order], mt.[Anonymous Order], mt.[Shipping Agent Code], mt.[Shipping Agent Service Code]," +
+                    "0 as Posted," +
+                    "(SELECT COUNT(*) FROM[" + navCompanyName + "Customer Order Payment] cop WHERE cop.[Document Id] = mt.[Document Id]) AS CoPay " +
+                    "FROM [" + navCompanyName + "Customer Order Header] mt " +
+                    "UNION " +
+                    "SELECT mt.[Document Id],mt.[Store No_],mt.[Web Trans_ GUID],mt.[Document DateTime],mt.[Source Type]," +
+                    "mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name],mt.[Sales Order No_]," +
+                    "mt.[FullName],mt.[Address],mt.[Address2],mt.[City],mt.[County],mt.[PostCode],mt.[CountryRegionCode]," +
+                    "mt.[PhoneNo],mt.[Email],mt.[HouseApartmentNo],mt.[MobilePhoneNo],mt.[DaytimePhoneNo]," +
+                    "mt.[ShipToFullName],mt.[ShipToAddress],mt.[ShipToAddress2],mt.[ShipToCity],mt.[ShipToCounty],mt.[ShipToPostCode]," +
+                    "mt.[ShipToPhoneNo],mt.[ShipToEmail],mt.[ShipToHouseApartmentNo],mt.[ShipToCountryRegionCode]," +
+                    "mt.[ClickAndCollectOrder],mt.[AnonymousOrder],mt.[Shipping Agent Code],mt.[Shipping Agent Service Code]," +
+                    "1 as Posted," +
+                    "(SELECT COUNT(*) FROM[" + navCompanyName + "Posted Customer Order Payment] cop WHERE cop.[Document Id]=mt.[Document Id]) AS CoPay " +
+                    "FROM [" + navCompanyName + "Posted Customer Order Header] mt " +
+                    ") as Orders ";
         }
 
         public Order OrderGetById(string id, bool includeLines)
@@ -36,9 +48,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 connection.Open();
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    // Look in UnPosted order
                     command.Parameters.Clear();
-                    command.CommandText = "SELECT " + sqlOrderColumn + sqlOrderFrom + " WHERE [Document Id]=@id";
+                    command.CommandText = sql + " WHERE [Document Id]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -64,7 +75,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.Parameters.Clear();
-                    command.CommandText = "SELECT " + sqlOrderColumn + sqlOrderFrom + " WHERE [Web Trans_ GUID]=@id";
+                    command.CommandText = sql + " WHERE [Web Trans_ GUID]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -128,7 +139,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.Parameters.Clear();
                     command.CommandText = "SELECT mt.[Document Id],mt.[Store No_],mt.[Source Type],mt.[Collect Location],mt.[Web Trans_ GUID]," +
                                           "mt.[Document DateTime],mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name] " +
-                                          sqlOrderFrom + (string.IsNullOrEmpty(webId) ? " WHERE [Document Id]=@id" : " WHERE [Web Trans_ GUID]=@id");
+                                          "FROM [" + navCompanyName + "Customer Order Header] mt " + (string.IsNullOrEmpty(webId) ? " WHERE [Document Id]=@id" : " WHERE [Web Trans_ GUID]=@id");
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -182,7 +193,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.Parameters.Clear();
-                    command.CommandText = "SELECT " + sqlOrderColumn + sqlOrderFrom + " WHERE [Member Card No_]=@id ORDER BY [Document Id] DESC";
+                    command.CommandText = sql + " WHERE [Member Card No_]=@id ORDER BY [Document Id] DESC";
                     command.Parameters.AddWithValue("@id", cardId);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -201,18 +212,23 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private List<OrderLine> OrderLinesGet(string id)
         {
-            List<OrderLine> list = new List<OrderLine>();
+            string select = "SELECT ml.[Document Id],ml.[Number],ml.[Variant Code],ml.[Unit of Measure Code]," +
+                            "MIN(ml.[Line No_]) AS LineNr,MAX(ml.[Line Type]) AS LineType,MAX(ml.[Net Price]) AS NetPrice,MAX(ml.[Price]) AS Price," +
+                            "SUM(ml.[Quantity]) AS Quantity,SUM(ml.[Discount Amount]) AS DiscAmt,MAX(ml.[Discount Percent]) AS DiscPer," +
+                            "SUM(ml.[Net Amount]) AS NetAmt,SUM(ml.[Vat Amount]) AS VatAmt,SUM(ml.[Amount]) AS Amt," +
+                            "MAX(ml.[Item Description]) AS ItemDesc,MAX(ml.[Variant Description]) AS VarDesc";
+
+            string groupBy = " GROUP BY ml.[Document Id], ml.[Number], ml.[Variant Code], ml.[Unit of Measure Code] ";
+
+            List <OrderLine> list = new List<OrderLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT ml.[Number],ml.[Variant Code],ml.[Unit of Measure Code]," +
-                                            "MIN(ml.[Line No_]) AS LineNr,MAX(ml.[Line Type]) AS LineType,MAX(ml.[Net Price]) AS NetPrice,MAX(ml.[Price]) AS Price," +
-                                            "SUM(ml.[Quantity]) AS Quantity,SUM(ml.[Discount Amount]) AS DiscAmt,MAX(ml.[Discount Percent]) AS DiscPer," +
-                                            "SUM(ml.[Net Amount]) AS NetAmt,SUM(ml.[Vat Amount]) AS VatAmt,SUM(ml.[Amount]) AS Amt," +
-                                            "MAX(ml.[Item Description]) AS ItemDesc,MAX(ml.[Variant Description]) AS VarDesc" +
-                                            " FROM [" + navCompanyName + "Customer Order Line] ml WHERE ml.[Document Id]=@id" +
-                                            " GROUP BY ml.Number, ml.[Variant Code], ml.[Unit of Measure Code]";
+                    command.CommandText = "SELECT * FROM ( " + select + " FROM [" + navCompanyName + "Customer Order Line] ml " + groupBy +
+                                            "UNION " + select + " FROM [" + navCompanyName + "Posted Customer Order Line] ml " + groupBy +
+                                            ") as OrderLines WHERE [Document Id]=@id";
+
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -237,10 +253,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             totalDiscount = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                string select = "SELECT[Document Id], SUM([Quantity]) AS Cnt, SUM([Discount Amount]) AS Disc, SUM([Net Amount]) AS NAmt, SUM([Amount]) AS Amt";
+
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT SUM([Quantity]) AS Cnt,SUM([Discount Amount]) AS Disc,SUM([Net Amount]) AS NAmt,SUM([Amount]) AS Amt" +
-                                            " FROM [" + navCompanyName + "Customer Order Line] ml WHERE [Document Id]=@id";
+                    command.CommandText = "SELECT * FROM (" + select +
+                                            " FROM [" + navCompanyName + "Customer Order Line] GROUP BY [Document Id] " + 
+                                            "UNION "+ select +
+                                            " FROM [" + navCompanyName + "Posted Customer Order Line] GROUP BY [Document Id] " + 
+                                            ") AS OrderTotals WHERE [Document Id]=@id";
                     command.Parameters.AddWithValue("@id", orderId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -249,11 +270,47 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (reader.Read())
                         {
                             itemCount = SQLHelper.GetInt32(reader["Cnt"]);
-                            totalAmount = SQLHelper.GetDecimal(reader["Amt"]);
-                            totalNetAmount = SQLHelper.GetDecimal(reader["NAmt"]);
-                            totalDiscount = SQLHelper.GetDecimal(reader["Disc"]);
+                            totalAmount = SQLHelper.GetDecimal(reader, "Amt");
+                            totalNetAmount = SQLHelper.GetDecimal(reader, "NAmt");
+                            totalDiscount = SQLHelper.GetDecimal(reader, "Disc");
                         }
                     }
+                }
+                connection.Close();
+            }
+        }
+
+        private void OrderPointsGetTotal(string orderId, out decimal rewarded, out decimal used)
+        {
+            rewarded = 0;
+            used = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    //Awarded points are linked to Sales Invoice Id
+                    command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Sales Invoice Header] Where [External Document No_]=@id";
+                    command.Parameters.AddWithValue("@id", orderId);
+                    TraceSqlCommand(command);
+                    logger.Log(NLog.LogLevel.Info,"ORDERID: " + orderId);
+                    connection.Open();
+                    string salesId = (string)command.ExecuteScalar();
+
+                    if (string.IsNullOrEmpty(salesId))
+                        return;
+
+                    //Get Used points with orderId
+                    command.CommandText = "SELECT [Points] FROM [" + navCompanyName + "Member Point Entry] WHERE [Document No_]=@id";
+                    TraceSqlCommand(command);
+                    var res = command.ExecuteScalar();
+                    used = res == null ? 0 : -(decimal)res; //use '-' to convert to positive number
+
+                    //Get rewarded points with SalesInvoice id
+                    command.Parameters.Clear();
+                    command.Parameters.AddWithValue("@id", salesId);
+                    TraceSqlCommand(command);
+                    res = command.ExecuteScalar();
+                    rewarded = res == null ? 0 : (decimal)res;
                 }
                 connection.Close();
             }
@@ -264,12 +321,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<OrderPayment> list = new List<OrderPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                string select = "SELECT ml.[Document Id],ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Finalised Amount],ml.[Tender Type]," +
+                                "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Authorisation Code],ml.[Pre Approved Valid Date],ml.[Card or Customer number]";
+
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT ml.[Document Id],ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Finalised Amount],ml.[Tender Type]," +
-                                          "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Authorisation Code],ml.[Pre Approved Valid Date],ml.[Card or Customer number]" +
-                                          " FROM [" + navCompanyName + "Customer Order Payment]" +
-                                          " ml WHERE [Document Id]=@id";
+                    command.CommandText = "SELECT * FROM (" + select +
+                                          " FROM [" + navCompanyName + "Customer Order Payment] ml " +
+                                          " UNION " + select + " FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
+                                          ") AS OrderTotal WHERE [Document Id]=@id";
 
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
@@ -292,12 +352,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<OrderDiscountLine> list = new List<OrderDiscountLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                string select = "SELECT ml.[Document Id],ml.[Line No_],ml.[Entry No_],ml.[Discount Type],ml.[Offer No_]," +
+                                "ml.[Periodic Disc_ Type],ml.[Periodic Disc_ Group],ml.[Description],ml.[Discount Percent],ml.[Discount Amount]";
+
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT ml.[Document Id],ml.[Line No_],ml.[Entry No_],ml.[Discount Type],ml.[Offer No_]," +
-                                          "ml.[Periodic Disc_ Type],ml.[Periodic Disc_ Group],ml.[Description],ml.[Discount Percent],ml.[Discount Amount]" +
-                                          " FROM [" + navCompanyName + "Customer Order Discount Line]" + 
-                                          " ml WHERE [Document Id]=@id";
+                    command.CommandText = "SELECT * FROM (" + select + " FROM [" + navCompanyName + "Customer Order Discount Line] ml " + 
+                                          "UNION " + select + " FROM [" + navCompanyName + "Posted CO Discount Line] ml " +
+                                          ") AS OrderDiscounts WHERE [Document Id]=@id";
 
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
@@ -324,12 +386,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["Web Trans_ GUID"]),
                 DocumentRegTime = SQLHelper.GetDateTime(reader["Document DateTime"]),
                 SourceType = (SourceType)SQLHelper.GetInt32(reader["Source Type"]),
-                CollectLocation = SQLHelper.GetString(reader["Collect Location"]),
                 ContactName = SQLHelper.GetString(reader["Member Contact Name"]),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 ContactId = SQLHelper.GetString(reader["Member Contact No_"]),
-
-                Posted = false,
                 OrderStatus = OrderStatus.Created
             };
 
@@ -344,6 +403,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 return order;
             }
 
+            order.Posted = SQLHelper.GetBool(reader["Posted"]);
             order.ClickAndCollectOrder = SQLHelper.GetBool(reader["Click And Collect Order"]);
             order.AnonymousOrder = SQLHelper.GetBool(reader["Anonymous Order"]);
 
@@ -391,6 +451,29 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             order.TotalNetAmount = namt;
             order.TotalDiscount = disc;
 
+            if (order.Posted)
+            {
+                string sorderNo = SQLHelper.GetString(reader["Sales Order No_"]);
+                if (string.IsNullOrEmpty(sorderNo) == false)
+                {
+                    // we just use the data from the sales order for posted orders
+                    int status = SaleOrderGetStatus(sorderNo);
+                    if (status == 0)
+                    {
+                        order.OrderStatus = OrderStatus.Pending;
+                        order.ShippingStatus = ShippingStatus.NotYetShipped;
+                    }
+                    else
+                    {
+                        order.OrderStatus = OrderStatus.Processing;
+                    }
+                }
+
+                OrderPointsGetTotal(order.DocumentId, out decimal rewarded, out decimal used);
+                order.PointsRewarded = rewarded;
+                order.PointsUsedInOrder = used;
+            }
+
             if (includeLines)
             {
                 order.OrderLines = OrderLinesGet(order.DocumentId);
@@ -406,17 +489,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure Code"]),
-                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
                 LineNumber = SQLHelper.GetInt32(reader["LineNr"]),
                 LineType = (LineType)SQLHelper.GetInt32(reader["LineType"]),
                 ItemId = SQLHelper.GetString(reader["Number"]),
-                NetPrice = SQLHelper.GetDecimal(reader["NetPrice"]),
-                Price = SQLHelper.GetDecimal(reader["Price"]),
-                DiscountAmount = SQLHelper.GetDecimal(reader["DiscAmt"]),
-                DiscountPercent = SQLHelper.GetDecimal(reader["DiscPer"]),
-                NetAmount = SQLHelper.GetDecimal(reader["NetAmt"]),
-                TaxAmount = SQLHelper.GetDecimal(reader["VatAmt"]),
-                Amount = SQLHelper.GetDecimal(reader["Amt"]),
+                NetPrice = SQLHelper.GetDecimal(reader, "NetPrice"),
+                Price = SQLHelper.GetDecimal(reader, "Price"),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "DiscAmt"),
+                DiscountPercent = SQLHelper.GetDecimal(reader, "DiscPer"),
+                NetAmount = SQLHelper.GetDecimal(reader, "NetAmt"),
+                TaxAmount = SQLHelper.GetDecimal(reader, "VatAmt"),
+                Amount = SQLHelper.GetDecimal(reader, "Amt"),
                 ItemDescription = SQLHelper.GetString(reader["ItemDesc"]),
                 VariantDescription = SQLHelper.GetString(reader["VarDesc"])
             };
@@ -433,9 +516,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 CardNumber = SQLHelper.GetString(reader["Card or Customer number"]),
                 CardType = SQLHelper.GetString(reader["Card Type"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                CurrencyFactor = SQLHelper.GetDecimal(reader["Currency Factor"]),
-                FinalizedAmount = SQLHelper.GetDecimal(reader["Finalised Amount"]),
-                PreApprovedAmount = SQLHelper.GetDecimal(reader["Pre Approved Amount"]),
+                CurrencyFactor = SQLHelper.GetDecimal(reader, "Currency Factor"),
+                FinalizedAmount = SQLHelper.GetDecimal(reader, "Finalised Amount"),
+                PreApprovedAmount = SQLHelper.GetDecimal(reader, "Pre Approved Amount"),
                 PreApprovedValidDate = SQLHelper.GetDateTime(reader["Pre Approved Valid Date"])
             };
         }
@@ -449,8 +532,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 No = SQLHelper.GetString(reader["Entry No_"]),
                 OfferNumber = SQLHelper.GetString(reader["Offer No_"]),
-                DiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]),
-                DiscountPercent = SQLHelper.GetDecimal(reader["Discount Percent"]),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Discount Amount"),
+                DiscountPercent = SQLHelper.GetDecimal(reader, "Discount Percent"),
                 DiscountType = (DiscountType)SQLHelper.GetInt32(reader["Discount Type"]),
                 PeriodicDiscGroup = SQLHelper.GetString(reader["Periodic Disc_ Group"]),
                 PeriodicDiscType = (PeriodicDiscType)SQLHelper.GetInt32(reader["Periodic Disc_ Type"])
@@ -523,19 +606,39 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure"]),
-                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
 
                 LineType = LineType.Item,
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
-                NetPrice = SQLHelper.GetDecimal(reader["Net Price"]),
-                Price = SQLHelper.GetDecimal(reader["Price"]),
-                DiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]),
-                NetAmount = SQLHelper.GetDecimal(reader["Net Amount"]),
-                TaxAmount = SQLHelper.GetDecimal(reader["VAT Amount"])
+                NetPrice = SQLHelper.GetDecimal(reader, "Net Price"),
+                Price = SQLHelper.GetDecimal(reader, "Price"),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Discount Amount"),
+                NetAmount = SQLHelper.GetDecimal(reader, "Net Amount"),
+                TaxAmount = SQLHelper.GetDecimal(reader, "VAT Amount")
             };
 
             line.Amount = line.NetAmount + line.TaxAmount;
             return line;
+        }
+
+        private int SaleOrderGetStatus(string id)
+        {
+            int status = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Status] FROM [" + navCompanyName + "Sales Header] WHERE [No_]=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    var value = command.ExecuteScalar();
+                    if (value != null)
+                        status = (int)value;
+                }
+                connection.Close();
+            }
+            return status;
         }
     }
 }

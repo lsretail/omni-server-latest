@@ -97,7 +97,6 @@
     <Compile Include="BOService.svc.cs">
       <DependentUpon>BOService.svc</DependentUpon>
     </Compile>
-    <Compile Include="Common\JsonContentTypeMapper.cs" />
     <Compile Include="Common\LSOmniBase.cs" />
     <Compile Include="Common\LSOmniBaseCustom.cs" />
     <Compile Include="Common\LSOmniBaseEcomm.cs" />
@@ -157,7 +156,6 @@
     </None>
     <Content Include="WebBehaviors.config" />
     <Content Include="WebBindings.config" />
-    <Content Include="WebClient.config" />
     <Content Include="WebServices.config" />
     <Content Include="WebServices_SSL_NonSSL.config" />
     <Content Include="WebServices_SSL_Only.config" />

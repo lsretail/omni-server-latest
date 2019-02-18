@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.Dal
 
         private string contactViewSql =
             "SELECT DISTINCT c.[Id],c.[AlternateId],c.[AccountId],c.[FirstName],c.[MiddleName],c.[LastName],c.[Email]," +
-            "c.[CreateDate],c.[ContactStatus],c.[BlockedReason],c.[BlockedDate],c.[BlockedBy],u.[UserId] AS UserName,u.[Password] " +
+            "c.[CreateDate],c.[ContactStatus],c.[BlockedReason],c.[BlockedDate],c.[BlockedBy],uc.[UserId] AS UserName " +
             "FROM [Contact] AS c " +
             "INNER JOIN [Card] AS cd ON c.[Id]=cd.[ContactId] " +
             "INNER JOIN [UserCard] AS uc ON cd.[Id]=uc.[CardId] " +
@@ -403,10 +403,9 @@ namespace LSOmni.DataAccess.Dal
                             using (SqlCommand command = connection.CreateCommand())
                             {
                                 command.Transaction = trans;
-                                command.CommandText = "INSERT INTO [User] ([UserId],[Password],[Blocked]) VALUES (@f0,@f1,@f2)";
+                                command.CommandText = "INSERT INTO [User] ([UserId],[Password],[Blocked]) VALUES (@f0,'',@f1)";
                                 command.Parameters.AddWithValue("@f0", contact.UserName);
-                                command.Parameters.AddWithValue("@f1", Security.NAVHash(contact.Password));
-                                command.Parameters.AddWithValue("@f2", 0);
+                                command.Parameters.AddWithValue("@f1", 0);
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
@@ -442,7 +441,7 @@ namespace LSOmni.DataAccess.Dal
                             using (SqlCommand command = connection.CreateCommand())
                             {
                                 command.Transaction = trans;
-                                command.CommandText = "INSERT INTO  [UserCard] ([CardId],[UserId]) VALUES (@f0,@f1)";
+                                command.CommandText = "INSERT INTO [UserCard] ([CardId],[UserId]) VALUES (@f0,@f1)";
                                 command.Parameters.AddWithValue("@f0", contact.Card.Id);
                                 command.Parameters.AddWithValue("@f1", contact.UserName);
                                 TraceSqlCommand(command);
@@ -792,26 +791,6 @@ namespace LSOmni.DataAccess.Dal
                 connection.Close();
             }
             return deviceId;
-        }
-
-        public void ChangePassword(string userName, string newPassword, string oldPassword)
-        {
-            if (base.DoesRecordExist("[User]", "[UserId]=@0", userName) == false)
-                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, string.Format("UserName {0} Not found.", userName));
-
-            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "UPDATE [User] SET [Password]=@f0 WHERE [UserId]=@id";
-                    command.Parameters.AddWithValue("@f0", Security.NAVHash(newPassword));
-                    command.Parameters.AddWithValue("@id", userName);
-                    connection.Open();
-                    TraceSqlCommand(command);
-                    command.ExecuteNonQuery();
-                }
-                connection.Close();
-            }
         }
 
         public void UpdateAccountBalance(string accountNumber, double balance)

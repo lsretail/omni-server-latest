@@ -309,19 +309,19 @@ namespace LSOmni.DataAccess.Dal
                             {
                                 Id = SQLHelper.GetString(reader["Id"]),
                                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
-                                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
                                 DisplayOrderId = SQLHelper.GetInt32(reader["DisplayOrderId"]),
                                 OneListId = SQLHelper.GetString(reader["OneListId"]),
                                 BarcodeId = SQLHelper.GetString(reader["BarcodeId"]),
                                 ItemId = SQLHelper.GetString(reader["ItemId"]),
                                 VariantId = SQLHelper.GetString(reader["VariantId"]),
                                 UnitOfMeasureId = SQLHelper.GetString(reader["UomId"]),
-                                Price = SQLHelper.GetDecimal(reader["Price"]),
-                                NetPrice = SQLHelper.GetDecimal(reader["NetPrice"]),
-                                NetAmount = SQLHelper.GetDecimal(reader["NetAmount"]),
-                                TaxAmount = SQLHelper.GetDecimal(reader["TaxAmount"]),
-                                DiscountAmount = SQLHelper.GetDecimal(reader["DiscountAmount"]),
-                                DiscountPercent = SQLHelper.GetDecimal(reader["DiscountPercent"])
+                                Price = SQLHelper.GetDecimal(reader, "Price"),
+                                NetPrice = SQLHelper.GetDecimal(reader, "NetPrice"),
+                                NetAmount = SQLHelper.GetDecimal(reader ,"NetAmount"),
+                                TaxAmount = SQLHelper.GetDecimal(reader, "TaxAmount"),
+                                DiscountAmount = SQLHelper.GetDecimal(reader, "DiscountAmount"),
+                                DiscountPercent = SQLHelper.GetDecimal(reader, "DiscountPercent")
                             };
                             line.Amount = line.NetAmount + line.TaxAmount;
                             oneLineList.Add(line);
@@ -353,7 +353,7 @@ namespace LSOmni.DataAccess.Dal
                         {
                             OneListPublishedOffer line = new OneListPublishedOffer()
                             {
-                                PublishedOffer = new PublishedOffer(SQLHelper.GetString(reader["OfferId"])),
+                                Id = SQLHelper.GetString(reader["OfferId"]),
                                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
                                 DisplayOrderId = SQLHelper.GetInt32(reader["DisplayOrderId"]),
                                 OneListId = SQLHelper.GetString(reader["OneListId"]),
@@ -395,13 +395,13 @@ namespace LSOmni.DataAccess.Dal
                                 LineNumber = SQLHelper.GetInt32(reader["LineNumber"]),
                                 No = SQLHelper.GetString(reader["No"]),
                                 Description = SQLHelper.GetString(reader["Description"]),
-                                DiscountAmount = SQLHelper.GetDecimal(reader["DiscountAmount"]),
-                                DiscountPercent = SQLHelper.GetDecimal(reader["DiscountPercent"]),
+                                DiscountAmount = SQLHelper.GetDecimal(reader, "DiscountAmount"),
+                                DiscountPercent = SQLHelper.GetDecimal(reader, "DiscountPercent"),
                                 DiscountType = (DiscountType)SQLHelper.GetInt32(reader["DiscountType"]),
                                 OfferNumber = SQLHelper.GetString(reader["OfferNumber"]),
                                 PeriodicDiscGroup = SQLHelper.GetString(reader["PeriodicDiscGroup"]),
                                 PeriodicDiscType = (PeriodicDiscType)SQLHelper.GetInt32(reader["PeriodicDiscType"]),
-                                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
                                 ItemId = itemId,
                                 VariantId = variantId
                             };
@@ -566,11 +566,7 @@ namespace LSOmni.DataAccess.Dal
                 {
                     displayOrderId++;
 
-                    string offerId = "";
-                    if (line.PublishedOffer != null && line.PublishedOffer.Id != null)
-                        offerId = NullToString(line.PublishedOffer.Id, 20);
-
-                    command.Parameters["@f0"].Value = offerId;
+                    command.Parameters["@f0"].Value = line.Id;
                     command.Parameters["@f1"].Value = oneListId;
                     command.Parameters["@f2"].Value = displayOrderId;
                     command.Parameters["@f3"].Value = DateTime.Now;
@@ -593,11 +589,11 @@ namespace LSOmni.DataAccess.Dal
                 CustomerId = SQLHelper.GetString(reader["CustomerId"]),
                 StoreId = SQLHelper.GetString(reader["StoreId"]),
                 ListType = (ListType)SQLHelper.GetInt32(reader["ListType"]),
-                TotalAmount = SQLHelper.GetDecimal(reader["TotalAmount"]),
-                TotalNetAmount = SQLHelper.GetDecimal(reader["TotalNetAmount"]),
-                TotalTaxAmount = SQLHelper.GetDecimal(reader["TotalTaxAmount"]),
-                TotalDiscAmount = SQLHelper.GetDecimal(reader["TotalDiscAmount"]),
-                ShippingAmount = SQLHelper.GetDecimal(reader["ShippingAmount"])
+                TotalAmount = SQLHelper.GetDecimal(reader, "TotalAmount"),
+                TotalNetAmount = SQLHelper.GetDecimal(reader, "TotalNetAmount"),
+                TotalTaxAmount = SQLHelper.GetDecimal(reader, "TotalTaxAmount"),
+                TotalDiscAmount = SQLHelper.GetDecimal(reader, "TotalDiscAmount"),
+                ShippingAmount = SQLHelper.GetDecimal(reader, "ShippingAmount")
             };
 
             if (includeLines)

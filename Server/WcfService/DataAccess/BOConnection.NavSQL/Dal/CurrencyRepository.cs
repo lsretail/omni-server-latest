@@ -157,9 +157,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 CurrencyCode = SQLHelper.GetString(reader["Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                RoundOfSales = SQLHelper.GetDecimal(reader["Amount Rounding Precision"]),
+                RoundOfSales = SQLHelper.GetDecimal(reader, "Amount Rounding Precision"),
                 RoundOfTypeAmount = SQLHelper.GetInt32(reader["Invoice Rounding Type"]),
-                RoundOfAmount = SQLHelper.GetDecimal(reader["Invoice Rounding Precision"]),
+                RoundOfAmount = SQLHelper.GetDecimal(reader, "Invoice Rounding Precision"),
                 Symbol = SQLHelper.GetString(reader["POS Currency Symbol"])
             };
 
@@ -209,8 +209,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 Id = SQLHelper.GetString(reader["Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                RoundOffSales = SQLHelper.GetDecimal(reader["Amount Rounding Precision"]),
-                RoundOffAmount = SQLHelper.GetDecimal(reader["Invoice Rounding Precision"]),
+                RoundOffSales = SQLHelper.GetDecimal(reader, "Amount Rounding Precision"),
+                RoundOffAmount = SQLHelper.GetDecimal(reader, "Invoice Rounding Precision"),
                 Symbol = SQLHelper.GetString(reader["POS Currency Symbol"]),
                 Culture = culture,
                 DecimalSeparator = CultureInfo.CurrentUICulture.NumberFormat.CurrencyDecimalSeparator,

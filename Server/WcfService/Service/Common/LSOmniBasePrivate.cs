@@ -156,9 +156,9 @@ namespace LSOmni.Service
                         sOut = string.Format("\r\nFormatted json for logging. Size(bytes):{0}\r\n{1}\r\n", sOut.Length.ToString(), sOut);
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    logger.Info(ex, "Json Logging failed (Ignore!)");
+                    logger.Info(Serialization.SerializeToXmlPrint(objIn));
                 }
             }
             return sOut; //FormatOutput(sOut);
@@ -170,12 +170,11 @@ namespace LSOmni.Service
             //if LoyaltyException is thrown then dont mess with it, let it flow to client
             if (ex.GetType() == typeof(LSOmniServiceException))
             {
-                //Authentication failed for statuses etc..
-
                 LSOmniServiceException lEx = (LSOmniServiceException)ex;
                 logger.Log(LogLevel.Error, lEx, lEx.Message);
                 throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, lEx.Message), exStatusCode);
             }
+
             logger.Log(LogLevel.Error, ex, errMsg);
             throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.Error, errMsg + " - " + ex.Message), exStatusCode);
         }

@@ -412,9 +412,5 @@ namespace LSOmni.Service
         OrderAvailabilityResponse OrderCheckAvailability(OneList request);
 
         #endregion Click and Collect
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string MyCustomFunction(string data);
     }
 }  	 

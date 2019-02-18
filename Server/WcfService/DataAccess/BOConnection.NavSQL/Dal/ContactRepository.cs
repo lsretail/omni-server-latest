@@ -308,10 +308,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return dev;
         }
 
-        public bool IsUserLinkedToDeviceId(string userName, string deviceId, out string cardId)
+        public bool IsUserLinkedToDeviceId(string userName, string deviceId)
         {
             bool isUserLinkedToDevice = true;
-            cardId = "";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -324,20 +323,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     string value = (string)command.ExecuteScalar();
                     if (value == null)
-                    {
-                        //now know the user is not linked to device but try and get the cardId
                         isUserLinkedToDevice = false;
-                        command.Parameters.Clear();
-
-                        command.CommandText = "SELECT [Card No_] FROM [" + navCompanyName + "Member Login Card] WHERE [Login ID]=@Lid " + GetDbCICollation();
-                        command.Parameters.AddWithValue("@Lid", userName);
-                        TraceSqlCommand(command);
-                        value = (string)command.ExecuteScalar();
-                        if (value != null)
-                        {
-                            cardId = value;
-                        }
-                    }
                 }
                 connection.Close();
             }
@@ -429,8 +415,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         if (reader.Read())
                         {
-                            decimal sum1 = SQLHelper.GetDecimal(reader["Sum1"]);
-                            decimal sum2 = SQLHelper.GetDecimal(reader["Sum2"]);
+                            decimal sum1 = SQLHelper.GetDecimal(reader, "Sum1");
+                            decimal sum2 = SQLHelper.GetDecimal(reader, "Sum2");
 
                             account = new Account()
                             {
@@ -609,33 +595,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
-
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
-            string sqlwhere = string.Empty;
+            string sqlwhere = " WHERE mc.[Contact No_]=@id";
             foreach (string si in searchitems)
             {
-                if (string.IsNullOrEmpty(sqlwhere))
-                {
-                    sqlwhere = string.Format(" WHERE a.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-                else
-                {
-                    sqlwhere += string.Format(" AND a.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
+                sqlwhere += string.Format(" AND a.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
             }
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
-                                          "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
-                                          "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
+                    command.CommandText = "SELECT a.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
+                                          "FROM [" + navCompanyName + "Member Contact] mc " +
+                                          "INNER JOIN [" + navCompanyName + "Member Attribute Setup] ms ON ms.[Club Code]=mc.[Club Code] " +
+                                          "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=ms.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0" + sqlwhere;
+                    command.Parameters.AddWithValue("@id", contactId);
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -643,6 +621,31 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         while (reader.Read())
                         {
                             list.Add(ReaderToProfile(reader, false));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<string> GetCardsByContactId(string contactId)
+        {
+            List<string> list = new List<string>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Card No_] FROM [" + navCompanyName + "Membership Card] WHERE [Contact No_]=@cid";
+                    command.Parameters.AddWithValue("@cid", contactId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(SQLHelper.GetString(reader["Card No_"]));
                         }
                         reader.Close();
                     }

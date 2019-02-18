@@ -139,7 +139,15 @@ namespace LSOmni.BLL.Loyalty
                 ev.Token = token;
 
                 string payloadJson = JsonConvert.SerializeObject(ev);
-                Uri url = new Uri(ConfigSetting.GetString("ECom.Url"));
+                string ecomUrl = ConfigSetting.GetString("Ecom.Url");
+
+                if (string.IsNullOrEmpty(ecomUrl))
+                    return "ERROR: Missing Ecom.Url in Appsettings";
+
+                if (ecomUrl.ToUpper() == "DEMO")
+                    return "OK";
+
+                Uri url = new Uri(ecomUrl);
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";

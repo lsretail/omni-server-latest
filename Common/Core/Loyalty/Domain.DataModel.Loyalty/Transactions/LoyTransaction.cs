@@ -129,6 +129,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Transactions
         public decimal DiscountAmt { get; set; }
         [DataMember]
         public decimal TotalQty { get; set; }
+
+        [DataMember]
+        public string CardId { get; set; }
     }
 
     public enum EntryDocumentType
