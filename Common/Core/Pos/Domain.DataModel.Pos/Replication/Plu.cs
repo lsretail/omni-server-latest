@@ -46,12 +46,13 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public ReplPlu()
         {
             IsDeleted = false;
-            StoreId = "";
+            StoreId = string.Empty;
             PageId = 0;
             PageIndex = 0;
-            ItemId = "";
-            Descritpion = "";
-            ImageId = "";
+            ItemId = string.Empty;
+            Descritpion = string.Empty;
+            ImageId = string.Empty;
+            ItemImageId = string.Empty;
         }
 
         public void Dispose()

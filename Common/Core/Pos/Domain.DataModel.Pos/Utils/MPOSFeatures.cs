@@ -19,7 +19,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Utils
         // We dont want those here as const since else warnings are generated when
         // this feature is turned off in code
         public static bool UseSignatureScreenInsteadOfPrintingReceipts = true;
-        public static bool EmailReceipt = true;
+        public static bool EmailReceipt = false;
         public static bool ReceiptPrintingOptional = true;
         public static bool ArabicLocalization = false;
         public static bool AutoLogoffActive = false;    // NOTE: This seems to be causing problems on the iOS side of things. Leave disabled for now.

@@ -46,8 +46,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public ReplSystemSettings()
         {
             IsDeleted = false;
-            Id = "";
-            Value = "";
+            Id = string.Empty;
+            Value = string.Empty;
         }
 
         public void Dispose()

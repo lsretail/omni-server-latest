@@ -522,6 +522,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual ReplTaxSetupResponse ReplEcommTaxSetup(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(clientTimeOutInSeconds);
+                return bll.ReplEcommTaxSetup(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                return null; //never gets here
+            }
+        }
+
         #endregion Replication
     }
 }

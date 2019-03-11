@@ -2,11 +2,9 @@
 
 using NLog;
 using LSOmni.Common.Util;
-using LSOmni.DataAccess.Dal;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -237,8 +235,8 @@ namespace LSOmni.BLL.Loyalty
         {
             if (string.IsNullOrEmpty(localCulture))
             {
-                AppSettingsRepository appRep = new AppSettingsRepository();
-                localCulture = appRep.AppSettingsGetByKey(AppSettingsKey.Currency_Culture, "en");
+                AppSettingsBLL appBll = new AppSettingsBLL();
+                localCulture = appBll.AppSettingsGetByKey(AppSettingsKey.Currency_Culture, "en");
             }
             return localCulture;
         }

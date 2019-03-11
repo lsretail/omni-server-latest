@@ -159,6 +159,9 @@
     <None Include="Web References\NavWS\RootCOQtyAvailabilityExtOut.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\NavWS\RootCustomerOrderFilteredList.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\NavWS\RootGetCrossSelling.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -242,7 +245,7 @@
       <Name>Domain.DataModel.Loyalty</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Pos\Domain.DataModel.Pos\Domain.DataModel.Pos.csproj">
-      <Project>{769b2d21-1164-46f9-a5dc-b812be3cf58d}</Project>
+      <Project>{b2615d03-8131-48d0-b0f2-717980189dc2}</Project>
       <Name>Domain.DataModel.Pos</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Common.csproj">

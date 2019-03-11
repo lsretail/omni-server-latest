@@ -52,6 +52,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             Name = string.Empty;
             UserName = string.Empty;
             CardId = string.Empty;
+            ClubCode = string.Empty;
+            SchemeCode = string.Empty;
 
             Street = string.Empty;
             City = string.Empty;

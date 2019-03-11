@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using LSOmni.DataAccess.Dal;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
@@ -10,6 +9,8 @@ namespace LSOmni.BLL.Loyalty
     public class NotificationBLL : BaseLoyBLL
     {
         private INotificationRepository iRepository;
+        private IImageRepository iImageRepository;
+        private IPushNotificationRepository iPushRepository;
 
         public NotificationBLL(int timeoutInSeconds)
             : this("", timeoutInSeconds)
@@ -20,6 +21,8 @@ namespace LSOmni.BLL.Loyalty
             : base(securityToken, timeoutInSeconds)
         {
             this.iRepository = GetDbRepository<INotificationRepository>();
+            this.iImageRepository = GetDbRepository<IImageRepository>();
+            this.iPushRepository = GetDbRepository<IPushNotificationRepository>();
         }
 
         public virtual Notification NotificationGetById(string id)
@@ -47,11 +50,10 @@ namespace LSOmni.BLL.Loyalty
             if (notificationlist == null)
                 return new List<Notification>();
 
-            ImageRepository imgRepo = new ImageRepository();
             foreach (Notification notification in notificationlist)
             {
                 //Check if images exist in local db
-                List<ImageView> images = imgRepo.NotificationImagesById(notification.Id);
+                List<ImageView> images = iImageRepository.NotificationImagesById(notification.Id);
                 if (images == null || images.Count == 0)
                 {
                     //if not, get images from BO and save them locally
@@ -59,15 +61,14 @@ namespace LSOmni.BLL.Loyalty
                     foreach (ImageView img in notification.Images)
                     {
                         //img.Id = notification.Id;
-                        imgRepo.SaveImageLink(img, "Member Notification", "Member Notification: " + notification.Id,
+                        iImageRepository.SaveImageLink(img, "Member Notification", "Member Notification: " + notification.Id,
                             notification.Id, img.Id, 0);
-                        imgRepo.SaveImage(img);
+                        iImageRepository.SaveImage(img);
                     }
                 }
                 if (notification.Status == NotificationStatus.New)
                 {
-                    PushNotificationRepository repo = new PushNotificationRepository();
-                    repo.SavePushNotification(contactId, notification.Id);
+                    iPushRepository.SavePushNotification(contactId, notification.Id);
                 }
             }
 

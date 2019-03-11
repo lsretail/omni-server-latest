@@ -1,4 +1,4 @@
-﻿using LSOmni.DataAccess.Dal;
+﻿using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
@@ -6,6 +6,8 @@ namespace LSOmni.BLL.Loyalty
 {
     public class CurrencyBLL : BaseLoyBLL
     {
+        private IAppSettingsRepository iAppSettingsRepository;
+
         public CurrencyBLL(int timeoutInSeconds)
             : this("", timeoutInSeconds)
         {
@@ -14,13 +16,13 @@ namespace LSOmni.BLL.Loyalty
         public CurrencyBLL(string securityToken, int timeoutInSeconds)
             : base(securityToken, timeoutInSeconds)
         {
+            this.iAppSettingsRepository = GetDbRepository<IAppSettingsRepository>();
         }
 
         public virtual Currency CurrencyGetLocal()
         {
-            AppSettingsRepository appRep = new AppSettingsRepository();
-            string id = appRep.AppSettingsGetByKey(AppSettingsKey.Currency_Code);
-            string culture = appRep.AppSettingsGetByKey(AppSettingsKey.Currency_Culture, "en");
+            string id = iAppSettingsRepository.AppSettingsGetByKey(AppSettingsKey.Currency_Code);
+            string culture = iAppSettingsRepository.AppSettingsGetByKey(AppSettingsKey.Currency_Culture, "en");
             return BOAppConnection.CurrencyGetById(id, culture);
         }
 
@@ -31,8 +33,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual decimal GiftCardGetBalance(string cardNo)
         {
-            AppSettingsRepository appRep = new AppSettingsRepository();
-            string entryType = appRep.AppSettingsGetByKey(AppSettingsKey.GiftCard_DataEntryType, "en");
+            string entryType = iAppSettingsRepository.AppSettingsGetByKey(AppSettingsKey.GiftCard_DataEntryType, "en");
             return BOLoyConnection.GiftCardGetBalance(cardNo, entryType);
         }
     }

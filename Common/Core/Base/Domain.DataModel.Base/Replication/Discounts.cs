@@ -62,6 +62,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             DiscountValue = 0M;
             OfferNo = string.Empty;
             StoreId = string.Empty;
+            Description = string.Empty;
+            Details = string.Empty;
             Type = ReplDiscountType.Unknown; //Disc. Offer, Multibuy
         }
 

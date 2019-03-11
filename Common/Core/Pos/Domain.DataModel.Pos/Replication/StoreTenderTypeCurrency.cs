@@ -46,6 +46,10 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
     {
         public ReplStoreTenderTypeCurrency()
         {
+            StoreID = string.Empty;
+            TenderTypeId = string.Empty;
+            CurrencyCode = string.Empty;
+            Description = string.Empty;
         }
 
         public void Dispose()

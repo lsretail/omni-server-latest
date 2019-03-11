@@ -52,6 +52,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             DisplayOrder = 0;
             TableName = string.Empty;
             KeyValue = string.Empty;
+            Description = string.Empty;
         }
 
         public void Dispose()

@@ -48,6 +48,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ReplHierarchyLeaf()
         {
+            HierarchyCode = string.Empty;
+            NodeId = string.Empty;
+            ImageId = string.Empty;
+            Description = string.Empty;
         }
 
         public void Dispose()

@@ -98,7 +98,7 @@
       <Name>Domain.DataModel.Base</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Loyalty.Hospitality\Domain.DataModel.Loyalty.Hospitality\Domain.DataModel.Loyalty.Hospitality.csproj">
-      <Project>{9eb8d929-e777-4780-bf52-a9f87addda60}</Project>
+      <Project>{539f8620-b7d5-4925-8038-45412674e776}</Project>
       <Name>Domain.DataModel.Loyalty.Hospitality</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
@@ -118,6 +118,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>if /I "$(ConfigurationName)" == "Release" Eazfuscator.NET.exe "$(TargetPath)" --msbuild-project-path "$(ProjectPath)" --msbuild-project-configuration "$(ConfigurationName)" --msbuild-project-platform "$(PlatformName)" --msbuild-solution-path "$(SolutionPath)" -n --newline-flush -v 3.3</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>

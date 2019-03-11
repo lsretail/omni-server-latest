@@ -242,6 +242,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             {
             }
         }
+
         [DataMember]
         public DateTime CreateDate { get; set; }
         [DataMember]

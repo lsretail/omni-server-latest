@@ -50,10 +50,31 @@ namespace LSOmni.DataAccess.Dal
 
         public List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines = false)
         {
-            //first get the userId from contactId
-            ContactRepository conRep = new ContactRepository();
-            string contactId = conRep.ContactIdGetByCardId(cardId);
-            return OneListGetByContactId(contactId, listType, includeLines);
+            List<OneList> oneList = new List<OneList>();
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Id],[IsDefaultList],[Description],[CardId],[CustomerId],[ContactId],[StoreId],[ListType]," +
+                        "[TotalAmount],[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[CreateDate]" +
+                        " FROM [OneList] WHERE [CardId]=@id AND [ListType]=@type ORDER BY [CreateDate] DESC";
+
+                    command.Parameters.AddWithValue("@id", cardId);
+                    command.Parameters.AddWithValue("@type", (int)listType);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            oneList.Add(ConvertToDataOneList(reader, includeLines));
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+            return oneList;
         }
 
         public OneList OneListGetById(string oneListId, ListType listType, bool includeLines = true)
@@ -100,13 +121,13 @@ namespace LSOmni.DataAccess.Dal
                 list.Id = guid.ToString().ToUpper();
             }
 
-            string description = (string.IsNullOrWhiteSpace(list.Description) ? "List " + list.ContactId : list.Description);
+            string description = (string.IsNullOrWhiteSpace(list.Description) ? "List " + list.CardId : list.Description);
             if (string.IsNullOrWhiteSpace(list.ContactId) == false)
             {
                 if (list.ListType == ListType.Basket)
                 {
                     // only have one basket, delete all other baskets if any
-                    List<OneList> conList = OneListGetByContactId(list.ContactId, ListType.Basket);
+                    List<OneList> conList = OneListGetByCardId(list.CardId, ListType.Basket);
                     foreach (OneList mylist in conList)
                     {
                         if (mylist.Id.Equals(guid))
@@ -567,7 +588,7 @@ namespace LSOmni.DataAccess.Dal
                     displayOrderId++;
 
                     command.Parameters["@f0"].Value = line.Id;
-                    command.Parameters["@f1"].Value = oneListId;
+                    command.Parameters["@f1"].Value = Guid.Parse(oneListId);
                     command.Parameters["@f2"].Value = displayOrderId;
                     command.Parameters["@f3"].Value = DateTime.Now;
                     TraceSqlCommand(command);

@@ -84,6 +84,11 @@ namespace LSOmni.DataAccess.Dal
             return base.Validate(sql, CacheMenuDurationInMinutes);
         }
 
+        public bool CacheMenu()
+        {
+            return CacheSettings.Instance.CacheMenu;
+        }
+
         //a bit faster when not using generics like in base class
         private MobileMenu DeserializeFromXml(string xml)
         {

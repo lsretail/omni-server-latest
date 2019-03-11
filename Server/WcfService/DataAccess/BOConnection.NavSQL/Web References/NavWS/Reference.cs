@@ -31,6 +31,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private System.Threading.SendOrPostCallback CustomerOrderCreateOperationCompleted;
         
+        private System.Threading.SendOrPostCallback CustomerOrderFilteredListOperationCompleted;
+        
         private System.Threading.SendOrPostCallback EcomCalculateBasketOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetCrossSellingOperationCompleted;
@@ -135,6 +137,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         public event CustomerOrderCreateCompletedEventHandler CustomerOrderCreateCompleted;
+        
+        /// <remarks/>
+        public event CustomerOrderFilteredListCompletedEventHandler CustomerOrderFilteredListCompleted;
         
         /// <remarks/>
         public event EcomCalculateBasketCompletedEventHandler EcomCalculateBasketCompleted;
@@ -263,6 +268,43 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             if ((this.CustomerOrderCreateCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CustomerOrderCreateCompleted(this, new CustomerOrderCreateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderFilteredList", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderFilteredList_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void CustomerOrderFilteredList(ref string responseCode, ref string errorText, bool includePostedCustomerOrders, ref RootCustomerOrderFilteredList customerOrderFilteredListXML) {
+            object[] results = this.Invoke("CustomerOrderFilteredList", new object[] {
+                        responseCode,
+                        errorText,
+                        includePostedCustomerOrders,
+                        customerOrderFilteredListXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            customerOrderFilteredListXML = ((RootCustomerOrderFilteredList)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void CustomerOrderFilteredListAsync(string responseCode, string errorText, bool includePostedCustomerOrders, RootCustomerOrderFilteredList customerOrderFilteredListXML) {
+            this.CustomerOrderFilteredListAsync(responseCode, errorText, includePostedCustomerOrders, customerOrderFilteredListXML, null);
+        }
+        
+        /// <remarks/>
+        public void CustomerOrderFilteredListAsync(string responseCode, string errorText, bool includePostedCustomerOrders, RootCustomerOrderFilteredList customerOrderFilteredListXML, object userState) {
+            if ((this.CustomerOrderFilteredListOperationCompleted == null)) {
+                this.CustomerOrderFilteredListOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderFilteredListOperationCompleted);
+            }
+            this.InvokeAsync("CustomerOrderFilteredList", new object[] {
+                        responseCode,
+                        errorText,
+                        includePostedCustomerOrders,
+                        customerOrderFilteredListXML}, this.CustomerOrderFilteredListOperationCompleted, userState);
+        }
+        
+        private void OnCustomerOrderFilteredListOperationCompleted(object arg) {
+            if ((this.CustomerOrderFilteredListCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CustomerOrderFilteredListCompleted(this, new CustomerOrderFilteredListCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1694,6 +1736,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private int sourceTypeField;
         
+        private string customerNoField;
+        
         private string fullNameField;
         
         private string addressField;
@@ -1801,6 +1845,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             }
             set {
                 this.sourceTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
             }
         }
         
@@ -2560,7 +2614,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033031")]
-    public partial class CustomerOrderHeader1 {
+    public partial class CustomerOrderHeader2 {
         
         private string documentIdField;
         
@@ -2574,7 +2628,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         private string sourcingOrderField;
         
-        public CustomerOrderHeader1() {
+        public CustomerOrderHeader2() {
             this.anonymousOrderField = false;
             this.sourceTypeField = 0;
         }
@@ -2648,7 +2702,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033031")]
     public partial class RootCOQtyAvailabilityExtIn {
         
-        private CustomerOrderHeader1[] customerOrderHeaderField;
+        private CustomerOrderHeader2[] customerOrderHeaderField;
         
         private CustomerOrderLine1[] customerOrderLineField;
         
@@ -2656,7 +2710,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
-        public CustomerOrderHeader1[] CustomerOrderHeader {
+        public CustomerOrderHeader2[] CustomerOrderHeader {
             get {
                 return this.customerOrderHeaderField;
             }
@@ -34487,6 +34541,199 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033042")]
+    public partial class CustomerOrderHeader1 {
+        
+        private string documentIDField;
+        
+        private string storeNoField;
+        
+        private string createdatStoreField;
+        
+        private System.DateTime documentDateTimeField;
+        
+        private bool inventoryTransferField;
+        
+        private string memberCardNoField;
+        
+        private string memberContactNoField;
+        
+        private string addressField;
+        
+        private string phoneNoField;
+        
+        private string emailField;
+        
+        private string statusInfoField;
+        
+        private string shipOrderPOSFlagField;
+        
+        public CustomerOrderHeader1() {
+            this.documentDateTimeField = new System.DateTime(0);
+            this.inventoryTransferField = false;
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedatStore {
+            get {
+                return this.createdatStoreField;
+            }
+            set {
+                this.createdatStoreField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public System.DateTime DocumentDateTime {
+            get {
+                return this.documentDateTimeField;
+            }
+            set {
+                this.documentDateTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool InventoryTransfer {
+            get {
+                return this.inventoryTransferField;
+            }
+            set {
+                this.inventoryTransferField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberCardNo {
+            get {
+                return this.memberCardNoField;
+            }
+            set {
+                this.memberCardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberContactNo {
+            get {
+                return this.memberContactNoField;
+            }
+            set {
+                this.memberContactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PhoneNo {
+            get {
+                return this.phoneNoField;
+            }
+            set {
+                this.phoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StatusInfo {
+            get {
+                return this.statusInfoField;
+            }
+            set {
+                this.statusInfoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipOrderPOSFlag {
+            get {
+                return this.shipOrderPOSFlagField;
+            }
+            set {
+                this.shipOrderPOSFlagField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3190.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033042")]
+    public partial class RootCustomerOrderFilteredList {
+        
+        private CustomerOrderHeader1[] customerOrderHeaderField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
+        public CustomerOrderHeader1[] CustomerOrderHeader {
+            get {
+                return this.customerOrderHeaderField;
+            }
+            set {
+                this.customerOrderHeaderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.7.3190.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
     public partial class CustomerOrderPayment {
         
@@ -35013,6 +35260,48 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3190.0")]
+    public delegate void CustomerOrderFilteredListCompletedEventHandler(object sender, CustomerOrderFilteredListCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.7.3190.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CustomerOrderFilteredListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal CustomerOrderFilteredListCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootCustomerOrderFilteredList customerOrderFilteredListXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootCustomerOrderFilteredList)(this.results[2]));
             }
         }
     }

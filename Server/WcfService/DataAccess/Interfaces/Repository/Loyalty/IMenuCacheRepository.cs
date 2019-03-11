@@ -8,5 +8,6 @@ namespace LSOmni.DataAccess.Interface.Repository.Loyalty
         MobileMenu MenuGetById(string id, string lastVersion);
         void Save(string id, string version, MobileMenu menuList);
         CacheState Validate(string id);
+        bool CacheMenu();
     }
 }

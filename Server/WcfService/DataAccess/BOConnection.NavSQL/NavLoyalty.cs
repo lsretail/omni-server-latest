@@ -1182,7 +1182,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             OrderMapping map = new OrderMapping();
             string respCode = string.Empty;
             string errorText = string.Empty;
-            NavWS.RootCustomerOrder root = map.MapFromOrderToRoot(request);
+            NavWS.RootCustomerOrder root = map.MapFromOrderToRoot(request, NAVVersion);
 
             try
             {

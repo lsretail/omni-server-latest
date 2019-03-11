@@ -29,6 +29,7 @@ namespace LSOmni.Service
     public interface IeCommerceService
     {
         // COMMON ////////////////////////////////////////////////////////////
+
         #region Helpers Common
 
         [OperationContract]
@@ -154,8 +155,6 @@ namespace LSOmni.Service
         ///         <ser:oneList>
         ///            <!--Not needed for anonymous basket:-->
         ///            <ns1:CardId>10021</ns1:CardId>
-        ///            <!--Not needed for anonymous basket:-->
-        ///            <ns1:ContactId>MO000008</ns1:ContactId>
         ///            <ns1:Items>
         ///               <!--Zero or more repetitions:-->
         ///               <ns1:OneListItem>
@@ -316,12 +315,10 @@ namespace LSOmni.Service
         ///      <Id>oneList.Id</Id>
         ///      <LineNo>lineCount</LineNo>
         ///      <LineType>0</LineType>
-        ///      <Barcode></Barcode>
         ///      <Number>oneList.Items.Item.Id</Number>
         ///      <VariantCode>oneList.Items.VariantReg.Id</VariantCode>
         ///      <UomId>oneList.Items.UnitOfMeasure.Id</UomId>
         ///      <Quantity>oneList.Items.Quantity</Quantity>
-        ///      <ExternalId>0</ExternalId>
         ///    </MobileTransactionLine>
         ///  </Request_Body>
         /// ]]>
@@ -462,7 +459,7 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="oneList">OneList Object</param>
-        /// <returns>Order Object</returns>
+        /// <returns>Order Object that can be used to Create Order</returns>
         [OperationContract]
         Order OneListCalculate(OneList oneList);
 
@@ -772,9 +769,9 @@ namespace LSOmni.Service
         ///            <a:OrderPayments>
         ///               <a:OrderPayment>
         ///                  <a:AuthorisationCode>123456</a:AuthorisationCode>
-        ///                  <a:CardNumber>45XX..5555</a:CardNumber>
+        ///                  <a:CardNumber>10xx xxxx xxxx 1475</a:CardNumber>
         ///                  <a:CardType>VISA</a:CardType>
-        ///                  <a:CurrencyCode/>
+        ///                  <a:CurrencyCode>GBP</a:CurrencyCode>
         ///                  <a:CurrencyFactor>1.00000000000000000000</a:CurrencyFactor>
         ///                  <a:FinalizedAmount>0.00000000000000000000</a:FinalizedAmount>
         ///                  <a:LineNumber>10000</a:LineNumber>
@@ -905,7 +902,7 @@ namespace LSOmni.Service
         Order OrderGetByWebId(string id, bool includeLines);
 
         /// <summary>
-        /// Get Customer Order by Web Order Id
+        /// Get Customer Order by Transaction Receipt Id
         /// </summary>
         /// <param name="id"></param>
         /// <param name="includeLines"></param>
@@ -1034,13 +1031,12 @@ namespace LSOmni.Service
         ///                  <ns:Address1>Santa Monica</ns:Address1>
         ///                  <ns:City>Hollywood</ns:City>
         ///                  <ns:Country>US</ns:Country>
-        ///                  <ns:PhoneNumber>555-5555</ns:PhoneNumber>
         ///                  <ns:PostCode>1001</ns:PostCode>
         ///                  <ns:StateProvinceRegion></ns:StateProvinceRegion>
         ///                  <ns:Type>Residential</ns:Type>
         ///               </ns:Address>
         ///            </ns1:Addresses>
-        ///            <ns1:Email>Sarah @Hollywood.com</ns1:Email>
+        ///            <ns1:Email>Sarah@Hollywood.com</ns1:Email>
         ///            <ns1:FirstName>Sarah</ns1:FirstName>
         ///            <ns1:Gender>Female</ns1:Gender>
         ///            <ns1:Initials>Ms</ns1:Initials>
@@ -1370,7 +1366,6 @@ namespace LSOmni.Service
         ///                  <ns:Address1>Santa Monica</ns:Address1>
         ///                  <ns:City>Hollywood</ns:City>
         ///                  <ns:Country>US</ns:Country>
-        ///                  <ns:PhoneNumber>555-5555</ns:PhoneNumber>
         ///                  <ns:PostCode>1001</ns:PostCode>
         ///                  <ns:StateProvinceRegion></ns:StateProvinceRegion>
         ///                  <ns:Type>Residential</ns:Type>
@@ -1587,9 +1582,9 @@ namespace LSOmni.Service
         bool Logout(string userName, string deviceId);
 
         /// <summary>
-        /// Deletes all User Data
+        /// Deletes all information and login for User in Local Omni Database (does not affect NAV)
         /// </summary>
-        /// <param name="userName"></param>
+        /// <param name="userName">User Login</param>
         /// <returns></returns>
         [OperationContract]
         bool UserDelete(string userName);
@@ -2690,6 +2685,24 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of store tender types</returns>
         [OperationContract]
         ReplStoreTenderTypeResponse ReplEcommStoreTenderTypes(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Tax setup
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 325 - VAT Posting Setup
+        /// <p/><p/>
+        /// All ReplEcommXX web methods work the same.
+        /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of store tender types</returns>
+        [OperationContract]
+        ReplTaxSetupResponse ReplEcommTaxSetup(ReplRequest replRequest);
 
         #endregion
 

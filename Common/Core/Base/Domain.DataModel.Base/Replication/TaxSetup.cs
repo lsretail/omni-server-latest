@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
+namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
     public class ReplTaxSetupResponse : IDisposable
@@ -45,6 +45,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
     {
         public ReplTaxSetup()
         {
+            BusinessTaxGroup = string.Empty;
+            ProductTaxGroup = string.Empty;
         }
 
         public void Dispose()

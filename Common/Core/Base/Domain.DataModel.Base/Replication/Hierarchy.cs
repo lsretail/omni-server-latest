@@ -48,6 +48,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ReplHierarchy()
         {
+            Description = string.Empty;
         }
 
         public void Dispose()

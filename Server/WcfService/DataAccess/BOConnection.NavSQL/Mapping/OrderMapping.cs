@@ -91,7 +91,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
             return order;
         }
 
-        public NavWS.RootCustomerOrder MapFromOrderToRoot(Order order)
+        public NavWS.RootCustomerOrder MapFromOrderToRoot(Order order, Version navVersion)
         {
             NavWS.RootCustomerOrder root = new NavWS.RootCustomerOrder();
 
@@ -129,8 +129,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 ShippingAgentCode = GetString(order.ShippingAgentCode),
                 ShippingAgentServiceCode = GetString(order.ShippingAgentServiceCode),
                 SourcingLocation = string.Empty,
-                ReceiptNo = string.Empty,
+                ReceiptNo = string.Empty
             });
+
+            if (navVersion > new Version("13.4"))
+                header[0].CustomerNo = string.Empty;
+
             root.CustomerOrderHeader = header.ToArray();
 
             List<NavWS.CustomerOrderLine> orderLines = new List<NavWS.CustomerOrderLine>();

@@ -48,6 +48,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             IsDeleted = false;
             Id = string.Empty;
             Name = string.Empty;
+            Street = string.Empty;
+            ZipCode = string.Empty;
+            City = string.Empty;
+            Country = string.Empty;
+            County = string.Empty;
+            State = string.Empty;
+            Phone = string.Empty;
+            Currency = string.Empty;
+            CultureName = string.Empty;
+            FunctionalityProfile = string.Empty;
+            TaxGroup = string.Empty;
+            DefaultCustomerAccount = string.Empty;
+            MainMenuID = string.Empty;
         }
 
         public void Dispose()

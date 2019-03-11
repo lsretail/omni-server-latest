@@ -45,9 +45,9 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
     {
         public ReplStaffStoreLink()
         {
-            StoreId = "";
-            StaffId = "";
-            DefaultHospType = "";
+            StoreId = string.Empty;
+            StaffId = string.Empty;
+            DefaultHospType = string.Empty;
         }
 
         public void Dispose()

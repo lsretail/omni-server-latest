@@ -46,6 +46,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public ReplBarcodeMask()
         {
             Del = false;
+            Mask = string.Empty;
+            Description = string.Empty;
+            Prefix = string.Empty;
+            NumberSeries = string.Empty;
         }
 
         public void Dispose()

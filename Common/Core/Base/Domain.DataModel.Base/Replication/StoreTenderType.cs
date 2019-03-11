@@ -46,12 +46,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public ReplStoreTenderType()
         {
             IsDeleted = false;
-            StoreID = "";
-            TenderTypeId = "";
-            Name = "";
+            StoreID = string.Empty;
+            TenderTypeId = string.Empty;
+            Name = string.Empty;
             TenderFunction = 0;
-            ChangeTenderId = "";
-            AboveMinimumTenderId = "";
+            ChangeTenderId = string.Empty;
+            AboveMinimumTenderId = string.Empty;
             MinimumChangeAmount = 0M;
             RoundingMethode = 0;
             Rounding = 0M;

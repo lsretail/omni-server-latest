@@ -46,17 +46,19 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public ReplTerminal()
         {
             IsDeleted = false;
-            Id = "";
-            Name = "";
-            StoreId = "";
-            EFTStoreId = "";
-            SFTTerminalId = "";
-            HardwareProfile = "";
-            FunctionalityProfile = "";
+            Id = string.Empty;
+            Name = string.Empty;
+            StoreId = string.Empty;
+            EFTStoreId = string.Empty;
+            SFTTerminalId = string.Empty;
+            HardwareProfile = string.Empty;
+            FunctionalityProfile = string.Empty;
+            VisualProfile = string.Empty;
             ExitAfterEachTransaction = 9;
             TerminalType = 0;
-            HospTypeFilter = "";
-            DefaultHospType = "";
+            HospTypeFilter = string.Empty;
+            DefaultHospType = string.Empty;
+            MainMenuID = string.Empty;
             AutoLogOffTimeOut = 0;  //boolean in NAV
             AutoLogOffAfterMin = 0; //
         }

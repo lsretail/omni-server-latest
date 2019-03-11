@@ -45,7 +45,7 @@ namespace LSOmni.BLL
 
             //when NO caching, then don't bother saving anything in database...
             // no AvgColor or Format returned, too much cpu unless caching!
-            if (DataAccess.Dal.CacheSettings.Instance.CacheImage == false)
+            if (iImageCacheRepository.CacheImage() == false)
             {
                 return ImageGetById(id, imageSize);
             }

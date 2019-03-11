@@ -209,7 +209,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
 
         public string FormatQty(decimal qty)
         {
-            string returnString = "";
+            string returnString = string.Empty;
             if (UnitOfMeasures.Count == 0)
                 returnString += qty.ToString("N0");
             else

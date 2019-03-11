@@ -393,6 +393,21 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplTaxSetupResponse ReplEcommTaxSetup(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplTaxSetupResponse rs = new ReplTaxSetupResponse();
+            rs.TaxSetups = BOAppConnection.ReplicateTaxSetup(replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(string.Format("Records {0} LastKey {1} RecRemain {2}", rs.TaxSetups.Count, rs.LastKey, rs.RecordsRemaining));
+            return rs;
+        }
+
         public virtual ReplShippingAgentResponse ReplEcommShippingAgent(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;

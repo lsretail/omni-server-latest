@@ -24,7 +24,7 @@ AppSupportURL=http://www.lsretail.com/
 AppUpdatesURL=http://www.lsretail.com/
 AppReadmeFile=http://www.tr.im/lsomni
 AppComments=LS Omni WCF Service
-AppCopyright=Copyright (C) 2016  LS Retail
+AppCopyright=Copyright (C) 2019 LS Retail
 ;file version
 VersionInfoVersion={#ApplicationVersion}
 ;when changing the DefaultDirName I had to change the AppId !!
@@ -157,20 +157,9 @@ begin
 
     //check full text search after db and connection has been checked
     ADOInit(SQLPage_txtServer.Text, SQLPage_txtDBname.Text,SQLPage_txtUsername.Text, SQLPage_txtPassword.Text, SQLPage_chkWindowsAuth.Checked);
-    if (not ADOCheckFullTextSearch()) then
-    begin
-      msg := 'SQL Server Full-Text search is not installed on ' + SQLPage_txtServer.Text + '.'#13
-      msg := msg + 'If you want the sql searches to be fast quit now and '#13
-      msg := msg + 'install the Sql Server Full-Text Search feature.'#13
-      msg := msg + 'Quit the setup?'
-      if (not CmdMode) and (MsgBox(msg, mbConfirmation, MB_YESNO) = idYes) then
-      begin
-        Result := False;
-      end;
-    end ;
 
     // Check if sql server mixed authentication is enabled
-    if (Result and not ADOCheckIsMixedAuthentication() )  then
+    if (not ADOCheckIsMixedAuthentication()) then
     begin
       msg := 'SQL Server mixed authentication mode is not enabled on ' + SQLPage_txtServer.Text + ' '#13
       msg := msg + 'You need this to continue the easy way. You can use Windows Authentication only but '#13

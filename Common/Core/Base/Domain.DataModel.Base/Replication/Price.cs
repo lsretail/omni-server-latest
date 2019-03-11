@@ -53,6 +53,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             CustomerDiscountGroup = string.Empty;
             LoyaltySchemeCode = string.Empty;
             CurrencyCode = string.Empty;
+            SaleCode = string.Empty;
+            VATPostGroup = string.Empty;
             UnitPrice = 0M;
             ModifyDate = DateTime.Now;
             EndingDate = new DateTime(1900, 1, 1);

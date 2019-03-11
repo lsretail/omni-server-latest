@@ -13,8 +13,6 @@ namespace LSOmni.DataAccess.Dal
     {
         public int CacheImageDurationInMinutes { get { return CacheSettings.Instance.CacheImageDurationInMinutes; } }
         public int CacheMenuDurationInMinutes { get { return CacheSettings.Instance.CacheMenuDurationInMinutes; } }
-        public bool CacheImage { get { return CacheSettings.Instance.CacheImage; } }
-        public bool CacheMenu { get { return CacheSettings.Instance.CacheMenu; } }
 
         protected internal static DateTime MinDate = new DateTime(1970, 1, 1); //min date for json
         protected static string sqlConnectionString = null;

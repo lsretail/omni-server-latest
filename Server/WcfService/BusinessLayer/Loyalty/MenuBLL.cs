@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 using NLog;
-using LSOmni.DataAccess.Dal;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
@@ -42,7 +41,7 @@ namespace LSOmni.BLL.Loyalty
                 id = "ALL";
 
             //when NO caching, then don't bother saving anything in database...
-            if (CacheSettings.Instance.CacheMenu == false)
+            if (iMenuCacheRepository.CacheMenu() == false)
             {
                 MenusGetAndFill(id, lastVersion, ref mobileMenu);
                 return mobileMenu;

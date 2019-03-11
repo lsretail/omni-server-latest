@@ -55,6 +55,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             IsDeleted = false;
             DateBlocked = new DateTime(1900, 1, 1);
             DateToActivateItem = new DateTime(1900, 1, 1);
+            Description = string.Empty;
+            Details = string.Empty;
+            ProductGroupId = string.Empty;
+            BaseUnitOfMeasure = string.Empty;
+            SalseUnitOfMeasure = string.Empty;
+            PurchUnitOfMeasure = string.Empty;
+            TaxItemGroupId = string.Empty;
+            VendorId = string.Empty;
+            VendorItemId = string.Empty;
+            SeasonCode = string.Empty;
+            ItemCategoryCode = string.Empty;
+            ItemFamilyCode = string.Empty;
+            MustKeyInComment = 0;
         }
 
         public ReplItem() : this(string.Empty)

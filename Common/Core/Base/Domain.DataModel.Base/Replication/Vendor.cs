@@ -52,6 +52,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             IsDeleted = false;
             Id = id;
             Name = string.Empty;
+            PageSizeOptions = string.Empty;
             UpdatedOnUtc = new DateTime(1900, 1, 1);
         }
 

@@ -45,6 +45,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
     {
         public ReplTenderType()
         {
+            Id = string.Empty;
+            Nam = string.Empty;
         }
 
         public void Dispose()

@@ -50,6 +50,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             IsDeleted = false;
             Image64 = string.Empty;
             Location = string.Empty;
+            Description = string.Empty;
             LocationType = LocationType.Image;
         }
 

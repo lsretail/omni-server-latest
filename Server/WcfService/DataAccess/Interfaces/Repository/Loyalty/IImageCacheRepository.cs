@@ -15,5 +15,6 @@ namespace LSOmni.DataAccess.Interface.Repository.Loyalty
         void SaveImageSizeCache(ImageView imgView);
 
         CacheState Validate(string id, ImageSize imageSize);
+        bool CacheImage();
     }
 }

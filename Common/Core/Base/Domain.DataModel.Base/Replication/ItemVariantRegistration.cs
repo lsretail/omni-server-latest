@@ -50,6 +50,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ReplItemVariantRegistration()
         {
+            ItemId = string.Empty;
+            VariantId = string.Empty;
+            FrameworkCode = string.Empty;
+            VariantDimension1 = string.Empty;
+            VariantDimension2 = string.Empty;
+            VariantDimension3 = string.Empty;
+            VariantDimension4 = string.Empty;
+            VariantDimension5 = string.Empty;
+            VariantDimension6 = string.Empty;
         }
 
         public void Dispose()

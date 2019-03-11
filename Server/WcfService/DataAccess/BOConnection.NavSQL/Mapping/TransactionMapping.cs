@@ -469,7 +469,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 EFTAuthCode = eftAuthCode,
                 EFTMessage = eftMessage,
                 EFTVerificationMethod = (int)verificationMethod,
-                EFTTransactionNo = eftTransactionId,
+                EFTTransactionNo = eftTransactionId ?? string.Empty,
                 EFTAuthStatus = (int)eftAuthStatus,
                 EFTTransType = (int)paymentTransactionType,
 

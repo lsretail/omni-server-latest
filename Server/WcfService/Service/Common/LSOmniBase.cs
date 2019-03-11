@@ -7,7 +7,6 @@ using System.Text;
 
 using LSOmni.BLL;
 using LSOmni.BLL.Loyalty;
-using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 
 using NLog;

@@ -3,10 +3,12 @@ using System.Xml;
 using System.Xml.Linq;
 using System.IO;
 using System.Net;
+using System.Xml.Xsl;
+using System.Drawing;
+using System.Web.Script.Serialization;
 using System.Collections.Generic;
 
 using NLog;
-using Newtonsoft.Json;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
@@ -18,9 +20,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
-using System.Xml.Xsl;
-using System.Drawing;
-using LSOmni.DataAccess.Dal;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -30,6 +29,7 @@ namespace LSOmni.BLL.Loyalty
         private IOrderQueueRepository iOrderQueueRepository;
         private IOrderRepository iOrderRepository;
         private IPayRequestRepository iPayRequestRepository;
+        private IPushNotificationRepository iPushRepository;
 
         public OrderMessageBLL(string securityToken, string deviceId, int timeoutInSeconds)
             : base(securityToken, deviceId, timeoutInSeconds)
@@ -37,6 +37,7 @@ namespace LSOmni.BLL.Loyalty
             iOrderQueueRepository = base.GetDbRepository<IOrderQueueRepository>();
             iOrderRepository = base.GetDbRepository<IOrderRepository>();
             iPayRequestRepository = base.GetDbRepository<IPayRequestRepository>();
+            iPushRepository = base.GetDbRepository<IPushNotificationRepository>();
         }
 
         public OrderMessageBLL(string deviceId, int timeoutInSeconds)
@@ -138,7 +139,7 @@ namespace LSOmni.BLL.Loyalty
                 ev.Amount = amount;
                 ev.Token = token;
 
-                string payloadJson = JsonConvert.SerializeObject(ev);
+                string payloadJson = new JavaScriptSerializer().Serialize(ev);
                 string ecomUrl = ConfigSetting.GetString("Ecom.Url");
 
                 if (string.IsNullOrEmpty(ecomUrl))
@@ -424,8 +425,7 @@ namespace LSOmni.BLL.Loyalty
 
                     string notificationId = GuidHelper.NewGuidString();
                     iOrderRepository.OrderMessageNotificationSave(notificationId, orderMessage.OrderId, contact.Id, orderMessage.Description, detailsAsHtml, qrText);
-                    PushNotificationRepository repo = new PushNotificationRepository();
-                    repo.SavePushNotification(contact.Id, notificationId);
+                    iPushRepository.SavePushNotification(contact.Id, notificationId);
 
                     //if status is ready 
                     if (orderStatus.StartsWith("REA"))

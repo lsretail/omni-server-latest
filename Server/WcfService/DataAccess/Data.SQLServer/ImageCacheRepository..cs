@@ -251,6 +251,11 @@ namespace LSOmni.DataAccess.Dal
             return base.Validate(sql, CacheImageDurationInMinutes);
         }
 
+        public bool CacheImage()
+        {
+            return CacheSettings.Instance.CacheImage;
+        }
+
         private ImageView ReaderToImageCache(SqlDataReader reader)
         {
             ImageView img = new ImageView();
