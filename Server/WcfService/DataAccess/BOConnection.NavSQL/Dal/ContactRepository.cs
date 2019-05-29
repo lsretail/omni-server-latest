@@ -8,7 +8,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -20,11 +19,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ContactRepository() : base()
+        public ContactRepository(Version navVersion) : base(navVersion)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
-                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[Country],mt.[County],mc.[Card No_],mlc.[Login ID],ma.[Club Code],ma.[Scheme Code]";
+                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[County],mc.[Card No_],mlc.[Login ID],ma.[Club Code],ma.[Scheme Code]";
+
+            if (navVersion > new Version("13.5"))
+                sqlcolumns += ",mt.[Country_Region Code]";
+            else
+                sqlcolumns += ",mt.[Country]";
 
             sqlfrom = " FROM [" + navCompanyName + "Member Contact] mt" +
                       " INNER JOIN [" + navCompanyName + "Membership Card] mc ON mc.[Contact No_]=mt.[Contact No_] AND (mc.[Last Valid Date]>GETDATE() OR mc.[Last Valid Date]='1753-01-01')" +
@@ -166,7 +170,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     break;
 
                 case ContactSearchType.UserName:
-                    where = string.Format("mlc.[Login ID] LIKE '{0}%'", search);
+                    where = string.Format("mlc.[Login ID] LIKE '{0}%' {1}", search, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
             }
@@ -667,7 +671,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Street = SQLHelper.GetString(reader["Address"]),
                 City = SQLHelper.GetString(reader["City"]),
                 ZipCode = SQLHelper.GetString(reader["Post Code"]),
-                Country = SQLHelper.GetString(reader["Country"]),
+                Country = SQLHelper.GetString((NavVersion > new Version("13.5")) ? reader["Country_Region Code"] : reader["Country"]),
                 County = SQLHelper.GetString(reader["County"]),
                 URL = SQLHelper.GetString(reader["Home Page"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
@@ -710,7 +714,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Address2 = SQLHelper.GetString(reader["Address 2"]),
                 City = SQLHelper.GetString(reader["City"]),
                 PostCode = SQLHelper.GetString(reader["Post Code"]),
-                Country = SQLHelper.GetString(reader["Country"]),
+                Country = SQLHelper.GetString((NavVersion > new Version("13.5")) ? reader["Country_Region Code"] : reader["Country"]),
                 StateProvinceRegion = SQLHelper.GetString(reader["County"])
             });
             return cont;

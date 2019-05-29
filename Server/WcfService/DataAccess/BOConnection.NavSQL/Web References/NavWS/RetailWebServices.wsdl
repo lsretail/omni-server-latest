@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="WebRequest">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pxmlRequest" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pxmlResponse" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="WebRequest_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pxmlRequest" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pxmlResponse" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateResponseCode">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pResponse_Code" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pResponse_Text" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateResponseCode_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pResponse_Code" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pResponse_Text" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPosImage">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="recordID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fieldNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="imageBase64String" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPosImage_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="imageBase64String" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPosImage2">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="recordID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fieldNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="imageBase64String" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fileTypeText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPosImage2_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="imageBase64String" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fileTypeText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPosHtml">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="recordID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fieldNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="html" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPosHtml_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="html" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="IsOnline">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="IsOnline_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="FillDataSet">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pDataTableID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pDataSetXml" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pUnformatted" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pStartRow" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pDataRows" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pIncludeRecIDs" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pSingleDBRow" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pContextInfo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="FillDataSet_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pDataSetXml" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="Find">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pDataTableID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pDataSetXml" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pFindText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pRowIndex" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pContextInfo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="Find_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pRowIndex" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateRecordZoomData">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pDataTableID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pTagFilter" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pRecordIDText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pDataSetXml" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CreateRecordZoomData_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pDataSetXml" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ValidateRecordZoomInput">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pFieldNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pFieldType" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pFieldValue" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pRecDataSet" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pZoomDataSet" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ValidateRecordZoomInput_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pZoomDataSet" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ImportRecordZoomData">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pRecordIDText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pRecordZoomDataSet" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pCallModifyTrigger" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ImportRecordZoomData_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="InsertRecord">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pDataTableID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pPKey1Data" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pPKey2Data" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pPKey3Data" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pPKey4Data" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pPKey5Data" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pCallInsertTrigger" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pCreatedRecordID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="InsertRecord_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pCreatedRecordID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="DeleteRecord">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pDataTableID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pRecordIDText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pCallDeleteTrigger" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="DeleteRecord_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="WriteRequestLog">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pRequestID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pStartDateTime" type="dateTime" />
+            <element minOccurs="1" maxOccurs="1" name="pProcessError" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="WriteRequestLog_Result">
+        <complexType>
+          <sequence />
+        </complexType>
+      </element>
+      <element name="Search">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pStore" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pTerminal" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pContext" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pSearchText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pFilterText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pSearchResult" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pMaxResults" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pPageNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="pWild" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pFuzzy" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="Search_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pContext" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pSearchResult" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PrintTestPage">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="externalPrinterID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PrintTestPage_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="pErrorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="WebRequest">
+    <part name="parameters" element="tns:WebRequest" />
+  </message>
+  <message name="WebRequest_Result">
+    <part name="parameters" element="tns:WebRequest_Result" />
+  </message>
+  <message name="CreateResponseCode">
+    <part name="parameters" element="tns:CreateResponseCode" />
+  </message>
+  <message name="CreateResponseCode_Result">
+    <part name="parameters" element="tns:CreateResponseCode_Result" />
+  </message>
+  <message name="GetPosImage">
+    <part name="parameters" element="tns:GetPosImage" />
+  </message>
+  <message name="GetPosImage_Result">
+    <part name="parameters" element="tns:GetPosImage_Result" />
+  </message>
+  <message name="GetPosImage2">
+    <part name="parameters" element="tns:GetPosImage2" />
+  </message>
+  <message name="GetPosImage2_Result">
+    <part name="parameters" element="tns:GetPosImage2_Result" />
+  </message>
+  <message name="GetPosHtml">
+    <part name="parameters" element="tns:GetPosHtml" />
+  </message>
+  <message name="GetPosHtml_Result">
+    <part name="parameters" element="tns:GetPosHtml_Result" />
+  </message>
+  <message name="IsOnline">
+    <part name="parameters" element="tns:IsOnline" />
+  </message>
+  <message name="IsOnline_Result">
+    <part name="parameters" element="tns:IsOnline_Result" />
+  </message>
+  <message name="FillDataSet">
+    <part name="parameters" element="tns:FillDataSet" />
+  </message>
+  <message name="FillDataSet_Result">
+    <part name="parameters" element="tns:FillDataSet_Result" />
+  </message>
+  <message name="Find">
+    <part name="parameters" element="tns:Find" />
+  </message>
+  <message name="Find_Result">
+    <part name="parameters" element="tns:Find_Result" />
+  </message>
+  <message name="CreateRecordZoomData">
+    <part name="parameters" element="tns:CreateRecordZoomData" />
+  </message>
+  <message name="CreateRecordZoomData_Result">
+    <part name="parameters" element="tns:CreateRecordZoomData_Result" />
+  </message>
+  <message name="ValidateRecordZoomInput">
+    <part name="parameters" element="tns:ValidateRecordZoomInput" />
+  </message>
+  <message name="ValidateRecordZoomInput_Result">
+    <part name="parameters" element="tns:ValidateRecordZoomInput_Result" />
+  </message>
+  <message name="ImportRecordZoomData">
+    <part name="parameters" element="tns:ImportRecordZoomData" />
+  </message>
+  <message name="ImportRecordZoomData_Result">
+    <part name="parameters" element="tns:ImportRecordZoomData_Result" />
+  </message>
+  <message name="InsertRecord">
+    <part name="parameters" element="tns:InsertRecord" />
+  </message>
+  <message name="InsertRecord_Result">
+    <part name="parameters" element="tns:InsertRecord_Result" />
+  </message>
+  <message name="DeleteRecord">
+    <part name="parameters" element="tns:DeleteRecord" />
+  </message>
+  <message name="DeleteRecord_Result">
+    <part name="parameters" element="tns:DeleteRecord_Result" />
+  </message>
+  <message name="WriteRequestLog">
+    <part name="parameters" element="tns:WriteRequestLog" />
+  </message>
+  <message name="WriteRequestLog_Result">
+    <part name="parameters" element="tns:WriteRequestLog_Result" />
+  </message>
+  <message name="Search">
+    <part name="parameters" element="tns:Search" />
+  </message>
+  <message name="Search_Result">
+    <part name="parameters" element="tns:Search_Result" />
+  </message>
+  <message name="PrintTestPage">
+    <part name="parameters" element="tns:PrintTestPage" />
+  </message>
+  <message name="PrintTestPage_Result">
+    <part name="parameters" element="tns:PrintTestPage_Result" />
+  </message>
+  <portType name="RetailWebServices_Port">
+    <operation name="WebRequest">
+      <input name="WebRequest" message="tns:WebRequest" />
+      <output name="WebRequest_Result" message="tns:WebRequest_Result" />
+    </operation>
+    <operation name="CreateResponseCode">
+      <input name="CreateResponseCode" message="tns:CreateResponseCode" />
+      <output name="CreateResponseCode_Result" message="tns:CreateResponseCode_Result" />
+    </operation>
+    <operation name="GetPosImage">
+      <input name="GetPosImage" message="tns:GetPosImage" />
+      <output name="GetPosImage_Result" message="tns:GetPosImage_Result" />
+    </operation>
+    <operation name="GetPosImage2">
+      <input name="GetPosImage2" message="tns:GetPosImage2" />
+      <output name="GetPosImage2_Result" message="tns:GetPosImage2_Result" />
+    </operation>
+    <operation name="GetPosHtml">
+      <input name="GetPosHtml" message="tns:GetPosHtml" />
+      <output name="GetPosHtml_Result" message="tns:GetPosHtml_Result" />
+    </operation>
+    <operation name="IsOnline">
+      <input name="IsOnline" message="tns:IsOnline" />
+      <output name="IsOnline_Result" message="tns:IsOnline_Result" />
+    </operation>
+    <operation name="FillDataSet">
+      <input name="FillDataSet" message="tns:FillDataSet" />
+      <output name="FillDataSet_Result" message="tns:FillDataSet_Result" />
+    </operation>
+    <operation name="Find">
+      <input name="Find" message="tns:Find" />
+      <output name="Find_Result" message="tns:Find_Result" />
+    </operation>
+    <operation name="CreateRecordZoomData">
+      <input name="CreateRecordZoomData" message="tns:CreateRecordZoomData" />
+      <output name="CreateRecordZoomData_Result" message="tns:CreateRecordZoomData_Result" />
+    </operation>
+    <operation name="ValidateRecordZoomInput">
+      <input name="ValidateRecordZoomInput" message="tns:ValidateRecordZoomInput" />
+      <output name="ValidateRecordZoomInput_Result" message="tns:ValidateRecordZoomInput_Result" />
+    </operation>
+    <operation name="ImportRecordZoomData">
+      <input name="ImportRecordZoomData" message="tns:ImportRecordZoomData" />
+      <output name="ImportRecordZoomData_Result" message="tns:ImportRecordZoomData_Result" />
+    </operation>
+    <operation name="InsertRecord">
+      <input name="InsertRecord" message="tns:InsertRecord" />
+      <output name="InsertRecord_Result" message="tns:InsertRecord_Result" />
+    </operation>
+    <operation name="DeleteRecord">
+      <input name="DeleteRecord" message="tns:DeleteRecord" />
+      <output name="DeleteRecord_Result" message="tns:DeleteRecord_Result" />
+    </operation>
+    <operation name="WriteRequestLog">
+      <input name="WriteRequestLog" message="tns:WriteRequestLog" />
+      <output name="WriteRequestLog_Result" message="tns:WriteRequestLog_Result" />
+    </operation>
+    <operation name="Search">
+      <input name="Search" message="tns:Search" />
+      <output name="Search_Result" message="tns:Search_Result" />
+    </operation>
+    <operation name="PrintTestPage">
+      <input name="PrintTestPage" message="tns:PrintTestPage" />
+      <output name="PrintTestPage_Result" message="tns:PrintTestPage_Result" />
+    </operation>
+  </portType>
+  <binding name="RetailWebServices_Binding" type="tns:RetailWebServices_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="WebRequest">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:WebRequest" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="WebRequest">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="WebRequest_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreateResponseCode">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:CreateResponseCode" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreateResponseCode">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreateResponseCode_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetPosImage">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:GetPosImage" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetPosImage">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetPosImage_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetPosImage2">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:GetPosImage2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetPosImage2">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetPosImage2_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetPosHtml">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:GetPosHtml" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetPosHtml">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetPosHtml_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="IsOnline">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:IsOnline" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="IsOnline">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="IsOnline_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="FillDataSet">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:FillDataSet" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="FillDataSet">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="FillDataSet_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="Find">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:Find" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="Find">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="Find_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CreateRecordZoomData">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:CreateRecordZoomData" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CreateRecordZoomData">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CreateRecordZoomData_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ValidateRecordZoomInput">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:ValidateRecordZoomInput" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ValidateRecordZoomInput">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ValidateRecordZoomInput_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ImportRecordZoomData">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:ImportRecordZoomData" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ImportRecordZoomData">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ImportRecordZoomData_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="InsertRecord">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:InsertRecord" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="InsertRecord">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="InsertRecord_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="DeleteRecord">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:DeleteRecord" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="DeleteRecord">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="DeleteRecord_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="WriteRequestLog">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:WriteRequestLog" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="WriteRequestLog">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="WriteRequestLog_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="Search">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:Search" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="Search">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="Search_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="PrintTestPage">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices:PrintTestPage" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="PrintTestPage">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="PrintTestPage_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="RetailWebServices">
+    <port name="RetailWebServices_Port" binding="tns:RetailWebServices_Binding">
+      <address location="http://dhqsrvomni002:8047/Release/WS/CRONUS%20LS%20XXXXX%20W1%20Demo/Codeunit/RetailWebServices" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

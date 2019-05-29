@@ -16,15 +16,10 @@ namespace LSOmni.DataAccess.Dal
         private static Logger logger = LogManager.GetCurrentClassLogger();
         static object statusLock = new object();
 
-        public string SaveOrderMessage(OrderMessage order)
+        public void SaveOrderMessage(OrderMessage order)
         {
             if (order == null)
                 throw new ApplicationException("SaveOrderMessage() order can not be null");
-
-            string theGuid = order.Id.Trim();
-            // dont need this strip guid like for queues
-            if (Validation.IsValidGuid(theGuid) == false)
-                theGuid = GuidHelper.NewGuidString();
 
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
@@ -40,12 +35,12 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
 
                                 // delete previous data
-                                command.CommandText = "DELETE FROM [OrderMessage] WHERE [Guid]=@id";
+                                command.CommandText = "DELETE FROM [OrderMessage] WHERE [OrderId]=@id";
                                 command.Parameters.AddWithValue("@id", order.Id);
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
-                                command.CommandText = "INSERT INTO [OrderMessage] ([Guid],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified]" +
+                                command.CommandText = "INSERT INTO [OrderMessage] ([OrderId],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified]" +
                                                       ") VALUES (@f1,@f2,@f3,@f4,@f5,@f6)";
 
                                 command.Parameters.Clear();
@@ -74,24 +69,20 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
             }
-            return theGuid;
         }
 
-        public OrderMessage OrderMessageGetById(string guid)
+        public OrderMessage OrderMessageGetById(string id)
         {
             OrderMessage order = null;
-            if (Validation.IsValidGuid(guid) == false)
-                return order;
-
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
                 db.Open();
                 using (SqlCommand command = db.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Guid],[Id],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified] " +
-                                          "FROM [OrderMessage] WHERE [Guid]=@id";
+                    command.CommandText = "SELECT [OrderId],[Id],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified] " +
+                                          "FROM [OrderMessage] WHERE [OrderId]=@id";
 
-                    command.Parameters.AddWithValue("@id", guid);
+                    command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -117,7 +108,7 @@ namespace LSOmni.DataAccess.Dal
                     string sql = "SELECT ";
                     if (request.MaxOrders > 0)
                         sql += string.Format("TOP({0}) ", request.MaxOrders);
-                    sql += "[Guid],[Id],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified] " +
+                    sql += "[OrderId],[Id],[MessageStatus],[Description],[Details],[DateCreated],[DateLastModified] " +
                            "FROM [OrderMessage]";
 
                     List<string> sqlwhere = new List<string>();
@@ -169,11 +160,11 @@ namespace LSOmni.DataAccess.Dal
             return orders;
         }
 
-        public void UpdateStatus(string guid, OrderMessageStatus status)
+        public void UpdateStatus(string id, OrderMessageStatus status)
         {
             //if guid not found in db and not sent in then create a new one
-            if (base.DoesRecordExist("[OrderMessage]", "[Guid]=@0", guid) == false)
-                throw new LSOmniServiceException(StatusCode.OrderQueueIdNotFound, "OrderMessage does not exists Id: " + guid);
+            if (base.DoesRecordExist("[OrderMessage]", "[OrderId]=@0", id) == false)
+                throw new LSOmniServiceException(StatusCode.OrderQueueIdNotFound, "OrderMessage does not exists Id: " + id);
 
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
@@ -183,11 +174,11 @@ namespace LSOmni.DataAccess.Dal
                     using (SqlCommand command = db.CreateCommand())
                     {
                         command.CommandText = "UPDATE [OrderMessage] SET " +
-                            "[MessageStatus]=@f1,[DateLastModified]=@f2 WHERE [Guid]=@id";
+                            "[MessageStatus]=@f1,[DateLastModified]=@f2 WHERE [OrderId]=@id";
 
                         command.Parameters.AddWithValue("@f1", status);
                         command.Parameters.AddWithValue("@f2", DateTime.Now);
-                        command.Parameters.AddWithValue("@id", guid);
+                        command.Parameters.AddWithValue("@id", id);
                         TraceSqlCommand(command);
                         command.ExecuteNonQuery();
                     }
@@ -279,7 +270,7 @@ namespace LSOmni.DataAccess.Dal
             OrderMessage order = new OrderMessage();
             {
                 order.OrderId = SQLHelper.GetInt64(reader["Id"]);
-                order.Id = SQLHelper.GetString(reader["Guid"]);
+                order.Id = SQLHelper.GetString(reader["OrderId"]);
                 order.Details = SQLHelper.GetString(reader["Details"]);
                 order.Description = SQLHelper.GetString(reader["Description"]);
                 order.OrderMessageStatus = (OrderMessageStatus)SQLHelper.GetInt32(reader["MessageStatus"]);

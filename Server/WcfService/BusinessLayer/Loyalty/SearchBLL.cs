@@ -1,5 +1,6 @@
 ﻿using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 
@@ -45,7 +46,14 @@ namespace LSOmni.BLL.Loyalty
             }
             if ((searchTypes & SearchType.Store) != 0)
             {
+                IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
+                int offset = iAppRepo.AppSettingsIntGetByKey(AppSettingsKey.Timezone_HoursOffset_DD);
+
                 searchRs.Stores = BOLoyConnection.StoreLoySearch(search);
+                foreach (Store store in searchRs.Stores)
+                {
+                    store.StoreHours = BOLoyConnection.StoreHoursGetByStoreId(store.Id, offset);
+                }
             }
             if ((searchTypes & SearchType.Profile) != 0)
             {

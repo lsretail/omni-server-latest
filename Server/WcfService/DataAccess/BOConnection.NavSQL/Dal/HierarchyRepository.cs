@@ -21,7 +21,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Hierarchy] mt INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]";
+            sqlfrom = " FROM [" + navCompanyName + "Hierarchy] mt INNER JOIN [" + navCompanyName + "Hierarchy Date] hd " +
+                      "ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
         }
 
         public List<ReplHierarchy> ReplicateHierarchy(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -29,9 +30,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            SQLHelper.CheckForSQLInjection(storeId);
             List<JscKey> keys = GetPrimaryKeys("Hierarchy");
-            string where = string.Format(" AND hd.[Store Code]='{0}' AND hd.[Start Date]<=GETDATE()", storeId);
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string where = string.Format(" AND hd.[Store Code]='{0}'", storeId);
 
             // get records remaining
             string sql = string.Empty;
@@ -127,7 +129,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " AND hd.[Store Code]=@sid AND hd.[Start Date]<=GETDATE()";
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " AND hd.[Store Code]=@sid";
                     command.Parameters.AddWithValue("@sid", storeId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -145,7 +147,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             foreach (Hierarchy root in list)
             {
                 HierarchyNodeRepository rep = new HierarchyNodeRepository(NavVersion);
-                List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id);
+                List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId);
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));
                 for (int i = 0; i < root.Nodes.Count; i++)
                 {

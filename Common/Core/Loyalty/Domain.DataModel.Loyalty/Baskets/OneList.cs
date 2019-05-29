@@ -91,6 +91,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public decimal TotalDiscAmount { get; set; }
         [DataMember]
         public decimal ShippingAmount { get; set; }
+        [DataMember]
+        public decimal PointAmount { get; set; }
 
         public BasketState State { get; set; }
 

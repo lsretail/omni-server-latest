@@ -27,8 +27,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         string ContactCreate(MemberContact contact);
         void ContactUpdate(MemberContact contact, string accountId);
         double ContactAddCard(string contactId, string accountId, string cardId);
-        MemberContact ContactGetById(string id, int numberOfTrans);
-        MemberContact ContactGetByCardId(string card, int numberOfTrans);
+        MemberContact ContactGetById(string id, int numberOfTrans, bool includeDetails);
+        MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails);
         MemberContact ContactGetByUserName(string user);
         MemberContact ContactGetByEMail(string email);
         List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
@@ -59,7 +59,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         Card CardGetById(string id);
         long MemberCardGetPoints(string cardId);
         decimal GetPointRate();
-        decimal GiftCardGetBalance(string cardNo, string entryType);
+        GiftCard GiftCardGetBalance(string cardNo, string entryType);
 
         #endregion
 
@@ -99,7 +99,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Offer and Advertisement
 
-        List<PublishedOffer> PublishedOffersGetByCardId(string cardId, string itemId);
+        List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId);
         List<Advertisement> AdvertisementsGetById(string id);
 
         #endregion
@@ -121,7 +121,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         List<StoreServices> StoreServicesGetByStoreId(string storeId);
         string GetWIStoreId();
-        List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset, int dayOfWeekOffset);
+        List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset);
         Store StoreGetById(string id);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
         List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
@@ -175,6 +175,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ReplShippingAgent> ReplEcommShippingAgent(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCustomer> ReplEcommMember(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCountryCode> ReplEcommCountryCode(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
 
         #endregion

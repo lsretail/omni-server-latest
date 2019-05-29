@@ -66,12 +66,12 @@ namespace LSOmni.BLL.Loyalty
             return iOrderQueueRepository.OrderSearch(searchRequest);
         }
 
-        public virtual void UpdateStatus(string guid, OrderQueueStatus status)
+        public virtual void UpdateStatus(string id, OrderQueueStatus status)
         {
-            iOrderQueueRepository.UpdateStatus(guid, status);
+            iOrderQueueRepository.UpdateStatus(id, status);
         }
 
-        public virtual void OrderCreate(Order request)
+        public virtual void OrderQueueCreate(Order request)
         {
             //validation
             if (request == null)
@@ -79,7 +79,7 @@ namespace LSOmni.BLL.Loyalty
                 string msg = "OrderCreateClickCollect() request is empty";
                 throw new LSOmniServiceException(StatusCode.Error, msg);
             }
-            if (Validation.IsValidGuid(request.Id) == false)
+            if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
 
             if (request.OrderLines != null)

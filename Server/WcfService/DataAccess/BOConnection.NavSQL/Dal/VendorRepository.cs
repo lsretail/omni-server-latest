@@ -12,9 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         const int TABLEID = 23;
 
         private string sqlcolumns = string.Empty;
-        private string sqlEcolumns = string.Empty;
         private string sqlfrom = string.Empty;
-        private string sqlEfrom = string.Empty;
 
         public VendorRepository() : base()
         {

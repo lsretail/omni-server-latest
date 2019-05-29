@@ -6,7 +6,6 @@ using System.ServiceModel.Web;
 using System.Runtime.Serialization.Json;
 
 using NLog;
-using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.Service

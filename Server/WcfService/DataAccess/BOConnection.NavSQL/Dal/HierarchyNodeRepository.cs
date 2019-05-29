@@ -24,11 +24,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumnsNode = "mt.[Hierarchy Code],mt.[Node ID],mt.[Parent Node ID],mt.[Description],mt.[Children Order],mt.[Indentation],mt.[Presentation Order],mt.[Retail Image Code]";
             sqlfromNode = " FROM [" + navCompanyName + ((NavVersion >= new Version("11.01.00")) ? "Hierarchy Nodes] mt" : "Hierarchy Node] mt") +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]";
+                          " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
 
             sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id]";
             sqlfromLink = " FROM [" + navCompanyName + "Hierarchy Node Link] mt" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]" +
+                          " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
                           " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0" +
                           " AND il.[TableName]=CASE WHEN mt.[Type]=0 THEN 'Item' ELSE 'Offer' END";
         }
@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             SQLHelper.CheckForSQLInjection(storeId);
             List<JscKey> keys = GetPrimaryKeys("Hierarchy Nodes");
-            string where = string.Format(" AND hd.[Store Code]='{0}' AND hd.[Start Date]<=GETDATE()", storeId);
+            string where = string.Format(" AND hd.[Store Code]='{0}'", storeId);
 
             // get records remaining
             string sql = string.Empty;
@@ -134,19 +134,21 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<HierarchyNode> HierarchyNodeGet(string hCode)
+        public List<HierarchyNode> HierarchyNodeGet(string hCode, string storeId)
         {
             List<HierarchyNode> list = new List<HierarchyNode>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumnsNode + sqlfromNode;
+                    command.CommandText = "SELECT " + sqlcolumnsNode + sqlfromNode + " AND hd.[Store Code]=@sid";
+                    command.Parameters.AddWithValue("@sid", storeId);
                     if (string.IsNullOrEmpty(hCode) == false)
                     {
                         command.CommandText += " WHERE mt.[Hierarchy Code]=@id";
                         command.Parameters.AddWithValue("@id", hCode);
                     }
+                    command.CommandText += " ORDER BY mt.[Presentation Order]";
 
                     TraceSqlCommand(command);
                     connection.Open();
@@ -154,7 +156,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToHierarchyNode(reader));
+                            list.Add(ReaderToHierarchyNode(reader, storeId));
                         }
                     }
                     connection.Close();
@@ -170,7 +172,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             SQLHelper.CheckForSQLInjection(storeId);
             List<JscKey> keys = GetPrimaryKeys("Hierarchy Node Link");
-            string where = string.Format(" AND hd.[Store Code]='{0}' AND hd.[Start Date]<=GETDATE()", storeId);
+            string where = string.Format(" AND hd.[Store Code]='{0}'", storeId);
 
             // get records remaining
             string sql = string.Empty;
@@ -266,7 +268,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<HierarchyLeaf> HierarchyNodeLinkGet(string hCode, string nCode)
+        public List<HierarchyLeaf> HierarchyNodeLinkGet(string hCode, string nCode, string storeId)
         {
             List<HierarchyLeaf> list = new List<HierarchyLeaf>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -274,10 +276,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumnsLink + sqlfromLink +
-                                         " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid";
+                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND hd.[Store Code]=@sid";
 
                     command.Parameters.AddWithValue("@Hid", hCode);
                     command.Parameters.AddWithValue("@Nid", nCode);
+                    command.Parameters.AddWithValue("@sid", storeId);
                     connection.Open();
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -325,7 +328,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
         }
 
-        private HierarchyNode ReaderToHierarchyNode(SqlDataReader reader)
+        private HierarchyNode ReaderToHierarchyNode(SqlDataReader reader, string storeId)
         {
             HierarchyNode val = new HierarchyNode()
             {
@@ -339,7 +342,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 PresentationOrder = SQLHelper.GetInt32(reader["Presentation Order"])
             };
 
-            val.Leafs = HierarchyNodeLinkGet(val.HierarchyCode, val.Id);
+            val.Leafs = HierarchyNodeLinkGet(val.HierarchyCode, val.Id, storeId);
             return val;
         }
 

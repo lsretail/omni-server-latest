@@ -10,7 +10,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
 {
     public class StoreMapping : BaseMapping
     {
-        public List<StoreHours> MapFromRootToOpeningHours(NavWS.RootGetStoreOpeningHours root, int offset, int dayOfWeekOffset)
+        public List<StoreHours> MapFromRootToOpeningHours(NavWS.RootGetStoreOpeningHours root, int offset)
         {
             List<StoreHours> list = new List<StoreHours>();
 
@@ -33,7 +33,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
                 storehr.Description = storehr.NameOfDay;
                 storehr.Type = (StoreHourOpeningType)ConvertTo.SafeInt(line.LineType);
 
-                storehr.DayOfWeek = dayofweek - dayOfWeekOffset; //NAV starts with Sunday as 1 but .Net Sunday=0
+                storehr.DayOfWeek = dayofweek == 7 ? 0 : dayofweek;
                 storehr.OpenFrom = ConvertTo.SafeDateTime(storehr.OpenFrom.AddHours(offset));
                 storehr.OpenTo = ConvertTo.SafeDateTime(storehr.OpenTo.AddHours(offset));
                 list.Add(storehr);

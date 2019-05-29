@@ -54,6 +54,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         Timezone_HoursOffset_DD = 1111,
         Loyalty_FilterOnStore = 1113,
         Timezone_DayOfWeekOffset = 1117,
+        Use_Json_Printing = 1120,
         Cache_Image_DurationInMinutes = 1200,
         Cache_Menu_DurationInMinutes = 1201,
 

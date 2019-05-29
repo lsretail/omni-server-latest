@@ -149,6 +149,9 @@ namespace LSOmni.Service
         List<PublishedOffer> PublishedOffersGetByCardId(string cardId, string itemId);
 
         [OperationContract]
+        List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId);
+
+        [OperationContract]
         List<Notification> NotificationsGetByContactId(string contactId, int numberOfNotifications);
 
         [OperationContract]

@@ -5,6 +5,9 @@ using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
+using Newtonsoft.Json;
+using System.Net;
+using System.IO;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -131,6 +134,44 @@ namespace LSOmni.BLL.Loyalty
 
                     throw new LSOmniServiceException(securityTokenStatusCode, msg);
                 }
+            }
+        }
+
+        protected string SendToEcom(object obj)
+        {
+            try
+            {
+                string payloadJson = JsonConvert.SerializeObject(obj);
+                string ecomUrl = ConfigSetting.GetString("Ecom.Url");
+
+                if (string.IsNullOrEmpty(ecomUrl))
+                    return "ERROR: Missing Ecom.Url in Appsettings";
+
+                if (ecomUrl.ToUpper() == "DEMO")
+                    return "OK";
+
+                Uri url = new Uri(ecomUrl);
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(payloadJson);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    return streamReader.ReadToEnd();
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex);
+                return "ERROR:" + ex.Message;
             }
         }
 

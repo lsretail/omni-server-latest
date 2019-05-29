@@ -1,6 +1,7 @@
 ﻿using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -31,7 +32,7 @@ namespace LSOmni.BLL.Loyalty
             return this.BOLoyConnection.GetPointRate();
         }
 
-        public virtual decimal GiftCardGetBalance(string cardNo)
+        public virtual GiftCard GiftCardGetBalance(string cardNo)
         {
             string entryType = iAppSettingsRepository.AppSettingsGetByKey(AppSettingsKey.GiftCard_DataEntryType, "en");
             return BOLoyConnection.GiftCardGetBalance(cardNo, entryType);

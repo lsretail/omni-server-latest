@@ -5,7 +5,7 @@ namespace LSOmni.DataAccess.Interface.Repository.Loyalty
 {
     public interface IOrderRepository
     {
-        string SaveOrderMessage(OrderMessage order);
+        void SaveOrderMessage(OrderMessage order);
         OrderMessage OrderMessageGetById(string guid);
         List<OrderMessage> OrderMessageSearch(OrderMessageSearchRequest searchRequest);
         void UpdateStatus(string guid, OrderMessageStatus status);

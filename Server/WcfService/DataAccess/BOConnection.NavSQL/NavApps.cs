@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Web.Services.Protocols;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSOmni.DataAccess.BOConnection.NavSQL.Dal;
+using LSOmni.DataAccess.BOConnection.NavSQL.Mapping;
 using LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty;
 
 using LSRetail.Omni.DiscountEngine.DataModels;
@@ -148,22 +150,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             string respCode = string.Empty;
             string errorText = string.Empty;
 
-            List<NavWS.InventoryBufferIn> lines = new List<NavWS.InventoryBufferIn>();
-            foreach (InventoryRequest item in items)
-            {
-                lines.Add(new NavWS.InventoryBufferIn()
-                {
-                    Number = item.ItemId,
-                    Variant = item.VariantId
-                });
-            }
-
-            NavWS.RootGetInventoryMultipleIn rootin = new NavWS.RootGetInventoryMultipleIn();
-            rootin.InventoryBufferIn = lines.ToArray();
-
+            if (navWS == null)
+                throw new Exception("WS2 is set to false, not supported in LS WS v1");
+            
+            OrderMapping map = new OrderMapping();
+            NavWS.RootGetInventoryMultipleIn rootin = map.MapListToInvReq(items);
             NavWS.RootGetInventoryMultipleOut rootout = new NavWS.RootGetInventoryMultipleOut();
-
-            List<InventoryResponse> list = new List<InventoryResponse>();
+            logger.Debug(Serialization.SerializeToXmlPrint(rootin));
 
             try
             {
@@ -177,18 +170,35 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
             }
 
-            if (rootout.InventoryBufferOut == null)
-                return list;
-
-            foreach (NavWS.InventoryBufferOut buffer in rootout.InventoryBufferOut)
+            List<InventoryResponse> list = new List<InventoryResponse>();
+            if (rootout.InventoryBufferOut != null)
             {
-                list.Add(new InventoryResponse()
+                foreach (NavWS.InventoryBufferOut buffer in rootout.InventoryBufferOut)
                 {
-                    ItemId = buffer.Number,
-                    VariantId = buffer.Variant,
-                    QtyInventory = buffer.Inventory,
-                    StoreId = buffer.Store
-                });
+                    list.Add(new InventoryResponse()
+                    {
+                        ItemId = buffer.Number,
+                        VariantId = buffer.Variant,
+                        QtyInventory = buffer.Inventory,
+                        QtyActualInventory = buffer.Inventory,
+                        StoreId = buffer.Store
+                    });
+                }
+            }
+
+            // check for missing items as nav does not return 0 items
+            foreach (NavWS.InventoryBufferIn item in rootin.InventoryBufferIn)
+            {
+                InventoryResponse it = list.Find(i => i.ItemId.Equals(item.Number) && i.VariantId.Equals(item.Variant));
+                if (it == null)
+                {
+                    list.Add(new InventoryResponse()
+                    {
+                        ItemId = item.Number,
+                        VariantId = item.Variant,
+                        StoreId = storeId
+                    });
+                }
             }
             return list;
         }

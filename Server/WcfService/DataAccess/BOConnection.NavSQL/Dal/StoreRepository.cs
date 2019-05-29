@@ -384,10 +384,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = string.Format("SELECT [Web Store Code] FROM [{0}WI Setup]", navCompanyName);
-                    TraceSqlCommand(command);
                     connection.Open();
-                    storeid = command.ExecuteScalar() as string;
+                    if (NavVersion < new Version("13.5"))
+                    {
+                        command.CommandText = string.Format("SELECT [Web Store Code] FROM [{0}WI Setup]", navCompanyName);
+                        TraceSqlCommand(command);
+                        storeid = command.ExecuteScalar() as string;
+                    }
                     if (string.IsNullOrEmpty(storeid))
                     {
                         command.CommandText = string.Format("SELECT [Local Store No_] FROM [{0}Retail Setup]", navCompanyName);
@@ -400,9 +403,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return storeid;
         }
 
-        public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset, int dayOfWeekOffset)
+        public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)
         {
-            //NAV can store datetime in UTC in db but UI shows correct. But DD replicates UTC so I need to adjust
             List<StoreHours> storeHourList = new List<StoreHours>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -432,7 +434,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             storehr.StoreId = storeId;
                             storehr.Description = storehr.NameOfDay;
 
-                            storehr.DayOfWeek = dayofweek - dayOfWeekOffset; //NAV starts with Sunday as 1 but .Net Sunday=0
+                            //NAV can store datetime in UTC in db but UI shows correct. But DD replicates UTC so I need to adjust
+                            storehr.DayOfWeek = (dayofweek == 7) ? 0 : dayofweek;
                             storehr.OpenFrom = ConvertTo.SafeDateTime(storehr.OpenFrom.AddHours(offset));
                             storehr.OpenTo = ConvertTo.SafeDateTime(storehr.OpenTo.AddHours(offset));
                             storeHourList.Add(storehr);
@@ -519,8 +522,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 store.Currency = new Currency(SQLHelper.GetString(reader["LCYCode"]));
             else
                 store.Currency = new Currency(cur);
-
-            store.StoreHours = StoreHoursGetByStoreId(store.Id, 0, 1);
 
             ImageRepository imgrepo = new ImageRepository();
             store.Images = imgrepo.ImageGetByKey("Store", store.Id, string.Empty, string.Empty, 0, includeDetails);

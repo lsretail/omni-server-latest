@@ -8,7 +8,6 @@ using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty;
 using LSOmni.DataAccess.BOConnection.NavSQL.Mapping;
 using LSOmni.DataAccess.BOConnection.NavSQL.Dal;
-using LSOmni.DataAccess.BOConnection.NavSQL.NavWS;
 using LSOmni.DataAccess.Interface.BOConnection;
 
 using LSRetail.Omni.Domain.DataModel.Base;
@@ -25,9 +24,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
-using Hierarchy = LSRetail.Omni.Domain.DataModel.Base.Hierarchies.Hierarchy;
-using MemberContact = LSRetail.Omni.Domain.DataModel.Loyalty.Members.MemberContact;
-using PublishedOffer = LSRetail.Omni.Domain.DataModel.Base.Retail.PublishedOffer;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL
 {
@@ -92,7 +88,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 CreateDeviceAndLinkToUser(contact.UserName, "", "", contactRs.CardId);
                 return contactRs.ContactId;
             }
-            
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             ContactMapping map = new ContactMapping();
@@ -164,38 +160,38 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             }
         }
 
-        public virtual MemberContact ContactGetById(string id, int numberOfTrans)
+        public virtual MemberContact ContactGetById(string id, int numberOfTrans, bool includeDetails)
         {
             MemberContact contact = null;
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             contact = rep.ContactGet(ContactSearchType.ContactNumber, id);
 
-            if (contact != null)
+            if (contact != null && includeDetails)
             {
                 long totalPoints = MemberCardGetPoints(contact.Card.Id);
                 contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
 
-                contact.PublishedOffers = PublishedOffersGetByCardId(contact.Card.Id, string.Empty);
+                contact.PublishedOffers = PublishedOffersGet(contact.Card.Id, string.Empty, string.Empty);
                 contact.Transactions = SalesEntriesGetByContactId(contact.Id, numberOfTrans, string.Empty);
             }
             return contact;
         }
 
-        public virtual MemberContact ContactGetByCardId(string card, int numberOfTrans)
+        public virtual MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails)
         {
             MemberContact contact = null;
             long totalPoints = 0;
 
             if (NavDirect)
             {
-                ContactRepository rep = new ContactRepository();
+                ContactRepository rep = new ContactRepository(NAVVersion);
                 contact = rep.ContactGet(ContactSearchType.CardId, card);
-                if (contact != null)
+                if (contact != null && includeDetails)
                 {
                     totalPoints = MemberCardGetPoints(contact.Card.Id);
                     contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
 
-                    contact.PublishedOffers = PublishedOffersGetByCardId(contact.Card.Id, string.Empty);
+                    contact.PublishedOffers = PublishedOffersGet(contact.Card.Id, string.Empty, string.Empty);
                     contact.Transactions = SalesEntriesGetByContactId(contact.Id, numberOfTrans, string.Empty);
                 }
                 return contact;
@@ -239,6 +235,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             logger.Debug("GetMemberContact Response - " + Serialization.SerializeToXmlPrint(rootContact));
 
             contact = map.MapFromRootToContact(rootContact);
+            if (includeDetails == false)
+                return contact;
 
             NavWS.RootGetMemberCard rootCard = new NavWS.RootGetMemberCard();
             decimal remainingPoints = 0;
@@ -319,13 +317,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual MemberContact ContactGetByUserName(string user)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ContactGetByUserName(user);
         }
 
         public virtual MemberContact ContactGetByEMail(string email)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ContactGet(ContactSearchType.Email, email);
         }
 
@@ -392,31 +390,31 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<Profile> ProfileGetByContactId(string id)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ProfileGetByContactId(id);
         }
 
         public virtual List<Profile> ProfileGetAll()
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ProfileGetAll();
         }
 
         public virtual Account AccountGetById(string accountId)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.AccountGetById(accountId);
         }
 
         public virtual List<Scheme> SchemeGetAll()
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.SchemeGetAll();
         }
 
         public virtual Scheme SchemeGetById(string schemeId)
         {
-            var rep = new ContactRepository();
+            var rep = new ContactRepository(NAVVersion);
             if (schemeId.Equals("Ping"))
             {
                 rep.SchemeGetById(schemeId);
@@ -461,13 +459,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual Device DeviceGetById(string id)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.DeviceGetById(id);
         }
 
         public virtual bool IsUserLinkedToDeviceId(string userName, string deviceId)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.IsUserLinkedToDeviceId(userName, deviceId);
         }
 
@@ -477,7 +475,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ContactSearch(searchType, search, maxNumberOfRowsReturned);
         }
 
@@ -507,7 +505,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<Profile> ProfileSearch(string contactId, string search)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ProfileSearch(contactId, search);
         }
 
@@ -523,13 +521,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual Card CardGetByContactId(string contactId)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.CardGetByContactId(contactId);
         }
 
         public virtual Card CardGetById(string id)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.CardGetById(id);
         }
 
@@ -583,15 +581,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return exchrate.CurrencyFactor;
         }
 
-        public virtual decimal GiftCardGetBalance(string cardNo, string entryType)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
+            if (navWS == null)
+                throw new LSOmniException(StatusCode.NAVWebFunctionNotFound, "Only supported in WS2");
+
             string respCode = string.Empty;
             string errorText = string.Empty;
-            RootGetDataEntryBalance root = new RootGetDataEntryBalance();
+            NavWS.RootGetDataEntryBalance root = new NavWS.RootGetDataEntryBalance();
             try
             {
                 logger.Debug("GetDataEntryBalance - GiftCardNo: {0}", cardNo);
-                
+
                 navWS.GetDataEntryBalance(ref respCode, ref errorText, entryType, cardNo, ref root);
                 if (root.POSDataEntry == null)
                 {
@@ -605,8 +606,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                     throw;
             }
-            logger.Debug("GetDataEntryBalance response - Balance: {0}", root.POSDataEntry.First().Balance);
-            return root.POSDataEntry.First().Balance;
+
+            logger.Debug("GetDataEntryBalance response - Balance:{0} Expire:{1}", root.POSDataEntry.First().Balance, root.POSDataEntry.First().ExpiryDate);
+            return new GiftCard(cardNo)
+            {
+                Balance = root.POSDataEntry.First().Balance,
+                ExpireDate = root.POSDataEntry.First().ExpiryDate
+            };
         }
 
         #endregion
@@ -631,8 +637,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 {
                     //the name of the Nav requestID changed between 9.00.04 and 9.00.05 
                     //TODO need to get the Notifications for this ws call too
-                    if(navWS == null)
-                    { 
+                    if (navWS == null)
+                    {
                         PublishedOfferXml xml = new PublishedOfferXml();
                         if (PublishOfferMemCache.Contains(cardId) == false)
                         {
@@ -957,6 +963,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual BasketCalcResponse BasketCalc(BasketCalcRequest basketRequest, decimal shippingPrice)
         {
+            if (NAVVersion > new Version("13.5"))
+                throw new LSOmniException(StatusCode.NAVWebFunctionNotFound, "Not supported in LS Central 13.5 or later");
+
             if (string.IsNullOrWhiteSpace(basketRequest.Id))
                 basketRequest.Id = GuidHelper.NewGuidString();
 
@@ -1068,45 +1077,83 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
 
-            ClickCollectXml xml = new ClickCollectXml();
-            string xmlRequest = xml.CheckAvailabilityRequestXML(request);
-            string xmlResponse = RunOperation(xmlRequest);
-
-            //need to ignore some nav response codes
-            string navResponseCode = GetResponseCode(ref xmlResponse);
-            if (navResponseCode == "0004")
+            if (navWS == null || NAVVersion < new Version("13.5"))
             {
-                //<Response_Text>Unknown Request_ID CO_QTY_AVAILABILITY</Response_Text>
-                //0004 = Unknown Request_ID,  NavResponseCode.Error = 0004
-                logger.Info("responseCode {0} - this is only supported by default for LS Nav 11.0 and later", navResponseCode);
-                return new OrderAvailabilityResponse();
-            }
+                ClickCollectXml xml = new ClickCollectXml();
+                string xmlRequest = xml.CheckAvailabilityRequestXML(request);
+                string xmlResponse = RunOperation(xmlRequest);
 
-            if (navResponseCode != "0000")
-            {
-                logger.Info("responseCode {0} - Inventory Not available for store {1}", navResponseCode, request.StoreId);
-                OrderAvailabilityResponse resp = new OrderAvailabilityResponse();
-                foreach(OneListItem item in request.Items)
+                //need to ignore some nav response codes
+                string navResponseCode = GetResponseCode(ref xmlResponse);
+                if (navResponseCode == "0004")
                 {
-                    resp.Lines.Add(new OrderLineAvailabilityResponse()
-                    {
-                        ItemId = item.Item.Id,
-                        VariantId = (item.VariantReg == null) ? string.Empty : item.VariantReg.Id,
-                        UnitOfMeasureId = (item.UnitOfMeasure == null) ? string.Empty : item.UnitOfMeasure.Id,
-                        Quantity = 0
-                    });
+                    //<Response_Text>Unknown Request_ID CO_QTY_AVAILABILITY</Response_Text>
+                    //0004 = Unknown Request_ID,  NavResponseCode.Error = 0004
+                    logger.Info("responseCode {0} - this is only supported by default for LS Nav 11.0 and later", navResponseCode);
+                    return new OrderAvailabilityResponse();
                 }
-                return resp;
+
+                if (navResponseCode != "0000")
+                {
+                    logger.Info("responseCode {0} - Inventory Not available for store {1}", navResponseCode, request.StoreId);
+                    OrderAvailabilityResponse resp = new OrderAvailabilityResponse();
+                    foreach (OneListItem item in request.Items)
+                    {
+                        resp.Lines.Add(new OrderLineAvailabilityResponse()
+                        {
+                            ItemId = item.Item.Id,
+                            VariantId = (item.VariantReg == null) ? string.Empty : item.VariantReg.Id,
+                            UnitOfMeasureId = (item.UnitOfMeasure == null) ? string.Empty : item.UnitOfMeasure.Id,
+                            Quantity = 0
+                        });
+                    }
+                    return resp;
+                }
+
+                HandleResponseCode(ref xmlResponse);
+                return xml.CheckAvailabilityExtResponseXML(xmlResponse);
             }
 
-            HandleResponseCode(ref xmlResponse);
-            return xml.CheckAvailabilityExtResponseXML(xmlResponse);
+            OrderMapping map = new OrderMapping();
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+
+            try
+            {
+                NavWS.RootGetInventoryMultipleIn rootin = map.MapOneListToInvReq(request);
+                NavWS.RootGetInventoryMultipleOut rootout = new NavWS.RootGetInventoryMultipleOut();
+                logger.Debug(Serialization.SerializeToXmlPrint(rootin));
+
+                navWS.GetInventoryMultiple(ref respCode, ref errorText, request.StoreId, string.Empty, rootin, ref rootout);
+                if (respCode != "0000")
+                    logger.Error(errorText);
+
+                return map.MapRootToOrderavailabilty(rootin, rootout);
+            }
+            catch (SoapException e)
+            {
+                if (e.Message.Contains("Method"))
+                    throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
+                else
+                    throw;
+            }
         }
 
         public virtual void OrderCreate(Order request, string tenderMapping)
         {
             if (request == null)
                 throw new ApplicationException("OrderCreate request can not be null");
+
+            if (NAVVersion > new Version("13.5"))
+            {
+                if (string.IsNullOrWhiteSpace(request.Id))
+                    request.Id = GuidHelper.NewGuidString();
+            }
+            else
+            {
+                if (Common.Util.Validation.IsValidGuid(request.Id) == false)
+                    request.Id = GuidHelper.NewGuidString();
+            }
 
             // need to map the TenderType enum coming from devices to TenderTypeId that NAV knows
             if (request.OrderPayments == null)
@@ -1182,12 +1229,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             OrderMapping map = new OrderMapping();
             string respCode = string.Empty;
             string errorText = string.Empty;
-            NavWS.RootCustomerOrder root = map.MapFromOrderToRoot(request, NAVVersion);
 
             try
             {
-                logger.Debug(Serialization.SerializeToXmlPrint(root));
-                navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
+                if (NAVVersion > new Version("13.5"))
+                {
+                    NavWS.RootCustomerOrderCreateV2 root = map.MapFromOrderV2ToRoot(request, NAVVersion);
+                    string orderId = string.Empty;
+                    logger.Debug(Serialization.SerializeToXmlPrint(root));
+                    navWS.CustomerOrderCreateV2(ref respCode, ref errorText, root, ref orderId);
+                }
+                else
+                {
+                    NavWS.RootCustomerOrder root = map.MapFromOrderToRoot(request, NAVVersion);
+                    logger.Debug(Serialization.SerializeToXmlPrint(root));
+                    navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
+                }
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.TransactionCalc, errorText);
             }
@@ -1211,7 +1268,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             Order order = repo.OrderGetById(id, includeLines);
             if (order == null)
-                return null;
+            {
+                order = OrderGetByReceiptId(id, includeLines, string.Empty);
+                if (order == null)
+                    return null;
+            }
 
             if (order.OrderPayments != null)
             {
@@ -1274,9 +1335,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 TotalDiscount = trans.DiscountAmt,
                 LineItemCount = (int)trans.TotalQty,
                 DocumentId = trans.DocumentNumber,
-                CardId = trans.CardId
+                CardId = trans.CardId,
+                Posted = true,
             };
-            
+
+            OrderRepository orepo = new OrderRepository(NAVVersion);
+            orepo.OrderPointsGetTotal(order.DocumentId, out decimal rewarded, out decimal used);
+            order.PointsRewarded = rewarded;
+            order.PointsUsedInOrder = used;
+
             foreach (LoySaleLine line in trans.SaleLines)
             {
                 OrderLine oline = new OrderLine()
@@ -1299,7 +1366,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 order.LineItemCount += (int)oline.Quantity;
             }
 
-            foreach(LoyTenderLine line in trans.TenderLines)
+            foreach (LoyTenderLine line in trans.TenderLines)
             {
                 order.OrderPayments.Add(new OrderPayment()
                 {
@@ -1309,7 +1376,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     TenderType = line.Type,
                 });
             }
-
             return order;
         }
 
@@ -1323,14 +1389,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             }
             else
             {
-                ContactRepository crepo = new ContactRepository();
+                ContactRepository crepo = new ContactRepository(NAVVersion);
                 MemberContact contact = crepo.ContactGet(ContactSearchType.ContactNumber, contactId);
                 if (contact == null)
                     throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact Not found");
 
                 List<string> cards = crepo.GetCardsByContactId(contactId);
                 OrderRepository repo = new OrderRepository(NAVVersion);
-                foreach(string card in cards)
+                foreach (string card in cards)
                     list.AddRange(repo.OrderHistoryByCardId(card, includeLines));
             }
 
@@ -1342,6 +1408,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 {
                     if (trans.DocumentType == EntryDocumentType.SalesInvoice)
                         continue;
+
+                    Order order = list.Find(o => o.ReceiptNo.Equals(trans.DocumentNumber));
+                    if (order != null)
+                        list.Remove(order);
 
                     list.Add(OrderGetByReceiptId(trans.ReceiptNumber, includeLines, string.Empty));
                 }
@@ -1368,7 +1438,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         #region Offer and Advertisement
 
-        public virtual List<PublishedOffer> PublishedOffersGetByCardId(string cardId, string itemId)
+        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
         {
             try
             {
@@ -1379,7 +1449,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                         //the name of the Nav requestID changed between 9.00.04 and 9.00.05 
                         //TODO need to get the Notifications for this ws call too
                         PublishedOfferXml xml = new PublishedOfferXml();
-                        string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, itemId, string.Empty);
+                        string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, itemId, storeId);
                         string xmlResponse = RunOperation(xmlRequest);
                         HandleResponseCode(ref xmlResponse);
 
@@ -1403,7 +1473,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     try
                     {
                         logger.Debug("GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
-                        navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, string.Empty, ref root);
+                        navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, storeId, ref root);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
                     }
@@ -1420,7 +1490,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 else
                 {
                     PublishedOfferXml xml = new PublishedOfferXml();
-                    string xmlRequest = xml.PublishedOfferRequestXML(cardId, itemId);
+                    string xmlRequest = xml.PublishedOfferRequestXML(cardId, itemId, storeId);
                     string xmlResponse = RunOperation(xmlRequest);
                     string navResponseCode = GetResponseCode(ref xmlResponse);
                     if (navResponseCode == "0004")
@@ -1512,24 +1582,24 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         #region Store
 
-        public virtual List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset, int dayOfWeekOffset)
+        public virtual List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)
         {
-            if(navWS == null || NAVVersion < new Version("13.01"))
-            { 
+            if (navWS == null || NAVVersion < new Version("13.01"))
+            {
                 StoreRepository rep = new StoreRepository(NAVVersion);
-                return rep.StoreHoursGetByStoreId(storeId, offset, dayOfWeekOffset);
+                return rep.StoreHoursGetByStoreId(storeId, offset);
             }
 
             string respCode = string.Empty;
             string errorText = string.Empty;
-            RootGetStoreOpeningHours root = new RootGetStoreOpeningHours();
+            NavWS.RootGetStoreOpeningHours root = new NavWS.RootGetStoreOpeningHours();
 
             try
             {
                 logger.Debug("StoreHoursGetByStoreId Store: " + storeId);
                 navWS.GetStoreOpeningHours(ref respCode, ref errorText, storeId, ref root);
                 if (respCode != "0000")
-                    throw new LSOmniServiceException(StatusCode.Error, errorText);
+                    return new List<StoreHours>();
             }
             catch (SoapException e)
             {
@@ -1540,7 +1610,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             }
             logger.Debug("GetStoreOpeningHours Response - " + Serialization.SerializeToXmlPrint(root));
             StoreMapping map = new StoreMapping();
-            return map.MapFromRootToOpeningHours(root, offset, dayOfWeekOffset);
+            return map.MapFromRootToOpeningHours(root, offset);
         }
 
         public virtual Store StoreGetById(string id)
@@ -1655,7 +1725,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<ReplCustomer> ReplEcommMember(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(NAVVersion);
             return rep.ReplicateMembers(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -1666,6 +1736,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             maxKey = string.Empty;
             recordsRemaining = 0;
             return rep.ReplicateCountryCode();
+        }
+
+        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            InvStatusRepository rep = new InvStatusRepository();
+            return rep.ReplicateInventoryStatus(storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

@@ -193,6 +193,10 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Notification> NotificationsGetByContactId(string contactId, int numberOfNotifications);
 
         [OperationContract]

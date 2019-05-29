@@ -155,7 +155,11 @@ namespace LSOmni.BLL.Loyalty
                 {
                     OneListItem line = list.Items.Find(i => i.DisplayOrderId == disc.LineNumber / 10000);
                     if (line == null)
-                        continue;
+                    {
+                        line = list.Items.Find(i => i.DisplayOrderId == disc.LineNumber);
+                        if (line == null)
+                            continue;
+                    }
 
                     OneListItemDiscount discount = new OneListItemDiscount();
                     discount.Description = disc.Description;

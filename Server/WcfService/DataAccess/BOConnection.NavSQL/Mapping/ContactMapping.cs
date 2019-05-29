@@ -294,6 +294,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Mapping
         {
             List<ImageView> list = new List<ImageView>();
 
+            if (imgs == null)
+                return list;
+
             foreach (NavWS.MemberNotificationImages img in imgs)
             {
                 if(img.KeyValue == notificationId)

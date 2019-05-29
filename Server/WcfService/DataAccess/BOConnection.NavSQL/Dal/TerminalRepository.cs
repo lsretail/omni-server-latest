@@ -22,6 +22,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                      "mt.[AutoLogoff After (Min_)],mt.[EFT Store No_],mt.[EFT POS Terminal No_],mt.[Hardware Profile]," +
                      "mt.[Interface Profile],mt.[Functionality Profile],mt.[Default Sales Type],mt.[Sales Type Filter]," +
                      "mt.[Inventory Main Menu],mt.[Show Numberpad],mt.[Device License Key],mt.[Item Filtering Method]";
+
             sqlfrom = " FROM [" + navCompanyName + "POS Terminal] mt";
         }
 

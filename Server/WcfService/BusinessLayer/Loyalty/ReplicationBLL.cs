@@ -498,6 +498,21 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplInvStatusResponse ReplEcommInventoryStatus(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplInvStatusResponse resp = new ReplInvStatusResponse();
+            resp.Items = BOLoyConnection.ReplEcommInventoryStatus(replRequest.StoreId, replRequest.BatchSize, ref lastkey, ref maxkey, ref recordsRemaining);
+            resp.RecordsRemaining = recordsRemaining;
+            resp.LastKey = lastkey;
+            resp.MaxKey = maxkey;
+            logger.Debug(string.Format("Records {0} LastKey {1} RecRemain {2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining));
+            return resp;
+        }
+
         public virtual ReplFullItemResponse ReplEcommFullItem(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;

@@ -79,6 +79,7 @@
     <Compile Include="Dal\HierarchyNodeRepository.cs" />
     <Compile Include="Dal\HierarchyRepository.cs" />
     <Compile Include="Dal\ImageRepository.cs" />
+    <Compile Include="Dal\InvStatusRepository.cs" />
     <Compile Include="Dal\ItemCategoryRepository.cs" />
     <Compile Include="Dal\ItemRepository.cs" />
     <Compile Include="Dal\ItemUOMRepository.cs" />
@@ -160,6 +161,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootCustomerOrderFilteredList.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootCustomerOrderStatus1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetCrossSelling.datasource">

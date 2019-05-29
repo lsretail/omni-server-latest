@@ -55,6 +55,33 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return view;
         }
 
+        public ImageView ImageGetByMediaId(string id)
+        {
+            ImageView view = null;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Content] FROM [Tenant Media] WHERE [ID]=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    connection.Open();
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            view = new ImageView();
+                            view.Id = id;
+                            view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[]);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return view;
+        }
+
         public List<ImageView> ImageGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
         {
             try

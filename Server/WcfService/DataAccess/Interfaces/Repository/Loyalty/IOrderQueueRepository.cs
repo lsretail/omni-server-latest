@@ -8,7 +8,7 @@ namespace LSOmni.DataAccess.Interface.Repository.Loyalty
     {
         string Save(OrderQueue order);
         OrderQueue OrderGetById(string id);
-        void UpdateStatus(string guid, OrderQueueStatus status);
+        void UpdateStatus(string id, OrderQueueStatus status);
         List<OrderQueue> OrderSearch(OrderSearchRequest searchRequest);
     }
 }

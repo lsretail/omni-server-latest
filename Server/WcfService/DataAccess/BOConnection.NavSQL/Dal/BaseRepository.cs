@@ -293,7 +293,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     }
                     catch (SqlException ex)
                     {
-                        status = (ex.Message.Contains("Invalid column name")) ? true : false;
+                        if (ex.Number == 208) // table does not exist
+                            status = false;
+                        else if (ex.Number == 207) // table exists but column does not exist
+                            status = true;
                     }
                 }
                 connection.Close();

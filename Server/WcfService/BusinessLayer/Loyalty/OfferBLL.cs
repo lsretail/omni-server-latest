@@ -22,7 +22,7 @@ namespace LSOmni.BLL.Loyalty
             return BOAppConnection.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 
-        public virtual List<PublishedOffer> PublishedOffersGetByCardId(string cardId, string itemId)
+        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
         {
             if (string.IsNullOrWhiteSpace(cardId) == false)
                 ValidateCard(cardId);
@@ -30,7 +30,7 @@ namespace LSOmni.BLL.Loyalty
             // this new published offers method came with LS Nav 9.00.03
             // before that it didn't make sense to show the coupons since they couldn't be used in mpos transaciton anyway!
             // old styld didn't have offerId 
-            return BOLoyConnection.PublishedOffersGetByCardId(cardId, itemId);
+            return BOLoyConnection.PublishedOffersGet(cardId, itemId, storeId);
         }
     }
 }

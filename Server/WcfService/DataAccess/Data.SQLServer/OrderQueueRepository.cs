@@ -20,9 +20,6 @@ namespace LSOmni.DataAccess.Dal
             if (order == null)
                 throw new ApplicationException("Save() order can not be null");
 
-            if (Validation.IsValidGuid(order.Id) == false)
-                order.Id = GuidHelper.NewGuidString();
-
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
                 db.Open();
@@ -37,13 +34,13 @@ namespace LSOmni.DataAccess.Dal
                                 command.Transaction = trans;
 
                                 // delete previous data
-                                command.CommandText = "DELETE FROM [OrderQueue] WHERE [Guid]=@id";
+                                command.CommandText = "DELETE FROM [OrderQueue] WHERE [OrderId]=@id";
                                 command.Parameters.AddWithValue("@id", order.Id);
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
 
                                 command.CommandText = "INSERT INTO [OrderQueue] (" +
-                                                "[Guid],[OrderStatus],[OrderType],[OrderXml],[DateCreated],[DateLastModified]," +
+                                                "[OrderId],[OrderStatus],[OrderType],[OrderXml],[DateCreated],[DateLastModified]," +
                                                 "[Description],[PhoneNumber],[Email],[SearchKey],[ContactId]," +
                                                 "[DeviceId],[StoreId],[TerminalId],[StatusChange]" +
                                                 ") VALUES (@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15)";
@@ -86,11 +83,10 @@ namespace LSOmni.DataAccess.Dal
             return order.Id.Replace("-", "");   //strip out the guild so client doesn't see it
         }
 
-        public void UpdateStatus(string guid, OrderQueueStatus status)
+        public void UpdateStatus(string id, OrderQueueStatus status)
         {
-            guid = GuidHelper.GuidWithDash(guid);
-            if (base.DoesRecordExist("[OrderQueue]", "[Guid]=@0", guid) == false)
-                throw new LSOmniServiceException(StatusCode.OrderQueueIdNotFound, "OrderQueue does not exists Id: " + guid);
+            if (base.DoesRecordExist("[OrderQueue]","[OrderId]=@0",id) == false)
+                throw new LSOmniServiceException(StatusCode.OrderQueueIdNotFound, "OrderQueue does not exists OrderId: " + id);
 
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
@@ -99,12 +95,10 @@ namespace LSOmni.DataAccess.Dal
                 {
                     using (SqlCommand command = db.CreateCommand())
                     {
-                        command.CommandText = "UPDATE [OrderQueue] SET " +
-                            "[OrderStatus]=@f1,[StatusChange]=@f2 WHERE [Guid]=@id";
-
+                        command.CommandText = "UPDATE [OrderQueue] SET [OrderStatus]=@f1,[StatusChange]=@f2 WHERE [OrderId]=@id";
                         command.Parameters.AddWithValue("@f1", (int)status);
                         command.Parameters.AddWithValue("@f2", string.Format("StatusChange - {0}", status));
-                        command.Parameters.AddWithValue("@id", guid);
+                        command.Parameters.AddWithValue("@id", id);
                         TraceSqlCommand(command);
                         command.ExecuteNonQuery();
                     }
@@ -127,7 +121,7 @@ namespace LSOmni.DataAccess.Dal
                     if (request.MaxOrders > 0)
                         sql += string.Format("TOP ({0}) ", request.MaxOrders);
 
-                    sql += "[Guid],[Id],[OrderStatus],[OrderType],[OrderXml],[DateCreated]," +
+                    sql += "[OrderId],[Id],[OrderStatus],[OrderType],[OrderXml],[DateCreated]," +
                            "[DateLastModified],[Description],[PhoneNumber],[Email],[SearchKey]," +
                            "[ContactId],[DeviceId],[StoreId],[TerminalId],[StatusChange] FROM [OrderQueue]";
 
@@ -194,24 +188,23 @@ namespace LSOmni.DataAccess.Dal
             return orders;
         }
 
-        public OrderQueue OrderGetById(string guid)
+        public OrderQueue OrderGetById(string id)
         {
             OrderQueue order = null;
-            if (Validation.IsValidGuid(guid) == false)
+            if (string.IsNullOrWhiteSpace(id))
                 return order;
-            guid = GuidHelper.GuidWithDash(guid);
 
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
                 db.Open();
                 using (SqlCommand command = db.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Guid],[Id],[OrderStatus],[OrderType],[OrderXml],[DateCreated]," +
+                    command.CommandText = "SELECT [OrderId],[Id],[OrderStatus],[OrderType],[OrderXml],[DateCreated]," +
                                           "[DateLastModified],[Description],[PhoneNumber],[Email],[SearchKey]," +
                                           "[ContactId],[DeviceId],[StoreId],[TerminalId],[StatusChange] " +
-                                          "FROM [OrderQueue] WHERE [Guid]=@id";
+                                          "FROM [OrderQueue] WHERE [OrderId]=@id";
 
-                    command.Parameters.AddWithValue("@id", guid);
+                    command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -230,9 +223,7 @@ namespace LSOmni.DataAccess.Dal
         {
             OrderQueue order = new OrderQueue();
             order.QueueId = SQLHelper.GetInt64(reader["Id"]);
-            order.Id = SQLHelper.GetString(reader["Guid"]);
-            order.Id = order.Id.Replace("-", ""); //strip out the guild so client doesn't see it
-
+            order.Id = SQLHelper.GetString(reader["OrderId"]);
             order.OrderXml = SQLHelper.GetString(reader["OrderXml"]);
             order.Description = SQLHelper.GetString(reader["Description"]);
             order.ContactId = SQLHelper.GetString(reader["ContactId"]);

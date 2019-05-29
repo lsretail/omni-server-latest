@@ -46,7 +46,7 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrWhiteSpace(id) == false && string.IsNullOrWhiteSpace(alternateId) == false)
                 ValidateContact(id);
 
-            MemberContact contact = BOLoyConnection.ContactGetById(id, 0);
+            MemberContact contact = BOLoyConnection.ContactGetById(id, 0, true);
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.ContactIdNotFound, string.Format("Contact {0} {1} Not found.", id, alternateId));
 
@@ -205,7 +205,7 @@ namespace LSOmni.BLL.Loyalty
             base.ValidateContact(contact.Id);
 
             //get existing contact in db to compare the email and get accountId
-            MemberContact ct = BOLoyConnection.ContactGetById(contact.Id, 0);
+            MemberContact ct = BOLoyConnection.ContactGetById(contact.Id, 0, false);
             if (ct == null)
                 throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact not found with Id: " + contact.Id);
 
@@ -220,7 +220,7 @@ namespace LSOmni.BLL.Loyalty
 
             BOLoyConnection.ContactUpdate(contact, ct.Account.Id);
             string contactId = iContactRepository.ContactUpdate(contact);
-            return BOLoyConnection.ContactGetById(contactId, 0);
+            return BOLoyConnection.ContactGetById(contactId, 0, true);
         }
 
         public virtual string Login(string userName, string password, string deviceId = "", string ipAddress = "")

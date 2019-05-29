@@ -23,7 +23,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         public TransactionRepository(Version navVersion) : base(navVersion)
         {
             sqltransheadcol = "mt.[Transaction No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Receipt No_],mt.[Staff ID],mt.[Trans_ Currency]," +
-                              "mt.[No_ of Items],mt.[Net Amount],mt.[Cost Amount],mt.[Gross Amount],mt.[Payment],mt.[Discount Amount],mt.[Date],mt.[Time],mt.[Order No_]";
+                              "mt.[No_ of Items],mt.[Net Amount],mt.[Cost Amount],mt.[Gross Amount],mt.[Payment],mt.[Discount Amount],mt.[Date],mt.[Time]";
+            sqltransheadcol += (navVersion >= new Version("13.4")) ? ",mt.[Customer Order No_] AS OrderNo" : ",mt.[Order No_] AS OrderNo";
             sqltransheadfrom = " FROM [" + navCompanyName + "Transaction Header] mt";
 
             sqlsalelinecol = "ml.[Transaction No_],ml.[Store No_],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
@@ -454,7 +455,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 TotalQty = SQLHelper.GetDecimal(reader, "No_ of Items")
             };
 
-            string orderno = SQLHelper.GetString(reader["Order No_"]);
+            string orderno = SQLHelper.GetString(reader["OrderNo"]);
             if (string.IsNullOrEmpty(orderno))
             {
                 trans.DocumentType =  EntryDocumentType.ReceiptNumber;

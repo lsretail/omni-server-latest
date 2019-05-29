@@ -134,7 +134,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty
         {
             XElement root =
                     new XElement("Customer_Order_Header",
-                        new XElement("Document_Id", rq.Id),
+                        new XElement("Document_Id", string.Empty),
                         new XElement("Store_No.", rq.StoreId),
                         new XElement("Member_Card_No.", rq.CardId),
                         new XElement("Source_Type", Convert.ToInt32(rq.SourceType).ToString())
@@ -146,7 +146,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty
         {
             XElement root =
                     new XElement("Customer_Order_Header",
-                        new XElement("Document_Id", rq.Id),
+                        new XElement("Document_Id", string.Empty),
                         new XElement("Store_No.", rq.StoreId),
                         new XElement("Member_Card_No.", rq.CardId),
                         new XElement("Anonymous_Order", (string.IsNullOrEmpty(rq.CardId)) ? true : false),
@@ -160,7 +160,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty
         {
             XElement root =
                 new XElement("Customer_Order_Line",
-                    new XElement("Document_Id", id),
+                    new XElement("Document_Id", string.Empty),
                     new XElement("Line_No.", LineNumberToNav(rq.LineNumber)),
                     new XElement("Line_Type", Convert.ToInt32(rq.LineType).ToString()),
                     new XElement("Number", rq.ItemId),
@@ -175,7 +175,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty
         {
             XElement root =
                 new XElement("Customer_Order_Line",
-                    new XElement("Document_Id", id),
+                    new XElement("Document_Id", string.Empty),
                     new XElement("Line_No.", LineNumberToNav(linenNo)),
                     new XElement("Line_Type", (int)LineType.Item),
                     new XElement("Number", rq.Item?.Id),

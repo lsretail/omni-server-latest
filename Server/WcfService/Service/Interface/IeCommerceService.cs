@@ -58,6 +58,16 @@ namespace LSOmni.Service
         List<PublishedOffer> PublishedOffersGetByCardId(string cardId, string itemId);
 
         /// <summary>
+        /// Get Published Offers
+        /// </summary>
+        /// <param name="cardId">Member Card Id to look for</param>
+        /// <param name="itemId">Only show Offers for this item</param>
+        /// <param name="storeId">Get Offers for Store</param>
+        /// <returns></returns>
+        [OperationContract]
+        List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId);
+
+        /// <summary>
         /// Get related items in a published offer
         /// </summary>
         /// <param name="pubOfferId">Published offer id</param>
@@ -82,7 +92,7 @@ namespace LSOmni.Service
         /// <param name="cardNo">Gift card number</param>
         /// <returns></returns>
         [OperationContract]
-        decimal GiftCardGetBalance(string cardNo);
+        GiftCard GiftCardGetBalance(string cardNo);
 
         #endregion
 
@@ -2703,6 +2713,26 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of store tender types</returns>
         [OperationContract]
         ReplTaxSetupResponse ReplEcommTaxSetup(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Inventory Status
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 99001608 - Inventory Lookup Table
+        /// <p/><p/>
+        /// Inventory Lookup Table has to be updated before the replication can be done.  
+        /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button.
+        /// Run Scheduler job with CodeUnit 10012871 - WI Update Inventory.
+        /// <p/><p/>
+        /// All ReplEcommXX web methods work the same.
+        /// This function always performs full replication
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of store tender types</returns>
+        [OperationContract]
+        ReplInvStatusResponse ReplEcommInventoryStatus(ReplRequest replRequest);
 
         #endregion
 

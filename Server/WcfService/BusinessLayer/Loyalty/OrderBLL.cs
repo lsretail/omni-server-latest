@@ -61,12 +61,10 @@ namespace LSOmni.BLL.Loyalty
                 string msg = "OrderCreate() request is empty";
                 throw new LSOmniServiceException(StatusCode.Error, msg);
             }
-            if (Validation.IsValidGuid(request.Id) == false)
-                request.Id = GuidHelper.NewGuidString();
 
             if (request.AnonymousOrder == false && string.IsNullOrEmpty(request.CardId) == false)
             {
-                MemberContact contact = BOLoyConnection.ContactGetByCardId(request.CardId, 0);
+                MemberContact contact = BOLoyConnection.ContactGetByCardId(request.CardId, 0, false);
                 if (contact == null)
                     throw new LSOmniServiceException(StatusCode.CardIdInvalid, "Invalid card number");
                 if (string.IsNullOrEmpty(request.ContactId))
@@ -85,7 +83,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 //líka save í OrderQueue töflunni - bara að ganni svo við eigum þetta?
                 OrderQueueBLL qBLL = new OrderQueueBLL(base.DeviceId, timeoutInSeconds);
-                qBLL.OrderCreate(request);
+                qBLL.OrderQueueCreate(request);
             }
             catch (Exception ex)
             {

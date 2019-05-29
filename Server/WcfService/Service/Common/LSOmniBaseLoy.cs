@@ -452,7 +452,6 @@ namespace LSOmni.Service
                 string contactId = contactBLL.Login(userName, password, "", clientIPAddress);
                 ContactBLL contactWithSecurityTokenBLL = new ContactBLL(contactBLL.SecurityToken, clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
                 MemberContact contact = contactWithSecurityTokenBLL.ContactGetById(contactId);
-                contact.Addresses = new List<Address>();
                 contact.Notifications = new List<Notification>();
                 contact.Profiles = new List<Profile>();
                 contact.PublishedOffers = new List<PublishedOffer>();
@@ -734,7 +733,7 @@ namespace LSOmni.Service
             {
                 logger.Debug("itemId:{0}  cardId:{1} ", itemId, cardId);
                 OfferBLL bll = new OfferBLL(securityToken, clientTimeOutInSeconds);
-                List<PublishedOffer> list = bll.PublishedOffersGetByCardId(cardId, itemId);
+                List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, string.Empty);
                 foreach (PublishedOffer it in list)
                 {
                     foreach (ImageView iv in it.Images)
@@ -751,6 +750,40 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Format("itemId:{0}  cardId:{1} ", itemId, cardId));
+                return null; //never gets here
+            }
+        }
+
+        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
+        {
+            if (cardId == null)
+                cardId = string.Empty;
+            if (itemId == null)
+                itemId = string.Empty;
+            if (storeId == null)
+                storeId = string.Empty;
+
+            try
+            {
+                logger.Debug("itemId:{0} cardId:{1} storeId:{2}", itemId, cardId, storeId);
+                OfferBLL bll = new OfferBLL(securityToken, clientTimeOutInSeconds);
+                List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, storeId);
+                foreach (PublishedOffer it in list)
+                {
+                    foreach (ImageView iv in it.Images)
+                    {
+                        iv.Location = GetImageStreamUrl(iv);
+                    }
+                    foreach (OfferDetails od in it.OfferDetails)
+                    {
+                        od.Image.Location = GetImageStreamUrl(od.Image);
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("itemId:{0} cardId:{1} storeId:{2}", itemId, cardId, storeId));
                 return null; //never gets here
             }
         }
@@ -1456,7 +1489,7 @@ namespace LSOmni.Service
 
                 StoreBLL storeBLL = new StoreBLL(clientTimeOutInSeconds);
                 maxNumberOfStores = (maxNumberOfStores > maxNumberReturned ? maxNumberReturned : maxNumberOfStores); //max 1000 should be the limit!
-                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores);
+                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);

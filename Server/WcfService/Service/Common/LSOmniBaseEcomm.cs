@@ -2,6 +2,7 @@
 
 using LSOmni.BLL.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.Service
@@ -26,7 +27,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual decimal GiftCardGetBalance(string cardNo)
+        public virtual GiftCard GiftCardGetBalance(string cardNo)
         {
             try
             {
@@ -36,7 +37,7 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Format("CardNo:{0} ", cardNo));
-                return 0;
+                return new GiftCard(string.Empty);
             }
         }
 
@@ -394,6 +395,21 @@ namespace LSOmni.Service
                 logger.Debug(LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyLeaf(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplInvStatusResponse ReplEcommInventoryStatus(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(clientTimeOutInSeconds);
+                return bll.ReplEcommInventoryStatus(replRequest);
             }
             catch (Exception ex)
             {

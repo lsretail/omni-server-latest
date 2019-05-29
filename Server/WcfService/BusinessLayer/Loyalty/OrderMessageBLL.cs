@@ -52,19 +52,19 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual OrderMessage OrderMessageSave(OrderMessage orderMessage)
         {
-            //
             try
             {
-                string theGuid = "";
                 //validation
                 if (orderMessage == null)
                 {
                     string msg = "OrderMessageSave() is null";
                     throw new LSOmniServiceException(StatusCode.Error, msg);
                 }
-                theGuid = iOrderRepository.SaveOrderMessage(orderMessage);
+                iOrderRepository.SaveOrderMessage(orderMessage);
 
-                return OrderMessageGetById(theGuid);
+                string resp = SendToEcom(new { Id = orderMessage.Id, Status = orderMessage.OrderMessageStatus });
+
+                return OrderMessageGetById(orderMessage.Id);
             }
             catch (Exception ex)
             {
@@ -130,47 +130,14 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token)
         {
-            try
-            {
-                EComRequestPayment ev = new EComRequestPayment();
-                ev.OrderId = orderId;
-                ev.Status = status;
-                ev.Id = iPayRequestRepository.NewRequest(orderId);
-                ev.Amount = amount;
-                ev.Token = token;
+            EComRequestPayment ev = new EComRequestPayment();
+            ev.OrderId = orderId;
+            ev.Status = status;
+            ev.Id = iPayRequestRepository.NewRequest(orderId);
+            ev.Amount = amount;
+            ev.Token = token;
 
-                string payloadJson = new JavaScriptSerializer().Serialize(ev);
-                string ecomUrl = ConfigSetting.GetString("Ecom.Url");
-
-                if (string.IsNullOrEmpty(ecomUrl))
-                    return "ERROR: Missing Ecom.Url in Appsettings";
-
-                if (ecomUrl.ToUpper() == "DEMO")
-                    return "OK";
-
-                Uri url = new Uri(ecomUrl);
-                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
-                httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = "POST";
-
-                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
-                {
-                    streamWriter.Write(payloadJson);
-                    streamWriter.Flush();
-                    streamWriter.Close();
-                }
-
-                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
-                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
-                {
-                    return streamReader.ReadToEnd();
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Error(ex);
-                return "ERROR:" + ex.Message;
-            }
+            return SendToEcom(ev);
         }
 
         public virtual bool OrderConfirmPayRequest(string orderId)
