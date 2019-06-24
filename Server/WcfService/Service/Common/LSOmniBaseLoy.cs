@@ -20,6 +20,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.Service
 {
@@ -54,9 +55,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("ProfileGetAll()");
+                logger.Debug(config.LSKey.Key, "ProfileGetAll()");
 
-                ContactBLL profileBLL = new ContactBLL(clientTimeOutInSeconds); //no security token neede
+                ContactBLL profileBLL = new ContactBLL(config, clientTimeOutInSeconds); //no security token neede
                 return profileBLL.ProfilesGetAll();
             }
             catch (Exception ex)
@@ -66,18 +67,18 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual List<Profile> ProfilesGetByContactId(string contactId)
+        public virtual List<Profile> ProfilesGetByCardId(string cardId)
         {
             try
             {
-                logger.Debug(string.Format("ProfilesGetByContactId() - contactId:{0}", contactId));
+                logger.Debug(config.LSKey.Key, string.Format("ProfilesGetByContactId() - cardId:{0}", cardId));
 
-                ContactBLL profileBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                return profileBLL.ProfilesGetByContactId(contactId);
+                ContactBLL profileBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return profileBLL.ProfilesGetByCardId(cardId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ProfilesGetByContactId() contactId:{0}", contactId));
+                HandleExceptions(ex, string.Format("Failed to ProfilesGetByContactId() cardId:{0}", cardId));
                 return null; //never gets here
             }
         }
@@ -85,46 +86,6 @@ namespace LSOmni.Service
         #endregion Profile
 
         #region contact and account
-
-        /// <summary>
-        /// Get account by account Id
-        /// </summary>
-        /// <param name="accountId">the account id</param>
-        /// <returns>Account</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>
-        /// </list>        
-        /// </exception>          
-        public virtual Account AccountGetById(string accountId)
-        {
-            try
-            {
-                logger.Debug("accountId:{0}", accountId);
-
-                ContactBLL accountBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                return accountBLL.AccountGetById(accountId);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("Failed to AccountGetById() accountId:{0}", accountId));
-                return null; //never gets here
-            }
-        }
 
         /// <summary>
         /// Get all schemes in system
@@ -150,9 +111,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("SchemeGetAll()");
+                logger.Debug(config.LSKey.Key, "SchemeGetAll()");
 
-                ContactBLL accountBLL = new ContactBLL(clientTimeOutInSeconds);
+                ContactBLL accountBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 return accountBLL.SchemesGetAll();
             }
             catch (Exception ex)
@@ -165,7 +126,7 @@ namespace LSOmni.Service
         /// <summary>
         /// Get contact by contact Id
         /// </summary>
-        /// <param name="contactId">contact Id</param>
+        /// <param name="cardId">Card Id</param>
         /// <returns>Contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -186,21 +147,21 @@ namespace LSOmni.Service
         /// </item>
         /// </list>        
         /// </exception> 
-        public virtual MemberContact ContactGetById(string contactId)
+        public virtual MemberContact ContactGetByCardId(string cardId)
         {
             try
             {
-                logger.Debug("contactId:{0}", contactId);
+                logger.Debug(config.LSKey.Key, "cardId:{0}", cardId);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                MemberContact contact = contactBLL.ContactGetById(contactId);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                MemberContact contact = contactBLL.ContactGetByCardId(cardId, true);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 return contact;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ContactGetById() contactId:{0}", contactId));
+                HandleExceptions(ex, string.Format("Failed to ContactGetById() cardId:{0}", cardId));
                 return null; //never gets here
             }
         }
@@ -209,33 +170,14 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("searchType:{0} searchValue:{1}", searchType, search);
+                logger.Debug(config.LSKey.Key, "searchType:{0} searchValue:{1}", searchType, search);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 return contactBLL.ContactSearch(searchType, search, maxNumberOfRowsReturned);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Format("Failed to ContactSearch() searchType:{0} searchValue:{1}", searchType, search));
-                return null; //never gets here
-            }
-        }
-
-        public virtual MemberContact ContactGetByAlternateId(string alternateId)
-        {
-            try
-            {
-                logger.Debug("alternateId:{0}", alternateId);
-
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                MemberContact contact = contactBLL.ContactGetById("", alternateId);
-                contact.Environment.Version = this.Version();
-                ContactSetLocation(contact);
-                return contact;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("Failed to ContactGetByAlternateId() alternateId:{0}", alternateId));
                 return null; //never gets here
             }
         }
@@ -280,8 +222,11 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(contact));
-                ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds);//not using securitytoken here, so no security checks
+                if (contact.Cards == null)
+                    contact.Cards = new List<Card>();
+
+                logger.Debug(config.LSKey.Key, LogJson(contact));
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);//not using securitytoken here, so no security checks
                 MemberContact contactOut = contactBLL.ContactCreate(contact);
                 contactOut.Environment.Version = this.Version();
                 ContactSetLocation(contactOut);
@@ -289,7 +234,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(LogJson(contact));
+                logger.Error(config.LSKey.Key, LogJson(contact));
                 HandleExceptions(ex, "Failed to ContactCreate().");
                 return null; //never gets here
             }
@@ -331,9 +276,12 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(contact));
+                if (contact.Cards == null)
+                    contact.Cards = new List<Card>();
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(contact));
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 MemberContact contactOut = contactBLL.ContactUpdate(contact);
                 contactOut.Environment = new OmniEnvironment();
                 contactOut.Environment.Version = this.Version();
@@ -343,7 +291,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(LogJson(contact));
+                logger.Error(config.LSKey.Key, LogJson(contact));
                 HandleExceptions(ex, "Failed to ContactUpdate().");
                 return null; //never gets here
             }
@@ -382,7 +330,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("userName:{0} deviceId:{1} ", userName, deviceId);
+                logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1} ", userName, deviceId);
 
                 //some validation
                 if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
@@ -390,11 +338,9 @@ namespace LSOmni.Service
                     throw new LSOmniServiceException(StatusCode.UserNamePasswordInvalid, "User name or password are missing.");
                 }
 
-                ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
-                string contactId = contactBLL.Login(userName, password, deviceId, clientIPAddress);
-
-                ContactBLL contactWithSecurityTokenBLL = new ContactBLL(contactBLL.SecurityToken, clientTimeOutInSeconds);
-                MemberContact contact = contactWithSecurityTokenBLL.ContactGetById(contactId);
+                config.SecurityCheck = false;
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
+                MemberContact contact = contactBLL.Login(userName, password, true, deviceId, clientIPAddress);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 return contact;
@@ -440,7 +386,7 @@ namespace LSOmni.Service
             //security token is in card
             try
             {
-                logger.Debug("userName:{0} ", userName);
+                logger.Debug(config.LSKey.Key, "userName:{0} ", userName);
 
                 //some validation
                 if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
@@ -448,14 +394,8 @@ namespace LSOmni.Service
                     throw new LSOmniServiceException(StatusCode.UserNamePasswordInvalid, "User name or password are missing.");
                 }
 
-                ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds); //not using securitytoken here, so no security checks
-                string contactId = contactBLL.Login(userName, password, "", clientIPAddress);
-                ContactBLL contactWithSecurityTokenBLL = new ContactBLL(contactBLL.SecurityToken, clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
-                MemberContact contact = contactWithSecurityTokenBLL.ContactGetById(contactId);
-                contact.Notifications = new List<Notification>();
-                contact.Profiles = new List<Profile>();
-                contact.PublishedOffers = new List<PublishedOffer>();
-                return contact;
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using securitytoken here, so no security checks
+                return contactBLL.Login(userName, password, false, "", clientIPAddress);
             }
             catch (Exception ex)
             {
@@ -496,31 +436,15 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("userName: {0} deviceId: {1}", userName, deviceId);
+                logger.Debug(config.LSKey.Key, "userName: {0} deviceId: {1}", userName, deviceId);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.Logout(userName, deviceId, clientIPAddress);
                 return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Format("Failed to Logout() userName: {0} deviceId: {1} ", userName, deviceId));
-            }
-            return false;
-        }
-        
-        public virtual bool UserDelete(string userName)
-        {
-            try
-            {
-                logger.Debug("userName: {0}", userName);
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                contactBLL.UserDelete(userName);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "Failed to delete user " + userName);
             }
             return false;
         }
@@ -564,9 +488,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("userName:{0}  ", userName);
+                logger.Debug(config.LSKey.Key, "userName:{0}  ", userName);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.ChangePassword(userName, newPassword, oldPassword);
             }
             catch (Exception ex)
@@ -576,15 +500,15 @@ namespace LSOmni.Service
             return true;
         }
 
-        public virtual double ContactAddCard(string contactId, string cardId)
+        public virtual double ContactAddCard(string contactId, string cardId, string accountId)
         {
             double points = 0;
             try
             {
-                logger.Debug("contactid:{0}  , cardid:{1}", contactId, cardId);
+                logger.Debug(config.LSKey.Key, "contactid:{0}  , cardid:{1}", contactId, cardId);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                points = contactBLL.ContactAddCard(contactId, cardId);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                points = contactBLL.ContactAddCard(contactId, cardId, accountId);
             }
             catch (Exception ex)
             {
@@ -593,18 +517,18 @@ namespace LSOmni.Service
             return points;
         }
 
-        public virtual long ContactGetPointBalance(string contactId)
+        public virtual long CardGetPointBalance(string cardId)
         {
             try
             {
-                logger.Debug("contactId:{0}", contactId);
+                logger.Debug(config.LSKey.Key, "cardId:{0}", cardId);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
-                return Convert.ToInt64(contactBLL.ContactGetPointBalance(contactId));
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return Convert.ToInt64(contactBLL.CardGetPointBalance(cardId));
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ContactGetPointBalance() contactId:{0}", contactId));
+                HandleExceptions(ex, string.Format("Failed to ContactGetPointBalance() cardId:{0}", cardId));
                 return 0;  //never gets here
             }
         }
@@ -613,9 +537,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("PointRate");
+                logger.Debug(config.LSKey.Key, "PointRate");
 
-                CurrencyBLL curBLL = new CurrencyBLL(securityToken, clientTimeOutInSeconds);
+                CurrencyBLL curBLL = new CurrencyBLL(config, clientTimeOutInSeconds);
                 return curBLL.GetPointRate();
             }
             catch (Exception ex)
@@ -629,9 +553,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("deviceid:{0} ", deviceId);
+                logger.Debug(config.LSKey.Key, "deviceid:{0} ", deviceId);
 
-                ContactBLL contactBLL = new ContactBLL(securityToken, clientTimeOutInSeconds);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.DeviceSave(deviceId, deviceFriendlyName, platform, osVersion, manufacturer, model);
             }
             catch (Exception ex)
@@ -647,9 +571,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("userName:{0}  resetCode:{1}", userName, resetCode);
+                logger.Debug(config.LSKey.Key, "userName:{0}  resetCode:{1}", userName, resetCode);
 
-                ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.ResetPassword(userName, resetCode, newPassword);
             }
             catch (Exception ex)
@@ -659,14 +583,14 @@ namespace LSOmni.Service
             return true;
         }
 
-        public virtual string ForgotPassword(string userNameOrEmail, string emailSubject, string emailBody)
+        public virtual string ForgotPassword(string userNameOrEmail)
         {
             try
             {
-                logger.Debug("userNameOrEmail:{0} emailSubject:{1}", userNameOrEmail, emailSubject);
+                logger.Debug(config.LSKey.Key, "userNameOrEmail:{0}", userNameOrEmail);
 
-                ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds);
-                return contactBLL.ForgotPassword(userNameOrEmail, string.Empty, emailSubject, emailBody);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return contactBLL.ForgotPassword(userNameOrEmail);
             }
             catch (Exception ex)
             {
@@ -674,28 +598,6 @@ namespace LSOmni.Service
             }
             return string.Empty;
         }
-
-        public virtual bool ForgotPasswordForDevice(string userNameOrEmail)
-        {
-            try
-            {
-                logger.Debug("userNameOrEmail:{0}  deviceId:{1}", userNameOrEmail, this.deviceId);
-
-                ContactBLL contactBLL = new ContactBLL(clientTimeOutInSeconds);
-                contactBLL.ForgotPasswordForDevice(userNameOrEmail, this.deviceId);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, String.Format("userNameOrEmail:{0} deviceId:{1}", userNameOrEmail, this.deviceId));
-            }
-            return true;
-        }
-
-        // offer2.Image = @"R0lGODlhUAAPAKIAAAsLav///88PD9WqsYmApmZmZtZfYmdakyH5BAQUAP8ALAAAAABQAA8AAAPb
-        //WLrc/jDKSVe4OOvNu/9gqARDSRBHegyGMahqO4R0bQcjIQ8E4BMCQc930JluyGRmdAAcdiigMLVr
-        //ApTYWy5FKM1IQe+Mp+L4rphz+qIOBAUYeCY4p2tGrJZeH9y79mZsawFoaIRxF3JyiYxuHiMGb5KT
-        //kpFvZj4ZbYeCiXaOiKBwnxh4fnt9e3ktgZyHhrChinONs3cFAShFF2JhvCZlG5uchYNun5eedRxM
-        //AF15XEFRXgZWWdciuM8GCmdSQ84lLQfY5R14wDB5Lyon4ubwS7jx9NcV9/j5+g4JADs=";
 
         #endregion contact and account
 
@@ -705,9 +607,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("pubOfferId:{0}", pubOfferId.ToString());
+                logger.Debug(config.LSKey.Key, "pubOfferId:{0}", pubOfferId.ToString());
 
-                ItemBLL bll = new ItemBLL(securityToken, clientTimeOutInSeconds);
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 List<LoyItem> items = bll.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
                 foreach (LoyItem item in items)
                 {
@@ -726,13 +628,11 @@ namespace LSOmni.Service
         {
             if (cardId == null)
                 cardId = string.Empty;
-            if (itemId == null)
-                itemId = string.Empty;
 
             try
             {
-                logger.Debug("itemId:{0}  cardId:{1} ", itemId, cardId);
-                OfferBLL bll = new OfferBLL(securityToken, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "itemId:{0}  cardId:{1} ", itemId, cardId);
+                OfferBLL bll = new OfferBLL(config, clientTimeOutInSeconds);
                 List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, string.Empty);
                 foreach (PublishedOffer it in list)
                 {
@@ -750,40 +650,6 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Format("itemId:{0}  cardId:{1} ", itemId, cardId));
-                return null; //never gets here
-            }
-        }
-
-        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
-        {
-            if (cardId == null)
-                cardId = string.Empty;
-            if (itemId == null)
-                itemId = string.Empty;
-            if (storeId == null)
-                storeId = string.Empty;
-
-            try
-            {
-                logger.Debug("itemId:{0} cardId:{1} storeId:{2}", itemId, cardId, storeId);
-                OfferBLL bll = new OfferBLL(securityToken, clientTimeOutInSeconds);
-                List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, storeId);
-                foreach (PublishedOffer it in list)
-                {
-                    foreach (ImageView iv in it.Images)
-                    {
-                        iv.Location = GetImageStreamUrl(iv);
-                    }
-                    foreach (OfferDetails od in it.OfferDetails)
-                    {
-                        od.Image.Location = GetImageStreamUrl(od.Image);
-                    }
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("itemId:{0} cardId:{1} storeId:{2}", itemId, cardId, storeId));
                 return null; //never gets here
             }
         }
@@ -813,9 +679,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("notificationId:{0}  ", notificationId);
+                logger.Debug(config.LSKey.Key, "notificationId:{0}  ", notificationId);
 
-                NotificationBLL notificationBLL = new NotificationBLL(clientTimeOutInSeconds);
+                NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
                 Notification notification = notificationBLL.NotificationGetById(notificationId);
                 NotificationSetLocation(notification);
                 return notification;
@@ -830,7 +696,7 @@ namespace LSOmni.Service
         /// <summary>
         /// Get notification by contact Id
         /// </summary>
-        /// <param name="contactId">contact Id</param>
+        /// <param name="cardId">Card Id</param>
         /// <param name="numberOfNotifications">numberOfNotifications</param>
         /// <returns>List of notifications</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
@@ -852,14 +718,14 @@ namespace LSOmni.Service
         /// </item>      
         /// </list>        
         /// </exception>
-        public virtual List<Notification> NotificationsGetByContactId(string contactId, int numberOfNotifications)
+        public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
             try
             {
-                logger.Debug("contactId:{0} numberOfNotifications:{1}", contactId, numberOfNotifications);
+                logger.Debug(config.LSKey.Key, "cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications);
 
-                NotificationBLL notificationBLL = new NotificationBLL(securityToken, clientTimeOutInSeconds);
-                List<Notification> notificationList = notificationBLL.NotificationsGetByContactId(contactId, numberOfNotifications);
+                NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
+                List<Notification> notificationList = notificationBLL.NotificationsGetByCardId(cardId, numberOfNotifications);
                 foreach (Notification notification in notificationList)
                 {
                     NotificationSetLocation(notification);
@@ -868,7 +734,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("contactId:{0} numberOfNotifications:{1}", contactId, numberOfNotifications));
+                HandleExceptions(ex, string.Format("cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications));
                 return null; //never gets here
             }
         }
@@ -876,53 +742,27 @@ namespace LSOmni.Service
         /// <summary>
         /// Update the notification status
         /// </summary>
-        public virtual bool NotificationsUpdateStatus(string contactId, List<string> notificationIds, NotificationStatus notificationStatus)
+        public virtual bool NotificationsUpdateStatus(string cardId, List<string> notificationIds, NotificationStatus notificationStatus)
         {
             try
             {
-                logger.Debug("contactId:{0} ", contactId);
-
-                NotificationBLL notificationBLL = new NotificationBLL(securityToken, clientTimeOutInSeconds);
-                notificationBLL.NotificationsUpdateStatus(contactId, notificationIds, notificationStatus);
+                //TODO: add cardId functionality
+                NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
+                notificationBLL.NotificationsUpdateStatus(notificationIds, notificationStatus);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("contactId:{0} ", contactId));
+                HandleExceptions(ex, string.Empty);
             }
             return true;
-        }
-
-        /// <summary>
-        /// Get the number of unread notifications since last checked date
-        /// </summary>
-        /// <param name="contactId">contact id</param>
-        /// <param name="lastChecked">datetime of last notification</param>
-        /// <returns></returns>
-        public virtual NotificationUnread NotificationCountGetUnread(string contactId, DateTime lastChecked)
-        {
-            try
-            {
-                logger.Debug("contactId:{0}   lastChecked:{1} - NO LONGER SUPPORTED, use Pushnotification", contactId, lastChecked.ToString());
-                return new NotificationUnread
-                {
-                    Created = DateTime.Now,
-                    Count = 0
-                };
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("contactId:{0} lastChecked:{1}", contactId, lastChecked.ToString()));
-                return null;
-            }
-
         }
 
         public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
         {
             try
             {
-                logger.Debug("Store: {0}, ItemIds: {1}, LoyaltySchemeCode: {2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
-                OfferBLL bll = new OfferBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "Store: {0}, ItemIds: {1}, LoyaltySchemeCode: {2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
+                OfferBLL bll = new OfferBLL(config, clientTimeOutInSeconds);
                 return bll.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
             }
             catch (Exception ex)
@@ -962,9 +802,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("itemId:{0}", itemId);
+                logger.Debug(config.LSKey.Key, "itemId:{0}", itemId);
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 LoyItem item = itemBLL.ItemGetById(itemId, storeId);
                 ItemSetLocation(item);
                 return item;
@@ -1002,9 +842,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("barcode:{0}", barcode);
+                logger.Debug(config.LSKey.Key, "barcode:{0}", barcode);
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 LoyItem item = itemBLL.ItemGetByBarcode(barcode, storeId);
                 ItemSetLocation(item);
                 return item;
@@ -1043,9 +883,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("search:{0} maxNumberOfItems:{1} includeDetails:{2}", search, maxNumberOfItems, includeDetails);
+                logger.Debug(config.LSKey.Key, "search:{0} maxNumberOfItems:{1} includeDetails:{2}", search, maxNumberOfItems, includeDetails);
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 maxNumberOfItems = (maxNumberOfItems > maxNumberReturned ? maxNumberReturned : maxNumberOfItems); //max 1000 should be the limit!
                 List<LoyItem> itemList = itemBLL.ItemsSearch(search, maxNumberOfItems, includeDetails);
                 foreach (LoyItem it in itemList)
@@ -1074,8 +914,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("storeId: {0} itemId: {1} variantId: {2} arrivingInStockInDays: {3}", storeId, itemId, variantId, arrivingInStockInDays);
-                ItemBLL bll = new ItemBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "storeId: {0} itemId: {1} variantId: {2} arrivingInStockInDays: {3}", storeId, itemId, variantId, arrivingInStockInDays);
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 return bll.ItemsInStockGet(storeId, itemId, variantId, arrivingInStockInDays);
             }
             catch (Exception ex)
@@ -1096,8 +936,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("storeId: {0} item cnt: {1}", storeId, items.Count);
-                ItemBLL bll = new ItemBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "storeId: {0} item cnt: {1}", storeId, items.Count);
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 return bll.ItemsInStoreGet(items, storeId);
             }
             catch (Exception ex)
@@ -1121,10 +961,10 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5} ",
+                logger.Debug(config.LSKey.Key, "pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5} ",
                     pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 List<LoyItem> itemList = itemBLL.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
                 foreach (LoyItem it in itemList)
                 {
@@ -1163,9 +1003,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("ItemCategoriesGetAll");
+                logger.Debug(config.LSKey.Key, "ItemCategoriesGetAll");
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 List<ItemCategory> categories = itemBLL.ItemCategoriesGetAll();
                 foreach (ItemCategory ic in categories)
                 {
@@ -1205,9 +1045,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("itemCategoryId:{0}", itemCategoryId);
+                logger.Debug(config.LSKey.Key, "itemCategoryId:{0}", itemCategoryId);
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 ItemCategory categories = itemBLL.ItemCategoriesGetById(itemCategoryId);
                 ItemCategorySetLocation(categories);
                 return categories;
@@ -1245,9 +1085,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("productGroupId:{0} includeDetails:{1} ", productGroupId, includeDetails);
+                logger.Debug(config.LSKey.Key, "productGroupId:{0} includeDetails:{1} ", productGroupId, includeDetails);
 
-                ItemBLL itemBLL = new ItemBLL(clientTimeOutInSeconds);
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 ProductGroup pg = itemBLL.ProductGroupGetById(productGroupId, includeDetails);
                 ProductGroupSetLocation(pg);
                 return pg;
@@ -1263,34 +1103,13 @@ namespace LSOmni.Service
 
         #region One list
 
-        public virtual List<OneList> OneListGetByContactId(string contactId, ListType listType, bool includeLines)
-        {
-            try
-            {
-                logger.Debug("contactId:{0} , includeLines: {1} , listType: {2}", contactId, includeLines, listType.ToString());
-
-                OneListBLL listBLL = new OneListBLL(securityToken, clientTimeOutInSeconds);
-                List<OneList> list = listBLL.OneListGetByContactId(contactId, listType, includeLines);
-                foreach (OneList l in list)
-                {
-                    this.OneListSetLocation(l);
-                }
-                return list;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("contactId:{0}   includeLines: {1} , listType: {2}", contactId, includeLines, listType.ToString()));
-                return null; //never gets here
-            }
-        }
-
         public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines)
         {
             try
             {
-                logger.Debug("cardId:{0} , includeLines: {1}, listType: {2}", cardId, includeLines, listType.ToString());
+                logger.Debug(config.LSKey.Key, "cardId:{0} , includeLines: {1}, listType: {2}", cardId, includeLines, listType.ToString());
 
-                OneListBLL listBLL = new OneListBLL(securityToken, clientTimeOutInSeconds);
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
                 List<OneList> list = listBLL.OneListGetByCardId(cardId, listType, includeLines);
                 foreach (OneList l in list)
                 {
@@ -1309,9 +1128,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("oneListId:{0} , includeLines: {1}, listType: {2}", oneListId, includeLines, listType.ToString());
+                logger.Debug(config.LSKey.Key, "oneListId:{0} , includeLines: {1}, listType: {2}", oneListId, includeLines, listType.ToString());
 
-                OneListBLL listBLL = new OneListBLL(securityToken, clientTimeOutInSeconds);
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
                 OneList list = listBLL.OneListGetById(oneListId, listType, includeLines, false);
                 OneListSetLocation(list);
                 return list;
@@ -1327,8 +1146,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(oneList));
-                OneListBLL listBLL = new OneListBLL(securityToken, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(oneList));
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
                 OneList list = listBLL.OneListSave(oneList, calculate, false);
                 OneListSetLocation(list);
                 return list;
@@ -1344,8 +1163,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(oneList));
-                OneListBLL listBLL = new OneListBLL(securityToken, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(oneList));
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
                 return listBLL.OneListCalculate(oneList);
             }
             catch (Exception ex)
@@ -1359,8 +1178,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("oneListId:{0} , listType: {1}", oneListId, listType.ToString());
-                OneListBLL listBLL = new OneListBLL(securityToken, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "oneListId:{0} , listType: {1}", oneListId, listType.ToString());
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
                 listBLL.OneListDeleteById(oneListId, listType);
                 return true;
             }
@@ -1399,9 +1218,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("StoresGetAll");
+                logger.Debug(config.LSKey.Key, "StoresGetAll");
 
-                StoreBLL storeBLL = new StoreBLL(clientTimeOutInSeconds);
+                StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
                 List<Store> storeList = storeBLL.StoresGetAll(false);
                 foreach (Store st in storeList)
                 {
@@ -1441,9 +1260,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("storeId:{0}  ", storeId);
+                logger.Debug(config.LSKey.Key, "storeId:{0}  ", storeId);
 
-                StoreBLL storeBLL = new StoreBLL(clientTimeOutInSeconds);
+                StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
                 Store store = storeBLL.StoreGetById(storeId);
                 StoreSetLocation(store);
                 return store;
@@ -1484,12 +1303,12 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("latitude:{0} longitude:{1} maxDistance:{2} maxNumberOfStores:{3}",
+                logger.Debug(config.LSKey.Key, "latitude:{0} longitude:{1} maxDistance:{2} maxNumberOfStores:{3}",
                     latitude, longitude, maxDistance, maxNumberOfStores);
 
-                StoreBLL storeBLL = new StoreBLL(clientTimeOutInSeconds);
+                StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
                 maxNumberOfStores = (maxNumberOfStores > maxNumberReturned ? maxNumberReturned : maxNumberOfStores); //max 1000 should be the limit!
-                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance);
+                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);
@@ -1533,10 +1352,10 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4} maxNumberOfStores:{5} ",
+                logger.Debug(config.LSKey.Key, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4} maxNumberOfStores:{5} ",
                     itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores);
 
-                StoreBLL storeBLL = new StoreBLL(clientTimeOutInSeconds);
+                StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
                 List<Store> storeList = storeBLL.StoresGetbyItemInStock(itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores);
                 foreach (Store st in storeList)
                 {
@@ -1557,9 +1376,9 @@ namespace LSOmni.Service
         #region transactions
 
         /// <summary>
-        /// Get transactions by contact Id
+        /// Get Sales history by card Id
         /// </summary>
-        /// <param name="contactId">contact Id</param>
+        /// <param name="cardId">Card Id</param>
         /// <param name="maxNumberOfTransactions">max number of transactions returned</param>
         /// <returns>List of most recent Transactions for a contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
@@ -1581,98 +1400,32 @@ namespace LSOmni.Service
         /// </item>      
         /// </list>        
         /// </exception>
-        public virtual List<LoyTransaction> SalesEntriesGetByContactId(string contactId, int maxNumberOfTransactions)
+        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions)
         {
             try
             {
-                logger.Debug("contactId:{0} maxNumberOfTransactions:{1}", contactId, maxNumberOfTransactions);
-                TransactionBLL transactionBLL = new TransactionBLL(securityToken, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfTransactions);
+                TransactionBLL transactionBLL = new TransactionBLL(config, clientTimeOutInSeconds);
                 maxNumberOfTransactions = (maxNumberOfTransactions > maxNumberReturned ? maxNumberReturned : maxNumberOfTransactions); //max 1000 should be the limit!
-                return transactionBLL.SalesEntriesGetByContactId(contactId, maxNumberOfTransactions);
+                return transactionBLL.SalesEntriesGetByCardId(cardId, maxNumberOfTransactions);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("contactId:{0} maxNumberOfTransactions:{1} ", contactId, maxNumberOfTransactions));
+                HandleExceptions(ex, string.Format("cardId:{0} maxNumberOfTransactions:{1} ", cardId, maxNumberOfTransactions));
                 return null; //never gets here
             }
         }
 
-        /// <summary>
-        /// Get transactions that include the items specified in itemSearch criteria
-        /// </summary>
-        /// <param name="contactId">contact Id</param>
-        /// <param name="itemSearch">item description to search for</param>
-        /// <param name="maxNumberOfTransactions">max number of transactions returned</param>
-        /// <param name="includeLines">Include list of SaleLines and TenderLines, or not</param>
-        /// <returns>List of Transactions matching the item search criteria</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>      
-        /// </list>        
-        /// </exception>
-        public virtual List<LoyTransaction> TransactionsSearch(string contactId, string itemSearch, int maxNumberOfTransactions, bool includeLines)
+        public virtual SalesEntry SalesEntryGet(string id, DocumentIdType type)
         {
             try
             {
-                logger.Debug("contactId:{0} itemSearch:{1} maxNumberOfTransactions:{2}  includeLines:{3}",
-                    contactId, itemSearch, maxNumberOfTransactions, includeLines);
-
-                TransactionBLL transactionBLL = new TransactionBLL(securityToken, clientTimeOutInSeconds);
-                maxNumberOfTransactions = (maxNumberOfTransactions > maxNumberReturned ? maxNumberReturned : maxNumberOfTransactions); //max 1000 should be the limit!
-                return transactionBLL.TransactionsSearch(contactId, itemSearch, maxNumberOfTransactions, includeLines);
+                TransactionBLL bll = new TransactionBLL(config, clientTimeOutInSeconds);
+                return bll.SalesEntryGet(id, type);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("contactId:{0} itemSearch:{1} maxNumberOfTransactions:{2}  includeLines:{3}",
-                    contactId, itemSearch, maxNumberOfTransactions, includeLines));
-                return null; //never gets here
-            }
-        }
-
-        /// <summary>
-        /// Get transaction by Receipt Number
-        /// </summary>
-        public virtual LoyTransaction TransactionGetByReceiptNo(string receiptNo)
-        {
-            try
-            {
-                logger.Debug("receipt:{0}", receiptNo);
-
-                TransactionBLL transactionBLL = new TransactionBLL(securityToken, clientTimeOutInSeconds);
-                return transactionBLL.TransactionGetByReceiptNoWithPrint(receiptNo);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("receipt:{0}", receiptNo));
-                return null; //never gets here
-            }
-        }
-
-        public virtual LoyTransaction SalesEntryGetById(string entryId)
-        {
-            try
-            {
-                logger.Debug("id:{0}", entryId);
-                TransactionBLL transactionBLL = new TransactionBLL(securityToken, clientTimeOutInSeconds);
-                return transactionBLL.SalesEntryGetById(entryId);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("id:{0}", entryId));
+                HandleExceptions(ex, "SalesEntryGet");
                 return null; //never gets here
             }
         }
@@ -1680,24 +1433,24 @@ namespace LSOmni.Service
         /// <summary>
         /// Search for text based on searchType
         /// </summary>
-        /// <param name="contactId">contact Id</param>
+        /// <param name="cardId">card Id</param>
         /// <param name="search">search string</param>
         /// <param name="searchTypes">enum: All, IOtem, ProductGroup, ItemCategory, OneList, Transaction, Store, Profile, Notification, Offer, Coupon</param>
         /// <returns>SearchRs</returns>
-        public virtual SearchRs Search(string contactId, string search, SearchType searchTypes)
+        public virtual SearchRs Search(string cardId, string search, SearchType searchTypes)
         {
             try
             {
-                logger.Debug("contactId:{0} search:{1} searchType:{2} ", contactId, search, searchTypes.ToString());
+                logger.Debug(config.LSKey.Key, "cardId:{0} search:{1} searchType:{2} ", cardId, search, searchTypes.ToString());
 
-                SearchBLL searchBLL = new SearchBLL(securityToken, clientTimeOutInSeconds);
-                SearchRs searchRs = searchBLL.Search(contactId, search, maxNumberReturned, searchTypes);
+                SearchBLL searchBLL = new SearchBLL(config, clientTimeOutInSeconds);
+                SearchRs searchRs = searchBLL.Search(cardId, search, maxNumberReturned, searchTypes);
                 SearchSetLocation(searchRs);
                 return searchRs;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("contactId:{0} search:{1} searchTypes:{2}", contactId, search, searchTypes.ToString()));
+                HandleExceptions(ex, string.Format("cardId:{0} search:{1} searchTypes:{2}", cardId, search, searchTypes.ToString()));
                 return null; //never gets here
             }
         }
@@ -1706,32 +1459,12 @@ namespace LSOmni.Service
 
         #region Basket 
 
-        public virtual BasketCalcResponse BasketCalc(BasketCalcRequest basketRequest)
-        {
-            try
-            {
-                logger.Debug(LogJson(basketRequest));
-                BasketBLL bll = new BasketBLL(clientTimeOutInSeconds);
-                return bll.BasketCalc(basketRequest);
-            }
-            catch (Exception ex)
-            {
-                string msg = "Failed to BasketCalc() ";
-                if (basketRequest != null)
-                {
-                    msg += basketRequest.ToString();
-                }
-                HandleExceptions(ex, msg);
-                return null; //never gets here
-            }
-        }
-
         public virtual OrderStatusResponse OrderStatusCheck(string transactionId)
         {
             try
             {
-                logger.Debug("transactionId:{0}", transactionId);
-                BasketBLL bll = new BasketBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "transactionId:{0}", transactionId);
+                BasketBLL bll = new BasketBLL(config, clientTimeOutInSeconds);
                 return bll.OrderStatusCheck(transactionId);
             }
             catch (Exception ex)
@@ -1745,8 +1478,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("transactionId:{0}", transactionId);
-                BasketBLL bll = new BasketBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "transactionId:{0}", transactionId);
+                BasketBLL bll = new BasketBLL(config, clientTimeOutInSeconds);
                 bll.OrderCancel(transactionId);
             }
             catch (Exception ex)
@@ -1771,9 +1504,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("id: {0} width: {1}  height: {1} ", id, width, height);
+                logger.Debug(config.LSKey.Key, "id: {0} width: {1}  height: {1} ", id, width, height);
                 ImageSize imgSize = new ImageSize(width, height);
-                ImageBLL bll = new ImageBLL();
+                ImageBLL bll = new ImageBLL(config);
                 ImageView imgView = bll.ImageSizeGetById(id, imgSize);
                 if (imgView == null)
                     return null;
@@ -1790,8 +1523,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("id: {0} lastVersion: {1}   ", id, lastVersion);
-                MenuBLL bll = new MenuBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "id: {0} lastVersion: {1}   ", id, lastVersion);
+                MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
                 MobileMenu mobileMenu = bll.MenusGetAll(id, lastVersion);
                 MenuSetLocation(mobileMenu);
                 return mobileMenu;
@@ -1807,8 +1540,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("storeId: {0}", storeId);
-                MenuBLL bll = new MenuBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "storeId: {0}", storeId);
+                MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
                 return bll.HierarchyGet(storeId);
             }
             catch (Exception ex)
@@ -1827,9 +1560,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("id: {0} contactId: {1}", id, contactId);
+                logger.Debug(config.LSKey.Key, "id: {0} contactId: {1}", id, contactId);
 
-                AdvertisementBLL bll = new AdvertisementBLL(clientTimeOutInSeconds);
+                AdvertisementBLL bll = new AdvertisementBLL(config, clientTimeOutInSeconds);
                 List<Advertisement> ads = bll.AdvertisementsGetById(id, contactId);
                 foreach (Advertisement ad in ads)
                 {
@@ -1852,8 +1585,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(order));
-                OrderQueueBLL bll = new OrderQueueBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(order));
+                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
                 return bll.Save(order);
             }
             catch (Exception ex)
@@ -1867,9 +1600,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("orderId: {0}   ", orderId);
+                logger.Debug(config.LSKey.Key, "orderId: {0}   ", orderId);
 
-                OrderQueueBLL bll = new OrderQueueBLL(this.deviceId, clientTimeOutInSeconds);
+                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
                 return bll.OrderGetById(orderId);
             }
             catch (Exception ex)
@@ -1883,9 +1616,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("orderId: {0} status: {1}  ", orderId, status.ToString());
+                logger.Debug(config.LSKey.Key, "orderId: {0} status: {1}  ", orderId, status.ToString());
 
-                OrderQueueBLL bll = new OrderQueueBLL(this.deviceId, clientTimeOutInSeconds);
+                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
                 bll.UpdateStatus(orderId, status);
                 return true;
             }
@@ -1901,8 +1634,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(searchRequest));
-                OrderQueueBLL bll = new OrderQueueBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(searchRequest));
+                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
                 return bll.OrderSearch(searchRequest);
             }
             catch (Exception ex)
@@ -1920,8 +1653,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(orderMessage));
-                OrderMessageBLL bll = new OrderMessageBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(orderMessage));
+                OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
                 return bll.OrderMessageSave(orderMessage);
             }
             catch (Exception ex)
@@ -1931,42 +1664,12 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual OrderMessage OrderMessageGetById(string id)
-        {
-            try
-            {
-                logger.Debug("id: {0} ", id);
-                OrderMessageBLL bll = new OrderMessageBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderMessageGetById(id);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("id: {0} ", id));
-                return null; //never gets here
-            }
-        }
-
-        public virtual List<OrderMessage> OrderMessageSearch(OrderMessageSearchRequest searchRequest)
-        {
-            try
-            {
-                logger.Debug(LogJson(searchRequest));
-                OrderMessageBLL bll = new OrderMessageBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderMessageSearch(searchRequest);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("searchRequest: {0}  ", searchRequest.ToString()));
-                return null; //never gets here
-            }
-        }
-
         public virtual string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token)
         {
             try
             {
-                logger.Debug("id:{0} status:{1} amount:{2} token:{3}", orderId, status, amount, token);
-                OrderMessageBLL bll = new OrderMessageBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} token:{3}", orderId, status, amount, token);
+                OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
                 return bll.OrderMessageRequestPayment(orderId, status, amount, token);
             }
             catch (Exception ex)
@@ -1980,121 +1683,34 @@ namespace LSOmni.Service
 
         #region Click and Collect
 
-        public virtual List<OrderLineAvailability> OrderAvailabilityCheck(OrderAvailabilityRequest request)
-        {
-            try
-            {
-                logger.Debug(LogJson(request));
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderAvailabilityCheck(request);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(LogJson(request));
-                HandleExceptions(ex, string.Format("id: {0} ", request.Id));
-                return null; //never gets here
-            }
-        }
-
         public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request)
         {
             try
             {
-                logger.Debug(LogJson(request));
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(request));
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
                 return bll.OrderAvailabilityCheck(request);
             }
             catch (Exception ex)
             {
-                logger.Error(LogJson(request));
+                logger.Error(config.LSKey.Key, LogJson(request));
                 HandleExceptions(ex, string.Format("id: {0} ", request.Id));
                 return null; //never gets here
             }
         }
 
-        public virtual Order OrderCreate(Order request)
+        public virtual SalesEntry OrderCreate(Order request)
         {
             try
             {
-                logger.Debug(LogJson(request));
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, LogJson(request));
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
                 return bll.OrderCreate(request);
             }
             catch (Exception ex)
             {
-                logger.Error(LogJson(request));
+                logger.Error(config.LSKey.Key, LogJson(request));
                 HandleExceptions(ex, string.Format("id: {0} ", request.Id));
-                return null; //never gets here
-            }
-        }
-
-        public virtual List<Order> OrderSearchClickCollect(OrderSearchRequest searchRequest)
-        {
-            try
-            {
-                logger.Debug(LogJson(searchRequest));
-                OrderQueueBLL bll = new OrderQueueBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderSearchClickCollect(searchRequest);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("searchRequest: {0}", searchRequest.ToString()));
-                return null; //never gets here
-            }
-        }
-
-        public virtual Order OrderGetById(string id, bool includeLines)
-        {
-            try
-            {
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderGetById(id, includeLines);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "OrderGetById");
-                return null; //never gets here
-            }
-        }
-
-        public virtual Order OrderGetByWebId(string id, bool includeLines)
-        {
-            try
-            {
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderGetByWebId(id, includeLines);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "OrderGetByWebId");
-                return null; //never gets here
-            }
-        }
-
-        public virtual Order OrderGetByReceiptId(string id, bool includeLines)
-        {
-            try
-            {
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderGetByReceiptId(id, includeLines);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "OrderGetByReceiptId");
-                return null; //never gets here
-            }
-        }
-
-        public virtual List<Order> OrderHistoryByContactId(string contactId, bool includeLines, bool includeTransactions)
-        {
-            try
-            {
-                OrderBLL bll = new OrderBLL(this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderHistoryByContactId(contactId, includeLines, includeTransactions);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "GetOrderHistory");
                 return null; //never gets here
             }
         }
@@ -2107,17 +1723,12 @@ namespace LSOmni.Service
         {
             try
             {
-                if (LSRecommendsBLLStatic.IsLSRecommendsAvail())
-                {
-                    // check configuration
-                    LSRecommendsBLL bll = new LSRecommendsBLL(clientTimeOutInSeconds);
-                    return true;
-                }
-                return false;
+                return LSRecommendsBLLStatic.IsLSRecommendsAvail();
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                logger.Error(config.LSKey.Key, ex);
+                HandleExceptions(ex, string.Empty);
                 return false; //never gets here
             }
         }
@@ -2131,19 +1742,19 @@ namespace LSOmni.Service
                 {
                     itms += " " + i.Id;
                 }
-                logger.Debug("userId:{0} items:{1} maxNumberOfItems:{2}", userId, itms, maxNumberOfItems);
+                logger.Debug(config.LSKey.Key, "userId:{0} items:{1} maxNumberOfItems:{2}", userId, itms, maxNumberOfItems);
 
                 if (LSRecommendsBLLStatic.IsLSRecommendsAvail() == false)
                 {
                     throw new NotImplementedException("LS Recommends is not implemented yet. Missing LS Recommends.dll");
                 }
 
-                LSRecommendsBLL bll = new LSRecommendsBLL(clientTimeOutInSeconds);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config, clientTimeOutInSeconds);
                 return bll.RecommendedItemsGetByUserId(userId, items, maxNumberOfItems);
             }
             catch (Exception ex)
             {
-                logger.Error("userId: {0}", userId);
+                logger.Error(config.LSKey.Key, "userId: {0}", userId);
                 HandleExceptions(ex, string.Format("userId: {0} ", userId));
                 return null; //never gets here
             }
@@ -2153,18 +1764,18 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("userId:{0} storeId:{1} items:{2}", userId, storeId, items);
+                logger.Debug(config.LSKey.Key, "userId:{0} storeId:{1} items:{2}", userId, storeId, items);
                 if (LSRecommendsBLLStatic.IsLSRecommendsAvail() == false)
                 {
                     throw new NotImplementedException("LS Recommends is not implemented yet. Missing LS Recommends.dll");
                 }
 
-                LSRecommendsBLL bll = new LSRecommendsBLL(clientTimeOutInSeconds);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config, clientTimeOutInSeconds);
                 return bll.RecommendedItemsGet(userId, storeId, items);
             }
             catch (Exception ex)
             {
-                logger.Error("userId:{0}", userId);
+                logger.Error(config.LSKey.Key, "userId:{0}", userId);
                 HandleExceptions(ex, string.Format("userId:{0} storeId:{1}", userId, storeId));
                 return null; //never gets here
             }
@@ -2174,13 +1785,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("userId:{0} ", wsUserName);
+                logger.Debug(config.LSKey.Key, "userId:{0} ", wsUserName);
                 if (LSRecommendsBLLStatic.IsLSRecommendsAvail() == false)
                 {
                     throw new NotImplementedException("LS Recommends is not implemented yet. Missing LS Recommends.dll");
                 }
 
-                LSRecommendsBLL bll = new LSRecommendsBLL();
+                LSRecommendsBLL bll = new LSRecommendsBLL(config);
                 bll.LSRecommendSetting(endPointUrl, accountConnection, azureAccountKey, azureName, numberOfRecommendedItems, calculateStock, wsURI, wsUserName, wsPassword, wsDomain, storeNo, location, minStock);
             }
             catch (Exception ex)

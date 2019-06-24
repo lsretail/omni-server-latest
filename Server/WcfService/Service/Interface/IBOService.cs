@@ -2,6 +2,7 @@
 using System.ServiceModel;
 
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
@@ -20,8 +21,6 @@ namespace LSOmni.Service
         [OperationContract]
         string Ping();
         [OperationContract]
-        StatusCode PingStatus(); //exposing the StatusCode to client
-        [OperationContract]
         string Version();
         [OperationContract]
         OmniEnvironment Environment();
@@ -39,9 +38,7 @@ namespace LSOmni.Service
         [OperationContract]
         List<OrderQueue> OrderQueueSearch(OrderSearchRequest searchRequest);
         [OperationContract]
-        List<Order> OrderSearchClickCollect(OrderSearchRequest searchRequest);
-        [OperationContract]
-        Order OrderCreate(Order request);
+        SalesEntry OrderCreate(Order request);
 
         #endregion OrderQueue
 
@@ -50,18 +47,12 @@ namespace LSOmni.Service
         [OperationContract]
         OrderMessage OrderMessageSave(OrderMessage orderMessage);
         [OperationContract]
-        OrderMessage OrderMessageGetById(string id);
-        [OperationContract]
-        List<OrderMessage> OrderMessageSearch(OrderMessageSearchRequest searchRequest);
-        [OperationContract]
         string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token);
 
         #endregion OrderMessage
 
         #region One List
 
-        [OperationContract]
-        List<OneList> OneListGetByContactId(string contactId, ListType listType, bool includeLines);
         [OperationContract]
         List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines);
         [OperationContract]
@@ -72,13 +63,6 @@ namespace LSOmni.Service
         bool OneListDeleteById(string oneListId, ListType listType);
 
         #endregion One List 
-
-        #region Common functions
-
-        [OperationContract]
-        bool UserDelete(string userName);
-
-        #endregion
 
         #region LSRecommend
 

@@ -6,9 +6,7 @@ Source: "..\Service\bin\LSOmni*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags
 Source: "..\Service\bin\LSRetail.Omni*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 
 Source: "..\Service\bin\CavemanTools.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
-Source: "..\Service\bin\itextsharp.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\NLog.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
-Source: "..\Service\bin\zxing.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\System.Runtime.Serialization.Primitives.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\System.Net.Http.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 Source: "..\Service\bin\System.Data.SqlClient.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
@@ -33,7 +31,8 @@ Source: "..\Service\WebServices.config"; DestDir: "{app}\{code:WcfDir}"; Flags: 
 Source: "..\Service\WebServices_SSL_NonSSL.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebServices_SSL_Only.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\NLog.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
-Source: "AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
+Source: "Default\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
+Source: "Multi\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppMultiSettings
 
 [Dirs]
 Name: "{app}\{code:WcfDir}\logs"; Permissions: everyone-modify

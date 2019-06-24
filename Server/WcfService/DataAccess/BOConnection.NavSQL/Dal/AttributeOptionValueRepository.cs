@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public AttributeOptionValueRepository() : base()
+        public AttributeOptionValueRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Attribute Code],mt.[Sequence],mt.[Option Value]";
 

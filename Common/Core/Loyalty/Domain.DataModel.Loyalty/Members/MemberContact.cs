@@ -10,6 +10,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 {
@@ -19,8 +20,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         #region Member variables
 
         private OneList basket;
-        private List<Notification> notifications;
         private OneList wishList;
+        private List<Notification> notifications;
 
         #endregion
 
@@ -127,11 +128,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         [DataMember]
         public List<Profile> Profiles { get; set; }
         [DataMember]
-        public List<LoyTransaction> Transactions { get; set; }
+        public List<SalesEntry> SalesEntries { get; set; }
         [IgnoreDataMember]
-        public List<LoyTransaction> TransactionOrderedByDate
+        public List<SalesEntry> TransactionOrderedByDate
         {
-            get { return Transactions?.OrderByDescending(x => x.Date).ToList(); }//
+            get { return SalesEntries?.OrderByDescending(x => x.DocumentRegTime).ToList(); }//
         }
 
         [DataMember]
@@ -143,8 +144,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                 {
                     wishList = new OneList()
                     {
-                        ContactId = Id,
-                        CardId = (Card == null) ? string.Empty : Card.Id,
+                        CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
                         ListType = ListType.Wish
                     };
                 }
@@ -162,10 +162,17 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             get
             {
                 if (basket == null)
-                    basket = new OneList();
+                    basket = new OneList()
+                    {
+                        CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
+                        ListType = ListType.Basket
+                    };
                 return basket;
             }
-            set { basket = value; }
+            set
+            {
+                basket = value;
+            }
         }
 
         [DataMember]
@@ -173,7 +180,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         [DataMember]
         public string AlternateId { get; set; }
         [DataMember]
-        public Card Card { get; set; }
+        public List<Card> Cards { get; set; }
         [DataMember]
         public Account Account { get; set; }
         [DataMember]
@@ -206,7 +213,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             notifications = new List<Notification>();
             PublishedOffers = new List<PublishedOffer>();
             Profiles = new List<Profile>();
-            Transactions = new List<LoyTransaction>();
+            SalesEntries = new List<SalesEntry>();
+            Cards = new List<Card>();
         }
 
         public void Dispose()
@@ -223,6 +231,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         }
 
         #endregion
+
+        public Card GetCard(string id)
+        {
+            return Cards.Find(c => c.Id == id);
+        }
 
         public static bool NameContainsFirstName(string name)
         {
@@ -251,45 +264,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             MemberContact temp = (MemberContact)MemberwiseClone();
             return temp;
         }
-    }
-
-    public class ContactRs : IDisposable
-    {
-        public ContactRs()
-        {
-            SchemeId = string.Empty;
-            AccountId = string.Empty;
-            ContactId = string.Empty;
-            CardId = string.Empty;
-            Balance = 0M;
-            ClubId = string.Empty;
-            EMail = string.Empty;
-            FirstName = string.Empty;
-            LastName = string.Empty;
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-            }
-        }
-
-        public string SchemeId { get; set; }
-        public string AccountId { get; set; }
-        public string ContactId { get; set; }
-        public string CardId { get; set; }
-        public decimal Balance { get; set; }
-        public string ClubId { get; set; }
-        public string EMail { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

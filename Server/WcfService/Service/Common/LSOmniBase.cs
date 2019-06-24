@@ -1,41 +1,26 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
 using System.ServiceModel;
+using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
-using System.Text;
 
 using LSOmni.BLL;
 using LSOmni.BLL.Loyalty;
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 
-using NLog;
-using NLog.Targets;
-using NLog.Targets.Wrappers;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 
 namespace LSOmni.Service
 {
-    /* Security 
-     * User + pwd is always sent from client in Basi Auth string. (Headers["Authorization"])
-     * When basic auth is enabled on IIS the web.config under LSOmniService needs to updated
-     *   authenticationScheme="Anonymous"  to "Basic"  for json and then IIS will block unwanted users
-     *   and LSOmniService will never see the incoming request.
-     * When Anonymous auth is used we still get the username pwd from client and can check if they are valid
-     *   by comparing to keys in the AppSettings table 
-     *    <add key="security_basicauth_validation" value="false"/>   set to true
-     *    and then the user/pwd is "compared to security_basicauth_username"   Keys
-     *    no changed to web.config needed and no configuration needed on IIS
-     *    
-     * The username and password should be unique for each customer - when app is built
-     * */
-
     /// <summary>
     /// Base class for JSON, SOAP client and XML 
     /// </summary>
+
+    [AspNetCompatibilityRequirements(RequirementsMode = AspNetCompatibilityRequirementsMode.Allowed)]
     public partial class LSOmniBase
     {
+        private const string HEADER_KEY = "LSRETAIL-KEY";
         private const string HEADER_TOKEN = "LSRETAIL-TOKEN";           // used for device security
         private const string LSRETAIL_VERSION = "LSRETAIL-VERSION";
         private const string LSRETAIL_LANGCODE = "LSRETAIL-LANGCODE";
@@ -43,17 +28,15 @@ namespace LSOmni.Service
         private const string LSRETAIL_TIMEOUT = "LSRETAIL-TIMEOUT";     // timeout set by client
 
         private const int maxNumberReturned = 1000;
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private const System.Net.HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable; //code=416
 
-        private string securityToken = string.Empty;
         private string version = string.Empty;
         private string languageCode = string.Empty;
         private string deviceId = string.Empty;
         private int clientTimeOutInSeconds = 0;
         protected string clientIPAddress = string.Empty;
-
-        private static object ConfigValidationRunOnce = null; //
+        protected BOConfiguration config = null;
 
         private string serverUri = string.Empty; //absoluteUri
         private string port = string.Empty;
@@ -69,6 +52,7 @@ namespace LSOmni.Service
             this.languageCode = "";
             this.deviceId = "";
             this.clientTimeOutInSeconds = 0; // set to 0, read timeout from config file if it is 0
+            this.config = new BOConfiguration();
 
             try
             {
@@ -101,7 +85,10 @@ namespace LSOmni.Service
                 //WebOperationContext.Current.IncomingRequest.Headers["Authorization"]
                 //get the securtytoken from request header
                 if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[HEADER_TOKEN] != null)
-                    securityToken = WebOperationContext.Current.IncomingRequest.Headers[HEADER_TOKEN].ToString();
+                    config.SecurityToken = WebOperationContext.Current.IncomingRequest.Headers[HEADER_TOKEN].ToString();
+
+                if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[HEADER_KEY] != null)
+                    config.LSKey.Key = WebOperationContext.Current.IncomingRequest.Headers[HEADER_KEY].ToString();
 
                 if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_VERSION] != null)
                     version = WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_VERSION];
@@ -128,22 +115,23 @@ namespace LSOmni.Service
                     userAgent = WebOperationContext.Current.IncomingRequest.Headers["User-Agent"];
 
                 //silverlight must send x instead of empty token!! strip it out
-                if (securityToken.ToLower() == "x")
-                    securityToken = "";
+                if (config.SecurityToken.ToLower() == "x" || config.SecurityToken.ToLower() == "securitytoken")
+                    config.SecurityToken = "";
 
                 //token should be here except for login
-                logger.Info(@"{0}=[{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}] ",
-                    HEADER_TOKEN, securityToken, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
+                logger.Info(config.LSKey.Key, @"{0}=[{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}] ",
+                    HEADER_TOKEN, string.Empty, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
 
-                //ValidateVersion(version, Version()); //throws exception if fails
-                ValidateConfiguration();
+                config = GetConfig(config);
+
+                //ValidateConfiguration();
             }
             catch (Exception ex)
             {
-                logger.Error("SecurityToken:{0} = [{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}]",
-                    HEADER_TOKEN, securityToken, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
-                logger.Log(LogLevel.Error, ex, "LSOmniServiceBase() exception");
-                throw ex;
+                logger.Error(config.LSKey.Key, "SecurityToken:{0} = [{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}]",
+                    HEADER_TOKEN, string.Empty, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
+                logger.Error(config.LSKey.Key, ex, "LSOmniServiceBase() exception");
+                HandleExceptions(ex, ex.Message);
             }
         }
 
@@ -161,32 +149,25 @@ namespace LSOmni.Service
             string ver = "";
             try
             {
-                logger.Debug("Ping");
-                AppSettingsBLL bll = new AppSettingsBLL();
-                bll.PingOmniDb();
+                logger.Debug(config.LSKey.Key, "Ping");
+                ConfigBLL bll = new ConfigBLL(config);
+                bll.PingOmniDB();
             }
             catch (Exception ex)
             {
-                omniDb = string.Format("[Failed to connect to LSOmni Db {0}]", ex.Message);
-                logger.Log(LogLevel.Error, ex, omniDb);
+                omniDb = string.Format("[Failed to connect to LSOmni DB {0}]", ex.Message);
+                logger.Error(config.LSKey.Key, ex, omniDb);
             }
 
             try
             {
-                AppSettingsBLL bll = new AppSettingsBLL();
+                ConfigBLL bll = new ConfigBLL(config);
                 // Nav returns version number, Ax returns "AX", One returns "LS One"
                 ver = bll.PingWs(clientIPAddress);
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("AX"))
-                {
-                    if (ex.Message.Contains("401"))
-                        navWs += "[The AX web service User name or Password are incorrect]";
-                    else
-                        navWs = string.Format("[Failed to Ping AX web service {0}]", ex.Message);
-                }
-                else if (ex.Message.Contains("LS One") || (ex.InnerException != null && ex.InnerException.Message.Contains("LS One")))
+                if (ex.Message.Contains("LS One") || (ex.InnerException != null && ex.InnerException.Message.Contains("LS One")))
                 {
                     // We can basically discard this message since the web service is not applicable when using LS One. If we don't set an empty string
                     // the app will show a duplicate error string which we don't want. The whitespace is here so we don't get a "Succsessfully connected to Nav web service" message.
@@ -195,16 +176,16 @@ namespace LSOmni.Service
                 else
                 {
                     if (ex.Message.Contains("401"))
-                        navWs += "[The NAV web service User name or Password are incorrect]";
+                        navWs += "[The LS Central Web Service Username or Password is incorrect]";
                     else
-                        navWs = string.Format("[Failed to Ping NAV web service {0}]", ex.Message);
+                        navWs = string.Format("[Failed to Ping LS Central Web Service {0}]", ex.Message);
                 }
-                logger.Log(LogLevel.Error, ex, navWs);
+                logger.Error(config.LSKey.Key, ex, navWs);
             }
 
             try
             {
-                AppSettingsBLL bll = new AppSettingsBLL();
+                ConfigBLL bll = new ConfigBLL(config);
                 bll.PingNavDb();
             }
             catch (Exception ex)
@@ -215,38 +196,31 @@ namespace LSOmni.Service
                 }
                 else
                 {
-                    navDb = string.Format("[Failed to connect to NAV Db {0}]", ex.Message);
+                    navDb = string.Format("[Failed to connect to LS Central DB {0}]", ex.Message);
                 }
-                logger.Log(LogLevel.Error, ex, navDb);
+                logger.Error(config.LSKey.Key, ex, navDb);
             }
 
-            string omniver = string.Format(" OMNI: {0}", Version());
+            string omniver = string.Format(" OMNI:{0}", Version());
 
             //any errors ?
             string msg = "";
             if (omniDb.Length > 0 || navWs.Length > 0 || navDb.Length > 0)
             {
                 if (omniDb.Length == 0)
-                    msg += " [Successfully connected to LSOmni Db]" + omniver;
+                    msg += " [Successfully connected to LS Omni DB]" + omniver;
 
-                if (ver.Contains("AX"))
+                if (ver.Contains("One"))
                 {
                     if (navDb.Length == 0)
-                        msg += " [Successfully connected to AX Db]";
-                    if (navWs.Length == 0)
-                        msg += " [Successfully connected to AX web service]";
-                }
-                else if (ver.Contains("One"))
-                {
-                    if (navDb.Length == 0)
-                        msg += " [Successfully connected to One Db]";
+                        msg += " [Successfully connected to LS One DB]";
                 }
                 else
                 {
                     if (navDb.Length == 0)
-                        msg += " [Successfully connected to NAV Db]";
+                        msg += " [Successfully connected to LS Central DB]";
                     if (navWs.Length == 0)
-                        msg += " [Successfully connected to NAV web service] " + ver;
+                        msg += " [Successfully connected to LS Central Web Service] " + ver;
                 }
 
                 //collect the failure
@@ -257,45 +231,23 @@ namespace LSOmni.Service
                 if (navWs.Length > 0)
                     msg += "  " + navWs;
 
-                logger.Debug(msg);
+                logger.Debug(config.LSKey.Key, msg);
                 return string.Format("*** ERROR *** {0} ", msg);
             }
             else
             {
-                if (ver.Contains("AX"))
+                if (ver.Contains("One"))
                 {
-                    msg = "Successfully connected to [LSOmni Db] & [AX Db] & [AX web service] " + ver + omniver;
-                }
-                else if (ver.Contains("One"))
-                {
-                    msg = "Successfully connected to [LSOmni Db] & [One Db] " + omniver;
+                    msg = "Successfully connected to [LSOmni DB] & [LSOne DB] " + omniver;
                 }
                 else
                 {
-                    msg = "Successfully connected to [LSOmni Db] & [NAV Db] & [NAV web service] " + ver + omniver;
+                    msg = "Successfully connected to [LSOmni DB] & [LSCentral DB] & [LSCentral WS] " + ver + omniver;
                 }
 
-                logger.Debug("PONG OK  {0} ", msg);
-                return string.Format("PONG OK. {0} ", msg);
+                logger.Debug(config.LSKey.Key, "PONG OK {0} ", msg);
+                return string.Format("PONG OK> {0} ", msg);
             }
-        }
-
-        /// <summary>
-        /// Simple ping that connects to database and returns a status code
-        /// </summary>
-        /// <returns>StatusCode</returns>
-        public virtual StatusCode PingStatus()
-        {
-            return StatusCode.OK;
-        }
-
-        /// <summary>
-        /// Get web service version number
-        /// </summary>
-        /// <returns>Version number</returns>
-        public virtual string Version()
-        {
-            return System.Diagnostics.FileVersionInfo.GetVersionInfo(System.Reflection.Assembly.GetExecutingAssembly().Location).FileVersion;
         }
 
         /// <summary>
@@ -306,14 +258,12 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("EnvironmentGet()");
-                CurrencyBLL bll = new CurrencyBLL(clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "EnvironmentGet()");
+                CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
                 OmniEnvironment env = new OmniEnvironment();
                 env.Currency = bll.CurrencyGetLocal();
                 env.Version = this.Version();
-
-                AppSettingsBLL appBll = new AppSettingsBLL();
-                env.PasswordPolicy = appBll.AppSettingsGetByKey(AppSettingsKey.Password_Policy, this.languageCode);
+                env.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
                 return env;
             }
             catch (Exception ex)
@@ -337,9 +287,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("Id: {0}  imageSize: {1}", id, imageSize.ToString());
+                logger.Debug(config.LSKey.Key, "Id: {0}  imageSize: {1}", id, imageSize.ToString());
 
-                ImageBLL bll = new ImageBLL();
+                ImageBLL bll = new ImageBLL(config);
                 ImageView imgView = bll.ImageSizeGetById(id, imageSize);
                 if (imgView != null)
                 {
@@ -357,15 +307,15 @@ namespace LSOmni.Service
 
         #endregion images
 
-        #region AppSettings
+        #region TenantConfig
 
-        public virtual string AppSettingsGetByKey(AppSettingsKey key, string languageCode)
+        public virtual string TenantConfigGetByKey(ConfigKey key)
         {
             try
             {
-                logger.Debug("key:{0} languageCode:{1}", key, languageCode);
-                AppSettingsBLL appSettingsBLL = new AppSettingsBLL(); //no security token neede
-                return appSettingsBLL.AppSettingsGetByKey(key, languageCode);
+                logger.Debug(config.LSKey.Key, "key:{0} languageCode:{1}", key, languageCode);
+                //no security token neede
+                return config.SettingsGetByKey(key);
             }
             catch (Exception ex)
             {
@@ -374,13 +324,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual void AppSettingSetByKey(AppSettingsKey key, string value, string languageCode)
+        public virtual void TenantConfigSetByKey(ConfigKey key, string value)
         {
             try
             {
-                logger.Debug("key:{0} languageCode:{1} value:{2}", key, languageCode, value);
-                AppSettingsBLL appSettingsBLL = new AppSettingsBLL(); //no security token neede
-                appSettingsBLL.AppSettingsSetByKey(key, value, languageCode);
+                logger.Debug(config.LSKey.Key, "key:{0} languageCode:{1} value:{2}", key, languageCode, value);
+                ConfigBLL configBll = new ConfigBLL(); //no security token neede
+                configBll.ConfigSetByKey(config.LSKey.Key, key, value, string.Empty);
             }
             catch (Exception ex)
             {
@@ -396,13 +346,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(pushNotificationRequest));
-                PushNotificationBLL bll = new PushNotificationBLL(this.deviceId, clientTimeOutInSeconds); //no security token needed
+                logger.Debug(config.LSKey.Key, LogJson(pushNotificationRequest));
+                PushNotificationBLL bll = new PushNotificationBLL(config, this.deviceId, clientTimeOutInSeconds); //no security token needed
                 return bll.PushNotificationSave(pushNotificationRequest);
             }
             catch (Exception ex)
             {
-                logger.Error(LogJson(pushNotificationRequest));
+                logger.Error(config.LSKey.Key, LogJson(pushNotificationRequest));
                 HandleExceptions(ex, string.Format("pushNotificationRequest:{0}  ", pushNotificationRequest.ToString()));
                 return false; //never gets here
             }
@@ -411,13 +361,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("deviceId: " + deviceId);
-                PushNotificationBLL bll = new PushNotificationBLL(this.deviceId, clientTimeOutInSeconds);
+                logger.Debug(config.LSKey.Key, "deviceId: " + deviceId);
+                PushNotificationBLL bll = new PushNotificationBLL(config, this.deviceId, clientTimeOutInSeconds);
                 return bll.PushNotificationDelete(deviceId);
             }
             catch (Exception ex)
             {
-                logger.Debug("deviceId: " + deviceId);
+                logger.Debug(config.LSKey.Key, "deviceId: " + deviceId);
                 HandleExceptions(ex, string.Format("deviceId:{0}  ", deviceId));
                 return false; //never gets here
             }
@@ -429,62 +379,15 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(LogJson(activityLog));
+                logger.Debug(config.LSKey.Key, LogJson(activityLog));
                 ActivityLogBLL bll = new ActivityLogBLL(this.deviceId, this.clientIPAddress, clientTimeOutInSeconds); //no security token needed
                 return bll.Save(activityLog);
             }
             catch (Exception ex)
             {
-                logger.Error(LogJson(activityLog));
+                logger.Error(config.LSKey.Key, LogJson(activityLog));
                 HandleExceptions(ex, string.Format("activityLog:{0}  ", activityLog.ToString()));
                 return false; //never gets here
-            }
-        }
-
-        public virtual string GetLogLines()
-        {
-            try
-            {
-                FileTarget fileTarget = null;
-                Target target = LogManager.Configuration.FindTargetByName("file");
-                if (target == null)
-                {
-                    throw new Exception("Could not find target named: file");
-                }
-
-                WrapperTargetBase wrapperTarget = target as WrapperTargetBase;
-                if (wrapperTarget == null)
-                {
-                    fileTarget = target as FileTarget;
-                }
-                else
-                {
-                    fileTarget = wrapperTarget.WrappedTarget as FileTarget;
-                }
-
-                if (fileTarget == null)
-                {
-                    throw new Exception("Could not get a FileTarget from " + target.GetType());
-                }
-
-                LogEventInfo logEventInfo = new LogEventInfo()
-                {
-                    TimeStamp = DateTime.Now
-                };
-
-                string fileName = fileTarget.FileName.Render(logEventInfo);
-
-                StringBuilder txt = new StringBuilder();
-                foreach (string s in File.ReadLines(fileName).Reverse().Take(200).ToList())
-                {
-                    txt.AppendLine(s);
-                }
-                return txt.ToString();
-            }
-            catch (Exception ex)
-            {
-                logger.Log(LogLevel.Error, ex);
-                return ex.Message;
             }
         }
     }

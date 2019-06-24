@@ -12,7 +12,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     {
         public OneList(string id) : base(id)
         {
-            ContactId = string.Empty;
             Description = string.Empty;
             CardId = string.Empty;
             CustomerId = string.Empty;
@@ -63,8 +62,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         [DataMember]
         public string StoreId { get; set; }
-        [DataMember]
-        public string ContactId { get; set; }
         [DataMember]
         public string Description { get; set; }
         [DataMember]
@@ -200,8 +197,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         public override string ToString()
         {
-            return string.Format(@"Id: {0} ContactId: {1}  Description: {2}  IsDefaultList: {3}  CreateDate: {4}  ContactId: {4}  ",
-                 Id, ContactId, Description, IsDefaultList, CreateDate, ContactId);
+            return string.Format(@"Id: {0} Description: {1}  IsDefaultList: {2}  CreateDate: {3}  ",
+                 Id, Description, IsDefaultList, CreateDate);
         }
     }
 

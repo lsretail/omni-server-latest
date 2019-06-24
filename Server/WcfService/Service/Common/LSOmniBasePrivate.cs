@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Text;
+using System.IO;
+using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.ServiceModel.Web;
-using System.Text;
 
-using NLog;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -14,6 +16,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using LSOmni.BLL;
 
 namespace LSOmni.Service
 {
@@ -34,15 +37,9 @@ namespace LSOmni.Service
         {
             try
             {
-
-                //if (image == null || image.Length < 10)
-                //    image = GetImageBytesFile("na.jpg");
-
                 int height = imageSize.Height;
                 int width = imageSize.Width;
                 System.Drawing.Imaging.ImageFormat imgFormat = System.Drawing.Imaging.ImageFormat.Jpeg; //default everything to Png
-
-                //string imageBase64 = ImageConverter.BytesToBase64(image, width, height, imgFormat);
                 return ImageConverter.BytesToBase64(image, width, height, imgFormat);
             }
             catch (Exception ex)
@@ -54,7 +51,7 @@ namespace LSOmni.Service
                 else
                     msg += " image bytes length: " + image.Length;
 
-                logger.Log(LogLevel.Warn, ex, msg);
+                logger.Warn(config.LSKey.Key, ex, msg);
                 return "";// GetImageFile("na.jpg");
             }
         }
@@ -63,34 +60,22 @@ namespace LSOmni.Service
         {
             if (imgView == null)
             {
-                logger.Info("imgView is null");
+                logger.Info(config.LSKey.Key, "imgView is null");
                 return "";
             }
-            // returns when imgView is null http://localhost/LSOmniService/json.svc/ImageStreamGetById?id={0}&width={1}&height={2} 
-            // return when imgView is not null http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
-            string url = BaseUrlReturnedToClient() + @"/ImageStreamGetById";
-            //if (imgView.ImgSize.Width == 0 && imgView.ImgSize.Height == 0)
-            url += "?id=" + imgView.Id + "&width={0}&height={1}";
-            //else
-            //    url += string.Format("?id={0}&width={1}&height={2}", imgView.Id, imgView.ImgSize.Width, imgView.ImgSize.Height);
-            return url;
+            // return http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
+            return BaseUrlReturnedToClient() + @"/ImageStreamGetById?id=" + imgView.Id + "&width={0}&height={1}";
         }
 
         private string GetImageStreamUrlEx(ImageView imgView)
         {
             if (imgView == null)
             {
-                logger.Info("imgView is null");
+                logger.Info(config.LSKey.Key, "imgView is null");
                 return "";
             }
-            // returns when imgView is null http://localhost/LSOmniService/json.svc/ImageStreamGetById?id={0}&width={1}&height={2} 
-            // return when imgView is not null http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
-            string url = BaseUrlReturnedToClient() + @"/ImageStreamGetById";
-            //if (imgView.ImgSize.Width == 0 && imgView.ImgSize.Height == 0)
-            url += "?id=" + imgView.Id + "&width={0}&height={1}";
-            //else
-            //    url += string.Format("?id={0}&width={1}&height={2}", imgView.Id, imgView.ImgSize.Width, imgView.ImgSize.Height);
-            return url;
+            // return imgView http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
+            return BaseUrlReturnedToClient() + @"/ImageStreamGetById?id=" + imgView.Id + "&width={0}&height={1}";
         }
 
         private string BaseUrlReturnedToClient()
@@ -120,7 +105,7 @@ namespace LSOmni.Service
                 srvUrl = srvUrl.Substring(0, idx + 4); // => http://macbookjij.lsretail.local/LSOmniService/json.svc
             }
             else
-                logger.Debug("baseUriOrignalString {0}  something not correct here..", srvUrl);
+                logger.Debug(config.LSKey.Key, "baseUriOrignalString {0}  something not correct here..", srvUrl);
 
             return srvUrl;
         }
@@ -138,7 +123,7 @@ namespace LSOmni.Service
                     return "";
                 try
                 {
-                    using (System.IO.MemoryStream memstream = new System.IO.MemoryStream())
+                    using (MemoryStream memstream = new MemoryStream())
                     {
                         DataContractJsonSerializer ser = new DataContractJsonSerializer(objIn.GetType());
                         ser.WriteObject(memstream, objIn);
@@ -158,7 +143,7 @@ namespace LSOmni.Service
                 }
                 catch (Exception)
                 {
-                    logger.Info(Serialization.SerializeToXmlPrint(objIn));
+                    logger.Info(config.LSKey.Key, Serialization.SerializeToXmlPrint(objIn));
                 }
             }
             return sOut; //FormatOutput(sOut);
@@ -170,12 +155,14 @@ namespace LSOmni.Service
             //if LoyaltyException is thrown then dont mess with it, let it flow to client
             if (ex.GetType() == typeof(LSOmniServiceException))
             {
+                //Authentication failed for statuses etc..
+
                 LSOmniServiceException lEx = (LSOmniServiceException)ex;
-                logger.Log(LogLevel.Error, lEx, lEx.Message);
+                logger.Error(config.LSKey.Key, lEx, lEx.Message);
                 throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, lEx.Message), exStatusCode);
             }
 
-            logger.Log(LogLevel.Error, ex, errMsg);
+            logger.Error(config.LSKey.Key, ex, errMsg);
             throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.Error, errMsg + " - " + ex.Message), exStatusCode);
         }
 
@@ -183,41 +170,71 @@ namespace LSOmni.Service
 
         #region private members
 
-        private void ValidateConfiguration()
+        public virtual string Version()
         {
-            if (ConfigValidationRunOnce == null)
+            return FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+        }
+
+        private BOConfiguration GetConfig(BOConfiguration config)
+        {
+            if (string.IsNullOrEmpty(serverUri))
             {
-                ConfigValidationRunOnce = new object();
-                //make sure this is NAV
-                if (ConfigSetting.KeyExists("BOConnection.Nav.Url"))
-                {
-                    string url = ConfigSetting.GetString("BOConnection.Nav.Url").ToLower();
-                    url = url.Replace("%20", " "); //what when user put %20 in it
-                    string connStr = "";
-                    if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
-                        connStr = ConfigSetting.GetString("SqlConnectionString.Nav");
-                    else if (ConfigSetting.KeyExists("NavSqlConnectionString"))
-                        connStr = ConfigSetting.GetString("NavSqlConnectionString");
-
-                    System.Data.Common.DbConnectionStringBuilder builder = new System.Data.Common.DbConnectionStringBuilder();
-                    builder.ConnectionString = connStr;
-
-                    string navCompanyName = "";
-                    if (builder.ContainsKey("NAVCompanyName"))
-                    {
-                        navCompanyName = builder["NAVCompanyName"] as string; //get the 
-                        navCompanyName = navCompanyName.Trim();
-                        navCompanyName = navCompanyName.Replace("$", "");
-                    }
-                    if (url.Contains(navCompanyName.ToLower()) == false)
-                    {
-                        string msg = string.Format("Config error. NAVCompanyName: {0}  not found in url:  {1} ", navCompanyName, url);
-                        msg += "There is a mismatch between company name in URL and SqlConnectionString.Nav  in appsettings.config file";
-                        logger.Error(msg);
-                        //throw new WebFaultException<LSOmniServiceFault>(new LSOmniServiceFault(StatusCode.Error, msg), exStatusCode);
-                    }
-                }
+                return null;
             }
+
+            ConfigBLL bll = new ConfigBLL();
+
+            //Check default LSNAV Appsettings values (single tenant)
+            if (ConfigSetting.KeyExists("BOConnection.Nav.UserName"))
+            {
+                //Get default config
+                config = bll.ConfigGet("");
+                config.Settings[ConfigKey.BOUser.ToString()] = ConfigSetting.GetString("BOConnection.Nav.UserName");
+
+                if (ConfigSetting.KeyExists("BOConnection.Nav.Password"))
+                {
+                    string pwd = ConfigSetting.GetString("BOConnection.Nav.Password");
+                
+                    //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
+                    if (DecryptConfigValue.IsEncryptedPwd(pwd))
+                    {
+                        pwd = DecryptConfigValue.DecryptString(pwd);
+                    }
+                    config.Settings[ConfigKey.BOPassword.ToString()] = pwd;
+                }
+
+                if (ConfigSetting.KeyExists("BOConnection.Nav.Url"))
+                    config.Settings[ConfigKey.BOUrl.ToString()] = ConfigSetting.GetString("BOConnection.Nav.Url");
+
+                if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
+                    config.Settings[ConfigKey.BOSql.ToString()] = ConfigSetting.GetString("SqlConnectionString.Nav");
+
+                //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
+                if (ConfigSetting.KeyExists("BOConnection.Nav.Timeout"))
+                        config.Settings[ConfigKey.BOTimeout.ToString()] = (ConfigSetting.GetInt("BOConnection.Nav.Timeout") * 1000).ToString();  //millisecs,  60 seconds
+
+            }
+
+            //check in db
+            else if (bll.ConfigKeyExists(ConfigKey.LSKey, config.LSKey.Key))
+            {
+                config = bll.ConfigGet(config.LSKey.Key);
+            }
+            //Check default LSOne Appsettings values (single tenant)
+            else if (ConfigSetting.KeyExists("LSOneConnection.LSOneUser"))
+            {
+                //TODO: get LS One config from appsettings
+            }
+            else
+            {
+                throw new LSOmniServiceException(StatusCode.LSKeyInvalid, " Invalid LSRETAIL-KEY");
+            }
+   
+            //Validate securitytoken if not ecommerce
+            //TODO: add settings in db for sec token validation
+            //config.SecurityCheck = serverUri.ToUpper().Contains("UCSERVICE") == false;
+
+            return config;
         }
 
         #endregion private members

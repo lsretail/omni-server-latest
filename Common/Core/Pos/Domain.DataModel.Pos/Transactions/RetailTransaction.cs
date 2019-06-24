@@ -13,14 +13,13 @@ using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Calculators.Price;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Calculators.Tax;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Discounts;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Exceptions;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
     public class RetailTransaction : PayableTransaction
     {
-        [DataMember]
-        public SourceType SourceType { get; set; }
         [DataMember]
         public MemberContact LoyaltyContact { get; set; }
 
@@ -160,7 +159,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 
             if (string.IsNullOrEmpty(loyaltyCardNumber) == false)
             {
-                if (this.LoyaltyContact == null || this.LoyaltyContact.Card.Id != loyaltyCardNumber)
+                if (this.LoyaltyContact == null || this.LoyaltyContact.GetCard(loyaltyCardNumber) == null)
                 {
                     this.LoyaltyContact = new UnknownMemberContact(loyaltyCardNumber);
                 }

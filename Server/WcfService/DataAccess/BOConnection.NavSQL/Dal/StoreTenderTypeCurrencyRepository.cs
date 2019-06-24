@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -14,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public StoreTenderTypeCurrencyRepository() : base()
+        public StoreTenderTypeCurrencyRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Store No_],mt.[Tender Type Code],mt.[Currency Code],mt.[Description]";
 

@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -21,28 +22,32 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         protected static Currency CurrencyLocalUnit = null;
         protected static CultureInfo CultInfo = CultureInfo.CurrentUICulture;
-        protected static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
+        protected static LSLogger logger = new LSLogger();
+        protected static BOConfiguration config = null;
 
         private static readonly Object myLock = new Object();
 
         public static Version NavVersion = new Version("11.0");
 
-        public BaseRepository(Version navVersion) : this()
+        public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {
-            NavVersion = navVersion;
+            if(navVersion != null)
+                NavVersion = navVersion;
         }
 
-        public BaseRepository()
+        public BaseRepository(BOConfiguration configuration)
         {
+            config = configuration;
+
             if (connectionString == null)
             {
                 lock (myLock)
                 {
-                    //first check the old one
-                    if (ConfigSetting.KeyExists("NavSqlConnectionString"))
-                        connectionString = ConfigSetting.GetString("NavSqlConnectionString");
-                    else
-                        connectionString = ConfigSetting.GetString("SqlConnectionString.Nav");
+                    connectionString = config.SettingsGetByKey(ConfigKey.BOSql);
+                    if (DecryptConfigValue.IsEncryptedPwd(connectionString))
+                    {
+                        connectionString = DecryptConfigValue.DecryptString(connectionString);
+                    }
 
                     navConnectionString = connectionString;
 
@@ -105,7 +110,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     }
                 }
 
-                CurrencyRepository currRep = new CurrencyRepository(NavVersion);
+                CurrencyRepository currRep = new CurrencyRepository(config, NavVersion);
                 CurrencyLocalUnit = currRep.CurrencyLoyGetById(curcode, culture);
                 if (CurrencyLocalUnit == null)
                     CurrencyLocalUnit = new Currency();
@@ -228,7 +233,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             //logger only in baseRepository
             if (logger.IsTraceEnabled)
-                logger.Trace("\r\n" + msg);
+                logger.Trace(config.LSKey.Key, "\r\n" + msg);
         }
 
         protected void TraceSqlCommand(IDbCommand command)
@@ -268,11 +273,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         }
                         builder.AppendLine(string.Format(" > Paramater {0}: {1}", param.ParameterName, value));
                     }
-                    logger.Trace("\r\n" + builder.ToString());
+                    logger.Trace(config.LSKey.Key, "\r\n" + builder.ToString());
                 }
                 catch(Exception ex)
                 {
-                    logger.Error("\r\n" + ex.Message);
+                    logger.Error(config.LSKey.Key, "\r\n" + ex.Message);
                 }
             }
         }
@@ -465,25 +470,30 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string whereaddon, string itemcolumnname, string storeid, bool includeorder)
         {
-            return GetWhereStatement(fullreplication, keys, whereaddon + GetSQLStoreDist(itemcolumnname, storeid), includeorder);
+            return GetWhereStatement(fullreplication, keys, whereaddon + GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
         }
 
         public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string itemcolumnname, string storeid, bool includeorder)
         {
-            return GetWhereStatement(fullreplication, keys, GetSQLStoreDist(itemcolumnname, storeid), includeorder);
+            return GetWhereStatement(fullreplication, keys, GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
         }
 
-        public string GetSQLStoreDist(string itemcolumnname, string storeid)
+        public string GetSQLStoreDist(string itemcolumnname, string storeid, bool fullreplication)
         {
             if (string.IsNullOrWhiteSpace(storeid))
                 return string.Empty;
 
             SQLHelper.CheckForSQLInjection(storeid);
 
-            // add distribution check for item data
-            return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
+            // for full replication get only active, otherwise get all
+            if (fullreplication)
+                return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
                    " LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group]" +
                    " WHERE id.[Status]=0 AND sg.[Store Code]='" + storeid + "')";
+
+            return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
+                   " LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group]" +
+                   " WHERE sg.[Store Code]='" + storeid + "')";
         }
 
         public string GetWhereStatement(bool fullreplication, List<JscKey> keys, bool includeorder)

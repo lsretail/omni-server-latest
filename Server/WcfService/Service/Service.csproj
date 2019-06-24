@@ -37,6 +37,8 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\LSOmni.Service.xml </DocumentationFile>
     <NoWarn>1591</NoWarn>
+    <FilesToIncludeForPublish>OnlyFilesToRunTheApp</FilesToIncludeForPublish>
+    <ExcludeGeneratedDebugSymbol>false</ExcludeGeneratedDebugSymbol>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -47,14 +49,13 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>1591</NoWarn>
     <PlatformTarget>AnyCPU</PlatformTarget>
+    <FilesToIncludeForPublish>AllFilesInProjectFolder</FilesToIncludeForPublish>
+    <ExcludeGeneratedDebugSymbol>true</ExcludeGeneratedDebugSymbol>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.9\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
@@ -103,25 +104,17 @@
     <Compile Include="Common\LSOmniBaseLoy.cs" />
     <Compile Include="Common\LSOmniBasePrivate.cs" />
     <Compile Include="Common\ServiceFaultBehavior.cs" />
-    <Compile Include="eCommerceJson.svc.cs">
-      <DependentUpon>eCommerceJson.svc</DependentUpon>
-    </Compile>
-    <Compile Include="eCommerceService.svc.cs">
-      <DependentUpon>eCommerceService.svc</DependentUpon>
-    </Compile>
     <Compile Include="Interface\IBOJson.cs" />
     <Compile Include="Interface\IBOService.cs" />
-    <Compile Include="Interface\IeCommerceJson.cs" />
-    <Compile Include="Interface\IeCommerceService.cs" />
-    <Compile Include="Interface\ILoyJson.cs" />
-    <Compile Include="Interface\ILoyService.cs" />
-    <Compile Include="LoyJson.svc.cs">
-      <DependentUpon>LoyJson.svc</DependentUpon>
-    </Compile>
-    <Compile Include="LoyService.svc.cs">
-      <DependentUpon>LoyService.svc</DependentUpon>
-    </Compile>
+    <Compile Include="Interface\IUCJson.cs" />
+    <Compile Include="Interface\IUCService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UCJson.svc.cs">
+      <DependentUpon>UCJson.svc</DependentUpon>
+    </Compile>
+    <Compile Include="UCService.svc.cs">
+      <DependentUpon>UCService.svc</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -129,8 +122,6 @@
   <ItemGroup>
     <Content Include="BOJson.svc" />
     <Content Include="BOService.svc" />
-    <Content Include="eCommerceJson.svc" />
-    <Content Include="eCommerceService.svc" />
     <Content Include="Images\Item-10000.jpg" />
     <Content Include="Images\Item-40020.jpg" />
     <Content Include="Images\na.jpg" />
@@ -139,14 +130,14 @@
     <Content Include="Images\na4.jpg" />
     <Content Include="Images\Offer-PUB0001.jpg" />
     <Content Include="Images\store1.jpg" />
-    <Content Include="LoyJson.svc" />
-    <Content Include="LoyService.svc" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AppSettings.config" />
     <Content Include="LSIcon.ico" />
     <Content Include="NLog.config" />
     <None Include="packages.config" />
+    <Content Include="UCJson.svc" />
+    <Content Include="UCService.svc" />
     <Content Include="Web.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

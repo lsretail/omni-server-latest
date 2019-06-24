@@ -33,6 +33,17 @@ namespace LSOmni.Common.Util
             return Encoding.Unicode.GetString(ms.ToArray());
         }
 
+        public static string EncryptString(string clearText)
+        {
+            SymmetricAlgorithm algorithm = getAlgorithm();
+            byte[] clearBytes = System.Text.Encoding.Unicode.GetBytes(clearText);
+            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            CryptoStream cs = new CryptoStream(ms, algorithm.CreateEncryptor(), CryptoStreamMode.Write);
+            cs.Write(clearBytes, 0, clearBytes.Length);
+            cs.Close();
+            return Convert.ToBase64String(ms.ToArray()) + ":encr:";
+        }
+
         public static bool IsEncryptedPwd(string encryptedPwd)
         {
             //sometimes I label a password string with :encr: so I know it is an encrypted pwd
@@ -40,6 +51,36 @@ namespace LSOmni.Common.Util
                 return true;
             else
                 return false;
+        }
+
+        private static SymmetricAlgorithm getAlgorithm(string password)
+        {
+            SymmetricAlgorithm algorithm = Rijndael.Create();
+            //wince does not support Rfc2898DeriveBytes
+            //Rfc2898DeriveBytes rdb = new Rfc2898DeriveBytes(
+            //    password, new byte[] {
+            //0x53,0x6f,0x64,0x69,0x75,0x6d,0x20,             // salty goodness
+            //0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x65});
+            //algorithm.Padding = PaddingMode.ISO10126;
+            //algorithm.Key = rdb.GetBytes(32);
+            //algorithm.IV = rdb.GetBytes(16);
+
+            //works on wince - using our own bytes 
+            byte[] byte16 = new byte[] {
+            (byte)password[0], (byte)password[1],0x64,0x69,0x75,0x6d,0x20,
+            0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x44,0x34
+            };
+            //
+            byte[] byte32 = new byte[] {
+            (byte)password[0], (byte)password[1],0x64,0x69,0x75,0x6d,0x20,0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x65,
+            0x53,0x66,0x62,0x69,0x45,0x66,0x78,0x47,0x78,0x6c,0x6f,0x73,0x64,0x67,0x63,0x62,0x61
+            };
+
+            algorithm.Padding = PaddingMode.ISO10126;
+            algorithm.Key = byte32;
+            algorithm.IV = byte16;
+
+            return algorithm;
         }
 
         private static SymmetricAlgorithm getAlgorithm()
@@ -171,10 +212,6 @@ namespace LSOmni.Common.Util
         //used by NAV to encrypt pwd
         public static string NAVHash(string password)
         {
-            //TODO, remove later. This is only for kfc, to encrypt pwd so we can decrypt later.
-            if (IsBOAx())
-                return Encryption.Encrypt(password, "123456AXkey43210");
-
             UTF8Encoding encoder = new UTF8Encoding();
             password += "rosasaltaftanvid"; //add a salt to it
             SHA512Managed sha512Hasher = new SHA512Managed();
@@ -203,16 +240,6 @@ namespace LSOmni.Common.Util
                 // Return the hexadecimal string.
                 return sBuilder.ToString();
             }
-        }
-
-        private static bool IsBOAx()
-        {
-            string key = "BOConnection.AssemblyName"; //key in app.settings
-            string val = "";
-            if (ConfigSetting.KeyExists(key))
-                val = ConfigSetting.GetString(key);
-
-            return (val.ToLower().Contains("ax.dll") ? true : false);
         }
     }
 

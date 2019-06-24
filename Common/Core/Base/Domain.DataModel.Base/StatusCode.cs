@@ -113,10 +113,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         MissingStoreId = 21,
         /// <summary>
-        /// AppSettings not found. 
+        /// TenantConfig not found. 
         /// </summary>
         [EnumMember]
-        AppSettingsNotFound = 22,
+        TenantConfigNotFound = 22,
         /// <summary>
         /// Order in Queue not found. 
         /// </summary>
@@ -172,7 +172,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         /// User is not logged in. SecurityToken used is valid but user is not longer logged into system
         /// </summary>
         [EnumMember]
-        UserNotLoggedIn = 102,       
+        UserNotLoggedIn = 102,
+        /// <summary>
+        /// User is not logged in. SecurityToken used is valid but user is not longer logged into system
+        /// </summary>
+        [EnumMember]
+        LSKeyInvalid = 103,
         //security related status codes, enum range end at 149
         //security related status codes ends.
 

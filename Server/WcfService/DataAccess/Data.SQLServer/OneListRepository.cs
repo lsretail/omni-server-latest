@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
@@ -14,38 +15,9 @@ namespace LSOmni.DataAccess.Dal
     {
         static object lockOneList = new object();
 
-        public OneListRepository()
-            : base()
+        public OneListRepository(BOConfiguration config)
+            : base(config)
         {
-        }
-
-        public List<OneList> OneListGetByContactId(string contactId, ListType listType, bool includeLines = false)
-        {
-            List<OneList> oneList = new List<OneList>();
-            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT [Id],[IsDefaultList],[Description],[CardId],[CustomerId],[ContactId],[StoreId],[ListType]," +
-                        "[TotalAmount],[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[CreateDate]" +
-                        " FROM [OneList] WHERE [ContactId]=@id AND [ListType]=@type ORDER BY [CreateDate] DESC";
-
-                    command.Parameters.AddWithValue("@id", contactId);
-                    command.Parameters.AddWithValue("@type", (int)listType);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            oneList.Add(ConvertToDataOneList(reader, includeLines));
-                        }
-                        reader.Close();
-                    }
-                }
-                connection.Close();
-            }
-            return oneList;
         }
 
         public List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines = false)
@@ -55,9 +27,9 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Id],[IsDefaultList],[Description],[CardId],[CustomerId],[ContactId],[StoreId],[ListType]," +
-                        "[TotalAmount],[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[CreateDate]" +
-                        " FROM [OneList] WHERE [CardId]=@id AND [ListType]=@type ORDER BY [CreateDate] DESC";
+                    command.CommandText = "SELECT [Id],[IsDefaultList],[Description],[CardId],[CustomerId],[StoreId],[ListType]," +
+                                          "[TotalAmount],[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[CreateDate]" +
+                                          " FROM [OneList] WHERE [CardId]=@id AND [ListType]=@type ORDER BY [CreateDate] DESC";
 
                     command.Parameters.AddWithValue("@id", cardId);
                     command.Parameters.AddWithValue("@type", (int)listType);
@@ -84,7 +56,7 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Id],[IsDefaultList],[Description],[CardId],[CustomerId],[ContactId],[StoreId],[ListType]," +
+                    command.CommandText = "SELECT [Id],[IsDefaultList],[Description],[CardId],[CustomerId],[StoreId],[ListType]," +
                         "[TotalAmount],[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[CreateDate]" +
                         " FROM [OneList] WHERE [Id]=@id AND [ListType]=@type";
 
@@ -111,18 +83,14 @@ namespace LSOmni.DataAccess.Dal
         {
             bool isDefaultList = false;
             Guid guid = Guid.Empty;
-            if (GuidHelper.IsValidGuid(list.Id))
-            {
-                guid = Guid.Parse(list.Id.ToUpper());
-            }
-            else
+            if (string.IsNullOrEmpty(list.Id))
             {
                 guid = GuidHelper.NewGuid();
                 list.Id = guid.ToString().ToUpper();
             }
 
             string description = (string.IsNullOrWhiteSpace(list.Description) ? "List " + list.CardId : list.Description);
-            if (string.IsNullOrWhiteSpace(list.ContactId) == false)
+            if (string.IsNullOrWhiteSpace(list.CardId) == false)
             {
                 if (list.ListType == ListType.Basket)
                 {
@@ -138,7 +106,7 @@ namespace LSOmni.DataAccess.Dal
                 }
 
                 //check if there is a current user list or not
-                if (HasDefaultList(list.ContactId, list.ListType) == false)
+                if (HasDefaultList(list.CardId, list.ListType) == false)
                 {
                     isDefaultList = true;  //user has no current list so force this one to be the current one
                 }
@@ -160,31 +128,29 @@ namespace LSOmni.DataAccess.Dal
                                 // Create a new onelist and use as default
                                 command.CommandText = "IF EXISTS(SELECT * FROM [OneList] WHERE [Id]=@id AND [ListType]=@type) " +
                                                       "UPDATE [OneList] SET " +
-                                                      "[IsDefaultList]=@f1,[Description]=@f2,[CardId]=@f3,[CustomerId]=@f4,[ContactId]=@f5,[TotalAmount]=@f6," +
-                                                      "[TotalNetAmount]=@f7,[TotalTaxAmount]=@f8,[TotalDiscAmount]=@f9,[ShippingAmount]=@f10,[PointAmount]=@f11,[LastAccessed]=@f13,[StoreId]=@f14 " +
+                                                      "[IsDefaultList]=@f1,[Description]=@f2,[CardId]=@f3,[CustomerId]=@f4,[TotalAmount]=@f6," +
+                                                      "[TotalNetAmount]=@f7,[TotalTaxAmount]=@f8,[TotalDiscAmount]=@f9,[ShippingAmount]=@f10,[LastAccessed]=@f12,[StoreId]=@f13 " +
                                                       "WHERE [Id]=@id" +
                                                       " ELSE " +
                                                       "INSERT INTO [OneList] (" +
-                                                      "[Id],[IsDefaultList],[Description],[CardId],[CustomerId],[ContactId],[ListType],[TotalAmount]," +
-                                                      "[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[PointAmount],[CreateDate],[LastAccessed],[StoreId]" +
-                                                      ") VALUES (@id,@f1,@f2,@f3,@f4,@f5,@type,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
+                                                      "[Id],[IsDefaultList],[Description],[CardId],[CustomerId],[ListType],[TotalAmount]," +
+                                                      "[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[CreateDate],[LastAccessed],[StoreId]" +
+                                                      ") VALUES (@id,@f1,@f2,@f3,@f4,@type,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13)";
 
-                                command.Parameters.AddWithValue("@id", guid);
+                                command.Parameters.AddWithValue("@id", list.Id);
                                 command.Parameters.AddWithValue("@f1", isDefaultList);
                                 command.Parameters.AddWithValue("@f2", NullToString(description, 100));
                                 command.Parameters.AddWithValue("@f3", NullToString(list.CardId, 500));
                                 command.Parameters.AddWithValue("@f4", NullToString(list.CustomerId, 500));
-                                command.Parameters.AddWithValue("@f5", NullToString(list.ContactId, 20));
                                 command.Parameters.AddWithValue("@type", (int)list.ListType);
                                 command.Parameters.AddWithValue("@f6", (calculate) ? list.TotalAmount : 0);
                                 command.Parameters.AddWithValue("@f7", (calculate) ? list.TotalNetAmount : 0);
                                 command.Parameters.AddWithValue("@f8", (calculate) ? list.TotalTaxAmount : 0);
                                 command.Parameters.AddWithValue("@f9", (calculate) ? list.TotalDiscAmount : 0);
                                 command.Parameters.AddWithValue("@f10", list.ShippingAmount);
-                                command.Parameters.AddWithValue("@f11", list.PointAmount);
+                                command.Parameters.AddWithValue("@f11", DateTime.Now);
                                 command.Parameters.AddWithValue("@f12", DateTime.Now);
-                                command.Parameters.AddWithValue("@f13", DateTime.Now);
-                                command.Parameters.AddWithValue("@f14", NullToString(list.StoreId, 50));
+                                command.Parameters.AddWithValue("@f13", NullToString(list.StoreId, 50));
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
@@ -258,7 +224,7 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        public List<OneList> OneListSearch(string contactId, string search, int maxNumberOfLists, ListType listType, bool includeLines = false)
+        public List<OneList> OneListSearch(string cardId, string search, int maxNumberOfLists, ListType listType, bool includeLines = false)
         {
             if (string.IsNullOrWhiteSpace(search))
                 search = "";
@@ -270,10 +236,13 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "EXEC OneListSearch @contactid=@0, @textsearch=@1, @top=@2";
-                    command.Parameters.AddWithValue("@0", contactId);
+                    command.CommandText = 
+                        "SELECT DISTINCT " + ((maxNumberOfLists > 0) ? "TOP(" + maxNumberOfLists + ")" : "") + " ol.* " +
+                        "FROM [OneList] ol " +
+                        "INNER JOIN [OneListItem] oli on oli.[OneListId] = ol.[Id] " +
+                        "WHERE ol.[CardId]=@0 AND UPPER(oli.[ItemDescription]) LIKE UPPER('%'+@1+'%') OR ol.[Description] like UPPER('%'+@1+'%')";
+                    command.Parameters.AddWithValue("@0", cardId);
                     command.Parameters.AddWithValue("@1", search);
-                    command.Parameters.AddWithValue("@2", maxNumberOfLists);
 
                     TraceSqlCommand(command);
                     connection.Open();
@@ -340,7 +309,7 @@ namespace LSOmni.DataAccess.Dal
                                 UnitOfMeasureId = SQLHelper.GetString(reader["UomId"]),
                                 Price = SQLHelper.GetDecimal(reader, "Price"),
                                 NetPrice = SQLHelper.GetDecimal(reader, "NetPrice"),
-                                NetAmount = SQLHelper.GetDecimal(reader ,"NetAmount"),
+                                NetAmount = SQLHelper.GetDecimal(reader, "NetAmount"),
                                 TaxAmount = SQLHelper.GetDecimal(reader, "TaxAmount"),
                                 DiscountAmount = SQLHelper.GetDecimal(reader, "DiscountAmount"),
                                 DiscountPercent = SQLHelper.GetDecimal(reader, "DiscountPercent")
@@ -363,7 +332,7 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [OfferId],[OneListId],[DisplayOrderId],[CreateDate]" +
+                    command.CommandText = "SELECT [OfferId],[OfferType],[OneListId],[DisplayOrderId],[CreateDate]" +
                         " FROM [OneListOffer] WHERE [OneListId]=@id ORDER BY [DisplayOrderid] ASC";
 
                     command.Parameters.AddWithValue("@id", oneListId);
@@ -375,6 +344,7 @@ namespace LSOmni.DataAccess.Dal
                         {
                             OneListPublishedOffer line = new OneListPublishedOffer()
                             {
+                                Type = (OfferDiscountType)SQLHelper.GetInt32(reader["OfferType"]),
                                 Id = SQLHelper.GetString(reader["OfferId"]),
                                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
                                 DisplayOrderId = SQLHelper.GetInt32(reader["DisplayOrderId"]),
@@ -447,12 +417,15 @@ namespace LSOmni.DataAccess.Dal
                 command.Parameters.AddWithValue("@id", oneListId);
                 TraceSqlCommand(command);
                 command.ExecuteNonQuery();
-                
-                command.CommandText = "DELETE FROM [OneListItemDiscount] WHERE [OneListId]=@id";
-                command.Parameters.Clear();
-                command.Parameters.AddWithValue("@id", oneListId);
-                TraceSqlCommand(command);
-                command.ExecuteNonQuery();
+
+                if (calculate)
+                {
+                    command.CommandText = "DELETE FROM [OneListItemDiscount] WHERE [OneListId]=@id";
+                    command.Parameters.Clear();
+                    command.Parameters.AddWithValue("@id", oneListId);
+                    TraceSqlCommand(command);
+                    command.ExecuteNonQuery();
+                }
 
                 if (listLines == null || listLines.Count == 0)
                     return;
@@ -509,7 +482,7 @@ namespace LSOmni.DataAccess.Dal
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 
-                    if (line.OnelistItemDiscounts != null && line.OnelistItemDiscounts.Count > 0)
+                    if (calculate && (line.OnelistItemDiscounts != null && line.OnelistItemDiscounts.Count > 0))
                     {
                         using (SqlCommand command2 = db.CreateCommand())
                         {
@@ -520,7 +493,7 @@ namespace LSOmni.DataAccess.Dal
                                 "[DiscountAmount],[DiscountPercent],[DiscountType],[PeriodicDiscType],[PeriodicDiscGroup]" +
                                 ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12)";
 
-                            command2.Parameters.Add("@f0", SqlDbType.UniqueIdentifier);
+                            command2.Parameters.Add("@f0", SqlDbType.NVarChar);
                             command2.Parameters.Add("@f1", SqlDbType.NVarChar);
                             command2.Parameters.Add("@f2", SqlDbType.NVarChar);
                             command2.Parameters.Add("@f3", SqlDbType.NVarChar);
@@ -536,7 +509,7 @@ namespace LSOmni.DataAccess.Dal
 
                             foreach (OneListItemDiscount dline in line.OnelistItemDiscounts)
                             {
-                                command2.Parameters["@f0"].Value = GuidHelper.NewGuid();
+                                command2.Parameters["@f0"].Value = GuidHelper.NewGuid().ToString();
                                 command2.Parameters["@f1"].Value = oneListId;
                                 command2.Parameters["@f2"].Value = line.Id;
                                 command2.Parameters["@f3"].Value = dline.No;
@@ -560,6 +533,8 @@ namespace LSOmni.DataAccess.Dal
         private void OneListPublishedOfferSave(string oneListId, List<OneListPublishedOffer> listLines, SqlConnection db, SqlTransaction trans)
         {
             //Using the OneListOffer for the PublishedOffers, will never be used at same time, offer and publishedoffers
+            if (listLines == null || listLines.Count == 0)
+                return;
 
             using (SqlCommand command = db.CreateCommand())
             {
@@ -570,16 +545,14 @@ namespace LSOmni.DataAccess.Dal
                 TraceSqlCommand(command);
                 command.ExecuteNonQuery();
 
-                if (listLines == null || listLines.Count == 0)
-                    return;
-
                 command.CommandText = "INSERT INTO [OneListOffer] " +
-                                      "([OfferId],[OneListId],[DisplayOrderId],[CreateDate]) VALUES (@f0,@f1,@f2,@f3)";
+                                      "([OfferId],[OfferType],[OneListId],[DisplayOrderId],[CreateDate]) VALUES (@f0,@f1,@f2,@f3,@f4)";
 
                 command.Parameters.Add("@f0", SqlDbType.NVarChar);
-                command.Parameters.Add("@f1", SqlDbType.UniqueIdentifier);
-                command.Parameters.Add("@f2", SqlDbType.Int);
-                command.Parameters.Add("@f3", SqlDbType.DateTime);
+                command.Parameters.Add("@f1", SqlDbType.Int);
+                command.Parameters.Add("@f2", SqlDbType.NVarChar);
+                command.Parameters.Add("@f3", SqlDbType.Int);
+                command.Parameters.Add("@f4", SqlDbType.DateTime);
 
                 int displayOrderId = 0;
                 foreach (OneListPublishedOffer line in listLines)
@@ -587,9 +560,10 @@ namespace LSOmni.DataAccess.Dal
                     displayOrderId++;
 
                     command.Parameters["@f0"].Value = line.Id;
-                    command.Parameters["@f1"].Value = Guid.Parse(oneListId);
-                    command.Parameters["@f2"].Value = displayOrderId;
-                    command.Parameters["@f3"].Value = DateTime.Now;
+                    command.Parameters["@f1"].Value = line.Type;
+                    command.Parameters["@f2"].Value = oneListId;
+                    command.Parameters["@f3"].Value = displayOrderId;
+                    command.Parameters["@f4"].Value = DateTime.Now;
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
@@ -604,7 +578,6 @@ namespace LSOmni.DataAccess.Dal
                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 IsDefaultList = SQLHelper.GetBool(reader["IsDefaultList"]),
-                ContactId = SQLHelper.GetString(reader["ContactId"]),
                 CardId = SQLHelper.GetString(reader["CardId"]),
                 CustomerId = SQLHelper.GetString(reader["CustomerId"]),
                 StoreId = SQLHelper.GetString(reader["StoreId"]),
@@ -613,8 +586,7 @@ namespace LSOmni.DataAccess.Dal
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "TotalNetAmount"),
                 TotalTaxAmount = SQLHelper.GetDecimal(reader, "TotalTaxAmount"),
                 TotalDiscAmount = SQLHelper.GetDecimal(reader, "TotalDiscAmount"),
-                ShippingAmount = SQLHelper.GetDecimal(reader, "ShippingAmount"),
-                PointAmount = SQLHelper.GetDecimal(reader, "PointAmount")
+                ShippingAmount = SQLHelper.GetDecimal(reader, "ShippingAmount")
             };
 
             if (includeLines)
@@ -633,7 +605,7 @@ namespace LSOmni.DataAccess.Dal
 
         private bool HasDefaultList(string contactId, ListType listType)
         {
-            return base.DoesRecordExist("[OneList]", "[ContactId]=@0 AND [ListType]=@1 AND [IsDefaultList]=1",
+            return base.DoesRecordExist("[OneList]", "[CardId]=@0 AND [ListType]=@1 AND [IsDefaultList]=1",
                 contactId, (int)listType);
         }
 

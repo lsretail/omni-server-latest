@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-using NLog;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public HierarchyRepository(Version navVersion) : base(navVersion)
+        public HierarchyRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type]";
 
@@ -146,7 +146,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             foreach (Hierarchy root in list)
             {
-                HierarchyNodeRepository rep = new HierarchyNodeRepository(NavVersion);
+                HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NavVersion);
                 List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId);
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));
                 for (int i = 0; i < root.Nodes.Count; i++)

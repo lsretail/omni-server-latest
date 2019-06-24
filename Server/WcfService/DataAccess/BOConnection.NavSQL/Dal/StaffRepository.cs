@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -14,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public StaffRepository() : base()
+        public StaffRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[ID],mt.[First Name],mt.[Last Name],mt.[Name on Receipt],mt.[Store No_],mt.[Password]," +
                          "mt.[Change Password],mt.[Blocked],mt.[Date to Be Blocked],mt.[Inventory Main Menu],mt.[Inventory Active]";

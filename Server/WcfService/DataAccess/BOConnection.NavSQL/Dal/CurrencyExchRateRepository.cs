@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -14,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public CurrencyExchRateRepository() : base()
+        public CurrencyExchRateRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Currency Code],mt.[Starting Date],mt.[POS Exchange Rate Amount],mt.[POS Rel_ Exch_ Rate Amount]," +
                          "mt.[Relational Currency Code],mt.[Relational Exch_ Rate Amount],mt.[Relational Currency Code],mt.[Exchange Rate Amount]";

@@ -9,51 +9,24 @@ namespace LSOmni.BLL.Loyalty
 {
     public class StoreBLL : BaseLoyBLL
     {
-        public StoreBLL(string securityToken, int timeoutInSeconds)
-            : base(securityToken, timeoutInSeconds)
-        {
-        }
-
-        public StoreBLL(int timeoutInSeconds)
-            : this("", timeoutInSeconds)
+        public StoreBLL(BOConfiguration config, int timeoutInSeconds)
+            : base(config, timeoutInSeconds)
         {
         }
 
         public virtual List<Store> StoresGetAll(bool clickAndCollectOnly)
         {
-            IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-            int offset = iAppRepo.AppSettingsIntGetByKey(AppSettingsKey.Timezone_HoursOffset_DD);
-
-            List<Store> storelist = BOLoyConnection.StoresGetAll(clickAndCollectOnly);
-            foreach (Store store in storelist)
-            {
-                store.StoreHours = BOLoyConnection.StoreHoursGetByStoreId(store.Id, offset);
-                store.StoreServices = BOLoyConnection.StoreServicesGetByStoreId(store.Id);
-            }
-            return storelist;
+            return BOLoyConnection.StoresGetAll(clickAndCollectOnly);
         }
 
         public virtual Store StoreGetById(string id)
         {
-            IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-            int offset = iAppRepo.AppSettingsIntGetByKey(AppSettingsKey.Timezone_HoursOffset_DD);
-
-            Store store = BOLoyConnection.StoreGetById(id);
-            store.StoreHours = BOLoyConnection.StoreHoursGetByStoreId(id, offset);
-            return store;
+            return BOLoyConnection.StoreGetById(id);
         }
 
-        public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance)
+        public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores)
         {
-            IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-            int offset = iAppRepo.AppSettingsIntGetByKey(AppSettingsKey.Timezone_HoursOffset_DD);
-
-            List<Store> storelist = BOLoyConnection.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, 0, Store.DistanceType.Kilometers);
-            foreach (Store store in storelist)
-            {
-                store.StoreHours = BOLoyConnection.StoreHoursGetByStoreId(store.Id, offset);
-            }
-            return storelist;
+            return BOLoyConnection.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores, Store.DistanceType.Kilometers);
         }
 
         public virtual List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores)

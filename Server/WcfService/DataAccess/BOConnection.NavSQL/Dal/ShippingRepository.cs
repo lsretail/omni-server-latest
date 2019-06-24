@@ -2,13 +2,14 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class ShippingRepository : BaseRepository
     {
-        public ShippingRepository() : base()
+        public ShippingRepository(BOConfiguration config) : base(config)
         {
         }
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Retail
@@ -58,7 +56,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
                     case ExtendedVariantCode.Width:
                         return "WIDTH";
                 }
-
                 return string.Empty;
             }
             set
@@ -70,7 +67,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
                         break;
 
                     case "FUEL":
-                        ExtendedVariantCode= ExtendedVariantCode.Fuel;
+                        ExtendedVariantCode = ExtendedVariantCode.Fuel;
                         break;
 
                     case "ICECR-FLAVOURS":
@@ -96,7 +93,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
                     case "WIDTH":
                         ExtendedVariantCode = ExtendedVariantCode.Width;
                         break;
-
                 }
             }
         }

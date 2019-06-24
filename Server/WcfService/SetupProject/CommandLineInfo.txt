@@ -21,7 +21,7 @@ OmniServer Setup Parameters and default values
 -IisX 		true			Create LSOmniService WCF service under IIS
 -IisSite 	Default Web Site	Web Site name
 -IisSrv 	LSOmniService		Web Service name
--IisUrl 	http://localhost:7047/DynamicsNAV90/WS/CRONUS LS 90004 W1 Demo/Codeunit/RetailWebServices	LS Central Web Services Url
+-IisUrl 	http://localhost:7047/BC140/WS/CRONUS LS 1400 W1 Demo/Codeunit/RetailWebServices	LS Central Web Services Url
 -IisUsr					LS Central WS User name
 -IisPwd					LS Central WS User password
 

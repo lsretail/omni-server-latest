@@ -68,7 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="AppSettings.config" />
+    <None Include="Default\AppSettings.config" />
+    <None Include="Multi\AppSettings.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

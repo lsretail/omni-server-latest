@@ -34,7 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.5.9\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.6.2\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -62,11 +62,13 @@
     <Compile Include="Util\EnumHelper.cs" />
     <Compile Include="Util\GuidHelper.cs" />
     <Compile Include="Util\ImageConverter.cs" />
+    <Compile Include="Util\LSNLog.cs" />
     <Compile Include="Util\RandomString.cs" />
     <Compile Include="Util\Security.cs" />
     <Compile Include="Util\Serialization.cs" />
     <Compile Include="Util\SQLHelper.cs" />
     <Compile Include="Util\Validation.cs" />
+    <Compile Include="Util\XMLHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
 namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
 {
@@ -54,13 +55,11 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
             HardwareProfile = string.Empty;
             FunctionalityProfile = string.Empty;
             VisualProfile = string.Empty;
-            ExitAfterEachTransaction = 9;
             TerminalType = 0;
             HospTypeFilter = string.Empty;
             DefaultHospType = string.Empty;
             MainMenuID = string.Empty;
-            AutoLogOffTimeOut = 0;  //boolean in NAV
-            AutoLogOffAfterMin = 0; //
+            Features = new FeatureFlags();
         }
 
         public void Dispose()
@@ -95,15 +94,6 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         [DataMember]
         public string FunctionalityProfile { get; set; }
         [DataMember]
-        public int ExitAfterEachTransaction { get; set; }
-        [DataMember]
-        public int AutoLogOffTimeOut
-        {
-            get { return (AutoLogOffAfterMin == 0) ? 0 : 1; }
-            set { }
-        }
-
-        [DataMember]
         public int DeviceType { get; set; }
         /// <summary>
         /// TerminalType.  1 = Mobile POS, 3 = Hosp. Mobile POS
@@ -115,8 +105,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         [DataMember]
         public string DefaultHospType { get; set; }
         [DataMember]
-        public int AutoLogOffAfterMin { get; set; }
-        [DataMember]
         public string MainMenuID { get; set; }
+        [DataMember]
+        public FeatureFlags Features { get; set; }
     }
 }

@@ -2,12 +2,17 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class InvStatusRepository : BaseRepository
     {
+        public InvStatusRepository(BOConfiguration config) : base(config)
+        {
+        }
+
         public virtual List<ReplInvStatus> ReplicateInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             string sqlcolumns = "mt.[timestamp],mt.[Item No_],mt.[Variant Code],mt.[Store No_],mt.[Net Inventory]";

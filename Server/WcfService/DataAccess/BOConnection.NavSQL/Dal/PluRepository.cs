@@ -4,12 +4,13 @@ using System.Data.SqlClient;
 
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class PluRepository : BaseRepository
     {
-        public PluRepository(Version navVersion) : base(navVersion)
+        public PluRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
         }
 

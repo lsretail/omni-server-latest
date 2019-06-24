@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -18,7 +19,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         //FUNCTION = 0  AND  FOREIGNCURRENCY = 1  ER CURRENCY
         //FUNCTION = 1 er card
 
-        public StoreTenderTypeRepository() : base()
+        public StoreTenderTypeRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Store No_],mt.[Code],mt.[Description],mt.[Function],mt.[Valid on Mobile POS]," +
                          "mt.[Counting Required],mt.[Change Tend_ Code],mt.[Above Min_ Change Tender Type]," +

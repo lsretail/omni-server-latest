@@ -51,15 +51,11 @@
     <Compile Include="BOConnection\ICustomBO.cs" />
     <Compile Include="BOConnection\ILoyaltyBO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\IConfigRepository.cs" />
     <Compile Include="Repository\ITaskRepository.cs" />
-    <Compile Include="Repository\Loyalty\IAccountRepository.cs" />
-    <Compile Include="Repository\Loyalty\IAppSettingsRepository.cs" />
-    <Compile Include="Repository\Loyalty\IContactRepository.cs" />
-    <Compile Include="Repository\Loyalty\IDisclaimerRepository.cs" />
-    <Compile Include="Repository\Loyalty\IEmailMessageRepository.cs" />
+    <Compile Include="Repository\Loyalty\IDeviceRepository.cs" />
     <Compile Include="Repository\Loyalty\IImageCacheRepository.cs" />
     <Compile Include="Repository\Loyalty\IImageRepository.cs" />
-    <Compile Include="Repository\Loyalty\IMenuCacheRepository.cs" />
     <Compile Include="Repository\Loyalty\INotificationRepository.cs" />
     <Compile Include="Repository\Loyalty\IOneListRepository.cs" />
     <Compile Include="Repository\Loyalty\IOrderQueueRepository.cs" />

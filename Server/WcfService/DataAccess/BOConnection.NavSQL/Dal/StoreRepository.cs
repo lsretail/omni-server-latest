@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
@@ -19,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlfrom = string.Empty;
         private string sqlfrominv = string.Empty;
 
-        public StoreRepository(Version navVersion) : base(navVersion)
+        public StoreRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             if (navVersion.Major > 10)
             {
@@ -175,7 +176,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (foundmystore == false)
             {
-                logger.Info("My store not found in setup, try to load data for " + storeId);
+                logger.Info(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
 
                 ReplStore st = StoreGetById(storeId);
                 if (st != null)
@@ -523,7 +524,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             else
                 store.Currency = new Currency(cur);
 
-            ImageRepository imgrepo = new ImageRepository();
+            ImageRepository imgrepo = new ImageRepository(config);
             store.Images = imgrepo.ImageGetByKey("Store", store.Id, string.Empty, string.Empty, 0, includeDetails);
             return store;
         }

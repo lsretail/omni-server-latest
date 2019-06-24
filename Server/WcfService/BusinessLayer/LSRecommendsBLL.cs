@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 
-using NLog;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
@@ -46,51 +45,50 @@ namespace LSOmni.BLL.Loyalty
     //  read from the appsettings.config
     public class LSRecommendsBLL : BaseLoyBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private LSRecommend.LSRecommend lsr;
 
-        public LSRecommendsBLL() : base(0)
+        public LSRecommendsBLL(BOConfiguration config) : this(config, 0)
         {
         }
 
-        public LSRecommendsBLL(int timeoutInSeconds) : base (timeoutInSeconds)
+        public LSRecommendsBLL(BOConfiguration config, int timeoutInSeconds) : base (config, timeoutInSeconds)
         {
-            AppSettingsBLL bll = new AppSettingsBLL();
             lsr = new LSRecommend.LSRecommend(
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_EndPointUrl),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_EndPointUrl),
                 string.Empty,   // apiAdminKey
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_AzureAccountKey),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_AccountConnection),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_AzureName),
-                bll.AppSettingsIntGetByKey(AppSettingsKey.LSReccomend_NumberOfRecommendedItems),
-                bll.AppSettingsBoolGetByKey(AppSettingsKey.LSReccomend_CalculateStock),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_WsURI),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_WsUserName),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_WsPassword),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_WsDomain),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_StoreNo),
-                bll.AppSettingsGetByKey(AppSettingsKey.LSReccomend_Location),
-                bll.AppSettingsIntGetByKey(AppSettingsKey.LSReccomend_MinStock)
+                config.SettingsGetByKey(ConfigKey.LSReccomend_AzureAccountKey),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_AccountConnection),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_AzureName),
+                config.SettingsIntGetByKey(ConfigKey.LSReccomend_NumberOfRecommendedItems),
+                config.SettingsBoolGetByKey(ConfigKey.LSReccomend_CalculateStock),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_WsURI),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_WsUserName),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_WsPassword),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_WsDomain),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_StoreNo),
+                config.SettingsGetByKey(ConfigKey.LSReccomend_Location),
+                config.SettingsIntGetByKey(ConfigKey.LSReccomend_MinStock)
             );
         }
 
         public virtual void LSRecommendSetting(string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
         {
-            AppSettingsBLL bll = new AppSettingsBLL();
+            ConfigBLL bll = new ConfigBLL();
 
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_EndPointUrl, endPointUrl, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_AccountConnection, accountConnection, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_AzureAccountKey, azureAccountKey, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_AzureName, azureName, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_NumberOfRecommendedItems, numberOfRecommendedItems.ToString(), "int", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_CalculateStock, calculateStock.ToString(), "bool", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_WsURI, wsURI, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_WsUserName, wsUserName, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_WsPassword, wsPassword, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_WsDomain, wsDomain, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_StoreNo, storeNo, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_Location, location, "string", "");
-            bll.AppSettingsSetByKey(AppSettingsKey.LSReccomend_MinStock, minStock.ToString(), "int", "");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_EndPointUrl, endPointUrl, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_AccountConnection, accountConnection, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_AzureAccountKey, azureAccountKey, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_AzureName, azureName, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_NumberOfRecommendedItems, numberOfRecommendedItems.ToString(), "int");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_CalculateStock, calculateStock.ToString(), "bool");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsURI, wsURI, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsUserName, wsUserName, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsPassword, wsPassword, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsDomain, wsDomain, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_StoreNo, storeNo, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_Location, location, "string");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_MinStock, minStock.ToString(), "int");
         }
 
         public virtual List<RecommendedItem> RecommendedItemsGetByUserId(string userId, List<LoyItem> items, int maxNumberOfItems, double minRating = 0.0)
@@ -122,7 +120,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (LSOmniServiceException ex)
             {
-                logger.Log(LogLevel.Error, "LSRecommendsGetByUserAndItems failed", ex);
+                logger.Error(config.LSKey.Key, ex, "LSRecommendsGetByUserAndItems failed");
                 throw;
             }
         }
@@ -159,12 +157,12 @@ namespace LSOmni.BLL.Loyalty
                     list.Add(i);
                 }
 
-                logger.Debug("Found {0} Recommended Items: {1}", list.Count, lsrRet);
+                logger.Debug(config.LSKey.Key, "Found {0} Recommended Items: {1}", list.Count, lsrRet);
                 return list;
             }
             catch (LSOmniServiceException ex)
             {
-                logger.Log(LogLevel.Error, "LSRecommendsGetByUserAndItems failed", ex);
+                logger.Error(config.LSKey.Key, ex, "LSRecommendsGetByUserAndItems failed");
                 throw;
             }
         }

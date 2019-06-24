@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LSRetail.Omni.Domain.DataModel.Base;
+using System;
 using System.Data.SqlClient;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -7,7 +8,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     {
         private string sqlfrom = string.Empty;
 
-        public NavWSRepository() : base()
+        public NavWSRepository(BOConfiguration config) : base(config)
         {
             sqlfrom = " FROM [" + navCompanyName + "WS Request] mt";
         }

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class NotificationRepository : BaseRepository
     {
-        public NotificationRepository() : base()
+        public NotificationRepository(BOConfiguration config) : base(config)
         {
         }
 
@@ -77,7 +78,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Status = (NotificationStatus)SQLHelper.GetInt32(reader["Status"])
             };
 
-            ImageRepository imgrep = new ImageRepository();
+            ImageRepository imgrep = new ImageRepository(config);
             noti.Images = imgrep.ImageGetByKey("Member Notification", noti.Id, string.Empty, string.Empty, 0, false);
             return noti;
         }

@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Linq;
 
-using NLog;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
+using LSRetail.Omni.Domain.DataModel.Base;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL
 {
     public class ImageBLL : BaseBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private IImageCacheRepository iImageCacheRepository;
         private IImageRepository iImageRepository;
         private ImageSize maxImageSize = null;
@@ -24,18 +25,18 @@ namespace LSOmni.BLL
             get
             {
                 if (iLoyBOConnection == null)
-                    iLoyBOConnection = GetBORepository<ILoyaltyBO>();
+                    iLoyBOConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key);
                 return iLoyBOConnection;
             }
         }
 
         #endregion BOConnection
 
-        public ImageBLL()
+        public ImageBLL(BOConfiguration config) : base(config)
         {
             maxImageSize = new ImageSize(1000, 1000); //no image can be larger than this
-            this.iImageCacheRepository = GetDbRepository<IImageCacheRepository>();
-            this.iImageRepository = GetDbRepository<IImageRepository>();
+            this.iImageCacheRepository = GetDbRepository<IImageCacheRepository>(config);
+            this.iImageRepository = GetDbRepository<IImageRepository>(config);
         }
 
         public virtual ImageView ImageSizeGetById(string id, ImageSize imageSize)
@@ -45,7 +46,7 @@ namespace LSOmni.BLL
 
             //when NO caching, then don't bother saving anything in database...
             // no AvgColor or Format returned, too much cpu unless caching!
-            if (iImageCacheRepository.CacheImage() == false)
+            if (config.SettingsIntGetByKey(ConfigKey.Cache_Image_DurationInMinutes) > 0 == false)
             {
                 return ImageGetById(id, imageSize);
             }
@@ -75,7 +76,7 @@ namespace LSOmni.BLL
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex, "Updating the Imagecache faile.");
+                logger.Error(config.LSKey.Key, ex, "Updating the Imagecache faile.");
             }
 
             //now the image should be in cache, if not for some reason.. then return null.. not found

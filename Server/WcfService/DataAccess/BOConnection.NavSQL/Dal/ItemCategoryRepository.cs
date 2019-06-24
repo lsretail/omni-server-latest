@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ItemCategoryRepository() : base()
+        public ItemCategoryRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Code],mt.[Description]";
 
@@ -136,7 +137,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             " SELECT 1 FROM [" + navCompanyName + "Product Group] pg " +
                             " INNER JOIN [" + navCompanyName + "Item] i ON i.[Product Group Code]=pg.Code " +
                             " WHERE mt.[Code]=pg.[Item Category Code])" +
-                            GetSQLStoreDist("it.[No_]", storeId) +
+                            GetSQLStoreDist("it.[No_]", storeId, true) +
                             " ORDER BY mt.[Description]";
                     TraceSqlCommand(command);
                     connection.Open();
@@ -242,10 +243,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Description = SQLHelper.GetString(reader["Description"])
             };
 
-            ProductGroupRepository prdrep = new ProductGroupRepository();
+            ProductGroupRepository prdrep = new ProductGroupRepository(config);
             itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false);
 
-            ImageRepository imgrep = new ImageRepository();
+            ImageRepository imgrep = new ImageRepository(config);
             itemcategory.Images = imgrep.ImageGetByKey("Item Category", itemcategory.Id, string.Empty, string.Empty, 0, false);
 
             return itemcategory;

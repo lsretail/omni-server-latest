@@ -75,7 +75,7 @@ namespace LSOmni.Common.Util
         {
             string value = GetString(key);
             decimal ret = 0.0M;
-            if (decimal.TryParse(value,System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture,out ret))
+            if (decimal.TryParse(value, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out ret))
                 return ret;
             else
                 throw new ArgumentException("AppSettings key: " + key + " does not have double value: " + value, key);

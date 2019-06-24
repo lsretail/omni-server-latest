@@ -8,6 +8,9 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Base;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -19,11 +22,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ContactRepository(Version navVersion) : base(navVersion)
+        public ContactRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
-                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[County],mc.[Card No_],mlc.[Login ID],ma.[Club Code],ma.[Scheme Code]";
+                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[County],ma.[Club Code],ma.[Scheme Code]";
 
             if (navVersion > new Version("13.5"))
                 sqlcolumns += ",mt.[Country_Region Code]";
@@ -31,8 +34,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 sqlcolumns += ",mt.[Country]";
 
             sqlfrom = " FROM [" + navCompanyName + "Member Contact] mt" +
-                      " INNER JOIN [" + navCompanyName + "Membership Card] mc ON mc.[Contact No_]=mt.[Contact No_] AND (mc.[Last Valid Date]>GETDATE() OR mc.[Last Valid Date]='1753-01-01')" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Member Login Card] mlc ON mlc.[Card No_]=mc.[Card No_]" +
                       " LEFT OUTER JOIN [" + navCompanyName + "Member Account] ma ON ma.[No_]=mt.[Account No_]";
         }
         public List<ReplCustomer> ReplicateMembers(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -137,7 +138,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
             if (maxNumberOfRowsReturned < 1)
-                maxNumberOfRowsReturned = 1;
+                maxNumberOfRowsReturned = 0;
 
             List<MemberContact> list = new List<MemberContact>();
             string where = string.Empty;
@@ -146,31 +147,36 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
-                    where = string.Format("mt.[Contact No_] LIKE '{0}%'", search);
+                    where = string.Format("mt.[Contact No_] LIKE '%{0}%'", search);
                     order = "mt.[Contact No_]";
                     break;
 
                 case ContactSearchType.Email:
-                    where = string.Format("mt.[Search E-Mail] LIKE '{0}%' {1}", search, GetDbCICollation());
+                    where = string.Format("mt.[Search E-Mail] LIKE '%{0}%' {1}", search, GetDbCICollation());
                     order = "mt.[Search E-Mail]";
                     break;
 
                 case ContactSearchType.Name:
-                    where = string.Format("mt.[Search Name] LIKE '{0}%' {1}", search, GetDbCICollation());
+                    where = string.Format("mt.[Search Name] LIKE '%{0}%' {1}", search, GetDbCICollation());
                     order = "mt.[Search Name]";
                     break;
 
                 case ContactSearchType.PhoneNumber:
-                    where = string.Format("(mt.[Phone No_] LIKE '{0}%' OR mt.[Mobile Phone No_] LIKE '{0}%')", search);
+                    where = string.Format("(mt.[Phone No_] LIKE '%{0}%' OR mt.[Mobile Phone No_] LIKE '{0}%')", search);
                     break;
 
                 case ContactSearchType.CardId:
-                    where = string.Format("mc.[Card No_] LIKE '{0}%'", search);
+                    sqlcolumns += ", mc.[Card No_] ";
+                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] ";
+                    where = string.Format("mc.[Card No_] LIKE '%{0}%'", search);
                     order = "mc.[Card No_]";
                     break;
 
                 case ContactSearchType.UserName:
-                    where = string.Format("mlc.[Login ID] LIKE '{0}%' {1}", search, GetDbCICollation());
+                    sqlcolumns += ", mlc.[Login ID]";
+                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] " +
+                               "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]";
+                    where = string.Format("mlc.[Login ID] LIKE '%{0}%' {1}", search, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
             }
@@ -221,6 +227,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     break;
 
                 case ContactSearchType.CardId:
+                    sqlcolumns += ", mc.[Card No_] ";
+                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] ";
                     where = "mc.[Card No_]=@id";
                     break;
             }
@@ -254,7 +262,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + ",ml.[Login ID],ml.[Password]" + sqlfrom +
+                    command.CommandText = 
+                        "SELECT " + sqlcolumns + ",ml.[Login ID],ml.[Password]" + sqlfrom +
+                        " LEFT OUTER JOIN["+ navCompanyName +"Membership Card] mc on mc.[Contact No_] = mt.[Contact No_]" +
+                        " LEFT OUTER JOIN["+ navCompanyName +"Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]" +
                         " INNER JOIN [" + navCompanyName + "Member Login] ml ON ml.[Login ID]=mlc.[Login ID]" +
                         " WHERE ml.[Login ID]=@id " + GetDbCICollation();
 
@@ -334,17 +345,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return isUserLinkedToDevice;
         }
 
-        public Card CardGetByContactId(string contactId)
+        public List<Card> CardsGetByContactId(string contactId, out string username)
         {
-            Card card = null;
+            List<Card> list = new List<Card>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     //CardStatus 3 = blocked
                     command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status]," +
-                                 "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by] " +
+                                 "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by], ml.[Login ID] " +
                                  "FROM [" + navCompanyName + "Membership Card] AS mt " +
+                                 "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] ml on mt.[Card No_] = ml.[Card No_]" +
                                  "WHERE mt.[Contact No_]=@id AND mt.[Status] != 3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
 
                     command.Parameters.AddWithValue("@id", contactId);
@@ -352,16 +364,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        if (reader.Read())
+                        while (reader.Read())
                         {
-                            card = ReaderToCard(reader);
+                            list.Add(ReaderToCard(reader));
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
-            return card;
+            username = list.FirstOrDefault(c => c.LoginId != string.Empty)?.LoginId ?? string.Empty;
+            return list;
         }
 
         public Card CardGetById(string id)
@@ -563,7 +576,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public virtual List<Profile> ProfileGetByContactId(string id)
+        public virtual List<Profile> ProfileGetByCardId(string id)
         {
             List<Profile> pro = new List<Profile>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -572,9 +585,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory],v.[Attribute Value] " +
                                           "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
+                                          "INNER JOIN [" + navCompanyName + "Membership Card] mc ON mc.[Card No_]=@id " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute Value] v ON v.[Attribute Code]=mt.[Code] " +
-                                          "AND a.[Visible Type]=0 AND a.[Lookup Type]=0 AND v.[Contact No_]=@id";
+                                          "AND a.[Visible Type]=0 AND a.[Lookup Type]=0 AND v.[Contact No_]=mc.[Contact No_]";
 
                     command.Parameters.AddWithValue("@id", id);
                     connection.Open();
@@ -634,36 +648,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<string> GetCardsByContactId(string contactId)
-        {
-            List<string> list = new List<string>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT [Card No_] FROM [" + navCompanyName + "Membership Card] WHERE [Contact No_]=@cid";
-                    command.Parameters.AddWithValue("@cid", contactId);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(SQLHelper.GetString(reader["Card No_"]));
-                        }
-                        reader.Close();
-                    }
-                    connection.Close();
-                }
-            }
-            return list;
-        }
-
         private ReplCustomer ReaderToCustomer(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplCustomer()
+            ReplCustomer cust = new ReplCustomer()
             {
                 Id = SQLHelper.GetString(reader["Contact No_"]),
                 AccountNumber = SQLHelper.GetString(reader["Account No_"]),
@@ -678,11 +667,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
                 PhoneLocal = SQLHelper.GetString(reader["Phone No_"]),
                 Blocked = SQLHelper.GetInt32(reader["Blocked"]),
-                UserName = SQLHelper.GetString(reader["Login ID"]),
-                CardId = SQLHelper.GetString(reader["Card No_"]),
                 ClubCode = SQLHelper.GetString(reader["Club Code"]),
                 SchemeCode = SQLHelper.GetString(reader["Scheme Code"])
             };
+            cust.Cards = CardsGetByContactId(cust.Id, out string username);
+            cust.UserName = username;
+            return cust;
         }
 
         private MemberContact ReaderToContact(SqlDataReader reader)
@@ -696,16 +686,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 MiddleName = SQLHelper.GetString(reader["Middle Name"]),
                 LastName = SQLHelper.GetString(reader["Surname"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
-                UserName = SQLHelper.GetString(reader["Login ID"]),
                 BirthDay = SQLHelper.GetDateTime(reader["Date of Birth"]),
                 Gender = (Gender)SQLHelper.GetInt32(reader["Gender"]),
                 MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"])
             };
 
-            cont.Card = CardGetById(SQLHelper.GetString(reader["Card No_"]));
+            cont.Cards = CardsGetByContactId(cont.Id, out string username);
+            cont.UserName = username;
             cont.Account = AccountGetById(SQLHelper.GetString(reader["Account No_"]));
-            cont.Profiles = ProfileGetByContactId(cont.Id);
-            cont.Transactions = new List<LoyTransaction>();
+            cont.Profiles = ProfileGetByCardId(cont.Cards[0].Id);
+            cont.SalesEntries = new List<SalesEntry>();
 
             cont.Addresses = new List<Address>();
             cont.Addresses.Add(new Address()
@@ -730,7 +720,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Status = (CardStatus)SQLHelper.GetInt32(reader["Status"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                DateBlocked = SQLHelper.GetDateTime(reader["Date Blocked"])
+                DateBlocked = SQLHelper.GetDateTime(reader["Date Blocked"]),
+                LoginId = SQLHelper.GetString(reader["Login ID"])
             };
         }
 

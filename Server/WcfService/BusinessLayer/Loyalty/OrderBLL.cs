@@ -1,45 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 
-using NLog;
-using LSOmni.Common.Util;
-using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class OrderBLL : BaseLoyBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private IOrderRepository iOrderRepository;
+        private static LSLogger logger = new LSLogger();
         private string tenderMapping;
-
-        public OrderBLL(string securityToken, string deviceId, int timeoutInSeconds)
-            : base(securityToken, deviceId, timeoutInSeconds)
+        public OrderBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
+            : base(config, deviceId, timeoutInSeconds)
         {
-            iOrderRepository = base.GetDbRepository<IOrderRepository>();
-
-            AppSettingsBLL appBll = new AppSettingsBLL();
-            tenderMapping = appBll.AppSettingsGetByKey(AppSettingsKey.TenderType_Mapping);   //will throw exception if not found
+            tenderMapping = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);   //will throw exception if not found
         }
 
-        public OrderBLL(string deviceId, int timeoutInSeconds)
-            : this("", deviceId, timeoutInSeconds)
+        public OrderBLL(BOConfiguration config, int timeoutInSeconds)
+           : this(config, "", timeoutInSeconds)
         {
-        }
-
-        public virtual List<OrderLineAvailability> OrderAvailabilityCheck(OrderAvailabilityRequest request)
-        {
-            //validation
-            if (request == null)
-            {
-                string msg = "OrderAvailabilityCheck() request is empty";
-                throw new LSOmniServiceException(StatusCode.Error, msg);
-            }
-            return BOLoyConnection.OrderAvailabilityCheck(request);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
@@ -53,7 +35,7 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.OrderAvailabilityCheck(request);
         }
 
-        public virtual Order OrderCreate(Order request)
+        public virtual SalesEntry OrderCreate(Order request)
         {
             //validation
             if (request == null)
@@ -77,40 +59,23 @@ namespace LSOmni.BLL.Loyalty
                     request.ContactName = contact.Name;
             }
 
-            BOLoyConnection.OrderCreate(request, tenderMapping);
+            string extId = BOLoyConnection.OrderCreate(request, tenderMapping, out string orderId);
 
             try
             {
                 //líka save í OrderQueue töflunni - bara að ganni svo við eigum þetta?
-                OrderQueueBLL qBLL = new OrderQueueBLL(base.DeviceId, timeoutInSeconds);
+                OrderQueueBLL qBLL = new OrderQueueBLL(config, base.DeviceId, timeoutInSeconds);
                 qBLL.OrderQueueCreate(request);
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex, "Failed to save OrderClickCollect in LSOmni db, but was saved in NAV");
+                logger.Error(config.LSKey.Key, ex, "Failed to save OrderClickCollect in LSOmni db, but was saved in NAV");
             }
 
-            return OrderGetByWebId(request.Id, true);
-        }
+            if (string.IsNullOrEmpty(orderId))
+                return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External, tenderMapping);
 
-        public virtual Order OrderGetById(string id, bool includeLines)
-        {
-            return BOLoyConnection.OrderGetById(id, includeLines, tenderMapping);
-        }
-
-        public virtual Order OrderGetByWebId(string id, bool includeLines)
-        {
-            return BOLoyConnection.OrderGetByWebId(id, includeLines, tenderMapping);
-        }
-
-        public virtual Order OrderGetByReceiptId(string id, bool includeLines)
-        {
-            return BOLoyConnection.OrderGetByReceiptId(id, includeLines, tenderMapping);
-        }
-
-        public virtual List<Order> OrderHistoryByContactId(string contactId, bool includeLines, bool includeTransactions)
-        {
-            return BOLoyConnection.OrderHistoryByContactId(contactId, includeLines, includeTransactions, tenderMapping);
+            return BOLoyConnection.SalesEntryGet(orderId, DocumentIdType.Order, tenderMapping);
         }
     }
 }

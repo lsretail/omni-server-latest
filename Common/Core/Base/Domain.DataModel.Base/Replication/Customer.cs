@@ -1,7 +1,7 @@
-﻿using LSRetail.Omni.Domain.DataModel.Base.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
@@ -51,7 +51,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             AccountNumber = string.Empty;
             Name = string.Empty;
             UserName = string.Empty;
-            CardId = string.Empty;
             ClubCode = string.Empty;
             SchemeCode = string.Empty;
 
@@ -76,6 +75,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             ReceiptEmail = string.Empty;
             Blocked = 0;
             IncludeTax = 0;
+			
+			Cards = new List<Card>();
         }
 
         public void Dispose()
@@ -144,11 +145,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string UserName { get; set; }
         [DataMember]
-        public string CardId { get; set; }
-        [DataMember]
         public string ClubCode { get; set; }
         [DataMember]
         public string SchemeCode { get; set; }
+
+        [DataMember]
+        public List<Card> Cards { get; set; }
     }
 }
 

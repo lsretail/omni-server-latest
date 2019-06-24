@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -17,7 +18,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public CurrencyRepository(Version navVersion) : base(navVersion)
+        public CurrencyRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Amount Rounding Precision],mt.[Invoice Rounding Type]," +
                          "mt.[Invoice Rounding Precision],mt.[POS Currency Symbol],mt.[Placement Of Currency Symbol]";
@@ -121,7 +122,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public ReplCurrency CurrencyGetByStoreId(string storeId)
         {
-            StoreRepository storeRep = new StoreRepository(NavVersion);
+            StoreRepository storeRep = new StoreRepository(config, NavVersion);
             ReplStore store = storeRep.StoreGetById(storeId);
             return CurrencyGetById(store.Currency);
         }

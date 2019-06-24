@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup.SpecialCase;
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public CustomerRepository() : base()
+        public CustomerRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[E-Mail],mt.[Home Page]," +
                          "mt.[Mobile Phone No_],mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";

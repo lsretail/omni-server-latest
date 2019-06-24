@@ -3,7 +3,6 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
 
-using NLog;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository;
 using LSRetail.Omni.Domain.DataModel.Base.OmniTasks;
@@ -13,15 +12,18 @@ namespace LSOmni.DataAccess.Dal
 {
     class TaskRepository : BaseRepository, ITaskRepository
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
         private static object locker = new object();
+
+        public TaskRepository(BOConfiguration config) : base(config)
+        {
+        }
 
         public OmniTask TaskSave(OmniTask task)
         {
             if (task == null)
                 throw new ApplicationException("Save() task can not be null");
 
-            logger.Log(LogLevel.Info, string.Format("SaveTask: Id:{0}", task.Id));
+            logger.Info(config.LSKey.Key, string.Format("SaveTask: Id:{0}", task.Id));
             lock (locker)
             {
                 DateTime timenow = DateTime.Now;
@@ -70,7 +72,7 @@ namespace LSOmni.DataAccess.Dal
                                 {
                                     task.CreateTime = timenow;
                                 }
-                                logger.Log(LogLevel.Info, task.ToString());
+                                logger.Info(config.LSKey.Key, task.ToString());
 
                                 command.CommandText = "IF EXISTS(SELECT * FROM [Task] WHERE [Id]=@id) " +
                                                       "UPDATE [Task] SET " +
@@ -133,7 +135,7 @@ namespace LSOmni.DataAccess.Dal
                                 foreach (OmniTaskLine line in task.Lines)
                                 {
                                     line.ModifyTime = timenow;
-                                    logger.Log(LogLevel.Info, line.ToString());
+                                    logger.Info(config.LSKey.Key, line.ToString());
 
                                     OmniTaskLine oldline = TaskLineGetById(task.Id, line.ItemId, line.VariantId, connection, trans);
                                     if (oldline != null)
@@ -173,7 +175,7 @@ namespace LSOmni.DataAccess.Dal
                         catch (Exception ex)
                         {
                             trans.Rollback();
-                            logger.Log(LogLevel.Error, ex, "Task: " + task.Id);
+                            logger.Error(config.LSKey.Key, ex, "Task: " + task.Id);
                             throw;
                         }
                         finally
@@ -291,7 +293,7 @@ namespace LSOmni.DataAccess.Dal
                         if (maxTasks > 0)
                             sql += " ORDER BY [ModifyTime] DESC";
 
-                        logger.Log(LogLevel.Info, string.Format("GetTask: Id:{0} Status:{1}",
+                        logger.Info(config.LSKey.Key, string.Format("GetTask: Id:{0} Status:{1}",
                             filter.Id, filter.Status));
 
                         command.CommandText = sql;
@@ -329,7 +331,7 @@ namespace LSOmni.DataAccess.Dal
 
                 catch (Exception ex)
                 {
-                    logger.Log(LogLevel.Error, ex);
+                    logger.Error(config.LSKey.Key, ex);
                     throw;
                 }
                 if (connectdb)
@@ -423,7 +425,7 @@ namespace LSOmni.DataAccess.Dal
                         }
                     }
 
-                    logger.Log(LogLevel.Info, string.Format("GetTaskLine: Id:{0} TaskId:{1} Status:{2}",
+                    logger.Info(config.LSKey.Key, string.Format("GetTaskLine: Id:{0} TaskId:{1} Status:{2}",
                         filter.Id, filter.TaskId, filter.Status));
 
                     command.CommandText = sql;
@@ -459,7 +461,7 @@ namespace LSOmni.DataAccess.Dal
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex);
+                logger.Error(config.LSKey.Key, ex);
                 throw;
             }
         }
@@ -534,7 +536,7 @@ namespace LSOmni.DataAccess.Dal
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex);
+                logger.Error(config.LSKey.Key, ex);
             }
         }
 
@@ -567,7 +569,7 @@ namespace LSOmni.DataAccess.Dal
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex);
+                logger.Error(config.LSKey.Key, ex);
             }
         }
     }

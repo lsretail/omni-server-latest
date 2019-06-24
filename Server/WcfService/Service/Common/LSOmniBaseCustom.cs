@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 
 using LSOmni.BLL;
 
@@ -11,7 +8,7 @@ namespace LSOmni.Service
     {
         public virtual string MyCustomFunction(string data)
         {
-            CustomBLL myBLL = new CustomBLL();
+            CustomBLL myBLL = new CustomBLL(config);
             return myBLL.MyCustomFunction(data);
         }
     }

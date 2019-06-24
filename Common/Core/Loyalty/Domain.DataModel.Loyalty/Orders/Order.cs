@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 {
@@ -13,8 +14,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     { 
         public Order(string id) : base(id)
         {
-            SourceType = SourceType.LSOmni;
-            OrderStatus = OrderStatus.Pending;
+            OrderStatus = SalesEntryStatus.Pending;
             ShippingStatus = ShippingStatus.ShippigNotRequired;
             PaymentStatus = PaymentStatus.PreApproved;
 
@@ -69,9 +69,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string ReceiptNo { get; set; }
 
         [DataMember]
-        public SourceType SourceType { get; set; }
-        [DataMember]
-        public OrderStatus OrderStatus { get; set; }
+        public SalesEntryStatus OrderStatus { get; set; }
         [DataMember]
         public PaymentStatus PaymentStatus { get; set; }
         [DataMember]
@@ -107,12 +105,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public string CollectLocation { get; set; }
-        /// <summary>
-        /// Click And Collect Order should be shipped after store processing
-        /// </summary>
-        [DataMember]
-        public bool ShipClickAndCollect { get; set; }
-
         [DataMember]
         public List<OrderLine> OrderLines { get; set; }
         [DataMember]
@@ -197,8 +189,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             {
             }
 
-            string s = string.Format("Id: {0} StoreId: {1} CardId: {2} ContactId: {3} SourceType: {4}  OrderLineCreateRequests: {5}  OrderDiscountLineCreateRequests: {6}",
-                Id, StoreId, CardId, ContactId, SourceType.ToString(), req, osldreq);
+            string s = string.Format("Id: {0} StoreId: {1} CardId: {2} ContactId: {3}  OrderLineCreateRequests: {4}  OrderDiscountLineCreateRequests: {6}",
+                Id, StoreId, CardId, ContactId, req, osldreq);
             return s;
         }
     }

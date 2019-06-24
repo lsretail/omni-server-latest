@@ -27,7 +27,7 @@ namespace LSOmni.FireSharpServer
             successfullySentList = new List<PushNotification>();
             failedToSendList = new List<PushNotification>();
             dateLastChecked = new DateTime(1900, 1, 1);
-            bll = new PushNotificationBLL();
+            bll = new PushNotificationBLL(new BOConfiguration());
         }
 
         public void Start()

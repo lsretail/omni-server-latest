@@ -23,19 +23,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         {
             Store = new Store();
             Staff = new Staff();
+            Features = new FeatureFlags();
         }
 
         public Terminal(string id) : base(id)
         {
             Store = new UnknownStore(string.Empty);
             Staff = new UnknownStaff(string.Empty);
+            Features = new FeatureFlags();
             Description = string.Empty;
             InventoryMainMenuId = string.Empty;
             LicenseKey = string.Empty;
             UniqueId = string.Empty;
             MainMenu = string.Empty;
-            ShowNumPad = false;
-            AutoLogOffAfterMin = 0;
             StoreInventory = true;
         }
 
@@ -54,8 +54,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public string InventoryMainMenuId { get; set; }
         [DataMember]
-        public bool ShowNumPad { get; set; }
-        [DataMember]
         public string LicenseKey { get; set; }
         [DataMember]
         public int NoOfRecords { get; set; }
@@ -70,7 +68,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public string HospTypeFilter { get; set; }
         [DataMember]
-        public int AutoLogOffAfterMin { get; set; }
+        public FeatureFlags Features { get; set; }
     }
 }
 

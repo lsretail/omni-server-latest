@@ -37,8 +37,17 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         {
             Item = item;
             Quantity = quantity;
-            UnitOfMeasure = item.UnitOfMeasures.FirstOrDefault(x => x.Id == uomId);
-            VariantReg = item.VariantsRegistration.FirstOrDefault(x => x.Id == variantId);
+
+            if (!string.IsNullOrEmpty(uomId))
+            {
+                UnitOfMeasure = item.UnitOfMeasures.FirstOrDefault(x => x.Id == uomId);
+            }
+
+            if (!string.IsNullOrEmpty(variantId))
+            {
+                VariantReg = item.VariantsRegistration.FirstOrDefault(x => x.Id == variantId);
+            }
+
             Price = item.AmtFromVariantsAndUOM(variantId, uomId);
         }
 
@@ -106,11 +115,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
                 {
                     return VariantReg.Images[0];
                 }
-                if (Item != null && Item.Images != null && Item.Images.Count > 0)
-                {
-                    return Item.Images[0];
-                }
-                return null;
+
+                return Item.DefaultImage;
             }
         }
 

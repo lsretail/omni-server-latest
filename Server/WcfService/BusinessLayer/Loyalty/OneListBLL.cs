@@ -13,16 +13,15 @@ namespace LSOmni.BLL.Loyalty
     {
         private IOneListRepository iRepository;
 
-        public OneListBLL(string securityToken, int timeoutInSeconds)
-            : base(securityToken, timeoutInSeconds)
+        public OneListBLL(BOConfiguration config, int timeoutInSeconds)
+            : base(config, timeoutInSeconds)
         {
-            this.iRepository = GetDbRepository<IOneListRepository>();
+            this.iRepository = GetDbRepository<IOneListRepository>(config);
         }
 
-        public virtual List<OneList> OneListGetByContactId(string contactId, ListType listType, bool includeLines = false)
+        public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines = false)
         {
-            base.ValidateContact(contactId);
-            List<OneList> list = iRepository.OneListGetByContactId(contactId, listType, includeLines);
+            List<OneList> list = iRepository.OneListGetByCardId(cardId, listType, includeLines);
             foreach (OneList lst in list)
             {
                 foreach (OneListItem oitem in lst.Items)
@@ -33,12 +32,6 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
             return list;
-        }
-
-        public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines = false)
-        {
-            base.ValidateCard(cardId);
-            return iRepository.OneListGetByCardId(cardId, listType, includeLines);
         }
 
         public virtual OneList OneListGetById(string oneListId, ListType listType, bool includeLines, bool includeItemDetails)
@@ -65,13 +58,6 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual OneList OneListSave(OneList list, bool calculate, bool includeItemDetails)
         {
-            base.ValidateContact(list.ContactId);
-
-            if (string.IsNullOrEmpty(list.StoreId))
-            {
-                IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-                list.StoreId = iAppRepo.AppSettingsGetByKey(AppSettingsKey.Loyalty_FilterOnStore);
-            }
 
             // check item setup
             foreach(OneListItem line in list.Items)
@@ -182,12 +168,6 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual Order OneListCalculate(OneList list)
         {
-            base.ValidateContact(list.ContactId);
-            if (string.IsNullOrEmpty(list.StoreId))
-            {
-                IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-                list.StoreId = iAppRepo.AppSettingsGetByKey(AppSettingsKey.Loyalty_FilterOnStore);
-            }
 
             // check item setup
             foreach (OneListItem line in list.Items)

@@ -1,28 +1,46 @@
 [Code]
 
 var
+  CheckPage: TWizardPage;
+
   CheckPage_SQLCheckBox: TCheckBox; 
   CheckPage_NavSQLCheckBox: TCheckBox;
   CheckPage_IISCheckBox: TCheckBox;
+  CheckPage_WSCheckBox: TCheckBox; 
+  CheckPage_MultiCheckBox: TCheckBox; 
 
   CheckPage_lblComment: TLabel;
   CheckPage_lblComment1: TLabel;
   CheckPage_lblComment2: TLabel;
- var
-  CheckPage: TWizardPage;
-              
 
-procedure CheckCustomForm_Activate(Page: TWizardPage) ;
+
+procedure CheckCustomForm_Activate(Page: TWizardPage);
 begin
     Log('CheckCustomForm_Activate called');
     WizardForm.NextButton.Enabled := True;
 end;
 
-{ IISCustomForm_CreatePage }
+procedure OnClickSQL(Sender: TObject);
+begin
+  if CheckPage_SQLCheckBox.Checked then
+  begin
+	CheckPage_WSCheckBox.Checked := False;
+	CheckPage_WSCheckBox.Enabled := True;
+	CheckPage_MultiCheckBox.Checked := False;
+	CheckPage_MultiCheckBox.Enabled := True;
+  end
+  else
+  begin
+	CheckPage_WSCheckBox.Checked := False;
+	CheckPage_WSCheckBox.Enabled := False;
+	CheckPage_MultiCheckBox.Checked := False;
+	CheckPage_MultiCheckBox.Enabled := False;
+  end;
+end;
 
+{ IISCustomForm_CreatePage }
 function CheckCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
-
   CheckPage := CreateCustomPage(
     PreviousPageId,
     'Installation options.',
@@ -41,7 +59,8 @@ begin
     Height := ScaleY(15);
     Enabled := True;
   end;
-   { CheckPage_lblComment1 }
+  
+  { CheckPage_lblComment1 }
   CheckPage_lblComment1 := TLabel.Create(CheckPage);
   with CheckPage_lblComment1 do
   begin
@@ -54,37 +73,50 @@ begin
     Enabled := True;
   end;
 
-   { CheckPage_SQLCheckBox }
   CheckPage_SQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_SQLCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_SQLCheckBox.Height := ScaleY(34);
+  CheckPage_SQLCheckBox.Height := ScaleY(22);
   CheckPage_SQLCheckBox.Caption := 'Create LSOmni SQL Server database';
   CheckPage_SQLCheckBox.Checked := True;
   CheckPage_SQLCheckBox.Parent := CheckPage.Surface;
-  //CheckPage_SQLCheckBox.OnClick := @ChkOnChange;
-  CheckPage_SQLCheckBox.Top := CheckPage_lblComment.Top + CheckPage_lblComment.Height + 15;
+  CheckPage_SQLCheckBox.Top := CheckPage_lblComment.Top + CheckPage_lblComment.Height + 25;
+  CheckPage_SQLCheckBox.OnClick := @OnClickSQL;
+
+  CheckPage_MultiCheckBox := TCheckBox.Create(CheckPage);
+  CheckPage_MultiCheckBox.Width := CheckPage.SurfaceWidth;
+  CheckPage_MultiCheckBox.Height := ScaleY(18);
+  CheckPage_MultiCheckBox.Caption := 'Use Multi-Tenant Mode';
+  CheckPage_MultiCheckBox.Checked := False;
+  CheckPage_MultiCheckBox.Parent := CheckPage.Surface;
+  CheckPage_MultiCheckBox.Left := CheckPage_SQLCheckBox.Left + 15
+  CheckPage_MultiCheckBox.Top := CheckPage_SQLCheckBox.Top + CheckPage_SQLCheckBox.Height;
+
+  CheckPage_WSCheckBox := TCheckBox.Create(CheckPage);
+  CheckPage_WSCheckBox.Width := CheckPage.SurfaceWidth;
+  CheckPage_WSCheckBox.Height := ScaleY(18);
+  CheckPage_WSCheckBox.Caption := 'Use WS Mode';
+  CheckPage_WSCheckBox.Checked := False;
+  CheckPage_WSCheckBox.Parent := CheckPage.Surface;
+  CheckPage_WSCheckBox.Left := CheckPage_SQLCheckBox.Left + 15
+  CheckPage_WSCheckBox.Top := CheckPage_MultiCheckBox.Top + CheckPage_MultiCheckBox.Height;
 
   CheckPage_NavSQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_NavSQLCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_NavSQLCheckBox.Height := ScaleY(34);
+  CheckPage_NavSQLCheckBox.Height := ScaleY(30);
   CheckPage_NavSQLCheckBox.Caption := 'Configure LS Nav/Central SQL parameters';
   CheckPage_NavSQLCheckBox.Checked := True;
   CheckPage_NavSQLCheckBox.Parent := CheckPage.Surface;
-  CheckPage_NavSQLCheckBox.Enabled := True;
-  CheckPage_NavSQLCheckBox.Visible := True;
-  //CheckPage_NavSQLCheckBox.OnClick := @ChkOnChange;
-  CheckPage_NavSQLCheckBox.Top := CheckPage_SQLCheckBox.Top + CheckPage_SQLCheckBox.Height;
+  CheckPage_NavSQLCheckBox.Top := CheckPage_WSCheckBox.Top + CheckPage_WSCheckBox.Height;
 
   CheckPage_IISCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_IISCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_IISCheckBox.Height := ScaleY(34);
+  CheckPage_IISCheckBox.Height := ScaleY(30);
   CheckPage_IISCheckBox.Caption := 'Create LSOmniService WCF service under IIS 7+';
   CheckPage_IISCheckBox.Checked := True;
   CheckPage_IISCheckBox.Parent := CheckPage.Surface;
-  //CheckPage_IISCheckBox.OnClick := @ChkOnChange;
   CheckPage_IISCheckBox.Top := CheckPage_NavSQLCheckBox.Top + CheckPage_NavSQLCheckBox.Height;
 
-    { CheckPage_lblComment }
+  { CheckPage_lblComment }
   CheckPage_lblComment2 := TLabel.Create(CheckPage);
   with CheckPage_lblComment2 do
   begin

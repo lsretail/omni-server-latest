@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 
@@ -11,10 +12,9 @@ namespace LSOmni.DataAccess.Dal
 {
     public class ImageCache : BaseRepository, IImageCacheRepository
     {
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
         static object statusLock = new object();
 
-        public ImageCache() : base()
+        public ImageCache(BOConfiguration config) : base(config)
         {
         }
 
@@ -248,12 +248,7 @@ namespace LSOmni.DataAccess.Dal
             id = SQLHelper.CheckForSQLInjection(id);
             string sql = string.Format(@"SELECT [LastModifiedDate],[CreatedDate] FROM [ImagesSizeCache] WHERE [ImageId]='{0}' AND [Height]={1} AND [Width]={2}",
                 id, imageSize.Height, imageSize.Width);
-            return base.Validate(sql, CacheImageDurationInMinutes);
-        }
-
-        public bool CacheImage()
-        {
-            return CacheSettings.Instance.CacheImage;
+            return base.Validate(sql, config.SettingsIntGetByKey(ConfigKey.Cache_Image_DurationInMinutes));
         }
 
         private ImageView ReaderToImageCache(SqlDataReader reader)

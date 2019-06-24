@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
@@ -15,7 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public UnitOfMeasureRepository() : base()
+        public UnitOfMeasureRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Code],mt.[Description]";
 

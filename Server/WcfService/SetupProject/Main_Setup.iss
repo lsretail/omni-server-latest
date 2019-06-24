@@ -33,7 +33,7 @@ DefaultGroupName=notused
 DisableProgramGroupPage=yes
 DisableDirPage=no
 DirExistsWarning=yes
-OutputBaseFilename="LSOmni.Server.Nav.Setup.{#VersionNo}"
+OutputBaseFilename="LSOmni.Service.Central.Setup.{#VersionNo}"
 SetupIconFile=LSIcon.ico
 UninstallDisplayIcon={app}\{code:WcfDir}\bin\LSIcon.ico
 Compression=lzma             
@@ -57,7 +57,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbInitData.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
 Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbObjects.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
 Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbPermissions.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
-Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbStoredProcs.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
 
 ;all files should be in other include files
 #include "FilesInclude.iss"
@@ -115,6 +114,8 @@ begin
   NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', true);
   NavSQLPage_chkSQLAuth.Checked := GetCommandLineParamBoolean('-NavSau', false);
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
+  CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', false);
+  CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', false);
   SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'LSOmni');
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
   SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', '');
@@ -131,7 +132,6 @@ begin
   //should only set the file here..
   //will be executed in this order
   SQLFileList.Add('LSOmniServiceDbObjects.sql');
-  SQLFileList.Add('LSOmniServiceDbStoredProcs.sql');
   SQLFileList.Add('LSOmniServiceDbPermissions.sql');
   SQLFileList.Add('LSOmniServiceDbInitData.sql');
 end;
@@ -143,7 +143,18 @@ end;
 
 function UpdAppSettings: Boolean;
 begin
-  Result := CopyAppSettingsFile;
+  if not CheckPage_MultiCheckBox.Checked then
+	Result := CopyAppSettingsFile
+  else
+    Result := False;
+end;
+
+function UpdAppMultiSettings: Boolean;
+begin
+  if CopyAppSettingsFile then
+	Result := CheckPage_MultiCheckBox.Checked
+  else
+    Result := False;
 end;
 
 function SqlCreateDb(): Boolean;
@@ -238,11 +249,21 @@ begin
   try
     // NAV Web Service
     if CheckPage_IISCheckBox.Checked then
-    begin    
-      Log('Update IIS Settings');
-      UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
-      UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
-      UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
+    begin
+      if CheckPage_MultiCheckBox.Checked then
+	  begin
+        Log('Update DB IIS Settings');
+	    ADOUpdateAppSettings('BOUrl', Trim(IISPage_txtNavUrl.Text));
+        ADOUpdateAppSettings('BOUser', Trim(IISPage_txtNavUser.Text));
+        ADOUpdateAppSettings('BOPassword', Trim(IISPage_txtNavPwd.Text));
+	  end
+	  else
+	  begin
+        Log('Update File IIS Settings');
+        UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
+	  end;
     end;
 
 	if (Length(NavSQLPage_txtUsername.Text) > 0) then
@@ -265,8 +286,17 @@ begin
       navStr := navStr + ';Password=' + Trim(pwd);
       navStr := navStr + ';NAVCompanyName=' + navCompany;
       navStr := navStr + ';Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
-      UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
+
+      if CheckPage_MultiCheckBox.Checked then
+	    ADOUpdateAppSettings('BOSql', navStr)
+      else
+        UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
     end;
+
+	if CheckPage_WSCheckBox.Checked then
+	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavWS.dll', ExpandConstant('{app}\{code:WcfDir}'))
+	else
+	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavSQL.dll', ExpandConstant('{app}\{code:WcfDir}'));
 
 	if (Length(SQLPage_txtUsername.Text) > 0) then
 	  user := SQLPage_txtUsername.Text
@@ -330,7 +360,7 @@ begin
       Result := 'Something went wrong in the sql setup...' ;
     end;
   end;
- 
+
   if (doContinue and CheckPage_IISCheckBox.Checked) then
   begin
     WizardForm.PreparingLabel.Visible := True;

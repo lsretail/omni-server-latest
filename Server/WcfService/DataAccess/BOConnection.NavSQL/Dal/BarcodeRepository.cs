@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public BarcodeRepository() : base()
+        public BarcodeRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Item No_],mt.[Barcode No_],mt.[Description],mt.[Variant Code],mt.[Unit of Measure Code]";
 

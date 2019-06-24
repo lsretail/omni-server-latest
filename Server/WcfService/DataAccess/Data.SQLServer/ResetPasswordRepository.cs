@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Data.SqlClient;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.Dal
 {
     public class ResetPasswordRepository : BaseRepository, IResetPasswordRepository
     {
-        public ResetPasswordRepository() : base()
+        public ResetPasswordRepository(BOConfiguration config) : base(config)
         {
         }
 

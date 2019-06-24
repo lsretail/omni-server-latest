@@ -134,6 +134,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int BlockPurchaseReturn { get; set; }
         [DataMember]
+        public int BlockDistribution { get; set; }
+        [DataMember]
         public DateTime DateToActivateItem { get; set; }
         [DataMember]
         public int CrossSellingExists { get; set; }

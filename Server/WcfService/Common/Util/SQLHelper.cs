@@ -1,7 +1,5 @@
-﻿using NLog;
-using System;
+﻿using System;
 using System.Data.SqlClient;
-using System.Globalization;
 
 namespace LSOmni.Common.Util
 {
@@ -117,7 +115,7 @@ namespace LSOmni.Common.Util
             }
             catch (OverflowException ex)
             {
-                Logger logger = LogManager.GetCurrentClassLogger();
+                LSLogger logger = new LSLogger();
                 logger.Warn(ex, "Field: " + fieldname);
                 return 0;
             }

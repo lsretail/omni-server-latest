@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -14,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public DataTranslationRepository() : base()
+        public DataTranslationRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Key],mt.[Language Code],mt.[Translation],mt.[Translation ID]";
 

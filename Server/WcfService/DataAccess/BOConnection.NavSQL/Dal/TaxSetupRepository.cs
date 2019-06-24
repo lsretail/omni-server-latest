@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -13,7 +14,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public TaxSetupRepository() : base()
+        public TaxSetupRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[VAT Bus_ Posting Group],mt.[VAT Prod_ Posting Group],mt.[VAT _]";
 

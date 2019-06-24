@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -19,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         const int IMAGE_TABLEID = 99009063;
         const int LINK_TABLEID = 99009064;
 
-        public ImageRepository() : base()
+        public ImageRepository(BOConfiguration config) : base(config)
         {
             sqlimgfields = "mt.[Code],mt.[Type],mt.[Image Location],mt.[Image Blob],mt.[Description]";
             sqlimgfrom = " FROM [" + navCompanyName + "Retail Image] mt";

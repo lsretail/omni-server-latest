@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ProductGroupRepository() : base()
+        public ProductGroupRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Item Category Code]";
 
@@ -234,7 +235,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeItems, bool includeItemDetail)
         {
-            ImageRepository imgrepo = new ImageRepository();
+            ImageRepository imgrepo = new ImageRepository(config);
 
             ProductGroup prgr = new ProductGroup()
             {
@@ -247,9 +248,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (includeItems)
             {
-                ItemRepository itrep = new ItemRepository();
+                ItemRepository itrep = new ItemRepository(config);
                 prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail);
-                ImageRepository imrep = new ImageRepository();
+                ImageRepository imrep = new ImageRepository(config);
                 prgr.Images = imrep.ImageGetByKey("Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }
             else

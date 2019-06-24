@@ -5,21 +5,20 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 
 namespace LSOmni.DataAccess.Dal
 {
     public class NotificationRepository : BaseRepository, INotificationRepository
     {
-
         private string notificationSql =
             "SELECT n.[Id],n.[Type],n.[TypeCode],n.[PrimaryText],n.[SecondaryText],n.[DisplayFrequency],n.[ValidFrom],n.[ValidTo]," +
             "n.[Created],n.[LastModifiedDate],n.[CreatedBy],n.[DateLastModified],n.[QRText],n.[NotificationType]," +
-            "n.[Status],nl.[ContactId],nl.[DeviceId],nl.[DateDisplayed],nl.[DateClosed],nl.[ReplicationCounter],nl.[NotificationStatus] " +
-            "FROM [Notification] AS n " +
-            "LEFT OUTER JOIN [NotificationLog] AS nl ON n.[Id]=nl.[Id] ";
+            "n.[Status] " +
+            "FROM [Notification] AS n ";
 
-        public NotificationRepository() : base()
+        public NotificationRepository(BOConfiguration config) : base(config)
         {
         }
 
@@ -62,9 +61,8 @@ namespace LSOmni.DataAccess.Dal
             return list;
         }
 
-        public void NotificationsUpdateStatus(string contactId, string deviceId, List<string> notificationIds, NotificationStatus notificationStatus)
+        public void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notificationStatus)
         {
-            int maxCounter = GetMaxReplicationCounter();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 connection.Open();
@@ -135,7 +133,7 @@ namespace LSOmni.DataAccess.Dal
                             command.CommandText = "IF NOT EXISTS (SELECT * FROM [Notification] WHERE [Id]=@f0 AND [TypeCode]=@f2)" +
                                 "INSERT INTO [Notification] ([Id],[Type],[TypeCode],[PrimaryText],[SecondaryText],[DisplayFrequency],[ValidFrom]," +
                                 "[ValidTo],[Created],[CreatedBy],[LastModifiedDate],[DateLastModified],[QRText],[NotificationType],[Status]) " +
-                                "VALUES (@f0, @f1, @f2, @f3, @f4, @f5, @f6, @f7, @f8, @f9, @f10, @f11, @f12, @f13, @f14)";
+                                "VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
 
                             command.Parameters.Clear();
                             command.Parameters.Add("@f0", SqlDbType.NVarChar);
@@ -188,22 +186,60 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        private int GetMaxReplicationCounter()
+        public void OrderMessageNotificationSave(string notificationId, long orderMessageId, string contactId, string description, string details, string qrText)
         {
-            int maxCounter = 0;
-            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+            //for notification table, Type should be = 1 (means contact) and TypeCode = contactId
+            int typeOfContact = 1;
+            string typeCodeContact = contactId;
+            using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
-                using (SqlCommand command = connection.CreateCommand())
+                db.Open();
+                using (SqlTransaction trans = db.BeginTransaction())
                 {
-                    command.CommandText = "SELECT MAX([ReplicationCounter]) FROM [NotificationLog]";
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    var result = command.ExecuteScalar();
-                    maxCounter = result != DBNull.Value ? Convert.ToInt32(result) : 0;
+                    try
+                    {
+                        using (SqlCommand command = db.CreateCommand())
+                        {
+                            command.Transaction = trans;
+
+                            command.CommandText = "INSERT INTO [Notification] ([Id],[Type],[TypeCode],[PrimaryText],[SecondaryText],[DisplayFrequency]," +
+                                                  "[ValidFrom],[ValidTo],[Created],[CreatedBy],[LastModifiedDate],[DateLastModified],[QRText],[NotificationType],[Status]" +
+                                                  ") VALUES (@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15)";
+
+                            command.Parameters.Clear();
+                            command.Parameters.AddWithValue("@f1", notificationId);
+                            command.Parameters.AddWithValue("@f2", typeOfContact);
+                            command.Parameters.AddWithValue("@f3", typeCodeContact);
+                            command.Parameters.AddWithValue("@f4", NullToString(description));
+                            command.Parameters.AddWithValue("@f5", NullToString(details));
+                            command.Parameters.AddWithValue("@f6", 0);
+                            command.Parameters.AddWithValue("@f7", DateTime.Now.AddMonths(-1));
+                            command.Parameters.AddWithValue("@f8", DateTime.Now.AddDays(2));
+                            command.Parameters.AddWithValue("@f9", DateTime.Now);
+                            command.Parameters.AddWithValue("@f10", string.Empty);
+                            command.Parameters.AddWithValue("@f11", DateTime.Now);
+                            command.Parameters.AddWithValue("@f12", DateTime.Now);
+                            command.Parameters.AddWithValue("@f13", NullToString(qrText));
+                            command.Parameters.AddWithValue("@f14", 1); //0 = BO, 1 = OrderMessage 
+                            command.Parameters.AddWithValue("@f15", 0); //Status 0 = New
+                            TraceSqlCommand(command);
+                            command.ExecuteNonQuery();
+
+                            trans.Commit();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error(config.LSKey.Key, ex);
+                        trans.Rollback();
+                        throw;
+                    }
+                    finally
+                    {
+                        db.Close();
+                    }
                 }
-                connection.Close();
             }
-            return maxCounter;
         }
 
         private List<Notification> NotificationsGetList(string where)
@@ -232,7 +268,7 @@ namespace LSOmni.DataAccess.Dal
 
         private Notification ReaderToNotification(SqlDataReader reader, string contactId)
         {
-            ImageRepository imageRepository = new ImageRepository();
+            ImageRepository imageRepository = new ImageRepository(config);
 
             DateTime created = SQLHelper.GetDateTime(reader["Created"]);
             Notification notification = new Notification()
@@ -246,7 +282,7 @@ namespace LSOmni.DataAccess.Dal
                 QRText = SQLHelper.GetString(reader["QRText"]),
                 NotificationType = (NotificationType)SQLHelper.GetInt32(reader["NotificationType"]),
                 ExpiryDate = SQLHelper.GetDateTime(reader["ValidTo"]),
-                Status = (NotificationStatus)SQLHelper.GetInt32(reader["NotificationStatus"])
+                Status = (NotificationStatus)SQLHelper.GetInt32(reader["Status"])
             };
 
             if (notification.NotificationType == NotificationType.OrderMessage)

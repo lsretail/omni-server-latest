@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using NLog;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
@@ -11,22 +10,16 @@ namespace LSOmni.BLL.Loyalty
 {
     public class OrderQueueBLL : BaseLoyBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
         private IOrderQueueRepository iOrderQueueRepository;
 
-        public OrderQueueBLL(string securityToken, string deviceId, int timeoutInSeconds)
-            : base(securityToken, deviceId, timeoutInSeconds)
+        public OrderQueueBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
+            : base(config, deviceId, timeoutInSeconds)
         {
-            iOrderQueueRepository = base.GetDbRepository<IOrderQueueRepository>();
+            iOrderQueueRepository = base.GetDbRepository<IOrderQueueRepository>(config);
         }
 
-        public OrderQueueBLL(string deviceId, int timeoutInSeconds)
-            : this("", deviceId, timeoutInSeconds)
-        {
-        }
-
-        public OrderQueueBLL(int timeoutInSeconds)
-            : this("", "", timeoutInSeconds)
+        public OrderQueueBLL(BOConfiguration config, int timeoutInSeconds)
+            : this(config, "", timeoutInSeconds)
         {
         }
 

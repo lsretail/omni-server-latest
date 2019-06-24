@@ -2,32 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using NLog;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class MenuBLL : BaseLoyBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
-        private IMenuCacheRepository iMenuCacheRepository;
+        private static LSLogger logger = new LSLogger();
         private IImageCacheRepository iImageCacheRepository;
 
-        public MenuBLL(string securityToken, int timeoutInSeconds)
-            : base(securityToken, timeoutInSeconds)
+        public MenuBLL(BOConfiguration config, int timeoutInSeconds)
+            : base(config, timeoutInSeconds)
         {
-            iMenuCacheRepository = base.GetDbRepository<IMenuCacheRepository>();
-            iImageCacheRepository = base.GetDbRepository<IImageCacheRepository>();
+            iImageCacheRepository = base.GetDbRepository<IImageCacheRepository>(config);
         }
 
-        public MenuBLL(int timeoutInSeconds)
-            : this("", timeoutInSeconds)
+        public MenuBLL(BOConfiguration config) : base(config, 0)
         {
         }
 
@@ -39,28 +35,8 @@ namespace LSOmni.BLL.Loyalty
             //if no menu id is given, get one
             if (string.IsNullOrWhiteSpace(id))
                 id = "ALL";
-
-            //when NO caching, then don't bother saving anything in database...
-            if (iMenuCacheRepository.CacheMenu() == false)
-            {
-                MenusGetAndFill(id, lastVersion, ref mobileMenu);
-                return mobileMenu;
-            }
-
-            //check if we have the menu in our db
-            CacheState cacheState = iMenuCacheRepository.Validate(id);
-            //does not exist or is expired, need new from BO 
-            if (cacheState != CacheState.Exists)
-            {
-                //save to local db
-                MenusGetAndFill(id, lastVersion, ref mobileMenu);
-                iMenuCacheRepository.Save(id, lastVersion, mobileMenu);
-            }
-            else
-            {
-                //found in cache so get the cached Menu from db
-                mobileMenu = iMenuCacheRepository.MenuGetById(id, lastVersion); // 
-            }
+            
+            MenusGetAndFill(id, lastVersion, ref mobileMenu);
 
             return mobileMenu;
         }
@@ -76,7 +52,7 @@ namespace LSOmni.BLL.Loyalty
         {
             try
             {
-                CurrencyBLL curBLL = new CurrencyBLL(timeoutInSeconds);
+                CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
                 Currency currency = curBLL.CurrencyGetLocal();
 
                 //not exist in cache so get them from BO
@@ -151,7 +127,7 @@ namespace LSOmni.BLL.Loyalty
             catch (LSOmniServiceException ex)
             {
                 //ignore the error and return what is in the cache, if anything
-                logger.Log(LogLevel.Error, "Something failed getting the menu.", ex);
+                logger.Error(config.LSKey.Key, "Something failed getting the menu.", ex);
                 throw;
             }
         }

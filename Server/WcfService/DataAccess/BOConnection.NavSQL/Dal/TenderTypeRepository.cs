@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -14,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public TenderTypeRepository() : base()
+        public TenderTypeRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Default Function]";
 

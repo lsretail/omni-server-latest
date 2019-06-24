@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Services.Protocols;
 
-using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSOmni.DataAccess.BOConnection.NavSQL.Dal;
-using LSOmni.DataAccess.BOConnection.NavSQL.Mapping;
-using LSOmni.DataAccess.BOConnection.NavSQL.XmlMapping.Loyalty;
 
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
@@ -23,44 +19,44 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
     {
         private static readonly object Locker = new object();
 
-        public NavApps() : base()
+        public NavApps(BOConfiguration config) : base(config)
         {
         }
 
         public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds,
             string loyaltySchemeCode)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository();
+            DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 
         public virtual Terminal TerminalGetById(string terminalId)
         {
-            TerminalRepository rep = new TerminalRepository();
+            TerminalRepository rep = new TerminalRepository(config, NAVVersion);
             return rep.TerminalBaseGetById(terminalId);
         }
 
         public virtual UnitOfMeasure UnitOfMeasureGetById(string id)
         {
-            UnitOfMeasureRepository rep = new UnitOfMeasureRepository();
+            UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
             return rep.UnitOfMeasureGetById(id);
         }
 
         public virtual VariantRegistration VariantRegGetById(string id, string itemId)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository();
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
             return rep.VariantRegGetById(id, itemId);
         }
 
         public virtual Currency CurrencyGetById(string id, string culture)
         {
-            CurrencyRepository rep = new CurrencyRepository(NAVVersion);
+            CurrencyRepository rep = new CurrencyRepository(config, NAVVersion);
             return rep.CurrencyLoyGetById(id, culture);
         }
 
         public virtual string ItemDetailsGetById(string itemId)
         {
-            ItemRepository itemRep = new ItemRepository();
+            ItemRepository itemRep = new ItemRepository(config);
             return itemRep.ItemDetailsGetById(itemId);
         }
 
@@ -71,7 +67,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 //JIJ add the distance calc for them, radius of X km ?
                 int recordsRemaining = 0;
                 string lastKey = "", maxKey = "";
-                StoreRepository rep = new StoreRepository(NAVVersion);
+                StoreRepository rep = new StoreRepository(config, NAVVersion);
                 List<ReplStore> totalList = rep.ReplicateStores(100, true, ref lastKey, ref maxKey, ref recordsRemaining);
 
                 //get the storeIds close to this store
@@ -79,309 +75,193 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                     locationIds.Add(store.Id);
             }
 
-            //locationIds are storeIds in NAV
-            if (navWS == null)
-            {
-                ItemInventoryXml inventoryXml = new ItemInventoryXml();
-                string xmlRequest = inventoryXml.ItemsInStockRequestXML(itemId, variantId, arrivingInStockInDays, locationIds);
-                string xmlResponse = RunOperation(xmlRequest);
-                HandleResponseCode(ref xmlResponse);
-                List<InventoryResponse> stores = inventoryXml.ItemsInStockResponseXML(xmlResponse, itemId, variantId);
-                if (skipUnAvailableStores == false)
-                    return stores;
-
-                //only return those stores that have inventory 
-                List<InventoryResponse> storeList = new List<InventoryResponse>();
-                foreach (InventoryResponse navStore in stores)
-                {
-                    if (navStore.QtyActualInventory > 0)   //actual inventory are positive when item exist in inventory, otherwise negative if not exist
-                    {
-                        storeList.Add(navStore);
-                    }
-                }
-                return storeList;
-            }
-
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            List<InventoryResponse> list = new List<InventoryResponse>();
-            NavWS.RootGetItemInventory root = new NavWS.RootGetItemInventory();
-            foreach (string id in locationIds)
-            {
-                try
-                {
-                    navWS.GetItemInventory(ref respCode, ref errorText, itemId, variantId, id, string.Empty, string.Empty, string.Empty, string.Empty, arrivingInStockInDays, ref root);
-                    if (respCode != "0000")
-                        throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
-                }
-                catch (SoapException e)
-                {
-                    if (e.Message.Contains("Method"))
-                        throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
-                }
-
-                if (root.WSInventoryBuffer == null)
-                    continue;
-
-                foreach (NavWS.WSInventoryBuffer buffer in root.WSInventoryBuffer)
-                {
-                    if (skipUnAvailableStores && buffer.ActualInventory <= 0)
-                        continue;
-
-                    list.Add(new InventoryResponse()
-                    {
-                        ItemId = buffer.ItemNo,
-                        VariantId = buffer.VariantCode,
-                        BaseUnitOfMeasure = buffer.BaseUnitofMeasure,
-                        QtyActualInventory = buffer.ActualInventory,
-                        QtyInventory = buffer.Inventory,
-                        QtySoldNotPosted = buffer.QtySoldnotPosted,
-                        QtyExpectedStock = buffer.ExpectedStock,
-                        ReorderPoint = buffer.ReorderPoint,
-                        StoreId = buffer.StoreNo
-                    });
-                }
-            }
-            return list;
+            return NavWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
         public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
         {
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-
-            if (navWS == null)
-                throw new Exception("WS2 is set to false, not supported in LS WS v1");
-            
-            OrderMapping map = new OrderMapping();
-            NavWS.RootGetInventoryMultipleIn rootin = map.MapListToInvReq(items);
-            NavWS.RootGetInventoryMultipleOut rootout = new NavWS.RootGetInventoryMultipleOut();
-            logger.Debug(Serialization.SerializeToXmlPrint(rootin));
-
-            try
-            {
-                navWS.GetInventoryMultiple(ref respCode, ref errorText, storeId, locationId, rootin, ref rootout);
-                if (respCode != "0000")
-                    throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
-            }
-            catch (SoapException e)
-            {
-                if (e.Message.Contains("Method"))
-                    throw new LSOmniServiceException(StatusCode.NAVWebFunctionNotFound, "Set WS2 to false in Omni Config", e);
-            }
-
-            List<InventoryResponse> list = new List<InventoryResponse>();
-            if (rootout.InventoryBufferOut != null)
-            {
-                foreach (NavWS.InventoryBufferOut buffer in rootout.InventoryBufferOut)
-                {
-                    list.Add(new InventoryResponse()
-                    {
-                        ItemId = buffer.Number,
-                        VariantId = buffer.Variant,
-                        QtyInventory = buffer.Inventory,
-                        QtyActualInventory = buffer.Inventory,
-                        StoreId = buffer.Store
-                    });
-                }
-            }
-
-            // check for missing items as nav does not return 0 items
-            foreach (NavWS.InventoryBufferIn item in rootin.InventoryBufferIn)
-            {
-                InventoryResponse it = list.Find(i => i.ItemId.Equals(item.Number) && i.VariantId.Equals(item.Variant));
-                if (it == null)
-                {
-                    list.Add(new InventoryResponse()
-                    {
-                        ItemId = item.Number,
-                        VariantId = item.Variant,
-                        StoreId = storeId
-                    });
-                }
-            }
-            return list;
+            return NavWSBase.ItemsInStockGet(items, storeId, locationId);
         }
 
         #region replication
 
-        public virtual List<ReplItem> ReplicateItems(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItem> ReplicateItems(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ReplicateItems(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public List<ReplBarcode> ReplicateBarcodes(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplBarcode> ReplicateBarcodes(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            BarcodeRepository rep = new BarcodeRepository();
+            BarcodeRepository rep = new BarcodeRepository(config);
             return rep.ReplicateBarcodes(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public List<ReplBarcodeMask> ReplicateBarcodeMasks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplBarcodeMask> ReplicateBarcodeMasks(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            BarcodeMaskRepository rep = new BarcodeMaskRepository();
+            BarcodeMaskRepository rep = new BarcodeMaskRepository(config);
             return rep.ReplicateBarcodeMasks(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public List<ReplBarcodeMaskSegment> ReplicateBarcodeMaskSegments(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplBarcodeMaskSegment> ReplicateBarcodeMaskSegments(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            BarcodeMaskSegmentRepository rep = new BarcodeMaskSegmentRepository();
+            BarcodeMaskSegmentRepository rep = new BarcodeMaskSegmentRepository(config);
             return rep.ReplicateBarcodeMaskSegments(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ExtendedVariantValuesRepository rep = new ExtendedVariantValuesRepository();
+            ExtendedVariantValuesRepository rep = new ExtendedVariantValuesRepository(config);
             return rep.ReplicateExtendedVariantValues(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemUOMRepository rep = new ItemUOMRepository();
+            ItemUOMRepository rep = new ItemUOMRepository(config);
             return rep.ReplicateItemUOM(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string storeId, int batchSize, bool fullReplication,ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, bool fullReplication,ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository();
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
             return rep.ReplicateItemVariantRegistration(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplStaff> ReplicateStaff(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplStaff> ReplicateStaff(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            StaffRepository rep = new StaffRepository();
+            StaffRepository rep = new StaffRepository(config);
             return rep.ReplicateStaff(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplVendor> ReplicateVendors(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            VendorRepository rep = new VendorRepository();
+            VendorRepository rep = new VendorRepository(config);
             return rep.ReplicateVendor(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplCurrency> ReplicateCurrency(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCurrency> ReplicateCurrency(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            CurrencyRepository rep = new CurrencyRepository(NAVVersion);
+            CurrencyRepository rep = new CurrencyRepository(config, NAVVersion);
             return rep.ReplicateCurrency(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplCurrencyExchRate> ReplicateCurrencyExchRate(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCurrencyExchRate> ReplicateCurrencyExchRate(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            CurrencyExchRateRepository rep = new CurrencyExchRateRepository();
+            CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
             return rep.ReplicateCurrencyExchRate(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplTaxSetup> ReplicateTaxSetup(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            TaxSetupRepository rep = new TaxSetupRepository();
+            TaxSetupRepository rep = new TaxSetupRepository(config);
             return rep.ReplicateTaxSetup(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplCustomer> ReplicateCustomer(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCustomer> ReplicateCustomer(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            CustomerRepository rep = new CustomerRepository();
+            CustomerRepository rep = new CustomerRepository(config);
             return rep.ReplicateCustomer(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplItemCategory> ReplicateItemCategory(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemCategory> ReplicateItemCategory(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository();
+            ItemCategoryRepository rep = new ItemCategoryRepository(config);
             return rep.ReplicateItemCategory(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplPrice> ReplicatePrice(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            PriceRepository rep = new PriceRepository();
+            PriceRepository rep = new PriceRepository(config);
             return rep.ReplicatePrice(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplPrice> ReplicateBasePrice(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            PriceRepository rep = new PriceRepository();
+            PriceRepository rep = new PriceRepository(config);
             return rep.ReplicateAllPrice(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public List<ReplProductGroup> ReplicateProductGroups(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ProductGroupRepository rep = new ProductGroupRepository();
+            ProductGroupRepository rep = new ProductGroupRepository(config);
             return rep.ReplicateProductGroups(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplStore> ReplicateStores(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            StoreRepository rep = new StoreRepository(NAVVersion);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             return rep.ReplicateStores(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplStore> ReplicateStores(string storeId, string terminalId)
+        public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, string terminalId)
         {
-            StoreRepository rep = new StoreRepository(NAVVersion);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             return rep.ReplicateInvStores(storeId, terminalId);
         }
 
-        public virtual List<ReplUnitOfMeasure> ReplicateUnitOfMeasure(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplUnitOfMeasure> ReplicateUnitOfMeasure(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            UnitOfMeasureRepository rep = new UnitOfMeasureRepository();
+            UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
             return rep.ReplicateUnitOfMeasure(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplDiscount> ReplicateDiscounts(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository();
+            DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.ReplicateDiscounts(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplDiscount> ReplicateMixAndMatch(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDiscount> ReplicateMixAndMatch(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository();
+            DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.ReplicateMixAndMatch(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository();
+            DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.ReplicateDiscountValidations(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public List<ReplStoreTenderType> ReplicateStoreTenderType(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplStoreTenderType> ReplicateStoreTenderType(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            StoreTenderTypeRepository rep = new StoreTenderTypeRepository();
+            StoreTenderTypeRepository rep = new StoreTenderTypeRepository(config);
             return rep.ReplicateStoreTenderType(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplHierarchy> ReplicateHierarchy(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
             {
-                logger.Error("Only supported in NAV 10.x and later");
+                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
                 return new List<ReplHierarchy>();
             }
 
-            HierarchyRepository rep = new HierarchyRepository(NAVVersion);
+            HierarchyRepository rep = new HierarchyRepository(config, NAVVersion);
             return rep.ReplicateHierarchy(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
             {
-                logger.Error("Only supported in NAV 10.x and later");
+                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
                 return new List<ReplHierarchyNode>();
             }
 
-            HierarchyNodeRepository rep = new HierarchyNodeRepository(NAVVersion);
+            HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NAVVersion);
             return rep.ReplicateHierarchyNode(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplHierarchyLeaf> ReplicateHierarchyLeaf(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplHierarchyLeaf> ReplicateHierarchyLeaf(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
             {
-                logger.Error("Only supported in NAV 10.x and later");
+                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
                 return new List<ReplHierarchyLeaf>();
             }
 
-            HierarchyNodeRepository rep = new HierarchyNodeRepository(NAVVersion);
+            HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NAVVersion);
             return rep.ReplicateHierarchyLeaf(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

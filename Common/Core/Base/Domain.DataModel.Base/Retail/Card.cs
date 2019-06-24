@@ -50,6 +50,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public string BlockedBy { get; set; }
         [DataMember]
         public string BlockedReason { get; set; }
+        [DataMember]
+        public string LoginId { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

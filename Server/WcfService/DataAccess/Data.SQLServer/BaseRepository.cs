@@ -3,34 +3,29 @@ using System.Text;
 using System.Data.SqlClient;
 using System.Data.Common;
 
-using NLog;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 
 namespace LSOmni.DataAccess.Dal
 {
     public abstract class BaseRepository //: MembershipEntities
     {
-        public int CacheImageDurationInMinutes { get { return CacheSettings.Instance.CacheImageDurationInMinutes; } }
-        public int CacheMenuDurationInMinutes { get { return CacheSettings.Instance.CacheMenuDurationInMinutes; } }
-
         protected internal static DateTime MinDate = new DateTime(1970, 1, 1); //min date for json
         protected static string sqlConnectionString = null;
+        protected static BOConfiguration config;
 
         private static readonly Object myLock = new Object();
-        private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        
-        public BaseRepository()
+        protected static LSLogger logger = new LSLogger();
+
+        public BaseRepository(BOConfiguration configuration)
         {
+            config = configuration;
             if (sqlConnectionString == null)
             {
                 lock (myLock)
                 {
-                    //first chech the old one
-                    if (ConfigSetting.KeyExists("LSOmniSQLConnectionString"))
-                        sqlConnectionString = ConfigSetting.GetString("LSOmniSQLConnectionString");
-                    else
-                        sqlConnectionString = ConfigSetting.GetString("SQLConnectionString.LSOmni");
+                    sqlConnectionString = ConfigSetting.GetString("SQLConnectionString.LSOmni");
 
                     DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
                     builder.ConnectionString = sqlConnectionString;
@@ -122,7 +117,7 @@ namespace LSOmni.DataAccess.Dal
         protected void TraceIt(string msg)
         {
             if (logger.IsTraceEnabled)
-                logger.Trace("\r\n" + msg);
+                logger.Trace(config.LSKey.Key, "\r\n" + msg);
         }
 
         protected void TraceSqlCommand(System.Data.IDbCommand command)
@@ -148,11 +143,11 @@ namespace LSOmni.DataAccess.Dal
                             (param.Value == null ?
                             "NULL" : param.Value.ToString())).AppendLine();
                     }
-                    logger.Trace("\r\n" + builder.ToString());
+                    logger.Trace(config.LSKey.Key, "\r\n" + builder.ToString());
                 }
                 catch (Exception ex)
                 {
-                    logger.Error("\r\n" + ex.Message);
+                    logger.Error(config.LSKey.Key, "\r\n" + ex.Message);
                 }
             }
         }
@@ -201,7 +196,7 @@ namespace LSOmni.DataAccess.Dal
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex, "Validate failed..");
+                logger.Error(config.LSKey.Key, ex, "Validate failed..");
                 throw;
             }
         }

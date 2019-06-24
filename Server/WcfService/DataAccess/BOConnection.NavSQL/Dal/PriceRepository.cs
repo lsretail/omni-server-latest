@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
@@ -19,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlMcolumns = string.Empty;
         private string sqlMfrom = string.Empty;
 
-        public PriceRepository() : base()
+        public PriceRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Item No_],mt.[Sales Type],mt.[Sales Code],mt.[Starting Date],mt.[Ending Date],mt.[Currency Code],mt.[Variant Code],mt.[Unit of Measure Code]," +
                          "mt.[Minimum Quantity],mt.[Currency Code],mt.[Unit Price],mt.[Price Includes VAT],mt.[Unit Price Including VAT],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]";
@@ -70,23 +71,27 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             else
             {
                 tmplastkey = lastKey;
+                string mainlastkey = lastKey;
                 string tmpmaxkey = string.Empty;
                 recordsRemaining = 0;
 
                 // Use actions from Item,Sales Price,Item Variant,Item Unit of Measure tables and as trigger for price update
                 recordsRemaining = GetRecordCount(27, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
-                actions = LoadActions(fullReplication, 27, 0, ref lastKey, ref recordsRemaining);
+                actions = LoadActions(fullReplication, 27, 0, ref mainlastkey, ref recordsRemaining);
                 bool isdone = tmplastkey.Equals(lastKey);
 
                 recordsRemaining += GetRecordCount(TABLEID, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 List<JscActions> priceact = LoadActions(fullReplication, TABLEID, batchSize, ref tmplastkey, ref recordsRemaining);
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 priceact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 priceact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
 
-                if (isdone)
-                    lastKey = tmplastkey;
+                lastKey = mainlastkey;
+                if (actions.Count == 0)
+                    recordsRemaining = 0;
 
                 foreach (JscActions act in priceact)
                 {

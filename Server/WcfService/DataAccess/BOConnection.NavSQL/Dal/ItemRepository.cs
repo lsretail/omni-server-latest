@@ -18,7 +18,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ItemRepository() : base()
+        public ItemRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[Keying in Price],mt.[Keying in Quantity],mt.[No Discount Allowed]," +
                          "mt.[Product Group Code],mt.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Zero Price Valid]," +
@@ -37,8 +37,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                          "(SELECT TOP(1) sl.[Block Purchase Return] FROM [" + navCompanyName + "Item Status Link] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
 
-
-
             sqlfrom = " FROM [" + navCompanyName + "Item] mt" +
                       " LEFT OUTER JOIN [" + navCompanyName + "Item HTML] ih ON mt.[No_]=ih.[Item No_]";
         }
@@ -47,6 +45,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
+
+            sqlcolumns += ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup] sg " +
+                         "LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group] " +
+                         "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
             List<JscKey> keys = GetPrimaryKeys("Item");
             List<JscActions> actions = new List<JscActions>();
@@ -66,35 +68,52 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             else
             {
                 string tmplastkey = lastKey;
+                string mainlastkey = lastKey;
                 string tmpmaxkey = string.Empty;
                 recordsRemaining = 0;
 
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
-                actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
-                bool isdone = tmplastkey.Equals(lastKey);
+                actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
                 // get item html and distirbution changes 
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
 
-                if (isdone)
-                    lastKey = tmplastkey;
+                lastKey = mainlastkey;
+                if (actions.Count == 0)
+                    recordsRemaining = 0;
 
                 foreach (JscActions act in itemact)
                 {
-                    if (act.Type == DDStatementType.Delete)
-                        continue;       // skip delete actions for extra tables
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact;
 
-                    int index = act.ParamValue.IndexOf(';');
-                    JscActions newact = new JscActions()
+                    if (act.TableId == 10000704)
                     {
-                        id = act.id,
-                        TableId = act.TableId,
-                        Type = act.Type,
-                        ParamValue = (index < 0) ? act.ParamValue : act.ParamValue.Substring(0, index)
-                    };
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = act.Type,
+                            ParamValue = (parvalues.Length > 2) ? parvalues[2] : act.ParamValue
+                        };
+                    }
+                    else
+                    {
+                        if (act.Type == DDStatementType.Delete)
+                            continue;       // skip delete actions for extra tables
+
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = act.Type,
+                            ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
+                        };
+                    }
 
                     JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
                     if (findme == null)
@@ -190,6 +209,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
+            sqlcolumns += ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup] sg " +
+                         "LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group] " +
+                         "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
+
             List<JscKey> keys = GetPrimaryKeys("Item");
             List<JscActions> actions = new List<JscActions>();
             string prevLastKey = lastKey;
@@ -208,46 +231,66 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             else
             {
                 string tmplastkey = lastKey;
+                string mainlastkey = lastKey;
                 string tmpmaxkey = string.Empty;
                 recordsRemaining = 0;
 
                 // get main item actions
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
-                actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
-                bool isdone = tmplastkey.Equals(lastKey);
+                actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
                 // Check for actions from Sales Price,Item Variant,Item Unit of Measure,Variant and Distribution tables
                 recordsRemaining += GetRecordCount(7002, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 7002, batchSize, ref tmplastkey, ref recordsRemaining);
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10001414, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001414, batchSize, ref tmplastkey, ref recordsRemaining));
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining));
+                tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
 
-                // if lastkey is same as before, then check for last key from other tables
-                if (isdone)
-                    lastKey = tmplastkey;
+                lastKey = mainlastkey;
+                if (actions.Count == 0)
+                    recordsRemaining = 0;
 
                 // combine actions
                 foreach (JscActions act in itemact)
                 {
-                    if (act.Type == DDStatementType.Delete)
-                        continue;       // skip delete actions for extra tables
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact;
 
-                    int index = act.ParamValue.IndexOf(';');
-                    JscActions newact = new JscActions()
+                    if (act.TableId == 10000704)
                     {
-                        id = act.id,
-                        TableId = act.TableId,
-                        Type = act.Type,
-                        ParamValue = (index < 0) ? act.ParamValue : act.ParamValue.Substring(0, index)
-                    };
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = act.Type,
+                            ParamValue = (parvalues.Length > 2) ? parvalues[2] : act.ParamValue
+                        };
+                    }
+                    else
+                    {
+                        if (act.Type == DDStatementType.Delete)
+                            continue;       // skip delete actions for extra tables
+
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = act.Type,
+                            ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
+                        };
+                    }
 
                     JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
                     if (findme == null)
@@ -391,7 +434,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search) == false)
                 sql += " AND mt.[Description] LIKE '%" + search + "%'" + GetDbCICollation();
 
-            sql += GetSQLStoreDist("mt.[No_]", storeId);
+            sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Product Group Code],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
             sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
@@ -447,7 +490,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
         {
-            BarcodeRepository brepo = new BarcodeRepository();
+            BarcodeRepository brepo = new BarcodeRepository(config);
             Barcode bcode = brepo.BarcodeGetByCode(code);
             if (bcode == null)  // barcode not found
                 throw new LSOmniServiceException(StatusCode.ItemNotFound, "Cannot find Item with Barcode:" + code);
@@ -455,7 +498,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             LoyItem item = ItemLoyGetById(bcode.ItemId, storeId, string.Empty, true);
 
             item.Prices.Clear();
-            PriceRepository prepo = new PriceRepository();
+            PriceRepository prepo = new PriceRepository(config);
             Price price = prepo.PriceGetByIds(bcode.ItemId, storeId, bcode.VariantId, bcode.UnitOfMeasureId, culture);
             if (price == null)
             {
@@ -471,7 +514,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(bcode.VariantId) == false)
             {
                 item.VariantsRegistration.Clear();
-                ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository();
+                ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository(config);
                 VariantRegistration variantReg = vreop.VariantRegGetById(bcode.VariantId, item.Id);
                 if (variantReg != null)
                     item.VariantsRegistration.Add(variantReg);
@@ -479,7 +522,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (string.IsNullOrWhiteSpace(bcode.UnitOfMeasureId) == false)
             {
-                ItemUOMRepository ireop = new ItemUOMRepository();
+                ItemUOMRepository ireop = new ItemUOMRepository(config);
                 item.UnitOfMeasures.Clear();
                 item.UnitOfMeasures.Add(new UnitOfMeasure()
                 {
@@ -519,7 +562,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = GetSQL(true, maxResult) + sqlcolumns + sqlfrom + sqlwhere +
-                                            GetSQLStoreDist("mt.[No_]", storeId) + " ORDER BY mt.[Description]";
+                                            GetSQLStoreDist("mt.[No_]", storeId, true) + " ORDER BY mt.[Description]";
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -579,6 +622,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 BlockNegativeAdjustment = SQLHelper.GetInt32(reader["BlockNegAdj"]),
                 BlockPositiveAdjustment = SQLHelper.GetInt32(reader["BlockPosAdj"]),
                 BlockPurchaseReturn = SQLHelper.GetInt32(reader["BlockPurRet"]),
+                BlockDistribution = SQLHelper.GetInt32(reader["DistStatus"]),
 
                 UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
                 PurchUnitOfMeasure = SQLHelper.GetString(reader["Purch_ Unit of Measure"]),
@@ -629,26 +673,26 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 item.AllowedToSell = false;
             }
 
-            ImageRepository imgrep = new ImageRepository();
+            ImageRepository imgrep = new ImageRepository(config);
             item.Images = imgrep.ImageGetByKey("Item", item.Id, string.Empty, string.Empty, 0, false);
             timestamp = (hastimestamp) ? ByteArrayToString(reader["timestamp"] as byte[]) : string.Empty;
 
             if (incldetails == false)
                 return item;
 
-            PriceRepository pricerep = new PriceRepository();
+            PriceRepository pricerep = new PriceRepository(config);
             item.Prices = pricerep.PricesGetByItemId(item.Id, storeId, culture);
 
-            ItemUOMRepository uomrep = new ItemUOMRepository();
+            ItemUOMRepository uomrep = new ItemUOMRepository(config);
             item.UnitOfMeasures = uomrep.ItemUOMGetByItemId(item.Id);
 
-            ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository();
+            ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config);
             item.VariantsRegistration = varrep.VariantRegGetByItemId(item.Id);
 
-            ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository();
+            ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config);
             item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id);
             
-            AttributeValueRepository attrrep = new AttributeValueRepository();
+            AttributeValueRepository attrrep = new AttributeValueRepository(config);
             item.ItemAttributes = attrrep.AttributesGetByItemId(item.Id);
 
             return item;

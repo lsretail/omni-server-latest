@@ -6,12 +6,13 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class OfferRepository : BaseRepository
     {
-        public OfferRepository() : base()
+        public OfferRepository(BOConfiguration config) : base(config)
         {
         }
 
@@ -144,7 +145,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             offer.OfferDetails = OfferDetailGetByOfferId(offer.Id);
 
-            ImageRepository irep = new ImageRepository();
+            ImageRepository irep = new ImageRepository(config);
             offer.Images = irep.ImageGetByKey("Published Offer", offer.Id, string.Empty, string.Empty, 0, false);
             return offer;
         }
@@ -170,7 +171,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Description = SQLHelper.GetString(reader["Description"])
             };
 
-            ImageRepository irep = new ImageRepository();
+            ImageRepository irep = new ImageRepository(config);
             det.Image = irep.ImageGetByKey("Published Offer Detail Line", det.OfferId, det.LineNumber, string.Empty, 1, false).FirstOrDefault();
             return det;
         }

@@ -7,6 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.DiscountEngine;
 using LSRetail.Omni.DiscountEngine.Repositories;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -23,7 +24,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlVcolumns = string.Empty;
         private string sqlVfrom = string.Empty;
 
-        public DiscountOfferRepository() : base()
+        public DiscountOfferRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Store No_],mt.[Priority No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
                          "mt.[To Date],mt.[Minimum Quantity],mt.[Discount _],mt.[Unit of Measure Code],mt.[Currency Code],mt.[Offer No_],mt.[Last Modify Date]," +

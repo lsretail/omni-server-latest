@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSOmni.DataAccess.Dal
@@ -12,8 +13,7 @@ namespace LSOmni.DataAccess.Dal
     {
         static object statusLock = new object();
 
-        //private static NLog.Logger logger = NLog.LogManager.GetCurrentClassLogger();
-        public ImageRepository() : base()
+        public ImageRepository(BOConfiguration config) : base(config)
         {
         }
 

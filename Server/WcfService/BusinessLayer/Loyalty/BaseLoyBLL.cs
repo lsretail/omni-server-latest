@@ -1,32 +1,29 @@
 ﻿using System;
+using System.Net;
+using System.IO;
+using System.Web.Script.Serialization;
 
-using NLog;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
-using Newtonsoft.Json;
-using System.Net;
-using System.IO;
 
 namespace LSOmni.BLL.Loyalty
 {
     public abstract class BaseLoyBLL : BaseBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         protected int timeoutInSeconds = 0;
 
-        private static object SecurityValidateTokenObj = null;
         private static bool SecurityValidateToken = false;
         //ALL  security related code is done in base class
         protected IValidationRepository iValidationRepository;
-
-        protected string securityToken;
+        
         private string contactId;
         private StatusCode securityTokenStatusCode;
         private string localCulture = null;
 
-        public virtual string SecurityToken { get { return securityToken; } }
+        public virtual string SecurityToken { get { return config.SecurityToken; } }
         public virtual string ContactId { get { return contactId; } }
 
         #region BOConnection
@@ -39,7 +36,7 @@ namespace LSOmni.BLL.Loyalty
             get
             {
                 if (iLoyBOConnection == null)
-                    iLoyBOConnection = GetBORepository<ILoyaltyBO>();
+                    iLoyBOConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key);
                 iLoyBOConnection.TimeoutInSeconds = this.timeoutInSeconds;
                 return iLoyBOConnection;
             }
@@ -50,7 +47,7 @@ namespace LSOmni.BLL.Loyalty
             get
             {
                 if (iAppBOConnection == null)
-                    iAppBOConnection = GetBORepository<IAppBO>();
+                    iAppBOConnection = GetBORepository<IAppBO>(config.LSKey.Key);
                 return iAppBOConnection;
             }
         }
@@ -60,53 +57,29 @@ namespace LSOmni.BLL.Loyalty
         private static object lockObject = new object();
         private static string LicenseKey = string.Empty;
 
-        public BaseLoyBLL(int timeoutInSeconds)
-            : this("", "", timeoutInSeconds)
-        {
-            //this constructor does NOT do any security checks. Used for Login() and ContactCreate()
-
-        }
-
-        public BaseLoyBLL(string securitytoken, int timeoutInSeconds)
-            : this(securitytoken, "", timeoutInSeconds)
+        public BaseLoyBLL(BOConfiguration config, int timeoutInSeconds) : this(config, "", timeoutInSeconds)
         {
 
         }
 
-        public BaseLoyBLL(string securitytoken, string deviceId, int timeoutInSeconds)
+        public BaseLoyBLL(BOConfiguration config, string deviceId, int timeoutInSeconds) : base(config)
         {
             this.timeoutInSeconds = timeoutInSeconds;
-            if (SecurityValidateTokenObj == null)
-            {
-                SecurityValidateTokenObj = "x";
-                try
-                {
-                    SecurityValidateToken = ConfigSetting.GetBoolean("Security.Validatetoken");
-                }
-                catch
-                {
-                    // find in database if not found in config file
-                    IAppSettingsRepository iRepository = GetDbRepository<IAppSettingsRepository>();
-                    SecurityValidateToken = iRepository.AppSettingsBoolGetByKey(AppSettingsKey.Security_Validatetoken);
-                }
-            }
-
-            Init(securitytoken);
+            Init(config.SecurityToken);
             base.DeviceId = deviceId; //keep this order
 
-            if (string.IsNullOrWhiteSpace(securitytoken) == false)
-            {
+            if (config.SecurityCheck) { 
                 SecurityCheck();
             }
         }
 
         private void Init(string securitytoken)
         {
-            this.securityToken = securitytoken;
+            this.config.SecurityToken = securitytoken;
             base.DeviceId = string.Empty;
             this.contactId = string.Empty;
             this.securityTokenStatusCode = StatusCode.OK;
-            this.iValidationRepository = GetDbRepository<IValidationRepository>();
+            this.iValidationRepository = GetDbRepository<IValidationRepository>(config);
         }
 
         protected void SecurityCheck()
@@ -116,21 +89,21 @@ namespace LSOmni.BLL.Loyalty
 
             //always validate security token and if device is blocked etc.  Will get deviceId and contactId back
             string deviceId = "";
-            securityTokenStatusCode = iValidationRepository.ValidateSecurityToken(securityToken, out deviceId, out contactId);
+            securityTokenStatusCode = iValidationRepository.ValidateSecurityToken(config.SecurityToken, out deviceId, out this.contactId);
             base.DeviceId = deviceId;
-            if (SecurityValidateToken)
+            if (config.SecurityCheck)
             {
                 // 
                 if (securityTokenStatusCode != StatusCode.OK)
                 {
                     string msg = string.Empty;
-                    securityToken = ""; //dont want to send the token back in error message
+                    config.SecurityToken = ""; //dont want to send the token back in error message
                     if (securityTokenStatusCode == StatusCode.DeviceIsBlocked)
                         msg = string.Format("Device has been blocked from usage: {0}", base.DeviceId);
                     else if (securityTokenStatusCode == StatusCode.SecurityTokenInvalid)
-                        msg = string.Format("Security token not valid: {0}", securityToken);
+                        msg = string.Format("Security token not valid: {0}", config.SecurityToken);
                     else if (securityTokenStatusCode == StatusCode.UserNotLoggedIn)
-                        msg = string.Format("User is not logged in: {0}", securityToken);
+                        msg = string.Format("User is not logged in: {0}", config.SecurityToken);
 
                     throw new LSOmniServiceException(securityTokenStatusCode, msg);
                 }
@@ -141,8 +114,8 @@ namespace LSOmni.BLL.Loyalty
         {
             try
             {
-                string payloadJson = JsonConvert.SerializeObject(obj);
-                string ecomUrl = ConfigSetting.GetString("Ecom.Url");
+                string payloadJson = new JavaScriptSerializer().Serialize(obj);
+                string ecomUrl = config.SettingsGetByKey(ConfigKey.EcommUrl);
 
                 if (string.IsNullOrEmpty(ecomUrl))
                     return "ERROR: Missing Ecom.Url in Appsettings";
@@ -170,85 +143,20 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                logger.Error(config.LSKey.Key, ex);
                 return "ERROR:" + ex.Message;
             }
         }
 
         #region validation
 
-        //all data validations are in base class
-        protected void ValidateContact(string contId)
-        {
-            if (string.IsNullOrEmpty(contId))
-                return;
-
-            contId = contId.Trim();
-            if (SecurityValidateToken == false)
-                return;
-
-            if (iValidationRepository.ValidateContact(contId, this.ContactId) == false)
-            {
-                //throw an error if id passed in is not tied to security token  
-                // security token retrived the ContactId so OK to use it
-
-                string msg = "ContactId and SecurityToken do not match.";
-                throw new LSOmniServiceException(StatusCode.AccessNotAllowed, msg);
-            }
-        }
-
-        protected void ValidateCard(string cardId)
-        {
-            cardId = cardId.Trim();
-            if (SecurityValidateToken == false)
-                return;
-
-            if (iValidationRepository.ValidateCard(cardId, this.ContactId) == false)
-            {
-                //throw an error if id passed in is not tied to security token  
-                // security token retrived the ContactId so OK to use it
-
-                string msg = "cardId and SecurityToken do not match.";
-                throw new LSOmniServiceException(StatusCode.AccessNotAllowed, msg);
-            }
-        }
-
-        protected void ValidateContactUserName(string userName)
-        {
-            if (SecurityValidateToken == false)
-                return;
-
-            if (iValidationRepository.ValidateContactUserName(userName, this.ContactId) == false)
-            {
-                //throw an error if id passed in is not tied to security token  
-                // security token retrived the ContactId so OK to use it
-
-                string msg = "UserName and SecurityToken do not match.";
-                throw new LSOmniServiceException(StatusCode.AccessNotAllowed, msg);
-            }
-        }
-
-        protected void ValidateAccount(string accountId)
-        {
-            if (SecurityValidateToken == false)
-                return;
-
-            if (iValidationRepository.ValidateAccount(accountId, this.ContactId) == false)
-            {
-                //throw an error if id passed in is not tied to security token  
-                // security token retrived the ContactId so OK to use it
-
-                string msg = "AccountId and SecurityToken do not match.";
-                throw new LSOmniServiceException(StatusCode.AccessNotAllowed, msg);
-            }
-        }
-
         protected void ValidateOneList(string oneListId)
         {
             if (SecurityValidateToken == false)
                 return;
 
-            if (iValidationRepository.ValidateOneList(oneListId, this.ContactId) == false)
+            /*
+            if (iValidationRepository.ValidateOneList(oneListId, this.contactId) == false)
             {
                 //throw an error if id passed in is not tied to security token  
                 // security token retrived the ContactId so OK to use it
@@ -256,11 +164,12 @@ namespace LSOmni.BLL.Loyalty
                 string msg = "OneListId and SecurityToken do not match.";
                 throw new LSOmniServiceException(StatusCode.AccessNotAllowed, msg);
             }
+            */
         }
 
         private void SecurityTokenCheck()
         {
-            if (SecurityValidateToken == false)
+            if (config.SecurityCheck == false)
                 return;
 
             if (Security.IsValidSecurityToken(this.SecurityToken) == false)
@@ -276,8 +185,7 @@ namespace LSOmni.BLL.Loyalty
         {
             if (string.IsNullOrEmpty(localCulture))
             {
-                AppSettingsBLL appBll = new AppSettingsBLL();
-                localCulture = appBll.AppSettingsGetByKey(AppSettingsKey.Currency_Culture, "en");
+                config.SettingsGetByKey(ConfigKey.Currency_Culture);
             }
             return localCulture;
         }

@@ -88,9 +88,13 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         [DataMember]
         public List<VariantExt> VariantsExt { get; set; }
         [DataMember]
+        public VariantRegistration SelectedVariant { get; set; }
+        [DataMember]
         public List<VariantRegistration> VariantsRegistration { get; set; }
         [DataMember]
         public List<RetailAttribute> ItemAttributes { get; set; }
+        [DataMember]
+        public UnitOfMeasure SelectedUnitOfMeasure { get; set; }
         [DataMember]
         public List<UnitOfMeasure> UnitOfMeasures { get; set; }
         [DataMember]
@@ -134,11 +138,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
             get { return (Images != null && Images.Count > 0) ? Images[0] : null; }
         }
 
-        public string PriceFromVariantsAndUOM(VariantRegistration variant, UnitOfMeasure uom)
-        {
-            return PriceFromVariantsAndUOM(variant?.Id, uom?.Id);
-        }
-
         public string PriceFromVariantsAndUOM(string variant, string uom)
         {
             if (Prices == null)
@@ -160,11 +159,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
                     {
                         return price.Amount;
                     }
-                    if ((variant.Equals(price.VariantId) && price.UomId.Equals("")) || (price.VariantId.Equals("") && uom.Equals(price.UomId)))
+                    if ((variant.Equals(price.VariantId) && string.IsNullOrEmpty(price.UomId)) || (string.IsNullOrEmpty(price.VariantId) && uom.Equals(price.UomId)))
                     {
                         return price.Amount;
                     }
-                    if (price.VariantId.Equals("") && price.UomId.Equals(""))
+                    if (string.IsNullOrEmpty(price.VariantId) && string.IsNullOrEmpty(price.UomId))
                     {
                         return price.Amount;
                     }

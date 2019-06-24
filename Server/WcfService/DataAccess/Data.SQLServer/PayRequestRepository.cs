@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Data.SqlClient;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
-using NLog;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.Dal
 {
     public class PayRequestRepository : BaseRepository, IPayRequestRepository
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        public PayRequestRepository(BOConfiguration config) : base(config)
+        {
+        }
 
         public Guid NewRequest(string orderId)
         {
@@ -20,7 +22,7 @@ namespace LSOmni.DataAccess.Dal
                     using (SqlCommand command = connection.CreateCommand())
                     {
                         command.CommandText = "INSERT INTO [PayRequests] ([Id],[OrderId],[RegTime]) VALUES (@f0, @f1, @f2)";
-                        command.Parameters.AddWithValue("@f0", id);
+                        command.Parameters.AddWithValue("@f0", id.ToString());
                         command.Parameters.AddWithValue("@f1", orderId);
                         command.Parameters.AddWithValue("@f2", DateTime.Now);
                         TraceSqlCommand(command);
@@ -33,33 +35,7 @@ namespace LSOmni.DataAccess.Dal
             }
             catch (Exception ex)
             {
-                logger.Log(LogLevel.Error, ex, "NewRequest for Order: " + orderId);
-                throw;
-            }
-        }
-
-        public bool CheckRequest(string orderId)
-        {
-            try
-            {
-                int rows = 0;
-                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-                {
-                    using (SqlCommand command = connection.CreateCommand())
-                    {
-                        command.CommandText = "SELECT COUNT(*) FROM [PayRequests] WHERE [OrderId]=@id";
-                        command.Parameters.AddWithValue("@id", orderId);
-                        TraceSqlCommand(command);
-                        connection.Open();
-                        rows = (int)command.ExecuteScalar();
-                    }
-                    connection.Close();
-                    return rows > 0;
-                }
-            }
-            catch (Exception ex)
-            {
-                logger.Log(LogLevel.Error, ex, "Guid: " + orderId);
+                logger.Error(config.LSKey.Key, ex, "NewRequest for Order: " + orderId);
                 throw;
             }
         }

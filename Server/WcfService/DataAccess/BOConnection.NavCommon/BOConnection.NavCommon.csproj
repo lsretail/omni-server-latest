@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E6B08A8C-10F0-4E48-999E-47F7236DDE5A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LSOmni.DataAccess.BOConnection.NavCommon</RootNamespace>
+    <AssemblyName>LSOmni.DataAccess.BOConnection.NavCommon</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
+      <Link>Properties\Version.cs</Link>
+    </Compile>
+    <Compile Include="Mapping\BaseMapping.cs" />
+    <Compile Include="Mapping\ContactMapping.cs" />
+    <Compile Include="Mapping\OrderMapping.cs" />
+    <Compile Include="Mapping\StoreMapping.cs" />
+    <Compile Include="Mapping\TransactionMapping.cs" />
+    <Compile Include="MemCache..cs" />
+    <Compile Include="NavCommonBase.cs" />
+    <Compile Include="NavCommonLoyalty.cs" />
+    <Compile Include="NavCommonReplicate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\NavWebReference\Reference.cs" />
+    <Compile Include="Web References\NavWS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="XmlMapping\BaseXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\AdvertisementXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\BasketXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\ClickCollectXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\HierarchyXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\MemberCardXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\StoreServicesXml.cs" />
+    <Compile Include="XmlMapping\NAVWebXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\ItemInventoryXml.cs" />
+    <Compile Include="XmlMapping\Replication\BaseRepository.cs" />
+    <Compile Include="XmlMapping\Replication\ContactRepository.cs" />
+    <Compile Include="XmlMapping\Replication\ItemRepository.cs" />
+    <Compile Include="XmlMapping\Replication\ReplicateRepository.cs" />
+    <Compile Include="XmlMapping\Replication\SetupRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\NavWebReference\Reference.map" />
+    <None Include="Web References\NavWebReference\RetailWebServices.wsdl" />
+    <None Include="Web References\NavWS\OmniWrapper.wsdl" />
+    <None Include="Web References\NavWS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\NavWS\Root.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootCOQtyAvailabilityExtOut.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootCustomerOrderFilteredList.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootCustomerOrderGet.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootCustomerOrderStatus2.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetCrossSelling.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetDataEntryBalance.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetDirectMarketingInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetHierarchy.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetHierarchyNodeOut.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetInventoryMultipleOut.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetItemInventory.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetItemSalesInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetMemberCard.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetMemberContact.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetMemberInfoForPos.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetMemberSalesHistory.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetStoreOpeningHours.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetTransaction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMemberContactCreate.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMemberContactCreate1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMobilePosPrint.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMobilePosSalesHistory.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMobilePosZReport.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootMobileTransaction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootSendTransaction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootSendTransactionHeader.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
+      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
+      <Name>DiscountEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
+      <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
+      <Name>Domain.DataModel.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
+      <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>
+      <Name>Domain.DataModel.Loyalty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Pos\Domain.DataModel.Pos\Domain.DataModel.Pos.csproj">
+      <Project>{b2615d03-8131-48d0-b0f2-717980189dc2}</Project>
+      <Name>Domain.DataModel.Pos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>
+      <Name>Common</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{8436968a-e89d-4470-9c90-bd4b448fd4c9}</Project>
+      <Name>Interfaces</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://DHQSRVOMNI001:8047/Master/WS/Codeunit/OmniWrapper">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\NavWS\</RelPath>
+      <UpdateFromURL>http://DHQSRVOMNI001:8047/Master/WS/Codeunit/OmniWrapper</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_NavCommon_NavWS_OmniWrapper</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

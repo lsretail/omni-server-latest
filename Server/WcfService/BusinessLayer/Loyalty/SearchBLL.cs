@@ -1,6 +1,6 @@
-﻿using LSOmni.DataAccess.Interface.Repository.Loyalty;
+﻿using LSOmni.Common.Util;
+using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 
@@ -11,26 +11,26 @@ namespace LSOmni.BLL.Loyalty
         private INotificationRepository iNotificationRepository;
         private IOneListRepository iOneListRepository;
 
-        public SearchBLL(string securityToken, int timeoutInSeconds)
-            : base(securityToken, timeoutInSeconds)
+        public SearchBLL(BOConfiguration config, int timeoutInSeconds)
+            : base(config, timeoutInSeconds)
         {
-            this.iNotificationRepository = GetDbRepository<INotificationRepository>();
-            this.iOneListRepository = GetDbRepository<IOneListRepository>();
+            this.iNotificationRepository = GetDbRepository<INotificationRepository>(config);
+            this.iOneListRepository = GetDbRepository<IOneListRepository>(config);
         }
 
-        public SearchBLL(int timeoutInSeconds)
-            : this("", timeoutInSeconds)
+        public SearchBLL(BOConfiguration config)
+            : this(config, 0)
         {
         }
 
-        public virtual SearchRs Search(string contactId, string search, int maxResultset, SearchType searchTypes)
+        public virtual SearchRs Search(string cardId, string search, int maxResultset, SearchType searchTypes)
         {
+            SQLHelper.CheckForSQLInjection(search);
+
             SearchRs searchRs = new SearchRs();
             if ((searchTypes & SearchType.Item) != 0)
             {
-                IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-                string storeId = iAppRepo.AppSettingsGetByKey(AppSettingsKey.Loyalty_FilterOnStore);
-                searchRs.Items = BOLoyConnection.ItemsSearch(search, storeId, maxResultset, false);
+                searchRs.Items = BOLoyConnection.ItemsSearch(search, "", maxResultset, false);
             }
             if ((searchTypes & SearchType.ProductGroup) != 0)
             {
@@ -40,32 +40,25 @@ namespace LSOmni.BLL.Loyalty
             {
                 searchRs.ItemCategories = BOLoyConnection.ItemCategorySearch(search);
             }
-            if ((searchTypes & SearchType.Transaction) != 0)
+            if ((searchTypes & SearchType.SalesEntry) != 0)
             {
-                searchRs.Transactions = BOLoyConnection.TransactionSearch(search, contactId, maxResultset, base.GetAppSettingCurrencyCulture(), false);
+                searchRs.SalesEntries = BOLoyConnection.SalesEntrySearch(search, cardId, maxResultset, false);
             }
             if ((searchTypes & SearchType.Store) != 0)
             {
-                IAppSettingsRepository iAppRepo = GetDbRepository<IAppSettingsRepository>();
-                int offset = iAppRepo.AppSettingsIntGetByKey(AppSettingsKey.Timezone_HoursOffset_DD);
-
                 searchRs.Stores = BOLoyConnection.StoreLoySearch(search);
-                foreach (Store store in searchRs.Stores)
-                {
-                    store.StoreHours = BOLoyConnection.StoreHoursGetByStoreId(store.Id, offset);
-                }
             }
             if ((searchTypes & SearchType.Profile) != 0)
             {
-                searchRs.Profiles = BOLoyConnection.ProfileSearch(contactId, search);
+                searchRs.Profiles = BOLoyConnection.ProfileSearch(cardId, search);
             }
             if ((searchTypes & SearchType.Notification) != 0)
             {
-                searchRs.Notifications = iNotificationRepository.NotificationSearch(contactId, search, maxResultset);
+                searchRs.Notifications = iNotificationRepository.NotificationSearch(cardId, search, maxResultset);
             }
             if ((searchTypes & SearchType.OneList) != 0)
             {
-                searchRs.OneLists = iOneListRepository.OneListSearch(contactId, search, maxResultset, ListType.Basket, true);
+                searchRs.OneLists = iOneListRepository.OneListSearch(cardId, search, maxResultset, ListType.Basket, true);
             }
             return searchRs;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
@@ -20,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumnsLink = string.Empty;
         private string sqlfromLink = string.Empty;
 
-        public HierarchyNodeRepository(Version navVersion) : base(navVersion)
+        public HierarchyNodeRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumnsNode = "mt.[Hierarchy Code],mt.[Node ID],mt.[Parent Node ID],mt.[Description],mt.[Children Order],mt.[Indentation],mt.[Presentation Order],mt.[Retail Image Code]";
             sqlfromNode = " FROM [" + navCompanyName + ((NavVersion >= new Version("11.01.00")) ? "Hierarchy Nodes] mt" : "Hierarchy Node] mt") +

@@ -1,18 +1,17 @@
 ﻿using System;
 
-using NLog;
-using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class ActivityLogBLL : BaseLoyBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private string ipAddress;
 
         public ActivityLogBLL(string deviceId, string ipAddress, int timeoutInSeconds)
-            : base("", deviceId, timeoutInSeconds)
+            : base(null, deviceId, timeoutInSeconds)
         {
             this.ipAddress = ipAddress;
         }
@@ -27,8 +26,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 activityLog.DeviceId = base.DeviceId;
                 activityLog.IPAddress = this.ipAddress;
-                //
-                logger.Log(LogLevel.Debug, base.DeviceId + " " + activityLog.ContactId + " " +  activityLog.Value);
+                logger.Debug(config.LSKey.Key, base.DeviceId + " " + activityLog.ContactId + " " + activityLog.Value);
             }
             catch
             {
@@ -36,12 +34,10 @@ namespace LSOmni.BLL.Loyalty
             }
             return true;
         }
- 
+
         #region private
 
 
         #endregion private
     }
 }
-
- 

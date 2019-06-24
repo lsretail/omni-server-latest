@@ -13,6 +13,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -27,19 +28,17 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         string ContactCreate(MemberContact contact);
         void ContactUpdate(MemberContact contact, string accountId);
         double ContactAddCard(string contactId, string accountId, string cardId);
-        MemberContact ContactGetById(string id, int numberOfTrans, bool includeDetails);
         MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails);
-        MemberContact ContactGetByUserName(string user);
-        MemberContact ContactGetByEMail(string email);
+        MemberContact ContactGetByUserName(string user, bool includeDetails);
+        MemberContact ContactGetByEMail(string email, bool includeDetails);
         List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
 
-        ContactRs Login(string userName, string password, string cardId);   //added cardId
+        void Login(string userName, string password, string cardId);
         string ChangePassword(string userName, string newPassword, string oldPassword);
         string ResetPassword(string userName, string newPassword);
 
-        List<Profile> ProfileGetByContactId(string id);
+        List<Profile> ProfileGetByCardId(string id);
         List<Profile> ProfileGetAll();
-        Account AccountGetById(string accountId);
         List<Scheme> SchemeGetAll();
         Scheme SchemeGetById(string schemeId);
 
@@ -55,7 +54,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Card
 
-        Card CardGetByContactId(string contactId);
         Card CardGetById(string id);
         long MemberCardGetPoints(string cardId);
         decimal GetPointRate();
@@ -65,7 +63,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Notification
 
-        List<Notification> NotificationsGetByContactId(string contactId, int numberOfNotifications);
         List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications);
 
         #endregion
@@ -82,17 +79,15 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Transaction
 
-        LoyTransaction TransactionNavGetByIdWithPrint(string storeId, string terminalId, string transactionId);
-        LoyTransaction TransactionGetByReceiptNo(string receiptNo, bool includeLines);
-        List<LoyTransaction> SalesEntriesGetByContactId(string contactId, int maxNumberOfTransactions, string culture);
-        LoyTransaction SalesEntryGetById(string entryId);
+        List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions, string culture);
+        SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping);
         string FormatAmount(decimal amount, string culture);
+        List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, bool includeLines);
 
         #endregion
 
         #region Basket
 
-        BasketCalcResponse BasketCalc(BasketCalcRequest basketRequest, decimal shippingPrice = 0);
         Order BasketCalcToOrder(OneList list);
 
         #endregion
@@ -121,7 +116,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         List<StoreServices> StoreServicesGetByStoreId(string storeId);
         string GetWIStoreId();
-        List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset);
         Store StoreGetById(string id);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
         List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
@@ -131,14 +125,9 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Order
 
         OrderStatusResponse OrderStatusCheck(string transactionId);
-        List<OrderLineAvailability> OrderAvailabilityCheck(OrderAvailabilityRequest request);
         OrderAvailabilityResponse OrderAvailabilityCheck(OneList request);
         void OrderCancel(string transactionId);
-        void OrderCreate(Order request, string tenderMapping);
-        Order OrderGetById(string id, bool includeLines, string tenderMapping);
-        Order OrderGetByWebId(string id, bool includeLines, string tenderMapping);
-        Order OrderGetByReceiptId(string id, bool includeLines, string tenderMapping);
-        List<Order> OrderHistoryByContactId(string contactId, bool includeLines, bool includeTransactions, string tenderMapping);
+        string OrderCreate(Order request, string tenderMapping, out string orderId);
 
         #endregion
 
@@ -149,7 +138,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ItemCategory> ItemCategorySearch(string search);
         List<Store> StoreLoySearch(string search);
         List<Profile> ProfileSearch(string contactId, string search);
-        List<LoyTransaction> TransactionSearch(string search, string contactId, int maxNumberOfTransactions, string culture, bool includeLines);
 
         #endregion
 
@@ -165,16 +153,16 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region EComm Replication
 
-        List<ReplImageLink> ReplEcommImageLinks(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplImage> ReplEcommImages(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplAttribute> ReplEcommAttribute(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplAttributeValue> ReplEcommAttributeValue(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplImageLink> ReplEcommImageLinks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplImage> ReplEcommImages(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplAttribute> ReplEcommAttribute(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplAttributeValue> ReplEcommAttributeValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplDataTranslation> ReplEcommDataTranslation(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplShippingAgent> ReplEcommShippingAgent(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplCustomer> ReplEcommMember(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplCountryCode> ReplEcommCountryCode(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplDataTranslation> ReplEcommDataTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplCustomer> ReplEcommMember(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplCountryCode> ReplEcommCountryCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
 

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ServiceModel.Web;
-
-using NLog;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 
@@ -10,7 +8,7 @@ namespace LSOmni.Service
     // LoyaltyJson returns data in Json format
     public class BOJson : LSOmniBase, IBOJson
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private System.Net.HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable;//.RequestedRangeNotSatisfiable; //code=416
 
         public string PingGet()
@@ -33,13 +31,13 @@ namespace LSOmni.Service
                 //Authentication failed for statuses etc..
 
                 LSOmniServiceException lEx = (LSOmniServiceException)ex;
-                logger.Log(LogLevel.Error, lEx, lEx.Message);
+                logger.Error(config.LSKey.Key, lEx, lEx.Message);
                 throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, lEx.Message), exStatusCode);
             }
             else
             {
-                logger.Log(LogLevel.Error, ex, errMsg);
-                throw new System.ServiceModel.Web.WebFaultException<LSOmniException>(new LSOmniException(StatusCode.Error, errMsg + " - " + ex.Message), exStatusCode);
+                logger.Error(config.LSKey.Key, ex, errMsg);
+                throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.Error, errMsg + " - " + ex.Message), exStatusCode);
             }
             //throw new System.ServiceModel.Web.WebFaultException<string>("My error description.", System.Net.HttpStatusCode.Conflict); 
             //WebOperationContext.Current.OutgoingResponse.Headers.Add("Origin", "*"); 

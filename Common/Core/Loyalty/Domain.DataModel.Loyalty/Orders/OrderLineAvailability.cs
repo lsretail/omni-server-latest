@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
@@ -61,7 +61,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     {
         public OrderAvailabilityResponse()
         {
-            OrderId = string.Empty;
             PreferredSourcingLocation = string.Empty;
             Lines = new List<OrderLineAvailabilityResponse>();
         }
@@ -81,8 +80,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             }
         }
 
-        [DataMember]
-        public string OrderId { get; set; }
         [DataMember]
         public string PreferredSourcingLocation { get; set; }
         [DataMember]

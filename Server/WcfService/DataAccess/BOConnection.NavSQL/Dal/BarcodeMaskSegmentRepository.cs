@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -15,7 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public BarcodeMaskSegmentRepository() : base()
+        public BarcodeMaskSegmentRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Mask Entry No_],mt.[Segment No],mt.[Length],mt.[Type],mt.[Decimals],mt.[Char],ROW_NUMBER() OVER (ORDER BY [Mask Entry No_],[Segment No]) AS Id";
 

@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
-using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -15,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqltext = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public TerminalRepository() : base()
+        public TerminalRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             // TODO: do NAV 10 version of the device licence ? 
             sqltext = "SELECT mt.[No_],mt.[Store No_],mt.[Terminal Type],mt.[Device Type],mt.[Description],mt.[Exit After Each Trans_]," +
@@ -84,14 +86,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return posTerminal;
         }
 
-        public string TerminalGetLicense(string terminalId, string appid, int navVersion)
+        public string TerminalGetLicense(string terminalId, string appid)
         {
             string lic = string.Empty;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    if (navVersion < 10)
+                    if (NavVersion.Major < 10)
                     {
                         command.CommandText = "SELECT mt.[Device License Key]" + sqlfrom + " WHERE mt.[No_]=@termid";
                         command.Parameters.AddWithValue("@termid", terminalId);
@@ -114,9 +116,40 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return lic;
         }
 
+        private void GetFeatureFlags(FeatureFlags flags, string storeId, string terminalId)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Feature Flag],mt.[Value] FROM [" + navCompanyName + "Feature Flags Setup] mt " +
+                                          "WHERE (mt.[POS Terminal]='' OR mt.[POS Terminal]=@tId) AND (mt.[Store No_]='' OR mt.[Store No_]=@sId)";
+                    command.Parameters.AddWithValue("@tId", terminalId);
+                    command.Parameters.AddWithValue("@sId", storeId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    try
+                    {
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                flags.AddFlag(SQLHelper.GetString(reader["Feature Flag"]), SQLHelper.GetString(reader["Value"]));
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn(config.LSKey.Key, ex, "No Feature Flags Loaded");
+                    }
+                    connection.Close();
+                }
+            }
+        }
+
         private ReplTerminal ReaderToTerminal(SqlDataReader reader)
         {
-            return new ReplTerminal()
+            ReplTerminal term = new ReplTerminal()
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Name = SQLHelper.GetString(reader["Description"]),
@@ -126,13 +159,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 HardwareProfile = SQLHelper.GetString(reader["Hardware Profile"]),
                 VisualProfile = SQLHelper.GetString(reader["Interface Profile"]),
                 FunctionalityProfile = SQLHelper.GetString(reader["Functionality Profile"]),
-                ExitAfterEachTransaction = SQLHelper.GetInt32(reader["Exit After Each Trans_"]),
                 TerminalType = SQLHelper.GetInt32(reader["Terminal Type"]),
                 DeviceType = SQLHelper.GetInt32(reader["Device Type"]),
                 HospTypeFilter = SQLHelper.GetString(reader["Sales Type Filter"]),
-                DefaultHospType = SQLHelper.GetString(reader["Default Sales Type"]),
-                AutoLogOffAfterMin = SQLHelper.GetInt32(reader["AutoLogoff After (Min_)"])
+                DefaultHospType = SQLHelper.GetString(reader["Default Sales Type"])
             };
+
+            GetFeatureFlags(term.Features, term.StoreId, term.Id);
+            term.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, SQLHelper.GetString(reader["Exit After Each Trans_"]));
+            term.Features.AddFlag(FeatureFlagName.AutoLogOffAfterMin, SQLHelper.GetString(reader["AutoLogoff After (Min_)"]));
+            term.Features.AddFlag(FeatureFlagName.ShowNumberPad, SQLHelper.GetString(reader["Show Numberpad"]));
+
+            return term;
         }
 
         public Terminal TerminalBaseGetById(string id)
@@ -161,20 +199,24 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private Terminal ReaderToTerminalBase(SqlDataReader reader)
         {
-            return new Terminal()
+            Terminal term = new Terminal()
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 InventoryMainMenuId = SQLHelper.GetString(reader["Inventory Main Menu"]),
-                ShowNumPad = SQLHelper.GetBool(reader["Show Numberpad"]),
                 LicenseKey = SQLHelper.GetString(reader["Device License Key"]),
                 TerminalType = SQLHelper.GetInt32(reader["Terminal Type"]),
                 DeviceType = SQLHelper.GetInt32(reader["Device Type"]),
                 ItemFilterMethod = SQLHelper.GetInt32(reader["Item Filtering Method"]),
-                AutoLogOffAfterMin = SQLHelper.GetInt32(reader["AutoLogoff After (Min_)"]),
                 Store = new Store(SQLHelper.GetString(reader["Store No_"])),
                 StoreInventory = GetStoreInventoryStatus()
             };
+
+            GetFeatureFlags(term.Features, term.Store.Id, term.Id);
+            term.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, SQLHelper.GetString(reader["Exit After Each Trans_"]));
+            term.Features.AddFlag(FeatureFlagName.AutoLogOffAfterMin, SQLHelper.GetString(reader["AutoLogoff After (Min_)"]));
+            term.Features.AddFlag(FeatureFlagName.ShowNumberPad, SQLHelper.GetString(reader["Show Numberpad"]));
+            return term;
         }
     }
 }

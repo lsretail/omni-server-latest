@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Text;
 using System.Reflection;
-using NLog;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.BLL
 {
@@ -13,18 +13,20 @@ namespace LSOmni.BLL
     {
         private static Assembly dalAssembly = null;
         private static Assembly boAssembly = null;
+        protected BOConfiguration config = null;
 
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
 
         public virtual string DeviceId { get; set; }    //DeviceId is used everywhere...
 
-        public BaseBLL()
+        public BaseBLL(BOConfiguration config)
         {
+            this.config = config;
         }
 
         #region protected
 
-        protected T GetDbRepository<T>()
+        protected T GetDbRepository<T>(BOConfiguration config)
         {
             try
             {
@@ -41,7 +43,7 @@ namespace LSOmni.BLL
 
                 //OK to use type to create instance when only one of that type is in the assembly
                 Type myType = dalAssembly.GetTypes().Where(typeof(T).IsAssignableFrom).FirstOrDefault();
-                T instance = (T)dalAssembly.CreateInstance(myType.FullName, true);
+                T instance = (T)Activator.CreateInstance(myType, config);
 
                 string cls = myType.FullName;
                 if (instance == null)
@@ -80,7 +82,7 @@ namespace LSOmni.BLL
                 return "LSOmni.DataAccess.Dal.dll"; //just in case the key is missing in app.settings file
         }
 
-        protected T GetBORepository<T>()
+        protected T GetBORepository<T>(string key)
         {
             try
             {
@@ -94,10 +96,20 @@ namespace LSOmni.BLL
                     asm = appPath + "\\" + asm;
                     boAssembly = Assembly.LoadFrom(asm);
                 }
-
+                if (config == null)
+                {
+                    ConfigBLL bll = new ConfigBLL();
+                    if (!bll.ConfigKeyExists(ConfigKey.LSKey, key))
+                    {
+                        string msg = string.Format("SecurityToken:{0} is invalid.", key);
+                        throw new LSOmniServiceException(StatusCode.SecurityTokenInvalid, msg);
+                    }
+                    config = bll.ConfigGet(key);
+                }
                 //OK to use type to create instance when only one of that type is in the assembly
                 Type myType = boAssembly.GetTypes().Where(typeof(T).IsAssignableFrom).FirstOrDefault();
-                T instance = (T)boAssembly.CreateInstance(myType.FullName, true);
+                T instance = (T)Activator.CreateInstance(myType, config);
+                //T instance = (T)boAssembly.CreateInstance(myType.FullName, true);
 
                 string cls = myType.FullName;
 
@@ -155,7 +167,7 @@ namespace LSOmni.BLL
                 else
                     msg += " image bytes length: " + image.Length;
 
-                logger.Log(LogLevel.Warn, ex, msg);
+                logger.Warn(config.LSKey.Key, ex, msg);
                 return "";// GetImageFile("na.jpg");
             }
         }
@@ -163,5 +175,3 @@ namespace LSOmni.BLL
         #endregion protected
     }
 }
-
- 

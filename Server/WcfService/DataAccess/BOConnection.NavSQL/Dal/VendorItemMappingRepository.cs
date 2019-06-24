@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -14,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public VendorItemMappingRepository() : base()
+        public VendorItemMappingRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[No_],mt.[Vendor No_],mt.[Vendor Item No_]";
 

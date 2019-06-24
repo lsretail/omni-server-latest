@@ -3,6 +3,7 @@ using System.Data.SqlClient;
 
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -11,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         // Key: Staff ID, Store No.
         const int TABLEID = 99001633;
 
-        public StaffStoreLinkRepository() : base()
+        public StaffStoreLinkRepository(BOConfiguration config) : base(config)
         {
         }
 

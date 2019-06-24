@@ -7,6 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
 {
@@ -21,7 +22,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         [EnumMember]
         ItemCategory = 4,       
         [EnumMember]
-        Transaction = 8,
+        SalesEntry = 8,
         [EnumMember]
         Store = 16,
         [EnumMember]
@@ -35,7 +36,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         [EnumMember]
         OneList = 512,
         [EnumMember]
-        All = Item | ProductGroup | ItemCategory | Transaction | Store | Profile | Notification | Offer | Coupon | OneList,  // 1023 All search types returned
+        All = Item | ProductGroup | ItemCategory | SalesEntry | Store | Profile | Notification | Offer | Coupon | OneList,  // 1023 All search types returned
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
@@ -43,7 +44,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
     {
         public SearchRs(string id) : base(id)
         {
-            Transactions = new List<LoyTransaction>();
+            SalesEntries = new List<SalesEntry>();
             Items = new List<LoyItem>();
             ProductGroups = new List<ProductGroup>();
             ItemCategories = new List<ItemCategory>();
@@ -68,8 +69,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         {
             if (disposing)
             {
-                if (Transactions != null)
-                    Transactions.Clear();
+                if (SalesEntries != null)
+                    SalesEntries.Clear();
                 if (Items != null)
                     Items.Clear();
                 if (ProductGroups != null)
@@ -94,7 +95,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         [DataMember]
         public List<ItemCategory> ItemCategories { get; set; }
         [DataMember]
-        public List<LoyTransaction> Transactions { get; set; }
+        public List<SalesEntry> SalesEntries { get; set; }
 
         [DataMember]
         public List<Store> Stores { get; set; }

@@ -1,30 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
-using NLog;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.BLL
 {
     public class CustomBLL : BaseBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private ICustomBO iBOConnection = null;
 
-        protected ICustomBO BOCustomConnection
+        public CustomBLL(BOConfiguration config) : base(config)
         {
-            get
-            {
-                if (iBOConnection == null)
-                    iBOConnection = GetBORepository<ICustomBO>();
-                return iBOConnection;
-            }
+            iBOConnection = GetDbRepository<ICustomBO>(config);
         }
 
         public virtual string MyCustomFunction(string data)
         {
-            logger.Debug("Debug data: " + data);
-            return BOCustomConnection.MyCustomFunction(data);
+            logger.Debug(config.LSKey.Key, "Debug data: " + data);
+            return iBOConnection.MyCustomFunction(data);
         }
     }
 }

@@ -1,31 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using NLog;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class PushNotificationBLL : BaseLoyBLL
     {
-        private static Logger logger = LogManager.GetCurrentClassLogger();
+        private static LSLogger logger = new LSLogger();
         private IPushNotificationRepository iPushRepository;
 
-        public PushNotificationBLL(string securityToken, string deviceId, int timeoutInSeconds)
-            : base(securityToken, deviceId, timeoutInSeconds)
+        public PushNotificationBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
+            : base(config, deviceId, timeoutInSeconds)
         {
-            this.iPushRepository = GetDbRepository<IPushNotificationRepository>();
+            this.iPushRepository = GetDbRepository<IPushNotificationRepository>(config);
         }
 
-        public PushNotificationBLL(string deviceId, int timeoutInSeconds)
-            : this("", deviceId, timeoutInSeconds)
-        {
-        }
-
-        public PushNotificationBLL(int timeoutInSeconds = 15)
-            : this("", "", timeoutInSeconds)
+        public PushNotificationBLL(BOConfiguration config, int timeoutInSeconds = 15)
+            : this(config, "", timeoutInSeconds)
         {
         }
 
@@ -42,7 +37,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (LSOmniServiceException ex)
             {
-                logger.Log(LogLevel.Error, "PushNotificationSave failed", ex);
+                logger.Error(config.LSKey.Key, ex, "PushNotificationSave failed");
                 throw;
             }
             return true;
@@ -58,7 +53,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (LSOmniServiceException ex)
             {
-                logger.Log(LogLevel.Error, "PushNotificationDelete failed", ex);
+                logger.Error(config.LSKey.Key, ex, "PushNotificationDelete failed");
                 throw;
             }
         }
@@ -71,7 +66,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (LSOmniServiceException ex)
             {
-                logger.Log(LogLevel.Error, "PushNotificationUpdateToSent failed", ex);
+                logger.Error(config.LSKey.Key, ex, "PushNotificationUpdateToSent failed");
                 throw;
             }
         }
@@ -84,7 +79,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (LSOmniServiceException ex)
             {
-                logger.Log(LogLevel.Error, "PushNotificationUpdateCounter failed", ex);
+                logger.Error(config.LSKey.Key, ex, "PushNotificationUpdateCounter failed");
                 throw;
             }
         }
@@ -96,7 +91,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                logger.Error(config.LSKey.Key, ex);
                 throw;
             }
         }
@@ -109,7 +104,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (Exception ex)
             {
-                logger.Error(ex);
+                logger.Error(config.LSKey.Key, ex);
                 throw;
             }
         }

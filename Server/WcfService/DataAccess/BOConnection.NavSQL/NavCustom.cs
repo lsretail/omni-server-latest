@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using LSOmni.DataAccess.Interface.BOConnection;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL
 {
     public class NavCustom : NavBase, ICustomBO
     {
-        public NavCustom() : base()
+        public NavCustom(BOConfiguration config) : base(config)
         {
         }
 

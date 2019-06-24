@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 
@@ -9,20 +11,15 @@ namespace LSOmni.BLL.Loyalty
     public class NotificationBLL : BaseLoyBLL
     {
         private INotificationRepository iRepository;
-        private IImageRepository iImageRepository;
         private IPushNotificationRepository iPushRepository;
+        private IImageRepository iImageRepository;
 
-        public NotificationBLL(int timeoutInSeconds)
-            : this("", timeoutInSeconds)
+        public NotificationBLL(BOConfiguration config, int timeoutInSeconds)
+            : base(config, timeoutInSeconds)
         {
-        }
-
-        public NotificationBLL(string securityToken, int timeoutInSeconds)
-            : base(securityToken, timeoutInSeconds)
-        {
-            this.iRepository = GetDbRepository<INotificationRepository>();
-            this.iImageRepository = GetDbRepository<IImageRepository>();
-            this.iPushRepository = GetDbRepository<IPushNotificationRepository>();
+            this.iRepository = GetDbRepository<INotificationRepository>(config);
+            this.iPushRepository = GetDbRepository<IPushNotificationRepository>(config);
+            this.iImageRepository = GetDbRepository<IImageRepository>(config);
         }
 
         public virtual Notification NotificationGetById(string id)
@@ -30,25 +27,16 @@ namespace LSOmni.BLL.Loyalty
             return this.iRepository.NotificationGetById(id);
         }
 
-        public virtual List<Notification> NotificationsGetByContactId(string contactId, int numberOfNotifications)
+        public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
-            ValidateContact(contactId);
             List<Notification> notificationlist = null;
 
-            //need the cardId
-            Card card = BOLoyConnection.CardGetByContactId(contactId);
-            if (card == null)
-            {
-                //just in case
-                notificationlist = BOLoyConnection.NotificationsGetByContactId(contactId, numberOfNotifications);
-            }
-            else
-            {
-                notificationlist = BOLoyConnection.NotificationsGetByCardId(card.Id, numberOfNotifications);
-            }
+            notificationlist = BOLoyConnection.NotificationsGetByCardId(cardId, numberOfNotifications);
 
             if (notificationlist == null)
                 return new List<Notification>();
+
+            string contactId = notificationlist.FirstOrDefault()?.ContactId;
 
             foreach (Notification notification in notificationlist)
             {
@@ -68,7 +56,7 @@ namespace LSOmni.BLL.Loyalty
                 }
                 if (notification.Status == NotificationStatus.New)
                 {
-                    iPushRepository.SavePushNotification(contactId, notification.Id);
+                    iPushRepository.SavePushNotification(notification.ContactId, notification.Id);
                 }
             }
 
@@ -77,11 +65,9 @@ namespace LSOmni.BLL.Loyalty
             return iRepository.NotificationsGetByContactId(contactId, numberOfNotifications);
         }
 
-        public virtual void NotificationsUpdateStatus(string contactId, List<string> notificationIds,
-            NotificationStatus notifacationStatus)
+        public virtual void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notifacationStatus)
         {
-            ValidateContact(contactId);
-            iRepository.NotificationsUpdateStatus(contactId, base.DeviceId, notificationIds, notifacationStatus);
+            iRepository.NotificationsUpdateStatus(notificationIds, notifacationStatus);
         }
     }
 }

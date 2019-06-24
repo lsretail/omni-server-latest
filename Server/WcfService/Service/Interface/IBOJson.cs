@@ -7,6 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.Service
 {
@@ -24,10 +25,6 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string Ping();
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        StatusCode PingStatus(); //exposing the StatusCode to client
 
         //both GET and POST of Version supported
         [OperationContract]
@@ -62,11 +59,7 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<Order> OrderSearchClickCollect(OrderSearchRequest searchRequest);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        Order OrderCreate(Order request);
+        SalesEntry OrderCreate(Order request);
 
         #endregion OrderQueue
 
@@ -78,22 +71,12 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderMessage OrderMessageGetById(string id);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<OrderMessage> OrderMessageSearch(OrderMessageSearchRequest searchRequest);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token);
 
         #endregion OrderMessage
 
         #region One List  LOY
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<OneList> OneListGetByContactId(string contactId, ListType listType, bool includeLines);
+
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines);
@@ -106,15 +89,8 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool OneListDeleteById(string oneListId, ListType listType);
+
         #endregion One List 
-
-        #region Common functions
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool UserDelete(string userName);
-
-        #endregion
 
         #region LSRecommend
 

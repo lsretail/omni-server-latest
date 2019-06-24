@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 
 namespace LSOmni.DataAccess.Dal
@@ -12,8 +13,7 @@ namespace LSOmni.DataAccess.Dal
         private const int maxRetryCounter = 3;
         private const int dateCreatedTimeBuffer = 48;
 
-        public PushNotificationRepository()
-            : base()
+        public PushNotificationRepository(BOConfiguration config) : base(config)
         {
         }
 
@@ -24,7 +24,7 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText =
-                        "IF EXISTS(SELECT * FROM [DeviceSecurity] WHERE [DeviceId]=@f1) " +
+                        "IF EXISTS (SELECT * FROM [DeviceSecurity] WHERE [DeviceId]=@f1) " +
                         "UPDATE [DeviceSecurity] SET [FcmToken]=@f2 WHERE [DeviceId]=@f1";
                     
                     command.Parameters.AddWithValue("@f1", request.DeviceId);
@@ -51,7 +51,7 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText =
-                        "IF NOT EXISTS(SELECT * FROM [PushNotification] WHERE [ContactId]=@f1 AND [NotificationId]=@f2) " +
+                        "IF NOT EXISTS (SELECT * FROM [PushNotification] WHERE [ContactId]=@f1 AND [NotificationId]=@f2) " +
                         "INSERT INTO [PushNotification] ([ContactId],[NotificationId]) VALUES (@f1,@f2)";
 
                     command.Parameters.AddWithValue("@f1", contactId);
@@ -70,7 +70,7 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "IF EXISTS(SELECT * FROM [DeviceSecurity] WHERE [DeviceId]=@f1) " +
+                    command.CommandText = "IF EXISTS (SELECT * FROM [DeviceSecurity] WHERE [DeviceId]=@f1) " +
                                           "UPDATE [DeviceSecurity] SET [FcmToken]=@f2 WHERE [DeviceId]=@f1";
 
                     command.Parameters.AddWithValue("@f1", deviceId);
@@ -133,12 +133,11 @@ namespace LSOmni.DataAccess.Dal
                 {
                     //status=0 are NEW, 
                     command.CommandText = 
-                        "SELECT TOP(@f0) p.[ContactId], p.[NotificationId], p.[DateCreated], n.[PrimaryText], n.[SecondaryText], " +
-                        "n.[Status], n.[DateLastModified] " +
+                        "SELECT TOP(@f0) p.[ContactId],p.[NotificationId],p.[DateCreated],n.[PrimaryText],n.[SecondaryText],n.[Status], n.[DateLastModified] " +
                         "FROM [PushNotification] p " +
-                        "INNER JOIN [Notification] n on p.[NotificationId] = n.[Id] " +
-                        "WHERE [DateCreated] > @f1 AND [DateSent] IS null AND n.[Status]=0 " +
-                        "AND [RetryCounter] < @f2 ORDER BY [DateCreated] ASC ";
+                        "INNER JOIN [Notification] n on p.[NotificationId]=n.[Id] " +
+                        "WHERE [DateCreated]>@f1 AND [DateSent] IS NULL AND n.[Status]=0 " +
+                        "AND [RetryCounter]<@f2 ORDER BY [DateCreated] ASC ";
 
                     command.Parameters.AddWithValue("@f0", numberOfNotifications);
                     command.Parameters.AddWithValue("@f1", dateCreated);
@@ -210,7 +209,6 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT COUNT(*) FROM [PushNotification] WHERE [DateCreated] > @f0 AND [DateSent] IS null";
-
                     command.Parameters.AddWithValue("@f0", dateLastChecked);
                     TraceSqlCommand(command);
                     connection.Open();
