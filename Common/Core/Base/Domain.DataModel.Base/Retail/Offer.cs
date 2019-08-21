@@ -54,7 +54,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public string ValidationText { get; set; }
         [DataMember]
         public List<ImageView> Images { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? ExpirationDate { get; set; }
         [DataMember]
         public long RV { get; set; }

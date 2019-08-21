@@ -36,7 +36,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public bool Personalized { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateCreated { get; set; }
     }
 }

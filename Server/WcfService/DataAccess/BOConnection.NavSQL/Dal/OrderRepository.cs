@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base;
 
@@ -20,22 +18,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             if (navVersion > new Version("13.5"))
             {
+                string date = (navVersion > new Version("14.2")) ? "Created" : "Document DateTime";
+                string full = (navVersion > new Version("14.2")) ? "Name" : "Full Name";
+
                 documentId = "Document ID";
                 sql = "SELECT * FROM (" +
-                        "SELECT mt.[Document ID],mt.[Receipt No_],mt.[Store No_],mt.[External ID],mt.[Document DateTime],mt.[Source Type]," +
-                        "mt.[Member Card No_],mt.[Sales Order No_],mt.[Full Name],mt.[Address],mt.[Address 2]," +
+                        "SELECT mt.[Document ID],mt.[Store No_],mt.[External ID],mt.[" + date + "] AS Date,mt.[Source Type]," +
+                        "mt.[Member Card No_],mt.[" + full + "] AS Name,mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
-                        "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Full Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
+                        "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to " + full + "] AS ShipName,mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
                         "mt.[Shipping Agent Service Code], 0 AS Posted," +
                         "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
                         "FROM [" + navCompanyName + "Customer Order Header] mt " +
                         "UNION " +
-                        "SELECT mt.[Document ID],mt.[Receipt No_],mt.[Store No_],mt.[External ID],mt.[Document DateTime],mt.[Source Type]," +
-                        "mt.[Member Card No_],mt.[Sales Order No_],mt.[Full Name],mt.[Address],mt.[Address 2]," +
+                        "SELECT mt.[Document ID],mt.[Store No_],mt.[External ID],mt.[" + date + "] AS Date,mt.[Source Type]," +
+                        "mt.[Member Card No_],mt.[" + full + "] AS Name,mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
-                        "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Full Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
+                        "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to " + full + "] AS ShipName,mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
                         "mt.[Shipping Agent Service Code],1 AS Posted," +
@@ -46,8 +47,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 documentId = "Document Id";
                 sql = "SELECT * FROM (" +
-                        "SELECT mt.[Document Id],mt.[Receipt No_],mt.[Store No_],mt.[Web Trans_ GUID],mt.[Document DateTime],mt.[Source Type]," +
-                        "mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name],mt.[Sales Order No_]," +
+                        "SELECT mt.[Document Id],mt.[Store No_],mt.[Web Trans_ GUID],mt.[Document DateTime] AS Date,mt.[Source Type]," +
+                        "mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name]," +
                         "mt.[Full Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country Region Code]," +
                         "mt.[Phone No_],mt.[Email],mt.[House Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship To Full Name],mt.[Ship To Address],mt.[Ship To Address 2],mt.[Ship To City],mt.[Ship To County],mt.[Ship To Post Code]," +
@@ -57,8 +58,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[Document Id]=mt.[Document Id]) AS CoPay " +
                         "FROM [" + navCompanyName + "Customer Order Header] mt " +
                         "UNION " +
-                        "SELECT mt.[Document Id],mt.[Receipt No_],mt.[Store No_],mt.[Web Trans_ GUID],mt.[Document DateTime],mt.[Source Type]," +
-                        "mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name],mt.[Sales Order No_]," +
+                        "SELECT mt.[Document Id],mt.[Store No_],mt.[Web Trans_ GUID],mt.[Document DateTime] AS Date,mt.[Source Type]," +
+                        "mt.[Member Card No_],mt.[Member Contact No_],mt.[Member Contact Name]," +
                         "mt.[FullName],mt.[Address],mt.[Address2],mt.[City],mt.[County],mt.[PostCode],mt.[CountryRegionCode]," +
                         "mt.[PhoneNo],mt.[Email],mt.[HouseApartmentNo],mt.[MobilePhoneNo],mt.[DaytimePhoneNo]," +
                         "mt.[ShipToFullName],mt.[ShipToAddress],mt.[ShipToAddress2],mt.[ShipToCity],mt.[ShipToCounty],mt.[ShipToPostCode]," +
@@ -81,7 +82,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     string where = external ? (NavVersion > new Version("13.5") ? "External ID" : "Web Trans_ GUID") : documentId;
                     command.Parameters.Clear();
-                    command.CommandText = sql + " WHERE [" + where + "] = @id";
+                    command.CommandText = sql + " WHERE [" + where + "]=@id";
                     command.Parameters.AddWithValue("@id", id.ToUpper());
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -235,7 +236,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 Id = SQLHelper.GetString(reader[documentId]),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Document DateTime"]),
+                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
                 IdType = DocumentIdType.Order,
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 Status = SalesEntryStatus.Created
@@ -252,7 +253,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 salesEntry.ExternalId = SQLHelper.GetString(reader["External ID"]);
 
-                salesEntry.ShipToName = SQLHelper.GetString(reader["Ship-to Full Name"]);
+                salesEntry.ShipToName = SQLHelper.GetString(reader["ShipName"]);
                 salesEntry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]);
                 salesEntry.ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]);
 
@@ -299,25 +300,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (salesEntry.Posted)
             {
-                string sorderNo = SQLHelper.GetString(reader["Sales Order No_"]);
                 salesEntry.Status = SalesEntryStatus.Complete;
-
-                if (string.IsNullOrEmpty(sorderNo) == false)
-                {
-                    // we just use the data from the sales order for posted orders
-                    int status = SaleOrderGetStatus(sorderNo);
-                    if (status == 0)
-                    {
-                        salesEntry.Status = SalesEntryStatus.Pending;
-                        salesEntry.ShippingStatus = ShippingStatus.NotYetShipped;
-                    }
-                    else
-                    {
-                        salesEntry.Status = SalesEntryStatus.Complete;
-                    }
-                }
                 SalesEntryRepository srepo = new SalesEntryRepository(config, NavVersion);
-
                 srepo.SalesEntryPointsGetTotal(salesEntry.Id, out decimal rewarded, out decimal used);
                 salesEntry.PointsRewarded = rewarded;
                 salesEntry.PointsUsedInOrder = used;
@@ -329,12 +313,26 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 salesEntry.Payments = OrderPayGet(salesEntry.Id);
                 salesEntry.DiscountLines = OrderDiscGet(salesEntry.Id);
 
+                ImageRepository imgrep = new ImageRepository(config);
                 List<SalesEntryLine> list = new List<SalesEntryLine>();
                 foreach (SalesEntryLine line in salesEntry.Lines)
                 {
                     SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
                     if (exline == null)
                     {
+                        if (string.IsNullOrEmpty(line.VariantId))
+                        {
+                            List<ImageView> img = imgrep.ImageGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
+                            if (img != null)
+                                line.ItemImageId = img[0].Id;
+                        }
+                        else
+                        {
+                            List<ImageView> img = imgrep.ImageGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
+                            if (img != null)
+                                line.ItemImageId = img[0].Id;
+                        }
+
                         list.Add(line);
                         continue;
                     }
@@ -388,6 +386,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
+                CurrencyFactor = SQLHelper.GetDecimal(reader["Currency Factor"]),
+                CardNo = SQLHelper.GetString(reader["Card or Customer number"])
             };
         }
 

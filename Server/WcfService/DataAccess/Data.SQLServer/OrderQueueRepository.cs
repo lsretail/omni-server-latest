@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.DataAccess.Dal
 {

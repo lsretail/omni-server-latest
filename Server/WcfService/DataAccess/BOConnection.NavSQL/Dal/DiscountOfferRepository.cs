@@ -28,7 +28,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[Store No_],mt.[Priority No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
                          "mt.[To Date],mt.[Minimum Quantity],mt.[Discount _],mt.[Unit of Measure Code],mt.[Currency Code],mt.[Offer No_],mt.[Last Modify Date]," +
-                         "p.[Type],p.[Discount Type],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID]";
+                         "p.[Type],p.[Discount Type],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID],p.[Discount Amount Value]";
 
             sqlfrom = " FROM [" + navCompanyName + "WI Discounts] mt" +
                       " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
@@ -72,15 +72,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom;
-                if (batchSize > 0)
-                {
-                    sql += GetWhereStatement(true, keys, where, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
             }
 
             // we use action count for peroidic discounts as WI Discounts does not have any actions
-            recordsRemaining = GetRecordCount(99001453, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(99001453, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, 99001453, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplDiscount> list = new List<ReplDiscount>();
@@ -121,13 +117,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 2 || par.Length != keys.Count)
-                                    continue;
-
                                 list.Add(new ReplDiscount()
                                 {
-                                    OfferNo = par[0],
+                                    OfferNo = act.ParamValue,
                                     IsDeleted = true
                                 });
                                 continue;
@@ -183,15 +175,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlMMfrom;
-                if (batchSize > 0)
-                {
-                    sql += GetWhereStatement(true, keys, where, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlMMfrom + GetWhereStatement(true, keys, where, false);
             }
 
             // we use action count for peroidic discounts as WI Discounts does not have any actions
-            recordsRemaining = GetRecordCount(99001453, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(99001453, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, 99001453, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplDiscount> list = new List<ReplDiscount>();
@@ -232,13 +220,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 2 || par.Length != keys.Count)
-                                    continue;
-
                                 list.Add(new ReplDiscount()
                                 {
-                                    OfferNo = par[0],
+                                    OfferNo = act.ParamValue,
                                     IsDeleted = true
                                 });
                                 continue;
@@ -283,13 +267,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlVfrom;
-                if (batchSize > 0)
-                {
-                    sql += GetWhereStatement(true, keys, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlVfrom + GetWhereStatement(true, keys, false);
             }
-            recordsRemaining = GetRecordCount(VTABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(VTABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, VTABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplDiscountValidation> list = new List<ReplDiscountValidation>();
@@ -433,6 +413,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrEmpty(tx3) == false)
                 disc.Details += "\r\n" + tx3;
 
+            decimal amt = SQLHelper.GetDecimal(reader["Discount Amount Value"]);
+            if (amt > 0 && disc.Type == ReplDiscountType.DiscOffer)
+            {
+                disc.DiscountValueType = DiscountValueType.Amount;
+                disc.DiscountValue = amt;
+            }
             return disc;
         }
 

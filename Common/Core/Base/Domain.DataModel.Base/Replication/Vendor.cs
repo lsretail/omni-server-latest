@@ -95,7 +95,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public bool Blocked { get; set; }
         [DataMember]
         public int DisplayOrder { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime UpdatedOnUtc { get; set; }
     }
 }

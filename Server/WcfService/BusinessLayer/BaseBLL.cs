@@ -6,6 +6,7 @@ using System.Reflection;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base;
+using System.Drawing.Imaging;
 
 namespace LSOmni.BLL
 {
@@ -149,14 +150,11 @@ namespace LSOmni.BLL
                 return "LSOmni.DataAccess.BOConnection.NavSQL.dll"; //just in case the key is missing in app.settings file
         }
 
-        protected string Base64GetFromByte(byte[] image, ImageSize imageSize)
+        protected string Base64GetFromByte(byte[] image, ImageSize imageSize, ImageFormat imgFormat)
         {
             try
             {
-                int height = imageSize.Height;
-                int width = imageSize.Width;
-                System.Drawing.Imaging.ImageFormat imgFormat = System.Drawing.Imaging.ImageFormat.Jpeg; //default everything to Png
-                return ImageConverter.BytesToBase64(image, width, height, imgFormat);
+                return ImageConverter.BytesToBase64(image, imageSize, imgFormat);
             }
             catch (Exception ex)
             {

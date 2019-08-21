@@ -5,7 +5,6 @@ using LSOmni.DataAccess.BOConnection.NavSQL.Dal;
 using LSOmni.DataAccess.Interface.BOConnection;
 
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -201,10 +200,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.StoreLoySearch(search);
         }
 
-        public virtual List<Profile> ProfileSearch(string contactId, string search)
+        public virtual List<Profile> ProfileSearch(string cardId, string search)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
-            return rep.ProfileSearch(contactId, search);
+            return rep.ProfileSearch(cardId, search);
         }
 
         public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, bool includeLines)
@@ -356,14 +355,20 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         #region Order
 
-        public virtual OrderStatusResponse OrderStatusCheck(string transactionId)
+        public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
-            return NavWSBase.OrderStatusCheck(transactionId);
+            if (NAVVersion < new Version("13.5"))
+                return new OrderStatusResponse();
+
+            return NavWSBase.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string transactionId)
+        public virtual void OrderCancel(string orderId)
         {
-            NavWSBase.OrderCancel(transactionId);
+            if (NAVVersion < new Version("13.5"))
+                return;
+
+            NavWSBase.OrderCancel(orderId);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
@@ -424,24 +429,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         #endregion
 
-        #region Menu
-
-        public virtual MobileMenu MenusGet(string storeId, Currency currency)
-        {
-            return NavWSBase.MenusGet(storeId, currency);
-        }
-
-        #endregion
-
         #region Image
 
-        public virtual ImageView ImageBOGetById(string imageId)
+        public virtual ImageView ImageGetById(string imageId, bool includeBlob)
         {
             ImageRepository rep = new ImageRepository(config);
-            return rep.ImageGetById(imageId);
+            return rep.ImageGetById(imageId, includeBlob);
         }
 
-        public virtual List<ImageView> ImageBOGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
+        public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
         {
             ImageRepository rep = new ImageRepository(config);
             return rep.ImageGetByKey(tableName, key1, key2, key3, imgCount, includeBlob);
@@ -578,10 +574,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateCountryCode();
         }
 
-        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             InvStatusRepository rep = new InvStatusRepository(config);
-            return rep.ReplicateInventoryStatus(storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return rep.ReplicateInventoryStatus(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

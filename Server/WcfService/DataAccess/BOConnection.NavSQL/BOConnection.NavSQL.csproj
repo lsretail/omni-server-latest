@@ -42,7 +42,6 @@
       <HintPath>..\..\packages\System.Data.SqlClient.4.5.1\lib\net461\System.Data.SqlClient.dll</HintPath>
     </Reference>
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -98,6 +97,7 @@
     <Compile Include="Dal\TaxSetupRepository.cs" />
     <Compile Include="Dal\TenderTypeRepository.cs" />
     <Compile Include="Dal\TerminalRepository.cs" />
+    <Compile Include="Dal\TransactionRepository.cs" />
     <Compile Include="Dal\UnitOfMeasureRepository.cs" />
     <Compile Include="Dal\VendorItemMappingRepository.cs" />
     <Compile Include="Dal\VendorRepository.cs" />

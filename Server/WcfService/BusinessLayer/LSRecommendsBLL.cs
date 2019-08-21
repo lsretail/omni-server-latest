@@ -25,7 +25,7 @@ namespace LSOmni.BLL.Loyalty
                 if (ConfigSetting.KeyExists(key))
                     asm = ConfigSetting.GetString(key);
                 else
-                    asm = "LSRecommends.dll"; //just in case the key is missing in app.settings file
+                    asm = "LSRecommend.dll"; //just in case the key is missing in app.settings file
 
                 string appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
                 appPath = appPath.Replace("file:\\", "");
@@ -48,7 +48,7 @@ namespace LSOmni.BLL.Loyalty
         private static LSLogger logger = new LSLogger();
         private LSRecommend.LSRecommend lsr;
 
-        public LSRecommendsBLL(BOConfiguration config) : this(config, 0)
+        public LSRecommendsBLL(BOConfiguration config) : base(config, 0)
         {
         }
 

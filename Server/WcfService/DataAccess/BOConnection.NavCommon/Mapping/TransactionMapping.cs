@@ -21,6 +21,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public class TransactionMapping : BaseMapping
     {
+        private Version NavVersion;
+
+        public TransactionMapping(Version navVersion)
+        {
+            NavVersion = navVersion;
+        }
+
         public RetailTransaction MapFromRootToRetailTransaction(NavWS.RootMobileTransaction root)
         {
             NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
@@ -118,6 +125,66 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return transaction;
         }
 
+        public SalesEntry MapFromRootToRetailTransaction(NavWS.RootGetTransaction root)
+        {
+            NavWS.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
+            UnknownCurrency transactionCurrency = new UnknownCurrency(header.TransCurrency);
+
+            SalesEntry transaction = new SalesEntry()
+            {
+                Id = header.ReceiptNo,
+                DocumentRegTime = header.Date,
+                CardId = header.MemberCardNo,
+                StoreId = header.StoreNo,
+                TerminalId = header.POSTerminalNo,
+                TotalAmount = header.GrossAmount,
+                TotalNetAmount = header.NetAmount,
+                TotalDiscount = header.DiscountAmount,
+                LineItemCount = (int)header.NoofItemLines,
+                IdType = DocumentIdType.Receipt
+            };
+
+            //now loop thru the discount lines
+            transaction.DiscountLines = new List<SalesEntryDiscountLine>();
+            if (root.TransDiscountEntry != null)
+            {
+                foreach (NavWS.TransDiscountEntry mobileTransDisc in root.TransDiscountEntry)
+                {
+                    transaction.DiscountLines.Add(new SalesEntryDiscountLine()
+                    {
+                        OfferNumber = mobileTransDisc.OfferNo,
+                        LineNumber = LineNumberFromNav(mobileTransDisc.LineNo),
+                        DiscountAmount = mobileTransDisc.DiscountAmount,
+                        PeriodicDiscType = (PeriodicDiscType)(Convert.ToInt32(mobileTransDisc.OfferType) + 1)
+                    });
+                }
+            }
+
+            //now loop thru the lines
+            transaction.Lines = new List<SalesEntryLine>();
+            if (root.TransSalesEntry != null)
+            {
+                foreach (NavWS.TransSalesEntry mobileTransLine in root.TransSalesEntry)
+                {
+                    transaction.Lines.Add(new SalesEntryLine()
+                    {
+                        ItemId = mobileTransLine.ItemNo,
+                        UomId = mobileTransLine.UnitofMeasure,
+                        VariantId = mobileTransLine.VariantCode,
+                        Amount = mobileTransLine.NetAmount + mobileTransLine.VATAmount,
+                        NetAmount = mobileTransLine.NetAmount,
+                        TaxAmount = mobileTransLine.VATAmount,
+                        DiscountAmount = mobileTransLine.DiscountAmount,
+                        Quantity = mobileTransLine.Quantity,
+                        Price = mobileTransLine.Price,
+                        NetPrice = mobileTransLine.NetPrice,
+                        LineNumber = LineNumberFromNav(mobileTransLine.LineNo)
+                    });
+                }
+            }
+            return transaction;
+        }
+
         public NavWS.RootMobileTransaction MapFromRetailTransactionToRoot(RetailTransaction transaction)
         {
             NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
@@ -188,6 +255,49 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
+        public RetailTransaction MapFromRootToLoyTransaction(NavWS.RootGetTransaction root)
+        {
+            NavWS.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
+            UnknownCurrency transactionCurrency = new UnknownCurrency(header.TransCurrency);
+
+            RetailTransaction transaction = new RetailTransaction()
+            {
+                Id = header.TransactionNo.ToString(),
+                GrossAmount = new Money(header.GrossAmount, transactionCurrency),
+                TotalDiscount = new Money(header.DiscountAmount, transactionCurrency),
+                NetAmount = new Money(header.NetAmount, transactionCurrency),
+                ReceiptNumber = header.ReceiptNo,
+                Terminal = new Terminal(header.POSTerminalNo),
+            };
+
+            foreach (NavWS.TransSalesEntry entry in root.TransSalesEntry)
+            {
+                transaction.SaleLines.Add(new SaleLine()
+                {
+                    Item = new RetailItem(entry.ItemNo),
+                    Quantity = entry.Quantity,
+                    ReturnQuantity = entry.RefundQty,
+                    NetAmount = new Money(entry.NetAmount, transactionCurrency),
+                    TaxAmount = new Money(entry.VATAmount, transactionCurrency),
+                    UnitPrice = new Money(entry.Price, transactionCurrency),
+                });
+            }
+
+            if (root.TransPaymentEntry != null && root.TransPaymentEntry.Length > 0)
+            {
+                int lineno = 1;
+                foreach (NavWS.TransPaymentEntry pay in root.TransPaymentEntry)
+                {
+                    Payment payment = new Payment()
+                    {
+                        Amount = new Money(pay.AmountTendered, transactionCurrency),
+                    };
+                    transaction.TenderLines.Add(new PaymentLine(lineno++, payment));
+                }
+            }
+            return transaction;
+        }
+
         #region Private
 
         private NavWS.MobileTransaction MobileTrans(RetailTransaction transaction)
@@ -254,7 +364,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
         {
             decimal quantity = 0m;
             int externalId = 0;
-            string eftTransactionNo = string.Empty;
 
             string itemId = string.Empty;
             string barcode = string.Empty;
@@ -330,12 +439,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 IncomeExpenseLine incomeExpenseLine = (IncomeExpenseLine)line;
                 itemId = incomeExpenseLine.AccountNumber;
                 netAmount = incomeExpenseLine.Amount.Value;
-                eftTransactionNo = incomeExpenseLine.TenderLineReference;
                 entryStatus = (incomeExpenseLine.Voided) ? EntryStatus.Voided : EntryStatus.Normal;
                 externalId = 0;
             }
 
-            return new NavWS.MobileTransactionLine()
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(line.LineNumber),
@@ -380,16 +488,20 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TenderDescription = string.Empty,
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
+                RetailImageID = string.Empty,
                 OrigTransLineNo = lineOrgNumber,
                 OrigTransNo = ConvertTo.SafeInt(orgTransNo),
                 OrigTransPos = orgTerminal ?? string.Empty,
                 OrigTransStore = orgStore ?? string.Empty,
             };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
         }
 
         private NavWS.MobileTransactionLine MobileTransLine(string id, PublishedOffer offer, int lineNumber, string storeId)
         {
-            return new NavWS.MobileTransactionLine()
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = lineNumber,
@@ -421,8 +533,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty                
             };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
         }
 
         private NavWS.MobileTransactionLine TransPaymentLine(string id, PaymentLine paymentLine, string transactionCurrencyCode, int lineNumber)
@@ -474,7 +590,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 entryStatus = 1; //voided
             }
 
-            return new NavWS.MobileTransactionLine()
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(lineNumber),
@@ -512,8 +628,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 SalesType = string.Empty,
                 TenderDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty
             };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
         }
 
         private void MobileTransLine(NavWS.MobileTransactionLine mobileTransLine, ref RetailTransaction transaction, List<DiscountLine> discounts, NavWS.MobileReceiptInfo[] receiptInfos)
@@ -561,6 +681,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 UnknownRetailItem item = new UnknownRetailItem(mobileTransLine.Number);
                 item.SelectedVariant = new UnknownVariantRegistration(mobileTransLine.VariantCode);
                 item.UnitOfMeasure = new UnknownUnitOfMeasure(mobileTransLine.UomId, mobileTransLine.Number);
+                item.Images.Add(new ItemImage(mobileTransLine.RetailImageID));
                 saleLine.Item = item;
 
                 saleLine.UnitPrice = new Money(mobileTransLine.NetPrice, transLineCurrency);

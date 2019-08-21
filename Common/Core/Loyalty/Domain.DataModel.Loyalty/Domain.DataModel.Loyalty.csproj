@@ -40,7 +40,6 @@
     <Compile Remove="Baskets\BackOfficeConnection.cs" />
     <Compile Remove="Baskets\Basket.cs" />
     <Compile Remove="Baskets\BasketItem.cs" />
-    <Compile Remove="Transactions\TenderPaymentLine.cs" />
   </ItemGroup>
 
   <ItemGroup>

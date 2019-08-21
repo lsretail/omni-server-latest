@@ -25,6 +25,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             TotalNetAmount = 0M;
             TotalTaxAmount = 0M;
             TotalDiscAmount = 0M;
+            PointAmount = 0M;
         }
 
         public OneList(string id, List<OneListItem> items, bool calculate) : this(id)
@@ -60,19 +61,19 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public string StoreId { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public string CardId { get; set; }
         [DataMember]
         public string CustomerId { get; set; }
         [DataMember]
-        public bool IsDefaultList { get; set; } 
-        [DataMember]
+        public bool IsDefaultList { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreateDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public ListType ListType { get; set; }
         [DataMember]
         public List<OneListItem> Items { get; set; }

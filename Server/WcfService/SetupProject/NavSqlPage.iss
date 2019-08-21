@@ -137,8 +137,8 @@ function NavSQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   NavSQLPage := CreateCustomPage(
     PreviousPageId,
-    'LS Nav/Central SQL Server Database used by the LS Omni Server',
-    'Configures SQL parameters and permissions in the LS Nav/Central Database'
+    'LS Nav/LS Central SQL Server Database used by the LS Omni Server',
+    'Configures SQL parameters and permissions in the LS Nav/LS Central Database'
   );
  
   { lblServer }
@@ -202,7 +202,7 @@ begin
   with NavSQLPage_lblNavCompany do
   begin
     Parent := NavSQLPage.Surface;
-    Caption := 'Nav/Central Company name:';
+    Caption := 'Company name:';
     Left := ScaleX(24);
     Top := ScaleY(55);
     Width := ScaleX(140);

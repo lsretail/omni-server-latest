@@ -111,6 +111,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             IncomeExpenseAmount = new Money();
             HeadDiscount = new Money();
             TotalDiscount = new Money();
+            ManualDiscount = new Discount(null, 0, 0, DiscountEntryType.Amount);
 
             SaleLines = new List<SaleLine>();
             IncomeExpenseLines = new List<IncomeExpenseLine>();
@@ -128,6 +129,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 
             this.HeadDiscount = new Money(0M, this.Terminal.Store.Currency);
             this.TotalDiscount = new Money(0M, this.Terminal.Store.Currency);
+            ManualDiscount = new Discount(null, 0, 0, DiscountEntryType.Amount);
 
             this.TaxAmount = new Money(0M, this.Terminal.Store.Currency);
 

@@ -17,7 +17,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(UnknownCurrency))]
-    public class Currency : Entity
+    [System.Xml.Serialization.XmlInclude(typeof(UnknownCurrency))]
+	public class Currency : Entity
     {
         public Currency(string id) : base(id)
         {

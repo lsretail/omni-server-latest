@@ -32,7 +32,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.OmniTasks
         public long Id { get; set; }
         [DataMember]
         public string TaskId { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ModifyTime { get; set; }
         /// <summary>
         /// Last User that modified the task

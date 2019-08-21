@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -74,6 +75,11 @@ namespace LSOmni.BLL.Loyalty
         public virtual ProductGroup ProductGroupGetById(string id, bool includeDetails)
         {
             return BOLoyConnection.ProductGroupGetById(id, GetAppSettingCurrencyCulture(), includeDetails, includeDetails);
+        }
+
+        public virtual List<Hierarchy> HierarchyGet(string storeId)
+        {
+            return BOLoyConnection.HierarchyGet(storeId);
         }
     }
 }

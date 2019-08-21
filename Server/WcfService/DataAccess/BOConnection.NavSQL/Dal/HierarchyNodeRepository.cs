@@ -47,13 +47,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfromNode + GetWhereStatement(true, keys, where, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfromNode + GetWhereStatement(true, keys, where, false);
             }
-            recordsRemaining = GetRecordCount(TABLENODEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLENODEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLENODEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplHierarchyNode> list = new List<ReplHierarchyNode>();
@@ -179,13 +175,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfromLink + GetWhereStatement(true, keys, where, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfromLink + GetWhereStatement(true, keys, where, false);
             }
-            recordsRemaining = GetRecordCount(TABLELINKID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLELINKID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLELINKID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplHierarchyLeaf> list = new List<ReplHierarchyLeaf>();

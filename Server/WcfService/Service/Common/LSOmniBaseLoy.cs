@@ -8,7 +8,6 @@ using LSOmni.Common.Util;
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
@@ -16,9 +15,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
@@ -505,14 +502,14 @@ namespace LSOmni.Service
             double points = 0;
             try
             {
-                logger.Debug(config.LSKey.Key, "contactid:{0}  , cardid:{1}", contactId, cardId);
+                logger.Debug(config.LSKey.Key, "contactid:{0}, cardid:{1}, accountid:{2}", contactId, cardId, accountId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 points = contactBLL.ContactAddCard(contactId, cardId, accountId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, String.Format("contactid:{0} , cardid:{1}", contactId, cardId));
+                HandleExceptions(ex, String.Format("contactid:{0}, cardid:{1}, accountid:{2}", contactId, cardId, accountId));
             }
             return points;
         }
@@ -628,6 +625,8 @@ namespace LSOmni.Service
         {
             if (cardId == null)
                 cardId = string.Empty;
+            if (itemId == null)
+                itemId = string.Empty;
 
             try
             {
@@ -1110,12 +1109,9 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "cardId:{0} , includeLines: {1}, listType: {2}", cardId, includeLines, listType.ToString());
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                List<OneList> list = listBLL.OneListGetByCardId(cardId, listType, includeLines);
-                foreach (OneList l in list)
-                {
-                    this.OneListSetLocation(l);
-                }
-                return list;
+                List<OneList> lists = listBLL.OneListGetByCardId(cardId, listType, includeLines);
+                OneListSetLocation(lists);
+                return lists;
             }
             catch (Exception ex)
             {
@@ -1441,6 +1437,9 @@ namespace LSOmni.Service
         {
             try
             {
+                if (cardId == null)
+                    cardId = string.Empty;
+
                 logger.Debug(config.LSKey.Key, "cardId:{0} search:{1} searchType:{2} ", cardId, search, searchTypes.ToString());
 
                 SearchBLL searchBLL = new SearchBLL(config, clientTimeOutInSeconds);
@@ -1459,39 +1458,39 @@ namespace LSOmni.Service
 
         #region Basket 
 
-        public virtual OrderStatusResponse OrderStatusCheck(string transactionId)
+        public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "transactionId:{0}", transactionId);
-                BasketBLL bll = new BasketBLL(config, clientTimeOutInSeconds);
-                return bll.OrderStatusCheck(transactionId);
+                logger.Debug(config.LSKey.Key, "orderId:{0}", orderId);
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
+                return bll.OrderStatusCheck(orderId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("transactionId:{0} ", transactionId));
+                HandleExceptions(ex, string.Format("orderId:{0} ", orderId));
                 return null; //never gets here
             }
         }
 
-        public virtual string OrderCancel(string transactionId)
+        public virtual string OrderCancel(string orderId)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "transactionId:{0}", transactionId);
-                BasketBLL bll = new BasketBLL(config, clientTimeOutInSeconds);
-                bll.OrderCancel(transactionId);
+                logger.Debug(config.LSKey.Key, "orderId:{0}", orderId);
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
+                bll.OrderCancel(orderId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("transactionId:{0} ", transactionId));
+                HandleExceptions(ex, string.Format("orderId:{0} ", orderId));
             }
             return string.Empty;
         }
 
         #endregion Basket 
 
-        #region menu & hierarchy & Image
+        #region hierarchy & Image
 
         /// <summary>
         /// To Get images via URL
@@ -1519,29 +1518,12 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual MobileMenu MenusGetAll(string id, string lastVersion)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "id: {0} lastVersion: {1}   ", id, lastVersion);
-                MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
-                MobileMenu mobileMenu = bll.MenusGetAll(id, lastVersion);
-                MenuSetLocation(mobileMenu);
-                return mobileMenu;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("id: {0} lastVersion: {1}   ", id, lastVersion));
-                return null; //never gets here
-            }
-        }
-
         public virtual List<Hierarchy> HierarchyGet(string storeId)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId: {0}", storeId);
-                MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 return bll.HierarchyGet(storeId);
             }
             catch (Exception ex)
@@ -1551,7 +1533,7 @@ namespace LSOmni.Service
             }
         }
 
-        #endregion menu
+        #endregion
 
         #region Ads
 
@@ -1649,22 +1631,21 @@ namespace LSOmni.Service
 
         #region OrderMessage
 
-        public virtual OrderMessage OrderMessageSave(OrderMessage orderMessage)
+        public virtual void OrderMessageSave(string orderId, int status, string subject, string message)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(orderMessage));
+                logger.Debug(config.LSKey.Key, "OrderId:{0}, Status:{1}, Subject:{2}", orderId, status, subject);
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderMessageSave(orderMessage);
+                bll.OrderMessageSave(orderId, status, subject, message);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("orderId: {0} Description: {1}  ", orderMessage.Id, orderMessage.Description));
-                return null; //never gets here
+                HandleExceptions(ex, string.Format("OrderId:{0}, Status:{1}, Subject:{2}", orderId, status, subject));
             }
         }
 
-        public virtual string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token)
+        public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token)
         {
             try
             {

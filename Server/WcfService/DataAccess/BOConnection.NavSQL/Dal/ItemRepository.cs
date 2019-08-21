@@ -18,11 +18,21 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
+        private string pgtablename = "Product Group";
+        private string pgfieldname = "Product Group Code";
+
         public ItemRepository(BOConfiguration config) : base(config)
         {
+            if (NavVersion > new Version("14.2"))
+            {
+                pgtablename = "Retail Product Group";
+                pgfieldname = "Retail Product Code";
+            }
+
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[Keying in Price],mt.[Keying in Quantity],mt.[No Discount Allowed]," +
-                         "mt.[Product Group Code],mt.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Zero Price Valid]," +
+                         "mt.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Zero Price Valid]," +
                          "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price]," +
+                         "mt.[" + pgfieldname + "]," +
                          "mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
@@ -58,12 +68,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
-                }
-                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
             }
             else
             {
@@ -72,14 +78,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 string tmpmaxkey = string.Empty;
                 recordsRemaining = 0;
 
-                recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
                 // get item html and distirbution changes 
-                recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
 
                 lastKey = mainlastkey;
@@ -221,12 +227,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
-                }
-                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
             }
             else
             {
@@ -236,26 +238,26 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 recordsRemaining = 0;
 
                 // get main item actions
-                recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
                 // Check for actions from Sales Price,Item Variant,Item Unit of Measure,Variant and Distribution tables
-                recordsRemaining += GetRecordCount(7002, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(7002, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 7002, batchSize, ref tmplastkey, ref recordsRemaining);
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(10001414, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(10001414, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001414, batchSize, ref tmplastkey, ref recordsRemaining));
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining));
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
 
                 lastKey = mainlastkey;
@@ -389,7 +391,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE [Product Group Code]=@id";
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE [" + pgfieldname + "]=@id";
                     command.Parameters.AddWithValue("@id", productGroupId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -414,7 +416,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 pageSize = 1;
 
             string sql =
-            "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Product Group Code],mt.[Sales Unit of Measure]," +
+            "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
+            "mt.[" + pgfieldname + "]," +
             "mt.[Blocked],mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
@@ -424,7 +427,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
             sqlfrom +
-            " LEFT OUTER JOIN [" + navCompanyName + "Product Group] pg ON pg.[Code]=mt.[Product Group Code]" +
+            " LEFT OUTER JOIN [" + navCompanyName + pgtablename + "] pg ON pg.[Code]=mt.[" + pgfieldname + "]" +
             " WHERE (1=1)";
 
             if (string.IsNullOrWhiteSpace(itemCategoryId) == false)
@@ -435,7 +438,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 sql += " AND mt.[Description] LIKE '%" + search + "%'" + GetDbCICollation();
 
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
-            sql += ") SELECT [No_],[Description],[Product Group Code],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
+            sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
+            sql += "[" + pgfieldname + "],";
             sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -579,24 +583,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public string ItemDetailsGetById(string itemId)
-        {
-            string detail = string.Empty;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT [Html] FROM [" + navCompanyName + "Item HTML] WHERE [Item No_]=@id";
-                    command.Parameters.AddWithValue("@id", itemId);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    detail = command.ExecuteScalar() as string;
-                    connection.Close();
-                }
-            }
-            return detail;
-        }
-
         private ReplItem ReaderToItem(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
@@ -609,7 +595,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 KeyingInPrice = SQLHelper.GetInt32(reader["Keying in Price"]),
                 KeyingInQty = SQLHelper.GetInt32(reader["Keying in Quantity"]),
                 NoDiscountAllowed = SQLHelper.GetInt32(reader["No Discount Allowed"]),
-                ProductGroupId = SQLHelper.GetString(reader["Product Group Code"]),
+                ProductGroupId = SQLHelper.GetString(reader[pgfieldname]),
                 ScaleItem = SQLHelper.GetInt32(reader["Scale Item"]),
                 TaxItemGroupId = SQLHelper.GetString(reader["VAT Prod_ Posting Group"]),
                 BaseUnitOfMeasure = SQLHelper.GetString(reader["Base Unit of Measure"]),
@@ -650,7 +636,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 Details = SQLHelper.GetStringByte(reader["Html"]),
 
-                ProductGroupId = SQLHelper.GetString(reader["Product Group Code"]),
+                ProductGroupId = SQLHelper.GetString(reader[pgfieldname]),
                 SalesUomId = SQLHelper.GetString(reader["Sales Unit of Measure"]),
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
                 BlockDiscount = SQLHelper.GetBool(reader["BlockDiscount"]),

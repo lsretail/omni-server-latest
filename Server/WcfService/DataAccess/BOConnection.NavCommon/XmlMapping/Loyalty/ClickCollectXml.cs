@@ -392,7 +392,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         new XElement("Ship_To_Email", rq.ShipToEmail),
                         new XElement("Ship_To_House_Apartment_No.", rq.ShipToAddress.HouseNo),
                         new XElement("Click_And_Collect_Order", rq.ClickAndCollectOrder),
-                        new XElement("Anonymous_Order", rq.AnonymousOrder),
+                        new XElement("Anonymous_Order", string.IsNullOrEmpty(rq.CardId)),
                         new XElement("Collect_Location", string.Empty),
                         new XElement("Created_at_Store", rq.StoreId),
                         new XElement("Receipt_No.", string.Empty),

@@ -27,7 +27,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 
         [DataMember]
         public decimal Balance { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ExpireDate { get; set; }
     }
 }

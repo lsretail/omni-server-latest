@@ -17,13 +17,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.OmniTasks
         public string AssignUser { get; set; }
         [DataMember]
         public string AssignUserName { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreateTime { get; set; }
         [DataMember]
         public List<OmniTaskLine> Lines { get; set; }
         [DataMember]
         public string ModifyLocation { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ModifyTime { get; set; }
         [DataMember]
         public string ModifyUser { get; set; }

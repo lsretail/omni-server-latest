@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 
 namespace LSRetail.Omni.Domain.DataModel.Base
 {
@@ -15,7 +15,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [DataMember]
         public bool SecurityCheck { get; set; }
         [DataMember]
-        public Dictionary<string, string> Settings { get; set; }
+        public List<TenantSetting> Settings { get; set; }
 
         public BOConfiguration() : this(string.Empty)
         {
@@ -24,17 +24,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         public BOConfiguration(string key)
         {
             LSKey = new LSKey(key);
-            Settings = new Dictionary<string, string>();
+            Settings = new List<TenantSetting>();
             SecurityCheck = false;
             SecurityToken = string.Empty;
         }
 
         public string SettingsGetByKey(ConfigKey key)
         {
-            Settings.TryGetValue(key.ToString(), out string value);
-            return value;
-            
+            TenantSetting setting = Settings.FirstOrDefault(x => x.Key == key.ToString());
+            return setting == null ? "" : setting.Value;
+
         }
+
         public int SettingsIntGetByKey(ConfigKey key)
         {
             string val = SettingsGetByKey(key);
@@ -43,14 +44,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
             return Convert.ToInt32(val);
         }
+
         public bool SettingsBoolGetByKey(ConfigKey key)
         {
             return SettingsGetByKey(key) == "true";
         }
+
         public decimal SettingsDecimalGetByKey(ConfigKey key)
         {
             return Convert.ToDecimal(SettingsGetByKey(key));
         }
+
         public bool SettingsKeyExists(ConfigKey key)
         {
             return SettingsGetByKey(key) != null;

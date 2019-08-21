@@ -94,13 +94,13 @@ namespace LSOmni.DataAccess.Dal
         {
             SQLHelper.CheckForSQLInjection(lsKey);
             BOConfiguration config = null;
-            Dictionary<string, string> list = new Dictionary<string, string>();
+            List<TenantSetting> list = new List<TenantSetting>();
 
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT t1.[Key],t1.[DataType],t1.[Value] AS DefaultValue," +
+                    command.CommandText = "SELECT t1.[Key],t1.[DataType],t1.[Comment], t1.[Advanced],t1.[Value] AS DefaultValue," +
                                           "(SELECT t2.[Value] FROM [TenantConfig] t2 WHERE t2.[Key]=t1.[Key] AND t2.[LSKey]=@id) AS CustomValue " +
                                           "FROM [TenantConfig] t1 where t1.[LSKey]='' ";
 
@@ -114,11 +114,20 @@ namespace LSOmni.DataAccess.Dal
                             string key = SQLHelper.GetString(reader["Key"]);
                             string defaultValue = SQLHelper.GetString(reader["DefaultValue"]);
                             string value = SQLHelper.GetString(reader["CustomValue"]);
+                            string comment = SQLHelper.GetString(reader["Comment"]);
+                            string dataType = SQLHelper.GetString(reader["DataType"]);
+                            bool advanced = SQLHelper.GetBool(reader["Advanced"]);
+                            bool isDefault = false;
 
-                            if (string.IsNullOrEmpty(value))
+                            if (string.IsNullOrEmpty(value)) { 
                                 value = defaultValue;
+                                isDefault = true;
+                            }
 
-                            list.Add(key, value);
+                            if (DecryptConfigValue.IsEncryptedPwd(value))
+                                value = DecryptConfigValue.DecryptString(value);
+
+                            list.Add(new TenantSetting(key, value, comment, dataType, advanced, isDefault));
                         }
                         reader.Close();
                     }
@@ -185,35 +194,42 @@ namespace LSOmni.DataAccess.Dal
                         try
                         {
                             Delete(config.LSKey.Key, connection, trans);
+                            if (config.Settings == null)
+                                config.Settings = new List<TenantSetting>();
                             using (SqlCommand command = connection.CreateCommand())
                             {
                                 command.Transaction = trans;
-                                foreach (KeyValuePair<string, string> settings in config.Settings)
+                                foreach (TenantSetting settings in config.Settings)
                                 {
                                     command.CommandText = "IF NOT EXISTS (SELECT [LSKey],[Key] FROM [TenantConfig] " +
                                         "WHERE [LSKey]=@lskey AND [Key]=@key) " +
                                         "AND (SELECT [Value] FROM [TenantConfig] WHERE [Key]=@key AND [LSKey]='') != @value " +
-                                        "INSERT INTO [TenantConfig] ([LSKey],[Key],[Value],[DataType]) " +
-                                        "VALUES (@lskey,@key,@value,(SELECT [DataType] FROM [TenantConfig] WHERE [Key]=@key AND [LSKey]='')) " +
+                                        "INSERT INTO [TenantConfig] ([LSKey],[Key],[Value],[DataType], [Advanced]) " +
+                                        "VALUES (@lskey,@key,@value,(SELECT [DataType] FROM [TenantConfig] WHERE [Key]=@key AND [LSKey]=''), " +
+                                        "(SELECT [Advanced] FROM [TenantConfig] WHERE [Key]=@key AND [LSKey]='')) " +
                                         "ELSE " +
                                         "UPDATE [TenantConfig] SET [Value]=@value WHERE [LSKey]=@lskey AND [Key]=@Key ";
 
                                     command.Parameters.Clear();
                                     command.Parameters.AddWithValue("@lskey", config.LSKey.Key);
                                     command.Parameters.AddWithValue("@key", settings.Key);
-                                    command.Parameters.AddWithValue("@value", settings.Value);
+                                    if(settings.Key == ConfigKey.BOPassword.ToString() || settings.Key == ConfigKey.BOSql.ToString())
+                                        command.Parameters.AddWithValue("@value", DecryptConfigValue.EncryptString(settings.Value));
+                                    else
+                                        command.Parameters.AddWithValue("@value", settings.Value);
                                     TraceSqlCommand(command);
                                     command.ExecuteNonQuery();
                                 }
                                 command.CommandText = "IF NOT EXISTS (SELECT [LSKey] FROM [LSKeys] " +
                                         "WHERE [LSKey]=@lskey) " +
-                                        "INSERT INTO [LSKeys] ([LSKey],[Description]) VALUES (@lskey,@desc)" +
+                                        "INSERT INTO [LSKeys] ([LSKey],[Description],[Active]) VALUES (@lskey,@desc,@active)" +
                                         "ELSE " +
                                         "UPDATE [LSKeys] SET [Description]=@desc WHERE [LSKey]=@lskey";
 
                                 command.Parameters.Clear();
                                 command.Parameters.AddWithValue("@lskey", config.LSKey.Key);
                                 command.Parameters.AddWithValue("@desc", config.LSKey.Description);
+                                command.Parameters.AddWithValue("@active", config.LSKey.Active);
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                                 trans.Commit();
@@ -297,6 +313,26 @@ namespace LSOmni.DataAccess.Dal
             return desc;
         }
 
+        public void ResetDefaults(string lskey)
+        {
+            //Don't want to delete the DEFAULT config
+            if (string.IsNullOrEmpty(lskey))
+                return;
+
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "DELETE FROM [TenantConfig] WHERE [LSKey]=@lskey ";
+                    command.Parameters.AddWithValue("@lskey", lskey);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                }
+                connection.Close();
+            }
+        }
+
         public void Delete(string lskey)
         {
             //Don't want to delete the DEFAULT config
@@ -311,6 +347,18 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters.AddWithValue("@lskey", lskey);
                     TraceSqlCommand(command);
                     connection.Open();
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM [LSKeys] WHERE [LSKey]=@lskey ";
+                    command.Parameters.Clear();
+                    command.Parameters.AddWithValue("@lskey", lskey);
+                    TraceSqlCommand(command);
+                    command.ExecuteNonQuery();
+
+                    command.CommandText = "DELETE FROM [UserKeys] WHERE [LSKey]=@lskey ";
+                    command.Parameters.Clear();
+                    command.Parameters.AddWithValue("@lskey", lskey);
+                    TraceSqlCommand(command);
                     command.ExecuteNonQuery();
                 }
                 connection.Close();

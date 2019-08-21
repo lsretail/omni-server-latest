@@ -25,12 +25,21 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         {
             Width = width;
             Height = height;
+            UseMinHorVerSize = false;
+        }
+
+        public ImageSize(int width, int height, bool useMinHorVerSize)
+        {
+            Width = width;
+            Height = height;
+            UseMinHorVerSize = useMinHorVerSize;
         }
 
         public ImageSize()
         {
             Width = 0;
             Height = 0;
+            UseMinHorVerSize = false;
         }
 
         public void Dispose()
@@ -55,6 +64,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public int Width { get; set; }
         [DataMember]
         public int Height { get; set; }
+        /// <summary>
+        /// Return Image where size will not be less than Width or Height
+        /// </summary>
+        [DataMember]
+        public bool UseMinHorVerSize { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -66,10 +80,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             Location = string.Empty; //if locationType is "Url" then this holds the URL to the image
             DisplayOrder = 0;
             LocationType = LocationType.Image;
-            AvgColor = string.Empty; //hex value of color 0xffffff or FFFFFF being white color
             ImgSize = new ImageSize(); //size of image as stored in database, 200x500 etc. client can determine
             Format = string.Empty; //jpeg, png
-            ObjectId = string.Empty;
+            AvgColor = string.Empty;
             LoadFromFile = false;
 
             ImgBytes = null;  //used on server only, not on client
@@ -97,16 +110,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         {
             return new ImageView(Id)
             {
-                AvgColor = AvgColor,
                 DisplayOrder = DisplayOrder,
                 Format = Format,
                 Image = Image,
                 ImgSize = ImgSize,
                 Location = Location,
                 LocationType = LocationType,
-                ObjectId = ObjectId,
                 ImgBytes = ImgBytes,
                 LoadFromFile = LoadFromFile,
+                AvgColor = AvgColor
             };
         }
 
@@ -126,8 +138,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         [DataMember]
         public LocationType LocationType { get; set; }
         [DataMember]
-        public string ObjectId { get; set; }
-        [DataMember]
         public string AvgColor { get; set; }
         [DataMember]
         public ImageSize ImgSize { get; set; }
@@ -135,13 +145,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public string Format { get; set; }
         [DataMember]
         public bool LoadFromFile { get; set; }
-        /// <summary>
-        /// Used to tell whether image should be crossfaded in or not, they should be crossfaded if they come from the server, otherwise not
-        /// </summary>
-        [IgnoreDataMember]
-        public bool Crossfade { get; set; }
 
         //not all data goes to wcf clients
         public byte[] ImgBytes { get; set; }
+        public DateTime ModifiedTime { get; set; }
+        public bool Crossfade { get; set; }
     }
 }

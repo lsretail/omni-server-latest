@@ -40,7 +40,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
@@ -84,7 +83,6 @@
     <Compile Include="XmlMapping\Loyalty\ClickCollectXml.cs" />
     <Compile Include="XmlMapping\Loyalty\HierarchyXml.cs" />
     <Compile Include="XmlMapping\Loyalty\MemberCardXml.cs" />
-    <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
     <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
     <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
     <Compile Include="XmlMapping\Loyalty\StoreServicesXml.cs" />
@@ -121,6 +119,9 @@
     <None Include="Web References\NavWS\RootCustomerOrderGet.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\NavWS\RootCustomerOrderGetV2.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\NavWS\RootCustomerOrderStatus2.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -131,6 +132,12 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetDirectMarketingInfo.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetDocumentList.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootGetDocumnet.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetHierarchy.datasource">
@@ -164,6 +171,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootGetTransaction.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWS\RootLeftRightLine.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\NavWS\RootMemberContactCreate.datasource">

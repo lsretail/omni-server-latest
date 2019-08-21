@@ -125,7 +125,7 @@ begin
   with IISPage_lblComment1 do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'LS Nav/Central Web Service configuration values';
+    Caption :=  'LS Nav/LS Central Web Service configuration values';
     Left := ScaleX(15);
     Top := IISPage_txtWcfServiceName.Top + IISPage_txtWcfServiceName.Height + 8;
     Width := ScaleX(450);
@@ -163,7 +163,7 @@ begin
   with IISPage_lblNavAuthentication do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'LS Nav/Central Web Services Authentication. Uses Windows Credential type.';
+    Caption :=  'LS Nav/LS Central Web Services Authentication. Uses Windows Credential type.';
     Left := ScaleX(15);
     Top :=  IISPage_txtNavUrl.Top + IISPage_txtNavUrl.Height + 8;
     Width := ScaleX(450);

@@ -27,7 +27,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     {
                         case "No.": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "Product Group Code": rec.ProductGroupId = field.Values[i]; break;
                         case "Base Unit of Measure": rec.BaseUnitOfMeasure = field.Values[i]; break;
 
                         case "Scale Item": rec.ScaleItem = GetWebBoolInt(field.Values[i]); break;
@@ -721,7 +720,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Store Name": rec.Name = field.Values[i]; break;
                     }
                 }
-                if(terminal == terminalId)
+                if (terminal == terminalId)
                     list.Add(rec);
             }
             return list;
@@ -1150,6 +1149,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "ItemId": rec.ItemId = field.Values[i]; break;
                         case "Description": rec.Descritpion = field.Values[i]; break;
                         case "ItemImageId": rec.ItemImageId = field.Values[i]; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        public List<ReplInvStatus> ReplicateInvStatus(XMLTableData table)
+        {
+            List<ReplInvStatus> list = new List<ReplInvStatus>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ReplInvStatus rec = new ReplInvStatus();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Item No.": rec.ItemId = field.Values[i]; break;
+                        case "Variant Code": rec.VariantId = field.Values[i]; break;
+                        case "Store No.": rec.StoreId = field.Values[i]; break;
+                        case "Net Inventory": rec.Quantity = GetWebDecimal(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

@@ -5,7 +5,6 @@ using System.Data.Common;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 
 namespace LSOmni.DataAccess.Dal
 {
@@ -15,7 +14,7 @@ namespace LSOmni.DataAccess.Dal
         protected static string sqlConnectionString = null;
         protected static BOConfiguration config;
 
-        private static readonly Object myLock = new Object();
+        private static readonly object myLock = new object();
         protected static LSLogger logger = new LSLogger();
 
         public BaseRepository(BOConfiguration configuration)
@@ -152,58 +151,9 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        // CACHE part
-        protected CacheState Validate(string sql, int durationInMinutes)
-        {
-            if (durationInMinutes <= 0)
-                durationInMinutes = 0; // 
-
-            DateTime currDate = DateTime.MinValue;
-            DateTime lastDate = DateTime.MinValue;
-            DateTime createdDate = DateTime.MinValue;
-
-            CacheState state = CacheState.NotExist;//in case nothing got returned default this to notexist
-            try
-            {
-                using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-                {
-                    connection.Open();
-                    using (SqlCommand command = connection.CreateCommand())
-                    {
-                        command.CommandText = sql;
-                        TraceSqlCommand(command);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            if (reader.Read())
-                            {
-                                currDate = DateTime.Now;
-                                lastDate = SQLHelper.GetDateTime(reader["LastModifiedDate"]);
-                                createdDate = SQLHelper.GetDateTime(reader["CreatedDate"]);
-                            }
-                            reader.Close();
-
-                            if (currDate == DateTime.MinValue)
-                                state = CacheState.NotExist; //id does not exist   9 < 20     false
-                            else if ((currDate - lastDate).TotalMinutes < durationInMinutes)
-                                state = CacheState.Exists; //id found and has not expired
-                            else
-                                state = CacheState.ExistsButExpired; //id found but has expired
-                        }
-                    }
-                    connection.Close();
-                }
-                return state;
-            }
-            catch (Exception ex)
-            {
-                logger.Error(config.LSKey.Key, ex, "Validate failed..");
-                throw;
-            }
-        }
-
         protected string SerializeToXml(object value)
         {
-            return Serialization.SerializeToXml(value);
+            return Serialization.ToXml(value, true);
         }
 
         protected T DeserializeFromXml<T>(string xml)

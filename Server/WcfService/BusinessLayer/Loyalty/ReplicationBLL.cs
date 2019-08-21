@@ -503,7 +503,7 @@ namespace LSOmni.BLL.Loyalty
             int recordsRemaining = 0;
 
             ReplInvStatusResponse resp = new ReplInvStatusResponse();
-            resp.Items = BOLoyConnection.ReplEcommInventoryStatus(replRequest.StoreId, replRequest.BatchSize, ref lastkey, ref maxkey, ref recordsRemaining);
+            resp.Items = BOLoyConnection.ReplEcommInventoryStatus(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
             resp.RecordsRemaining = recordsRemaining;
             resp.LastKey = lastkey;
             resp.MaxKey = maxkey;

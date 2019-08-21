@@ -64,7 +64,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public List<ImageView> Images { get; set; }
         [DataMember]
         public List<PublishedOfferLine> OfferLines { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? ExpirationDate { get; set; }
         [DataMember]
         public OfferDiscountType Code { get; set; }

@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base;
-using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -47,13 +47,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom + GetWhereStatement(true, keys, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplCustomer> list = new List<ReplCustomer>();
@@ -607,7 +603,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return pro;
         }
 
-        public List<Profile> ProfileSearch(string contactId, string search)
+        public List<Profile> ProfileSearch(string cardId, string search)
         {
             List<Profile> list = new List<Profile>();
             if (string.IsNullOrWhiteSpace(search))
@@ -616,7 +612,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
-            string sqlwhere = " WHERE mc.[Contact No_]=@id";
+            string sqlwhere = " WHERE c.[Card No_]=@id";
             foreach (string si in searchitems)
             {
                 sqlwhere += string.Format(" AND a.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
@@ -630,8 +626,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                           "FROM [" + navCompanyName + "Member Contact] mc " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute Setup] ms ON ms.[Club Code]=mc.[Club Code] " +
                                           "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=ms.[Code] " +
+                                          "INNER JOIN[" + navCompanyName + "Membership Card] c on c.[Contact No_] = mc.[Contact No_]" +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0" + sqlwhere;
-                    command.Parameters.AddWithValue("@id", contactId);
+                    command.Parameters.AddWithValue("@id", cardId);
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -696,6 +693,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             cont.Account = AccountGetById(SQLHelper.GetString(reader["Account No_"]));
             cont.Profiles = ProfileGetByCardId(cont.Cards[0].Id);
             cont.SalesEntries = new List<SalesEntry>();
+            cont.OneLists = new List<OneList>();
 
             cont.Addresses = new List<Address>();
             cont.Addresses.Add(new Address()

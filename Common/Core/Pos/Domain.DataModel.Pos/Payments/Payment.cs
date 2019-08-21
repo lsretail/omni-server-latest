@@ -66,7 +66,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Payments
         public TenderType TenderType { get; set; }
         [DataMember]
         public Money Amount { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateTime { get; set; }
         [DataMember]
         public string StoreId { get; set; }

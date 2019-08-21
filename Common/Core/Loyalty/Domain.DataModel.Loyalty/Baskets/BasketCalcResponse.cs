@@ -71,7 +71,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public EntryStatus EntryStatus { get; set; }
         [DataMember]
         public string TransactionNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TransDate { get; set; }
         [DataMember]
         public string CurrencyCode { get; set; }

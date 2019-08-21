@@ -2,11 +2,9 @@
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.Service
@@ -67,11 +65,11 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderMessage OrderMessageSave(OrderMessage orderMessage);
+        void OrderMessageSave(string orderId, int status, string subject, string message);
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token);
+        string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token);
 
         #endregion OrderMessage
 

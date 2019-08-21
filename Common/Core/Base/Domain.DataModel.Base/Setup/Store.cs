@@ -9,13 +9,15 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(UnknownStore))]
-    public class Store : Entity
+    [System.Xml.Serialization.XmlInclude(typeof(UnknownStore))]
+	public class Store : Entity
     {
         public Store(string id) : base(id)
         {
             IsClickAndCollect = false;
             Description = string.Empty;
             Phone = string.Empty;
+            TaxGroupId = string.Empty;
             Address = new Address();
             Images = new List<ImageView>();
             Latitude = 0.0;

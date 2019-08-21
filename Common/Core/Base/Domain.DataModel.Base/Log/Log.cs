@@ -40,7 +40,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         public string Message { get; set; }
         [DataMember]
         public string Stacktrace { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeStamp { get; set; }
 
         public Log() : this(0)

@@ -70,9 +70,9 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Items
         public bool MustKeyInComment { get; set; }
         [DataMember]
         public bool Blocked { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? BlockedDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? ActivateDate { get; set; }
         [DataMember]
         public List<ItemImage> Images { get; set; }

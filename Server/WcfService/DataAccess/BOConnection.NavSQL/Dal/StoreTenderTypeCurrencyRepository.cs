@@ -36,13 +36,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom + GetWhereStatement(true, keys, where, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplStoreTenderTypeCurrency> list = new List<ReplStoreTenderTypeCurrency>();

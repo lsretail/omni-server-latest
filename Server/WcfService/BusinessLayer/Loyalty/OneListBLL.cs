@@ -3,8 +3,10 @@ using System.Collections.Generic;
 
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.BLL.Loyalty
@@ -17,6 +19,26 @@ namespace LSOmni.BLL.Loyalty
             : base(config, timeoutInSeconds)
         {
             this.iRepository = GetDbRepository<IOneListRepository>(config);
+        }
+
+        public virtual List<OneList> OneListGet(MemberContact contact, bool includeLines)
+        {
+            List<OneList> list = new List<OneList>();
+            foreach (Card card in contact.Cards)
+            {
+                list.AddRange(iRepository.OneListGetByCardId(card.Id, includeLines));
+            }
+
+            foreach (OneList lst in list)
+            {
+                foreach (OneListItem oitem in lst.Items)
+                {
+                    oitem.Item = BOLoyConnection.ItemGetById(oitem.ItemId, string.Empty, GetAppSettingCurrencyCulture(), includeLines);
+                    if (string.IsNullOrWhiteSpace(oitem.VariantId) == false)
+                        oitem.VariantReg = BOAppConnection.VariantRegGetById(oitem.VariantId, oitem.ItemId);
+                }
+            }
+            return list;
         }
 
         public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines = false)
@@ -58,34 +80,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual OneList OneListSave(OneList list, bool calculate, bool includeItemDetails)
         {
-
-            // check item setup
-            foreach(OneListItem line in list.Items)
-            {
-                if (string.IsNullOrWhiteSpace(line.ItemId))
-                {
-                    if (line.Item != null && line.Item.Id != null)
-                        line.ItemId = line.Item.Id;
-                    else
-                        line.ItemId = string.Empty;
-                }
-
-                if (string.IsNullOrWhiteSpace(line.VariantId))
-                {
-                    if (line.VariantReg != null && line.VariantReg.Id != null)
-                        line.VariantId = line.VariantReg.Id;
-                    else
-                        line.VariantId = string.Empty;
-                }
-
-                if (string.IsNullOrWhiteSpace(line.UnitOfMeasureId))
-                {
-                    if (line.UnitOfMeasure != null && line.UnitOfMeasure.Id != null)
-                        line.UnitOfMeasureId = line.UnitOfMeasure.Id;
-                    else
-                        line.UnitOfMeasureId = string.Empty;
-                }
-            }
+            CheckItemSetup(list);
 
             list.TotalAmount = 0;
             list.TotalDiscAmount = 0;
@@ -111,6 +106,7 @@ namespace LSOmni.BLL.Loyalty
                     item.ItemId = line.ItemId;
                     item.Item = new LoyItem(line.ItemId);
                     item.Item.Description = line.ItemDescription;
+                    item.Item.Images.Add(new ImageView(line.ItemImageId));
                     item.UnitOfMeasureId = line.UomId;
                     if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
                         item.UnitOfMeasureId = olditem.UnitOfMeasureId;
@@ -168,7 +164,39 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual Order OneListCalculate(OneList list)
         {
+            CheckItemSetup(list);
 
+            // temp solution till we get this from NAV
+            Order order = BOLoyConnection.BasketCalcToOrder(list);
+            foreach (OrderLine line in order.OrderLines)
+            {
+                if (string.IsNullOrEmpty(line.ItemImageId) == false)
+                    continue;   // load any missing images if not coming from NAV
+
+                if (string.IsNullOrEmpty(line.VariantId))
+                {
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
+                    if (img != null && img.Count > 0)
+                        line.ItemImageId = img[0].Id;
+                }
+                else
+                {
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
+                    if (img != null && img.Count > 0)
+                        line.ItemImageId = img[0].Id;
+                }
+            }
+            return order;
+        }
+
+        public virtual void OneListDeleteById(string oneListId, ListType listType)
+        {
+            base.ValidateOneList(oneListId);
+            iRepository.OneListDeleteById(oneListId, listType);
+        }
+
+        private void CheckItemSetup(OneList list)
+        {
             // check item setup
             foreach (OneListItem line in list.Items)
             {
@@ -196,14 +224,6 @@ namespace LSOmni.BLL.Loyalty
                         line.UnitOfMeasureId = string.Empty;
                 }
             }
-
-            return BOLoyConnection.BasketCalcToOrder(list);
-        }
-
-        public virtual void OneListDeleteById(string oneListId, ListType listType)
-        {
-            base.ValidateOneList(oneListId);
-            iRepository.OneListDeleteById(oneListId, listType);
         }
     }
 }

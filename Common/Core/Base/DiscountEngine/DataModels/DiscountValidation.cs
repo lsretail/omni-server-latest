@@ -52,16 +52,16 @@ namespace LSRetail.Omni.DiscountEngine.DataModels
         [DataMember]
         public string Description { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartDate { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EndDate { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EndTime { get; set; }
 
         [DataMember]
@@ -70,64 +70,64 @@ namespace LSRetail.Omni.DiscountEngine.DataModels
         [DataMember]
         public bool EndAfterMidnight { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime MondayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime MondayEnd { get; set; }
 
         [DataMember]
         public bool MondayWithinBounds { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TuesdayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TuesdayEnd { get; set; }
 
         [DataMember]
         public bool TuesdayWithinBounds { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime WednesdayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime WednesdayEnd { get; set; }
 
         [DataMember]
         public bool WednesdayWithinBounds { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ThursdayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ThursdayEnd { get; set; }
 
         [DataMember]
         public bool ThursdayWithinBounds { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FridayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FridayEnd { get; set; }
 
         [DataMember]
         public bool FridayWithinBounds { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SaturdayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SaturdayEnd { get; set; }
 
         [DataMember]
         public bool SaturdayWithinBounds { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SundayStart { get; set; }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SundayEnd { get; set; }
 
         [DataMember]

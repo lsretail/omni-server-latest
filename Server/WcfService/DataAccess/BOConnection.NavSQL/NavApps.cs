@@ -17,8 +17,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
     //Navision back office connection
     public class NavApps : NavBase, IAppBO
     {
-        private static readonly object Locker = new object();
-
         public NavApps(BOConfiguration config) : base(config)
         {
         }
@@ -52,12 +50,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
             CurrencyRepository rep = new CurrencyRepository(config, NAVVersion);
             return rep.CurrencyLoyGetById(id, culture);
-        }
-
-        public virtual string ItemDetailsGetById(string itemId)
-        {
-            ItemRepository itemRep = new ItemRepository(config);
-            return itemRep.ItemDetailsGetById(itemId);
         }
 
         public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)

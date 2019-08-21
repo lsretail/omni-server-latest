@@ -17,7 +17,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(UnknownTerminal))]
-    public class Terminal : Entity, IAggregateRoot
+    [System.Xml.Serialization.XmlInclude(typeof(UnknownTerminal))]
+	public class Terminal : Entity, IAggregateRoot
     {
         public Terminal()
         {

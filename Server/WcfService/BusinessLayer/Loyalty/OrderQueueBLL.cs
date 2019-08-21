@@ -3,7 +3,6 @@
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.BLL.Loyalty
@@ -106,8 +105,8 @@ namespace LSOmni.BLL.Loyalty
             orderQueue.Email = request.Email;
 
             //this is ordertype click and collect, so serialize it
-            orderQueue.OrderXml = Serialization.SerializeToXml(request);
-            orderQueue = this.Save(orderQueue);
+            orderQueue.OrderXml = Serialization.ToXml(request, true);
+            Save(orderQueue);
         }
 
         public virtual List<Order> OrderSearchClickCollect(OrderSearchRequest searchRequest)

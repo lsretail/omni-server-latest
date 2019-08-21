@@ -68,7 +68,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public bool IsDeleted { get; set; }
         [DataMember]
         public string CurrencyCode { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartingDate { get; set; }
         [DataMember]
         public decimal CurrencyFactor { get; set; }

@@ -86,7 +86,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string FirstName { get; set; }
         [DataMember]
         public string LastName { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime BlockingDate { get; set; }
         [DataMember]
         public int ChangePassword { get; set; }

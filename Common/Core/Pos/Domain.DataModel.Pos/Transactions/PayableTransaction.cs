@@ -31,9 +31,9 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
     {
         [DataMember]
         public Terminal Terminal { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? BeginDateTime { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? EndDateTime { get; set; }
         [DataMember]
         public string TransactionNumber { get; set; }

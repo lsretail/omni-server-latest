@@ -115,7 +115,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public string TransactionNo { get; set; }
         [DataMember]
         public string ReceiptNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TransDate { get; set; }
         [DataMember]
         public string MemberCardNo { get; set; }

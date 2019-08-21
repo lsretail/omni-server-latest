@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Globalization;
 
-using LSOmni.Common.Util;
-
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
 {
     public abstract class BaseXml

@@ -11,7 +11,6 @@ using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -59,8 +58,7 @@ namespace LSOmni.BLL.Loyalty
                 contact.Notifications = notificationBLL.NotificationsGetByCardId(cardId, 5000);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.Basket = oneListBLL.OneListGetByCardId(cardId, ListType.Basket, true).FirstOrDefault();
-                contact.WishList = oneListBLL.OneListGetByCardId(cardId, ListType.Wish, true).FirstOrDefault();
+                contact.OneLists = oneListBLL.OneListGet(contact, true);
             }
             return contact;
         }
@@ -222,8 +220,7 @@ namespace LSOmni.BLL.Loyalty
                 contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.Basket = oneListBLL.OneListGetByCardId(contact.Cards[0].Id, ListType.Basket, true).FirstOrDefault();
-                contact.WishList = oneListBLL.OneListGetByCardId(contact.Cards[0].Id, ListType.Wish, true).FirstOrDefault();
+                contact.OneLists = oneListBLL.OneListGet(contact, true);
 
                 try
                 {

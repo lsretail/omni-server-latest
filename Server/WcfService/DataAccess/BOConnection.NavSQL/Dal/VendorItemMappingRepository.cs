@@ -34,13 +34,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, " AND mt.[Vendor No_]<>''", "mt.[No_]", storeId, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, " AND mt.[Vendor No_]<>''", "mt.[No_]", storeId, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplLoyVendorItemMapping> list = new List<ReplLoyVendorItemMapping>();

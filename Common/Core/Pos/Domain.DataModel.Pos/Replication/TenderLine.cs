@@ -99,7 +99,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public EFTAuthorizationStatus EFTAuthStatus { get; set; }
         [DataMember]
         public EFTTransactionType EFTTransType { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EFTDateTime { get; set; }
 
         [DataMember]

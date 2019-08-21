@@ -45,7 +45,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO.Compression, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Transactions" />
@@ -73,11 +72,9 @@
     <Compile Include="ConfigBLL.cs" />
     <Compile Include="Loyalty\AdvertisementBLL.cs" />
     <Compile Include="Loyalty\BaseLoyBLL.cs" />
-    <Compile Include="Loyalty\BasketBLL.cs" />
     <Compile Include="Loyalty\ContactBLL.cs" />
     <Compile Include="Loyalty\CurrencyBLL.cs" />
     <Compile Include="Loyalty\ItemBLL.cs" />
-    <Compile Include="Loyalty\MenuBLL.cs" />
     <Compile Include="Loyalty\NotificationBLL.cs" />
     <Compile Include="Loyalty\OfferBLL.cs" />
     <Compile Include="Loyalty\OneListBLL.cs" />

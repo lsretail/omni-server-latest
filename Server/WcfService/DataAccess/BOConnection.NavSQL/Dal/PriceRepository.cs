@@ -57,16 +57,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string tmplastkey = "0";
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlMfrom;
-                if (batchSize > 0)
-                {
-                    sql += GetWhereStatement(true, keys, where, false);
-                }
-
-                recordsRemaining = GetRecordCount(TABLEMOBILEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+                sql = "SELECT COUNT(*)" + sqlMfrom + GetWhereStatement(true, keys, where, false);
+                recordsRemaining = GetRecordCount(TABLEMOBILEID, lastKey, sql, keys, ref maxKey);
 
                 // get maxkey value for item
-                GetRecordCount(27, tmplastkey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+                GetRecordCount(27, tmplastkey, sql, keys, ref maxKey);
             }
             else
             {
@@ -76,17 +71,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 recordsRemaining = 0;
 
                 // Use actions from Item,Sales Price,Item Variant,Item Unit of Measure tables and as trigger for price update
-                recordsRemaining = GetRecordCount(27, lastKey, string.Empty, (batchSize > 0) ? keys : null, ref maxKey);
+                recordsRemaining = GetRecordCount(27, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, 27, 0, ref mainlastkey, ref recordsRemaining);
                 bool isdone = tmplastkey.Equals(lastKey);
 
-                recordsRemaining += GetRecordCount(TABLEID, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(TABLEID, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> priceact = LoadActions(fullReplication, TABLEID, batchSize, ref tmplastkey, ref recordsRemaining);
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 priceact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
                 tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, (batchSize > 0) ? keys : null, ref tmpmaxkey);
+                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 priceact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
 
                 lastKey = mainlastkey;
@@ -208,13 +203,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string where = " AND spg.[Store] = '" + storeId + "' AND mt.[Sales Code]=spg.[Price Group Code]";
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + ",[" + navCompanyName + "Store Price Group] spg";
-                if (batchSize > 0)
-                {
-                    sql += GetWhereStatementWithStoreDist(true, keys, where, "mt.[Item No_]", storeId, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlfrom + ",[" + navCompanyName + "Store Price Group] spg" + 
+                    GetWhereStatementWithStoreDist(true, keys, where, "mt.[Item No_]", storeId, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplPrice> list = new List<ReplPrice>();

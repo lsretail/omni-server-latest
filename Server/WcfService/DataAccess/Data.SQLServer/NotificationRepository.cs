@@ -13,7 +13,7 @@ namespace LSOmni.DataAccess.Dal
     public class NotificationRepository : BaseRepository, INotificationRepository
     {
         private string notificationSql =
-            "SELECT n.[Id],n.[Type],n.[TypeCode],n.[PrimaryText],n.[SecondaryText],n.[DisplayFrequency],n.[ValidFrom],n.[ValidTo]," +
+            " n.[Id],n.[Type],n.[TypeCode],n.[PrimaryText],n.[SecondaryText],n.[DisplayFrequency],n.[ValidFrom],n.[ValidTo]," +
             "n.[Created],n.[LastModifiedDate],n.[CreatedBy],n.[DateLastModified],n.[QRText],n.[NotificationType]," +
             "n.[Status] " +
             "FROM [Notification] AS n ";
@@ -32,33 +32,17 @@ namespace LSOmni.DataAccess.Dal
             return (list.Count > 0 ? list[0] : null); // return null if nothing found!
         }
 
-        public List<Notification> NotificationsGetByContactId(string contactId, int numberOfNotifications)
+        public List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
-            return NotificationsGetList("WHERE [TypeCode]='" + contactId + "'");
+            SQLHelper.CheckForSQLInjection(cardId);
+            return NotificationsGetList("WHERE [TypeCode]='" + cardId + "'");
         }
 
-        private List<Notification> NotificationsGetByStoredProcs(string sql, string contactId)
+        public List<Notification> NotificationSearch(string cardId, string search, int maxNumberOfLists)
         {
-            List<Notification> list = new List<Notification>();
-            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = sql;
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(ReaderToNotification(reader, contactId));
-                        }
-                        reader.Close();
-                    }
-                }
-                connection.Close();
-            }
-            return list;
+            SQLHelper.CheckForSQLInjection(cardId);
+            SQLHelper.CheckForSQLInjection(search);
+            return NotificationsGetList(string.Format("WHERE (PrimaryText LIKE '%{0}%' OR SecondaryText LIKE '%{0}%') AND TypeCode = '{1}'", search, cardId), maxNumberOfLists);
         }
 
         public void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notificationStatus)
@@ -100,19 +84,7 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        public List<Notification> NotificationSearch(string contactId, string search, int maxNumberOfLists)
-        {
-            if (string.IsNullOrWhiteSpace(search))
-                search = "";
-            if (search.Contains("'"))
-                search = search.Replace("'", "''");
-
-            //OfferSearch must return same columns as OfferView
-            string sql = string.Format("EXEC NotificationSearch @contactId='{0}', @search='{1}', @top='{2}'", contactId, search, maxNumberOfLists);
-            return NotificationsGetByStoredProcs(sql, contactId);
-        }
-
-        public void Save(string contactId, List<Notification> notifications)
+        public void Save(string cardId, List<Notification> notifications)
         {
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
@@ -126,7 +98,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Transaction = trans;
                             command.CommandText = "DELETE FROM [Notification] WHERE [TypeCode]=@id AND [NotificationType]=0";
                             command.Parameters.Clear();
-                            command.Parameters.AddWithValue("@id", contactId);
+                            command.Parameters.AddWithValue("@id", cardId);
                             TraceSqlCommand(command);
                             command.ExecuteNonQuery();
 
@@ -156,7 +128,7 @@ namespace LSOmni.DataAccess.Dal
                             {
                                 command.Parameters["@f0"].Value = notification.Id;
                                 command.Parameters["@f1"].Value = 1; //   0=Account,1=Contact,2=Club,3=Scheme   
-                                command.Parameters["@f2"].Value = contactId;
+                                command.Parameters["@f2"].Value = cardId;
                                 command.Parameters["@f3"].Value = notification.Description;
                                 command.Parameters["@f4"].Value = NullToString(notification.Details);
                                 command.Parameters["@f5"].Value = 0;
@@ -186,11 +158,10 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        public void OrderMessageNotificationSave(string notificationId, long orderMessageId, string contactId, string description, string details, string qrText)
+        public void OrderMessageNotificationSave(string notificationId, string orderId, string cardId, string description, string details, string qrText)
         {
             //for notification table, Type should be = 1 (means contact) and TypeCode = contactId
             int typeOfContact = 1;
-            string typeCodeContact = contactId;
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
             {
                 db.Open();
@@ -201,7 +172,6 @@ namespace LSOmni.DataAccess.Dal
                         using (SqlCommand command = db.CreateCommand())
                         {
                             command.Transaction = trans;
-
                             command.CommandText = "INSERT INTO [Notification] ([Id],[Type],[TypeCode],[PrimaryText],[SecondaryText],[DisplayFrequency]," +
                                                   "[ValidFrom],[ValidTo],[Created],[CreatedBy],[LastModifiedDate],[DateLastModified],[QRText],[NotificationType],[Status]" +
                                                   ") VALUES (@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15)";
@@ -209,7 +179,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.Clear();
                             command.Parameters.AddWithValue("@f1", notificationId);
                             command.Parameters.AddWithValue("@f2", typeOfContact);
-                            command.Parameters.AddWithValue("@f3", typeCodeContact);
+                            command.Parameters.AddWithValue("@f3", cardId);
                             command.Parameters.AddWithValue("@f4", NullToString(description));
                             command.Parameters.AddWithValue("@f5", NullToString(details));
                             command.Parameters.AddWithValue("@f6", 0);
@@ -242,7 +212,7 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        private List<Notification> NotificationsGetList(string where)
+        private List<Notification> NotificationsGetList(string where, int maxNumberOfLists = 0)
         {
             List<Notification> list = new List<Notification>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
@@ -250,7 +220,7 @@ namespace LSOmni.DataAccess.Dal
                 connection.Open();
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = notificationSql + where;
+                    command.CommandText = "SELECT " + ((maxNumberOfLists > 0) ? "TOP(" + maxNumberOfLists + ")" : "") + notificationSql + where;
                     TraceSqlCommand(command);
 
                     using (SqlDataReader reader = command.ExecuteReader())

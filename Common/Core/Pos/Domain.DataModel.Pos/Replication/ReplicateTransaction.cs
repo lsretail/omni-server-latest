@@ -41,6 +41,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public int TransactionType { get; set; }
         [DataMember]
         public string ReceiptNo { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TransDate { get; set; }
         [DataMember]
         public string CurrencyCode { get; set; }

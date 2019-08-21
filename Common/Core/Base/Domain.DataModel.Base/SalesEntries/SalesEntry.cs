@@ -51,7 +51,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         /// </summary>
         [DataMember]
         public string ExternalId { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DocumentRegTime { get; set; }
         [DataMember]
         public string StoreId { get; set; }

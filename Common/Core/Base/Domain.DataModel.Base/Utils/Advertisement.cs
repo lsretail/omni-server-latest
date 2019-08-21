@@ -51,7 +51,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Utils
         //public List<string> StoreIds { get; set; }
         [DataMember]
         public ImageView ImageView { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ExpirationDate { get; set; }
         [DataMember]
         public long RV { get; set; }

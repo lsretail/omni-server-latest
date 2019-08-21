@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private static readonly Object myLock = new Object();
 
-        public static Version NavVersion = new Version("11.0");
+        public static Version NavVersion = new Version("14.0");
 
         public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {
@@ -233,52 +233,51 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             //logger only in baseRepository
             if (logger.IsTraceEnabled)
-                logger.Trace(config.LSKey.Key, "\r\n" + msg);
+                logger.Trace((config == null) ? "Unknown" : config.LSKey.Key, "\r\n" + msg);
         }
 
         protected void TraceSqlCommand(IDbCommand command)
         {
-            if (logger.IsTraceEnabled)
+            if (logger.IsTraceEnabled == false)
+                return;
+            try
             {
-                try
+                StringBuilder builder = new StringBuilder();
+                if (command.CommandType == CommandType.StoredProcedure)
+                    builder.AppendLine("Stored procedure: " + command.CommandText);
+                else
+                    builder.AppendLine("Sql command: " + command.CommandText);
+
+                if (command.Parameters.Count > 0)
+                    builder.AppendLine("With the following parameters.");
+
+                string value;
+                foreach (IDataParameter param in command.Parameters)
                 {
-                    StringBuilder builder = new StringBuilder();
-                    if (command.CommandType == CommandType.StoredProcedure)
-                        builder.AppendLine("Stored procedure: " + command.CommandText);
-                    else
-                        builder.AppendLine("Sql command: " + command.CommandText);
-
-                    if (command.Parameters.Count > 0)
-                        builder.AppendLine("With the following parameters.");
-
-                    string value;
-                    foreach (IDataParameter param in command.Parameters)
+                    if (param.Value == null)
                     {
-                        if (param.Value == null)
-                        {
-                            value = "NULL";
-                        }
-                        else
-                        {
-                            switch (param.DbType)
-                            {
-                                case DbType.Binary:
-                                    value = BitConverter.ToString((byte[])param.Value);
-                                    break;
-                                default:
-                                    value = param.Value.ToString();
-                                    break;
-
-                            }
-                        }
-                        builder.AppendLine(string.Format(" > Paramater {0}: {1}", param.ParameterName, value));
+                        value = "NULL";
                     }
-                    logger.Trace(config.LSKey.Key, "\r\n" + builder.ToString());
+                    else
+                    {
+                        switch (param.DbType)
+                        {
+                            case DbType.Binary:
+                                value = BitConverter.ToString((byte[])param.Value);
+                                break;
+                            default:
+                                value = param.Value.ToString();
+                                break;
+
+                        }
+                    }
+                    builder.AppendLine(string.Format(" > Paramater {0}: {1}", param.ParameterName, value));
                 }
-                catch(Exception ex)
-                {
-                    logger.Error(config.LSKey.Key, "\r\n" + ex.Message);
-                }
+                logger.Trace((config == null) ? "Unknown" : config.LSKey.Key, "\r\n" + builder.ToString());
+            }
+            catch (Exception ex)
+            {
+                logger.Error((config == null) ? "Unknown" : config.LSKey.Key, "\r\n" + ex.Message);
             }
         }
 
@@ -333,11 +332,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     else
                     {
                         command.CommandText = fullreplsql;
-                        if (keys != null)
-                        {
-                            JscActions act = new JscActions(lastkey);
-                            SetWhereValues(command, act, keys, true, true);
-                        }
+                        JscActions act = new JscActions(lastkey);
+                        SetWhereValues(command, act, keys, true, true);
                         cnt = (int)command.ExecuteScalar();
                     }
                 }

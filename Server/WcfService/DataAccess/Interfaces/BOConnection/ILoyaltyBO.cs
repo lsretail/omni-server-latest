@@ -2,12 +2,10 @@
 
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
@@ -86,12 +84,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #endregion
 
-        #region Basket
-
-        Order BasketCalcToOrder(OneList list);
-
-        #endregion
-
         #region Offer and Advertisement
 
         List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId);
@@ -99,16 +91,10 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #endregion
 
-        #region Menu
-
-        MobileMenu MenusGet(string lastVersion, Currency currency);
-
-        #endregion
-
         #region Image
 
-        ImageView ImageBOGetById(string imageId);
-        List<ImageView> ImageBOGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob);
+        ImageView ImageGetById(string imageId, bool includeBlob);
+        List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob);
 
         #endregion
 
@@ -124,10 +110,11 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Order
 
-        OrderStatusResponse OrderStatusCheck(string transactionId);
+        OrderStatusResponse OrderStatusCheck(string orderId);
         OrderAvailabilityResponse OrderAvailabilityCheck(OneList request);
-        void OrderCancel(string transactionId);
+        void OrderCancel(string orderId);
         string OrderCreate(Order request, string tenderMapping, out string orderId);
+        Order BasketCalcToOrder(OneList list);
 
         #endregion
 
@@ -137,7 +124,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ProductGroup> ProductGroupSearch(string search);
         List<ItemCategory> ItemCategorySearch(string search);
         List<Store> StoreLoySearch(string search);
-        List<Profile> ProfileSearch(string contactId, string search);
+        List<Profile> ProfileSearch(string cardId, string search);
 
         #endregion
 
@@ -163,7 +150,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCustomer> ReplEcommMember(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCountryCode> ReplEcommCountryCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
-        List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
 
         #endregion

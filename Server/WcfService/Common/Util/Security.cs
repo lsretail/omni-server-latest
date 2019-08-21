@@ -201,7 +201,7 @@ namespace LSOmni.Common.Util
             token = token.Replace("-", "");
             Byte[] inputBytes = Encoding.UTF8.GetBytes(token);
 
-            //the final lenght of string using SHA1 is 40 chars (hashing a GUID).  SHA256 was 64 char
+            //the final length of string using SHA1 is 40 chars (hashing a GUID).  SHA256 was 64 char
             //http://www.obviex.com/samples/Code.aspx?Source=HashCS&Title=Hashing%20Data&Lang=C%23
             SHA1 shaM = new SHA1Managed(); //MD5CryptoServiceProvider
 

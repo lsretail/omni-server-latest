@@ -8,11 +8,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     {
         public OrderStatusResponse()
         {
-            WebOrderStatus = string.Empty;
-            WebOrderShippingStatus = string.Empty;
-            WebOrderPaymentStatus = string.Empty;
-            DocumentType = string.Empty; // Added in NAV 7.1
-            DocumentNo = string.Empty; // Added in NAV 7.1
+            DocumentType = string.Empty;
+            DocumentNo = string.Empty;
         }
 
         public void Dispose()
@@ -29,7 +26,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         }
 
         /// <summary>
-        ///  Web Order Status
+        ///  Customer Order Status
         /// </summary>
         /// <remarks>
         ///   10 : Pending
@@ -38,9 +35,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         ///   40 : Canceled
         /// </remarks>
         [DataMember]
-        public string WebOrderStatus { get; set; }
+        public int CustomerOrderStatus { get; set; }
         /// <summary>
-        ///  Web Order Shipping Status
+        ///  Customer Order Shipping Status
         /// </summary>
         /// <remarks>
         ///   10 : ShippigNotRequired
@@ -50,9 +47,17 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         ///   40 : Delivered
         /// </remarks>
         [DataMember]
-        public string WebOrderShippingStatus { get; set; }
+        public int CustomerOrderShippingStatus { get; set; }
+        /// <summary>
+        /// Customer Order Payment Status
+        /// </summary>
+        /// <remarks>
+        ///   10 : PreApproved
+        ///   20 : Approved
+        ///   25 : Posted
+        /// </remarks>
         [DataMember]
-        public string WebOrderPaymentStatus { get; set; }
+        public int CustomerOrderPaymentStatus { get; set; }
         [DataMember]
         public string DocumentType { get; set; }
         [DataMember]
@@ -60,9 +65,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 
         public override string ToString()
         {
-            string s = string.Format("WebOrderStatus: {0} WebOrderShippingStatus: {1} WebOrderPaymentStatus: {2} DocumentType: {3} DocumentNo: {4} ",
-                WebOrderStatus, WebOrderShippingStatus, WebOrderPaymentStatus, DocumentType, DocumentNo);
-            return s;
+            return string.Format("COStatus:{0} COShippingStatus:{1} COPaymentStatus:{2} DocumentType:{3} DocumentNo:{4}",
+                CustomerOrderStatus, CustomerOrderShippingStatus, CustomerOrderPaymentStatus, DocumentType, DocumentNo);
         }
     }
 }

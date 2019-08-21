@@ -70,11 +70,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public decimal Quantity { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public LoyItem Item { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreateDate { get; set; }
         [DataMember]
         public VariantRegistration VariantReg { get; set; }
@@ -115,7 +115,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
                 {
                     return VariantReg.Images[0];
                 }
-
                 return Item.DefaultImage;
             }
         }
@@ -249,7 +248,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreateDate { get; set; }
         [DataMember]
         public int DisplayOrderId { get; set; }

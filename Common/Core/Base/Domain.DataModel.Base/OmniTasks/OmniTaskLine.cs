@@ -85,7 +85,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.OmniTasks
         public int LineNumber { get; set; }
         [DataMember]
         public string ModifyLocation { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ModifyTime { get; set; }
         [DataMember]
         public string ModifyUser { get; set; }

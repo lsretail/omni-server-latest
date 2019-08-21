@@ -34,7 +34,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.OmniTasks
         /// <summary>
         /// Last Modified Time
         /// </summary>
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ModifyTime { get; set; }
         /// <summary>
         /// Last User that modified the task

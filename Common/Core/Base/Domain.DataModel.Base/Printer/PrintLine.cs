@@ -7,9 +7,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Printer
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2018")]
     public enum PrintLineType
     {
+        [EnumMember]
         PrintLine,
+        [EnumMember]
         PrintBarcode,
+        [EnumMember]
         PrintBitmap,
+        [EnumMember]
         LineFeed
     }
 

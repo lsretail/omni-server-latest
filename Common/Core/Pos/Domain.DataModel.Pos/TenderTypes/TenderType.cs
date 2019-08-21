@@ -1,7 +1,6 @@
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
-using LSRetail.Omni.Domain.DataModel.Pos.Currencies;
 using LSRetail.Omni.Domain.DataModel.Pos.TenderTypes.SpecialCase;
 
 namespace LSRetail.Omni.Domain.DataModel.Pos.TenderTypes

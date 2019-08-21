@@ -36,20 +36,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)";
-                if (batchSize > 0)
-                {
-                    if (string.IsNullOrEmpty(storeId))
-                    {
-                        sql += sqlfrom + GetWhereStatement(true, keys, false);
-                    }
-                    else
-                    {
-                        sql = "SELECT COUNT(DISTINCT mt.[No_])" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
-                    }
-                }
+                if (string.IsNullOrEmpty(storeId))
+                    sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+                else
+                    sql = "SELECT COUNT(DISTINCT mt.[No_])" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplVendor> list = new List<ReplVendor>();

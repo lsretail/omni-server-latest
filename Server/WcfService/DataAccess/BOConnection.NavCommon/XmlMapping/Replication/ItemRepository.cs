@@ -8,25 +8,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
 {
     public class ItemRepository : BaseRepository
     {
-        public LoyItem GetItem(XMLTableData table)
-        {
-            if (table == null || table.NumberOfValues == 0)
-                return null;
-
-            LoyItem rec = new LoyItem();
-            foreach (XMLFieldData field in table.FieldList)
-            {
-                switch (field.FieldName)
-                {
-                    case "No.": rec.Id = field.Values[0]; break;
-                    case "Description": rec.Description = field.Values[0]; break;
-                    case "Product Group Code": rec.ProductGroupId = field.Values[0]; break;
-                    case "Sales Unit of Measure": rec.SalesUomId = field.Values[0]; break;
-                }
-            }
-            return rec;
-        }
-
         public List<UnitOfMeasure> GetUnitOfMeasure(XMLTableData table)
         {
             List<UnitOfMeasure> list = new List<UnitOfMeasure>();
@@ -126,6 +107,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
 
+        public LoyItem ItemGet(XMLTableData table)
+        {
+            if (table == null || table.NumberOfValues == 0)
+                return null;
+
+            LoyItem rec = new LoyItem();
+            foreach (XMLFieldData field in table.FieldList)
+            {
+                switch (field.FieldName)
+                {
+                    case "No.": rec.Id = field.Values[0]; break;
+                    case "Description": rec.Description = field.Values[0]; break;
+                    case "Retail Product Code": rec.ProductGroupId = field.Values[0]; break;
+                    case "Product Group Code": rec.ProductGroupId = (string.IsNullOrEmpty(rec.ProductGroupId)) ? field.Values[0] : string.Empty; break;
+                    case "Item Category Code": rec.ItemCategoryCode = field.Values[0]; break;
+                    case "Sales Unit of Measure": rec.SalesUomId = field.Values[0]; break;
+                    case "Season Code": rec.SeasonCode = field.Values[0]; break;
+                    case "Item Family Code": rec.ItemFamilyCode = field.Values[0]; break;
+                }
+            }
+            return rec;
+        }
+
         public List<LoyItem> ItemsGet(XMLTableData table)
         {
             List<LoyItem> list = new List<LoyItem>();
@@ -141,11 +145,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     {
                         case "No.": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
+                        case "Retail Product Code": rec.ProductGroupId = field.Values[i]; break;
                         case "Product Group Code": rec.ProductGroupId = field.Values[i]; break;
+                        case "Item Category Code": rec.ItemCategoryCode = field.Values[i]; break;
                         case "Sales Unit of Measure": rec.SalesUomId = field.Values[i]; break;
                         case "Blocked": rec.Blocked = GetWebBool(field.Values[i]); break;
                         case "Season Code": rec.SeasonCode = field.Values[i]; break;
-                        case "Item Category Code": rec.ItemCategoryCode = field.Values[i]; break;
                         case "Item Family Code": rec.ItemFamilyCode = field.Values[i]; break;
                     }
                 }

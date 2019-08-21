@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Text;
 using System.IO;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.Serialization.Json;
 using System.ServiceModel.Web;
 
+using LSOmni.BLL;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSOmni.BLL;
+using System.Linq;
 
 namespace LSOmni.Service
 {
@@ -25,37 +26,6 @@ namespace LSOmni.Service
     /// </summary>
     public partial class LSOmniBase
     {
-        #region image processing
-
-        /// <summary>
-        /// Get image from byte[] array
-        /// </summary>
-        /// <param name='image'>the byte array</param>
-        /// <param name='imageSize'>imageSize</param>
-        /// <returns>base64 string of </returns>
-        private string GetImageFromByte(byte[] image, ImageSize imageSize)
-        {
-            try
-            {
-                int height = imageSize.Height;
-                int width = imageSize.Width;
-                System.Drawing.Imaging.ImageFormat imgFormat = System.Drawing.Imaging.ImageFormat.Jpeg; //default everything to Png
-                return ImageConverter.BytesToBase64(image, width, height, imgFormat);
-            }
-            catch (Exception ex)
-            {
-                //HandleExceptions(ex, "Failed to GetImageFromByte() ");  //dont throw an error but return something
-                string msg = "GetImageFromByte() failed but returning empty base64 string";
-                if (image == null)
-                    msg += " image bytes are null";
-                else
-                    msg += " image bytes length: " + image.Length;
-
-                logger.Warn(config.LSKey.Key, ex, msg);
-                return "";// GetImageFile("na.jpg");
-            }
-        }
-
         private string GetImageStreamUrl(ImageView imgView)
         {
             if (imgView == null)
@@ -64,17 +34,6 @@ namespace LSOmni.Service
                 return "";
             }
             // return http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
-            return BaseUrlReturnedToClient() + @"/ImageStreamGetById?id=" + imgView.Id + "&width={0}&height={1}";
-        }
-
-        private string GetImageStreamUrlEx(ImageView imgView)
-        {
-            if (imgView == null)
-            {
-                logger.Info(config.LSKey.Key, "imgView is null");
-                return "";
-            }
-            // return imgView http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
             return BaseUrlReturnedToClient() + @"/ImageStreamGetById?id=" + imgView.Id + "&width={0}&height={1}";
         }
 
@@ -110,8 +69,6 @@ namespace LSOmni.Service
             return srvUrl;
         }
 
-        #endregion image processing
-
         #region protected members
 
         protected string LogJson(object objIn)
@@ -143,7 +100,7 @@ namespace LSOmni.Service
                 }
                 catch (Exception)
                 {
-                    logger.Info(config.LSKey.Key, Serialization.SerializeToXmlPrint(objIn));
+                    logger.Info(config.LSKey.Key, Serialization.ToXml(objIn, true));
                 }
             }
             return sOut; //FormatOutput(sOut);
@@ -189,7 +146,7 @@ namespace LSOmni.Service
             {
                 //Get default config
                 config = bll.ConfigGet("");
-                config.Settings[ConfigKey.BOUser.ToString()] = ConfigSetting.GetString("BOConnection.Nav.UserName");
+                config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUser.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.UserName");
 
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Password"))
                 {
@@ -200,19 +157,21 @@ namespace LSOmni.Service
                     {
                         pwd = DecryptConfigValue.DecryptString(pwd);
                     }
-                    config.Settings[ConfigKey.BOPassword.ToString()] = pwd;
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOPassword.ToString()).Value = pwd;
                 }
 
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Url"))
-                    config.Settings[ConfigKey.BOUrl.ToString()] = ConfigSetting.GetString("BOConnection.Nav.Url");
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Url");
 
                 if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
-                    config.Settings[ConfigKey.BOSql.ToString()] = ConfigSetting.GetString("SqlConnectionString.Nav");
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");
 
                 //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Timeout"))
-                        config.Settings[ConfigKey.BOTimeout.ToString()] = (ConfigSetting.GetInt("BOConnection.Nav.Timeout") * 1000).ToString();  //millisecs,  60 seconds
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value = (ConfigSetting.GetInt("BOConnection.Nav.Timeout") * 1000).ToString();  //millisecs,  60 seconds
 
+                if (ConfigSetting.KeyExists("ECom.Url"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");
             }
 
             //check in db
@@ -363,65 +322,46 @@ namespace LSOmni.Service
             }
         }
 
-        private void BasketSetLocation(OneList basket)
+        private void OneListSetLocation(List<OneList> lists)
         {
-            if (basket?.Items?.Count > 0)
+            if (lists.Count == 0)
+                return;
+            foreach (OneList list in lists)
             {
-                foreach (OneListItem basketItem in basket.Items)
-                {
-                    if (basketItem.Item != null)
-                    {
-                        foreach (ImageView iv in basketItem.Item.Images)
-                        {
-                            iv.Location = GetImageStreamUrl(iv);
-                        }
-                        if (basketItem.Item.VariantsRegistration != null)
-                        {
-                            foreach (VariantRegistration variant in basketItem.Item.VariantsRegistration)
-                            {
-                                foreach (ImageView iv2 in variant.Images)
-                                {
-                                    iv2.Location = GetImageStreamUrl(iv2);
-                                }
-                            }
-                        }
-                    }
-                }
+                OneListSetLocation(list);
             }
         }
 
         private void OneListSetLocation(OneList list)
         {
-            if (list == null)
+            if (list == null || list.Items == null)
                 return;
 
-            if (list != null && list.Items != null)
+            foreach (OneListItem line in list.Items)
             {
-                foreach (OneListItem line in list.Items)
+                if (line.Item != null)
                 {
-                    if (line.Item != null)
+                    foreach (ImageView iv in line.Item.Images)
                     {
-                        foreach (ImageView iv in line.Item.Images)
+                        iv.Location = GetImageStreamUrl(iv);
+                    }
+                    if (line.Item.VariantsRegistration != null)
+                    {
+                        foreach (VariantRegistration variant in line.Item.VariantsRegistration)
                         {
-                            iv.Location = GetImageStreamUrl(iv);
-                        }
-                        if (line.Item.VariantsRegistration != null)
-                        {
-                            foreach (VariantRegistration variant in line.Item.VariantsRegistration)
+                            foreach (ImageView iv2 in variant.Images)
                             {
-                                foreach (ImageView iv2 in variant.Images)
-                                {
-                                    iv2.Location = GetImageStreamUrl(iv2);
-                                }
+                                iv2.Location = GetImageStreamUrl(iv2);
                             }
                         }
                     }
-                    if (line.VariantReg != null && line.VariantReg.Images != null)
+                }
+
+                if (line.VariantReg != null && line.VariantReg.Images != null)
+                {
+                    foreach (ImageView iv2 in line.VariantReg.Images)
                     {
-                        foreach (ImageView iv2 in line.VariantReg.Images)
-                        {
-                            iv2.Location = GetImageStreamUrl(iv2);
-                        }
+                        iv2.Location = GetImageStreamUrl(iv2);
                     }
                 }
             }
@@ -434,8 +374,7 @@ namespace LSOmni.Service
                 NotificationSetLocation(notification);
             }
 
-            this.OneListSetLocation(contact.WishList);
-            this.BasketSetLocation(contact.Basket);
+            this.OneListSetLocation(contact.OneLists);
 
             foreach (PublishedOffer list in contact.PublishedOffers)
             {
@@ -446,82 +385,6 @@ namespace LSOmni.Service
                 foreach (OfferDetails od in list.OfferDetails)
                 {
                     od.Image.Location = GetImageStreamUrl(od.Image);
-                }
-            }
-        }
-
-        private void MenuSetLocation(MobileMenu mobileMenu)
-        {
-            if (mobileMenu == null)
-                return;
-
-
-            for (int k = 0; k < (mobileMenu.Items != null ? mobileMenu.Items.Count : 0); k++)
-            {
-                //get all the iviews Location
-                if (mobileMenu.Items[k].Images != null && mobileMenu.Items[k].Images.Count > 0)
-                {
-                    for (int m = 0; m < mobileMenu.Items[k].Images.Count; m++)
-                    {
-                        if (mobileMenu.Items[k].Images[m] != null)
-                            mobileMenu.Items[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Items[k].Images[m].Id));
-                    }
-                }
-            }
-
-            //foreach (Menu.Product prod in mobileMenu.Prods)
-            for (int k = 0; k < (mobileMenu.Products != null ? mobileMenu.Products.Count : 0); k++)
-            {
-                //get all the iviews Location
-                if (mobileMenu.Products[k].Images.Count > 0)
-                {
-                    for (int m = 0; m < mobileMenu.Products[k].Images.Count; m++)
-                    {
-                        if (mobileMenu.Products[k].Images[m] != null)
-                            mobileMenu.Products[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Products[k].Images[m].Id));
-                    }
-                }
-            }
-
-            //foreach (Menu.Recipe recipe in mobileMenu.Recipes)
-            for (int k = 0; k < (mobileMenu.Recipes != null ? mobileMenu.Recipes.Count : 0); k++)
-            {
-                //get all the iviews Location
-                if (mobileMenu.Recipes[k].Images.Count > 0)
-                {
-                    for (int m = 0; m < mobileMenu.Recipes[k].Images.Count; m++)
-                    {
-                        if (mobileMenu.Recipes[k].Images[m] != null)
-                            mobileMenu.Recipes[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Recipes[k].Images[m].Id));
-                    }
-                }
-            }
-
-            for (int k = 0; k < (mobileMenu.Deals != null ? mobileMenu.Deals.Count : 0); k++)
-            {
-                //get all the iviews Location
-                if (mobileMenu.Deals[k].Images.Count > 0)
-                {
-                    for (int m = 0; m < mobileMenu.Deals[k].Images.Count; m++)
-                    {
-                        if (mobileMenu.Deals[k].Images[m] != null)
-                            mobileMenu.Deals[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Deals[k].Images[m].Id));
-                    }
-                }
-            }
-
-            for (int k = 0; k < (mobileMenu.MenuNodes != null ? mobileMenu.MenuNodes.Count : 0); k++)
-            {
-                if (mobileMenu.MenuNodes[k].Image != null)
-                    mobileMenu.MenuNodes[k].Image.Location = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].Image.Id));
-
-                if (mobileMenu.MenuNodes[k].MenuNodes != null)
-                {
-                    for (int m = 0; m < mobileMenu.MenuNodes[k].MenuNodes.Count; m++)
-                    {
-                        if (mobileMenu.MenuNodes[k].MenuNodes[m] != null)
-                            mobileMenu.MenuNodes[k].MenuNodes[m].Image.Location = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].MenuNodes[m].Image.Id));
-                    }
                 }
             }
         }

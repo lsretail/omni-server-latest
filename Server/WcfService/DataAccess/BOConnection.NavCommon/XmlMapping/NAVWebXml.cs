@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Data;
+using System.Collections.Generic;
 using System.Xml.Linq;
 
 using LSOmni.Common.Util;
-using System.Data;
-using System;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
 {
@@ -24,7 +24,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             this.AppType = apptype;
         }
 
-        public string RegisterApplicationRequestXML()
+        public string RegisterApplicationRequestXML(Version navVer)
         {
             #region xml
             /*
@@ -47,13 +47,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             switch (this.AppType.ToUpper())
             {
                 case "ECOM":
-                    AddEComTableData(body);
+                    AddEComTableData(body, navVer);
                     break;
                 case "MPOS":
-                    AddMPosTableData(body);
+                    AddMPosTableData(body, navVer);
                     break;
                 case "INV":
-                    AddInvTableData(body);
+                    AddInvTableData(body, navVer);
                     break;
             }
 
@@ -517,7 +517,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             return table;
         }
 
-        private void AddEComTableData(XElement body)
+        private void AddEComTableData(XElement body, Version navVer)
         {
             // Item
             AddTable(body, 27, true);
@@ -535,7 +535,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 27, 5425);
             AddField(body, 27, 5426);
             AddField(body, 27, 5702);
-            AddField(body, 27, 5704);
+            AddField(body, 27, (navVer > new Version("14.2")) ? 10000703 : 5704);
             AddField(body, 27, 10001401);
             AddField(body, 27, 99001463);
             AddField(body, 27, 99001480);
@@ -547,10 +547,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 5722, 3);
 
             // Product Group
-            AddTable(body, 5723, false);
-            AddField(body, 5723, 1);
-            AddField(body, 5723, 2);
-            AddField(body, 5723, 3);
+            int pgtableid = (navVer > new Version("14.2")) ? 10000705 : 5723;
+            AddTable(body, pgtableid, false);
+            AddField(body, pgtableid, 1);
+            AddField(body, pgtableid, 2);
+            AddField(body, pgtableid, 3);
 
             // Hierarchy
             AddTable(body, 10000920, false);
@@ -841,9 +842,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddTable(body, 9, false);
             AddField(body, 9, 1);
             AddField(body, 9, 2);
+
+            // Inventory Lookup Table
+            AddTable(body, 99001608, false);
+            AddField(body, 99001608, 10);
+            AddField(body, 99001608, 15);
+            AddField(body, 99001608, 25);
+            AddField(body, 99001608, 120);
         }
 
-        private void AddMPosTableData(XElement body)
+        private void AddMPosTableData(XElement body, Version navVer)
         {
             // Item
             AddTable(body, 27, true);
@@ -861,7 +869,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 27, 5425);
             AddField(body, 27, 5426);
             AddField(body, 27, 5702);
-            AddField(body, 27, 5704);
+            AddField(body, 27, (navVer > new Version("14.2")) ? 10000703 : 5704);
             AddField(body, 27, 10001401);
             AddField(body, 27, 99001463);
             AddField(body, 27, 99001480);
@@ -873,10 +881,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 5722, 3);
 
             // Product Group
-            AddTable(body, 5723, false);
-            AddField(body, 5723, 1);
-            AddField(body, 5723, 2);
-            AddField(body, 5723, 3);
+            int pgtableid = (navVer > new Version("14.2")) ? 10000705 : 5723;
+            AddTable(body, pgtableid, false);
+            AddField(body, pgtableid, 1);
+            AddField(body, pgtableid, 2);
+            AddField(body, pgtableid, 3);
 
             // Hierarchy
             AddTable(body, 10000920, false);
@@ -1134,7 +1143,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 99001471, 2102);
         }
 
-        private void AddInvTableData(XElement body)
+        private void AddInvTableData(XElement body, Version navVer)
         {
             // Item
             AddTable(body, 27, true);
@@ -1152,7 +1161,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 27, 5425);
             AddField(body, 27, 5426);
             AddField(body, 27, 5702);
-            AddField(body, 27, 5704);
+            AddField(body, 27, (navVer > new Version("14.2")) ? 10000703 : 5704);
             AddField(body, 27, 10001401);
             AddField(body, 27, 99001463);
             AddField(body, 27, 99001480);

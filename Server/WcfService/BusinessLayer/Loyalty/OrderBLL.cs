@@ -35,6 +35,16 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.OrderAvailabilityCheck(request);
         }
 
+        public virtual OrderStatusResponse OrderStatusCheck(string orderId)
+        {
+            return BOLoyConnection.OrderStatusCheck(orderId);
+        }
+
+        public virtual void OrderCancel(string orderId)
+        {
+            BOLoyConnection.OrderCancel(orderId);
+        }
+
         public virtual SalesEntry OrderCreate(Order request)
         {
             //validation
@@ -44,7 +54,7 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniServiceException(StatusCode.Error, msg);
             }
 
-            if (request.AnonymousOrder == false && string.IsNullOrEmpty(request.CardId) == false)
+            if (string.IsNullOrEmpty(request.CardId) == false)
             {
                 MemberContact contact = BOLoyConnection.ContactGetByCardId(request.CardId, 0, false);
                 if (contact == null)

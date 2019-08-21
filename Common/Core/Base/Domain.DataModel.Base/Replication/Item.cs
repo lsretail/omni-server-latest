@@ -117,25 +117,46 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public int ScaleItem { get; set; }
         [DataMember]
         public int? MustKeyInComment { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateBlocked { get; set; }
         [DataMember]
         public int Blocked { get; set; }
+        /// <summary>
+        /// Block Sale on POS from Item Status
+        /// </summary>
         [DataMember]
         public int BlockedOnPos { get; set; }
+        /// <summary>
+        /// Block Discount from Item Status
+        /// </summary>
         [DataMember]
         public int BlockDiscount { get; set; }
+        /// <summary>
+        /// Block Manual Price Change from Item Status
+        /// </summary>
         [DataMember]
         public int BlockManualPriceChange { get; set; }
+        /// <summary>
+        /// Block Negative Adjustment from Item Status
+        /// </summary>
         [DataMember]
         public int BlockNegativeAdjustment { get; set; }
+        /// <summary>
+        /// Block Positive Adjustment from Item Status
+        /// </summary>
         [DataMember]
         public int BlockPositiveAdjustment { get; set; }
+        /// <summary>
+        /// Block Purchase Return from Item Status
+        /// </summary>
         [DataMember]
         public int BlockPurchaseReturn { get; set; }
+        /// <summary>
+        /// Status field from Distribution setup on Item Page (Store Distribution) 0=Active
+        /// </summary>
         [DataMember]
         public int BlockDistribution { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateToActivateItem { get; set; }
         [DataMember]
         public int CrossSellingExists { get; set; }

@@ -30,15 +30,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         }
 
 
-        public ImageView ImageGetById(string id)
+        public ImageView ImageGetById(string id, bool includeBlob)
         {
             ImageView view = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code] as [Image Id], 0 as [Display Order], mt.[Type],mt.[Image Location],mt.[Image Blob]" + sqlimgfrom +
-                                         " WHERE mt.[Code]=@id";     //must return lowest displayorder first
+                    command.CommandText = "SELECT mt.[Code] as [Image Id], 0 as [Display Order], mt.[Type],mt.[Image Location],mt.[Last Date Modified],mt.[Image Blob]" + 
+                                          sqlimgfrom + " WHERE mt.[Code]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     connection.Open();
                     TraceSqlCommand(command);
@@ -46,7 +46,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         if (reader.Read())
                         {
-                            view = ReaderToImage(reader, true);
+                            view = ReaderToImage(reader, includeBlob);
                         }
                         reader.Close();
                     }
@@ -92,7 +92,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 if (imgCount > 0)
                     sqlcnt = " TOP(" + imgCount.ToString() + ") ";
 
-                string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order]" +
+                string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",mt.[Image Blob]" : string.Empty) +
                              sqlimgfrom + " INNER JOIN [" + navCompanyName + "Retail Image Link] il ON mt.[Code]=il.[Image Id]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
@@ -139,7 +139,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["Image Id"]),
                 DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
                 Location = SQLHelper.GetString(reader["Image Location"]),
-                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"])
+                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
+                ModifiedTime = SQLHelper.GetDateTime(reader["Last Date Modified"])
             };
 
             if (includeblob)
@@ -158,13 +159,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*) ";
-                if (batchSize > 0)
-                {
-                    sql += sqlimgfrom + GetWhereStatement(true, keys, false);
-                }
+                sql = "SELECT COUNT(*)" + sqlimgfrom + GetWhereStatement(true, keys, false);
             }
-            recordsRemaining = GetRecordCount(IMAGE_TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(IMAGE_TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, IMAGE_TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplImage> list = new List<ReplImage>();
@@ -270,13 +267,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*) ";
-                if (batchSize > 0)
-                {
-                    sql += sqllinkfrom + GetWhereStatement(true, keys, false);
-                }
+                sql = "SELECT COUNT(*)" + sqllinkfrom + GetWhereStatement(true, keys, false);
             }
-            recordsRemaining = GetRecordCount(LINK_TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(LINK_TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, LINK_TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplImageLink> list = new List<ReplImageLink>();

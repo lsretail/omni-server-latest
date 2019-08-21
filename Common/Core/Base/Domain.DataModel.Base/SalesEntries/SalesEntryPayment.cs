@@ -37,5 +37,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string TenderType { get; set; }
         [DataMember]
         public string CurrencyCode { get; set; }
+        [DataMember]
+        public decimal CurrencyFactor { get; set; }
+        [DataMember]
+        public string CardNo { get; set; }
     }
 }

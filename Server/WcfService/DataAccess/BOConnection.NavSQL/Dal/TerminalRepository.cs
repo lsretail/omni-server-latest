@@ -138,9 +138,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             }
                         }
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        logger.Warn(config.LSKey.Key, ex, "No Feature Flags Loaded");
+                        logger.Warn(config.LSKey.Key, "No Feature Flags Loaded");
                     }
                     connection.Close();
                 }

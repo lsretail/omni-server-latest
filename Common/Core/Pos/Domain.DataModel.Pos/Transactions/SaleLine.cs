@@ -113,6 +113,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 
         [DataMember]
         public decimal Quantity { get; set; }
+        [DataMember]
+        public decimal ReturnQuantity { get; set; }
 
         [DataMember]
         public bool PriceOverridden { get; set; }

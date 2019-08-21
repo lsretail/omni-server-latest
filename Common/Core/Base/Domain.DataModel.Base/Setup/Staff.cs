@@ -1,12 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
+
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup.SpecialCase;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(UnknownStaff))]
-    public class Staff : Entity
+    [System.Xml.Serialization.XmlInclude(typeof(UnknownStaff))]
+	public class Staff : Entity
     {
         public Staff()
         {

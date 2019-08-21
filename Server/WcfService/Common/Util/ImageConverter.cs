@@ -5,6 +5,8 @@ using System.Collections;
 using System.IO.Compression;
 using System.Drawing.Imaging;
 
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
+
 // http://code.google.com/p/imagelibrary/  MIT license
 
 namespace LSOmni.Common.Util
@@ -42,79 +44,28 @@ namespace LSOmni.Common.Util
             g /= total;
             b /= total;
             Color color = Color.FromArgb(r, g, b);
-            return HexConverter(color);
-        }
 
-        private static String HexConverter(Color c)
-        {
             //RRGGBB  
-            return c.R.ToString("X2") + c.G.ToString("X2") + c.B.ToString("X2"); //"#" 
+            return color.R.ToString("X2") + color.G.ToString("X2") + color.B.ToString("X2"); 
         }
 
-        public static byte[] ByteFromBase64(string base64String)
-        {
-            // Convert the Base64 UUEncoded input into binary output.
-            try
-            {
-                return Convert.FromBase64String(base64String);
-            }
-            catch (ArgumentNullException aex)
-            {
-                throw new ApplicationException("Base 64 string is null.", aex);
-            }
-            catch (FormatException fex)
-            {
-                throw new ApplicationException("Base 64 string length is not 4 or is not an even multiple of 4.", fex);
-            }
-        }
-
-        public static string BytesToBase64(byte[] imageBytes, int width, int height)
-        {
-            return BytesToBase64(imageBytes, width, height, DefaultImgFormat);
-        }
-
-        public static string BytesToBase64(byte[] imageBytes, int width, int height, ImageFormat imgFormat)
+        public static string BytesToBase64(byte[] imageBytes, ImageSize size, ImageFormat imgFormat)
         {
             //now check if we need to change the size and format
-            if (width <= 0 || height <= 0)
+            if (size.Width <= 0 || size.Height <= 0)
             {
                 return Convert.ToBase64String(imageBytes); //base64String  
             }
 
-            //must be PNG or JPEG format for silverlight so I make sure it happens here.  Imaging.ImageFormat.Png
-            using (MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
-            {
-                // resize and reformat the image
-                //note. this does not allow us to get sized over the Image size
-                Image resizedImage = FixedSize(ByteToImage(imageBytes), width, height, false);
+            // resize and reformat the image
+            //note. this does not allow us to get sized over the Image size
+            Image resizedImage = FixedSize(ByteToImage(imageBytes), size);
 
-                using (MemoryStream msFormatted = new MemoryStream())
-                {
-                    resizedImage.Save(msFormatted, imgFormat);
-                    resizedImage.Dispose();
-                    return Convert.ToBase64String(msFormatted.ToArray()); //base64String
-                }
-            }
-        }
-
-        public static Image ByteToImage(byte[] imageBytes, int width, int height, ImageFormat imgFormat)
-        {
-            if (width < 0 || height < 0)
+            using (MemoryStream msFormatted = new MemoryStream())
             {
-                return null;
-            }
-            //must be PNG or JPEG format for silverlight so I make sure it happens here.  Imaging.ImageFormat.Png
-            using (MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
-            {
-                //note. this does not allow us to get sized over the Image size
-                Image resizedImage = FixedSize(ByteToImage(imageBytes), width, height, false);
-                using (MemoryStream msFormatted = new MemoryStream())
-                {
-                    resizedImage.Save(msFormatted, imgFormat);
-                    //resizedImage.Dispose();
-                    //image.Dispose();
-                    return resizedImage;
-                }
+                resizedImage.Save(msFormatted, imgFormat);
+                resizedImage.Dispose();
+                return Convert.ToBase64String(msFormatted.ToArray()); //base64String
             }
         }
 
@@ -123,18 +74,6 @@ namespace LSOmni.Common.Util
             using (MemoryStream ms = new MemoryStream(bytes))
             {
                 return Image.FromStream(ms);
-            }
-        }
-
-        public static string ImageToBase64(Image image, ImageFormat format)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Bitmap bmp = new Bitmap(image);
-                bmp.Save(ms, format);
-                byte[] imageBytes = ms.ToArray();
-                // Convert byte[] to Base64 String
-                return Convert.ToBase64String(imageBytes);//base64String
             }
         }
 
@@ -150,35 +89,12 @@ namespace LSOmni.Common.Util
             }
         }
 
-        public static Image ImageFromBase64(string base64String)
-        {
-            // Convert the Base64 UUEncoded input into binary output.
-            try
-            {
-                byte[] binaryData = Convert.FromBase64String(base64String);
-                using (MemoryStream ms = new MemoryStream(binaryData))
-                {
-                    Image image = Image.FromStream(ms);
-                    return image;
-                }
-            }
-            catch (ArgumentNullException aex)
-            {
-                throw new ApplicationException("Base 64 string is null.", aex);
-            }
-            catch (FormatException fex)
-            {
-                throw new ApplicationException("Base 64 string length is not 4 or is not an even multiple of 4.", fex);
-            }
-        }
-
         public static Stream StreamFromBase64(string base64String)
         {
             // Convert the Base64 UUEncoded input into stream output.
             try
             {
-                byte[] binaryData = Convert.FromBase64String(base64String);
-                return new MemoryStream(binaryData);
+                return new MemoryStream(Convert.FromBase64String(base64String));
             }
             catch (ArgumentNullException aex)
             {
@@ -191,7 +107,7 @@ namespace LSOmni.Common.Util
 
         }
 
-        public static Image FixedSize(Image imgPhoto, int Width, int Height, bool needToFill)
+        public static Image FixedSize(Image imgPhoto, ImageSize size)
         {
             int sourceWidth = imgPhoto.Width;
             int sourceHeight = imgPhoto.Height;
@@ -200,38 +116,9 @@ namespace LSOmni.Common.Util
             int destX = 0;
             int destY = 0;
 
-            float nPercent = 0;
-            float nPercentW = 0;
-            float nPercentH = 0;
-
-            nPercentW = ((float)Width / (float)sourceWidth);
-            nPercentH = ((float)Height / (float)sourceHeight);
-            if (needToFill == false)
-            {
-                if (nPercentH < nPercentW)
-                {
-                    nPercent = nPercentH;
-                }
-                else
-                {
-                    nPercent = nPercentW;
-                }
-            }
-            else
-            {
-                if (nPercentH > nPercentW)
-                {
-                    nPercent = nPercentH;
-                    destX = (int)Math.Round((Width -
-                        (sourceWidth * nPercent)) / 2);
-                }
-                else
-                {
-                    nPercent = nPercentW;
-                    destY = (int)Math.Round((Height -
-                        (sourceHeight * nPercent)) / 2);
-                }
-            }
+            float nPercentW = size.Width / (float)sourceWidth;
+            float nPercentH = size.Height / (float)sourceHeight;
+            float nPercent = (size.UseMinHorVerSize) ? (nPercentH > nPercentW) ? nPercentH : nPercentW : (nPercentH < nPercentW) ? nPercentH : nPercentW;
 
             if (nPercent > 1)
                 nPercent = 1;
@@ -239,9 +126,15 @@ namespace LSOmni.Common.Util
             int destWidth = (int)Math.Round(sourceWidth * nPercent);
             int destHeight = (int)Math.Round(sourceHeight * nPercent);
 
-            Bitmap bmPhoto = new Bitmap(
-                destWidth <= Width ? destWidth : Width,
-                destHeight < Height ? destHeight : Height, PixelFormat.Format32bppRgb);
+            Bitmap bmPhoto;
+            if (size.UseMinHorVerSize)
+                bmPhoto = new Bitmap(destWidth, destHeight, PixelFormat.Format32bppRgb);
+            else
+                bmPhoto = new Bitmap(
+                    destWidth <= size.Width ? destWidth : size.Width,
+                    destHeight < size.Height ? destHeight : size.Height,
+                    PixelFormat.Format32bppRgb);
+
             bmPhoto.SetResolution(imgPhoto.HorizontalResolution, imgPhoto.VerticalResolution);
 
             Graphics grPhoto = Graphics.FromImage(bmPhoto);
@@ -259,74 +152,6 @@ namespace LSOmni.Common.Util
 
             grPhoto.Dispose();
             return bmPhoto;
-        }
-
-        public static void GetImageFromFile(string fullPathImageFileName, bool useInWebPages, ref string imageBase64)
-        {
-            try
-            {
-                // useInWebPages is only for web pages where <img src="" is used
-
-                if (string.IsNullOrWhiteSpace(fullPathImageFileName))
-                    fullPathImageFileName = "";
-
-                imageBase64 = "";
-                string imageStringFormat = "data:image/png;base64,"; //"data:image/png;base64,"  for the <img src="" />
-                ImageFormat imgFormat = ImageFormat.Png;
-
-                //Need to know the image format
-                fullPathImageFileName = fullPathImageFileName.ToLower();
-                if (fullPathImageFileName.Contains(".png"))
-                {
-                    imgFormat = ImageFormat.Png;
-                    imageStringFormat = "data:image/png;base64,";
-                }
-                else if (fullPathImageFileName.Contains(".jpg") || fullPathImageFileName.Contains(".jpeg"))
-                {
-                    imgFormat = ImageFormat.Jpeg;
-                    imageStringFormat = "data:image/jpg;base64,";
-                }
-                else if (fullPathImageFileName.Contains(".gif"))
-                {
-                    imgFormat = ImageFormat.Gif;
-                    imageStringFormat = "data:image/gif;base64,";
-                }
-
-                //if file is not found, then return empty string (?)
-                if (File.Exists(fullPathImageFileName))
-                {
-                    Image theImgage = Image.FromFile(fullPathImageFileName);
-                    if (useInWebPages)
-                        imageBase64 = imageStringFormat + ImageToBase64(theImgage, imgFormat);
-                    else
-                        imageBase64 = ImageToBase64(theImgage, imgFormat);
-                }
-                else
-                {
-                    //if not an image then return a spacer.gif
-                    if (useInWebPages)
-                        imageBase64 = "data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAALSURBVBhXY2AAAgAABQABqtXIUQAAAABJRU5ErkJggg==";
-                    else
-                    {
-                        //1x1-pixel.png
-                        imageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAALSURBVBhXY2AAAgAABQABqtXIUQAAAABJRU5ErkJggg==";
-                    }
-                }
-
-                /*  NO GIF PLEASE
-                 * spacer.gif =  "R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-                string imageBase64 = @"data:image/gif;base64,R0lGODlhUAAPAKIAAAsLav///88PD9WqsYmApmZmZtZfYmdakyH5BAQUAP8ALAAAAABQAA8AAAPb
-                                        WLrc/jDKSVe4OOvNu/9gqARDSRBHegyGMahqO4R0bQcjIQ8E4BMCQc930JluyGRmdAAcdiigMLVr
-                                        ApTYWy5FKM1IQe+Mp+L4rphz+qIOBAUYeCY4p2tGrJZeH9y79mZsawFoaIRxF3JyiYxuHiMGb5KT
-                                        kpFvZj4ZbYeCiXaOiKBwnxh4fnt9e3ktgZyHhrChinONs3cFAShFF2JhvCZlG5uchYNun5eedRxM
-                                        AF15XEFRXgZWWdciuM8GCmdSQ84lLQfY5R14wDB5Lyon4ubwS7jx9NcV9/j5+g4JADs=";
-                */
-
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
         }
 
         public static byte[] GetImageFromFile(string fullPathImageFileName)
@@ -382,101 +207,11 @@ namespace LSOmni.Common.Util
             }
         }
 
-        public static ImageFormat GetImageFormat(this Image img)
-        {
-            if (img.RawFormat.Equals(ImageFormat.Jpeg))
-                return ImageFormat.Jpeg;
-            if (img.RawFormat.Equals(ImageFormat.Bmp))
-                return ImageFormat.Bmp;
-            if (img.RawFormat.Equals(ImageFormat.Png))
-                return ImageFormat.Png;
-            if (img.RawFormat.Equals(ImageFormat.Emf))
-                return ImageFormat.Emf;
-            if (img.RawFormat.Equals(ImageFormat.Exif))
-                return ImageFormat.Exif;
-            if (img.RawFormat.Equals(ImageFormat.Gif))
-                return ImageFormat.Gif;
-            if (img.RawFormat.Equals(ImageFormat.Icon))
-                return ImageFormat.Icon;
-            if (img.RawFormat.Equals(ImageFormat.MemoryBmp))
-                return ImageFormat.MemoryBmp;
-            if (img.RawFormat.Equals(ImageFormat.Tiff))
-                return ImageFormat.Tiff;
-            else
-                return ImageFormat.Wmf;
-        }
-
-        public static void SaveImageToFile(string fullPathImageFileName, string base64String, int width, int height, ImageFormat format)
-        {
-            try
-            {
-                byte[] imgBuffer = ByteFromBase64(base64String);
-                Image imgToSave = ByteToImage(imgBuffer, width, height, format);
-                imgToSave.Save(fullPathImageFileName, format);
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-        }
-
-        public static void SaveImageToFile(string fullPathImageFileName, ref byte[] imgBuffer, int width, int height, ImageFormat format)
-        {
-            try
-            {
-                Image imgToSave = ByteToImage(imgBuffer, width, height, format);
-                imgToSave.Save(fullPathImageFileName, format);
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-        }
-
         public static bool FileExists(string fullPathImageFileName)
         {
             try
             {
                 return File.Exists(fullPathImageFileName);
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-        }
-
-        public static void DeleteFile(string fullPathImageFileName)
-        {
-            try
-            {
-                if (File.Exists(fullPathImageFileName))
-                {
-                    File.Delete(fullPathImageFileName);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw (ex);
-            }
-        }
-
-        public static void DeleteFilesOlderThan(string fullPath, int filesOlderThanInDays = 90)
-        {
-            //deletes all files older than "filesOlderThanInDays"  
-            try
-            {
-                if (Directory.Exists(fullPath))
-                {
-                    DirectoryInfo source = new DirectoryInfo(fullPath);
-                    // Get info of each file into the directory
-                    foreach (FileInfo fi in source.GetFiles())
-                    {
-                        if (fi.CreationTime < (DateTime.Now - new TimeSpan(filesOlderThanInDays, 0, 0, 0)))
-                        {
-                            fi.Delete();
-                        }
-                    }
-                }
             }
             catch (Exception ex)
             {

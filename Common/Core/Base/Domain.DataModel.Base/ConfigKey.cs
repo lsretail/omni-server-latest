@@ -15,7 +15,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         BOUrl = 3,
         [EnumMember]
-        EcommUrl = 4,
+        EComUrl = 4,
 
         [EnumMember]
         forgotpassword_code_encrypted = 10,

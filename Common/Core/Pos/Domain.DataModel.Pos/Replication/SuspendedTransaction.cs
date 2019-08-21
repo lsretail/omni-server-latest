@@ -58,8 +58,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
 		public string Staff { get; set; }
 		[DataMember]
 		public decimal Amount { get; set; }
-		[DataMember]
-		public DateTime Date { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        public DateTime Date { get; set; }
 		[DataMember]
 		public decimal NetAmount { get; set; }
 		[DataMember]

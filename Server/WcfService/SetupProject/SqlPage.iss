@@ -157,7 +157,7 @@ begin
   with SQLPage_lblDatabase do
   begin
     Parent := SQLPage.Surface;
-    Caption := 'Database name:';
+    Caption := 'SQL Database name:';
     Left := ScaleX(24);
     Top := ScaleY(33);
     Width := ScaleX(115);

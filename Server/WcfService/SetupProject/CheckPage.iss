@@ -103,7 +103,7 @@ begin
   CheckPage_NavSQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_NavSQLCheckBox.Width := CheckPage.SurfaceWidth;
   CheckPage_NavSQLCheckBox.Height := ScaleY(30);
-  CheckPage_NavSQLCheckBox.Caption := 'Configure LS Nav/Central SQL parameters';
+  CheckPage_NavSQLCheckBox.Caption := 'Configure LS Nav/LS Central SQL parameters';
   CheckPage_NavSQLCheckBox.Checked := True;
   CheckPage_NavSQLCheckBox.Parent := CheckPage.Surface;
   CheckPage_NavSQLCheckBox.Top := CheckPage_WSCheckBox.Top + CheckPage_WSCheckBox.Height;

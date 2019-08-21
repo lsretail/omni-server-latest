@@ -36,9 +36,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Utils
         public string Body { get; set; }
         [DataMember]
         public string ContactId { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreatedDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime LastModifiedDate { get; set; }
         [DataMember]
         public PushApplication Application { get; set; }

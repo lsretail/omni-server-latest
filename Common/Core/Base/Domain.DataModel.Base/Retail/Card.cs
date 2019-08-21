@@ -44,7 +44,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public bool LinkedToAccount { get; set; }
         [DataMember]
         public CardStatus Status { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? DateBlocked { get; set; }
         [DataMember]
         public string BlockedBy { get; set; }

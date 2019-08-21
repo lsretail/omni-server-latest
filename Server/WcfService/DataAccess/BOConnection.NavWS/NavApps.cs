@@ -15,14 +15,8 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
     //Navision back office connection
     public class NavApps : NavBase, IAppBO
     {
-        private static readonly object Locker = new object();
-        private string appId = string.Empty;
-        private string appType = string.Empty;
-
         public NavApps(BOConfiguration config) : base(config)
         {
-            config.Settings.TryGetValue(ConfigKey.NavAppId.ToString(), out appId);
-            config.Settings.TryGetValue(ConfigKey.NavAppType.ToString(), out appType);
         }
 
         public virtual Terminal TerminalGetById(string terminalId)
@@ -48,11 +42,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual Currency CurrencyGetById(string id, string culture)
         {
             return NavWSBase.CurrencyGetById(id, culture);
-        }
-
-        public virtual string ItemDetailsGetById(string itemId)
-        {
-            return string.Empty;
         }
 
         public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)

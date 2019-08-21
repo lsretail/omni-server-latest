@@ -17,5 +17,6 @@ namespace LSOmni.DataAccess.Interface.Repository
         void ToggleLSKey(string lskey, bool toggle);
         void DbCleanUp(int daysLog, int daysNotify, int daysOneList);
         void Delete(string lskey);
+        void ResetDefaults(string lskey);
     }
 }

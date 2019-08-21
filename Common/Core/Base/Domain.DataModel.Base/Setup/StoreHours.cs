@@ -66,9 +66,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public string NameOfDay { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime OpenFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime OpenTo { get; set; }
         [DataMember]
         public StoreHourOpeningType Type { get; set; }

@@ -15,6 +15,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             ItemDescription = string.Empty;
             VariantDescription = string.Empty;
             UomId = string.Empty;
+            ItemImageId = string.Empty;
             Quantity = 1.0M;
 
             LineType = LineType.Item; //never change this unless you know what you are doing !
@@ -57,6 +58,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string VariantDescription { get; set; }
         [DataMember]
         public string UomId { get; set; }
+        [DataMember]
+        public string ItemImageId { get; set; }
         [DataMember]
         public decimal Quantity { get; set; }
         [DataMember]

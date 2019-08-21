@@ -60,11 +60,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public NotificationStatus Status { get; set; }
         [DataMember]
         public NotificationTextType NotificationTextType { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? ExpiryDate { get; set; }
         [DataMember]
         public List<ImageView> Images { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime Created { get; set; }
 #if WCFSERVER
         //not all data goes to wcf clients
@@ -98,7 +98,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
 
         [DataMember]
         public int Count { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime Created { get; set; }
     }
 

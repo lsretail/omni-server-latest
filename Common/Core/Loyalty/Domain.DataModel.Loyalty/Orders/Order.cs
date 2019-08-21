@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
@@ -53,14 +52,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public string DocumentId { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DocumentRegTime { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public string StoreId { get; set; }
         /// <summary>
         /// Member Contact Card Id
         /// </summary>
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public string CardId { get; set; }
         /// <summary>
         /// Transaction Receipt Number
@@ -93,13 +92,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// Sales Order or Click and Collect Order
         /// Click And Collect order are processed in the store at POS Terminal
         /// </summary>
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public bool ClickAndCollectOrder { get; set; }
-        /// <summary>
-        /// AnonymousOrder
-        /// </summary>
-        [DataMember]
-        public bool AnonymousOrder { get; set; }
         /// <summary>
         /// Store to collect Click And Collect Order from
         /// </summary>
@@ -189,9 +183,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             {
             }
 
-            string s = string.Format("Id: {0} StoreId: {1} CardId: {2} ContactId: {3}  OrderLineCreateRequests: {4}  OrderDiscountLineCreateRequests: {6}",
+            return string.Format("Id:{0} StoreId:{1} CardId:{2} ContactId:{3} OrderLineCreateRequests:{4} OrderDiscountLineCreateRequests:{5}",
                 Id, StoreId, CardId, ContactId, req, osldreq);
-            return s;
         }
     }
 }

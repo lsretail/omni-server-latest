@@ -661,7 +661,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             var itemBufferLines = doc.Element("Response").Element("Response_Body").Descendants("Published_Offer");
             foreach (XElement line in itemBufferLines)
             {
-
                 if (line.Element("No.") == null)
                     throw new XmlException("No. node not found in response xml");
                 PublishedOffer po = new PublishedOffer(line.Element("No.").Value);
@@ -861,7 +860,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
         private string GetOfferMemberImageId(XDocument doc, string id)
         {
-            //TODO now only taking one images,, 
+            // TODO now only taking one images,, 
             string imgId = "";
             var detailsLines = doc.Element("Response").Element("Response_Body").Descendants("Published_Offer_Images");
             foreach (XElement line in detailsLines)

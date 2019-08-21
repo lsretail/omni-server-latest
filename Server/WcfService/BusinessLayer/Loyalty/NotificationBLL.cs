@@ -45,7 +45,7 @@ namespace LSOmni.BLL.Loyalty
                 if (images == null || images.Count == 0)
                 {
                     //if not, get images from BO and save them locally
-                    notification.Images = BOLoyConnection.ImageBOGetByKey("Member Notification", notification.Id, string.Empty, string.Empty, 1, true);
+                    notification.Images = BOLoyConnection.ImagesGetByKey("Member Notification", notification.Id, string.Empty, string.Empty, 1, true);
                     foreach (ImageView img in notification.Images)
                     {
                         //img.Id = notification.Id;
@@ -60,9 +60,9 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
 
-            iRepository.Save(contactId, notificationlist);
+            iRepository.Save(cardId, notificationlist);
 
-            return iRepository.NotificationsGetByContactId(contactId, numberOfNotifications);
+            return iRepository.NotificationsGetByCardId(cardId, numberOfNotifications);
         }
 
         public virtual void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notifacationStatus)

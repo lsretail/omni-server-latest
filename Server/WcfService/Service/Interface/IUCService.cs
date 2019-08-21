@@ -4,23 +4,21 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
+using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
-using LSRetail.Omni.DiscountEngine.DataModels;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.Service
 {
@@ -138,9 +136,9 @@ namespace LSOmni.Service
         /// Save Basket or Wish List
         /// </summary>
         /// <remarks>
-        /// OneList can be saved, for both Registered Users and Anonymous Users.
-        /// For Anonymous User, keep CardId and ContactId empty, 
-        /// and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
+        /// OneList can be saved, for both Member Contact and Anonymous Users.
+        /// Member Contact can have one or more Member Cards and each Card can have one WishList and one Basket
+        /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
         /// as Omni does not store any information for Anonymous Users.<p/>
         /// Used OneListGetById to get the OneList back.
         /// </remarks>
@@ -187,7 +185,6 @@ namespace LSOmni.Service
         ///          < OneListSaveResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
         ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017">16c57444-49c8-424a-b7bd-5be4adb5608f</Id>
         ///             <a:CardId>10021</a:CardId>
-        ///             <a:ContactId>MO000008</a:ContactId>
         ///             <a:CreateDate>2018-11-20T12:46:42.79</a:CreateDate>
         ///             <a:CustomerId/>
         ///             <a:Description>List MO000008</a:Description>
@@ -231,9 +228,9 @@ namespace LSOmni.Service
         ///                      <a:ProductGroupId>WOMEN-S</a:ProductGroupId>
         ///                      <a:SalesUomId>PCS</a:SalesUomId>
         ///                      <a:UnitOfMeasures xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                      < a:VariantsExt xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                      < a:VariantsRegistration xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   </ a:Item>
+        ///                      <a:VariantsExt xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
+        ///                      <a:VariantsRegistration xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
+        ///                   </a:Item>
         ///                   <a:NetAmount>64.00000000</a:NetAmount>
         ///                   <a:NetPrice>64.00000000</a:NetPrice>
         ///                   <a:OnelistItemDiscounts/>
@@ -241,8 +238,8 @@ namespace LSOmni.Service
         ///                   <a:Quantity>1.00000000</a:Quantity>
         ///                   <a:TaxAmount>16.00000000</a:TaxAmount>
         ///                   <a:UnitOfMeasure i:nil= "true" xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   < a:VariantReg xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                      < b:Id>002</b:Id>
+        ///                   <a:VariantReg xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///                      <b:Id>002</b:Id>
         ///                      <b:Dimension1>YELLOW</b:Dimension1>
         ///                      <b:Dimension2>38</b:Dimension2>
         ///                      <b:Dimension3/>
@@ -301,31 +298,6 @@ namespace LSOmni.Service
         /// Contact Info, Payment and then it can be posted for Creation
         /// </remarks>
         /// <example>
-        /// Shows how Omni Object is mapped to LS Nav/Central WS Request
-        /// <code language="xml" title="NAV WS Mapping">
-        /// <![CDATA[
-        /// <Request_ID>ECOMM_CALCULATE_BASKET</Request_ID>
-        ///  <Request_Body>
-        ///    <MobileTransaction>
-        ///      <Id>oneList.Id</Id>
-        ///      <StoreId>oneList.StoreId</StoreId>
-        ///      <MemberContactNo>oneList.ContactId</MemberContactNo>
-        ///      <MemberCardNo>oneList.CardId</MemberCardNo>
-        ///    </MobileTransaction>
-        ///    <MobileTransactionLine>
-        ///      <Id>oneList.Id</Id>
-        ///      <LineNo>lineCount</LineNo>
-        ///      <LineType>0</LineType>
-        ///      <Barcode></Barcode>
-        ///      <Number>oneList.Items.Item.Id</Number>
-        ///      <VariantCode>oneList.Items.VariantReg.Id</VariantCode>
-        ///      <UomId>oneList.Items.UnitOfMeasure.Id</UomId>
-        ///      <Quantity>oneList.Items.Quantity</Quantity>
-        ///      <ExternalId>0</ExternalId>
-        ///    </MobileTransactionLine>
-        ///  </Request_Body>
-        /// ]]>
-        /// </code>
         /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
         /// Include minimum data needed to be able to process the request
         /// <code language="xml" title="SOAP Sample Request">
@@ -337,8 +309,6 @@ namespace LSOmni.Service
         ///        <ser:oneList>
         ///           <!--Not needed for anonymous basket:-->
         ///           <ns1:CardId>10021</ns1:CardId>
-        ///           <!--Not needed for anonymous basket:-->
-        ///           <ns1:ContactId>MO000008</ns1:ContactId>
         ///           <ns1:Items>
         ///              <!--Zero or more repetitions:-->
         ///              <ns1:OneListItem>
@@ -363,100 +333,98 @@ namespace LSOmni.Service
         /// Response Data from OMNI after Request has been sent
         /// <code language="xml" title="SOAP Response">
         /// <![CDATA[
-        /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///    <s:Body>
-        ///       <OneListCalculateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///          < OneListCalculateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" >{6281701B-7C81-4FB6-9A17-C445DC522390}</Id>
-        ///             <a:AnonymousOrder>false</a:AnonymousOrder>
-        ///             <a:CardId>10021</a:CardId>
-        ///             <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
-        ///             <a:CollectLocation i:nil="true"/>
-        ///             <a:ContactAddress xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
-        ///                <b:Address1/>
-        ///                <b:Address2/>
-        ///                <b:CellPhoneNumber i:nil="true"/>
-        ///                <b:City/>
-        ///                <b:Country/>
-        ///                <b:HouseNo i:nil="true"/>
-        ///                <b:Id/>
-        ///                <b:PhoneNumber i:nil="true"/>
-        ///                <b:PostCode/>
-        ///                <b:StateProvinceRegion/>
-        ///                <b:Type>Residential</b:Type>
-        ///             </a:ContactAddress>
-        ///             <a:ContactId i:nil="true"/>
-        ///             <a:ContactName i:nil="true"/>
-        ///             <a:DayPhoneNumber i:nil="true"/>
-        ///             <a:DocumentId i:nil="true"/>
-        ///             <a:DocumentRegTime>0001-01-01T00:00:00</a:DocumentRegTime>
-        ///             <a:Email i:nil="true"/>
-        ///             <a:LineItemCount>0</a:LineItemCount>
-        ///             <a:MobileNumber i:nil="true"/>
-        ///             <a:OrderDiscountLines/>
-        ///             <a:OrderLines>
-        ///                <a:OrderLine>
-        ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   < a:Amount>160.00</a:Amount>
-        ///                   <a:DiscountAmount>0.00</a:DiscountAmount>
-        ///                   <a:DiscountPercent>0.00</a:DiscountPercent>
-        ///                   <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
-        ///                   <a:ItemId>40020</a:ItemId>
-        ///                   <a:LineNumber>1</a:LineNumber>
-        ///                   <a:LineType>Item</a:LineType>
-        ///                   <a:NetAmount>128.00</a:NetAmount>
-        ///                   <a:NetPrice>64.00</a:NetPrice>
-        ///                   <a:OrderId/>
-        ///                   <a:Price>80.00</a:Price>
-        ///                   <a:Quantity>2.00</a:Quantity>
-        ///                   <a:QuantityOutstanding>0</a:QuantityOutstanding>
-        ///                   <a:QuantityToInvoice>2.00</a:QuantityToInvoice>
-        ///                   <a:QuantityToShip>0</a:QuantityToShip>
-        ///                   <a:TaxAmount>32.00</a:TaxAmount>
-        ///                   <a:UomId/>
-        ///                   <a:VariantDescription>YELLOW/38</a:VariantDescription>
-        ///                   <a:VariantId>002</a:VariantId>
-        ///                </a:OrderLine>
-        ///             </a:OrderLines>
-        ///             <a:OrderPayments/>
-        ///             <a:OrderStatus>Pending</a:OrderStatus>
-        ///             <a:PaymentStatus>PreApproved</a:PaymentStatus>
-        ///             <a:PhoneNumber i:nil= "true" />
-        ///             < a:PointAmount>1600.00</a:PointAmount>
-        ///             <a:PointBalance>53928.00</a:PointBalance>
-        ///             <a:PointCashAmountNeeded>0.00</a:PointCashAmountNeeded>
-        ///             <a:PointsRewarded>160.00</a:PointsRewarded>
-        ///             <a:PointsUsedInOrder>0.00</a:PointsUsedInOrder>
-        ///             <a:Posted>false</a:Posted>
-        ///             <a:ReceiptNo/>
-        ///             <a:ShipClickAndCollect>false</a:ShipClickAndCollect>
-        ///             <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                < b:Address1/>
-        ///                <b:Address2/>
-        ///                <b:CellPhoneNumber i:nil= "true" />
-        ///                < b:City/>
-        ///                <b:Country/>
-        ///                <b:HouseNo i:nil= "true" />
-        ///                < b:Id/>
-        ///                <b:PhoneNumber i:nil= "true" />
-        ///                < b:PostCode/>
-        ///                <b:StateProvinceRegion/>
-        ///                <b:Type>Residential</b:Type>
-        ///             </a:ShipToAddress>
-        ///             <a:ShipToEmail i:nil= "true" />
-        ///             < a:ShipToName i:nil= "true" />
-        ///             < a:ShipToPhoneNumber i:nil= "true" />
-        ///             < a:ShippingAgentCode i:nil= "true" />
-        ///             < a:ShippingAgentServiceCode i:nil= "true" />
-        ///             < a:ShippingStatus>ShippigNotRequired</a:ShippingStatus>
-        ///             <a:StoreId>S0013</a:StoreId>
-        ///             <a:TotalAmount>160.00</a:TotalAmount>
-        ///             <a:TotalDiscount>0.00</a:TotalDiscount>
-        ///             <a:TotalNetAmount>128.00</a:TotalNetAmount>
-        ///          </OneListCalculateResult>
-        ///       </OneListCalculateResponse>
-        ///    </s:Body>
-        /// </s:Envelope>
+        ///<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+        ///   <s:Body>
+        ///      <OneListCalculateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
+        ///         <OneListCalculateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" >{3FA2BCEB-0CF0-45FB-BC88-BE85BDDB1704}</Id>
+        ///            <a:CardId>10021</a:CardId>
+        ///            <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
+        ///            <a:CollectLocation i:nil="true"/>
+        ///            <a:ContactAddress xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
+        ///               <b:Address1/>
+        ///               <b:Address2/>
+        ///               <b:CellPhoneNumber i:nil="true"/>
+        ///               <b:City/>
+        ///               <b:Country/>
+        ///               <b:HouseNo i:nil="true"/>
+        ///               <b:Id/>
+        ///               <b:PhoneNumber i:nil="true"/>
+        ///               <b:PostCode/>
+        ///               <b:StateProvinceRegion/>
+        ///               <b:Type>Residential</b:Type>
+        ///            </a:ContactAddress>
+        ///            <a:ContactId i:nil="true"/>
+        ///            <a:ContactName i:nil="true"/>
+        ///            <a:DayPhoneNumber i:nil="true"/>
+        ///            <a:DocumentId i:nil="true"/>
+        ///            <a:Email i:nil="true"/>
+        ///            <a:LineItemCount>0</a:LineItemCount>
+        ///            <a:MobileNumber i:nil="true"/>
+        ///            <a:OrderDiscountLines/>
+        ///            <a:OrderLines>
+        ///               <a:OrderLine>
+        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
+        ///                  < a:Amount>160.00</a:Amount>
+        ///                  <a:DiscountAmount>0.00</a:DiscountAmount>
+        ///                  <a:DiscountPercent>0.00</a:DiscountPercent>
+        ///                  <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
+        ///                  <a:ItemId>40020</a:ItemId>
+        ///                  <a:ItemImageId>40020-Y</a:ItemImageId>
+        ///                  <a:LineNumber>1</a:LineNumber>
+        ///                  <a:LineType>Item</a:LineType>
+        ///                  <a:NetAmount>128.00</a:NetAmount>
+        ///                  <a:NetPrice>64.00</a:NetPrice>
+        ///                  <a:OrderId/>
+        ///                  <a:Price>80.00</a:Price>
+        ///                  <a:Quantity>2.00</a:Quantity>
+        ///                  <a:QuantityOutstanding>0</a:QuantityOutstanding>
+        ///                  <a:QuantityToInvoice>2.00</a:QuantityToInvoice>
+        ///                  <a:QuantityToShip>0</a:QuantityToShip>
+        ///                  <a:TaxAmount>32.00</a:TaxAmount>
+        ///                  <a:UomId/>
+        ///                  <a:VariantDescription>YELLOW/38</a:VariantDescription>
+        ///                  <a:VariantId>002</a:VariantId>
+        ///               </a:OrderLine>
+        ///            </a:OrderLines>
+        ///            <a:OrderPayments/>
+        ///            <a:OrderStatus>Pending</a:OrderStatus>
+        ///            <a:PaymentStatus>PreApproved</a:PaymentStatus>
+        ///            <a:PhoneNumber i:nil= "true" />
+        ///            < a:PointAmount>1600.00</a:PointAmount>
+        ///            <a:PointBalance>53632.00</a:PointBalance>
+        ///            <a:PointCashAmountNeeded>0.00</a:PointCashAmountNeeded>
+        ///            <a:PointsRewarded>160.00</a:PointsRewarded>
+        ///            <a:PointsUsedInOrder>0.00</a:PointsUsedInOrder>
+        ///            <a:Posted>false</a:Posted>
+        ///            <a:ReceiptNo/>
+        ///            <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///               < b:Address1/>
+        ///               <b:Address2/>
+        ///               <b:CellPhoneNumber i:nil= "true" />
+        ///               < b:City/>
+        ///               <b:Country/>
+        ///               <b:HouseNo i:nil= "true" />
+        ///               < b:Id/>
+        ///               <b:PhoneNumber i:nil= "true" />
+        ///               < b:PostCode/>
+        ///               <b:StateProvinceRegion/>
+        ///               <b:Type>Residential</b:Type>
+        ///            </a:ShipToAddress>
+        ///            <a:ShipToEmail i:nil= "true" />
+        ///            < a:ShipToName i:nil= "true" />
+        ///            < a:ShipToPhoneNumber i:nil= "true" />
+        ///            < a:ShippingAgentCode i:nil= "true" />
+        ///            < a:ShippingAgentServiceCode i:nil= "true" />
+        ///            < a:ShippingStatus>ShippigNotRequired</a:ShippingStatus>
+        ///            <a:StoreId>S0013</a:StoreId>
+        ///            <a:TotalAmount>160.00</a:TotalAmount>
+        ///            <a:TotalDiscount>0.00</a:TotalDiscount>
+        ///            <a:TotalNetAmount>128.00</a:TotalNetAmount>
+        ///         </OneListCalculateResult>
+        ///      </OneListCalculateResponse>
+        ///   </s:Body>
+        ///</s:Envelope>
         /// ]]>
         /// </code>
         /// </example>
@@ -472,33 +440,6 @@ namespace LSOmni.Service
         /// <summary>
         /// Check the quantity available of items in order for certain store, Use with LS Nav 11.0 and later
         /// </summary>
-        /// <example>
-        /// Shows how Omni Object is mapped to LS Nav/Central WS Request
-        /// <code language="xml" title="NAV WS mapping">
-        /// <![CDATA[
-        /// <Request_ID>CO_QTY_AVAILABILITY_EXT</Request_ID>
-        /// <Request_Body>
-        ///   <Item_No_Type>request.ItemNumberType</Item_No_Type>
-        ///   <Customer_Order_Header>
-        ///     <Document_Id>request.Id</Document_Id>
-        ///     <Store_No.>request.StoreId</Store_No.>
-        ///     <Member_Card_No.>request.CardId</Member_Card_No.>
-        ///     <Anonymous_Order>request.AnonymousOrder</Anonymous_Order>
-        ///     <Source_Type>request.SourceType</Source_Type>
-        ///   </Customer_Order_Header>
-        ///   <Customer_Order_Line>
-        ///     <Document_Id>request.Id</Document_Id>
-        ///     <Line_No.>request.OrderLine.LineNumber</Line_No.>
-        ///     <Line_Type>request.OrderLine.LineType</Line_Type>
-        ///     <Number>request.OrderLine.ItemId</Number>
-        ///     <Variant_Code>request.OrderLine.VariantId</Variant_Code>
-        ///     <Unit_of_Measure_Code>request.OrderLine.UomId</Unit_of_Measure_Code>
-        ///     <Quantity>request.OrderLine.Quantity</Quantity>
-        ///   </Customer_Order_Line>
-        /// </Request_Body>
-        /// ]]>
-        /// </code>
-        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -508,87 +449,6 @@ namespace LSOmni.Service
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
         /// </summary>
         /// <example>
-        /// Shows how Omni Object is mapped to LS Nav/Central WS Request
-        /// <code language="xml" title="NAV WS mapping">
-        /// <![CDATA[
-        ///  <Request_ID>CUSTOMER_ORDER_CREATE_EXT</Request_ID> 
-        ///  <Request_Body>
-        ///   <Item_No_Type>request.ItemNumberType</Item_No_Type>
-        ///   <Customer_Order_Header>
-        ///     <Document_Id>request.Id</Document_Id>
-        ///     <Store_No.>request.StoreId</Store_No.>
-        ///     <Member_Card_No.>request.CardId</Member_Card_No.>
-        ///     <Source_Type>request.SourceType</Source_Type>
-        ///     <Full_Name>request.ContactName</Full_Name>
-        ///     <Address>request.ContactAddress.Address1</Address>
-        ///     <Address_2>request.ContactAddress.Address2</Address_2>
-        ///     <City>request.ContactAddress.City</City>
-        ///     <County>request.ContactAddress.StateProvinceRegion</County>
-        ///     <Post_Code>request.ContactAddress.PostCode</Post_Code>
-        ///     <Country_Region_Code>request.ContactAddress.Country</Country_Region_Code>
-        ///     <Phone_No.>request.PhoneNumber</Phone_No.>
-        ///     <Email>request.Email</Email>
-        ///     <House_Apartment_No.>request.ContactAddress.HouseNo</House_Apartment_No.>
-        ///     <Mobile_Phone_No.>request.MobileNumber</Mobile_Phone_No.>
-        ///     <Daytime_Phone_No.>request.DayPhoneNumber</Daytime_Phone_No.>
-        ///     <Ship_To_Full_Name>request.ShipToName</Ship_To_Full_Name>
-        ///     <Ship_To_Address>request.ShipToAddress.Address1</Ship_To_Address>
-        ///     <Ship_To_Address_2>request.ShipToAddress.Address2</Ship_To_Address_2>
-        ///     <Ship_To_City>request.ShipToAddress.City</Ship_To_City>
-        ///     <Ship_To_County>request.ShipToAddress.StateProvinceRegion</Ship_To_County>
-        ///     <Ship_To_Post_Code>request.ShipToAddress.PostCode</Ship_To_Post_Code>
-        ///     <Ship_To_Country_Region_Code>request.ShipToAddress.Country</Ship_To_Country_Region_Code>
-        ///     <Ship_To_Phone_No.>request.ShipToPhoneNumber</Ship_To_Phone_No.>
-        ///     <Ship_To_Email>request.ShipToEmail</Ship_To_Email>
-        ///     <Ship_To_House_Apartment_No.>request.ShipToAddress.HouseNo</Ship_To_House_Apartment_No.>
-        ///     <Click_And_Collect_Order>request.ClickAndCollectOrder</Click_And_Collect_Order>
-        ///     <Anonymous_Order>request.AnonymousOrder</Anonymous_Order>
-        ///     <Shipping_Agent_Code>request.ShippingAgentCode</Shipping_Agent_Code>
-        ///     <Shipping_Agent_Service_Code>request.ShippingAgentServiceCode</Shipping_Agent_Service_Code>
-        ///   </Customer_Order_Header>
-        ///   <Customer_Order_Line>
-        ///     <Document_Id>request.Id</Document_Id>
-        ///     <Line_No.>request.OrderLineCreateRequests.LineNumber</Line_No.>
-        ///     <Line_Type>request.OrderLineCreateRequests.LineType</Line_Type>
-        ///     <Number>request.OrderLineCreateRequests.ItemId</Number>
-        ///     <Variant_Code>request.OrderLineCreateRequests.VariantId</Variant_Code>
-        ///     <Unit_of_Measure_Code>request.OrderLineCreateRequests.UomId</Unit_of_Measure_Code>
-        ///     <Net_Price>request.OrderLineCreateRequests.NetPrice</Net_Price>
-        ///     <Price>request.OrderLineCreateRequests.Price</Price>
-        ///     <Quantity>request.OrderLineCreateRequests.Quantity</Quantity>
-        ///     <Discount_Amount>request.OrderLineCreateRequests.DiscountAmount</Discount_Amount>
-        ///     <Discount_Percent>request.OrderLineCreateRequests.DiscountPercent</Discount_Percent>
-        ///     <Net_Amount>request.OrderLineCreateRequests.NetAmount</Net_Amount>
-        ///     <Vat_Amount>request.OrderLineCreateRequests.TaxAmount</Vat_Amount>
-        ///     <Amount>request.OrderLineCreateRequests.Amount</Amount>
-        ///   </Customer_Order_Line>
-        ///   <Customer_Order_Discount_Line>
-        ///     <Document_Id>request.Id</Document_Id>
-        ///     <Line_No.>request.OrderDiscountLineCreateRequests.LineNumber</Line_No.>
-        ///     <Entry_No.>request.OrderDiscountLineCreateRequests.No</Entry_No.>
-        ///     <Discount_Type>request.OrderDiscountLineCreateRequests.DiscountType</Discount_Type>
-        ///     <Offer_No.>request.OrderDiscountLineCreateRequests.OfferNumber</Offer_No.>
-        ///     <Periodic_Disc._Type>request.OrderDiscountLineCreateRequests.PeriodicDiscType</Periodic_Disc._Type>
-        ///     <Periodic_Disc._Group>request.OrderDiscountLineCreateRequests.PeriodicDiscGroup</Periodic_Disc._Group>
-        ///     <Description>request.OrderDiscountLineCreateRequests.Description</Description>
-        ///     <Discount_Percent>request.OrderDiscountLineCreateRequests.DiscountPercent</Discount_Percent>
-        ///     <Discount_Amount>request.OrderDiscountLineCreateRequests.DiscountAmount</Discount_Amount>
-        ///   </Customer_Order_Discount_Line>
-        ///   <Customer_Order_Payment>
-        ///     <Document_Id>request.Id</Document_Id>
-        ///     <Line_No.>request.OrderPaymentCreateRequests.LineNumber</Line_No.>
-        ///     <Pre_Approved_Amount>request.OrderPaymentCreateRequests.PreApprovedAmount</Pre_Approved_Amount>
-        ///     <Tender_Type>request.OrderPaymentCreateRequests.TenderType</Tender_Type>
-        ///     <Card_Type>request.OrderPaymentCreateRequests.CardType</Card_Type> 
-        ///     <Currency_Code>request.OrderPaymentCreateRequests.CurrencyCode</Currency_Code>
-        ///     <Currency_Factor>request.OrderPaymentCreateRequests.CurrencyFactor</Currency_Factor>
-        ///     <Authorisation_Code>request.OrderPaymentCreateRequests.AuthorisationCode</Authorisation_Code>
-        ///     <Pre_Approved_Valid_Date>request.OrderPaymentCreateRequests.PreApprovedValidDate</Pre_Approved_Valid_Date>
-        ///     <Card_or_Customer_number>request.OrderPaymentCreateRequests.CardNumber</Card_or_Customer_number>
-        ///   </Customer_Order_Payment>
-        /// </Request_Body>
-        /// ]]>
-        /// </code>
         /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
         /// Include minimum data needed to be able to process the request
         /// <code language="xml" title="SOAP Sample Request">
@@ -798,42 +658,20 @@ namespace LSOmni.Service
         SalesEntry OrderCreate(Order request);
 
         /// <summary>
-        /// Check Status of an Order made with BasketPostSale (LSNAV 10.02 and older)
+        /// Check Status of a Customer Order
         /// </summary>
-        /// <example>
-        /// Shows how Omni Object is mapped to LS Nav/Central WS Request
-        /// <code language="xml" title="NAV WS mapping">
-        /// <![CDATA[
-        /// <Request_ID>WI_NC_ORDER_STATUS</Request_ID>
-        /// <Request_Body>
-        ///   <WebTransactionGUID>transactionId</WebTransactionGUID>
-        /// </Request_Body>
-        /// ]]>
-        /// </code>
-        /// </example>
-        /// <param name="transactionId">Order GUID Id</param>
+        /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
-        OrderStatusResponse OrderStatusCheck(string transactionId);
+        OrderStatusResponse OrderStatusCheck(string orderId);
 
         /// <summary>
-        /// Cancel Order made with BasketPostSale
+        /// Cancel Customer Order
         /// </summary>
-        /// <example>
-        /// Shows how Omni Object is mapped to LS Nav/Central WS Request
-        /// <code language="xml" title="NAV WS mapping">
-        /// <![CDATA[
-        /// <Request_ID>WEB_POS_CANCEL_CUSTOMER_ORDER</Request_ID>
-        /// <Request_Body>
-        ///   <WebTransactionGUID>transactionId</WebTransactionGUID>
-        /// </Request_Body>
-        /// ]]>
-        /// </code>
-        /// </example>
-        /// <param name="transactionId"></param>
+        /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
-        string OrderCancel(string transactionId); 
+        string OrderCancel(string orderId);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -890,51 +728,11 @@ namespace LSOmni.Service
         #region Contact
 
         /// <summary>
-        /// Change password
-        /// </summary>
-        /// <remarks>
-        /// Nav/Central WS: MM_MOBILE_PWD_CHANGE
-        /// </remarks>
-        /// <param name="userName">user name (Nav/Central:LoginID)</param>
-        /// <param name="newPassword">new password (Nav/Central:NewPassword)</param>
-        /// <param name="oldPassword">old password (Nav/Central:OldPassword)</param>
-        /// <returns>true/false</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.ContactIdNotFound</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.PasswordInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.PasswordOldInvalid</description>
-        /// </item>
-        /// </list>
-        /// </exception>
-        [OperationContract]
-        bool ChangePassword(string userName, string newPassword, string oldPassword);
-
-        /// <summary>
         /// Create a new contact
         /// </summary>
         /// <remarks>
-        /// Nav/Central WS: MM_MOBILE_CONTACT_CREATE<p/><p/>
+        /// LS Nav/Central WS1 : MM_MOBILE_CONTACT_CREATE<p/><p/>
+        /// LS Nav/Central WS2 : MemberContactCreate<p/><p/>
         /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Nav/Central<p/>
         /// Contact will be assigned to a Member Account.
         /// Member Account has Club and Club has Scheme level.<p/>
@@ -943,36 +741,6 @@ namespace LSOmni.Service
         /// Valid UserName, Password and Email address is determined by LS Nav/Central and can be found in CU 99009001.
         /// </remarks>
         /// <example>
-        /// Shows how Omni Object is mapped to LS Nav/Central WS Request
-        /// <code language="xml" title="NAV WS mapping">
-        /// <![CDATA[
-        /// <Request_ID>MM_MOBILE_CONTACT_CREATE</Request_ID>
-        /// <Request_Body>
-        ///	  <LoginID>contact.UserName</LoginID>
-        ///	  <Password>contact.Password</Password>
-        ///	  <Email>contact.Email</Email>
-        ///	  <FirstName>contact.FirstName</FirstName>
-        ///	  <LastName>contact.LastName</LastName>
-        ///	  <MiddleName>contact.MiddleName</MiddleName>
-        ///	  <Gender>contact.Gender</Gender>
-        ///	  <Phone>contact.Phone</Phone>
-        ///	  <Address1>contact.Addresses.Address1</Address1>
-        ///	  <Address2>contact.Addresses.Address2</Address2>
-        ///	  <City>contact.Addresses.City</City>
-        ///	  <PostCode>contact.Addresses.PostCode</PostCode>
-        ///	  <StateProvinceRegion>contact.Addresses.StateProvinceRegion</StateProvinceRegion>
-        ///	  <Country>contact.Addresses.Country</Country>
-        ///	  <ClubID></ClubID>
-        ///	  <SchemeID></SchemeID>
-        ///	  <AccountID></AccountID>
-        ///	  <ContactID></ContactID>
-        ///	  <DeviceID>contact.Device.Id</DeviceID>
-        ///	  <DeviceFriendlyName>contact.Device.DeviceFriendlyName</DeviceFriendlyName>
-        ///	  <ExternalID></ExternalID>
-        ///	  <ExternalSystem></ExternalSystem>
-        /// </Request_Body>
-        /// ]]>
-        /// </code>
         /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
         /// Include minimum data needed to be able to process the request
         /// <code language="xml" title="SOAP Sample Request">
@@ -1020,16 +788,13 @@ namespace LSOmni.Service
         /// Response Data from OMNI after Request has been sent
         /// <code language="xml" title="SOAP Response">
         /// <![CDATA[
-        /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///   <s:Header>
-        ///      <ActivityId CorrelationId = "f6fac723-17d5-4592-8cf9-70f614208dfd" xmlns="http://schemas.microsoft.com/2004/09/ServiceModel/Diagnostics">00000000-0000-0000-0000-000000000000</ActivityId>
-        ///   </s:Header>
+        ///<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
         ///   <s:Body>
         ///      <ContactCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
         ///         < ContactCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MO000072 </ Id >
+        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MO000090 </ Id >
         ///            < a:Account>
-        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MA000070 </ Id >
+        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MA000088 </ Id >
         ///               < a:PointBalance>0</a:PointBalance>
         ///               <a:Scheme>
         ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR1 - BRONZE </ Id >
@@ -1039,18 +804,19 @@ namespace LSOmni.Service
         ///                  </a:Club>
         ///                  <a:Description>Cronus Bronze</a:Description>
         ///                  <a:NextScheme>
-        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
+        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR2 - SILVER </ Id >
         ///                     < a:Club>
-        ///                        <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                        < a:Name/>
+        ///                        <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </ Id >
+        ///                        < a:Name>Cronus Loyalty Club</a:Name>
         ///                     </a:Club>
-        ///                     <a:Description/>
-        ///                     <a:NextScheme i:nil= "true" />
-        ///                     < a:Perks/>
-        ///                     <a:PointsNeeded>0</a:PointsNeeded>
+        ///                     <a:Description>Cronus Silver</a:Description>
+        ///                     <a:NextScheme>
+        ///                     </a:NextScheme>
+        ///                     <a:Perks>Discount 10% when you upgrade to Cronus Gold</a:Perks>
+        ///                     <a:PointsNeeded>100000</a:PointsNeeded>
         ///                  </a:NextScheme>
         ///                  <a:Perks>Free MP3 Player - 64 Gb Silver when you upgrade to Cronus Silver Scheme</a:Perks>
-        ///                  <a:PointsNeeded>0</a:PointsNeeded>
+        ///                  <a:PointsNeeded>50000</a:PointsNeeded>
         ///               </a:Scheme>
         ///            </a:Account>
         ///            <a:Addresses xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
@@ -1058,39 +824,32 @@ namespace LSOmni.Service
         ///                  <b:Address1>Santa Monica</b:Address1>
         ///                  <b:Address2/>
         ///                  <b:CellPhoneNumber i:nil= "true" />
-        ///                  <b:City>Hollywood</b:City>
-        ///                  <b:Country/>
+        ///                  < b:City>Hollywood</b:City>
+        ///                  <b:Country>US</b:Country>
         ///                  <b:HouseNo i:nil= "true" />
         ///                  < b:Id/>
         ///                  <b:PhoneNumber i:nil= "true" />
-        ///                  < b:PostCode/>
+        ///                  < b:PostCode>1001</b:PostCode>
         ///                  <b:StateProvinceRegion/>
         ///                  <b:Type>Residential</b:Type>
         ///               </b:Address>
         ///            </a:Addresses>
         ///            <a:AlternateId i:nil= "true" />
-        ///            < a:Basket xmlns:b= "http://schemas.datacontract.org/2004/07/LSRetail.Omni.Domain.DataModel.Loyalty.Baskets" >
-        ///               < Id xmlns= "http://lsretail.com/LSOmniService/Base/2017" > F8F76574 - 1111 - 4FBA-9424-023957776A94</Id>
-        ///               <b:Amount>0</b:Amount>
-        ///               <b:Items/>
-        ///               <b:NetAmount>0</b:NetAmount>
-        ///               <b:PublishedOffers xmlns:c= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///               < b:ShippingPrice>0</b:ShippingPrice>
-        ///               <b:State>Dirty</b:State>
-        ///               <b:TAXAmount>0</b:TAXAmount>
-        ///            </a:Basket>
-        ///            <a:BirthDay>1753-01-01T00:00:00</a:BirthDay>
-        ///            <a:Card xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               < b:Id>10084</b:Id>
-        ///               <b:BlockedBy/>
-        ///               <b:BlockedReason/>
-        ///               <b:ClubId>CRONUS</b:ClubId>
-        ///               <b:ContactId>MO000072</b:ContactId>
-        ///               <b:DateBlocked>1753-01-01T00:00:00</b:DateBlocked>
-        ///               <b:LinkedToAccount>false</b:LinkedToAccount>
-        ///               <b:Status>Active</b:Status>
-        ///            </a:Card>
-        ///            <a:Email>email @email.xxx</a:Email>
+        ///            < a:BirthDay>1753-01-01T00:00:00</a:BirthDay>
+        ///            <a:Cards xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///               < b:Card>
+        ///                  <b:Id>10102</b:Id>
+        ///                  <b:BlockedBy/>
+        ///                  <b:BlockedReason/>
+        ///                  <b:ClubId>CRONUS</b:ClubId>
+        ///                  <b:ContactId>MO000090</b:ContactId>
+        ///                  <b:DateBlocked>1753-01-01T00:00:00</b:DateBlocked>
+        ///                  <b:LinkedToAccount>false</b:LinkedToAccount>
+        ///                  <b:LoginId>sarah1</b:LoginId>
+        ///                  <b:Status>Active</b:Status>
+        ///               </b:Card>
+        ///            </a:Cards>
+        ///            <a:Email>Sarah1 @Hollywood.com</a:Email>
         ///            <a:Environment xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
         ///               < b:Currency>
         ///                  <b:Id>GBP</b:Id>
@@ -1108,7 +867,7 @@ namespace LSOmni.Service
         ///                  <b:ThousandSeparator>,</b:ThousandSeparator>
         ///               </b:Currency>
         ///               <b:PasswordPolicy>5-character minimum; case sensitive</b:PasswordPolicy>
-        ///               <b:Version>2.4.0.0</b:Version>
+        ///               <b:Version>4.1.1</b:Version>
         ///            </a:Environment>
         ///            <a:FirstName>Sarah</a:FirstName>
         ///            <a:Gender>Female</a:Gender>
@@ -1117,7 +876,7 @@ namespace LSOmni.Service
         ///            <a:LoggedOnToDevice>
         ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
         ///               < a:BlockedBy i:nil="true"/>
-        ///               <a:BlockedDate>0001-01-01T00:00:00</a:BlockedDate>
+        ///               <a:BlockedDate>1900-01-01T00:00:00</a:BlockedDate>
         ///               <a:BlockedReason i:nil="true"/>
         ///               <a:CardId i:nil="true"/>
         ///               <a:DeviceFriendlyName/>
@@ -1125,36 +884,64 @@ namespace LSOmni.Service
         ///               <a:Model/>
         ///               <a:OsVersion/>
         ///               <a:Platform/>
-        ///               <a:SecurityToken>A041B7165A7B4C1ABD357A854D377B88|17-09-29 13:41:32</a:SecurityToken>
+        ///               <a:SecurityToken>5F2AEC894F4C40DABC552A9F053F3450|19-08-08 14:37:41</a:SecurityToken>
         ///               <a:Status>0</a:Status>
         ///            </a:LoggedOnToDevice>
         ///            <a:MaritalStatus>Unknown</a:MaritalStatus>
         ///            <a:MiddleName/>
-        ///            <a:MobilePhone/>
+        ///            <a:MobilePhone>555-5551</a:MobilePhone>
         ///            <a:Name>Sarah Parker</a:Name>
         ///            <a:Notifications>
         ///               <a:Notification>
         ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MN000001 </ Id >
-        ///                  < a:ContactId>MO000072</a:ContactId>
-        ///                  <a:Created>2017-09-29T13:41:32.86</a:Created>
+        ///                  < a:ContactId/>
+        ///                  <a:Created>2019-08-08T14:37:21.1</a:Created>
         ///                  <a:Description>Remember our regular offers</a:Description>
         ///                  <a:Details>Cronus Club Members receive exra discounts</a:Details>
-        ///                  <a:ExpiryDate>2018-03-29T13:41:32.82</a:ExpiryDate>
+        ///                  <a:ExpiryDate>1753-01-01T23:59:59</a:ExpiryDate>
         ///                  <a:Images xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
         ///                     < b:ImageView>
         ///                        <b:Id>OFFERS</b:Id>
-        ///                        <b:AvgColor>F6F2E4</b:AvgColor>
+        ///                        <b:AvgColor/>
         ///                        <b:DisplayOrder>0</b:DisplayOrder>
         ///                        <b:Format/>
         ///                        <b:Image/>
         ///                        <b:ImgSize>
-        ///                           <b:Height>1000</b:Height>
-        ///                           <b:Width>1500</b:Width>
+        ///                           <b:Height>0</b:Height>
+        ///                           <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
+        ///                           <b:Width>0</b:Width>
         ///                        </b:ImgSize>
         ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://desktop-f9p79r1/lsomniservice/ucservice.svc/ImageStreamGetById?id=OFFERS&amp;width={0}&amp;height={1}</b:Location>
+        ///                        <b:Location>http://ddlap1/lsomniservice/ucservice.svc/ImageStreamGetById?id=OFFERS&amp;width={0}&amp;height={1}</b:Location>
         ///                        <b:LocationType>Image</b:LocationType>
-        ///                        <b:ObjectId/>
+        ///                     </b:ImageView>
+        ///                  </a:Images>
+        ///                  <a:NotificationTextType>Plain</a:NotificationTextType>
+        ///                  <a:QRText/>
+        ///                  <a:Status>New</a:Status>
+        ///               </a:Notification>
+        ///               <a:Notification>
+        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MN000002 </ Id >
+        ///                  < a:ContactId/>
+        ///                  <a:Created>2019-08-08T14:37:21.4</a:Created>
+        ///                  <a:Description>Call our Help Desk for assistance</a:Description>
+        ///                  <a:Details>Our help desk phone number is (212) 555-9999</a:Details>
+        ///                  <a:ExpiryDate>1753-01-01T23:59:59</a:ExpiryDate>
+        ///                  <a:Images xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
+        ///                     <b:ImageView>
+        ///                        <b:Id>HELPDESK</b:Id>
+        ///                        <b:AvgColor/>
+        ///                        <b:DisplayOrder>0</b:DisplayOrder>
+        ///                        <b:Format/>
+        ///                        <b:Image/>
+        ///                        <b:ImgSize>
+        ///                           <b:Height>0</b:Height>
+        ///                           <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
+        ///                           <b:Width>0</b:Width>
+        ///                        </b:ImgSize>
+        ///                        <b:LoadFromFile>false</b:LoadFromFile>
+        ///                        <b:Location>http://ddlap1/lsomniservice/ucservice.svc/ImageStreamGetById?id=HELPDESK&amp;width={0}&amp;height={1}</b:Location>
+        ///                        <b:LocationType>Image</b:LocationType>
         ///                     </b:ImageView>
         ///                  </a:Images>
         ///                  <a:NotificationTextType>Plain</a:NotificationTextType>
@@ -1162,59 +949,58 @@ namespace LSOmni.Service
         ///                  <a:Status>New</a:Status>
         ///               </a:Notification>
         ///            </a:Notifications>
-        ///            <a:Password/>
-        ///            <a:Phone/>
+        ///            <a:OneLists/>
+        ///            <a:Password>TI9nX0kjWX3f3LA1EPpwXmMC3cfBC0bKzpcmPlzAWLIJghSYLwbLxFvsakQiPf93kxw6xpY+4KUB41yBsAM/3w==</a:Password>
+        ///            <a:Phone>666-6661</a:Phone>
         ///            <a:Profiles/>
         ///            <a:PublishedOffers xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
         ///               <b:PublishedOffer>
-        ///                  <b:Id>PUB0038</b:Id>
-        ///                  <b:Code>Deal</b:Code>
-        ///                  <b:Description>Chicken, Salad and Fries</b:Description>
-        ///                  <b:Details>For only 9,50. Grilled Chicken marinated with our own recipe rich with a tasty flavor.Served with fresh salad, steak fries and our classic barbeque sauce</b:Details>
-        ///                  <b:ExpirationDate>1970-01-01T00:00:00</b:ExpirationDate>
+        ///                  <b:Id>PUB0047</b:Id>
+        ///                  <b:Code>Coupon</b:Code>
+        ///                  <b:Description>Leather Backpack -  20% off</b:Description>
+        ///                  <b:Details>Receive 20% discount when you shop this fabulous bag. This bag is genuine leather, designed by our team.</b:Details>
+        ///                  <b:ExpirationDate>2019-12-31T00:00:00</b:ExpirationDate>
         ///                  <b:Images>
         ///                     <b:ImageView>
-        ///                        <b:Id>PUBOFF-CHICKENS</b:Id>
+        ///                        <b:Id>PUBOFF-UR-CBAG-OM</b:Id>
         ///                        <b:AvgColor/>
         ///                        <b:DisplayOrder>0</b:DisplayOrder>
         ///                        <b:Format/>
         ///                        <b:Image/>
         ///                        <b:ImgSize>
         ///                           <b:Height>0</b:Height>
+        ///                           <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
         ///                           <b:Width>0</b:Width>
         ///                        </b:ImgSize>
         ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://desktop-f9p79r1/lsomniservice/ucservice.svc/ImageStreamGetById?id=PUBOFF-CHICKENS&amp;width={0}&amp;height={1}</b:Location>
+        ///                        <b:Location>http://ddlap1/lsomniservice/ucservice.svc/ImageStreamGetById?id=PUBOFF-UR-CBAG-OM&amp;width={0}&amp;height={1}</b:Location>
         ///                        <b:LocationType>Image</b:LocationType>
-        ///                        <b:ObjectId/>
         ///                     </b:ImageView>
         ///                  </b:Images>
         ///                  <b:OfferDetails/>
-        ///                  <b:OfferId>S10017</b:OfferId>
+        ///                  <b:OfferId>COUP0119</b:OfferId>
+        ///                  <b:OfferLines>
+        ///                     <b:PublishedOfferLine>
+        ///                        <b:Id>40180</b:Id>
+        ///                        <b:Description>Leather Backpack</b:Description>
+        ///                        <b:DiscountId>COUP0119</b:DiscountId>
+        ///                        <b:DiscountType>Coupon</b:DiscountType>
+        ///                        <b:Exclude>false</b:Exclude>
+        ///                        <b:LineNo>10000</b:LineNo>
+        ///                        <b:LineType>Item</b:LineType>
+        ///                        <b:OfferId>PUB0047</b:OfferId>
+        ///                        <b:UnitOfMeasure/>
+        ///                        <b:Variant/>
+        ///                        <b:VariantType>None</b:VariantType>
+        ///                     </b:PublishedOfferLine>
+        ///                  </b:OfferLines>
         ///                  <b:Selected>false</b:Selected>
-        ///                  <b:Type>General</b:Type>
+        ///                  <b:Type>PointOffer</b:Type>
         ///                  <b:ValidationText/>
         ///               </b:PublishedOffer>
         ///            </a:PublishedOffers>
-        ///            <a:RV>0</a:RV>
-        ///            <a:Transactions/>
-        ///            <a:UserName>sarah</a:UserName>
-        ///            <a:WishList>
-        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///               < a:CardId>10084</a:CardId>
-        ///               <a:ContactId>MO000072</a:ContactId>
-        ///               <a:CreateDate>2017-09-29T13:41:32.9856902+00:00</a:CreateDate>
-        ///               <a:CustomerId/>
-        ///               <a:Description/>
-        ///               <a:IsDefaultList>false</a:IsDefaultList>
-        ///               <a:Items/>
-        ///               <a:ListType>Wish</a:ListType>
-        ///               <a:PublishedOffers/>
-        ///               <a:TotalAmount>0</a:TotalAmount>
-        ///               <a:TotalDiscAmount>0</a:TotalDiscAmount>
-        ///               <a:TotalNetAmount>0</a:TotalNetAmount>
-        ///               <a:TotalTaxAmount>0</a:TotalTaxAmount>
-        ///            </a:WishList>
+        ///            <a:SalesEntries/>
+        ///            <a:UserName>sarah1</a:UserName>
         ///         </ContactCreateResult>
         ///      </ContactCreateResponse>
         ///   </s:Body>
@@ -1259,55 +1045,11 @@ namespace LSOmni.Service
         MemberContact ContactCreate(MemberContact contact);
 
         /// <summary>
-        /// Get contact by contact Id
-        /// </summary>
-        /// <param name="cardId">Card Id</param>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>
-        /// </list>
-        /// </exception>
-        [OperationContract]
-        MemberContact ContactGetByCardId(string cardId);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cardId"></param>
-        /// <returns></returns>
-        [OperationContract]
-        long CardGetPointBalance(string cardId);
-
-        /// <summary>
-        /// Gets Rate value for points (f.ex. 1 point = 0.01 kr)
-        /// </summary>
-        /// <returns></returns>
-        [OperationContract]
-        decimal GetPointRate();
-
-        [OperationContract]
-        List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
-
-        /// <summary>
         /// Update a contact
         /// </summary>
         /// <remarks>
-        /// Nav/Central WS: MM_MOBILE_CONTACT_UPDATE<p/><p/>
+        /// LS Nav/Central WS1 : MM_MOBILE_CONTACT_UPDATE<p/><p/>
+        /// LS Nav/Central WS2 : MemberContactUpdate<p/><p/>
         /// Contact Id, Username and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
         /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Nav/Central
@@ -1381,8 +1123,97 @@ namespace LSOmni.Service
         [OperationContract]
         MemberContact ContactUpdate(MemberContact contact);
 
+        /// <summary>
+        /// Get contact by contact Id
+        /// </summary>
+        /// <param name="cardId">Card Id</param>
+        /// <returns>Contact</returns>
+        /// <exception cref="LSOmniServiceException">StatusCodes returned:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>StatusCode.Error</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.SecurityTokenInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.UserNotLoggedIn</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.DeviceIsBlocked</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.AccessNotAllowed</description>
+        /// </item>
+        /// </list>
+        /// </exception>
+        [OperationContract]
+        MemberContact ContactGetByCardId(string cardId);
+
+        [OperationContract]
+        List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
+
         [OperationContract]
         double ContactAddCard(string contactId, string cardId, string accountId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        long CardGetPointBalance(string cardId);
+
+        /// <summary>
+        /// Gets Rate value for points (f.ex. 1 point = 0.01 kr)
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        decimal GetPointRate();
+
+        [OperationContract]
+        bool DeviceSave(string deviceId, string deviceFriendlyName, string platform, string osVersion, string manufacturer, string model);
+
+        /// <summary>
+        /// Change password
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central WS1 : MM_MOBILE_PWD_CHANGE
+        /// </remarks>
+        /// <param name="userName">user name (Nav/Central:LoginID)</param>
+        /// <param name="newPassword">new password (Nav/Central:NewPassword)</param>
+        /// <param name="oldPassword">old password (Nav/Central:OldPassword)</param>
+        /// <returns>true/false</returns>
+        /// <exception cref="LSOmniServiceException">StatusCodes returned:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>StatusCode.Error</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.SecurityTokenInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.UserNotLoggedIn</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.DeviceIsBlocked</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.AccessNotAllowed</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.ContactIdNotFound</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.PasswordInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.PasswordOldInvalid</description>
+        /// </item>
+        /// </list>
+        /// </exception>
+        [OperationContract]
+        bool ChangePassword(string userName, string newPassword, string oldPassword);
 
         /// <summary>
         /// Request a ResetCode to use in Email to send to Member Contact
@@ -1445,9 +1276,6 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         bool ResetPassword(string userName, string resetCode, string newPassword);
-
-        [OperationContract]
-        bool DeviceSave(string deviceId, string deviceFriendlyName, string platform, string osVersion, string manufacturer, string model);
 
         /// <summary>
         /// Login user
@@ -1572,9 +1400,6 @@ namespace LSOmni.Service
         [OperationContract]
         ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails);
 
-        [OperationContract]
-        MobileMenu MenusGetAll(string id, string lastVersion);
-
         /// <summary>
         /// Gets Hierarchy setup for a Store with all Leafs and Nodes
         /// </summary>
@@ -1607,18 +1432,14 @@ namespace LSOmni.Service
         /// <remarks>
         /// Member Attribute Value has to have Value Yes or No, even in other languages as Omni Server uses that Text to determent if the Attribute is selected or not for the Contact
         /// </remarks>
-        /// <param name="contactId"></param>
+        /// <param name="cardId"></param>
         /// <returns></returns>
         [OperationContract]
-        List<Profile> ProfilesGetByCardId(string contactId);
+        List<Profile> ProfilesGetByCardId(string cardId);
 
         #endregion
 
-        #region Basket LOY
-
-        #endregion
-
-        #region Images COMMON
+        #region Images
 
         [OperationContract]
         ImageView ImageGetById(string id, ImageSize imageSize);

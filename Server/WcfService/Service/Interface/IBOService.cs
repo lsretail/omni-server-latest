@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
 
-using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.Service
@@ -45,9 +43,9 @@ namespace LSOmni.Service
         #region OrderMessage
 
         [OperationContract]
-        OrderMessage OrderMessageSave(OrderMessage orderMessage);
+        void OrderMessageSave(string orderId, int status, string subject, string message);
         [OperationContract]
-        string OrderMessageRequestPayment(string orderId, OrderMessagePayStatus status, decimal amount, string token);
+        string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token);
 
         #endregion OrderMessage
 

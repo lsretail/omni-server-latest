@@ -2,7 +2,6 @@
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 {
@@ -55,9 +54,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string OrderId { get; set; }
         [DataMember]
         public int LineNumber { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public string ItemId { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public string VariantId { get; set; }
         [DataMember]
         public string ItemDescription { get; set; }
@@ -66,6 +65,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string UomId { get; set; }
         [DataMember]
+        public string ItemImageId { get; set; }
+        [DataMember(IsRequired = true)]
         public decimal Quantity { get; set; }
         [DataMember]
         public decimal QuantityOutstanding { get; set; }
@@ -73,7 +74,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public decimal QuantityToInvoice { get; set; }
         [DataMember]
         public decimal QuantityToShip { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = true)]
         public LineType LineType { get; set; }
         [DataMember]
         public decimal DiscountAmount { get; set; }

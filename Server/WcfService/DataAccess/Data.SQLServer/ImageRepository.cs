@@ -108,7 +108,7 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT il.[ImageId],ic.[Width],ic.[Height],ic.[AvgColor] " +
+                    command.CommandText = "SELECT il.[ImageId],ic.[Width],ic.[Height] " +
                                           "FROM [ImageLink] il INNER JOIN [Images] i ON il.[ImageId]=i.[Id] " +
                                           "LEFT OUTER JOIN [ImagesCache] ic ON ic.[Id]=i.[Id] " + 
                                           "WHERE [TableName]='Item' AND [KeyValue]=@id ORDER BY [DisplayOrder] ";
@@ -121,8 +121,6 @@ namespace LSOmni.DataAccess.Dal
                         while (reader.Read())
                         {
                             ImageView imageView = new ImageView(SQLHelper.GetString(reader["ImageId"]));
-                            imageView.AvgColor = SQLHelper.GetString(reader["AvgColor"]);
-
                             int w = SQLHelper.GetInt32(reader["Width"]);
                             int h = SQLHelper.GetInt32(reader["Height"]);
                             imageView.ImgSize = new ImageSize(w, h);
@@ -142,7 +140,7 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT il.[ImageId],ic.[Width],ic.[Height],ic.[AvgColor],i.[Image] " +
+                    command.CommandText = "SELECT il.[ImageId],ic.[Width],ic.[Height],i.[Image] " +
                                           "FROM [ImageLink] il INNER JOIN [Images] i ON il.[ImageId]=i.[Id] " +
                                           "LEFT OUTER JOIN [ImagesCache] ic ON ic.[Id]=i.[Id] " +
                                           "WHERE [TableName]='Member Notification' AND [KeyValue]=@id " +
@@ -156,7 +154,6 @@ namespace LSOmni.DataAccess.Dal
                         while (reader.Read())
                         {
                             ImageView imageView = new ImageView(SQLHelper.GetString(reader["ImageId"]));
-                            imageView.AvgColor = SQLHelper.GetString(reader["AvgColor"]);
                             imageView.ImgBytes = SQLHelper.GetByteArray(reader["Image"]);
 
                             int w = SQLHelper.GetInt32(reader["Width"]);

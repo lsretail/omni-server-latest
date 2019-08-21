@@ -88,7 +88,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public string ReceiptNo { get; set; }
         [DataMember]
         public string TransactionNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TransDate { get; set; }
         [DataMember]
         public string CurrencyCode { get; set; }
@@ -168,7 +168,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public string UomDescription { get; set; }
         [DataMember]
         public string TenderDescription { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TransDate { get; set; }
         [DataMember]
         public string EFTCardNumber { get; set; }
@@ -186,7 +186,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public EFTAuthorizationStatus EFTAuthStatus { get; set; }
         [DataMember]
         public EFTTransactionType EFTTransType { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EFTDateTime { get; set; }
     }
 }

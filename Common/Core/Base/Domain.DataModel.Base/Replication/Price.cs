@@ -95,7 +95,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public decimal UnitPrice { get; set; }
         [DataMember]
         public decimal UnitPriceInclVat { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ModifyDate { get; set; }
         [DataMember]
         public int SaleType { get; set; }
@@ -105,9 +105,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string SaleCode { get; set; }
         [DataMember]
         public string VATPostGroup { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartingDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EndingDate { get; set; }
         [DataMember]
         public decimal MinimumQuantity { get; set; }

@@ -3,24 +3,22 @@ using System.IO;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+
+using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Hospitality.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Transactions;
-using LSRetail.Omni.DiscountEngine.DataModels;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.Service
 {
@@ -155,9 +153,9 @@ namespace LSOmni.Service
         /// Save Basket or Wish List
         /// </summary>
         /// <remarks>
-        /// OneList can be saved, for both Registered Users and Anonymous Users.
-        /// For Anonymous User, keep CardId and ContactId empty, 
-        /// and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
+        /// OneList can be saved, for both Member Contact and Anonymous Users.
+        /// Member Contact can have one or more Member Cards and each Card can have one WishList and one Basket
+        /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
         /// as Omni does not store any information for Anonymous Users.<p/>
         /// Used OneListGetById to get the OneList back.
         /// </remarks>
@@ -287,7 +285,6 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         /// 	"request": {
-        /// 		"AnonymousOrder": "false",
         /// 		"CardId": "10021",
         /// 		"ClickAndCollectOrder": "false",
         /// 		"LineItemCount": "1",
@@ -349,7 +346,6 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         /// 	"request": {
-        /// 		"AnonymousOrder": "false",
         /// 		"CardId": "10021",
         /// 		"ClickAndCollectOrder": "false",
         /// 		"LineItemCount": "1",
@@ -417,7 +413,6 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         /// 	"request": {
-        /// 		"AnonymousOrder": "false",
         /// 		"CardId": "10021",
         /// 		"ClickAndCollectOrder": "false",
         /// 		"LineItemCount": "1",
@@ -495,7 +490,6 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         /// 	"request": {
-        /// 		"AnonymousOrder": "false",
         /// 		"CardId": "10021",
         /// 		"ClickAndCollectOrder": "true",
         /// 		"CollectLocation": "S0001",
@@ -541,22 +535,22 @@ namespace LSOmni.Service
         SalesEntry OrderCreate(Order request);
 
         /// <summary>
-        /// Check Status of an Order made with BasketPostSale (LSNAV 10.02 and older)
+        /// Check Status of a Customer Order
         /// </summary>
-        /// <param name="transactionId">Order GUID Id</param>
+        /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderStatusResponse OrderStatusCheck(string transactionId);
+        OrderStatusResponse OrderStatusCheck(string orderId);
 
         /// <summary>
-        /// Cancel Order made with BasketPostSale
+        /// Cancel Customer Order
         /// </summary>
-        /// <param name="transactionId"></param>
+        /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string OrderCancel(string transactionId);
+        string OrderCancel(string orderId);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -618,52 +612,11 @@ namespace LSOmni.Service
         #region Contact
 
         /// <summary>
-        /// Change password
-        /// </summary>
-        /// <remarks>
-        /// Nav/Central WS: MM_MOBILE_PWD_CHANGE
-        /// </remarks>
-        /// <param name="userName">user name (Nav/Central:LoginID)</param>
-        /// <param name="newPassword">new password (Nav/Central:NewPassword)</param>
-        /// <param name="oldPassword">old password (Nav/Central:OldPassword)</param>
-        /// <returns>true/false</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.ContactIdNotFound</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.PasswordInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.PasswordOldInvalid</description>
-        /// </item>
-        /// </list>
-        /// </exception>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool ChangePassword(string userName, string newPassword, string oldPassword);
-
-        /// <summary>
         /// Create a new contact
         /// </summary>
         /// <remarks>
-        /// Nav/Central WS: MM_MOBILE_CONTACT_CREATE<p/><p/>
+        /// LS Nav/Central WS1 : MM_MOBILE_CONTACT_CREATE<p/><p/>
+        /// LS Nav/Central WS2 : MemberContactCreate<p/><p/>
         /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Nav/Central<p/>
         /// Contact will be assigned to a Member Account.
         /// Member Account has Club and Club has Scheme level.<p/>
@@ -750,59 +703,11 @@ namespace LSOmni.Service
         MemberContact ContactCreate(MemberContact contact);
 
         /// <summary>
-        /// Get contact by contact Id
-        /// </summary>
-        /// <param name="cardId">Card Id</param>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>
-        /// </list>
-        /// </exception>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        MemberContact ContactGetByCardId(string cardId);
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cardId"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        long CardGetPointBalance(string cardId);
-
-        /// <summary>
-        /// Gets Rate value for points (f.ex. 1 point = 0.01 kr)
-        /// </summary>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        decimal GetPointRate();
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
-
-        /// <summary>
         /// Update a contact
         /// </summary>
         /// <remarks>
-        /// Nav/Central WS: MM_MOBILE_CONTACT_UPDATE<p/><p/>
+        /// LS Nav/Central WS1 : MM_MOBILE_CONTACT_UPDATE<p/><p/>
+        /// LS Nav/Central WS2 : MemberContactUpdate<p/><p/>
         /// Contact Id, Username and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
         /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Nav/Central
@@ -873,9 +778,104 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         MemberContact ContactUpdate(MemberContact contact);
 
+        /// <summary>
+        /// Get contact by contact Id
+        /// </summary>
+        /// <param name="cardId">Card Id</param>
+        /// <returns>Contact</returns>
+        /// <exception cref="LSOmniServiceException">StatusCodes returned:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>StatusCode.Error</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.SecurityTokenInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.UserNotLoggedIn</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.DeviceIsBlocked</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.AccessNotAllowed</description>
+        /// </item>
+        /// </list>
+        /// </exception>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        MemberContact ContactGetByCardId(string cardId);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
+
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         double ContactAddCard(string contactId, string cardId, string accountId);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        long CardGetPointBalance(string cardId);
+
+        /// <summary>
+        /// Gets Rate value for points (f.ex. 1 point = 0.01 kr)
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        decimal GetPointRate();
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool DeviceSave(string deviceId, string deviceFriendlyName, string platform, string osVersion, string manufacturer, string model);
+
+        /// <summary>
+        /// Change password
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central WS1 : MM_MOBILE_PWD_CHANGE
+        /// </remarks>
+        /// <param name="userName">user name (Nav/Central:LoginID)</param>
+        /// <param name="newPassword">new password (Nav/Central:NewPassword)</param>
+        /// <param name="oldPassword">old password (Nav/Central:OldPassword)</param>
+        /// <returns>true/false</returns>
+        /// <exception cref="LSOmniServiceException">StatusCodes returned:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>StatusCode.Error</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.SecurityTokenInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.UserNotLoggedIn</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.DeviceIsBlocked</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.AccessNotAllowed</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.ContactIdNotFound</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.PasswordInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.PasswordOldInvalid</description>
+        /// </item>
+        /// </list>
+        /// </exception>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool ChangePassword(string userName, string newPassword, string oldPassword);
 
         /// <summary>
         /// Request a ResetCode to use in Email to send to Member Contact
@@ -940,10 +940,6 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool ResetPassword(string userName, string resetCode, string newPassword);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool DeviceSave(string deviceId, string deviceFriendlyName, string platform, string osVersion, string manufacturer, string model);
 
         /// <summary>
         /// Login user
@@ -1093,10 +1089,6 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails);
 
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        MobileMenu MenusGetAll(string id, string lastVersion);
-
         /// <summary>
         /// Gets Hierarchy setup for a Store with all Leafs and Nodes
         /// </summary>
@@ -1139,11 +1131,7 @@ namespace LSOmni.Service
 
         #endregion
 
-        #region Basket LOY
-
-        #endregion
-
-        #region Images COMMON
+        #region Images
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]

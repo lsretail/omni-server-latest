@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace LSRetail.Omni.Domain.DataModel.Loyalty.Transactions
+namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 {
     //How many tendertypes will Loyalty support. Card, points, coupons ?
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public enum TenderType
+    public enum LoyTenderType
     {
         [EnumMember]
         Cash = 0,
@@ -17,7 +17,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Transactions
         Points = 3,
         [EnumMember]
         WebPay = 4,
-
     }
 }
  

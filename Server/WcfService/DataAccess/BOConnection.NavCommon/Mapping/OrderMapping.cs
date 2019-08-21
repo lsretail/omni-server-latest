@@ -12,6 +12,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public class OrderMapping : BaseMapping
     {
+        private Version NavVersion;
+
+        public OrderMapping(Version navVersion)
+        {
+            NavVersion = navVersion;
+        }
+
         public Order MapFromRootTransactionToOrder(NavWS.RootMobileTransaction root)
         {
             NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
@@ -86,6 +93,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         UomId = mobileTransLine.UomId,
                         LineType = lineType
                     };
+                    if (NavVersion > new Version("14.2"))
+                        line.ItemImageId = mobileTransLine.RetailImageID;
+
                     order.OrderLines.Add(line);
                 }
             }
@@ -173,6 +183,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         UomId = oline.UnitofMeasureCode,
                         LineType = lineType
                     };
+                    if (NavVersion > new Version("14.2"))
+                        line.ItemImageId = oline.RetailImageID;
+
                     cnt += oline.Quantity;
                     order.Lines.Add(line);
                 }
@@ -184,6 +197,116 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             if (root.CustomerOrderPayment != null)
             {
                 foreach (NavWS.CustomerOrderPayment1 line in root.CustomerOrderPayment)
+                {
+                    SalesEntryPayment pay = new SalesEntryPayment()
+                    {
+                        LineNumber = LineNumberFromNav(line.LineNo),
+                        Amount = (line.FinalisedAmount > 0) ? line.FinalisedAmount : line.PreApprovedAmount,
+                        CurrencyCode = line.CurrencyCode,
+                        TenderType = line.TenderType
+                    };
+                    order.Payments.Add(pay);
+                }
+            }
+
+            return order;
+        }
+
+        public SalesEntry MapFromRootV2ToSalesEntry(NavWS.RootCustomerOrderGetV2 root)
+        {
+            NavWS.CustomerOrderGetCOHeaderV2 header = root.CustomerOrderGetCOHeaderV2.FirstOrDefault();
+
+            SalesEntry order = new SalesEntry()
+            {
+                Id = header.DocumentID,
+                TerminalId = header.TerminalNo,
+                StoreId = header.StoreNo,
+                CardId = header.MemberCardNo,
+                ExternalId = header.ExternalID,
+                ClickAndCollectOrder = header.ClickandCollectOrder,
+                AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
+                DocumentRegTime = header.Created,
+                ShippingAgentCode = header.ShippingAgentCode,
+                ShipToEmail = header.ShiptoEmail,
+                ShipToName = header.ShiptoName,
+                ShipToPhoneNumber = header.ShiptoPhoneNo,
+                ShippingAgentServiceCode = header.ShippingAgentServiceCode,
+                ShipToAddress = new Address()
+                {
+                    Address1 = header.ShiptoAddress,
+                    Address2 = header.ShiptoAddress2,
+                    City = header.ShiptoCity,
+                    Country = header.ShiptoCountryRegionCode,
+                    PostCode = header.ShiptoPostCode,
+                    StateProvinceRegion = header.ShiptoCounty
+                }
+            };
+
+            //now loop thru the discount lines
+            order.DiscountLines = new List<SalesEntryDiscountLine>();
+            if (root.CustomerOrderGetCODiscountLineV2 != null)
+            {
+                foreach (NavWS.CustomerOrderGetCODiscountLineV2 line in root.CustomerOrderGetCODiscountLineV2)
+                {
+                    SalesEntryDiscountLine discount = new SalesEntryDiscountLine()
+                    {
+                        //DiscountType: Periodic Disc.,Customer,InfoCode,Total,Line,Promotion,Deal,Total Discount,Tender Type,Item Point,Line Discount,Member Point,Coupon
+                        DiscountType = (DiscountType)line.DiscountType,
+                        PeriodicDiscType = (PeriodicDiscType)line.PeriodicDiscType,
+                        DiscountPercent = line.DiscountPercent,
+                        DiscountAmount = line.DiscountAmount,
+                        Description = line.Description,
+                        No = line.EntryNo.ToString(),
+                        OfferNumber = line.OfferNo,
+                        LineNumber = LineNumberFromNav(line.LineNo)
+                    };
+                    order.DiscountLines.Add(discount);
+                }
+            }
+
+            //now loop thru the lines
+            decimal cnt = 0;
+            order.Lines = new List<SalesEntryLine>();
+            if (root.CustomerOrderGetCOLineV2 != null)
+            {
+                foreach (NavWS.CustomerOrderGetCOLineV2 oline in root.CustomerOrderGetCOLineV2)
+                {
+                    LineType lineType = (LineType)Convert.ToInt32(oline.LineType);
+                    if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
+                        continue;
+
+                    SalesEntryLine line = new SalesEntryLine()
+                    {
+                        LineNumber = LineNumberFromNav(oline.LineNo),
+                        ItemId = oline.Number,
+                        Quantity = oline.Quantity,
+                        DiscountAmount = oline.DiscountAmount,
+                        DiscountPercent = oline.DiscountPercent,
+                        Price = oline.Price,
+                        NetPrice = oline.NetPrice,
+                        Amount = oline.Amount,
+                        NetAmount = oline.NetAmount,
+                        TaxAmount = oline.VatAmount,
+                        ItemDescription = oline.ItemDescription,
+                        VariantId = oline.VariantCode,
+                        VariantDescription = oline.VariantDescription,
+                        UomId = oline.UnitofMeasureCode,
+                        LineType = lineType
+                    };
+                    if (NavVersion > new Version("14.2"))
+                        line.ItemImageId = oline.RetailImageID;
+
+                    cnt += oline.Quantity;
+                    order.Lines.Add(line);
+                }
+            }
+            order.LineItemCount = (int)cnt;
+
+            //now loop thru the discount lines
+            order.Payments = new List<SalesEntryPayment>();
+            if (root.CustomerOrderGetCOPaymentV2 != null)
+            {
+                foreach (NavWS.CustomerOrderGetCOPaymentV2 line in root.CustomerOrderGetCOPaymentV2)
                 {
                     SalesEntryPayment pay = new SalesEntryPayment()
                     {
@@ -212,14 +335,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         StoreId = header.StoreNo,
                         CardId = header.MemberCardNo,
                         AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
-                        DocumentRegTime = header.DocumentDateTime
+                        DocumentRegTime = header.Created,
+                        ShipToName = header.FullName
                     });
                 }
             }
             return list;
         }
 
-        public NavWS.RootCustomerOrderCreateV2 MapFromOrderV2ToRoot(Order order, Version navVersion)
+        public NavWS.RootCustomerOrderCreateV2 MapFromOrderV2ToRoot(Order order)
         {
             NavWS.RootCustomerOrderCreateV2 root = new NavWS.RootCustomerOrderCreateV2();
 
@@ -260,10 +384,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 CreatedAtStore = string.Empty,
                 TerritoryCode = string.Empty,
                 SourcingLocation = string.Empty,
-                ReceiptNo = string.Empty,
+                ReceiptNo = new string[] { string.Empty }
             });
 
-            if (navVersion > new Version("13.4"))
+            if (NavVersion > new Version("13.4"))
                 header[0].CustomerNo = string.Empty;
 
             root.CustomerOrderHeaderV2 = header.ToArray();
@@ -344,7 +468,131 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootCustomerOrder MapFromOrderToRoot(Order order, Version navVersion)
+        public NavWS.RootCustomerOrderCreateV3 MapFromOrderV3ToRoot(Order order)
+        {
+            NavWS.RootCustomerOrderCreateV3 root = new NavWS.RootCustomerOrderCreateV3();
+
+            List<NavWS.CustomerOrderCreateCOHeaderV3> header = new List<NavWS.CustomerOrderCreateCOHeaderV3>();
+            header.Add(new NavWS.CustomerOrderCreateCOHeaderV3()
+            {
+                DocumentID = string.Empty,
+                ExternalID = order.Id.ToUpper(),
+                StoreNo = (order.ClickAndCollectOrder && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
+                MemberCardNo = GetString(order.CardId),
+                Name = GetString(order.ContactName),
+                SourceType = 1, //NAV POS = 0, Omni = 1
+                Address = GetString(order.ContactAddress.Address1),
+                Address2 = GetString(order.ContactAddress.Address2),
+                HouseApartmentNo = GetString(order.ContactAddress.HouseNo),
+                City = GetString(order.ContactAddress.City),
+                County = GetString(order.ContactAddress.StateProvinceRegion),
+                PostCode = GetString(order.ContactAddress.PostCode),
+                CountryRegionCode = GetString(order.ContactAddress.Country),
+                PhoneNo = GetString(order.PhoneNumber),
+                MobilePhoneNo = GetString(order.MobileNumber),
+                DaytimePhoneNo = GetString(order.DayPhoneNumber),
+                Email = GetString(order.Email),
+                ShipToName = GetString(order.ShipToName),
+                ShipToAddress = GetString(order.ShipToAddress.Address1),
+                ShipToAddress2 = GetString(order.ShipToAddress.Address2),
+                ShipToHouseApartmentNo = GetString(order.ShipToAddress.HouseNo),
+                ShipToCity = GetString(order.ShipToAddress.City),
+                ShipToCounty = GetString(order.ShipToAddress.StateProvinceRegion),
+                ShipToPostCode = GetString(order.ShipToAddress.PostCode),
+                ShipToCountryRegionCode = GetString(order.ShipToAddress.Country),
+                ShipToPhoneNo = GetString(order.ShipToPhoneNumber),
+                ShipToEmail = GetString(order.ShipToEmail),
+                ClickAndCollectOrder = order.ClickAndCollectOrder,
+                ShippingAgentCode = GetString(order.ShippingAgentCode),
+                ShippingAgentServiceCode = GetString(order.ShippingAgentServiceCode),
+                CustomerNo = string.Empty,
+                CreatedAtStore = string.Empty,
+                TerritoryCode = string.Empty,
+                SourcingLocation = string.Empty
+            });
+
+            if (NavVersion > new Version("13.4"))
+                header[0].CustomerNo = string.Empty;
+
+            root.CustomerOrderCreateCOHeaderV3 = header.ToArray();
+
+            List<NavWS.CustomerOrderCreateCOLineV3> orderLines = new List<NavWS.CustomerOrderCreateCOLineV3>();
+            foreach (OrderLine line in order.OrderLines)
+            {
+                orderLines.Add(new NavWS.CustomerOrderCreateCOLineV3()
+                {
+                    DocumentID = string.Empty,
+                    LineNo = LineNumberToNav(line.LineNumber),
+                    LineType = Convert.ToInt32(line.LineType).ToString(),
+                    Number = line.ItemId,
+                    VariantCode = GetString(line.VariantId),
+                    UnitofMeasureCode = GetString(line.UomId),
+                    Quantity = line.Quantity,
+                    DiscountAmount = line.DiscountAmount,
+                    DiscountPercent = line.DiscountPercent,
+                    Amount = line.Amount,
+                    NetAmount = line.NetAmount,
+                    VatAmount = line.TaxAmount,
+                    Price = line.Price,
+                    NetPrice = line.NetPrice,
+                    Status = string.Empty,
+                    LeadTimeCalculation = string.Empty,
+                    PurchaseOrderNo = string.Empty,
+                    OrderReference = string.Empty,
+                    SourcingLocation = string.Empty
+                });
+            }
+            root.CustomerOrderCreateCOLineV3 = orderLines.ToArray();
+
+            List<NavWS.CustomerOrderCreateCODiscountLineV3> discLines = new List<NavWS.CustomerOrderCreateCODiscountLineV3>();
+            if (order.OrderDiscountLines != null)
+            {
+                foreach (OrderDiscountLine line in order.OrderDiscountLines)
+                {
+                    discLines.Add(new NavWS.CustomerOrderCreateCODiscountLineV3()
+                    {
+                        DocumentID = string.Empty,
+                        LineNo = LineNumberToNav(line.LineNumber),
+                        EntryNo = Convert.ToInt32(line.No),
+                        DiscountType = (int)line.DiscountType,
+                        OfferNo = GetString(line.OfferNumber),
+                        PeriodicDiscType = (int)line.PeriodicDiscType,
+                        PeriodicDiscGroup = GetString(line.PeriodicDiscGroup),
+                        Description = GetString(line.Description),
+                        DiscountPercent = line.DiscountPercent,
+                        DiscountAmount = line.DiscountAmount
+                    });
+                }
+            }
+            root.CustomerOrderCreateCODiscountLineV3 = discLines.ToArray();
+
+            List<NavWS.CustomerOrderCreateCOPaymentV3> payLines = new List<NavWS.CustomerOrderCreateCOPaymentV3>();
+            if (order.OrderPayments != null)
+            {
+                foreach (OrderPayment line in order.OrderPayments)
+                {
+                    payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV3()
+                    {
+                        DocumentID = string.Empty,
+                        LineNo = LineNumberToNav(line.LineNumber),
+                        PreApprovedAmount = line.PreApprovedAmount,
+                        TenderType = line.TenderType,
+                        CardType = GetString(line.CardType),
+                        CurrencyCode = GetString(line.CurrencyCode),
+                        CurrencyFactor = line.CurrencyFactor,
+                        AuthorisationCode = GetString(line.AuthorisationCode),
+                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        CardorCustomernumber = GetString(line.CardNumber),
+                        IncomeExpenseAccountNo = string.Empty,
+                        StoreNo = string.Empty
+                    });
+                }
+            }
+            root.CustomerOrderCreateCOPaymentV3 = payLines.ToArray();
+            return root;
+        }
+
+        public NavWS.RootCustomerOrder MapFromOrderToRoot(Order order)
         {
             NavWS.RootCustomerOrder root = new NavWS.RootCustomerOrder();
 
@@ -377,14 +625,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToPhoneNo = GetString(order.ShipToPhoneNumber),
                 ShipToEmail = GetString(order.ShipToEmail),
                 ClickAndCollectOrder = order.ClickAndCollectOrder,
-                AnonymousOrder = order.AnonymousOrder,
+                AnonymousOrder = string.IsNullOrEmpty(order.CardId),
                 ShippingAgentCode = GetString(order.ShippingAgentCode),
                 ShippingAgentServiceCode = GetString(order.ShippingAgentServiceCode),
                 SourcingLocation = string.Empty,
-                ReceiptNo = string.Empty,
+                ReceiptNo = new string[] { string.Empty }
             });
 
-            if (navVersion > new Version("13.4"))
+            if (NavVersion > new Version("13.4"))
                 header[0].CustomerNo = string.Empty;
 
             root.CustomerOrderHeader = header.ToArray();
@@ -499,7 +747,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             List<NavWS.MobileTransactionLine> transLines = new List<NavWS.MobileTransactionLine>();
             foreach (OneListItem line in list.Items)
             {
-                transLines.Add(new NavWS.MobileTransactionLine()
+                NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
                 {
                     Id = root.MobileTransaction[0].Id,
                     LineNo = LineNumberToNav(lineno++),
@@ -542,7 +790,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     UomDescription = string.Empty,
                     VariantDescription = string.Empty,
                     TransDate = DateTime.Now
-                });
+                };
+                if (NavVersion > new Version("14.2"))
+                    tline.RetailImageID = string.Empty;
+                transLines.Add(tline);
             }
 
             //Coupons

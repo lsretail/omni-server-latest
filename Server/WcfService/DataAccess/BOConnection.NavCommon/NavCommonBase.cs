@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping;
 using LSRetail.Omni.Domain.DataModel.Base;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon
 {
@@ -32,6 +33,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         private string ecomAppId = string.Empty;
         private string ecomAppType = string.Empty;
+
+        private string pgtablename = "Product Group";
 
         public NavCommonBase(BOConfiguration configuration, bool ping = false)
         {
@@ -79,10 +82,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (NAVVersion == null)
             {
                 navWebReference = new NavWebReference.RetailWebServices();
-                config.Settings.TryGetValue(ConfigKey.BOUrl.ToString(), out string url);
-                navWebReference.Url = url;
+                
+                navWebReference.Url = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value;
                 //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
-                config.Settings.TryGetValue(ConfigKey.BOTimeout.ToString(), out string timeout);
+                string timeout = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value;
                 navWebReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
 
                 //dont set the credentials unless we have them. Can use the app pool too.
@@ -111,6 +114,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 navWS.PreAuthenticate = true;
                 navWS.AllowAutoRedirect = true;
             }
+
+            if (NAVVersion > new Version("14.2"))
+                pgtablename = "Retail Product Group";
         }
 
         public string TenderTypeMapping(string tenderMapping, string tenderType, bool toOmni)
@@ -159,9 +165,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         }
 
 
-        public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out bool endoftable, out int totalrecs)
+        public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
         {
-            endoftable = true;
+            bool endoftable = true;
             totalrecs = 0;
 
             if (string.IsNullOrEmpty(appid) && string.IsNullOrEmpty(apptype))
@@ -402,7 +408,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (ret == "1921")
             {
                 // App is not registered, so lets register it
-                xmlRequest = xml.RegisterApplicationRequestXML();
+                xmlRequest = xml.RegisterApplicationRequestXML(NAVVersion);
                 xmlResponse = RunOperation(xmlRequest);
                 HandleResponseCode(ref xmlResponse);
 
@@ -508,7 +514,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 string regex = "<" + nodeName + ">.*?</" + nodeName + ">"; //strip out 
                 return System.Text.RegularExpressions.Regex.Replace(xml, regex, "<" + nodeName + ">XXX</" + nodeName + ">");
             }
-            catch { return xml; }
+            catch
+            {
+                return xml;
+            }
         }
 
         //first time executing this I check if this is nav 7 or 6 web service
@@ -818,7 +827,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     statusCode = StatusCode.PriceChangeNotAllowed;
                     break;
                 case "1610":
-                    statusCode = StatusCode.PriceToHigh;
+                    statusCode = StatusCode.PriceTooHigh;
                     break;
                 case "1611":
                     statusCode = StatusCode.InvalidDiscPercent;

@@ -53,7 +53,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string AuthorisationCode { get; set; }
         [DataMember]
         public string CardNumber { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PreApprovedValidDate { get; set; }
     }
 }

@@ -19,8 +19,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         private const string CalculatieBasketRequestId = "WI_NC_CALCULATE_BASKET";
         private const string CalculatieBasketNewRequestId = "ECOMM_CALCULATE_BASKET";
         private const string CreateOrderRequestId = "WI_NC_CREATE_ORDER";
-        private const string OrderStatusRequestId = "WI_NC_ORDER_STATUS";
-        private const string OrderCancelRequestId = "WEB_POS_CANCEL_CUSTOMER_ORDER";
 
         public BasketXml()
         {
@@ -611,110 +609,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 rs.OrderDiscountLines.Add(rsld);
             }
             return rs;
-        }
-
-        public string OrderStatusRequestXML(string webTransactionGuid)
-        {
-            #region xml
-            /*
-            <?xml version="1.0" encoding="utf-8" standalone="no"?> <Request>
-              <Request_ID>WI_NC_ORDER_STATUS</Request_ID>
-              <Request_Body>
-                <WebTransactionGUID>x</WebTransactionGUID>
-              </Request_Body>
-            </Request>
-             */
-            #endregion xml
-
-            // Create the XML Declaration
-            XElement root =
-                new XElement("Request",
-                    new XElement("Request_ID", OrderStatusRequestId),
-                    new XElement("Request_Body",
-                        new XElement("WebTransactionGUID", webTransactionGuid)
-                    )
-                );
-            ;
-            XDocument doc = new XDocument(new XDeclaration("1.0", wsEncoding, "no"));
-            doc.Add(root);
-            return doc.ToString();
-        }
-
-        public OrderStatusResponse OrderStatusResponseXML(string responseXml)
-        {
-            #region xml
-            /*
-            <?xml version="1.0" encoding="utf-8" standalone="no"?>
-            <Response>
-                <Request_ID>WI_NC_ORDER_STATUS</Request_ID>
-                <Response_Code>0000</Response_Code>
-                <Response_Text></Response_Text>
-                <Response_Body>
-                    <WebOrderStatus></WebOrderStatus>
-                    <WebOrderShippingStatus></WebOrderShippingStatus>
-                    <DocumentType></DocumentType>
-                    <DocumentNo></DocumentNo>
-                </Response_Body>
-            </Response>
-
-             */
-            #endregion
-
-            OrderStatusResponse rs = new OrderStatusResponse();
-
-            XDocument doc = XDocument.Parse(responseXml);
-            XElement body = doc.Element("Response").Element("Response_Body");
-            if (body.Element("WebOrderStatus") == null)
-                throw new XmlException("WebOrderStatus node not found in response xml");
-            rs.WebOrderStatus = body.Element("WebOrderStatus").Value;
-
-            if (body.Element("WebOrderShippingStatus") == null)
-                throw new XmlException("WebOrderShippingStatus node not found in response xml");
-            rs.WebOrderShippingStatus = body.Element("WebOrderShippingStatus").Value;
-
-            if (body.Element("WebOrderPaymentStatus") != null)
-                rs.WebOrderPaymentStatus = body.Element("WebOrderPaymentStatus").Value;
-
-            if (body.Element("DocumentType") == null)
-                throw new XmlException("DocumentType node not found in response xml");
-            rs.DocumentType = body.Element("DocumentType").Value;
-
-            if (body.Element("DocumentNo") == null)
-                throw new XmlException("DocumentNo node not found in response xml");
-            rs.DocumentNo = body.Element("DocumentNo").Value;
-
-            return rs;
-        }
-
-        public string OrderCancelRequestXML(string webTransactionGuid)
-        {
-            #region xml
-            /*
-            <?xml version="1.0" encoding="utf-8" standalone="no"?> <Request>
-              <Request_ID>WEB_POS_CANCEL_CUSTOMER_ORDER</Request_ID>
-              <Request_Body>
-                <WI_NC_Web_Order_Status>
-                  <Web_Transaction_GUID>x</Web_Transaction_GUID>
-                </WI_NC_Web_Order_Status>
-              </Request_Body>
-            </Request>
-             */
-            #endregion xml
-
-            // Create the XML Declaration
-            XElement root =
-                new XElement("Request",
-                    new XElement("Request_ID", OrderCancelRequestId),
-                    new XElement("Request_Body",
-                        new XElement("WI_NC_Web_Order_Status",
-                            new XElement("Web_Transaction_GUID", webTransactionGuid)
-                        )
-                    )
-                );
-            ;
-            XDocument doc = new XDocument(new XDeclaration("1.0", wsEncoding, "no"));
-            doc.Add(root);
-            return doc.ToString();
         }
     }
 }

@@ -17,13 +17,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
+        private string pgtablename = "Product Group";
+        private string pgfieldname = "Product Group Code";
+
         public ItemCategoryRepository(BOConfiguration config) : base(config)
         {
+            if (NavVersion > new Version("14.2"))
+            {
+                pgtablename = "Retail Product Group";
+                pgfieldname = "Retail Product Code";
+            }
+
             sqlcolumns = "mt.[Code],mt.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Category] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Product Group] pg ON pg.[Item Category Code]=mt.[Code]" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[Product Group Code]=pg.[Code]";
+                      " LEFT OUTER JOIN [" + navCompanyName + pgtablename + "] pg ON pg.[Item Category Code]=mt.[Code]" +
+                      " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[" + pgfieldname + "]=pg.[Code]";
         }
 
         public List<ReplItemCategory> ReplicateItemCategory(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -38,13 +47,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(DISTINCT mt.[Code])";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
-                }
+                sql = "SELECT COUNT(DISTINCT mt.[Code])" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplItemCategory> list = new List<ReplItemCategory>();
@@ -134,8 +139,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + 
                             " WHERE EXISTS(" +
-                            " SELECT 1 FROM [" + navCompanyName + "Product Group] pg " +
-                            " INNER JOIN [" + navCompanyName + "Item] i ON i.[Product Group Code]=pg.Code " +
+                            " SELECT 1 FROM [" + navCompanyName + pgtablename + "] pg " +
+                            " INNER JOIN [" + navCompanyName + "Item] i ON i.[" + pgfieldname + "]=pg.[Code] " +
                             " WHERE mt.[Code]=pg.[Item Category Code])" +
                             GetSQLStoreDist("it.[No_]", storeId, true) +
                             " ORDER BY mt.[Description]";

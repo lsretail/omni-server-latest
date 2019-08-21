@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017"), KnownType(typeof(MenuItem))]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
     public class Item : Entity, IAggregateRoot, IDisposable
     {
         [DataMember]

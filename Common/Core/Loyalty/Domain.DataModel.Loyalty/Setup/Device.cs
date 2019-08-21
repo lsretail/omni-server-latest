@@ -59,7 +59,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public string BlockedBy;
         [DataMember]
         public string BlockedReason;
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime BlockedDate;
     }
 }

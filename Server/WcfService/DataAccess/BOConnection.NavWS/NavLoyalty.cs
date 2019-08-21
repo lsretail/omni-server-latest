@@ -4,19 +4,18 @@ using System.Collections.Generic;
 using LSOmni.DataAccess.Interface.BOConnection;
 
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -173,7 +172,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.StoreSearch(search);
         }
 
-        public virtual List<Profile> ProfileSearch(string contactId, string search)
+        public virtual List<Profile> ProfileSearch(string cardId, string search)
         {
             return NavWSBase.ProfileSearch(search);
         }
@@ -303,9 +302,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
         {
             if (type == DocumentIdType.Receipt)
-            {
-                //NavWSBase.TransactionByReceiptNumber(string.Empty, string.Empty, entryId, string.Empty);
-            }
+                return NavWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
 
             return NavWSBase.OrderGet(entryId);
         }
@@ -328,14 +325,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #region Order
 
-        public virtual OrderStatusResponse OrderStatusCheck(string transactionId)
+        public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
-            return NavWSBase.OrderStatusCheck(transactionId);
+            if (NAVVersion < new Version("13.5"))
+                return new OrderStatusResponse();
+
+            return NavWSBase.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string transactionId)
+        public virtual void OrderCancel(string orderId)
         {
-            NavWSBase.OrderCancel(transactionId);
+            if (NAVVersion < new Version("13.5"))
+                return;
+
+            NavWSBase.OrderCancel(orderId);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
@@ -369,23 +372,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #endregion
 
-        #region Menu
-
-        public virtual MobileMenu MenusGet(string storeId, Currency currency)
-        {
-            return NavWSBase.MenusGet(storeId, currency);
-        }
-
-        #endregion
-
         #region Image
 
-        public virtual ImageView ImageBOGetById(string imageId)
+        public virtual ImageView ImageGetById(string imageId, bool includeBlob)
         {
-            return NavWSBase.ImageGetById(imageId);
+            return NavWSBase.ImageGetById(imageId, includeBlob);
         }
 
-        public virtual List<ImageView> ImageBOGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
+        public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
         {
             return NavWSBase.ImagesGetByLink(tableName, key1, key2, key3);
         }
@@ -485,7 +479,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }

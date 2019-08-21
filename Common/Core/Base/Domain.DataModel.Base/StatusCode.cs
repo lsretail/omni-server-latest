@@ -259,7 +259,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         PriceChangeNotAllowed = 1609,
         [EnumMember]
-        PriceToHigh = 1610,
+        PriceTooHigh = 1610,
         [EnumMember]
         InvalidDiscPercent = 1611,
         [EnumMember]
@@ -408,9 +408,43 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         #endregion hospPos
 
-        //Inventory
+        //Inventory - LSOne
         [EnumMember]
         VendorNotFound = 5001,
+        [EnumMember]
+        DocumentError = 5002,
+        [EnumMember]
+        TemplateNotFound = 5003,
+        [EnumMember]
+        DocumentNotFound = 5004,
+        [EnumMember]
+        MissingUnitConversion = 5005,
+        [EnumMember]
+        NoLinesToPost = 5006,
+        [EnumMember]
+        AlreadyPosted = 5007,
+        [EnumMember]
+        AlreadyProcessing = 5008,
+        [EnumMember]
+        InvalidReceivingQty = 5009,
+        [EnumMember]
+        NoVendorItems = 5010,
+        [EnumMember]
+        TransferOrderNotFound = 5011,
+        [EnumMember]
+        TransferOrderProcessing = 5012,
+        [EnumMember]
+        TransferOrderReceived = 5013,
+        [EnumMember]
+        TransferOrderFetched = 5014,
+        [EnumMember]
+        TransferOrderSent = 5015,
+        [EnumMember]
+        TransferOrderRejected = 5016,
+
+        //POS - LSOne
+        [EnumMember]
+        InvalidSuspensionWithPartialPayment = 6001,
 
         //New Core added
         [EnumMember]

@@ -8,7 +8,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Currencies
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017"), KnownType(typeof(UnknownCurrencyExchRate))]
     public class CurrencyExchRate : Entity, IAggregateRoot
     {
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartingDate { get; set; }
         [DataMember]
         public decimal CurrencyFactor { get; set; }

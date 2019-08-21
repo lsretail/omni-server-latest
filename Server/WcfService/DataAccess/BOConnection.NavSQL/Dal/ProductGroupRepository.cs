@@ -17,11 +17,20 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
+        private string tablename = "Product Group";
+        private string fieldname = "Product Group Code";
+
         public ProductGroupRepository(BOConfiguration config) : base(config)
         {
+            if (NavVersion > new Version("14.2"))
+            {
+                tablename = "Retail Product Group";
+                fieldname = "Retail Product Code";
+            }
+
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Item Category Code]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Product Group] mt";
+            sqlfrom = " FROM [" + navCompanyName + tablename + "] mt";
         }
 
         public List<ReplProductGroup> ReplicateProductGroups(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -29,21 +38,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            List<JscKey> keys = GetPrimaryKeys("Product Group");
+            List<JscKey> keys = GetPrimaryKeys(tablename);
             string prevLastKey = lastKey;
-            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[Product Group Code]=mt.[Code]";
+            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[" + fieldname + "]=mt.[Code]";
 
             // get records remaining
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(DISTINCT mt.[Code])";
-                if (batchSize > 0)
-                {
-                    sql += sqlfrom2 + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
-                }
+                sql = "SELECT COUNT(DISTINCT mt.[Code])" + sqlfrom2 + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, (batchSize > 0) ? keys : null, ref maxKey);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplProductGroup> list = new List<ReplProductGroup>();
@@ -244,14 +249,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ItemCategoryId = SQLHelper.GetString(reader["Item Category Code"])
             };
 
-            prgr.Images = imgrepo.ImageGetByKey("Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 1, false);
+            prgr.Images = imgrepo.ImageGetByKey(tablename, prgr.ItemCategoryId, prgr.Id, string.Empty, 1, false);
 
             if (includeItems)
             {
                 ItemRepository itrep = new ItemRepository(config);
                 prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail);
                 ImageRepository imrep = new ImageRepository(config);
-                prgr.Images = imrep.ImageGetByKey("Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
+                prgr.Images = imrep.ImageGetByKey(tablename, prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }
             else
             {

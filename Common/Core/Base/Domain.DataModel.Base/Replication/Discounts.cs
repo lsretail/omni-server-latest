@@ -94,9 +94,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string CustomerDiscountGroup { get; set; }
         [DataMember]
         public string LoyaltySchemeCode { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FromDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ToDate { get; set; }
         [DataMember]
         public string UnitOfMeasureId { get; set; }
@@ -110,7 +110,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public decimal DiscountValue { get; set; }
         [DataMember]
         public string OfferNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ModifyDate { get; set; }
         [DataMember]
         public ReplDiscountType Type { get; set; }
@@ -220,57 +220,57 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string Id { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EndDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartTime { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EndTime { get; set; }
         [DataMember]
         public bool TimeWithinBounds { get; set; }
         [DataMember]
         public bool EndAfterMidnight { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime MondayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime MondayEnd { get; set; }
         [DataMember]
         public bool MondayWithinBounds { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TuesdayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TuesdayEnd { get; set; }
         [DataMember]
         public bool TuesdayWithinBounds { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime WednesdayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime WednesdayEnd { get; set; }
         [DataMember]
         public bool WednesdayWithinBounds { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ThursdayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ThursdayEnd { get; set; }
         [DataMember]
         public bool ThursdayWithinBounds { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FridayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FridayEnd { get; set; }
         [DataMember]
         public bool FridayWithinBounds { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SaturdayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SaturdayEnd { get; set; }
         [DataMember]
         public bool SaturdayWithinBounds { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SundayStart { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime SundayEnd { get; set; }
         [DataMember]
         public bool SundayWithinBounds { get; set; }

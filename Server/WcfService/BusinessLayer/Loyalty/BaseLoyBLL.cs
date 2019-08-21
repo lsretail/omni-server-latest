@@ -54,9 +54,6 @@ namespace LSOmni.BLL.Loyalty
 
         #endregion
 
-        private static object lockObject = new object();
-        private static string LicenseKey = string.Empty;
-
         public BaseLoyBLL(BOConfiguration config, int timeoutInSeconds) : this(config, "", timeoutInSeconds)
         {
 
@@ -110,12 +107,12 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        protected string SendToEcom(object obj)
+        protected string SendToEcom(string command, object obj)
         {
             try
             {
                 string payloadJson = new JavaScriptSerializer().Serialize(obj);
-                string ecomUrl = config.SettingsGetByKey(ConfigKey.EcommUrl);
+                string ecomUrl = config.SettingsGetByKey(ConfigKey.EComUrl);
 
                 if (string.IsNullOrEmpty(ecomUrl))
                     return "ERROR: Missing Ecom.Url in Appsettings";
@@ -123,7 +120,7 @@ namespace LSOmni.BLL.Loyalty
                 if (ecomUrl.ToUpper() == "DEMO")
                     return "OK";
 
-                Uri url = new Uri(ecomUrl);
+                Uri url = new Uri(ecomUrl + "/" + command);
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";

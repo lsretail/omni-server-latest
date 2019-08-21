@@ -53,7 +53,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             root.ContactCreateParameters = member.ToArray();
 
             List<NavWS.MemberAttributeValue> attr = new List<NavWS.MemberAttributeValue>();
-            if(contact.Profiles != null) { 
+            if (contact.Profiles != null)
+            {
                 foreach (Profile prof in contact.Profiles)
                 {
                     attr.Add(new NavWS.MemberAttributeValue()
@@ -103,17 +104,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             };
 
             List<NavWS.MemberAttributeValue1> attr = new List<NavWS.MemberAttributeValue1>();
-            //if (contact.Profiles != null)
-            //{
-            //    foreach (Profile prof in contact.Profiles)
-            //    {
-            //        attr.Add(new NavWS.MemberAttributeValue1()
-            //        {
-            //            AttributeCode = prof.Id,
-            //            AttributeValue = (prof.ContactValue) ? "Yes" : "No"
-            //        });
-            //    }
-            //}
+            if (contact.Profiles != null)
+            {
+                foreach (Profile prof in contact.Profiles)
+                {
+                    attr.Add(new NavWS.MemberAttributeValue1()
+                    {
+                        AttributeCode = prof.Id,
+                        AttributeValue = (prof.ContactValue) ? "Yes" : "No"
+                    });
+                }
+            }
 
             NavWS.RootMemberContactCreate1 root = new NavWS.RootMemberContactCreate1();
             root.ContactCreateParameters = member.ToArray();
@@ -133,7 +134,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,
                 LastName = contact.Surname,
-                Gender =  (Gender)Convert.ToInt32(contact.Gender),
+                Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 Phone = contact.PhoneNo,
                 MobilePhone = contact.MobilePhoneNo,
@@ -270,20 +271,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
         private List<ImageView> GetMemberNotificationImages(NavWS.MemberNotificationImages[] imgs, string notificationId)
         {
             List<ImageView> list = new List<ImageView>();
-
             if (imgs == null)
                 return list;
 
             foreach (NavWS.MemberNotificationImages img in imgs)
             {
-                if(img.KeyValue == notificationId)
+                if (img.KeyValue == notificationId)
                     list.Add(new ImageView()
                     {
                         Id = img.ImageId,
                         DisplayOrder = img.DisplayOrder
                     });
             }
-
             return list;
         }
 
@@ -295,7 +294,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             foreach (NavWS.PublishedOfferLine line in lines.Where(x => x.PublishedOfferNo == offerId))
             {
-                OfferDiscountType discountType = (OfferDiscountType) Convert.ToInt32(line.DiscountType);
+                OfferDiscountType discountType = (OfferDiscountType)Convert.ToInt32(line.DiscountType);
                 list.Add(new PublishedOfferLine()
                 {
                     Id = line.DiscountLineId,
@@ -320,31 +319,31 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 case OfferDiscountType.Promotion:
                 case OfferDiscountType.Deal:
-                {
-                    switch (discountLineType)
                     {
-                        case 0: return OfferDiscountLineType.Item;
-                        case 1: return OfferDiscountLineType.ProductGroup;
-                        case 2: return OfferDiscountLineType.ItemCategory;
-                        case 3: return OfferDiscountLineType.All;
-                        case 4: return OfferDiscountLineType.PLUMenu;
-                        case 5: return OfferDiscountLineType.DealModifier;
-                        case 6: return OfferDiscountLineType.SpecialGroup;
+                        switch (discountLineType)
+                        {
+                            case 0: return OfferDiscountLineType.Item;
+                            case 1: return OfferDiscountLineType.ProductGroup;
+                            case 2: return OfferDiscountLineType.ItemCategory;
+                            case 3: return OfferDiscountLineType.All;
+                            case 4: return OfferDiscountLineType.PLUMenu;
+                            case 5: return OfferDiscountLineType.DealModifier;
+                            case 6: return OfferDiscountLineType.SpecialGroup;
+                        }
+                        break;
                     }
-                    break;
-                }
                 case OfferDiscountType.Coupon:
-                {
-                    switch (discountLineType)
                     {
-                        case 0: return OfferDiscountLineType.Item;
-                        case 1: return OfferDiscountLineType.ProductGroup;
-                        case 2: return OfferDiscountLineType.ItemCategory;
-                        case 3: return OfferDiscountLineType.SpecialGroup;
-                        case 4: return OfferDiscountLineType.All;
+                        switch (discountLineType)
+                        {
+                            case 0: return OfferDiscountLineType.Item;
+                            case 1: return OfferDiscountLineType.ProductGroup;
+                            case 2: return OfferDiscountLineType.ItemCategory;
+                            case 3: return OfferDiscountLineType.SpecialGroup;
+                            case 4: return OfferDiscountLineType.All;
+                        }
+                        break;
                     }
-                    break;
-                } 
             }
             return (OfferDiscountLineType)discountLineType;
         }
