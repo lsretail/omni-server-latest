@@ -87,7 +87,8 @@ namespace LSOmni.Common.Util
 				Encoding = Encoding.Unicode,
 				OmitXmlDeclaration = true,
 				ConformanceLevel = prettyPrint ? ConformanceLevel.Document : ConformanceLevel.Fragment,
-				Indent = true
+				Indent = true,
+				CheckCharacters = false
 			};
 
 			using (MemoryStream ms = new MemoryStream())
@@ -101,7 +102,7 @@ namespace LSOmni.Common.Util
 				};
 
 				ms.Position = 0;
-				using (StreamReader sr = new StreamReader(ms))
+				using (StreamReader sr = new StreamReader(ms, Encoding.Unicode))
 				{
 					contract = sr.ReadToEnd();
 				}

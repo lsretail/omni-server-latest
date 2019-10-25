@@ -8,6 +8,9 @@ using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
+using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
@@ -15,8 +18,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
-using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL
 {
@@ -170,27 +171,27 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         #region Search
 
-        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
+        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
-            return rep.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+            return rep.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact);
         }
 
         public virtual List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             return rep.ItemLoySearch(search, storeId, maxNumberOfItems, includeDetails);
         }
 
         public virtual List<ItemCategory> ItemCategorySearch(string search)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
             return rep.ItemCategorySearch(search);
         }
 
         public virtual List<ProductGroup> ProductGroupSearch(string search)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, NAVVersion);
             return rep.ProductGroupSearch(search);
         }
 
@@ -257,13 +258,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             return rep.ItemLoyGetById(id, storeId, culture, includeDetails);
         }
 
         public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             return rep.ItemLoyGetByBarcode(code, storeId, culture);
         }
 
@@ -271,7 +272,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
             List<LoyItem> tmplist = NavWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
 
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             List<LoyItem> list = new List<LoyItem>();
             foreach (LoyItem item in tmplist)
             {
@@ -282,7 +283,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             return rep.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, storeId, includeDetails);
         }
 
@@ -298,25 +299,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
             return rep.ItemCategoriesGetAll(storeId, culture);
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
             return rep.ItemCategoryGetById(id);
         }
 
         public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, NAVVersion);
             return rep.ProductGroupGetByItemCategoryId(itemcategoryId, culture, includeChildren, includeItems);
         }
 
         public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, NAVVersion);
             return rep.ProductGroupGetById(id, culture, includeItems, includeItemDetail);
         }
 
@@ -330,6 +331,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             HierarchyRepository rep = new HierarchyRepository(config, NAVVersion);
             return rep.HierarchyGetByStore(storeId);
+        }
+
+        public virtual MobileMenu MenuGet(string storeId, string salesType, Currency currency)
+        {
+            return NavWSBase.MenuGet(storeId, salesType, currency);
         }
 
         #endregion
@@ -363,12 +369,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string orderId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId)
         {
             if (NAVVersion < new Version("13.5"))
                 return;
 
-            NavWSBase.OrderCancel(orderId);
+            NavWSBase.OrderCancel(orderId, storeId, userId);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
@@ -390,7 +396,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             }
 
             OrderRepository repo = new OrderRepository(config, NAVVersion);
-            SalesEntry entry = repo.OrderGetById(entryId, true, type == DocumentIdType.External);
+            SalesEntry entry = repo.OrderGetById(entryId, true, (type == DocumentIdType.External));
             if (entry == null)
                 return null;
 
@@ -490,12 +496,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return stores;
         }
 
-        public virtual string GetWIStoreId()
-        {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
-            return rep.GetWIStoreId();
-        }
-
         public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId)
         {
             return NavWSBase.StoreServicesGetByStoreId(storeId);
@@ -582,7 +582,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             return rep.ReplicateEcommFullItems(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

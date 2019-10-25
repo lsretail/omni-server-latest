@@ -5,14 +5,13 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class OrderBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
         private string tenderMapping;
+
         public OrderBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
             : base(config, deviceId, timeoutInSeconds)
         {
@@ -40,9 +39,9 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string orderId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId)
         {
-            BOLoyConnection.OrderCancel(orderId);
+            BOLoyConnection.OrderCancel(orderId, storeId, userId);
         }
 
         public virtual SalesEntry OrderCreate(Order request)
@@ -70,17 +69,6 @@ namespace LSOmni.BLL.Loyalty
             }
 
             string extId = BOLoyConnection.OrderCreate(request, tenderMapping, out string orderId);
-
-            try
-            {
-                //líka save í OrderQueue töflunni - bara að ganni svo við eigum þetta?
-                OrderQueueBLL qBLL = new OrderQueueBLL(config, base.DeviceId, timeoutInSeconds);
-                qBLL.OrderQueueCreate(request);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(config.LSKey.Key, ex, "Failed to save OrderClickCollect in LSOmni db, but was saved in NAV");
-            }
 
             if (string.IsNullOrEmpty(orderId))
                 return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External, tenderMapping);

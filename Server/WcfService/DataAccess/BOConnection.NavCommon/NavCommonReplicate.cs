@@ -209,10 +209,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            XMLTableData mytable = DoReplication(10000920, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Hierarchy Date", "Store Code", storeId);
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            if (table == null || table.NumberOfValues == 0)
+                return null;
+
+            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Hierarchy Code"));
+            string hircode = field.Values[0];
+
+            xmlRequest = xml.GetGeneralWebRequestXML("Hierarchy", "Hierarchy Code", hircode);
+            xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicateHierarchy(mytable);
+            return rep.ReplicateHierarchy(table);
         }
 
         public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)

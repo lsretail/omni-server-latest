@@ -3,6 +3,8 @@
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
@@ -11,7 +13,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -29,7 +30,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails);
         MemberContact ContactGetByUserName(string user, bool includeDetails);
         MemberContact ContactGetByEMail(string email, bool includeDetails);
-        List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
 
         void Login(string userName, string password, string cardId);
         string ChangePassword(string userName, string newPassword, string oldPassword);
@@ -101,7 +101,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Store
 
         List<StoreServices> StoreServicesGetByStoreId(string storeId);
-        string GetWIStoreId();
         Store StoreGetById(string id);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
         List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
@@ -112,7 +111,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         OrderStatusResponse OrderStatusCheck(string orderId);
         OrderAvailabilityResponse OrderAvailabilityCheck(OneList request);
-        void OrderCancel(string orderId);
+        void OrderCancel(string orderId, string storeId, string userId);
         string OrderCreate(Order request, string tenderMapping, out string orderId);
         Order BasketCalcToOrder(OneList list);
 
@@ -121,6 +120,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Search
 
         List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails);
+        List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact);
         List<ProductGroup> ProductGroupSearch(string search);
         List<ItemCategory> ItemCategorySearch(string search);
         List<Store> StoreLoySearch(string search);
@@ -135,6 +135,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems);
         ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail);
         List<Hierarchy> HierarchyGet(string storeId);
+        MobileMenu MenuGet(string storeId, string salesType, Currency currency);
 
         #endregion
 

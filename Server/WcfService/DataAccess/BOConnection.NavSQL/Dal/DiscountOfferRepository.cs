@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         public DiscountOfferRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Store No_],mt.[Priority No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
-                         "mt.[To Date],mt.[Minimum Quantity],mt.[Discount _],mt.[Unit of Measure Code],mt.[Currency Code],mt.[Offer No_],mt.[Last Modify Date]," +
+                         "mt.[To Date],mt.[Minimum Quantity],mt.[Discount _],mt.[Unit of Measure Code],mt.[Offer No_],mt.[Last Modify Date]," +
                          "p.[Type],p.[Discount Type],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID],p.[Discount Amount Value]";
 
             sqlfrom = " FROM [" + navCompanyName + "WI Discounts] mt" +
@@ -82,7 +82,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<ReplDiscount> list = new List<ReplDiscount>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, where, false);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, where, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -185,7 +185,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<ReplDiscount> list = new List<ReplDiscount>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlMMcolumns + sqlMMfrom + GetWhereStatement(fullReplication, keys, where, false);
+            sql = GetSQL(fullReplication, batchSize) + sqlMMcolumns + sqlMMfrom + GetWhereStatement(fullReplication, keys, where, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -396,7 +396,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 FromDate = SQLHelper.GetDateTime(reader["From Date"]),
                 ToDate = SQLHelper.GetDateTime(reader["To Date"]),
                 MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
-                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 OfferNo = SQLHelper.GetString(reader["Offer No_"]),
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
                 Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),

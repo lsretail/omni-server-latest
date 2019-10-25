@@ -42,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<ReplBarcodeMaskSegment> list = new List<ReplBarcodeMaskSegment>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, false);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

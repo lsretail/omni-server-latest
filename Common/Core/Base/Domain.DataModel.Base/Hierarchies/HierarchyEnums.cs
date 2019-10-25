@@ -18,7 +18,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [EnumMember]
         ItemDeal,
         [EnumMember]
-        StoreWarehouseCustomer
+        StoreWarehouseCustomer,
+        [EnumMember]
+        Vendor
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

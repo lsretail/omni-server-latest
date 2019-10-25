@@ -134,7 +134,6 @@
     <Content Include="AppSettings.config" />
     <Content Include="LSIcon.ico" />
     <Content Include="NLog.config" />
-    <Content Include="Log.config" />
     <None Include="packages.config" />
     <Content Include="UCJson.svc" />
     <Content Include="UCService.svc" />

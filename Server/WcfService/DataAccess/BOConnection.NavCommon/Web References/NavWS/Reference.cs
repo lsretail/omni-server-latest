@@ -67,7 +67,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback MobilePosPostOperationCompleted;
         
+        private System.Threading.SendOrPostCallback MobilePosPostPrecalcOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MobilePosSaveOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MobilePosRetSaveOperationCompleted;
+        
         private System.Threading.SendOrPostCallback MobilePosSuspendOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MobilePosSuspendV2OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MobilePosRetSuspendedOperationCompleted;
         
         private System.Threading.SendOrPostCallback MobilePosGetDeviceIDOperationCompleted;
         
@@ -109,17 +119,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback SendDocumentImageOperationCompleted;
         
+        private System.Threading.SendOrPostCallback MobilePosRefundOperationCompleted;
+        
         private System.Threading.SendOrPostCallback ItemSalesInfoOperationCompleted;
         
         private System.Threading.SendOrPostCallback TestConnectionOperationCompleted;
         
         private System.Threading.SendOrPostCallback CustomerOrderCreateV3OperationCompleted;
         
+        private System.Threading.SendOrPostCallback CustomerOrderCreateV4OperationCompleted;
+        
         private System.Threading.SendOrPostCallback CustomerOrderGetV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDocumentListOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDocumentOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MobilePosPriceCheckOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MobilePosFloatEntOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -217,7 +235,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event MobilePosPostCompletedEventHandler MobilePosPostCompleted;
         
         /// <remarks/>
+        public event MobilePosPostPrecalcCompletedEventHandler MobilePosPostPrecalcCompleted;
+        
+        /// <remarks/>
+        public event MobilePosSaveCompletedEventHandler MobilePosSaveCompleted;
+        
+        /// <remarks/>
+        public event MobilePosRetSaveCompletedEventHandler MobilePosRetSaveCompleted;
+        
+        /// <remarks/>
         public event MobilePosSuspendCompletedEventHandler MobilePosSuspendCompleted;
+        
+        /// <remarks/>
+        public event MobilePosSuspendV2CompletedEventHandler MobilePosSuspendV2Completed;
+        
+        /// <remarks/>
+        public event MobilePosRetSuspendedCompletedEventHandler MobilePosRetSuspendedCompleted;
         
         /// <remarks/>
         public event MobilePosGetDeviceIDCompletedEventHandler MobilePosGetDeviceIDCompleted;
@@ -280,6 +313,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event SendDocumentImageCompletedEventHandler SendDocumentImageCompleted;
         
         /// <remarks/>
+        public event MobilePosRefundCompletedEventHandler MobilePosRefundCompleted;
+        
+        /// <remarks/>
         public event ItemSalesInfoCompletedEventHandler ItemSalesInfoCompleted;
         
         /// <remarks/>
@@ -287,6 +323,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event CustomerOrderCreateV3CompletedEventHandler CustomerOrderCreateV3Completed;
+        
+        /// <remarks/>
+        public event CustomerOrderCreateV4CompletedEventHandler CustomerOrderCreateV4Completed;
         
         /// <remarks/>
         public event CustomerOrderGetV2CompletedEventHandler CustomerOrderGetV2Completed;
@@ -298,30 +337,40 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event GetDocumentCompletedEventHandler GetDocumentCompleted;
         
         /// <remarks/>
+        public event MobilePosPriceCheckCompletedEventHandler MobilePosPriceCheckCompleted;
+        
+        /// <remarks/>
+        public event MobilePosFloatEntCompletedEventHandler MobilePosFloatEntCompleted;
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCancel", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCancel_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderCancel(ref string responseCode, ref string errorText, string customerOrderDocumentID) {
+        public void CustomerOrderCancel(ref string responseCode, ref string errorText, string customerOrderDocumentID, int sourceType, RootCustomerOrderCancel customerOrderCancelXML) {
             object[] results = this.Invoke("CustomerOrderCancel", new object[] {
                         responseCode,
                         errorText,
-                        customerOrderDocumentID});
+                        customerOrderDocumentID,
+                        sourceType,
+                        customerOrderCancelXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
         }
         
         /// <remarks/>
-        public void CustomerOrderCancelAsync(string responseCode, string errorText, string customerOrderDocumentID) {
-            this.CustomerOrderCancelAsync(responseCode, errorText, customerOrderDocumentID, null);
+        public void CustomerOrderCancelAsync(string responseCode, string errorText, string customerOrderDocumentID, int sourceType, RootCustomerOrderCancel customerOrderCancelXML) {
+            this.CustomerOrderCancelAsync(responseCode, errorText, customerOrderDocumentID, sourceType, customerOrderCancelXML, null);
         }
         
         /// <remarks/>
-        public void CustomerOrderCancelAsync(string responseCode, string errorText, string customerOrderDocumentID, object userState) {
+        public void CustomerOrderCancelAsync(string responseCode, string errorText, string customerOrderDocumentID, int sourceType, RootCustomerOrderCancel customerOrderCancelXML, object userState) {
             if ((this.CustomerOrderCancelOperationCompleted == null)) {
                 this.CustomerOrderCancelOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCancelOperationCompleted);
             }
             this.InvokeAsync("CustomerOrderCancel", new object[] {
                         responseCode,
                         errorText,
-                        customerOrderDocumentID}, this.CustomerOrderCancelOperationCompleted, userState);
+                        customerOrderDocumentID,
+                        sourceType,
+                        customerOrderCancelXML}, this.CustomerOrderCancelOperationCompleted, userState);
         }
         
         private void OnCustomerOrderCancelOperationCompleted(object arg) {
@@ -1044,6 +1093,119 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosPostPrecalc", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosPostPrecalc_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosPostPrecalc(ref string responseCode, ref string errorText, string staffId, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosPostPrecalc", new object[] {
+                        responseCode,
+                        errorText,
+                        staffId,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosPostPrecalcAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosPostPrecalcAsync(responseCode, errorText, staffId, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosPostPrecalcAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosPostPrecalcOperationCompleted == null)) {
+                this.MobilePosPostPrecalcOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosPostPrecalcOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosPostPrecalc", new object[] {
+                        responseCode,
+                        errorText,
+                        staffId,
+                        mobileTransactionXML}, this.MobilePosPostPrecalcOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosPostPrecalcOperationCompleted(object arg) {
+            if ((this.MobilePosPostPrecalcCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosPostPrecalcCompleted(this, new MobilePosPostPrecalcCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSave", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosSave_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosSave(ref string responseCode, ref string errorText, string staffId, string menuType, bool unlockTrans, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosSave", new object[] {
+                        responseCode,
+                        errorText,
+                        staffId,
+                        menuType,
+                        unlockTrans,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosSaveAsync(string responseCode, string errorText, string staffId, string menuType, bool unlockTrans, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosSaveAsync(responseCode, errorText, staffId, menuType, unlockTrans, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosSaveAsync(string responseCode, string errorText, string staffId, string menuType, bool unlockTrans, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosSaveOperationCompleted == null)) {
+                this.MobilePosSaveOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosSaveOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosSave", new object[] {
+                        responseCode,
+                        errorText,
+                        staffId,
+                        menuType,
+                        unlockTrans,
+                        mobileTransactionXML}, this.MobilePosSaveOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosSaveOperationCompleted(object arg) {
+            if ((this.MobilePosSaveCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosSaveCompleted(this, new MobilePosSaveCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRetSave", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosRetSave_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosRetSave(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosRetSave", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosRetSaveAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosRetSaveAsync(responseCode, errorText, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosRetSaveAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosRetSaveOperationCompleted == null)) {
+                this.MobilePosRetSaveOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosRetSaveOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosRetSave", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML}, this.MobilePosRetSaveOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosRetSaveOperationCompleted(object arg) {
+            if ((this.MobilePosRetSaveCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosRetSaveCompleted(this, new MobilePosRetSaveCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSuspend", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosSuspend_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void MobilePosSuspend(ref string responseCode, ref string errorText, string searchKey, RootMobileTransaction mobileTransactionXML, ref string receiptNo) {
             object[] results = this.Invoke("MobilePosSuspend", new object[] {
@@ -1079,6 +1241,80 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.MobilePosSuspendCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MobilePosSuspendCompleted(this, new MobilePosSuspendCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSuspendV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosSuspendV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosSuspendV2(ref string responseCode, ref string errorText, RootMobileTransaction mobileTransactionXML, ref string receiptNo) {
+            object[] results = this.Invoke("MobilePosSuspendV2", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML,
+                        receiptNo});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            receiptNo = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosSuspendV2Async(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, string receiptNo) {
+            this.MobilePosSuspendV2Async(responseCode, errorText, mobileTransactionXML, receiptNo, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosSuspendV2Async(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, string receiptNo, object userState) {
+            if ((this.MobilePosSuspendV2OperationCompleted == null)) {
+                this.MobilePosSuspendV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosSuspendV2OperationCompleted);
+            }
+            this.InvokeAsync("MobilePosSuspendV2", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML,
+                        receiptNo}, this.MobilePosSuspendV2OperationCompleted, userState);
+        }
+        
+        private void OnMobilePosSuspendV2OperationCompleted(object arg) {
+            if ((this.MobilePosSuspendV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosSuspendV2Completed(this, new MobilePosSuspendV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRetSuspended", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosRetSuspended_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosRetSuspended(ref string responseCode, ref string errorText, string receiptNo, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosRetSuspended", new object[] {
+                        responseCode,
+                        errorText,
+                        receiptNo,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosRetSuspendedAsync(string responseCode, string errorText, string receiptNo, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosRetSuspendedAsync(responseCode, errorText, receiptNo, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosRetSuspendedAsync(string responseCode, string errorText, string receiptNo, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosRetSuspendedOperationCompleted == null)) {
+                this.MobilePosRetSuspendedOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosRetSuspendedOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosRetSuspended", new object[] {
+                        responseCode,
+                        errorText,
+                        receiptNo,
+                        mobileTransactionXML}, this.MobilePosRetSuspendedOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosRetSuspendedOperationCompleted(object arg) {
+            if ((this.MobilePosRetSuspendedCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosRetSuspendedCompleted(this, new MobilePosRetSuspendedCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1931,6 +2167,41 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRefund", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosRefund_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosRefund(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosRefund", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosRefundAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosRefundAsync(responseCode, errorText, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosRefundAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosRefundOperationCompleted == null)) {
+                this.MobilePosRefundOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosRefundOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosRefund", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML}, this.MobilePosRefundOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosRefundOperationCompleted(object arg) {
+            if ((this.MobilePosRefundCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosRefundCompleted(this, new MobilePosRefundCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:ItemSalesInfo", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="ItemSalesInfo_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void ItemSalesInfo(ref string responseCode, ref string errorText, string itemNo, string locationCode, ref RootGetItemSalesInfo itemSalesInfoXML) {
             object[] results = this.Invoke("ItemSalesInfo", new object[] {
@@ -2051,27 +2322,68 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreateV4", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreateV4_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void CustomerOrderCreateV4(ref string responseCode, ref string errorText, RootCustomerOrderCreateV4 customerOrderCreateV4XML, ref string customerOrderID) {
+            object[] results = this.Invoke("CustomerOrderCreateV4", new object[] {
+                        responseCode,
+                        errorText,
+                        customerOrderCreateV4XML,
+                        customerOrderID});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            customerOrderID = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void CustomerOrderCreateV4Async(string responseCode, string errorText, RootCustomerOrderCreateV4 customerOrderCreateV4XML, string customerOrderID) {
+            this.CustomerOrderCreateV4Async(responseCode, errorText, customerOrderCreateV4XML, customerOrderID, null);
+        }
+        
+        /// <remarks/>
+        public void CustomerOrderCreateV4Async(string responseCode, string errorText, RootCustomerOrderCreateV4 customerOrderCreateV4XML, string customerOrderID, object userState) {
+            if ((this.CustomerOrderCreateV4OperationCompleted == null)) {
+                this.CustomerOrderCreateV4OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCreateV4OperationCompleted);
+            }
+            this.InvokeAsync("CustomerOrderCreateV4", new object[] {
+                        responseCode,
+                        errorText,
+                        customerOrderCreateV4XML,
+                        customerOrderID}, this.CustomerOrderCreateV4OperationCompleted, userState);
+        }
+        
+        private void OnCustomerOrderCreateV4OperationCompleted(object arg) {
+            if ((this.CustomerOrderCreateV4Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CustomerOrderCreateV4Completed(this, new CustomerOrderCreateV4CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderGetV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderGetV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderGetV2(ref string responseCode, ref string errorText, string documentStatus, string documentID, string posTerminalNo, ref RootCustomerOrderGetV2 customerOrderGetV2XML) {
+        public void CustomerOrderGetV2(ref string responseCode, ref string errorText, string documentStatus, string documentID, string posTerminalNo, ref RootCustomerOrderGetV2 customerOrderGetV2XML, ref decimal pointsEarned, ref decimal pointsUsed) {
             object[] results = this.Invoke("CustomerOrderGetV2", new object[] {
                         responseCode,
                         errorText,
                         documentStatus,
                         documentID,
                         posTerminalNo,
-                        customerOrderGetV2XML});
+                        customerOrderGetV2XML,
+                        pointsEarned,
+                        pointsUsed});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
             customerOrderGetV2XML = ((RootCustomerOrderGetV2)(results[2]));
+            pointsEarned = ((decimal)(results[3]));
+            pointsUsed = ((decimal)(results[4]));
         }
         
         /// <remarks/>
-        public void CustomerOrderGetV2Async(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGetV2 customerOrderGetV2XML) {
-            this.CustomerOrderGetV2Async(responseCode, errorText, documentStatus, documentID, posTerminalNo, customerOrderGetV2XML, null);
+        public void CustomerOrderGetV2Async(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGetV2 customerOrderGetV2XML, decimal pointsEarned, decimal pointsUsed) {
+            this.CustomerOrderGetV2Async(responseCode, errorText, documentStatus, documentID, posTerminalNo, customerOrderGetV2XML, pointsEarned, pointsUsed, null);
         }
         
         /// <remarks/>
-        public void CustomerOrderGetV2Async(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGetV2 customerOrderGetV2XML, object userState) {
+        public void CustomerOrderGetV2Async(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGetV2 customerOrderGetV2XML, decimal pointsEarned, decimal pointsUsed, object userState) {
             if ((this.CustomerOrderGetV2OperationCompleted == null)) {
                 this.CustomerOrderGetV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderGetV2OperationCompleted);
             }
@@ -2081,7 +2393,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                         documentStatus,
                         documentID,
                         posTerminalNo,
-                        customerOrderGetV2XML}, this.CustomerOrderGetV2OperationCompleted, userState);
+                        customerOrderGetV2XML,
+                        pointsEarned,
+                        pointsUsed}, this.CustomerOrderGetV2OperationCompleted, userState);
         }
         
         private void OnCustomerOrderGetV2OperationCompleted(object arg) {
@@ -2182,6 +2496,78 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosPriceCheck", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosPriceCheck_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosPriceCheck(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosPriceCheck", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosPriceCheckAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosPriceCheckAsync(responseCode, errorText, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosPriceCheckAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosPriceCheckOperationCompleted == null)) {
+                this.MobilePosPriceCheckOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosPriceCheckOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosPriceCheck", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML}, this.MobilePosPriceCheckOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosPriceCheckOperationCompleted(object arg) {
+            if ((this.MobilePosPriceCheckCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosPriceCheckCompleted(this, new MobilePosPriceCheckCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosFloatEnt", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosFloatEnt_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosFloatEnt(ref string responseCode, ref string errorText, string staffId, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosFloatEnt", new object[] {
+                        responseCode,
+                        errorText,
+                        staffId,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosFloatEntAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosFloatEntAsync(responseCode, errorText, staffId, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosFloatEntAsync(string responseCode, string errorText, string staffId, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosFloatEntOperationCompleted == null)) {
+                this.MobilePosFloatEntOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosFloatEntOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosFloatEnt", new object[] {
+                        responseCode,
+                        errorText,
+                        staffId,
+                        mobileTransactionXML}, this.MobilePosFloatEntOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosFloatEntOperationCompleted(object arg) {
+            if ((this.MobilePosFloatEntCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosFloatEntCompleted(this, new MobilePosFloatEntCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         public new void CancelAsync(object userState) {
             base.CancelAsync(userState);
         }
@@ -2205,60 +2591,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class RootCustomerOrder {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033058")]
+    public partial class RootCustomerOrderCancel {
         
-        private CustomerOrderHeader[] customerOrderHeaderField;
-        
-        private CustomerOrderLine[] customerOrderLineField;
-        
-        private CustomerOrderDiscountLine[] customerOrderDiscountLineField;
-        
-        private CustomerOrderPayment[] customerOrderPaymentField;
+        private CustomerOrderStatusLog[] customerOrderStatusLogField;
         
         private string[] textField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
-        public CustomerOrderHeader[] CustomerOrderHeader {
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderStatusLog")]
+        public CustomerOrderStatusLog[] CustomerOrderStatusLog {
             get {
-                return this.customerOrderHeaderField;
+                return this.customerOrderStatusLogField;
             }
             set {
-                this.customerOrderHeaderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderLine")]
-        public CustomerOrderLine[] CustomerOrderLine {
-            get {
-                return this.customerOrderLineField;
-            }
-            set {
-                this.customerOrderLineField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderDiscountLine")]
-        public CustomerOrderDiscountLine[] CustomerOrderDiscountLine {
-            get {
-                return this.customerOrderDiscountLineField;
-            }
-            set {
-                this.customerOrderDiscountLineField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderPayment")]
-        public CustomerOrderPayment[] CustomerOrderPayment {
-            get {
-                return this.customerOrderPaymentField;
-            }
-            set {
-                this.customerOrderPaymentField = value;
+                this.customerOrderStatusLogField = value;
             }
         }
         
@@ -2279,90 +2626,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class CustomerOrderHeader {
-        
-        private string documentIdField;
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033058")]
+    public partial class CustomerOrderStatusLog {
         
         private string storeNoField;
         
-        private string[] receiptNoField;
+        private string userIDField;
         
-        private string memberCardNoField;
+        private string staffIDField;
         
-        private int sourceTypeField;
-        
-        private string customerNoField;
-        
-        private string fullNameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string shipToFullNameField;
-        
-        private string shipToAddressField;
-        
-        private string shipToAddress2Field;
-        
-        private string shipToCityField;
-        
-        private string shipToCountyField;
-        
-        private string shipToPostCodeField;
-        
-        private string shipToCountryRegionCodeField;
-        
-        private string shipToPhoneNoField;
-        
-        private string shipToEmailField;
-        
-        private string shipToHouseApartmentNoField;
-        
-        private bool clickAndCollectOrderField;
-        
-        private bool anonymousOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string sourcingLocationField;
-        
-        public CustomerOrderHeader() {
-            this.sourceTypeField = 0;
-            this.clickAndCollectOrderField = false;
-            this.anonymousOrderField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentId {
-            get {
-                return this.documentIdField;
-            }
-            set {
-                this.documentIdField = value;
-            }
-        }
+        private string terminalNoField;
         
         /// <remarks/>
         public string StoreNo {
@@ -2375,313 +2648,32 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ReceiptNo")]
-        public string[] ReceiptNo {
+        public string UserID {
             get {
-                return this.receiptNoField;
+                return this.userIDField;
             }
             set {
-                this.receiptNoField = value;
+                this.userIDField = value;
             }
         }
         
         /// <remarks/>
-        public string MemberCardNo {
+        public string StaffID {
             get {
-                return this.memberCardNoField;
+                return this.staffIDField;
             }
             set {
-                this.memberCardNoField = value;
+                this.staffIDField = value;
             }
         }
         
         /// <remarks/>
-        public int SourceType {
+        public string TerminalNo {
             get {
-                return this.sourceTypeField;
+                return this.terminalNoField;
             }
             set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FullName {
-            get {
-                return this.fullNameField;
-            }
-            set {
-                this.fullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToFullName {
-            get {
-                return this.shipToFullNameField;
-            }
-            set {
-                this.shipToFullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress {
-            get {
-                return this.shipToAddressField;
-            }
-            set {
-                this.shipToAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress2 {
-            get {
-                return this.shipToAddress2Field;
-            }
-            set {
-                this.shipToAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCity {
-            get {
-                return this.shipToCityField;
-            }
-            set {
-                this.shipToCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCounty {
-            get {
-                return this.shipToCountyField;
-            }
-            set {
-                this.shipToCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPostCode {
-            get {
-                return this.shipToPostCodeField;
-            }
-            set {
-                this.shipToPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCountryRegionCode {
-            get {
-                return this.shipToCountryRegionCodeField;
-            }
-            set {
-                this.shipToCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPhoneNo {
-            get {
-                return this.shipToPhoneNoField;
-            }
-            set {
-                this.shipToPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToEmail {
-            get {
-                return this.shipToEmailField;
-            }
-            set {
-                this.shipToEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToHouseApartmentNo {
-            get {
-                return this.shipToHouseApartmentNoField;
-            }
-            set {
-                this.shipToHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickAndCollectOrder {
-            get {
-                return this.clickAndCollectOrderField;
-            }
-            set {
-                this.clickAndCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool AnonymousOrder {
-            get {
-                return this.anonymousOrderField;
-            }
-            set {
-                this.anonymousOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
+                this.terminalNoField = value;
             }
         }
     }
@@ -3067,6 +3059,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime ExpectedDate {
             get {
                 return this.expectedDateField;
@@ -3267,6 +3260,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime ExpectedDate {
             get {
                 return this.expectedDateField;
@@ -3359,7 +3353,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountField;
         
-        private decimal finalisedAmountField;
+        private decimal finalizedAmountField;
         
         private string tenderTypeField;
         
@@ -3369,7 +3363,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
-        private string authorisationCodeField;
+        private string authorizationCodeField;
         
         private System.DateTime preApprovedValidDateField;
         
@@ -3383,15 +3377,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private bool loyaltyPointpaymentField;
         
+        private string posTransReceiptNoField;
+        
+        private string typeField;
+        
+        private System.DateTime createdField;
+        
+        private bool authorizationExpiredField;
+        
+        private string tokenNoField;
+        
+        private string externalReferenceField;
+        
         public CustomerOrderGetCOPaymentV2() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
-            this.finalisedAmountField = ((decimal)(0m));
+            this.finalizedAmountField = ((decimal)(0m));
             this.currencyFactorField = ((decimal)(0m));
             this.preApprovedValidDateField = new System.DateTime(0);
             this.preApprovedAmountLCYField = ((decimal)(0m));
             this.finalisedAmountLCYField = ((decimal)(0m));
             this.loyaltyPointpaymentField = false;
+            this.createdField = new System.DateTime(0);
+            this.authorizationExpiredField = false;
         }
         
         /// <remarks/>
@@ -3436,12 +3444,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal FinalisedAmount {
+        public decimal FinalizedAmount {
             get {
-                return this.finalisedAmountField;
+                return this.finalizedAmountField;
             }
             set {
-                this.finalisedAmountField = value;
+                this.finalizedAmountField = value;
             }
         }
         
@@ -3486,12 +3494,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public string AuthorisationCode {
+        public string AuthorizationCode {
             get {
-                return this.authorisationCodeField;
+                return this.authorizationCodeField;
             }
             set {
-                this.authorisationCodeField = value;
+                this.authorizationCodeField = value;
             }
         }
         
@@ -3554,6 +3562,68 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.loyaltyPointpaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PosTransReceiptNo {
+            get {
+                return this.posTransReceiptNoField;
+            }
+            set {
+                this.posTransReceiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime Created {
+            get {
+                return this.createdField;
+            }
+            set {
+                this.createdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool AuthorizationExpired {
+            get {
+                return this.authorizationExpiredField;
+            }
+            set {
+                this.authorizationExpiredField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenNo {
+            get {
+                return this.tokenNoField;
+            }
+            set {
+                this.tokenNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalReference {
+            get {
+                return this.externalReferenceField;
+            }
+            set {
+                this.externalReferenceField = value;
             }
         }
     }
@@ -4170,6 +4240,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string externalIDField;
         
+        private bool onHoldField;
+        
+        private decimal totalAmountField;
+        
+        private decimal orderNetAmountField;
+        
+        private decimal totalDiscountField;
+        
+        private decimal totalQuantityField;
+        
         public CustomerOrderGetCOHeaderV2() {
             this.createdField = new System.DateTime(0);
             this.collectTimeLimitField = new System.DateTime(0);
@@ -4179,6 +4259,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.clickandCollectOrderField = false;
             this.showaspostedIntField = false;
             this.vendorSourcingField = false;
+            this.onHoldField = false;
+            this.totalAmountField = ((decimal)(0m));
+            this.orderNetAmountField = ((decimal)(0m));
+            this.totalDiscountField = ((decimal)(0m));
+            this.totalQuantityField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -4640,6 +4725,61 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                 this.externalIDField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool OnHold {
+            get {
+                return this.onHoldField;
+            }
+            set {
+                this.onHoldField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalAmount {
+            get {
+                return this.totalAmountField;
+            }
+            set {
+                this.totalAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal OrderNetAmount {
+            get {
+                return this.orderNetAmountField;
+            }
+            set {
+                this.orderNetAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalDiscount {
+            get {
+                return this.totalDiscountField;
+            }
+            set {
+                this.totalDiscountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalQuantity {
+            get {
+                return this.totalQuantityField;
+            }
+            set {
+                this.totalQuantityField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -4721,6 +4861,1342 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
+    public partial class CustomerOrderCreateCOStatusLogV4 {
+        
+        private string storeNoField;
+        
+        private string userIDField;
+        
+        private string staffIDField;
+        
+        private string terminalNoField;
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UserID {
+            get {
+                return this.userIDField;
+            }
+            set {
+                this.userIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StaffID {
+            get {
+                return this.staffIDField;
+            }
+            set {
+                this.staffIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TerminalNo {
+            get {
+                return this.terminalNoField;
+            }
+            set {
+                this.terminalNoField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
+    public partial class CustomerOrderCreateCOPaymentV4 {
+        
+        private string documentIDField;
+        
+        private string storeNoField;
+        
+        private int lineNoField;
+        
+        private decimal preApprovedAmountField;
+        
+        private decimal finalizedAmountField;
+        
+        private string tenderTypeField;
+        
+        private string cardTypeField;
+        
+        private string currencyCodeField;
+        
+        private decimal currencyFactorField;
+        
+        private string authorizationCodeField;
+        
+        private System.DateTime preApprovedValidDateField;
+        
+        private string cardorCustomernumberField;
+        
+        private string incomeExpenseAccountNoField;
+        
+        private decimal preApprovedAmountLCYField;
+        
+        private decimal finalizedAmountLCYField;
+        
+        private bool loyaltyPointpaymentField;
+        
+        private bool depositPaymentField;
+        
+        private string posTransReceiptNoField;
+        
+        private string typeField;
+        
+        private System.DateTime createdField;
+        
+        private bool authorizationExpiredField;
+        
+        private string tokenNoField;
+        
+        private string externalReferenceField;
+        
+        public CustomerOrderCreateCOPaymentV4() {
+            this.lineNoField = 0;
+            this.preApprovedAmountField = ((decimal)(0m));
+            this.finalizedAmountField = ((decimal)(0m));
+            this.currencyFactorField = ((decimal)(0m));
+            this.preApprovedValidDateField = new System.DateTime(0);
+            this.preApprovedAmountLCYField = ((decimal)(0m));
+            this.finalizedAmountLCYField = ((decimal)(0m));
+            this.loyaltyPointpaymentField = false;
+            this.depositPaymentField = false;
+            this.createdField = new System.DateTime(0);
+            this.authorizationExpiredField = false;
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PreApprovedAmount {
+            get {
+                return this.preApprovedAmountField;
+            }
+            set {
+                this.preApprovedAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal FinalizedAmount {
+            get {
+                return this.finalizedAmountField;
+            }
+            set {
+                this.finalizedAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TenderType {
+            get {
+                return this.tenderTypeField;
+            }
+            set {
+                this.tenderTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardType {
+            get {
+                return this.cardTypeField;
+            }
+            set {
+                this.cardTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CurrencyCode {
+            get {
+                return this.currencyCodeField;
+            }
+            set {
+                this.currencyCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal CurrencyFactor {
+            get {
+                return this.currencyFactorField;
+            }
+            set {
+                this.currencyFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AuthorizationCode {
+            get {
+                return this.authorizationCodeField;
+            }
+            set {
+                this.authorizationCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime PreApprovedValidDate {
+            get {
+                return this.preApprovedValidDateField;
+            }
+            set {
+                this.preApprovedValidDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardorCustomernumber {
+            get {
+                return this.cardorCustomernumberField;
+            }
+            set {
+                this.cardorCustomernumberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string IncomeExpenseAccountNo {
+            get {
+                return this.incomeExpenseAccountNoField;
+            }
+            set {
+                this.incomeExpenseAccountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PreApprovedAmountLCY {
+            get {
+                return this.preApprovedAmountLCYField;
+            }
+            set {
+                this.preApprovedAmountLCYField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal FinalizedAmountLCY {
+            get {
+                return this.finalizedAmountLCYField;
+            }
+            set {
+                this.finalizedAmountLCYField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool LoyaltyPointpayment {
+            get {
+                return this.loyaltyPointpaymentField;
+            }
+            set {
+                this.loyaltyPointpaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool DepositPayment {
+            get {
+                return this.depositPaymentField;
+            }
+            set {
+                this.depositPaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PosTransReceiptNo {
+            get {
+                return this.posTransReceiptNoField;
+            }
+            set {
+                this.posTransReceiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime Created {
+            get {
+                return this.createdField;
+            }
+            set {
+                this.createdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool AuthorizationExpired {
+            get {
+                return this.authorizationExpiredField;
+            }
+            set {
+                this.authorizationExpiredField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenNo {
+            get {
+                return this.tokenNoField;
+            }
+            set {
+                this.tokenNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalReference {
+            get {
+                return this.externalReferenceField;
+            }
+            set {
+                this.externalReferenceField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
+    public partial class CustomerOrderCreateCODiscountLineV4 {
+        
+        private string documentIDField;
+        
+        private int lineNoField;
+        
+        private int entryNoField;
+        
+        private int discountTypeField;
+        
+        private string offerNoField;
+        
+        private int periodicDiscTypeField;
+        
+        private string periodicDiscGroupField;
+        
+        private string descriptionField;
+        
+        private decimal discountPercentField;
+        
+        private decimal discountAmountField;
+        
+        public CustomerOrderCreateCODiscountLineV4() {
+            this.lineNoField = 0;
+            this.entryNoField = 0;
+            this.discountTypeField = 0;
+            this.periodicDiscTypeField = 0;
+            this.discountPercentField = ((decimal)(0m));
+            this.discountAmountField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int EntryNo {
+            get {
+                return this.entryNoField;
+            }
+            set {
+                this.entryNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int DiscountType {
+            get {
+                return this.discountTypeField;
+            }
+            set {
+                this.discountTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OfferNo {
+            get {
+                return this.offerNoField;
+            }
+            set {
+                this.offerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int PeriodicDiscType {
+            get {
+                return this.periodicDiscTypeField;
+            }
+            set {
+                this.periodicDiscTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PeriodicDiscGroup {
+            get {
+                return this.periodicDiscGroupField;
+            }
+            set {
+                this.periodicDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal DiscountPercent {
+            get {
+                return this.discountPercentField;
+            }
+            set {
+                this.discountPercentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal DiscountAmount {
+            get {
+                return this.discountAmountField;
+            }
+            set {
+                this.discountAmountField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
+    public partial class CustomerOrderCreateCOLineV4 {
+        
+        private string documentIDField;
+        
+        private int lineNoField;
+        
+        private string statusField;
+        
+        private string lineTypeField;
+        
+        private string numberField;
+        
+        private string variantCodeField;
+        
+        private string unitofMeasureCodeField;
+        
+        private decimal netPriceField;
+        
+        private decimal priceField;
+        
+        private decimal quantityField;
+        
+        private decimal discountAmountField;
+        
+        private decimal discountPercentField;
+        
+        private decimal netAmountField;
+        
+        private decimal vatAmountField;
+        
+        private decimal amountField;
+        
+        private string sourcingLocationField;
+        
+        private string orderReferenceField;
+        
+        private bool inventoryTransferField;
+        
+        private bool vendorSourcingField;
+        
+        private string leadTimeCalculationField;
+        
+        private decimal prepaymentAmountField;
+        
+        private string purchaseOrderNoField;
+        
+        public CustomerOrderCreateCOLineV4() {
+            this.lineNoField = 0;
+            this.netPriceField = ((decimal)(0m));
+            this.priceField = ((decimal)(0m));
+            this.quantityField = ((decimal)(0m));
+            this.discountAmountField = ((decimal)(0m));
+            this.discountPercentField = ((decimal)(0m));
+            this.netAmountField = ((decimal)(0m));
+            this.vatAmountField = ((decimal)(0m));
+            this.amountField = ((decimal)(0m));
+            this.inventoryTransferField = false;
+            this.vendorSourcingField = false;
+            this.prepaymentAmountField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LineType {
+            get {
+                return this.lineTypeField;
+            }
+            set {
+                this.lineTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Number {
+            get {
+                return this.numberField;
+            }
+            set {
+                this.numberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitofMeasureCode {
+            get {
+                return this.unitofMeasureCodeField;
+            }
+            set {
+                this.unitofMeasureCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NetPrice {
+            get {
+                return this.netPriceField;
+            }
+            set {
+                this.netPriceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Price {
+            get {
+                return this.priceField;
+            }
+            set {
+                this.priceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal DiscountAmount {
+            get {
+                return this.discountAmountField;
+            }
+            set {
+                this.discountAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal DiscountPercent {
+            get {
+                return this.discountPercentField;
+            }
+            set {
+                this.discountPercentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NetAmount {
+            get {
+                return this.netAmountField;
+            }
+            set {
+                this.netAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal VatAmount {
+            get {
+                return this.vatAmountField;
+            }
+            set {
+                this.vatAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SourcingLocation {
+            get {
+                return this.sourcingLocationField;
+            }
+            set {
+                this.sourcingLocationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OrderReference {
+            get {
+                return this.orderReferenceField;
+            }
+            set {
+                this.orderReferenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool InventoryTransfer {
+            get {
+                return this.inventoryTransferField;
+            }
+            set {
+                this.inventoryTransferField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool VendorSourcing {
+            get {
+                return this.vendorSourcingField;
+            }
+            set {
+                this.vendorSourcingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LeadTimeCalculation {
+            get {
+                return this.leadTimeCalculationField;
+            }
+            set {
+                this.leadTimeCalculationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PrepaymentAmount {
+            get {
+                return this.prepaymentAmountField;
+            }
+            set {
+                this.prepaymentAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PurchaseOrderNo {
+            get {
+                return this.purchaseOrderNoField;
+            }
+            set {
+                this.purchaseOrderNoField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
+    public partial class CustomerOrderCreateCOHeaderV4 {
+        
+        private string documentIDField;
+        
+        private string storeNoField;
+        
+        private string memberCardNoField;
+        
+        private int sourceTypeField;
+        
+        private string customerNoField;
+        
+        private string nameField;
+        
+        private string addressField;
+        
+        private string address2Field;
+        
+        private string cityField;
+        
+        private string countyField;
+        
+        private string postCodeField;
+        
+        private string countryRegionCodeField;
+        
+        private string phoneNoField;
+        
+        private string emailField;
+        
+        private string houseApartmentNoField;
+        
+        private string mobilePhoneNoField;
+        
+        private string daytimePhoneNoField;
+        
+        private string territoryCodeField;
+        
+        private string shipToNameField;
+        
+        private string shipToAddressField;
+        
+        private string shipToAddress2Field;
+        
+        private string shipToCityField;
+        
+        private string shipToCountyField;
+        
+        private string shipToPostCodeField;
+        
+        private string shipToCountryRegionCodeField;
+        
+        private string shipToPhoneNoField;
+        
+        private string shipToEmailField;
+        
+        private string shipToHouseApartmentNoField;
+        
+        private bool clickAndCollectOrderField;
+        
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
+        private string sourcingLocationField;
+        
+        private string externalIDField;
+        
+        private bool vendorSourcingField;
+        
+        private bool inventoryTransferField;
+        
+        private string createdAtStoreField;
+        
+        private bool shipOrderField;
+        
+        public CustomerOrderCreateCOHeaderV4() {
+            this.sourceTypeField = 0;
+            this.clickAndCollectOrderField = false;
+            this.vendorSourcingField = false;
+            this.inventoryTransferField = false;
+            this.shipOrderField = false;
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberCardNo {
+            get {
+                return this.memberCardNoField;
+            }
+            set {
+                this.memberCardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int SourceType {
+            get {
+                return this.sourceTypeField;
+            }
+            set {
+                this.sourceTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address2 {
+            get {
+                return this.address2Field;
+            }
+            set {
+                this.address2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string City {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string County {
+            get {
+                return this.countyField;
+            }
+            set {
+                this.countyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PostCode {
+            get {
+                return this.postCodeField;
+            }
+            set {
+                this.postCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CountryRegionCode {
+            get {
+                return this.countryRegionCodeField;
+            }
+            set {
+                this.countryRegionCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PhoneNo {
+            get {
+                return this.phoneNoField;
+            }
+            set {
+                this.phoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HouseApartmentNo {
+            get {
+                return this.houseApartmentNoField;
+            }
+            set {
+                this.houseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MobilePhoneNo {
+            get {
+                return this.mobilePhoneNoField;
+            }
+            set {
+                this.mobilePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DaytimePhoneNo {
+            get {
+                return this.daytimePhoneNoField;
+            }
+            set {
+                this.daytimePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TerritoryCode {
+            get {
+                return this.territoryCodeField;
+            }
+            set {
+                this.territoryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToName {
+            get {
+                return this.shipToNameField;
+            }
+            set {
+                this.shipToNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToAddress {
+            get {
+                return this.shipToAddressField;
+            }
+            set {
+                this.shipToAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToAddress2 {
+            get {
+                return this.shipToAddress2Field;
+            }
+            set {
+                this.shipToAddress2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCity {
+            get {
+                return this.shipToCityField;
+            }
+            set {
+                this.shipToCityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCounty {
+            get {
+                return this.shipToCountyField;
+            }
+            set {
+                this.shipToCountyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToPostCode {
+            get {
+                return this.shipToPostCodeField;
+            }
+            set {
+                this.shipToPostCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCountryRegionCode {
+            get {
+                return this.shipToCountryRegionCodeField;
+            }
+            set {
+                this.shipToCountryRegionCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToPhoneNo {
+            get {
+                return this.shipToPhoneNoField;
+            }
+            set {
+                this.shipToPhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToEmail {
+            get {
+                return this.shipToEmailField;
+            }
+            set {
+                this.shipToEmailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToHouseApartmentNo {
+            get {
+                return this.shipToHouseApartmentNoField;
+            }
+            set {
+                this.shipToHouseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool ClickAndCollectOrder {
+            get {
+                return this.clickAndCollectOrderField;
+            }
+            set {
+                this.clickAndCollectOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SourcingLocation {
+            get {
+                return this.sourcingLocationField;
+            }
+            set {
+                this.sourcingLocationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool VendorSourcing {
+            get {
+                return this.vendorSourcingField;
+            }
+            set {
+                this.vendorSourcingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool InventoryTransfer {
+            get {
+                return this.inventoryTransferField;
+            }
+            set {
+                this.inventoryTransferField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedAtStore {
+            get {
+                return this.createdAtStoreField;
+            }
+            set {
+                this.createdAtStoreField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ShipOrder {
+            get {
+                return this.shipOrderField;
+            }
+            set {
+                this.shipOrderField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
+    public partial class RootCustomerOrderCreateV4 {
+        
+        private CustomerOrderCreateCOHeaderV4[] customerOrderCreateCOHeaderV4Field;
+        
+        private CustomerOrderCreateCOLineV4[] customerOrderCreateCOLineV4Field;
+        
+        private CustomerOrderCreateCODiscountLineV4[] customerOrderCreateCODiscountLineV4Field;
+        
+        private CustomerOrderCreateCOPaymentV4[] customerOrderCreateCOPaymentV4Field;
+        
+        private CustomerOrderCreateCOStatusLogV4[] customerOrderCreateCOStatusLogV4Field;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOHeaderV4")]
+        public CustomerOrderCreateCOHeaderV4[] CustomerOrderCreateCOHeaderV4 {
+            get {
+                return this.customerOrderCreateCOHeaderV4Field;
+            }
+            set {
+                this.customerOrderCreateCOHeaderV4Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOLineV4")]
+        public CustomerOrderCreateCOLineV4[] CustomerOrderCreateCOLineV4 {
+            get {
+                return this.customerOrderCreateCOLineV4Field;
+            }
+            set {
+                this.customerOrderCreateCOLineV4Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCODiscountLineV4")]
+        public CustomerOrderCreateCODiscountLineV4[] CustomerOrderCreateCODiscountLineV4 {
+            get {
+                return this.customerOrderCreateCODiscountLineV4Field;
+            }
+            set {
+                this.customerOrderCreateCODiscountLineV4Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOPaymentV4")]
+        public CustomerOrderCreateCOPaymentV4[] CustomerOrderCreateCOPaymentV4 {
+            get {
+                return this.customerOrderCreateCOPaymentV4Field;
+            }
+            set {
+                this.customerOrderCreateCOPaymentV4Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOStatusLogV4")]
+        public CustomerOrderCreateCOStatusLogV4[] CustomerOrderCreateCOStatusLogV4 {
+            get {
+                return this.customerOrderCreateCOStatusLogV4Field;
+            }
+            set {
+                this.customerOrderCreateCOStatusLogV4Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033048")]
     public partial class CustomerOrderCreateCOPaymentV3 {
         
@@ -4756,6 +6232,20 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private bool loyaltyPointpaymentField;
         
+        private bool depositPaymentField;
+        
+        private string posTransReceiptNoField;
+        
+        private string typeField;
+        
+        private System.DateTime createdField;
+        
+        private bool authorizationExpiredField;
+        
+        private string tokenNoField;
+        
+        private string externalReferenceField;
+        
         public CustomerOrderCreateCOPaymentV3() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
@@ -4765,6 +6255,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.preApprovedAmountLCYField = ((decimal)(0m));
             this.finalisedAmountLCYField = ((decimal)(0m));
             this.loyaltyPointpaymentField = false;
+            this.depositPaymentField = false;
+            this.createdField = new System.DateTime(0);
+            this.authorizationExpiredField = false;
         }
         
         /// <remarks/>
@@ -4926,6 +6419,79 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.loyaltyPointpaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool DepositPayment {
+            get {
+                return this.depositPaymentField;
+            }
+            set {
+                this.depositPaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PosTransReceiptNo {
+            get {
+                return this.posTransReceiptNoField;
+            }
+            set {
+                this.posTransReceiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime Created {
+            get {
+                return this.createdField;
+            }
+            set {
+                this.createdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool AuthorizationExpired {
+            get {
+                return this.authorizationExpiredField;
+            }
+            set {
+                this.authorizationExpiredField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenNo {
+            get {
+                return this.tokenNoField;
+            }
+            set {
+                this.tokenNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalReference {
+            get {
+                return this.externalReferenceField;
+            }
+            set {
+                this.externalReferenceField = value;
             }
         }
     }
@@ -31502,6 +33068,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private int numberofBenefitCouponsField;
         
+        private string couponCodeField;
+        
         public FBPWSBuffer() {
             this.quantityField = 0;
             this.quanitytoTriggerField = 0;
@@ -31577,6 +33145,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.numberofBenefitCouponsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CouponCode {
+            get {
+                return this.couponCodeField;
+            }
+            set {
+                this.couponCodeField = value;
             }
         }
     }
@@ -31849,6 +33427,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime StartingDate {
             get {
                 return this.startingDateField;
@@ -31860,6 +33439,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime EndingDate {
             get {
                 return this.endingDateField;
@@ -33294,6 +34874,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime DateofBirth {
             get {
                 return this.dateofBirthField;
@@ -33345,6 +34926,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime DateBlocked {
             get {
                 return this.dateBlockedField;
@@ -33366,6 +34948,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime CreatedDate {
             get {
                 return this.createdDateField;
@@ -33584,6 +35167,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime DateActivated {
             get {
                 return this.dateActivatedField;
@@ -33675,6 +35259,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime LastSalesDate {
             get {
                 return this.lastSalesDateField;
@@ -33706,6 +35291,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime DateBlocked {
             get {
                 return this.dateBlockedField;
@@ -33727,6 +35313,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime CreatedDate {
             get {
                 return this.createdDateField;
@@ -33887,6 +35474,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime FirstDateUsed {
             get {
                 return this.firstDateUsedField;
@@ -33898,6 +35486,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime LastValidDate {
             get {
                 return this.lastValidDateField;
@@ -33919,6 +35508,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime DateBlocked {
             get {
                 return this.dateBlockedField;
@@ -33940,6 +35530,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime DateCreated {
             get {
                 return this.dateCreatedField;
@@ -36833,6 +38424,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string typeField;
         
+        private string[] largeValueField;
+        
         public MobileReceiptInfo() {
             this.idField = "{00000000-0000-0000-0000-000000000000}";
             this.line_NoField = 0;
@@ -36898,6 +38491,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("LargeValue")]
+        public string[] LargeValue {
+            get {
+                return this.largeValueField;
+            }
+            set {
+                this.largeValueField = value;
             }
         }
     }
@@ -37895,6 +39499,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal prepaymentField;
         
+        private bool saleIsReturnSaleField;
+        
         private string refundedReceiptNoField;
         
         private string refundedFromStoreNoField;
@@ -37940,6 +39546,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.totalDiscountField = ((decimal)(0m));
             this.incomeExpAmountField = ((decimal)(0m));
             this.prepaymentField = ((decimal)(0m));
+            this.saleIsReturnSaleField = false;
             this.refundedFromTransNoField = 0;
             this.tableNoField = 0;
             this.noofCoversField = 0;
@@ -38223,6 +39830,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool SaleIsReturnSale {
+            get {
+                return this.saleIsReturnSaleField;
+            }
+            set {
+                this.saleIsReturnSaleField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string RefundedReceiptNo {
             get {
                 return this.refundedReceiptNoField;
@@ -38481,7 +40099,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
-        private string authorisationCodeField;
+        private string authorizationCodeField;
         
         private System.DateTime preApprovedValidDateField;
         
@@ -38491,9 +40109,23 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountLCYField;
         
-        private decimal finalisedAmountLCYField;
+        private decimal finalizedAmountLCYField;
         
         private bool loyaltyPointpaymentField;
+        
+        private bool depositPaymentField;
+        
+        private string posTransReceiptNoField;
+        
+        private string typeField;
+        
+        private System.DateTime createdField;
+        
+        private bool authorizationExpiredField;
+        
+        private string tokenNoField;
+        
+        private string externalReferenceField;
         
         public CustomerOrderPayment1() {
             this.lineNoField = 0;
@@ -38502,8 +40134,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.currencyFactorField = ((decimal)(0m));
             this.preApprovedValidDateField = new System.DateTime(0);
             this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalisedAmountLCYField = ((decimal)(0m));
+            this.finalizedAmountLCYField = ((decimal)(0m));
             this.loyaltyPointpaymentField = false;
+            this.depositPaymentField = false;
+            this.createdField = new System.DateTime(0);
+            this.authorizationExpiredField = false;
         }
         
         /// <remarks/>
@@ -38598,12 +40233,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public string AuthorisationCode {
+        public string AuthorizationCode {
             get {
-                return this.authorisationCodeField;
+                return this.authorizationCodeField;
             }
             set {
-                this.authorisationCodeField = value;
+                this.authorizationCodeField = value;
             }
         }
         
@@ -38650,12 +40285,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public decimal FinalisedAmountLCY {
+        public decimal FinalizedAmountLCY {
             get {
-                return this.finalisedAmountLCYField;
+                return this.finalizedAmountLCYField;
             }
             set {
-                this.finalisedAmountLCYField = value;
+                this.finalizedAmountLCYField = value;
             }
         }
         
@@ -38666,6 +40301,79 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.loyaltyPointpaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool DepositPayment {
+            get {
+                return this.depositPaymentField;
+            }
+            set {
+                this.depositPaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PosTransReceiptNo {
+            get {
+                return this.posTransReceiptNoField;
+            }
+            set {
+                this.posTransReceiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime Created {
+            get {
+                return this.createdField;
+            }
+            set {
+                this.createdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool AuthorizationExpired {
+            get {
+                return this.authorizationExpiredField;
+            }
+            set {
+                this.authorizationExpiredField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenNo {
+            get {
+                return this.tokenNoField;
+            }
+            set {
+                this.tokenNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalReference {
+            get {
+                return this.externalReferenceField;
+            }
+            set {
+                this.externalReferenceField = value;
             }
         }
     }
@@ -39302,6 +41010,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string externalIDField;
         
+        private bool cancelledOrderField;
+        
         public CustomerOrderHeader2() {
             this.documentDateTimeField = new System.DateTime(0);
             this.collectTimeLimitField = new System.DateTime(0);
@@ -39311,6 +41021,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.clickandCollectOrderField = false;
             this.showaspostedField = false;
             this.vendorSourcingField = false;
+            this.cancelledOrderField = false;
         }
         
         /// <remarks/>
@@ -39883,6 +41594,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                 this.externalIDField = value;
             }
         }
+        
+        /// <remarks/>
+        public bool CancelledOrder {
+            get {
+                return this.cancelledOrderField;
+            }
+            set {
+                this.cancelledOrderField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -39991,9 +41712,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string shipOrderPOSFlagField;
         
+        private string memberContactNoField;
+        
+        private decimal totalAmountField;
+        
+        private decimal totalQuantityField;
+        
+        private string processingStatusField;
+        
         public CustomerOrderHeader1() {
             this.createdField = new System.DateTime(0);
             this.inventoryTransferField = false;
+            this.totalAmountField = ((decimal)(0m));
+            this.totalQuantityField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -40027,6 +41758,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime Created {
             get {
                 return this.createdField;
@@ -40037,6 +41769,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool InventoryTransfer {
             get {
                 return this.inventoryTransferField;
@@ -40113,6 +41846,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.shipOrderPOSFlagField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberContactNo {
+            get {
+                return this.memberContactNoField;
+            }
+            set {
+                this.memberContactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalAmount {
+            get {
+                return this.totalAmountField;
+            }
+            set {
+                this.totalAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalQuantity {
+            get {
+                return this.totalQuantityField;
+            }
+            set {
+                this.totalQuantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ProcessingStatus {
+            get {
+                return this.processingStatusField;
+            }
+            set {
+                this.processingStatusField = value;
             }
         }
     }
@@ -40427,6 +42202,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime PreApprovedValidDate {
             get {
                 return this.preApprovedValidDateField;
@@ -41592,6 +43368,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime PreApprovedValidDate {
             get {
                 return this.preApprovedValidDateField;
@@ -41972,6 +43749,492 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.inventoryTransferField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
+    public partial class CustomerOrderHeader {
+        
+        private string documentIdField;
+        
+        private string storeNoField;
+        
+        private string[] receiptNoField;
+        
+        private string memberCardNoField;
+        
+        private int sourceTypeField;
+        
+        private string customerNoField;
+        
+        private string fullNameField;
+        
+        private string addressField;
+        
+        private string address2Field;
+        
+        private string cityField;
+        
+        private string countyField;
+        
+        private string postCodeField;
+        
+        private string countryRegionCodeField;
+        
+        private string phoneNoField;
+        
+        private string emailField;
+        
+        private string houseApartmentNoField;
+        
+        private string mobilePhoneNoField;
+        
+        private string daytimePhoneNoField;
+        
+        private string shipToFullNameField;
+        
+        private string shipToAddressField;
+        
+        private string shipToAddress2Field;
+        
+        private string shipToCityField;
+        
+        private string shipToCountyField;
+        
+        private string shipToPostCodeField;
+        
+        private string shipToCountryRegionCodeField;
+        
+        private string shipToPhoneNoField;
+        
+        private string shipToEmailField;
+        
+        private string shipToHouseApartmentNoField;
+        
+        private bool clickAndCollectOrderField;
+        
+        private bool anonymousOrderField;
+        
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
+        private string sourcingLocationField;
+        
+        public CustomerOrderHeader() {
+            this.sourceTypeField = 0;
+            this.clickAndCollectOrderField = false;
+            this.anonymousOrderField = false;
+        }
+        
+        /// <remarks/>
+        public string DocumentId {
+            get {
+                return this.documentIdField;
+            }
+            set {
+                this.documentIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ReceiptNo")]
+        public string[] ReceiptNo {
+            get {
+                return this.receiptNoField;
+            }
+            set {
+                this.receiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberCardNo {
+            get {
+                return this.memberCardNoField;
+            }
+            set {
+                this.memberCardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int SourceType {
+            get {
+                return this.sourceTypeField;
+            }
+            set {
+                this.sourceTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FullName {
+            get {
+                return this.fullNameField;
+            }
+            set {
+                this.fullNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address2 {
+            get {
+                return this.address2Field;
+            }
+            set {
+                this.address2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string City {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string County {
+            get {
+                return this.countyField;
+            }
+            set {
+                this.countyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PostCode {
+            get {
+                return this.postCodeField;
+            }
+            set {
+                this.postCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CountryRegionCode {
+            get {
+                return this.countryRegionCodeField;
+            }
+            set {
+                this.countryRegionCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PhoneNo {
+            get {
+                return this.phoneNoField;
+            }
+            set {
+                this.phoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HouseApartmentNo {
+            get {
+                return this.houseApartmentNoField;
+            }
+            set {
+                this.houseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MobilePhoneNo {
+            get {
+                return this.mobilePhoneNoField;
+            }
+            set {
+                this.mobilePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DaytimePhoneNo {
+            get {
+                return this.daytimePhoneNoField;
+            }
+            set {
+                this.daytimePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToFullName {
+            get {
+                return this.shipToFullNameField;
+            }
+            set {
+                this.shipToFullNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToAddress {
+            get {
+                return this.shipToAddressField;
+            }
+            set {
+                this.shipToAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToAddress2 {
+            get {
+                return this.shipToAddress2Field;
+            }
+            set {
+                this.shipToAddress2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCity {
+            get {
+                return this.shipToCityField;
+            }
+            set {
+                this.shipToCityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCounty {
+            get {
+                return this.shipToCountyField;
+            }
+            set {
+                this.shipToCountyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToPostCode {
+            get {
+                return this.shipToPostCodeField;
+            }
+            set {
+                this.shipToPostCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCountryRegionCode {
+            get {
+                return this.shipToCountryRegionCodeField;
+            }
+            set {
+                this.shipToCountryRegionCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToPhoneNo {
+            get {
+                return this.shipToPhoneNoField;
+            }
+            set {
+                this.shipToPhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToEmail {
+            get {
+                return this.shipToEmailField;
+            }
+            set {
+                this.shipToEmailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToHouseApartmentNo {
+            get {
+                return this.shipToHouseApartmentNoField;
+            }
+            set {
+                this.shipToHouseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool ClickAndCollectOrder {
+            get {
+                return this.clickAndCollectOrderField;
+            }
+            set {
+                this.clickAndCollectOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool AnonymousOrder {
+            get {
+                return this.anonymousOrderField;
+            }
+            set {
+                this.anonymousOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SourcingLocation {
+            get {
+                return this.sourcingLocationField;
+            }
+            set {
+                this.sourcingLocationField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
+    public partial class RootCustomerOrder {
+        
+        private CustomerOrderHeader[] customerOrderHeaderField;
+        
+        private CustomerOrderLine[] customerOrderLineField;
+        
+        private CustomerOrderDiscountLine[] customerOrderDiscountLineField;
+        
+        private CustomerOrderPayment[] customerOrderPaymentField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
+        public CustomerOrderHeader[] CustomerOrderHeader {
+            get {
+                return this.customerOrderHeaderField;
+            }
+            set {
+                this.customerOrderHeaderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderLine")]
+        public CustomerOrderLine[] CustomerOrderLine {
+            get {
+                return this.customerOrderLineField;
+            }
+            set {
+                this.customerOrderLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderDiscountLine")]
+        public CustomerOrderDiscountLine[] CustomerOrderDiscountLine {
+            get {
+                return this.customerOrderDiscountLineField;
+            }
+            set {
+                this.customerOrderDiscountLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderPayment")]
+        public CustomerOrderPayment[] CustomerOrderPayment {
+            get {
+                return this.customerOrderPaymentField;
+            }
+            set {
+                this.customerOrderPaymentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
             }
         }
     }
@@ -42768,6 +45031,132 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosPostPrecalcCompletedEventHandler(object sender, MobilePosPostPrecalcCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosPostPrecalcCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosPostPrecalcCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosSaveCompletedEventHandler(object sender, MobilePosSaveCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosSaveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosSaveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosRetSaveCompletedEventHandler(object sender, MobilePosRetSaveCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosRetSaveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosRetSaveCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void MobilePosSuspendCompletedEventHandler(object sender, MobilePosSuspendCompletedEventArgs e);
     
     /// <remarks/>
@@ -42804,6 +45193,90 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosSuspendV2CompletedEventHandler(object sender, MobilePosSuspendV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosSuspendV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosSuspendV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string receiptNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosRetSuspendedCompletedEventHandler(object sender, MobilePosRetSuspendedCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosRetSuspendedCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosRetSuspendedCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
             }
         }
     }
@@ -43730,6 +46203,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosRefundCompletedEventHandler(object sender, MobilePosRefundCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosRefundCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosRefundCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void ItemSalesInfoCompletedEventHandler(object sender, ItemSalesInfoCompletedEventArgs e);
     
     /// <remarks/>
@@ -43880,6 +46395,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void CustomerOrderCreateV4CompletedEventHandler(object sender, CustomerOrderCreateV4CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CustomerOrderCreateV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal CustomerOrderCreateV4CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string customerOrderID {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void CustomerOrderGetV2CompletedEventHandler(object sender, CustomerOrderGetV2CompletedEventArgs e);
     
     /// <remarks/>
@@ -43916,6 +46473,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootCustomerOrderGetV2)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal pointsEarned {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal pointsUsed {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[4]));
             }
         }
     }
@@ -44000,6 +46573,90 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootGetDocumnet)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosPriceCheckCompletedEventHandler(object sender, MobilePosPriceCheckCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosPriceCheckCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosPriceCheckCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MobilePosFloatEntCompletedEventHandler(object sender, MobilePosFloatEntCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosFloatEntCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosFloatEntCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
             }
         }
     }

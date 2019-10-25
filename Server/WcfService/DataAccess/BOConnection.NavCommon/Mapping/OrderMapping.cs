@@ -226,6 +226,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ClickAndCollectOrder = header.ClickandCollectOrder,
                 AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
                 DocumentRegTime = header.Created,
+                TotalAmount = header.TotalAmount,
+                TotalDiscount = header.TotalDiscount,
+                LineItemCount = (int)header.TotalQuantity,
                 ShippingAgentCode = header.ShippingAgentCode,
                 ShipToEmail = header.ShiptoEmail,
                 ShipToName = header.ShiptoName,
@@ -265,7 +268,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             }
 
             //now loop thru the lines
-            decimal cnt = 0;
             order.Lines = new List<SalesEntryLine>();
             if (root.CustomerOrderGetCOLineV2 != null)
             {
@@ -296,11 +298,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     if (NavVersion > new Version("14.2"))
                         line.ItemImageId = oline.RetailImageID;
 
-                    cnt += oline.Quantity;
                     order.Lines.Add(line);
                 }
             }
-            order.LineItemCount = (int)cnt;
 
             //now loop thru the discount lines
             order.Payments = new List<SalesEntryPayment>();
@@ -311,14 +311,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     SalesEntryPayment pay = new SalesEntryPayment()
                     {
                         LineNumber = LineNumberFromNav(line.LineNo),
-                        Amount = (line.FinalisedAmount > 0) ? line.FinalisedAmount : line.PreApprovedAmount,
+                        Amount = (line.FinalizedAmount > 0) ? line.FinalizedAmount : line.PreApprovedAmount,
                         CurrencyCode = line.CurrencyCode,
                         TenderType = line.TenderType
                     };
                     order.Payments.Add(pay);
                 }
             }
-
             return order;
         }
 
@@ -334,9 +333,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Id = header.DocumentID,
                         StoreId = header.StoreNo,
                         CardId = header.MemberCardNo,
+                        StoreName = header.StoreNo,
                         AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
                         DocumentRegTime = header.Created,
-                        ShipToName = header.FullName
+                        ShipToName = header.FullName,
+                        TotalAmount = header.TotalAmount,
+                        LineItemCount = (int)header.TotalQuantity
                     });
                 }
             }
@@ -433,7 +435,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         DiscountType = (int)line.DiscountType,
                         OfferNo = GetString(line.OfferNumber),
                         PeriodicDiscType = (int)line.PeriodicDiscType,
-                        PeriodicDiscGroup = GetString(line.PeriodicDiscGroup),
+                        PeriodicDiscGroup = GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
                         Description = GetString(line.Description),
                         DiscountPercent = line.DiscountPercent,
                         DiscountAmount = line.DiscountAmount
@@ -451,13 +453,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     {
                         DocumentID = string.Empty,
                         LineNo = LineNumberToNav(line.LineNumber),
-                        PreApprovedAmount = line.PreApprovedAmount,
+                        PreApprovedAmount = line.Amount,
                         TenderType = line.TenderType,
                         CardType = GetString(line.CardType),
                         CurrencyCode = GetString(line.CurrencyCode),
                         CurrencyFactor = line.CurrencyFactor,
-                        AuthorisationCode = GetString(line.AuthorisationCode),
-                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        AuthorisationCode = GetString(line.AuthorizationCode),
+                        PreApprovedValidDate = GetSQLNAVDate(line.PreApprovedValidDate),
                         CardorCustomernumber = GetString(line.CardNumber),
                         IncomeExpenseAccountNo = string.Empty,
                         StoreNo = string.Empty
@@ -468,12 +470,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootCustomerOrderCreateV3 MapFromOrderV3ToRoot(Order order)
+        public NavWS.RootCustomerOrderCreateV4 MapFromOrderV4ToRoot(Order order)
         {
-            NavWS.RootCustomerOrderCreateV3 root = new NavWS.RootCustomerOrderCreateV3();
+            NavWS.RootCustomerOrderCreateV4 root = new NavWS.RootCustomerOrderCreateV4();
 
-            List<NavWS.CustomerOrderCreateCOHeaderV3> header = new List<NavWS.CustomerOrderCreateCOHeaderV3>();
-            header.Add(new NavWS.CustomerOrderCreateCOHeaderV3()
+            List<NavWS.CustomerOrderCreateCOHeaderV4> header = new List<NavWS.CustomerOrderCreateCOHeaderV4>();
+            header.Add(new NavWS.CustomerOrderCreateCOHeaderV4()
             {
                 DocumentID = string.Empty,
                 ExternalID = order.Id.ToUpper(),
@@ -514,12 +516,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             if (NavVersion > new Version("13.4"))
                 header[0].CustomerNo = string.Empty;
 
-            root.CustomerOrderCreateCOHeaderV3 = header.ToArray();
+            root.CustomerOrderCreateCOHeaderV4 = header.ToArray();
 
-            List<NavWS.CustomerOrderCreateCOLineV3> orderLines = new List<NavWS.CustomerOrderCreateCOLineV3>();
+            List<NavWS.CustomerOrderCreateCOLineV4> orderLines = new List<NavWS.CustomerOrderCreateCOLineV4>();
             foreach (OrderLine line in order.OrderLines)
             {
-                orderLines.Add(new NavWS.CustomerOrderCreateCOLineV3()
+                orderLines.Add(new NavWS.CustomerOrderCreateCOLineV4()
                 {
                     DocumentID = string.Empty,
                     LineNo = LineNumberToNav(line.LineNumber),
@@ -542,14 +544,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     SourcingLocation = string.Empty
                 });
             }
-            root.CustomerOrderCreateCOLineV3 = orderLines.ToArray();
+            root.CustomerOrderCreateCOLineV4 = orderLines.ToArray();
 
-            List<NavWS.CustomerOrderCreateCODiscountLineV3> discLines = new List<NavWS.CustomerOrderCreateCODiscountLineV3>();
+            List<NavWS.CustomerOrderCreateCODiscountLineV4> discLines = new List<NavWS.CustomerOrderCreateCODiscountLineV4>();
             if (order.OrderDiscountLines != null)
             {
                 foreach (OrderDiscountLine line in order.OrderDiscountLines)
                 {
-                    discLines.Add(new NavWS.CustomerOrderCreateCODiscountLineV3()
+                    discLines.Add(new NavWS.CustomerOrderCreateCODiscountLineV4()
                     {
                         DocumentID = string.Empty,
                         LineNo = LineNumberToNav(line.LineNumber),
@@ -557,38 +559,46 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         DiscountType = (int)line.DiscountType,
                         OfferNo = GetString(line.OfferNumber),
                         PeriodicDiscType = (int)line.PeriodicDiscType,
-                        PeriodicDiscGroup = GetString(line.PeriodicDiscGroup),
+                        PeriodicDiscGroup = GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
                         Description = GetString(line.Description),
                         DiscountPercent = line.DiscountPercent,
                         DiscountAmount = line.DiscountAmount
                     });
                 }
             }
-            root.CustomerOrderCreateCODiscountLineV3 = discLines.ToArray();
+            root.CustomerOrderCreateCODiscountLineV4 = discLines.ToArray();
 
-            List<NavWS.CustomerOrderCreateCOPaymentV3> payLines = new List<NavWS.CustomerOrderCreateCOPaymentV3>();
+            List<NavWS.CustomerOrderCreateCOPaymentV4> payLines = new List<NavWS.CustomerOrderCreateCOPaymentV4>();
             if (order.OrderPayments != null)
             {
                 foreach (OrderPayment line in order.OrderPayments)
                 {
-                    payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV3()
+                    string curcode = GetString(line.CurrencyCode);
+                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals("LOY", StringComparison.InvariantCultureIgnoreCase);
+
+                    payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV4()
                     {
                         DocumentID = string.Empty,
                         LineNo = LineNumberToNav(line.LineNumber),
-                        PreApprovedAmount = line.PreApprovedAmount,
+                        PreApprovedAmount = line.Amount,
+                        Type = ((int)line.PaymentType).ToString(),
                         TenderType = line.TenderType,
                         CardType = GetString(line.CardType),
-                        CurrencyCode = GetString(line.CurrencyCode),
+                        CurrencyCode = curcode,
                         CurrencyFactor = line.CurrencyFactor,
-                        AuthorisationCode = GetString(line.AuthorisationCode),
-                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        AuthorizationCode = GetString(line.AuthorizationCode),
+                        TokenNo = GetString(line.TokenNumber),
+                        ExternalReference = GetString(line.ExternalReference),
+                        PreApprovedValidDate = GetSQLNAVDate(line.PreApprovedValidDate),
                         CardorCustomernumber = GetString(line.CardNumber),
+                        LoyaltyPointpayment = loypayment,
                         IncomeExpenseAccountNo = string.Empty,
-                        StoreNo = string.Empty
+                        StoreNo = string.Empty,
+                        PosTransReceiptNo = string.Empty
                     });
                 }
             }
-            root.CustomerOrderCreateCOPaymentV3 = payLines.ToArray();
+            root.CustomerOrderCreateCOPaymentV4 = payLines.ToArray();
             return root;
         }
 
@@ -693,14 +703,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     {
                         DocumentId = order.Id,
                         LineNo = LineNumberToNav(line.LineNumber),
-                        PreApprovedAmount = line.PreApprovedAmount,
+                        PreApprovedAmount = line.Amount,
                         TenderType = line.TenderType,
                         CardType = GetString(line.CardType),
                         CurrencyCode = GetString(line.CurrencyCode),
                         CurrencyFactor = line.CurrencyFactor,
-                        AuthorisationCode = GetString(line.AuthorisationCode),
-                        PreApprovedValidDate = line.PreApprovedValidDate,
-                        CardorCustomernumber = GetString(line.CardNumber)
+                        AuthorisationCode = GetString(line.AuthorizationCode),
+                        PreApprovedValidDate = GetSQLNAVDate(line.PreApprovedValidDate),
+                        CardorCustomernumber = GetString(order.CardId)
                     });
                 }
             }
@@ -720,11 +730,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 StoreId = list.StoreId.ToUpper(),
                 TransactionType = 2,
                 EntryStatus = (int)EntryStatus.Normal,
-                CustomerId = GetString(list.CustomerId),
                 MemberCardNo = GetString(list.CardId),
 
                 // fill out null fields
                 BusinessTAXCode = string.Empty,
+                CustomerId = string.Empty,
                 CurrencyCode = string.Empty,
                 CustDiscGroup = string.Empty,
                 DiningTblDescription = string.Empty,
@@ -753,10 +763,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     LineNo = LineNumberToNav(lineno++),
                     EntryStatus = (int)EntryStatus.Normal,
                     LineType = (int)LineType.Item,
-                    Number = line.Item.Id,
+                    Number = line.ItemId,
                     CurrencyFactor = 1,
-                    VariantCode = (line.VariantReg == null) ? string.Empty : line.VariantReg.Id,
-                    UomId = (line.UnitOfMeasure == null) ? string.Empty : line.UnitOfMeasure.Id,
+                    VariantCode = line.VariantId,
+                    UomId = line.UnitOfMeasureId,
                     Quantity = line.Quantity,
                     DiscountAmount = line.DiscountAmount,
                     DiscountPercent = line.DiscountPercent,
@@ -801,7 +811,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 foreach (OneListPublishedOffer line in list.PublishedOffers?.Where(x => x.Type == OfferDiscountType.Coupon))
                 {
-                    transLines.Add(new NavWS.MobileTransactionLine()
+                    NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
                     {
                         Id = root.MobileTransaction[0].Id,
                         LineNo = LineNumberToNav(lineno++),
@@ -844,7 +854,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         UomDescription = string.Empty,
                         VariantDescription = string.Empty,
                         TransDate = DateTime.Now
-                    });
+                    };
+                    if (NavVersion > new Version("14.2"))
+                        tline.RetailImageID = string.Empty;
+                    transLines.Add(tline);
                 }
             }
 
@@ -913,9 +926,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     DocumentID = string.Empty,
                     LineNo = LineNumberToNav(linenr++),
-                    Number = item.Item?.Id,
-                    VariantCode = item.VariantReg?.Id ?? string.Empty,
-                    UnitofMeasureCode = item.UnitOfMeasure?.Id ?? string.Empty,
+                    Number = item.ItemId,
+                    VariantCode = item.VariantId,
+                    UnitofMeasureCode = item.UnitOfMeasureId,
                     Quantity = item.Quantity,
                     LineType = ((int)LineType.Item).ToString()
                 });

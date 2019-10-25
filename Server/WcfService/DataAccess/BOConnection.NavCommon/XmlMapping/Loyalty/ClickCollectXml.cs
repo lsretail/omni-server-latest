@@ -98,9 +98,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("Document_Id", string.Empty),
                     new XElement("Line_No.", LineNumberToNav(linenNo)),
                     new XElement("Line_Type", (int)LineType.Item),
-                    new XElement("Number", rq.Item?.Id),
-                    new XElement("Variant_Code", rq.VariantReg?.Id),
-                    new XElement("Unit_of_Measure_Code", rq.UnitOfMeasure?.Id),
+                    new XElement("Number", rq.ItemId),
+                    new XElement("Variant_Code", rq.VariantId),
+                    new XElement("Unit_of_Measure_Code", rq.UnitOfMeasureId),
                     new XElement("Quantity", rq.Quantity)
                 );
             return root;
@@ -453,13 +453,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 new XElement("Customer_Order_Payment",
                     new XElement("Document_Id", id),
                     new XElement("Line_No.", LineNumberToNav(rq.LineNumber)),
-                    new XElement("Pre_Approved_Amount", rq.PreApprovedAmount),  //Entry number, if more than one discount pr Line No.
-                    new XElement("Finalised_Amount", rq.FinalizedAmount),
+                    new XElement("Pre_Approved_Amount", rq.Amount),  //Entry number, if more than one discount pr Line No.
+                    new XElement("Finalised_Amount", rq.Amount),
                     new XElement("Tender_Type", rq.TenderType),
                     new XElement("Card_Type", rq.CardType),
                     new XElement("Currency_Code", rq.CurrencyCode),
                     new XElement("Currency_Factor", (rq.CurrencyFactor == 0) ? 1 : rq.CurrencyFactor),
-                    new XElement("Authorisation_Code", rq.AuthorisationCode),
+                    new XElement("Authorisation_Code", rq.AuthorizationCode),
                     new XElement("Pre_Approved_Valid_Date", ToNAVDate(rq.PreApprovedValidDate)),
                     new XElement("Card_or_Customer_number", rq.CardNumber)
                 );

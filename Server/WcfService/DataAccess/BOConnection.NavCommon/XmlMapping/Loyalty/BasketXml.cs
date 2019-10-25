@@ -327,7 +327,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("Tender_Type", line.TenderType.ToString()),
                     new XElement("Currency_Code", line.CurrencyCode),
                     new XElement("CurrencyFactor", "1"),   //new in LS Nav 9.00.03
-                    new XElement("Amount", ConvertTo.SafeStringDecimal(line.FinalizedAmount)),
+                    new XElement("Amount", ConvertTo.SafeStringDecimal(line.Amount)),
                     new XElement("Card_Or_Cust._No.", line.CardNumber),
                     new XElement("Card_Type", line.CardType),
                     new XElement("EFT_Card_Number", string.Empty),

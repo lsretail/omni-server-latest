@@ -51,7 +51,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public bool ChangePassword { get; set; }
         [DataMember]
         public bool Blocked { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? BlockingDate { get; set; }
     }
 }

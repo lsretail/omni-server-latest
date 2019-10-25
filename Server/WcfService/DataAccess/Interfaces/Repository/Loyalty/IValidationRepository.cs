@@ -5,7 +5,5 @@ namespace LSOmni.DataAccess.Interface.Repository.Loyalty
     public interface IValidationRepository
     {
         StatusCode ValidateSecurityToken(string securityToken, out string deviceId, out string contactId);
-        bool ValidateOneList(string id, string cardId);
-
     }
 }

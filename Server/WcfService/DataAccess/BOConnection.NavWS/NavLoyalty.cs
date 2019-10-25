@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using LSOmni.DataAccess.Interface.BOConnection;
 
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -147,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #region Search
 
-        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
+        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
         {
             return NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
         }
@@ -290,6 +291,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.HierarchyGet(storeId);
         }
 
+        public virtual MobileMenu MenuGet(string storeId, string salesType, Currency currency)
+        {
+            return NavWSBase.MenuGet(storeId, salesType, currency);
+        }
+
         #endregion
 
         #region Transaction
@@ -333,12 +339,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string orderId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId)
         {
             if (NAVVersion < new Version("13.5"))
                 return;
 
-            NavWSBase.OrderCancel(orderId);
+            NavWSBase.OrderCancel(orderId, storeId, userId);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
@@ -387,11 +393,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         #endregion
 
         #region Store
-
-        public virtual string GetWIStoreId()
-        {
-            return string.Empty;
-        }
 
         public virtual Store StoreGetById(string id)
         {

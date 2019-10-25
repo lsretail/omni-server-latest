@@ -447,7 +447,7 @@ namespace LSOmni.DataAccess.Dal
                             TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
                             {
-                                if (reader.Read())
+                                while (reader.Read())
                                 {
                                     OneList list = new OneList()
                                     {
@@ -462,7 +462,7 @@ namespace LSOmni.DataAccess.Dal
                             OneListRepository rep = new OneListRepository(config);
                             foreach (OneList list in lists)
                             {
-                                rep.OneListDeleteById(list.Id, list.ListType);
+                                rep.OneListDeleteById(list.Id);
                             }
                             logger.Info(string.Empty, "OneList CleanUp, removed {0} records", lists.Count);
                         }

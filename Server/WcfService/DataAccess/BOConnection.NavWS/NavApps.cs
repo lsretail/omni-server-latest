@@ -67,6 +67,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ItemsInStockGet(items, storeId, locationId);
         }
 
+        public virtual string ItemDetailsGetById(string itemId)
+        {
+            return string.Empty;    //TODO call ws or get it with menu
+        }
+
         #region replication
 
         public virtual List<ReplItem> ReplicateItems(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

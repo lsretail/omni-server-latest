@@ -24,7 +24,6 @@ Source: "..\Service\Xml\OfflinePrintTemplate.xml"; DestDir: "{app}\{code:WcfDir}
 Source: "..\..\3rdPartyComponents\LSRecommends\*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
 
 ; Configs Files
-Source: "..\Service\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBindings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBehaviors.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebServices.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
@@ -32,7 +31,9 @@ Source: "..\Service\WebServices_SSL_NonSSL.config"; DestDir: "{app}\{code:WcfDir
 Source: "..\Service\WebServices_SSL_Only.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\NLog.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "Default\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
+Source: "Default\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
 Source: "Multi\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppMultiSettings
+Source: "Multi\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppMultiSettings
 
 [Dirs]
 Name: "{app}\{code:WcfDir}\logs"; Permissions: everyone-modify

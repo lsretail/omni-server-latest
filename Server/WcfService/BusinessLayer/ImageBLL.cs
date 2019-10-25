@@ -123,7 +123,14 @@ namespace LSOmni.BLL
 
             var bytes = Convert.FromBase64String(iv.Image);
             Image img = Common.Util.ImageConverter.ByteToImage(bytes);
-            iv.AvgColor = Common.Util.ImageConverter.CalculateAverageColor(img);
+            try
+            {
+                iv.AvgColor = Common.Util.ImageConverter.CalculateAverageColor(img);
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(config.LSKey.Key, "Failed to get AvgColor > " + ex.Message);
+            }
             return iv;
         }
     }

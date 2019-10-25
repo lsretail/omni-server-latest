@@ -11,6 +11,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
@@ -121,11 +122,9 @@ namespace LSOmni.Service
         /// Delete Basket or Wish List By OneList Id
         /// </summary>
         /// <param name="oneListId"></param>
-        /// <param name="listType">0=Basket,1=Wish</param>
-        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OneListDeleteById(string oneListId, ListType listType);
+        bool OneListDeleteById(string oneListId);
 
         /// <summary>
         /// Get Basket or all Wish Lists by Member Card Id
@@ -142,12 +141,11 @@ namespace LSOmni.Service
         /// Get Basket or Wish List by OneList Id
         /// </summary>
         /// <param name="id">List Id</param>
-        /// <param name="listType">0=Basket,1=Wish</param>
         /// <param name="includeLines">Include detail lines</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OneList OneListGetById(string id, ListType listType, bool includeLines);
+        OneList OneListGetById(string id, bool includeLines);
 
         /// <summary>
         /// Save Basket or Wish List
@@ -164,23 +162,19 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"oneList": {
-        /// 		"Id": null,
-        /// 		"CardId": "10021",
-        /// 		"Items": [{
-        /// 			"Id": null,
-        /// 			"Item": {
-        /// 				"Id": "40020"
-        ///             },
-        /// 			"Quantity": 2,
-        /// 			"VariantReg": {
-        /// 				"Id": "002"
-        /// 			}
+        ///     "oneList": {
+        ///         "CardId": "10021",
+        ///         "Items": [{
+        ///             "ItemDescription": "Skirt Linda Professional Wear",
+        ///             "ItemId": "40020",
+        ///             "Quantity": 2,
+        ///             "VariantDescription": "YELLOW/38",
+        ///             "VariantId": "002"
         ///         }],
-        /// 		"ListType": 0,
-        /// 		"StoreId": "S0001"
-        /// 	},
-        /// 	"calculate": true
+        ///         "ListType": 0,
+        ///         "StoreId": "S0001"
+        ///     },
+        ///     "calculate": true
         /// }
         /// ]]>
         /// </code>
@@ -206,18 +200,14 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"oneList": {
-        /// 		"Id": null,
+        ///     "oneList": {
         /// 		"CardId": "10021",
-        /// 		"Items": [{
-        /// 			"Id": null,
-        /// 			"Item": {
-        /// 				"Id": "40020"
-        ///             },
-        /// 			"Quantity": 2,
-        /// 			"VariantReg": {
-        /// 				"Id": "002"
-        /// 		    }
+        ///         "Items": [{
+        ///             "ItemDescription": "Skirt Linda Professional Wear",
+        ///             "ItemId": "40020",
+        ///             "Quantity": 2,
+        ///             "VariantDescription": "YELLOW/38",
+        ///             "VariantId": "002"
         ///         }],
         /// 		"ListType": 0,
         /// 		"StoreId": "S0001"
@@ -231,18 +221,13 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         /// 	"oneList": {
-        /// 		"Id": null,
         /// 		"CardId": "10021",
-        /// 		"Items": [{
-        /// 			"Id": null,
-        /// 			"Item": {
-        /// 				"Id": "40020"
-        /// 
-        ///                },
-        /// 			"Quantity": 2,
-        /// 			"VariantReg": {
-        /// 				"Id": "002"
-        /// 			}
+        ///         "Items": [{
+        ///             "ItemDescription": "Skirt Linda Professional Wear",
+        ///             "ItemId": "40020",
+        ///             "Quantity": 2,
+        ///             "VariantDescription": "YELLOW/38",
+        ///             "VariantId": "002"
         ///         }],
         /// 		"PublishedOffers": [{
         /// 			"Id": "XMAS",
@@ -261,6 +246,49 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         Order OneListCalculate(OneList oneList);
+
+        /// <summary>
+        /// Add or remove Item in OneList without sending whole list
+        /// </summary>
+        /// <example>
+        /// Sample requests including minimum data needed to be able to process the request in OMNI<p/>
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "onelistId":"1117AC57-10BD-4F7C-974D-FA19B1B027FB",
+        ///     "item": {
+        /// 	    "ItemDescription": "T-shirt Linda Wear",
+        /// 	    "ItemId": "40045",
+        ///         "Quantity": 1,
+        ///         "VariantDescription": "BLACK/40",
+        /// 	    "VariantId": "015"
+        ///     },
+        /// 	"remove": false,
+        /// 	"calculate": true
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="onelistId">OneList Id</param>
+        /// <param name="item">OneList Item to add or remove</param>
+        /// <param name="remove">true if remove item, else false</param>
+        /// <param name="calculate">Recalculate Onelist</param>
+        /// <returns>Updated OneList</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+
+        /// <summary>
+        /// Link or remove a Member to/from exisitng OneList
+        /// </summary>
+        /// <param name="oneListId">OneList Id to link</param>
+        /// <param name="cardId">Card Id to link or remove</param>
+        /// <param name="email">Email address to look up Card Id when requesting a Linking</param>
+        /// <param name="status">Link action</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
 
         #endregion
 
@@ -307,16 +335,18 @@ namespace LSOmni.Service
         /// 			"VariantId": "002"
         ///         }],
         /// 		"OrderPayments": [{
+        /// 			"Amount": "160.0",
         /// 			"AuthorisationCode": "123456",
         /// 			"CardNumber": "10xx xxxx xxxx 1475",
         /// 			"CardType": "VISA",
         /// 			"CurrencyCode": "GBP",
         /// 			"CurrencyFactor": 1,
-        /// 			"FinalizedAmount": "0",
+        /// 			"ExternalReference": "MyRef123",
         /// 			"LineNumber": 1,
-        /// 			"PreApprovedAmount": "160.0",
+        /// 			"PaymentType": "2",
         /// 			"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
-        /// 			"TenderType": "1"
+        /// 			"TenderType": "1",
+        /// 			"TokenNumber": "123456"
         ///         }],
         /// 		"OrderStatus": "1",
         /// 		"PaymentStatus": "10",
@@ -374,16 +404,18 @@ namespace LSOmni.Service
         /// 			"VariantId": "002"
         ///         }],
         /// 		"OrderPayments": [{
+        /// 			"Amount": "160.0",
         /// 			"AuthorisationCode": "123456",
         /// 			"CardNumber": "10xx xxxx xxxx 1475",
         /// 			"CardType": "VISA",
         /// 			"CurrencyCode": "GBP",
         /// 			"CurrencyFactor": 1,
-        /// 			"FinalizedAmount": "0",
+        /// 			"ExternalReference": "MyRef123",
         /// 			"LineNumber": 1,
-        /// 			"PreApprovedAmount": "144.0",
+        /// 			"PaymentType": "2",
         /// 			"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
-        /// 			"TenderType": "1"
+        /// 			"TenderType": "1",
+        /// 			"TokenNumber": "123456"
         ///         }],
         /// 		"OrderStatus": "1",
         /// 		"PaymentStatus": "10",
@@ -435,31 +467,33 @@ namespace LSOmni.Service
         /// 			"VariantId": "002"
         ///         }],
         ///        	"OrderPayments": [{
-        ///        		"AuthorisationCode": "123456",
-        ///        		"CardNumber": "10xx xxxx xxxx 1475",
-        ///        		"CardType": "VISA",
-        ///        		"CurrencyCode": "GBP",
-        ///        		"CurrencyFactor": "1.0",
-        ///        		"FinalizedAmount": "0",
-        ///        		"LineNumber": 1,
-        ///        		"PreApprovedAmount": "120.0",
-        ///        		"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
-        ///        		"TenderType": "1"
+        /// 			"Amount": "160.0",
+        /// 			"AuthorisationCode": "123456",
+        /// 			"CardNumber": "10xx xxxx xxxx 1475",
+        /// 			"CardType": "VISA",
+        /// 			"CurrencyCode": "GBP",
+        /// 			"CurrencyFactor": 1,
+        /// 			"ExternalReference": "MyRef123",
+        /// 			"LineNumber": 1,
+        /// 			"PaymentType": "2",
+        /// 			"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
+        /// 			"TenderType": "1",
+        /// 			"TokenNumber": "123456"
         ///         },
         ///         {
+        ///        		"Amount": "200.0",
         ///        		"CardNumber": "10021",
         ///        		"CurrencyCode": "LOY",
         ///        		"CurrencyFactor": "0.1",
         ///        		"LineNumber": 2,
-        ///        		"PreApprovedAmount": "200.0",
         ///       		"TenderType": "3"
         ///         },
         ///         {
+        ///        		"Amount": "20.0",
         ///        		"CardNumber": "123456",
         ///        		"CurrencyCode": "GBP",
         ///        		"CurrencyFactor": "1.0",
         ///        		"LineNumber": 3,
-        ///        		"PreApprovedAmount": "20.0",
         ///       		"TenderType": "4"
         ///         }],
         /// 		"OrderStatus": "1",
@@ -546,11 +580,13 @@ namespace LSOmni.Service
         /// <summary>
         /// Cancel Customer Order
         /// </summary>
-        /// <param name="orderId"></param>
+        /// <param name="orderId">Customer Order Id</param>
+        /// <param name="storeId">Web Store Id</param>
+        /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string OrderCancel(string orderId);
+        string OrderCancel(string orderId, string storeId, string userId);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -592,22 +628,6 @@ namespace LSOmni.Service
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type);
 
         #endregion
-
-        #region OrderQueue
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderQueue OrderQueueSave(OrderQueue order);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderQueue OrderQueueGetById(string orderId);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OrderQueueUpdateStatus(string orderId, OrderQueueStatus status);
-
-        #endregion OrderQueue
 
         #region Contact
 
@@ -1103,6 +1123,22 @@ namespace LSOmni.Service
         List<Hierarchy> HierarchyGet(string storeId);
 
         #endregion
+
+        #region menu
+
+        /// <summary>
+        /// Load Hospitality Menu
+        /// </summary>
+        /// <param name="storeId">Store to load, empty loads all</param>
+        /// <param name="salesType">Sales type to load, empty loads all</param>
+        /// <param name="loadDetails">Load Item Details and Image data</param>
+        /// <param name="imageSize">Size of Image if loadDetails is set to true</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        MobileMenu MenuGet(string storeId, string salesType, bool loadDetails, ImageSize imageSize);
+
+        #endregion menu
 
         #region Profile
 

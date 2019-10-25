@@ -10,6 +10,7 @@ namespace LSOmni.WinService
         private ServiceProcessInstaller process;
         private ServiceInstaller service;
         public static string InstallServiceName = "LSOmniWinService";
+
         public CustomServiceInstaller()
         {
             try
@@ -33,13 +34,12 @@ namespace LSOmni.WinService
                 this.service.ServiceName = InstallServiceName;
                 this.service.StartType = ServiceStartMode.Automatic;
 
-
                 Installers.Add(process);
                 Installers.Add(service);
             }
-            catch(Exception)
+            catch (Exception)
             {
             }
-        } 
+        }
     }
 }

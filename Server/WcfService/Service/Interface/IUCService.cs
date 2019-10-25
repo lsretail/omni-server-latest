@@ -10,6 +10,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
@@ -101,16 +102,14 @@ namespace LSOmni.Service
 
         #endregion
 
-        #region One List
+        #region OneList
 
         /// <summary>
         /// Delete Basket or Wish List By OneList Id
         /// </summary>
         /// <param name="oneListId"></param>
-        /// <param name="listType">0=Basket,1=Wish</param>
-        /// <returns></returns>
         [OperationContract]
-        bool OneListDeleteById(string oneListId, ListType listType);
+        bool OneListDeleteById(string oneListId);
 
         /// <summary>
         /// Get Basket or all Wish Lists by Member Card Id
@@ -126,11 +125,10 @@ namespace LSOmni.Service
         /// Get Basket or Wish List by OneList Id
         /// </summary>
         /// <param name="id">List Id</param>
-        /// <param name="listType">0=Basket,1=Wish</param>
         /// <param name="includeLines">Include detail lines</param>
         /// <returns></returns>
         [OperationContract]
-        OneList OneListGetById(string id, ListType listType, bool includeLines);
+        OneList OneListGetById(string id, bool includeLines);
 
         /// <summary>
         /// Save Basket or Wish List
@@ -147,24 +145,20 @@ namespace LSOmni.Service
         /// Include minimum data needed to be able to process the request
         /// <code language="xml" title="SOAP Sample Request">
         /// <![CDATA[
-        ///<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
         ///  <soapenv:Header/>
         ///   <soapenv:Body>
         ///      <ser:OneListSave>
         ///         <ser:oneList>
-        ///            <!--Not needed for anonymous basket:-->
+        ///            <!--Empty for anonymous basket:-->
         ///            <ns1:CardId>10021</ns1:CardId>
         ///            <ns1:Items>
-        ///               <!--Zero or more repetitions:-->
         ///               <ns1:OneListItem>
-        ///                  <ns1:Item>
-        ///                     <ns:Id>40020</ns:Id>
-        ///                  </ns1:Item>
+        ///                  <ns1:ItemDescription>Skirt Linda Professional Wear</ns1:ItemDescription>
+        ///                  <ns1:ItemId>40020</ns1:ItemId>
         ///                  <ns1:Quantity>2</ns1:Quantity>
-        ///                  <!--Optional:-->
-        ///                  <ns1:VariantReg>
-        ///                      <ns:Id>002</ns:Id>
-        ///                  </ns1:VariantReg>
+        ///                  <ns1:VariantDescription>YELLOW/38</ns1:VariantDescription>
+        ///                  <ns1:VariantId>002</ns1:VariantId>
         ///               </ns1:OneListItem>
         ///            </ns1:Items>
         ///            <ns1:ListType>Basket</ns1:ListType>
@@ -173,112 +167,92 @@ namespace LSOmni.Service
         ///         <ser:calculate>true</ser:calculate>
         ///      </ser:OneListSave>
         ///   </soapenv:Body>
-        ///</soapenv:Envelope>
+        /// </soapenv:Envelope>
         /// ]]>
         /// </code>
         /// Response Data from OMNI after Request has been sent
         /// <code language="soap" title="SOAP Response">
         /// <![CDATA[
         /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///    <s:Body>
-        ///       <OneListSaveResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///          < OneListSaveResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017">16c57444-49c8-424a-b7bd-5be4adb5608f</Id>
-        ///             <a:CardId>10021</a:CardId>
-        ///             <a:CreateDate>2018-11-20T12:46:42.79</a:CreateDate>
-        ///             <a:CustomerId/>
-        ///             <a:Description>List MO000008</a:Description>
-        ///             <a:IsDefaultList>true</a:IsDefaultList>
-        ///             <a:Items>
-        ///                <a:OneListItem>
-        ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > a7e973a9 - 3dad-4c93-9f10-08ba82b244b9</Id>
-        ///                   <a:Amount>80.00000000</a:Amount>
-        ///                   <a:BarcodeId/>
-        ///                   <a:CreateDate>2018-11-20T12:46:42.803</a:CreateDate>
-        ///                   <a:DiscountAmount>0.00000000</a:DiscountAmount>
-        ///                   <a:DiscountPercent>0.00000000</a:DiscountPercent>
-        ///                   <a:DisplayOrderId>1</a:DisplayOrderId>
-        ///                   <a:Item>
-        ///                      <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > 40020 </ Id >
-        ///                      < a:AllowedToSell>true</a:AllowedToSell>
-        ///                      <a:Description>Skirt Linda Professional Wear</a:Description>
-        ///                      <a:Details>Skirt - Professional Wear from the Linda Line, Elegant skirt suitable for different occasions
-        ///                      This skirt is available in many sizes and colors. This is one of our most sold skirts. Come and try it, you will find out how well it suits you.</a:Details>
-        ///                      <a:Images xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                         < b:ImageView>
-        ///                            <b:Id>40020</b:Id>
-        ///                            <b:AvgColor/>
-        ///                            <b:DisplayOrder>0</b:DisplayOrder>
-        ///                            <b:Format/>
-        ///                            <b:Image/>
-        ///                            <b:ImgSize>
-        ///                               <b:Height>0</b:Height>
-        ///                               <b:Width>0</b:Width>
-        ///                            </b:ImgSize>
-        ///                            <b:LoadFromFile>false</b:LoadFromFile>
-        ///                            <b:Location>http://hq-lsotest-d01.lsretail.local/lsomniservice/ucservice.svc/ImageStreamGetById?id=40020&amp;width={0}&amp;height={1}</b:Location>
-        ///                            <b:LocationType>Image</b:LocationType>
-        ///                            <b:ObjectId/>
-        ///                         </b:ImageView>
-        ///                      </a:Images>
-        ///                      <a:IsDeleted>false</a:IsDeleted>
-        ///                      <a:ItemAttributes/>
-        ///                      <a:Price/>
-        ///                      <a:Prices/>
-        ///                      <a:ProductGroupId>WOMEN-S</a:ProductGroupId>
-        ///                      <a:SalesUomId>PCS</a:SalesUomId>
-        ///                      <a:UnitOfMeasures xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                      <a:VariantsExt xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                      <a:VariantsRegistration xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   </a:Item>
-        ///                   <a:NetAmount>64.00000000</a:NetAmount>
-        ///                   <a:NetPrice>64.00000000</a:NetPrice>
-        ///                   <a:OnelistItemDiscounts/>
-        ///                   <a:Price>80.00000000</a:Price>
-        ///                   <a:Quantity>1.00000000</a:Quantity>
-        ///                   <a:TaxAmount>16.00000000</a:TaxAmount>
-        ///                   <a:UnitOfMeasure i:nil= "true" xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   <a:VariantReg xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                      <b:Id>002</b:Id>
-        ///                      <b:Dimension1>YELLOW</b:Dimension1>
-        ///                      <b:Dimension2>38</b:Dimension2>
-        ///                      <b:Dimension3/>
-        ///                      <b:Dimension4/>
-        ///                      <b:Dimension5/>
-        ///                      <b:Dimension6/>
-        ///                      <b:FrameworkCode>WOMEN</b:FrameworkCode>
-        ///                      <b:Images>
-        ///                         <b:ImageView>
-        ///                            <b:Id>40020-Y</b:Id>
-        ///                            <b:AvgColor/>
-        ///                            <b:DisplayOrder>0</b:DisplayOrder>
-        ///                            <b:Format/>
-        ///                            <b:Image/>
-        ///                            <b:ImgSize>
-        ///                               <b:Height>0</b:Height>
-        ///                               <b:Width>0</b:Width>
-        ///                            </b:ImgSize>
-        ///                            <b:LoadFromFile>false</b:LoadFromFile>
-        ///                            <b:Location>http://hq-lsotest-d01.lsretail.local/lsomniservice/ucservice.svc/ImageStreamGetById?id=40020-Y&amp;width={0}&amp;height={1}</b:Location>
-        ///                            <b:LocationType>Image</b:LocationType>
-        ///                            <b:ObjectId/>
-        ///                         </b:ImageView>
-        ///                      </b:Images>
-        ///                      <b:ItemId>40020</b:ItemId>
-        ///                   </a:VariantReg>
-        ///                </a:OneListItem>
-        ///             </a:Items>
-        ///             <a:ListType>Basket</a:ListType>
-        ///             <a:PublishedOffers/>
-        ///             <a:ShippingAmount>0.00000000</a:ShippingAmount>
-        ///             <a:StoreId>S0001</a:StoreId>
-        ///             <a:TotalAmount>80.00000000</a:TotalAmount>
-        ///             <a:TotalDiscAmount>0.00000000</a:TotalDiscAmount>
-        ///             <a:TotalNetAmount>64.00000000</a:TotalNetAmount>
-        ///             <a:TotalTaxAmount>16.00000000</a:TotalTaxAmount>
-        ///          </OneListSaveResult>
-        ///       </OneListSaveResponse>
-        ///    </s:Body>
+        ///   <s:Body>
+        ///      <OneListSaveResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
+        ///         < OneListSaveResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > 4979E04C-D037-4791-B3AA-1885106160E3</Id>
+        ///            <a:CardId>10021</a:CardId>
+        ///            <a:CardLinks>
+        ///               <a:OneListLink>
+        ///                  <a:CardId>10021</a:CardId>
+        ///                  <a:Name>Tom Thomson</a:Name>
+        ///                  <a:Owner>true</a:Owner>
+        ///                  <a:Status>Active</a:Status>
+        ///               </a:OneListLink>
+        ///            </a:CardLinks>
+        ///            <a:CreateDate>2019-09-12T09:42:24.693</a:CreateDate>
+        ///            <a:Description>Basket: 10021</a:Description>
+        ///            <a:ExternalType>0</a:ExternalType>
+        ///            <a:Items>
+        ///               <a:OneListItem>
+        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > A3C1C59D - F4E5 - 428E-8A3E-F80F91A507F6</Id>
+        ///                  <a:Amount>160.00000000</a:Amount>
+        ///                  <a:BarcodeId/>
+        ///                  <a:CreateDate>2019-09-12T09:42:24.71</a:CreateDate>
+        ///                  <a:Detail/>
+        ///                  <a:DiscountAmount>0.00000000</a:DiscountAmount>
+        ///                  <a:DiscountPercent>0.00000000</a:DiscountPercent>
+        ///                  <a:DisplayOrderId>1</a:DisplayOrderId>
+        ///                  <a:Image xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///                     < b:Id>40020-Y</b:Id>
+        ///                     <b:AvgColor/>
+        ///                     <b:DisplayOrder>0</b:DisplayOrder>
+        ///                     <b:Format/>
+        ///                     <b:Image/>
+        ///                     <b:ImgSize>
+        ///                        <b:Height>0</b:Height>
+        ///                        <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
+        ///                        <b:Width>0</b:Width>
+        ///                     </b:ImgSize>
+        ///                     <b:LoadFromFile>false</b:LoadFromFile>
+        ///                     <b:Location>http://dhqsrvomni001.lsretail.local/lsomniservice/ucservice.svc/ImageStreamGetById?id=40020-Y&amp;width={0}&amp;height={1}</b:Location>
+        ///                     <b:LocationType>Image</b:LocationType>
+        ///                  </a:Image>
+        ///                  <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
+        ///                  <a:ItemId>40020</a:ItemId>
+        ///                  <a:NetAmount>128.00000000</a:NetAmount>
+        ///                  <a:NetPrice>64.00000000</a:NetPrice>
+        ///                  <a:OnelistItemDiscounts/>
+        ///                  <a:Price>80.00000000</a:Price>
+        ///                  <a:Quantity>2.00000000</a:Quantity>
+        ///                  <a:TaxAmount>32.00000000</a:TaxAmount>
+        ///                  <a:UnitOfMeasureDescription i:nil= "true" />
+        ///                  < a:UnitOfMeasureId/>
+        ///                  <a:VariantDescription>YELLOW/38</a:VariantDescription>
+        ///                  <a:VariantId>002</a:VariantId>
+        ///                  <a:VariantRegistration xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///                     < b:Id>1BAC4050-C3CA-4ADB-A979-D80BC43EC10A</b:Id>
+        ///                     <b:Dimension1/>
+        ///                     <b:Dimension2/>
+        ///                     <b:Dimension3/>
+        ///                     <b:Dimension4/>
+        ///                     <b:Dimension5/>
+        ///                     <b:Dimension6/>
+        ///                     <b:FrameworkCode/>
+        ///                     <b:Images/>
+        ///                     <b:ItemId/>
+        ///                  </a:VariantRegistration>
+        ///               </a:OneListItem>
+        ///            </a:Items>
+        ///            <a:ListType>Basket</a:ListType>
+        ///            <a:PointAmount>0</a:PointAmount>
+        ///            <a:PublishedOffers/>
+        ///            <a:ShippingAmount>0.00000000</a:ShippingAmount>
+        ///            <a:StoreId>S0001</a:StoreId>
+        ///            <a:TotalAmount>160.00000000</a:TotalAmount>
+        ///            <a:TotalDiscAmount>0.00000000</a:TotalDiscAmount>
+        ///            <a:TotalNetAmount>128.00000000</a:TotalNetAmount>
+        ///            <a:TotalTaxAmount>32.00000000</a:TotalTaxAmount>
+        ///         </OneListSaveResult>
+        ///      </OneListSaveResponse>
+        ///   </s:Body>
         /// </s:Envelope>
         /// ]]>
         /// </code>
@@ -307,20 +281,16 @@ namespace LSOmni.Service
         ///   <soapenv:Body>
         ///     <ser:OneListCalculate>
         ///        <ser:oneList>
-        ///           <!--Not needed for anonymous basket:-->
+        ///           <!--Empty for anonymous basket:-->
         ///           <ns1:CardId>10021</ns1:CardId>
         ///           <ns1:Items>
-        ///              <!--Zero or more repetitions:-->
-        ///              <ns1:OneListItem>
-        ///                 <ns1:Item>
-        ///                    <ns:Id>40020</ns:Id>
-        ///                 </ns1:Item>
-        ///                 <ns1:Quantity>2</ns1:Quantity>
-        ///                 <!--Optional:-->
-        ///                 <ns1:VariantReg>
-        ///                     <ns:Id>002</ns:Id>
-        ///                 </ns1:VariantReg>
-        ///              </ns1:OneListItem>
+        ///               <ns1:OneListItem>
+        ///                  <ns1:ItemDescription>Skirt Linda Professional Wear</ns1:ItemDescription>
+        ///                  <ns1:ItemId>40020</ns1:ItemId>
+        ///                  <ns1:Quantity>2</ns1:Quantity>
+        ///                  <ns1:VariantDescription>YELLOW/38</ns1:VariantDescription>
+        ///                  <ns1:VariantId>002</ns1:VariantId>
+        ///               </ns1:OneListItem>
         ///           </ns1:Items>
         ///           <ns1:ListType>Basket</ns1:ListType>
         ///           <ns1:StoreId>S0013</ns1:StoreId>
@@ -333,98 +303,98 @@ namespace LSOmni.Service
         /// Response Data from OMNI after Request has been sent
         /// <code language="xml" title="SOAP Response">
         /// <![CDATA[
-        ///<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///   <s:Body>
-        ///      <OneListCalculateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///         <OneListCalculateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" >{3FA2BCEB-0CF0-45FB-BC88-BE85BDDB1704}</Id>
-        ///            <a:CardId>10021</a:CardId>
-        ///            <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
-        ///            <a:CollectLocation i:nil="true"/>
-        ///            <a:ContactAddress xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
-        ///               <b:Address1/>
-        ///               <b:Address2/>
-        ///               <b:CellPhoneNumber i:nil="true"/>
-        ///               <b:City/>
-        ///               <b:Country/>
-        ///               <b:HouseNo i:nil="true"/>
-        ///               <b:Id/>
-        ///               <b:PhoneNumber i:nil="true"/>
-        ///               <b:PostCode/>
-        ///               <b:StateProvinceRegion/>
-        ///               <b:Type>Residential</b:Type>
-        ///            </a:ContactAddress>
-        ///            <a:ContactId i:nil="true"/>
-        ///            <a:ContactName i:nil="true"/>
-        ///            <a:DayPhoneNumber i:nil="true"/>
-        ///            <a:DocumentId i:nil="true"/>
-        ///            <a:Email i:nil="true"/>
-        ///            <a:LineItemCount>0</a:LineItemCount>
-        ///            <a:MobileNumber i:nil="true"/>
-        ///            <a:OrderDiscountLines/>
-        ///            <a:OrderLines>
-        ///               <a:OrderLine>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                  < a:Amount>160.00</a:Amount>
-        ///                  <a:DiscountAmount>0.00</a:DiscountAmount>
-        ///                  <a:DiscountPercent>0.00</a:DiscountPercent>
-        ///                  <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
-        ///                  <a:ItemId>40020</a:ItemId>
-        ///                  <a:ItemImageId>40020-Y</a:ItemImageId>
-        ///                  <a:LineNumber>1</a:LineNumber>
-        ///                  <a:LineType>Item</a:LineType>
-        ///                  <a:NetAmount>128.00</a:NetAmount>
-        ///                  <a:NetPrice>64.00</a:NetPrice>
-        ///                  <a:OrderId/>
-        ///                  <a:Price>80.00</a:Price>
-        ///                  <a:Quantity>2.00</a:Quantity>
-        ///                  <a:QuantityOutstanding>0</a:QuantityOutstanding>
-        ///                  <a:QuantityToInvoice>2.00</a:QuantityToInvoice>
-        ///                  <a:QuantityToShip>0</a:QuantityToShip>
-        ///                  <a:TaxAmount>32.00</a:TaxAmount>
-        ///                  <a:UomId/>
-        ///                  <a:VariantDescription>YELLOW/38</a:VariantDescription>
-        ///                  <a:VariantId>002</a:VariantId>
-        ///               </a:OrderLine>
-        ///            </a:OrderLines>
-        ///            <a:OrderPayments/>
-        ///            <a:OrderStatus>Pending</a:OrderStatus>
-        ///            <a:PaymentStatus>PreApproved</a:PaymentStatus>
-        ///            <a:PhoneNumber i:nil= "true" />
-        ///            < a:PointAmount>1600.00</a:PointAmount>
-        ///            <a:PointBalance>53632.00</a:PointBalance>
-        ///            <a:PointCashAmountNeeded>0.00</a:PointCashAmountNeeded>
-        ///            <a:PointsRewarded>160.00</a:PointsRewarded>
-        ///            <a:PointsUsedInOrder>0.00</a:PointsUsedInOrder>
-        ///            <a:Posted>false</a:Posted>
-        ///            <a:ReceiptNo/>
-        ///            <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               < b:Address1/>
-        ///               <b:Address2/>
-        ///               <b:CellPhoneNumber i:nil= "true" />
-        ///               < b:City/>
-        ///               <b:Country/>
-        ///               <b:HouseNo i:nil= "true" />
-        ///               < b:Id/>
-        ///               <b:PhoneNumber i:nil= "true" />
-        ///               < b:PostCode/>
-        ///               <b:StateProvinceRegion/>
-        ///               <b:Type>Residential</b:Type>
-        ///            </a:ShipToAddress>
-        ///            <a:ShipToEmail i:nil= "true" />
-        ///            < a:ShipToName i:nil= "true" />
-        ///            < a:ShipToPhoneNumber i:nil= "true" />
-        ///            < a:ShippingAgentCode i:nil= "true" />
-        ///            < a:ShippingAgentServiceCode i:nil= "true" />
-        ///            < a:ShippingStatus>ShippigNotRequired</a:ShippingStatus>
-        ///            <a:StoreId>S0013</a:StoreId>
-        ///            <a:TotalAmount>160.00</a:TotalAmount>
-        ///            <a:TotalDiscount>0.00</a:TotalDiscount>
-        ///            <a:TotalNetAmount>128.00</a:TotalNetAmount>
-        ///         </OneListCalculateResult>
-        ///      </OneListCalculateResponse>
-        ///   </s:Body>
-        ///</s:Envelope>
+        /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
+        ///    <s:Body>
+        ///       <OneListCalculateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
+        ///          <OneListCalculateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+        ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" >{16B13DED-C5BE-4462-9223-5A45A9569F84}</Id>
+        ///             <a:CardId>10021</a:CardId>
+        ///             <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
+        ///             <a:CollectLocation i:nil="true"/>
+        ///             <a:ContactAddress xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
+        ///                <b:Address1/>
+        ///                <b:Address2/>
+        ///                <b:CellPhoneNumber i:nil="true"/>
+        ///                <b:City/>
+        ///                <b:Country/>
+        ///                <b:HouseNo i:nil="true"/>
+        ///                <b:Id/>
+        ///                <b:PhoneNumber i:nil="true"/>
+        ///                <b:PostCode/>
+        ///                <b:StateProvinceRegion/>
+        ///                <b:Type>Residential</b:Type>
+        ///             </a:ContactAddress>
+        ///             <a:ContactId i:nil="true"/>
+        ///             <a:ContactName i:nil="true"/>
+        ///             <a:DayPhoneNumber i:nil="true"/>
+        ///             <a:DocumentId i:nil="true"/>
+        ///             <a:Email i:nil="true"/>
+        ///             <a:LineItemCount>0</a:LineItemCount>
+        ///             <a:MobileNumber i:nil="true"/>
+        ///             <a:OrderDiscountLines/>
+        ///             <a:OrderLines>
+        ///                <a:OrderLine>
+        ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
+        ///                   <a:Amount>160.00</a:Amount>
+        ///                   <a:DiscountAmount>0.00</a:DiscountAmount>
+        ///                   <a:DiscountPercent>0.00</a:DiscountPercent>
+        ///                   <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
+        ///                   <a:ItemId>40020</a:ItemId>
+        ///                   <a:ItemImageId>40020-Y</a:ItemImageId>
+        ///                   <a:LineNumber>1</a:LineNumber>
+        ///                   <a:LineType>Item</a:LineType>
+        ///                   <a:NetAmount>128.00</a:NetAmount>
+        ///                   <a:NetPrice>64.00</a:NetPrice>
+        ///                   <a:OrderId/>
+        ///                   <a:Price>80.00</a:Price>
+        ///                   <a:Quantity>2.00</a:Quantity>
+        ///                   <a:QuantityOutstanding>0</a:QuantityOutstanding>
+        ///                   <a:QuantityToInvoice>2.00</a:QuantityToInvoice>
+        ///                   <a:QuantityToShip>0</a:QuantityToShip>
+        ///                   <a:TaxAmount>32.00</a:TaxAmount>
+        ///                   <a:UomId/>
+        ///                   <a:VariantDescription>YELLOW/38</a:VariantDescription>
+        ///                   <a:VariantId>002</a:VariantId>
+        ///                </a:OrderLine>
+        ///             </a:OrderLines>
+        ///             <a:OrderPayments/>
+        ///             <a:OrderStatus>Pending</a:OrderStatus>
+        ///             <a:PaymentStatus>PreApproved</a:PaymentStatus>
+        ///             <a:PhoneNumber i:nil= "true" />
+        ///             <a:PointAmount>1600.00</a:PointAmount>
+        ///             <a:PointBalance>53632.00</a:PointBalance>
+        ///             <a:PointCashAmountNeeded>0.00</a:PointCashAmountNeeded>
+        ///             <a:PointsRewarded>160.00</a:PointsRewarded>
+        ///             <a:PointsUsedInOrder>0.00</a:PointsUsedInOrder>
+        ///             <a:Posted>false</a:Posted>
+        ///             <a:ReceiptNo/>
+        ///             <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///                <b:Address1/>
+        ///                <b:Address2/>
+        ///                <b:CellPhoneNumber i:nil= "true" />
+        ///                <b:City/>
+        ///                <b:Country/>
+        ///                <b:HouseNo i:nil= "true" />
+        ///                <b:Id/>
+        ///                <b:PhoneNumber i:nil= "true" />
+        ///                <b:PostCode/>
+        ///                <b:StateProvinceRegion/>
+        ///                <b:Type>Residential</b:Type>
+        ///             </a:ShipToAddress>
+        ///             <a:ShipToEmail i:nil= "true" />
+        ///             <a:ShipToName i:nil= "true" />
+        ///             <a:ShipToPhoneNumber i:nil= "true" />
+        ///             <a:ShippingAgentCode i:nil= "true" />
+        ///             <a:ShippingAgentServiceCode i:nil= "true" />
+        ///             <a:ShippingStatus>ShippigNotRequired</a:ShippingStatus>
+        ///             <a:StoreId>S0013</a:StoreId>
+        ///             <a:TotalAmount>160.00</a:TotalAmount>
+        ///             <a:TotalDiscount>0.00</a:TotalDiscount>
+        ///             <a:TotalNetAmount>128.00</a:TotalNetAmount>
+        ///          </OneListCalculateResult>
+        ///       </OneListCalculateResponse>
+        ///    </s:Body>
+        /// </s:Envelope>
         /// ]]>
         /// </code>
         /// </example>
@@ -432,6 +402,28 @@ namespace LSOmni.Service
         /// <returns>Order Object that can be used to Create Order</returns>
         [OperationContract]
         Order OneListCalculate(OneList oneList);
+
+        /// <summary>
+        /// Add or remove Item in OneList
+        /// </summary>
+        /// <param name="onelistId">OneList Id</param>
+        /// <param name="item">OneList Item to add or remove</param>
+        /// <param name="remove">true if remove item, else false</param>
+        /// <param name="calculate">Recalculate Onelist</param>
+        /// <returns>Updated OneList</returns>
+        [OperationContract]
+        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+
+        /// <summary>
+        /// Link or remove a Member to/from exisitng OneList
+        /// </summary>
+        /// <param name="oneListId">OneList Id to link</param>
+        /// <param name="cardId">Card Id to link or remove</param>
+        /// <param name="email">Email address to look up Card Id when requesting a Linking</param>
+        /// <param name="status">Link action</param>
+        /// <returns></returns>
+        [OperationContract]
+        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
 
         #endregion
 
@@ -459,8 +451,7 @@ namespace LSOmni.Service
         ///     <ser:OrderCreate>
         ///        <ser:request>
         ///           <ns:Id></ns:Id>
-        ///           <ns1:AnonymousOrder>false</ns1:AnonymousOrder>
-        ///            <!--Not needed when AnonymouseOrder == false:-->
+        ///            <!--AnonymouseOrder leave empty-->
         ///           <ns1:CardId>10021</ns1:CardId>
         ///           <ns1:ClickAndCollectOrder>false</ns1:ClickAndCollectOrder>
         ///           <ns1:CollectLocation></ns1:CollectLocation>
@@ -492,18 +483,18 @@ namespace LSOmni.Service
         ///           <ns1:OrderPayments>
         ///              <!--Zero or more repetitions:-->
         ///              <ns1:OrderPayment>
+        ///                 <ns1:Amount>160.00</ns1:Amount>
         ///                 <ns1:AuthorisationCode>123456</ns1:AuthorisationCode>
         ///                 <ns1:CardNumber>45XX..5555</ns1:CardNumber>
         ///                 <ns1:CardType>VISA</ns1:CardType>
         ///                 <ns1:CurrencyCode></ns1:CurrencyCode>
         ///                 <ns1:CurrencyFactor>1</ns1:CurrencyFactor>
-        ///                 <ns1:FinalizedAmount>0</ns1:FinalizedAmount>
+        ///                 <ns1:ExternalReference>My123456</ns1:ExternalReference>
         ///                 <ns1:LineNumber>1</ns1:LineNumber>
-        ///                 <ns1:No></ns1:No>
-        ///                 <ns1:OrderId></ns1:OrderId>
-        ///                 <ns1:PreApprovedAmount>160.00</ns1:PreApprovedAmount>
+        ///                 <ns1:PaymentType>PreAuthorization</ns1:PaymentType>
         ///                 <ns1:PreApprovedValidDate>2030-01-01</ns1:PreApprovedValidDate>
         ///                 <ns1:TenderType>1</ns1:TenderType>
+        ///                 <ns1:TokenNumber>123456</ns1:TokenNumber>
         ///              </ns1:OrderPayment>
         ///           </ns1:OrderPayments>
         ///           <ns1:OrderStatus>Pending</ns1:OrderStatus>
@@ -540,114 +531,82 @@ namespace LSOmni.Service
         /// <code language="xml" title="SOAP Response">
         /// <![CDATA[
         /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///   <s:Body>
-        ///      <OrderCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///         < OrderCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > 1874c7fa-48f9-4417-a2b2-7b51fba07b08</Id>
-        ///            <a:AnonymousOrder>false</a:AnonymousOrder>
-        ///            <a:CardId>10021</a:CardId>
-        ///            <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
-        ///            <a:CollectLocation i:nil="true"/>
-        ///            <a:ContactAddress xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
-        ///               <b:Address1/>
-        ///               <b:Address2/>
-        ///               <b:CellPhoneNumber i:nil="true"/>
-        ///               <b:City/>
-        ///               <b:Country/>
-        ///               <b:HouseNo/>
-        ///               <b:Id/>
-        ///               <b:PhoneNumber i:nil="true"/>
-        ///               <b:PostCode/>
-        ///               <b:StateProvinceRegion/>
-        ///               <b:Type>Residential</b:Type>
-        ///            </a:ContactAddress>
-        ///            <a:ContactId/>
-        ///            <a:ContactName/>
-        ///            <a:DayPhoneNumber/>
-        ///            <a:DocumentId>CO000011</a:DocumentId>
-        ///            <a:DocumentRegTime>2018-11-20T12:41:53.763</a:DocumentRegTime>
-        ///            <a:Email>tom @tom.xxx</a:Email>
-        ///            <a:LineItemCount>2</a:LineItemCount>
-        ///            <a:MobileNumber/>
-        ///            <a:OrderDiscountLines/>
-        ///            <a:OrderLines>
-        ///               <a:OrderLine>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                  < a:Amount>160.00000000000000000000</a:Amount>
-        ///                  <a:DiscountAmount>0.00000000000000000000</a:DiscountAmount>
-        ///                  <a:DiscountPercent>0.00000000000000000000</a:DiscountPercent>
-        ///                  <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
-        ///                  <a:ItemId>40020</a:ItemId>
-        ///                  <a:LineNumber>10000</a:LineNumber>
-        ///                  <a:LineType>Item</a:LineType>
-        ///                  <a:NetAmount>128.00000000000000000000</a:NetAmount>
-        ///                  <a:NetPrice>64.00000000000000000000</a:NetPrice>
-        ///                  <a:OrderId/>
-        ///                  <a:Price>80.00000000000000000000</a:Price>
-        ///                  <a:Quantity>2.00000000000000000000</a:Quantity>
-        ///                  <a:QuantityOutstanding>0</a:QuantityOutstanding>
-        ///                  <a:QuantityToInvoice>0</a:QuantityToInvoice>
-        ///                  <a:QuantityToShip>0</a:QuantityToShip>
-        ///                  <a:TaxAmount>32.00000000000000000000</a:TaxAmount>
-        ///                  <a:UomId/>
-        ///                  <a:VariantDescription>YELLOW/38</a:VariantDescription>
-        ///                  <a:VariantId>002</a:VariantId>
-        ///               </a:OrderLine>
-        ///            </a:OrderLines>
-        ///            <a:OrderPayments>
-        ///               <a:OrderPayment>
-        ///                  <a:AuthorisationCode>123456</a:AuthorisationCode>
-        ///                  <a:CardNumber>10xx xxxx xxxx 1475</a:CardNumber>
-        ///                  <a:CardType>VISA</a:CardType>
-        ///                  <a:CurrencyCode>GBP</a:CurrencyCode>
-        ///                  <a:CurrencyFactor>1.00000000000000000000</a:CurrencyFactor>
-        ///                  <a:FinalizedAmount>0.00000000000000000000</a:FinalizedAmount>
-        ///                  <a:LineNumber>10000</a:LineNumber>
-        ///                  <a:No>1</a:No>
-        ///                  <a:OrderId>CO000011</a:OrderId>
-        ///                  <a:PreApprovedAmount>160.00000000000000000000</a:PreApprovedAmount>
-        ///                  <a:PreApprovedValidDate>2030-01-01T00:00:00</a:PreApprovedValidDate>
-        ///                  <a:TenderType>1</a:TenderType>
-        ///               </a:OrderPayment>
-        ///            </a:OrderPayments>
-        ///            <a:OrderStatus>Created</a:OrderStatus>
-        ///            <a:PaymentStatus>PreApproved</a:PaymentStatus>
-        ///            <a:PhoneNumber>98545468</a:PhoneNumber>
-        ///            <a:PointAmount>0</a:PointAmount>
-        ///            <a:PointBalance>0</a:PointBalance>
-        ///            <a:PointCashAmountNeeded>0</a:PointCashAmountNeeded>
-        ///            <a:PointsRewarded>0</a:PointsRewarded>
-        ///            <a:PointsUsedInOrder>0</a:PointsUsedInOrder>
-        ///            <a:Posted>false</a:Posted>
-        ///            <a:ReceiptNo i:nil= "true" />
-        ///            < a:ShipClickAndCollect>false</a:ShipClickAndCollect>
-        ///            <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               < b:Address1>Some Address</b:Address1>
-        ///               <b:Address2/>
-        ///               <b:CellPhoneNumber i:nil= "true" />
-        ///               < b:City>Some City</b:City>
-        ///               <b:Country/>
-        ///               <b:HouseNo/>
-        ///               <b:Id/>
-        ///               <b:PhoneNumber i:nil= "true" />
-        ///               < b:PostCode>999</b:PostCode>
-        ///               <b:StateProvinceRegion/>
-        ///               <b:Type>Residential</b:Type>
-        ///            </a:ShipToAddress>
-        ///            <a:ShipToEmail/>
-        ///            <a:ShipToName/>
-        ///            <a:ShipToPhoneNumber/>
-        ///            <a:ShippingAgentCode/>
-        ///            <a:ShippingAgentServiceCode/>
-        ///            <a:ShippingStatus>NotYetShipped</a:ShippingStatus>
-        ///            <a:SourceType>eCommerce</a:SourceType>
-        ///            <a:StoreId>S0013</a:StoreId>
-        ///            <a:TotalAmount>160.00000000000000000000</a:TotalAmount>
-        ///            <a:TotalDiscount>0.00000000000000000000</a:TotalDiscount>
-        ///            <a:TotalNetAmount>128.00000000000000000000</a:TotalNetAmount>
-        ///         </OrderCreateResult>
-        ///      </OrderCreateResponse>
-        ///   </s:Body>
+        ///    <s:Body>
+        ///       <OrderCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
+        ///          < OrderCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+        ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CO000007 </ Id >
+        ///             < a:AnonymousOrder>false</a:AnonymousOrder>
+        ///             <a:CardId>10021</a:CardId>
+        ///             <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
+        ///             <a:DiscountLines/>
+        ///             <a:DocumentRegTime>2019-10-22T09:47:20.857</a:DocumentRegTime>
+        ///             <a:ExternalId>16B01BE6-BA8A-462E-97D7-18F63D7AFE81</a:ExternalId>
+        ///             <a:IdType>Order</a:IdType>
+        ///             <a:LineItemCount>2</a:LineItemCount>
+        ///             <a:Lines>
+        ///                <a:SalesEntryLine>
+        ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
+        ///                   < a:Amount>160.00000000000000000000</a:Amount>
+        ///                   <a:DiscountAmount>0.00000000000000000000</a:DiscountAmount>
+        ///                   <a:DiscountPercent>0.00000000000000000000</a:DiscountPercent>
+        ///                   <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
+        ///                   <a:ItemId>40020</a:ItemId>
+        ///                   <a:ItemImageId>40020-Y</a:ItemImageId>
+        ///                   <a:LineNumber>10000</a:LineNumber>
+        ///                   <a:LineType>Item</a:LineType>
+        ///                   <a:NetAmount>128.00000000000000000000</a:NetAmount>
+        ///                   <a:NetPrice>64.00000000000000000000</a:NetPrice>
+        ///                   <a:Price>80.00000000000000000000</a:Price>
+        ///                   <a:Quantity>2.00000000000000000000</a:Quantity>
+        ///                   <a:TaxAmount>32.00000000000000000000</a:TaxAmount>
+        ///                   <a:UomId/>
+        ///                   <a:VariantDescription>YELLOW/38</a:VariantDescription>
+        ///                   <a:VariantId>002</a:VariantId>
+        ///                </a:SalesEntryLine>
+        ///             </a:Lines>
+        ///             <a:PaymentStatus>PreApproved</a:PaymentStatus>
+        ///             <a:Payments>
+        ///                <a:SalesEntryPayment>
+        ///                   <a:Amount>160.00000000000000000000</a:Amount>
+        ///                   <a:CardNo>45XX..5555</a:CardNo>
+        ///                   <a:CurrencyCode/>
+        ///                   <a:CurrencyFactor>1.00000000000000000000</a:CurrencyFactor>
+        ///                   <a:LineNumber>10000</a:LineNumber>
+        ///                   <a:TenderType>1</a:TenderType>
+        ///                </a:SalesEntryPayment>
+        ///             </a:Payments>
+        ///             <a:PointsRewarded>0</a:PointsRewarded>
+        ///             <a:PointsUsedInOrder>0</a:PointsUsedInOrder>
+        ///             <a:Posted>false</a:Posted>
+        ///             <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
+        ///                < b:Address1>Some Address</b:Address1>
+        ///                <b:Address2/>
+        ///                <b:CellPhoneNumber i:nil= "true" />
+        ///                < b:City>Some City</b:City>
+        ///                <b:Country/>
+        ///                <b:HouseNo/>
+        ///                <b:Id/>
+        ///                <b:PhoneNumber i:nil= "true" />
+        ///                < b:PostCode>999</b:PostCode>
+        ///                <b:StateProvinceRegion/>
+        ///                <b:Type>Residential</b:Type>
+        ///             </a:ShipToAddress>
+        ///             <a:ShipToEmail/>
+        ///             <a:ShipToName/>
+        ///             <a:ShipToPhoneNumber/>
+        ///             <a:ShippingAgentCode/>
+        ///             <a:ShippingAgentServiceCode/>
+        ///             <a:ShippingStatus>NotYetShipped</a:ShippingStatus>
+        ///             <a:Status>Created</a:Status>
+        ///             <a:StoreId>S0013</a:StoreId>
+        ///             <a:StoreName i:nil= "true" />
+        ///             < a:TerminalId i:nil= "true" />
+        ///             < a:TotalAmount>160.00000000000000000000</a:TotalAmount>
+        ///             <a:TotalDiscount>0.00000000000000000000</a:TotalDiscount>
+        ///             <a:TotalNetAmount>128.00000000000000000000</a:TotalNetAmount>
+        ///          </OrderCreateResult>
+        ///       </OrderCreateResponse>
+        ///    </s:Body>
         /// </s:Envelope>
         /// ]]>
         /// </code>
@@ -668,10 +627,12 @@ namespace LSOmni.Service
         /// <summary>
         /// Cancel Customer Order
         /// </summary>
-        /// <param name="orderId"></param>
+        /// <param name="orderId">Customer Order Id</param>
+        /// <param name="storeId">Web Store Id</param>
+        /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
         /// <returns></returns>
         [OperationContract]
-        string OrderCancel(string orderId);
+        string OrderCancel(string orderId, string storeId, string userId);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -711,19 +672,6 @@ namespace LSOmni.Service
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type);
 
         #endregion
-
-        #region OrderQueue
-
-        [OperationContract]
-        OrderQueue OrderQueueSave(OrderQueue order);
-
-        [OperationContract]
-        OrderQueue OrderQueueGetById(string orderId);
-
-        [OperationContract]
-        bool OrderQueueUpdateStatus(string orderId, OrderQueueStatus status);
-
-        #endregion OrderQueue
 
         #region Contact
 
@@ -1075,6 +1023,11 @@ namespace LSOmni.Service
         ///                  <ns:Type>Residential</ns:Type>
         ///               </ns:Address>
         ///            </ns1:Addresses>
+        ///            <ns1:Cards>
+        ///               <ns:Card>
+        ///                  <ns:Id>10027</ns:Id>
+        ///               </ns:Card>
+        ///            </ns1:Cards>
         ///            <ns1:Email>Sarah@Hollywood.com</ns1:Email>
         ///            <ns1:FirstName>Sarah</ns1:FirstName>
         ///            <ns1:Gender>Female</ns1:Gender>
@@ -1413,6 +1366,21 @@ namespace LSOmni.Service
         List<Hierarchy> HierarchyGet(string storeId);
 
         #endregion
+
+        #region menu
+
+        /// <summary>
+        /// Load Hospitality Menu
+        /// </summary>
+        /// <param name="storeId">Store to load, empty loads all</param>
+        /// <param name="salesType">Sales type to load, empty loads all</param>
+        /// <param name="loadDetails">Load Item Details and Image data</param>
+        /// <param name="imageSize">Size of Image if loadDetails is set to true</param>
+        /// <returns></returns>
+        [OperationContract]
+        MobileMenu MenuGet(string storeId, string salesType, bool loadDetails, ImageSize imageSize);
+
+        #endregion menu
 
         #region Profile
 

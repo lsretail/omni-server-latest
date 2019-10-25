@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions;
 using LSRetail.Omni.Domain.DataModel.Pos.Payments;
@@ -31,7 +30,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqltransheadcol = "mt.[Transaction No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Receipt No_],mt.[Staff ID],mt.[Trans_ Currency]," +
                               "mt.[No_ of Items],mt.[Net Amount],mt.[Cost Amount],mt.[Gross Amount],mt.[Payment],mt.[Discount Amount],mt.[Date],mt.[Time]";
 
-            sqltransheadcol += (navVersion >= new Version("13.4")) ? (navVersion >= new Version("14.1")) ? ",mt.[Customer Order ID] AS OrderNo" : ",mt.[Customer Order No_] AS OrderNo" : ",mt.[Order No_] AS OrderNo";
+            sqltransheadcol += (navVersion >= new Version("13.4")) ? (navVersion >= new Version("14.2")) ? ",mt.[Customer Order ID] AS OrderNo" : ",mt.[Customer Order No_] AS OrderNo" : ",mt.[Order No_] AS OrderNo";
 
             sqltransheadfrom = " FROM [" + navCompanyName + "Transaction Header] mt";
 
@@ -128,6 +127,34 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
+        public List<ReceiptInfo> ReceiptGet(string id)
+        {
+            List<ReceiptInfo> list = new List<ReceiptInfo>();
+            /*
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Line No_],[Key],[Value],[Transaction No_],[Type],[LargeValue]" +
+                                          " FROM [" + navCompanyName + "MobileReceiptInfo] WHERE [Id]=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToReceiptInfo(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            */
+            return list;
+        }
+
         private RetailTransaction ReaderToLoyTransHeader(SqlDataReader reader, string culture, bool includeLines)
         {
             Currency cur = new Currency(SQLHelper.GetString(reader["Trans_ Currency"]));
@@ -179,7 +206,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 TaxAmount = new Money(SQLHelper.GetDecimal(reader, "VAT Amount", true), currency),
             };
 
-            ItemRepository itemRepo = new ItemRepository(config);
+            ItemRepository itemRepo = new ItemRepository(config, NavVersion);
             LoyItem item = itemRepo.ItemLoyGetById(SQLHelper.GetString(reader["Item No_"]), storeId, string.Empty, false);
             RetailItem ritem = new RetailItem()
             {
@@ -214,9 +241,29 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 TenderType = new TenderType(SQLHelper.GetString(reader["Tender Type"])),
-                Amount = new LSRetail.Omni.Domain.DataModel.Base.Retail.Money(SQLHelper.GetDecimal(reader, "Amount Tendered", false), string.Empty)
+                Amount = new Money(SQLHelper.GetDecimal(reader, "Amount Tendered", false), string.Empty),
             };
+            pay.ReceiptInfo = ReceiptGet(pay.TransactionId);
             return new PaymentLine(lineno, pay);
+        }
+
+        private ReceiptInfo ReaderToReceiptInfo(SqlDataReader reader)
+        {
+            //[Line No_],[Key],[Value],[Transaction No_],[Type],[LargeValue]
+            ReceiptInfo info = new ReceiptInfo()
+            {
+                Key = SQLHelper.GetString(reader["Key"]),
+                ValueAsText = ConvertTo.Base64Decode(SQLHelper.GetString(reader["LargeValue"])),
+                Type = SQLHelper.GetString(reader["Type"]),
+                IsLargeValue = true
+            };
+
+            if (string.IsNullOrEmpty(info.ValueAsText))
+            {
+                info.IsLargeValue = false;
+                info.ValueAsText = SQLHelper.GetString(reader["Value"]);
+            }
+            return info;
         }
     }
 }

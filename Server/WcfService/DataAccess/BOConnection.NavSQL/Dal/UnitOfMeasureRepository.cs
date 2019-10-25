@@ -155,7 +155,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 Id = SQLHelper.GetString(reader["Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ShortDescription = SQLHelper.GetString(reader["Description"])
+                ShortDescription = SQLHelper.GetString(reader["Code"])
             };
         }
     }

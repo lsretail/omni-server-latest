@@ -70,11 +70,10 @@ Name: "{group}\{cm:ProgramOnTheWeb,LSOmniService}"; Filename: "http://www.lsreta
 #include "ado.iss"
 #include "adonav.iss"
 #include "IISFunctions.iss"
-// the xxxPage.iss have the custom forms used
 #include "SqlPage.iss"
 #include "NavSqlPage.iss"
-#include "IISPage.iss"
 #include "CheckPage.iss"
+#include "IISPage.iss"
  
 var
   //the custome pages used, defined in other iss files
@@ -125,7 +124,7 @@ begin
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSOmniService');
-  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/DynamicsNAV90/WS/CRONUS LS 90004 W1 Demo/Codeunit/RetailWebServices');
+  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC140/WS/CRONUS LS 1401 W1 Demo/Codeunit/RetailWebServices');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 
@@ -155,6 +154,16 @@ begin
 	Result := CheckPage_MultiCheckBox.Checked
   else
     Result := False;
+end;
+
+function SingleMode: Boolean;
+begin
+  Result := CheckPage_MultiCheckBox.Checked = False;
+end;
+
+function WebMode: Boolean;
+begin
+  Result := CheckPage_WSCheckBox.Checked = False;
 end;
 
 function SqlCreateDb(): Boolean;
@@ -335,15 +344,6 @@ begin
   Log('PrepareToInstall() called');
   doContinue := True;
 
-  {
-  // I want to be able to extract the files to the folder
-  if not CheckPage_IISCheckBox.Checked and not CheckPage_NavSQLCheckBox.Checked and not CheckPage_SQLCheckBox.Checked  then
-  begin                                               
-    doContinue := False;
-    Result := 'No action selected. Nothing done';    
-  end;
-  }
-
   if (doContinue and CheckPage_SQLCheckBox.Checked) then
   begin
     WizardForm.PreparingLabel.Visible := True;
@@ -455,6 +455,14 @@ begin
     begin
       with IISPage do
       begin
+	    IISPage_lblComment1.Visible := SingleMode;
+		IISPage_lblNavUrl.Visible := SingleMode;
+		IISPage_txtNavUrl.Visible := SingleMode;
+	    IISPage_lblNavAuthentication.Visible := SingleMode;
+		IISPage_lblNavUser.Visible := SingleMode;
+		IISPage_txtNavUser.Visible := SingleMode;
+		IISPage_lblNavPwd.Visible := SingleMode;
+		IISPage_txtNavPwd.Visible := SingleMode;
         OnActivate := @IISCustomForm_Activate;
       end;
     end;

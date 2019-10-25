@@ -75,12 +75,12 @@
     <Compile Include="Loyalty\ContactBLL.cs" />
     <Compile Include="Loyalty\CurrencyBLL.cs" />
     <Compile Include="Loyalty\ItemBLL.cs" />
+    <Compile Include="Loyalty\MenuBLL.cs" />
     <Compile Include="Loyalty\NotificationBLL.cs" />
     <Compile Include="Loyalty\OfferBLL.cs" />
     <Compile Include="Loyalty\OneListBLL.cs" />
     <Compile Include="Loyalty\OrderBLL.cs" />
     <Compile Include="Loyalty\OrderMessageBLL.cs" />
-    <Compile Include="Loyalty\OrderQueueBLL.cs" />
     <Compile Include="Loyalty\PushNotificationBLL.cs" />
     <Compile Include="Loyalty\ReplicationBLL.cs" />
     <Compile Include="Loyalty\SearchBLL.cs" />
@@ -101,10 +101,6 @@
     <ProjectReference Include="..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\Core\Loyalty.Hospitality\Domain.DataModel.Loyalty.Hospitality\Domain.DataModel.Loyalty.Hospitality.csproj">
-      <Project>{9eb8d929-e777-4780-bf52-a9f87addda60}</Project>
-      <Name>Domain.DataModel.Loyalty.Hospitality</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>

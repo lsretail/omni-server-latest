@@ -15,7 +15,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
     {
         private string connectionString = string.Empty;
         private string navCompanyName = string.Empty;
-        
+
         public NavRepository(string SqlConnectionString)
         {
             connectionString = SqlConnectionString;
@@ -31,23 +31,25 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
                 if (navCompanyName.EndsWith("$") == false)
                     navCompanyName += "$";
             }
+
             builder.Remove("NAVCompanyName");
             connectionString = builder.ConnectionString;
         }
+
         public List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId)
         {
             string sqlcolumns = "p.[No_], p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],mt.[Store No_],mt.[Item No_]," +
                                 "mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[Discount _],mt.[Minimum Quantity],mt.[Unit of Measure Code]";
 
             string sqlfrom = " FROM [" + navCompanyName + "WI Discounts] mt" +
-                             " INNER JOIN [" + navCompanyName + "Periodic Discount] p on p.No_ = mt.[Offer No_]";
+                             " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
-            string sqlMMcolumns = "p.[No_],p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Discount _ Value] as [Discount _]," +
-                                  "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code], 0 as [Minimum Quantity]" +
-                                  ",'' as [Unit of Measure Code]";
+            string sqlMMcolumns = "p.[No_],p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Discount _ Value] AS [Discount _]," +
+                                  "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code], 0 AS [Minimum Quantity]," +
+                                  "'' AS [Unit of Measure Code]";
 
             string sqlMMfrom = " FROM [" + navCompanyName + "WI Mix & Match Offer] mt" +
-                               " INNER JOIN [" + navCompanyName + "Periodic Discount] p on p.No_ = mt.[Offer No_]";
+                               " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
 
@@ -67,6 +69,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
                         }
                         reader.Close();
                     }
+
                     command.CommandText = "SELECT " + sqlMMcolumns + sqlMMfrom + " WHERE mt.[Store No_]=@sid AND mt.[Item No_]=@iid";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
@@ -79,7 +82,6 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
                     connection.Close();
                 }
             }
-
             return list;
         }
 
@@ -90,9 +92,8 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM [" + navCompanyName +
-                                          "Validation Period] mt WHERE [ID]= (Select [Validation Period ID] from [" +
-                                          navCompanyName + "Periodic Discount] where [No_]=@id)";
+                    command.CommandText = "SELECT * FROM [" + navCompanyName + "Validation Period] mt WHERE [ID]=(" +
+                                          "SELECT [Validation Period ID] FROM [" + navCompanyName + "Periodic Discount] WHERE [No_]=@id)";
 
                     command.Parameters.AddWithValue("@id", offerId);
                     connection.Open();
@@ -117,15 +118,13 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName +
-                                          "WI Mix & Match Offer] WHERE [Offer No_]=@id AND [Store No_]=@sid";
-
+                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + "WI Mix & Match Offer] WHERE [Offer No_]=@id AND [Store No_]=@sid";
                     command.Parameters.AddWithValue("@id", offerId);
                     command.Parameters.AddWithValue("@sid", storeId);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        while(reader.Read())
+                        while (reader.Read())
                         {
                             ids.Add(SQLHelper.GetString(reader["Item No_"]));
                         }
@@ -139,63 +138,64 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
 
         private DiscountValidation ReaderToDiscountValidation(SqlDataReader reader)
         {
-            DiscountValidation discVal = new DiscountValidation();
-            discVal.Id = SQLHelper.GetString(reader["ID"]);
-            discVal.Description = SQLHelper.GetString(reader["Description"]);
-            discVal.StartDate = SQLHelper.GetDateTime(reader["Starting Date"]);
-            discVal.EndDate = SQLHelper.GetDateTime(reader["Ending Date"]);
-            discVal.StartTime = SQLHelper.GetDateTime(reader["Starting Time"]);
-            discVal.EndTime = SQLHelper.GetDateTime(reader["Ending Time"]);
-            discVal.MondayStart = SQLHelper.GetDateTime(reader["Monday Starting Time"]);
-            discVal.MondayEnd = SQLHelper.GetDateTime(reader["Monday Ending Time"]);
-            discVal.TuesdayStart = SQLHelper.GetDateTime(reader["Tuesday Starting Time"]);
-            discVal.TuesdayEnd = SQLHelper.GetDateTime(reader["Tuesday Ending Time"]);
-            discVal.WednesdayStart = SQLHelper.GetDateTime(reader["Wednesday Starting Time"]);
-            discVal.WednesdayEnd = SQLHelper.GetDateTime(reader["Wednesday Ending Time"]);
-            discVal.ThursdayStart = SQLHelper.GetDateTime(reader["Thursday Starting Time"]);
-            discVal.ThursdayEnd = SQLHelper.GetDateTime(reader["Thursday Ending Time"]);
-            discVal.FridayStart = SQLHelper.GetDateTime(reader["Friday Starting Time"]);
-            discVal.FridayEnd = SQLHelper.GetDateTime(reader["Friday Ending Time"]);
-            discVal.SaturdayStart = SQLHelper.GetDateTime(reader["Saturday Starting Time"]);
-            discVal.SaturdayEnd = SQLHelper.GetDateTime(reader["Saturday Ending Time"]);
-            discVal.SundayStart = SQLHelper.GetDateTime(reader["Sunday Starting Time"]);
-            discVal.SundayEnd = SQLHelper.GetDateTime(reader["Sunday Ending Time"]);
-            discVal.TimeWithinBounds = SQLHelper.GetBool(reader["Time within Bounds"]);
-            discVal.EndAfterMidnight = SQLHelper.GetBool(reader["Ending Time After Midnight"]);
-            discVal.MondayWithinBounds = SQLHelper.GetBool(reader["Mon_ Time within Bounds"]);
-            discVal.MondayEndAfterMidnight = SQLHelper.GetBool(reader["Mon_ End_ Time After Midnight"]);
-            discVal.TuesdayWithinBounds = SQLHelper.GetBool(reader["Tue_ Time within Bounds"]);
-            discVal.TuesdayEndAfterMidnight = SQLHelper.GetBool(reader["Tue_ End_ Time After Midnight"]);
-            discVal.WednesdayWithinBounds = SQLHelper.GetBool(reader["Wed_ Time within Bounds"]);
-            discVal.WednesdayEndAfterMidnight = SQLHelper.GetBool(reader["Wed_ End_ Time After Midnight"]);
-            discVal.ThursdayWithinBounds = SQLHelper.GetBool(reader["Thu_ Time within Bounds"]);
-            discVal.ThursdayEndAfterMidnight = SQLHelper.GetBool(reader["Thu_ End_ Time After Midnight"]);
-            discVal.FridayWithinBounds = SQLHelper.GetBool(reader["Fri_ Time within Bounds"]);
-            discVal.FridayEndAfterMidnight = SQLHelper.GetBool(reader["Fri_ End_ Time After Midnight"]);
-            discVal.SaturdayWithinBounds = SQLHelper.GetBool(reader["Sat_ Time within Bounds"]);
-            discVal.SaturdayEndAfterMidnight = SQLHelper.GetBool(reader["Sat_ End_ Time After Midnight"]);
-            discVal.SundayWithinBounds = SQLHelper.GetBool(reader["Sun_ Time within Bounds"]);
-            discVal.SundayEndAfterMidnight = SQLHelper.GetBool(reader["Sun_ End_ Time After Midnight"]);
-            return discVal;
+            return new DiscountValidation()
+            {
+                Id = SQLHelper.GetString(reader["ID"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                StartDate = SQLHelper.GetDateTime(reader["Starting Date"]),
+                EndDate = SQLHelper.GetDateTime(reader["Ending Date"]),
+                StartTime = SQLHelper.GetDateTime(reader["Starting Time"]),
+                EndTime = SQLHelper.GetDateTime(reader["Ending Time"]),
+                MondayStart = SQLHelper.GetDateTime(reader["Monday Starting Time"]),
+                MondayEnd = SQLHelper.GetDateTime(reader["Monday Ending Time"]),
+                TuesdayStart = SQLHelper.GetDateTime(reader["Tuesday Starting Time"]),
+                TuesdayEnd = SQLHelper.GetDateTime(reader["Tuesday Ending Time"]),
+                WednesdayStart = SQLHelper.GetDateTime(reader["Wednesday Starting Time"]),
+                WednesdayEnd = SQLHelper.GetDateTime(reader["Wednesday Ending Time"]),
+                ThursdayStart = SQLHelper.GetDateTime(reader["Thursday Starting Time"]),
+                ThursdayEnd = SQLHelper.GetDateTime(reader["Thursday Ending Time"]),
+                FridayStart = SQLHelper.GetDateTime(reader["Friday Starting Time"]),
+                FridayEnd = SQLHelper.GetDateTime(reader["Friday Ending Time"]),
+                SaturdayStart = SQLHelper.GetDateTime(reader["Saturday Starting Time"]),
+                SaturdayEnd = SQLHelper.GetDateTime(reader["Saturday Ending Time"]),
+                SundayStart = SQLHelper.GetDateTime(reader["Sunday Starting Time"]),
+                SundayEnd = SQLHelper.GetDateTime(reader["Sunday Ending Time"]),
+                TimeWithinBounds = SQLHelper.GetBool(reader["Time within Bounds"]),
+                EndAfterMidnight = SQLHelper.GetBool(reader["Ending Time After Midnight"]),
+                MondayWithinBounds = SQLHelper.GetBool(reader["Mon_ Time within Bounds"]),
+                MondayEndAfterMidnight = SQLHelper.GetBool(reader["Mon_ End_ Time After Midnight"]),
+                TuesdayWithinBounds = SQLHelper.GetBool(reader["Tue_ Time within Bounds"]),
+                TuesdayEndAfterMidnight = SQLHelper.GetBool(reader["Tue_ End_ Time After Midnight"]),
+                WednesdayWithinBounds = SQLHelper.GetBool(reader["Wed_ Time within Bounds"]),
+                WednesdayEndAfterMidnight = SQLHelper.GetBool(reader["Wed_ End_ Time After Midnight"]),
+                ThursdayWithinBounds = SQLHelper.GetBool(reader["Thu_ Time within Bounds"]),
+                ThursdayEndAfterMidnight = SQLHelper.GetBool(reader["Thu_ End_ Time After Midnight"]),
+                FridayWithinBounds = SQLHelper.GetBool(reader["Fri_ Time within Bounds"]),
+                FridayEndAfterMidnight = SQLHelper.GetBool(reader["Fri_ End_ Time After Midnight"]),
+                SaturdayWithinBounds = SQLHelper.GetBool(reader["Sat_ Time within Bounds"]),
+                SaturdayEndAfterMidnight = SQLHelper.GetBool(reader["Sat_ End_ Time After Midnight"]),
+                SundayWithinBounds = SQLHelper.GetBool(reader["Sun_ Time within Bounds"]),
+                SundayEndAfterMidnight = SQLHelper.GetBool(reader["Sun_ End_ Time After Midnight"])
+            };
         }
 
         private ProactiveDiscount ReaderToDiscount(SqlDataReader reader)
         {
-            ProactiveDiscount discount = new ProactiveDiscount();
-
-            discount.Id = SQLHelper.GetString(reader["No_"]);
-            discount.Percentage = SQLHelper.GetDecimal(reader["Discount _"]);
-            discount.Priority = SQLHelper.GetInt32(reader["Priority"]);
-            discount.ItemId = SQLHelper.GetString(reader["Item No_"]);
-            discount.Type = ToProactiveDiscountType(SQLHelper.GetInt32(reader["Type"]));
-            discount.LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]);
-            discount.MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]);
-            discount.Description = SQLHelper.GetString(reader["Description"]);
-            discount.VariantId = SQLHelper.GetString(reader["Variant Code"]);
-            discount.UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure Code"]);
-            discount.PopUpLine1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
-            discount.PopUpLine2 = SQLHelper.GetString(reader["Pop-up Line 2"]);
-            return discount;
+            return new ProactiveDiscount()
+            {
+                Id = SQLHelper.GetString(reader["No_"]),
+                Percentage = SQLHelper.GetDecimal(reader["Discount _"]),
+                Priority = SQLHelper.GetInt32(reader["Priority"]),
+                ItemId = SQLHelper.GetString(reader["Item No_"]),
+                Type = ToProactiveDiscountType(SQLHelper.GetInt32(reader["Type"])),
+                LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
+                MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure Code"]),
+                PopUpLine1 = SQLHelper.GetString(reader["Pop-up Line 1"]),
+                PopUpLine2 = SQLHelper.GetString(reader["Pop-up Line 2"])
+            };
         }
 
         private ProactiveDiscountType ToProactiveDiscountType(int type)
@@ -214,10 +214,9 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
         {
             string sqlMcolumns = "mt.[Unit Price] ";
             string sqlMfrom = " FROM [" + navCompanyName + "WI Price] mt" +
-                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure] u ON mt.[Item No_] = u.[Item No_] AND mt.[Unit of Measure Code] = u.[Code]";
+                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure] u ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
 
             decimal price = 0m;
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())

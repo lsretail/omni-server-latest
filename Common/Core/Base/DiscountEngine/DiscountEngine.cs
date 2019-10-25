@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.DiscountEngine.Interfaces;
 using LSRetail.Omni.DiscountEngine.Repositories;
@@ -11,6 +12,7 @@ namespace LSRetail.Omni.DiscountEngine
     {
         private IDiscountRepository discRepo;
         private IPriceRepository priceRepo;
+
         public DiscountEngine(IDiscountRepository discountRepository, IPriceRepository priceRepository)
         {
             discRepo = discountRepository;
@@ -32,15 +34,13 @@ namespace LSRetail.Omni.DiscountEngine
                 discounts.AddRange(discRepo.DiscountsGetByStoreAndItem(storeId, id));
             }
 
-            if (!string.IsNullOrEmpty(loyaltySchemeCode))
+            if (string.IsNullOrEmpty(loyaltySchemeCode))
             {
-                discounts = discounts.Where(disc =>
-                    disc.LoyaltySchemeCode == string.Empty || disc.LoyaltySchemeCode == loyaltySchemeCode).ToList();
+                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty).ToList();
             }
             else
             {
-                discounts = discounts.Where(disc =>
-                    disc.LoyaltySchemeCode == string.Empty).ToList();
+                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty || disc.LoyaltySchemeCode == loyaltySchemeCode).ToList();
             }
 
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
@@ -74,6 +74,7 @@ namespace LSRetail.Omni.DiscountEngine
             bool afterMidnight = false;
 
             if (discval != null)
+            {
                 switch (DateTime.Now.DayOfWeek)
                 {
                     case DayOfWeek.Monday:
@@ -133,6 +134,7 @@ namespace LSRetail.Omni.DiscountEngine
                             break;
                         }
                 }
+            }
 
             if (start == DateTime.Parse("1753-01-01 00:00:00.000") && end == DateTime.Parse("1753-01-01 00:00:00.000"))
             {
@@ -141,6 +143,7 @@ namespace LSRetail.Omni.DiscountEngine
                 end = discval.EndTime;
                 afterMidnight = discval.EndAfterMidnight;
             }
+
             if (start == DateTime.Parse("1753-01-01 00:00:00.000") && end == DateTime.Parse("1753-01-01 00:00:00.000"))
                 return withinBounds;
             if (DateTime.Now >= start && DateTime.Now <= end)
@@ -150,6 +153,5 @@ namespace LSRetail.Omni.DiscountEngine
 
             return false;
         }
-
     }
 }

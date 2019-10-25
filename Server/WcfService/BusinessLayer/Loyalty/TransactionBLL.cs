@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -20,7 +18,6 @@ namespace LSOmni.BLL.Loyalty
 
         public List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions)
         {
-            //base.ValidateContact(contactId);
             return BOLoyConnection.SalesEntriesGetByCardId(cardId, maxNumberOfTransactions, base.GetAppSettingCurrencyCulture());
         }
 

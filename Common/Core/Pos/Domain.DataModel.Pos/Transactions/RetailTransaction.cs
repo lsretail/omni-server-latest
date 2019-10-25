@@ -6,14 +6,12 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Retail.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members.SpecialCase;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Pos.Items;
 using LSRetail.Omni.Domain.DataModel.Pos.Items.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Calculators.Price;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Calculators.Tax;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Discounts;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Exceptions;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 {

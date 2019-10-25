@@ -38,6 +38,20 @@ begin
   end;
 end;
 
+procedure OnClickWS(Sender: TObject);
+begin
+  if CheckPage_WSCheckBox.Checked OR CheckPage_MultiCheckBox.Checked then
+  begin
+	CheckPage_NavSQLCheckBox.Checked := False;
+	CheckPage_NavSQLCheckBox.Enabled := False;
+  end
+  else
+  begin
+	CheckPage_NavSQLCheckBox.Checked := True;
+	CheckPage_NavSQLCheckBox.Enabled := True;
+  end;
+end;
+
 { IISCustomForm_CreatePage }
 function CheckCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
@@ -90,6 +104,7 @@ begin
   CheckPage_MultiCheckBox.Parent := CheckPage.Surface;
   CheckPage_MultiCheckBox.Left := CheckPage_SQLCheckBox.Left + 15
   CheckPage_MultiCheckBox.Top := CheckPage_SQLCheckBox.Top + CheckPage_SQLCheckBox.Height;
+  CheckPage_MultiCheckBox.OnClick := @OnClickWS;
 
   CheckPage_WSCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_WSCheckBox.Width := CheckPage.SurfaceWidth;
@@ -99,6 +114,7 @@ begin
   CheckPage_WSCheckBox.Parent := CheckPage.Surface;
   CheckPage_WSCheckBox.Left := CheckPage_SQLCheckBox.Left + 15
   CheckPage_WSCheckBox.Top := CheckPage_MultiCheckBox.Top + CheckPage_MultiCheckBox.Height;
+  CheckPage_WSCheckBox.OnClick := @OnClickWS;
 
   CheckPage_NavSQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_NavSQLCheckBox.Width := CheckPage.SurfaceWidth;

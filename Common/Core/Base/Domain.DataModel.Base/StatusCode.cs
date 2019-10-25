@@ -185,7 +185,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         /// Primary key duplication
         /// </summary>
         [EnumMember]
-        PrimaryKeyDuplication = 150, 
+        PrimaryKeyDuplication = 150,
+        [EnumMember]
+        ObjectIdMissing = 151,
 
         //only used on client side
         /// <summary>

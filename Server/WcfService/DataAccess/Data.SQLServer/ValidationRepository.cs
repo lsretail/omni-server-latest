@@ -50,11 +50,6 @@ namespace LSOmni.DataAccess.Dal
             }
             return statusCode;
         }
-
-        public bool ValidateOneList(string id, string cardId)
-        {
-            return base.DoesRecordExist("[OneList] s ", "s.[Id]=@0 AND s.[CardId]=@1 ", id, cardId);
-        }
     }
 }
          

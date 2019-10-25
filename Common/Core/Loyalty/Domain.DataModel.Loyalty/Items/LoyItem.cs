@@ -108,6 +108,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         [DataMember]
         public bool AllowedToSell { get; set; } // Blocked on POS
         [DataMember]
+        public bool ScaleItem { get; set; }
+        [DataMember]
         public bool Blocked { get; set; }
         [DataMember]
         public bool BlockDiscount { get; set; }

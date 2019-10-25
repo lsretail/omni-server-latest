@@ -131,7 +131,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
+        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
         {
             if (maxNumberOfRowsReturned < 1)
                 maxNumberOfRowsReturned = 0;
@@ -139,32 +139,33 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<MemberContact> list = new List<MemberContact>();
             string where = string.Empty;
             string order = string.Empty;
+            string like = (exact) ? string.Format("='{0}'", search) : string.Format(" LIKE '%{0}%'", search);
 
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
-                    where = string.Format("mt.[Contact No_] LIKE '%{0}%'", search);
+                    where = string.Format("mt.[Contact No_]{0}", like);
                     order = "mt.[Contact No_]";
                     break;
 
                 case ContactSearchType.Email:
-                    where = string.Format("mt.[Search E-Mail] LIKE '%{0}%' {1}", search, GetDbCICollation());
+                    where = string.Format("mt.[Search E-Mail]{0} {1}", like, GetDbCICollation());
                     order = "mt.[Search E-Mail]";
                     break;
 
                 case ContactSearchType.Name:
-                    where = string.Format("mt.[Search Name] LIKE '%{0}%' {1}", search, GetDbCICollation());
+                    where = string.Format("mt.[Search Name]{0} {1}", like, GetDbCICollation());
                     order = "mt.[Search Name]";
                     break;
 
                 case ContactSearchType.PhoneNumber:
-                    where = string.Format("(mt.[Phone No_] LIKE '%{0}%' OR mt.[Mobile Phone No_] LIKE '{0}%')", search);
+                    where = string.Format("(mt.[Phone No_]{0} OR mt.[Mobile Phone No_]{0})", like);
                     break;
 
                 case ContactSearchType.CardId:
                     sqlcolumns += ", mc.[Card No_] ";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] ";
-                    where = string.Format("mc.[Card No_] LIKE '%{0}%'", search);
+                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    where = string.Format("mc.[Card No_]='{0}'", search);
                     order = "mc.[Card No_]";
                     break;
 
@@ -172,7 +173,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     sqlcolumns += ", mlc.[Login ID]";
                     sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] " +
                                "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]";
-                    where = string.Format("mlc.[Login ID] LIKE '%{0}%' {1}", search, GetDbCICollation());
+                    where = string.Format("mlc.[Login ID]{0} {1}", like, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
             }

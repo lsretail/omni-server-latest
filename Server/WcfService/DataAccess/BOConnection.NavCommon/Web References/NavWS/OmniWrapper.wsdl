@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033058" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033058" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="CustomerOrderStatusLog">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="UserID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="StaffID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="TerminalNo" type="string" />
+        </sequence>
+      </complexType>
+      <complexType name="RootCustomerOrderCancel" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="CustomerOrderStatusLog" type="tns:CustomerOrderStatusLog" />
+        </sequence>
+      </complexType>
+      <element name="RootCustomerOrderCancel" type="tns:RootCustomerOrderCancel" />
+    </schema>
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10032996" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10032996" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="CustomerOrderHeader">
         <sequence>
@@ -84,7 +100,7 @@
           <element minOccurs="1" maxOccurs="1" name="CurrencyCode" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="CurrencyFactor" type="decimal" />
           <element minOccurs="1" maxOccurs="1" name="AuthorisationCode" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="CardorCustomernumber" type="string" />
         </sequence>
       </complexType>
@@ -194,7 +210,7 @@
           <element minOccurs="1" maxOccurs="1" name="CurrencyCode" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="CurrencyFactor" type="decimal" />
           <element minOccurs="1" maxOccurs="1" name="AuthorisationCode" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="CardorCustomernumber" type="string" />
           <element minOccurs="1" maxOccurs="1" name="IncomeExpenseAccountNo" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmountLCY" type="decimal" />
@@ -233,18 +249,22 @@
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033042" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033042" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="CustomerOrderHeader">
         <sequence>
-          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="CreatedatStore" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01T00:00:00" name="Created" type="dateTime" />
-          <element minOccurs="1" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
-          <element minOccurs="1" maxOccurs="1" name="MemberCardNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="FullName" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="Address" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="PhoneNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="Email" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="StatusInfo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="ShipOrderPOSFlag" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CreatedatStore" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Created" type="dateTime" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="MemberCardNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="FullName" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Address" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="PhoneNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Email" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="StatusInfo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ShipOrderPOSFlag" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="MemberContactNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalQuantity" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" name="ProcessingStatus" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootCustomerOrderFilteredList" mixed="true">
@@ -313,6 +333,7 @@
           <element minOccurs="1" maxOccurs="1" default="false" name="Showasposted" type="boolean" />
           <element minOccurs="1" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
           <element minOccurs="1" maxOccurs="1" name="ExternalID" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="CancelledOrder" type="boolean" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderLine">
@@ -373,13 +394,20 @@
           <element minOccurs="1" maxOccurs="1" name="CardType" type="string" />
           <element minOccurs="1" maxOccurs="1" name="CurrencyCode" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="CurrencyFactor" type="decimal" />
-          <element minOccurs="1" maxOccurs="1" name="AuthorisationCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="AuthorizationCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="CardorCustomernumber" type="string" />
           <element minOccurs="1" maxOccurs="1" name="IncomeExpenseAccountNo" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmountLCY" type="decimal" />
-          <element minOccurs="1" maxOccurs="1" default="0" name="FinalisedAmountLCY" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="FinalizedAmountLCY" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="false" name="LoyaltyPointpayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="DepositPayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="PosTransReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Type" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Created" type="dateTime" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="AuthorizationExpired" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="TokenNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalReference" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootCustomerOrderGet" mixed="true">
@@ -422,6 +450,7 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalDiscount" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="IncomeExpAmount" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="Prepayment" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="SaleIsReturnSale" type="boolean" />
           <element minOccurs="1" maxOccurs="1" name="RefundedReceiptNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="RefundedFromStoreNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="RefundedFromPOSTermNo" type="string" />
@@ -526,6 +555,7 @@
           <element minOccurs="1" maxOccurs="1" name="Value" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="Transaction_No." type="int" />
           <element minOccurs="1" maxOccurs="1" name="Type" type="string" />
+          <element minOccurs="0" maxOccurs="unbounded" name="LargeValue" type="string" />
         </sequence>
       </complexType>
       <complexType name="MobileTransactionSubLine">
@@ -845,12 +875,12 @@
           <element minOccurs="1" maxOccurs="1" name="SchemeCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="AccountNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="ContactNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="FirstDateUsed" type="date" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="LastValidDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="FirstDateUsed" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="LastValidDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="ReasonBlocked" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
           <element minOccurs="1" maxOccurs="1" name="Blockedby" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="DateCreated" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateCreated" type="date" />
           <element minOccurs="1" maxOccurs="1" name="Createdby" type="string" />
           <element minOccurs="1" maxOccurs="1" name="NoSeries" type="string" />
           <element minOccurs="1" maxOccurs="1" name="AllocatedtoStore" type="string" />
@@ -863,7 +893,7 @@
           <element minOccurs="1" maxOccurs="1" name="AccountType" type="string" />
           <element minOccurs="1" maxOccurs="1" name="Description" type="string" />
           <element minOccurs="1" maxOccurs="1" name="LinkedToCustomerNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="DateActivated" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateActivated" type="date" />
           <element minOccurs="1" maxOccurs="1" name="ActivatedBy" type="string" />
           <element minOccurs="1" maxOccurs="1" name="ClubCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SchemeCode" type="string" />
@@ -872,12 +902,12 @@
           <element minOccurs="1" maxOccurs="1" name="NoSeries" type="string" />
           <element minOccurs="1" maxOccurs="1" name="ExpirationPeriodType" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="SalesCurrentYear" type="decimal" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="LastSalesDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="LastSalesDate" type="date" />
           <element minOccurs="1" maxOccurs="1" default="false" name="Blocked" type="boolean" />
           <element minOccurs="1" maxOccurs="1" name="ReasonBlocked" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
           <element minOccurs="1" maxOccurs="1" name="BlockedBy" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="CreatedDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="CreatedDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="CreatedBy" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalRemainingPoints" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalSales" type="decimal" />
@@ -905,14 +935,14 @@
           <element minOccurs="1" maxOccurs="1" name="County" type="string" />
           <element minOccurs="1" maxOccurs="1" name="Country" type="string" />
           <element minOccurs="1" maxOccurs="1" name="Gender" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="DateofBirth" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateofBirth" type="date" />
           <element minOccurs="1" maxOccurs="1" name="Birthday" type="string" />
           <element minOccurs="1" maxOccurs="1" name="MaritalStatus" type="string" />
           <element minOccurs="1" maxOccurs="1" default="false" name="Blocked" type="boolean" />
           <element minOccurs="1" maxOccurs="1" name="ReasonBlocked" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="DateBlocked" type="date" />
           <element minOccurs="1" maxOccurs="1" name="Blockedby" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="CreatedDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="CreatedDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="Createdby" type="string" />
           <element minOccurs="1" maxOccurs="1" name="NoSeries" type="string" />
           <element minOccurs="1" maxOccurs="1" name="ExternalID" type="string" />
@@ -1042,8 +1072,8 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="Points" type="decimal" />
           <element minOccurs="1" maxOccurs="1" name="CustomerFilterType" type="string" />
           <element minOccurs="1" maxOccurs="1" name="CustomerFilterCode" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="StartingDate" type="date" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="EndingDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="StartingDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="EndingDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="ClubCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="FilterSubCode" type="string" />
         </sequence>
@@ -1068,6 +1098,7 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="NumberofUnusedCoupons" type="int" />
           <element minOccurs="1" maxOccurs="1" default="0" name="NumberofNewCoupons" type="int" />
           <element minOccurs="1" maxOccurs="1" default="0" name="NumberofBenefitCoupons" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="CouponCode" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootGetMemberInfoForPos" mixed="true">
@@ -3513,6 +3544,13 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmountLCY" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="FinalisedAmountLCY" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="false" name="LoyaltyPointpayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="DepositPayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="PosTransReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Type" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Created" type="dateTime" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="AuthorizationExpired" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="TokenNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalReference" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootCustomerOrderCreateV3" mixed="true">
@@ -3524,6 +3562,134 @@
         </sequence>
       </complexType>
       <element name="RootCustomerOrderCreateV3" type="tns:RootCustomerOrderCreateV3" />
+    </schema>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033056" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033056" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="CustomerOrderCreateCOHeaderV4">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="MemberCardNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="SourceType" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="CustomerNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Name" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Address" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Address2" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="City" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="County" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="PostCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="CountryRegionCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="PhoneNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Email" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="HouseApartmentNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="MobilePhoneNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="DaytimePhoneNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="TerritoryCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToName" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToAddress" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToAddress2" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToCity" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToCounty" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToPostCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToCountryRegionCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToPhoneNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToEmail" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShipToHouseApartmentNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="ClickAndCollectOrder" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" name="ShippingAgentCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ShippingAgentServiceCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="SourcingLocation" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalID" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" name="CreatedAtStore" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="ShipOrder" type="boolean" />
+        </sequence>
+      </complexType>
+      <complexType name="CustomerOrderCreateCOLineV4">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="Status" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="LineType" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Number" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="VariantCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="UnitofMeasureCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="NetPrice" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Price" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Quantity" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="DiscountAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="DiscountPercent" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="NetAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="VatAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Amount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="SourcingLocation" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="OrderReference" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="InventoryTransfer" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" name="LeadTimeCalculation" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="PrepaymentAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="PurchaseOrderNo" type="string" />
+        </sequence>
+      </complexType>
+      <complexType name="CustomerOrderCreateCODiscountLineV4">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="EntryNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="DiscountType" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="OfferNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="PeriodicDiscType" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="PeriodicDiscGroup" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Description" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="DiscountPercent" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="DiscountAmount" type="decimal" />
+        </sequence>
+      </complexType>
+      <complexType name="CustomerOrderCreateCOPaymentV4">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="FinalizedAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="TenderType" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="CardType" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="CurrencyCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="CurrencyFactor" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="AuthorizationCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
+          <element minOccurs="1" maxOccurs="1" name="CardorCustomernumber" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="IncomeExpenseAccountNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmountLCY" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="FinalizedAmountLCY" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="LoyaltyPointpayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="DepositPayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="PosTransReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Type" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Created" type="dateTime" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="AuthorizationExpired" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="TokenNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalReference" type="string" />
+        </sequence>
+      </complexType>
+      <complexType name="CustomerOrderCreateCOStatusLogV4">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="UserID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="StaffID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="TerminalNo" type="string" />
+        </sequence>
+      </complexType>
+      <complexType name="RootCustomerOrderCreateV4" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="CustomerOrderCreateCOHeaderV4" type="tns:CustomerOrderCreateCOHeaderV4" />
+          <element minOccurs="0" maxOccurs="unbounded" name="CustomerOrderCreateCOLineV4" type="tns:CustomerOrderCreateCOLineV4" />
+          <element minOccurs="0" maxOccurs="unbounded" name="CustomerOrderCreateCODiscountLineV4" type="tns:CustomerOrderCreateCODiscountLineV4" />
+          <element minOccurs="0" maxOccurs="unbounded" name="CustomerOrderCreateCOPaymentV4" type="tns:CustomerOrderCreateCOPaymentV4" />
+          <element minOccurs="0" maxOccurs="unbounded" name="CustomerOrderCreateCOStatusLogV4" type="tns:CustomerOrderCreateCOStatusLogV4" />
+        </sequence>
+      </complexType>
+      <element name="RootCustomerOrderCreateV4" type="tns:RootCustomerOrderCreateV4" />
     </schema>
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033047" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033047" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="CustomerOrderGetCOHeaderV2">
@@ -3574,6 +3740,11 @@
           <element minOccurs="1" maxOccurs="1" default="false" name="ShowaspostedInt" type="boolean" />
           <element minOccurs="1" maxOccurs="1" default="false" name="VendorSourcing" type="boolean" />
           <element minOccurs="1" maxOccurs="1" name="ExternalID" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="OnHold" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="OrderNetAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalDiscount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalQuantity" type="decimal" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderGetCOLineV2">
@@ -3629,18 +3800,24 @@
           <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
           <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmount" type="decimal" />
-          <element minOccurs="0" maxOccurs="1" default="0" name="FinalisedAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="FinalizedAmount" type="decimal" />
           <element minOccurs="1" maxOccurs="1" name="TenderType" type="string" />
           <element minOccurs="1" maxOccurs="1" name="CardType" type="string" />
           <element minOccurs="1" maxOccurs="1" name="CurrencyCode" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="CurrencyFactor" type="decimal" />
-          <element minOccurs="1" maxOccurs="1" name="AuthorisationCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="AuthorizationCode" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="PreApprovedValidDate" type="date" />
           <element minOccurs="1" maxOccurs="1" name="CardorCustomernumber" type="string" />
           <element minOccurs="1" maxOccurs="1" name="IncomeExpenseAccountNo" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="PreApprovedAmountLCY" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="FinalisedAmountLCY" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="false" name="LoyaltyPointpayment" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="PosTransReceiptNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Type" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01T00:00:00" name="Created" type="dateTime" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="AuthorizationExpired" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="TokenNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalReference" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootCustomerOrderGetV2" mixed="true">
@@ -3663,7 +3840,7 @@
           <element minOccurs="1" maxOccurs="1" name="DocumentType" type="string" />
           <element minOccurs="1" maxOccurs="1" name="DocumentNo." type="string" />
           <element minOccurs="1" maxOccurs="1" name="PRCountingHeaderNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="ExpectedDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ExpectedDate" type="date" />
           <element minOccurs="1" maxOccurs="1" default="0" name="No.ofItems" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalQty" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="QtyLeft" type="decimal" />
@@ -3690,7 +3867,7 @@
           <element minOccurs="1" maxOccurs="1" name="DocumentNo." type="string" />
           <element minOccurs="1" maxOccurs="1" name="DocumentMemberName" type="string" />
           <element minOccurs="1" maxOccurs="1" name="PRCounting_HeaderNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="ExpectedDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ExpectedDate" type="date" />
           <element minOccurs="1" maxOccurs="1" default="0" name="No.OfCheckedRounds" type="int" />
           <element minOccurs="1" maxOccurs="1" name="QuantityMethod" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="QuickdefaultQuantity" type="decimal" />
@@ -3731,6 +3908,8 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="customerOrderDocumentID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="sourceType" type="int" />
+            <element xmlns:q1="urn:microsoft-dynamics-nav/xmlports/x10033058" minOccurs="1" maxOccurs="1" name="customerOrderCancelXML" type="q1:RootCustomerOrderCancel" />
           </sequence>
         </complexType>
       </element>
@@ -3747,7 +3926,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q1="urn:microsoft-dynamics-nav/xmlports/x10032996" minOccurs="1" maxOccurs="1" name="customerOrderCreateXML" type="q1:RootCustomerOrder" />
+            <element xmlns:q2="urn:microsoft-dynamics-nav/xmlports/x10032996" minOccurs="1" maxOccurs="1" name="customerOrderCreateXML" type="q2:RootCustomerOrder" />
           </sequence>
         </complexType>
       </element>
@@ -3764,7 +3943,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q2="urn:microsoft-dynamics-nav/xmlports/x10033046" minOccurs="1" maxOccurs="1" name="customerOrderCreateXML" type="q2:RootCustomerOrderCreateV2" />
+            <element xmlns:q3="urn:microsoft-dynamics-nav/xmlports/x10033046" minOccurs="1" maxOccurs="1" name="customerOrderCreateXML" type="q3:RootCustomerOrderCreateV2" />
             <element minOccurs="1" maxOccurs="1" name="customerOrderID" type="string" />
           </sequence>
         </complexType>
@@ -3784,7 +3963,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="customerOrderDocumentID" type="string" />
-            <element xmlns:q3="urn:microsoft-dynamics-nav/xmlports/x10033038" minOccurs="1" maxOccurs="1" name="customerOrderStatusXML" type="q3:RootCustomerOrderStatus" />
+            <element xmlns:q4="urn:microsoft-dynamics-nav/xmlports/x10033038" minOccurs="1" maxOccurs="1" name="customerOrderStatusXML" type="q4:RootCustomerOrderStatus" />
           </sequence>
         </complexType>
       </element>
@@ -3793,7 +3972,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q4="urn:microsoft-dynamics-nav/xmlports/x10033038" minOccurs="1" maxOccurs="1" name="customerOrderStatusXML" type="q4:RootCustomerOrderStatus" />
+            <element xmlns:q5="urn:microsoft-dynamics-nav/xmlports/x10033038" minOccurs="1" maxOccurs="1" name="customerOrderStatusXML" type="q5:RootCustomerOrderStatus" />
           </sequence>
         </complexType>
       </element>
@@ -3803,7 +3982,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="includePostedCustomerOrders" type="boolean" />
-            <element xmlns:q5="urn:microsoft-dynamics-nav/xmlports/x10033042" minOccurs="1" maxOccurs="1" name="customerOrderFilteredListXML" type="q5:RootCustomerOrderFilteredList" />
+            <element xmlns:q6="urn:microsoft-dynamics-nav/xmlports/x10033042" minOccurs="1" maxOccurs="1" name="customerOrderFilteredListXML" type="q6:RootCustomerOrderFilteredList" />
           </sequence>
         </complexType>
       </element>
@@ -3812,7 +3991,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q6="urn:microsoft-dynamics-nav/xmlports/x10033042" minOccurs="1" maxOccurs="1" name="customerOrderFilteredListXML" type="q6:RootCustomerOrderFilteredList" />
+            <element xmlns:q7="urn:microsoft-dynamics-nav/xmlports/x10033042" minOccurs="1" maxOccurs="1" name="customerOrderFilteredListXML" type="q7:RootCustomerOrderFilteredList" />
           </sequence>
         </complexType>
       </element>
@@ -3824,7 +4003,7 @@
             <element minOccurs="1" maxOccurs="1" name="documentStatus" type="string" />
             <element minOccurs="1" maxOccurs="1" name="documentID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="posTerminalNo" type="string" />
-            <element xmlns:q7="urn:microsoft-dynamics-nav/xmlports/x10033010" minOccurs="1" maxOccurs="1" name="customerOrderGetXML" type="q7:RootCustomerOrderGet" />
+            <element xmlns:q8="urn:microsoft-dynamics-nav/xmlports/x10033010" minOccurs="1" maxOccurs="1" name="customerOrderGetXML" type="q8:RootCustomerOrderGet" />
           </sequence>
         </complexType>
       </element>
@@ -3833,7 +4012,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q8="urn:microsoft-dynamics-nav/xmlports/x10033010" minOccurs="1" maxOccurs="1" name="customerOrderGetXML" type="q8:RootCustomerOrderGet" />
+            <element xmlns:q9="urn:microsoft-dynamics-nav/xmlports/x10033010" minOccurs="1" maxOccurs="1" name="customerOrderGetXML" type="q9:RootCustomerOrderGet" />
           </sequence>
         </complexType>
       </element>
@@ -3842,7 +4021,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q9="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q9:RootMobileTransaction" />
+            <element xmlns:q10="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q10:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -3851,7 +4030,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q10="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q10:RootMobileTransaction" />
+            <element xmlns:q11="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q11:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -3862,7 +4041,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
-            <element xmlns:q11="urn:microsoft-dynamics-nav/xmlports/x10032995" minOccurs="1" maxOccurs="1" name="getCrossSellingXML" type="q11:RootGetCrossSelling" />
+            <element xmlns:q12="urn:microsoft-dynamics-nav/xmlports/x10032995" minOccurs="1" maxOccurs="1" name="getCrossSellingXML" type="q12:RootGetCrossSelling" />
           </sequence>
         </complexType>
       </element>
@@ -3871,7 +4050,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q12="urn:microsoft-dynamics-nav/xmlports/x10032995" minOccurs="1" maxOccurs="1" name="getCrossSellingXML" type="q12:RootGetCrossSelling" />
+            <element xmlns:q13="urn:microsoft-dynamics-nav/xmlports/x10032995" minOccurs="1" maxOccurs="1" name="getCrossSellingXML" type="q13:RootGetCrossSelling" />
           </sequence>
         </complexType>
       </element>
@@ -3884,7 +4063,7 @@
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="customerNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="view" type="string" />
-            <element xmlns:q13="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q13:RootLeftRightLine" />
+            <element xmlns:q14="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q14:RootLeftRightLine" />
           </sequence>
         </complexType>
       </element>
@@ -3893,7 +4072,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q14="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q14:RootLeftRightLine" />
+            <element xmlns:q15="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q15:RootLeftRightLine" />
           </sequence>
         </complexType>
       </element>
@@ -3903,7 +4082,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
-            <element xmlns:q15="urn:microsoft-dynamics-nav/xmlports/x10032985" minOccurs="1" maxOccurs="1" name="getHierarchyXML" type="q15:RootGetHierarchy" />
+            <element xmlns:q16="urn:microsoft-dynamics-nav/xmlports/x10032985" minOccurs="1" maxOccurs="1" name="getHierarchyXML" type="q16:RootGetHierarchy" />
           </sequence>
         </complexType>
       </element>
@@ -3912,7 +4091,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q16="urn:microsoft-dynamics-nav/xmlports/x10032985" minOccurs="1" maxOccurs="1" name="getHierarchyXML" type="q16:RootGetHierarchy" />
+            <element xmlns:q17="urn:microsoft-dynamics-nav/xmlports/x10032985" minOccurs="1" maxOccurs="1" name="getHierarchyXML" type="q17:RootGetHierarchy" />
           </sequence>
         </complexType>
       </element>
@@ -3924,8 +4103,8 @@
             <element minOccurs="1" maxOccurs="1" name="hierarchyCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="nodeID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
-            <element xmlns:q17="urn:microsoft-dynamics-nav/xmlports/x10032986" minOccurs="1" maxOccurs="1" name="getHierarchyNodeInXML" type="q17:RootGetHierarchyNodeIn" />
-            <element xmlns:q18="urn:microsoft-dynamics-nav/xmlports/x10032987" minOccurs="1" maxOccurs="1" name="getHierarchyNodeOutXML" type="q18:RootGetHierarchyNodeOut" />
+            <element xmlns:q18="urn:microsoft-dynamics-nav/xmlports/x10032986" minOccurs="1" maxOccurs="1" name="getHierarchyNodeInXML" type="q18:RootGetHierarchyNodeIn" />
+            <element xmlns:q19="urn:microsoft-dynamics-nav/xmlports/x10032987" minOccurs="1" maxOccurs="1" name="getHierarchyNodeOutXML" type="q19:RootGetHierarchyNodeOut" />
           </sequence>
         </complexType>
       </element>
@@ -3934,7 +4113,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q19="urn:microsoft-dynamics-nav/xmlports/x10032987" minOccurs="1" maxOccurs="1" name="getHierarchyNodeOutXML" type="q19:RootGetHierarchyNodeOut" />
+            <element xmlns:q20="urn:microsoft-dynamics-nav/xmlports/x10032987" minOccurs="1" maxOccurs="1" name="getHierarchyNodeOutXML" type="q20:RootGetHierarchyNodeOut" />
           </sequence>
         </complexType>
       </element>
@@ -3950,7 +4129,7 @@
             <element minOccurs="1" maxOccurs="1" name="variantCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="barcodeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="viewCode" type="string" />
-            <element xmlns:q20="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q20:RootLeftRightLine" />
+            <element xmlns:q21="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q21:RootLeftRightLine" />
           </sequence>
         </complexType>
       </element>
@@ -3959,7 +4138,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q21="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q21:RootLeftRightLine" />
+            <element xmlns:q22="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q22:RootLeftRightLine" />
           </sequence>
         </complexType>
       </element>
@@ -3970,7 +4149,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="cardNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="totalRemainingPoints" type="decimal" />
-            <element xmlns:q22="urn:microsoft-dynamics-nav/xmlports/x10032989" minOccurs="1" maxOccurs="1" name="getMemberCardXML" type="q22:RootGetMemberCard" />
+            <element xmlns:q23="urn:microsoft-dynamics-nav/xmlports/x10032989" minOccurs="1" maxOccurs="1" name="getMemberCardXML" type="q23:RootGetMemberCard" />
           </sequence>
         </complexType>
       </element>
@@ -3980,7 +4159,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="totalRemainingPoints" type="decimal" />
-            <element xmlns:q23="urn:microsoft-dynamics-nav/xmlports/x10032989" minOccurs="1" maxOccurs="1" name="getMemberCardXML" type="q23:RootGetMemberCard" />
+            <element xmlns:q24="urn:microsoft-dynamics-nav/xmlports/x10032989" minOccurs="1" maxOccurs="1" name="getMemberCardXML" type="q24:RootGetMemberCard" />
           </sequence>
         </complexType>
       </element>
@@ -3992,7 +4171,7 @@
             <element minOccurs="1" maxOccurs="1" name="cardNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="accountNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="contactNo" type="string" />
-            <element xmlns:q24="urn:microsoft-dynamics-nav/xmlports/x10032991" minOccurs="1" maxOccurs="1" name="getMemberContactXML" type="q24:RootGetMemberContact" />
+            <element xmlns:q25="urn:microsoft-dynamics-nav/xmlports/x10032991" minOccurs="1" maxOccurs="1" name="getMemberContactXML" type="q25:RootGetMemberContact" />
           </sequence>
         </complexType>
       </element>
@@ -4001,7 +4180,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q25="urn:microsoft-dynamics-nav/xmlports/x10032991" minOccurs="1" maxOccurs="1" name="getMemberContactXML" type="q25:RootGetMemberContact" />
+            <element xmlns:q26="urn:microsoft-dynamics-nav/xmlports/x10032991" minOccurs="1" maxOccurs="1" name="getMemberContactXML" type="q26:RootGetMemberContact" />
           </sequence>
         </complexType>
       </element>
@@ -4012,7 +4191,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="cardNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
-            <element xmlns:q26="urn:microsoft-dynamics-nav/xmlports/x10032992" minOccurs="1" maxOccurs="1" name="getMemberInfoForPosXML" type="q26:RootGetMemberInfoForPos" />
+            <element xmlns:q27="urn:microsoft-dynamics-nav/xmlports/x10032992" minOccurs="1" maxOccurs="1" name="getMemberInfoForPosXML" type="q27:RootGetMemberInfoForPos" />
           </sequence>
         </complexType>
       </element>
@@ -4021,7 +4200,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q27="urn:microsoft-dynamics-nav/xmlports/x10032992" minOccurs="1" maxOccurs="1" name="getMemberInfoForPosXML" type="q27:RootGetMemberInfoForPos" />
+            <element xmlns:q28="urn:microsoft-dynamics-nav/xmlports/x10032992" minOccurs="1" maxOccurs="1" name="getMemberInfoForPosXML" type="q28:RootGetMemberInfoForPos" />
           </sequence>
         </complexType>
       </element>
@@ -4034,7 +4213,7 @@
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="posTerminalNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="transactionNo" type="int" />
-            <element xmlns:q28="urn:microsoft-dynamics-nav/xmlports/x10032999" minOccurs="1" maxOccurs="1" name="getTransactionXML" type="q28:RootGetTransaction" />
+            <element xmlns:q29="urn:microsoft-dynamics-nav/xmlports/x10032999" minOccurs="1" maxOccurs="1" name="getTransactionXML" type="q29:RootGetTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4043,7 +4222,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q29="urn:microsoft-dynamics-nav/xmlports/x10032999" minOccurs="1" maxOccurs="1" name="getTransactionXML" type="q29:RootGetTransaction" />
+            <element xmlns:q30="urn:microsoft-dynamics-nav/xmlports/x10032999" minOccurs="1" maxOccurs="1" name="getTransactionXML" type="q30:RootGetTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4056,7 +4235,7 @@
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="vendorNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="view" type="string" />
-            <element xmlns:q30="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q30:RootLeftRightLine" />
+            <element xmlns:q31="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q31:RootLeftRightLine" />
           </sequence>
         </complexType>
       </element>
@@ -4065,7 +4244,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q31="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q31:RootLeftRightLine" />
+            <element xmlns:q32="urn:microsoft-dynamics-nav/xmlports/x10033051" minOccurs="1" maxOccurs="1" name="leftRightLineXML" type="q32:RootLeftRightLine" />
           </sequence>
         </complexType>
       </element>
@@ -4075,7 +4254,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="staffId" type="string" />
-            <element xmlns:q32="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q32:RootMobileTransaction" />
+            <element xmlns:q33="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q33:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4084,7 +4263,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q33="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q33:RootMobileTransaction" />
+            <element xmlns:q34="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q34:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4094,7 +4273,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="staffId" type="string" />
-            <element xmlns:q34="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q34:RootMobileTransaction" />
+            <element xmlns:q35="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q35:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4103,7 +4282,65 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q35="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q35:RootMobileTransaction" />
+            <element xmlns:q36="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q36:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosPostPrecalc">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="staffId" type="string" />
+            <element xmlns:q37="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q37:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosPostPrecalc_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q38="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q38:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosSave">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="staffId" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="menuType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="unlockTrans" type="boolean" />
+            <element xmlns:q39="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q39:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosSave_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q40="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q40:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosRetSave">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q41="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q41:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosRetSave_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q42="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q42:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4113,7 +4350,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="searchKey" type="string" />
-            <element xmlns:q36="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q36:RootMobileTransaction" />
+            <element xmlns:q43="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q43:RootMobileTransaction" />
             <element minOccurs="1" maxOccurs="1" name="receiptNo" type="string" />
           </sequence>
         </complexType>
@@ -4124,6 +4361,44 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="receiptNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosSuspendV2">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q44="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q44:RootMobileTransaction" />
+            <element minOccurs="1" maxOccurs="1" name="receiptNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosSuspendV2_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="receiptNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosRetSuspended">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="receiptNo" type="string" />
+            <element xmlns:q45="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q45:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosRetSuspended_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q46="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q46:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4179,7 +4454,7 @@
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="terminalNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="transactionNo" type="int" />
-            <element xmlns:q37="urn:microsoft-dynamics-nav/xmlports/x10033003" minOccurs="1" maxOccurs="1" name="mobilePosPrintXML" type="q37:RootMobilePosPrint" />
+            <element xmlns:q47="urn:microsoft-dynamics-nav/xmlports/x10033003" minOccurs="1" maxOccurs="1" name="mobilePosPrintXML" type="q47:RootMobilePosPrint" />
           </sequence>
         </complexType>
       </element>
@@ -4191,7 +4466,7 @@
             <element minOccurs="1" maxOccurs="1" name="printMethod" type="string" />
             <element minOccurs="1" maxOccurs="1" name="mailRecipient" type="string" />
             <element minOccurs="1" maxOccurs="1" name="externalPrinterID" type="string" />
-            <element xmlns:q38="urn:microsoft-dynamics-nav/xmlports/x10033003" minOccurs="1" maxOccurs="1" name="mobilePosPrintXML" type="q38:RootMobilePosPrint" />
+            <element xmlns:q48="urn:microsoft-dynamics-nav/xmlports/x10033003" minOccurs="1" maxOccurs="1" name="mobilePosPrintXML" type="q48:RootMobilePosPrint" />
           </sequence>
         </complexType>
       </element>
@@ -4221,7 +4496,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="staffId" type="string" />
-            <element xmlns:q39="urn:microsoft-dynamics-nav/xmlports/x99009613" minOccurs="1" maxOccurs="1" name="mobileTransactionXMLV2" type="q39:Root" />
+            <element xmlns:q49="urn:microsoft-dynamics-nav/xmlports/x99009613" minOccurs="1" maxOccurs="1" name="mobileTransactionXMLV2" type="q49:Root" />
           </sequence>
         </complexType>
       </element>
@@ -4230,7 +4505,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q40="urn:microsoft-dynamics-nav/xmlports/x99009613" minOccurs="1" maxOccurs="1" name="mobileTransactionXMLV2" type="q40:Root" />
+            <element xmlns:q50="urn:microsoft-dynamics-nav/xmlports/x99009613" minOccurs="1" maxOccurs="1" name="mobileTransactionXMLV2" type="q50:Root" />
           </sequence>
         </complexType>
       </element>
@@ -4244,7 +4519,7 @@
             <element minOccurs="1" maxOccurs="1" name="staffID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="xZReport" type="string" />
             <element minOccurs="1" maxOccurs="1" name="zReportID" type="string" />
-            <element xmlns:q41="urn:microsoft-dynamics-nav/xmlports/x10033008" minOccurs="1" maxOccurs="1" name="mobilePosZReportXML" type="q41:RootMobilePosZReport" />
+            <element xmlns:q51="urn:microsoft-dynamics-nav/xmlports/x10033008" minOccurs="1" maxOccurs="1" name="mobilePosZReportXML" type="q51:RootMobilePosZReport" />
           </sequence>
         </complexType>
       </element>
@@ -4254,7 +4529,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="zReportID" type="string" />
-            <element xmlns:q42="urn:microsoft-dynamics-nav/xmlports/x10033008" minOccurs="1" maxOccurs="1" name="mobilePosZReportXML" type="q42:RootMobilePosZReport" />
+            <element xmlns:q52="urn:microsoft-dynamics-nav/xmlports/x10033008" minOccurs="1" maxOccurs="1" name="mobilePosZReportXML" type="q52:RootMobilePosZReport" />
           </sequence>
         </complexType>
       </element>
@@ -4267,7 +4542,7 @@
             <element minOccurs="1" maxOccurs="1" name="contactNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="cardNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="maxNoOfHeaders" type="int" />
-            <element xmlns:q43="urn:microsoft-dynamics-nav/xmlports/x10032998" minOccurs="1" maxOccurs="1" name="getMemberSalesHistoryXML" type="q43:RootGetMemberSalesHistory" />
+            <element xmlns:q53="urn:microsoft-dynamics-nav/xmlports/x10032998" minOccurs="1" maxOccurs="1" name="getMemberSalesHistoryXML" type="q53:RootGetMemberSalesHistory" />
           </sequence>
         </complexType>
       </element>
@@ -4276,7 +4551,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q44="urn:microsoft-dynamics-nav/xmlports/x10032998" minOccurs="1" maxOccurs="1" name="getMemberSalesHistoryXML" type="q44:RootGetMemberSalesHistory" />
+            <element xmlns:q54="urn:microsoft-dynamics-nav/xmlports/x10032998" minOccurs="1" maxOccurs="1" name="getMemberSalesHistoryXML" type="q54:RootGetMemberSalesHistory" />
           </sequence>
         </complexType>
       </element>
@@ -4288,7 +4563,7 @@
             <element minOccurs="1" maxOccurs="1" name="cardId" type="string" />
             <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
-            <element xmlns:q45="urn:microsoft-dynamics-nav/xmlports/x10032993" minOccurs="1" maxOccurs="1" name="loadMemberDirMarkInfoXML" type="q45:RootGetDirectMarketingInfo" />
+            <element xmlns:q55="urn:microsoft-dynamics-nav/xmlports/x10032993" minOccurs="1" maxOccurs="1" name="loadMemberDirMarkInfoXML" type="q55:RootGetDirectMarketingInfo" />
           </sequence>
         </complexType>
       </element>
@@ -4297,7 +4572,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q46="urn:microsoft-dynamics-nav/xmlports/x10032993" minOccurs="1" maxOccurs="1" name="loadMemberDirMarkInfoXML" type="q46:RootGetDirectMarketingInfo" />
+            <element xmlns:q56="urn:microsoft-dynamics-nav/xmlports/x10032993" minOccurs="1" maxOccurs="1" name="loadMemberDirMarkInfoXML" type="q56:RootGetDirectMarketingInfo" />
           </sequence>
         </complexType>
       </element>
@@ -4314,7 +4589,7 @@
             <element minOccurs="1" maxOccurs="1" name="size" type="string" />
             <element minOccurs="1" maxOccurs="1" name="style" type="string" />
             <element minOccurs="1" maxOccurs="1" name="stockDays" type="int" />
-            <element xmlns:q47="urn:microsoft-dynamics-nav/xmlports/x10032988" minOccurs="1" maxOccurs="1" name="getItemInventoryXML" type="q47:RootGetItemInventory" />
+            <element xmlns:q57="urn:microsoft-dynamics-nav/xmlports/x10032988" minOccurs="1" maxOccurs="1" name="getItemInventoryXML" type="q57:RootGetItemInventory" />
           </sequence>
         </complexType>
       </element>
@@ -4323,7 +4598,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q48="urn:microsoft-dynamics-nav/xmlports/x10032988" minOccurs="1" maxOccurs="1" name="getItemInventoryXML" type="q48:RootGetItemInventory" />
+            <element xmlns:q58="urn:microsoft-dynamics-nav/xmlports/x10032988" minOccurs="1" maxOccurs="1" name="getItemInventoryXML" type="q58:RootGetItemInventory" />
           </sequence>
         </complexType>
       </element>
@@ -4362,7 +4637,7 @@
             <element minOccurs="1" maxOccurs="1" name="descriptionFilter" type="string" />
             <element minOccurs="1" maxOccurs="1" name="itemProductGrFilter" type="string" />
             <element minOccurs="1" maxOccurs="1" name="itemCatFilter" type="string" />
-            <element xmlns:q49="urn:microsoft-dynamics-nav/xmlports/x10033005" minOccurs="1" maxOccurs="1" name="mobilePosSalesHistoryXML" type="q49:RootMobilePosSalesHistory" />
+            <element xmlns:q59="urn:microsoft-dynamics-nav/xmlports/x10033005" minOccurs="1" maxOccurs="1" name="mobilePosSalesHistoryXML" type="q59:RootMobilePosSalesHistory" />
           </sequence>
         </complexType>
       </element>
@@ -4371,7 +4646,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q50="urn:microsoft-dynamics-nav/xmlports/x10033005" minOccurs="1" maxOccurs="1" name="mobilePosSalesHistoryXML" type="q50:RootMobilePosSalesHistory" />
+            <element xmlns:q60="urn:microsoft-dynamics-nav/xmlports/x10033005" minOccurs="1" maxOccurs="1" name="mobilePosSalesHistoryXML" type="q60:RootMobilePosSalesHistory" />
           </sequence>
         </complexType>
       </element>
@@ -4382,7 +4657,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="addOnly" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="updateReplicationCounter" type="boolean" />
-            <element xmlns:q51="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q51:RootSendTransaction" />
+            <element xmlns:q61="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q61:RootSendTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4391,7 +4666,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q52="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q52:RootSendTransaction" />
+            <element xmlns:q62="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q62:RootSendTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4401,7 +4676,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="updateReplicationCounter" type="boolean" />
-            <element xmlns:q53="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q53:RootSendTransactionHeader" />
+            <element xmlns:q63="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q63:RootSendTransactionHeader" />
           </sequence>
         </complexType>
       </element>
@@ -4410,7 +4685,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q54="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q54:RootSendTransactionHeader" />
+            <element xmlns:q64="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q64:RootSendTransactionHeader" />
           </sequence>
         </complexType>
       </element>
@@ -4425,7 +4700,7 @@
             <element minOccurs="1" maxOccurs="1" name="contactID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="cardID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="totalRemainingPoints" type="decimal" />
-            <element xmlns:q55="urn:microsoft-dynamics-nav/xmlports/x10033019" minOccurs="1" maxOccurs="1" name="memberContactCreateXML" type="q55:RootMemberContactCreate" />
+            <element xmlns:q65="urn:microsoft-dynamics-nav/xmlports/x10033019" minOccurs="1" maxOccurs="1" name="memberContactCreateXML" type="q65:RootMemberContactCreate" />
           </sequence>
         </complexType>
       </element>
@@ -4440,7 +4715,7 @@
             <element minOccurs="1" maxOccurs="1" name="contactID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="cardID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="totalRemainingPoints" type="decimal" />
-            <element xmlns:q56="urn:microsoft-dynamics-nav/xmlports/x10033019" minOccurs="1" maxOccurs="1" name="memberContactCreateXML" type="q56:RootMemberContactCreate" />
+            <element xmlns:q66="urn:microsoft-dynamics-nav/xmlports/x10033019" minOccurs="1" maxOccurs="1" name="memberContactCreateXML" type="q66:RootMemberContactCreate" />
           </sequence>
         </complexType>
       </element>
@@ -4449,7 +4724,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q57="urn:microsoft-dynamics-nav/xmlports/x10033020" minOccurs="1" maxOccurs="1" name="memberContactUpdateXML" type="q57:RootMemberContactCreate" />
+            <element xmlns:q67="urn:microsoft-dynamics-nav/xmlports/x10033020" minOccurs="1" maxOccurs="1" name="memberContactUpdateXML" type="q67:RootMemberContactCreate" />
           </sequence>
         </complexType>
       </element>
@@ -4458,7 +4733,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q58="urn:microsoft-dynamics-nav/xmlports/x10033020" minOccurs="1" maxOccurs="1" name="memberContactUpdateXML" type="q58:RootMemberContactCreate" />
+            <element xmlns:q68="urn:microsoft-dynamics-nav/xmlports/x10033020" minOccurs="1" maxOccurs="1" name="memberContactUpdateXML" type="q68:RootMemberContactCreate" />
           </sequence>
         </complexType>
       </element>
@@ -4469,7 +4744,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="entryType" type="string" />
             <element minOccurs="1" maxOccurs="1" name="entryCode" type="string" />
-            <element xmlns:q59="urn:microsoft-dynamics-nav/xmlports/x10033013" minOccurs="1" maxOccurs="1" name="getDataEntryBalanceXML" type="q59:RootGetDataEntryBalance" />
+            <element xmlns:q69="urn:microsoft-dynamics-nav/xmlports/x10033013" minOccurs="1" maxOccurs="1" name="getDataEntryBalanceXML" type="q69:RootGetDataEntryBalance" />
           </sequence>
         </complexType>
       </element>
@@ -4478,7 +4753,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q60="urn:microsoft-dynamics-nav/xmlports/x10033013" minOccurs="1" maxOccurs="1" name="getDataEntryBalanceXML" type="q60:RootGetDataEntryBalance" />
+            <element xmlns:q70="urn:microsoft-dynamics-nav/xmlports/x10033013" minOccurs="1" maxOccurs="1" name="getDataEntryBalanceXML" type="q70:RootGetDataEntryBalance" />
           </sequence>
         </complexType>
       </element>
@@ -4488,7 +4763,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
-            <element xmlns:q61="urn:microsoft-dynamics-nav/xmlports/x10033022" minOccurs="1" maxOccurs="1" name="getStoreOpeningHoursXML" type="q61:RootGetStoreOpeningHours" />
+            <element xmlns:q71="urn:microsoft-dynamics-nav/xmlports/x10033022" minOccurs="1" maxOccurs="1" name="getStoreOpeningHoursXML" type="q71:RootGetStoreOpeningHours" />
           </sequence>
         </complexType>
       </element>
@@ -4497,18 +4772,18 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q62="urn:microsoft-dynamics-nav/xmlports/x10033022" minOccurs="1" maxOccurs="1" name="getStoreOpeningHoursXML" type="q62:RootGetStoreOpeningHours" />
+            <element xmlns:q72="urn:microsoft-dynamics-nav/xmlports/x10033022" minOccurs="1" maxOccurs="1" name="getStoreOpeningHoursXML" type="q72:RootGetStoreOpeningHours" />
           </sequence>
         </complexType>
       </element>
       <element name="COQtyAvailability">
         <complexType>
           <sequence>
-            <element xmlns:q63="urn:microsoft-dynamics-nav/xmlports/x10033031" minOccurs="1" maxOccurs="1" name="cOQtyAvailabilityInXML" type="q63:RootCOQtyAvailabilityExtIn" />
+            <element xmlns:q73="urn:microsoft-dynamics-nav/xmlports/x10033031" minOccurs="1" maxOccurs="1" name="cOQtyAvailabilityInXML" type="q73:RootCOQtyAvailabilityExtIn" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="preferredSourcingLocation" type="string" />
-            <element xmlns:q64="urn:microsoft-dynamics-nav/xmlports/x10033032" minOccurs="1" maxOccurs="1" name="cOQtyAvailabilityOutXML" type="q64:RootCOQtyAvailabilityExtOut" />
+            <element xmlns:q74="urn:microsoft-dynamics-nav/xmlports/x10033032" minOccurs="1" maxOccurs="1" name="cOQtyAvailabilityOutXML" type="q74:RootCOQtyAvailabilityExtOut" />
           </sequence>
         </complexType>
       </element>
@@ -4518,7 +4793,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="preferredSourcingLocation" type="string" />
-            <element xmlns:q65="urn:microsoft-dynamics-nav/xmlports/x10033032" minOccurs="1" maxOccurs="1" name="cOQtyAvailabilityOutXML" type="q65:RootCOQtyAvailabilityExtOut" />
+            <element xmlns:q75="urn:microsoft-dynamics-nav/xmlports/x10033032" minOccurs="1" maxOccurs="1" name="cOQtyAvailabilityOutXML" type="q75:RootCOQtyAvailabilityExtOut" />
           </sequence>
         </complexType>
       </element>
@@ -4529,8 +4804,8 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="locationCode" type="string" />
-            <element xmlns:q66="urn:microsoft-dynamics-nav/xmlports/x10033052" minOccurs="1" maxOccurs="1" name="getInventoryMultipleInXML" type="q66:RootGetInventoryMultipleIn" />
-            <element xmlns:q67="urn:microsoft-dynamics-nav/xmlports/x10033053" minOccurs="1" maxOccurs="1" name="getInventoryMultipleOutXML" type="q67:RootGetInventoryMultipleOut" />
+            <element xmlns:q76="urn:microsoft-dynamics-nav/xmlports/x10033052" minOccurs="1" maxOccurs="1" name="getInventoryMultipleInXML" type="q76:RootGetInventoryMultipleIn" />
+            <element xmlns:q77="urn:microsoft-dynamics-nav/xmlports/x10033053" minOccurs="1" maxOccurs="1" name="getInventoryMultipleOutXML" type="q77:RootGetInventoryMultipleOut" />
           </sequence>
         </complexType>
       </element>
@@ -4539,7 +4814,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q68="urn:microsoft-dynamics-nav/xmlports/x10033053" minOccurs="1" maxOccurs="1" name="getInventoryMultipleOutXML" type="q68:RootGetInventoryMultipleOut" />
+            <element xmlns:q78="urn:microsoft-dynamics-nav/xmlports/x10033053" minOccurs="1" maxOccurs="1" name="getInventoryMultipleOutXML" type="q78:RootGetInventoryMultipleOut" />
           </sequence>
         </complexType>
       </element>
@@ -4566,6 +4841,24 @@
           </sequence>
         </complexType>
       </element>
+      <element name="MobilePosRefund">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q79="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q79:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosRefund_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q80="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q80:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="ItemSalesInfo">
         <complexType>
           <sequence>
@@ -4573,7 +4866,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="itemNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="locationCode" type="string" />
-            <element xmlns:q69="urn:microsoft-dynamics-nav/xmlports/x10033024" minOccurs="1" maxOccurs="1" name="itemSalesInfoXML" type="q69:RootGetItemSalesInfo" />
+            <element xmlns:q81="urn:microsoft-dynamics-nav/xmlports/x10033024" minOccurs="1" maxOccurs="1" name="itemSalesInfoXML" type="q81:RootGetItemSalesInfo" />
           </sequence>
         </complexType>
       </element>
@@ -4582,7 +4875,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q70="urn:microsoft-dynamics-nav/xmlports/x10033024" minOccurs="1" maxOccurs="1" name="itemSalesInfoXML" type="q70:RootGetItemSalesInfo" />
+            <element xmlns:q82="urn:microsoft-dynamics-nav/xmlports/x10033024" minOccurs="1" maxOccurs="1" name="itemSalesInfoXML" type="q82:RootGetItemSalesInfo" />
           </sequence>
         </complexType>
       </element>
@@ -4615,12 +4908,31 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q71="urn:microsoft-dynamics-nav/xmlports/x10033048" minOccurs="1" maxOccurs="1" name="customerOrderCreateV3XML" type="q71:RootCustomerOrderCreateV3" />
+            <element xmlns:q83="urn:microsoft-dynamics-nav/xmlports/x10033048" minOccurs="1" maxOccurs="1" name="customerOrderCreateV3XML" type="q83:RootCustomerOrderCreateV3" />
             <element minOccurs="1" maxOccurs="1" name="customerOrderID" type="string" />
           </sequence>
         </complexType>
       </element>
       <element name="CustomerOrderCreateV3_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="customerOrderID" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CustomerOrderCreateV4">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q84="urn:microsoft-dynamics-nav/xmlports/x10033056" minOccurs="1" maxOccurs="1" name="customerOrderCreateV4XML" type="q84:RootCustomerOrderCreateV4" />
+            <element minOccurs="1" maxOccurs="1" name="customerOrderID" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CustomerOrderCreateV4_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
@@ -4637,7 +4949,9 @@
             <element minOccurs="1" maxOccurs="1" name="documentStatus" type="string" />
             <element minOccurs="1" maxOccurs="1" name="documentID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="posTerminalNo" type="string" />
-            <element xmlns:q72="urn:microsoft-dynamics-nav/xmlports/x10033047" minOccurs="1" maxOccurs="1" name="customerOrderGetV2XML" type="q72:RootCustomerOrderGetV2" />
+            <element xmlns:q85="urn:microsoft-dynamics-nav/xmlports/x10033047" minOccurs="1" maxOccurs="1" name="customerOrderGetV2XML" type="q85:RootCustomerOrderGetV2" />
+            <element minOccurs="1" maxOccurs="1" name="pointsEarned" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="pointsUsed" type="decimal" />
           </sequence>
         </complexType>
       </element>
@@ -4646,7 +4960,9 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q73="urn:microsoft-dynamics-nav/xmlports/x10033047" minOccurs="1" maxOccurs="1" name="customerOrderGetV2XML" type="q73:RootCustomerOrderGetV2" />
+            <element xmlns:q86="urn:microsoft-dynamics-nav/xmlports/x10033047" minOccurs="1" maxOccurs="1" name="customerOrderGetV2XML" type="q86:RootCustomerOrderGetV2" />
+            <element minOccurs="1" maxOccurs="1" name="pointsEarned" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="pointsUsed" type="decimal" />
           </sequence>
         </complexType>
       </element>
@@ -4662,7 +4978,7 @@
             <element minOccurs="1" maxOccurs="1" name="pDocument_Type" type="string" />
             <element minOccurs="1" maxOccurs="1" name="pStore_No" type="string" />
             <element minOccurs="1" maxOccurs="1" name="pLocation_Code" type="string" />
-            <element xmlns:q74="urn:microsoft-dynamics-nav/xmlports/x10033050" minOccurs="1" maxOccurs="1" name="getDocumentListXML" type="q74:RootGetDocumentList" />
+            <element xmlns:q87="urn:microsoft-dynamics-nav/xmlports/x10033050" minOccurs="1" maxOccurs="1" name="getDocumentListXML" type="q87:RootGetDocumentList" />
           </sequence>
         </complexType>
       </element>
@@ -4671,7 +4987,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q75="urn:microsoft-dynamics-nav/xmlports/x10033050" minOccurs="1" maxOccurs="1" name="getDocumentListXML" type="q75:RootGetDocumentList" />
+            <element xmlns:q88="urn:microsoft-dynamics-nav/xmlports/x10033050" minOccurs="1" maxOccurs="1" name="getDocumentListXML" type="q88:RootGetDocumentList" />
           </sequence>
         </complexType>
       </element>
@@ -4683,7 +4999,7 @@
             <element minOccurs="1" maxOccurs="1" name="terminalNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="requestType" type="string" />
             <element minOccurs="1" maxOccurs="1" name="documentNo" type="string" />
-            <element xmlns:q76="urn:microsoft-dynamics-nav/xmlports/x10033025" minOccurs="1" maxOccurs="1" name="getDocumentXML" type="q76:RootGetDocumnet" />
+            <element xmlns:q89="urn:microsoft-dynamics-nav/xmlports/x10033025" minOccurs="1" maxOccurs="1" name="getDocumentXML" type="q89:RootGetDocumnet" />
           </sequence>
         </complexType>
       </element>
@@ -4692,7 +5008,44 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q77="urn:microsoft-dynamics-nav/xmlports/x10033025" minOccurs="1" maxOccurs="1" name="getDocumentXML" type="q77:RootGetDocumnet" />
+            <element xmlns:q90="urn:microsoft-dynamics-nav/xmlports/x10033025" minOccurs="1" maxOccurs="1" name="getDocumentXML" type="q90:RootGetDocumnet" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosPriceCheck">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q91="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q91:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosPriceCheck_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q92="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q92:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosFloatEnt">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="staffId" type="string" />
+            <element xmlns:q93="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q93:RootMobileTransaction" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="MobilePosFloatEnt_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q94="urn:microsoft-dynamics-nav/xmlports/x99009610" minOccurs="1" maxOccurs="1" name="mobileTransactionXML" type="q94:RootMobileTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -4812,11 +5165,41 @@
   <message name="MobilePosPost_Result">
     <part name="parameters" element="tns:MobilePosPost_Result" />
   </message>
+  <message name="MobilePosPostPrecalc">
+    <part name="parameters" element="tns:MobilePosPostPrecalc" />
+  </message>
+  <message name="MobilePosPostPrecalc_Result">
+    <part name="parameters" element="tns:MobilePosPostPrecalc_Result" />
+  </message>
+  <message name="MobilePosSave">
+    <part name="parameters" element="tns:MobilePosSave" />
+  </message>
+  <message name="MobilePosSave_Result">
+    <part name="parameters" element="tns:MobilePosSave_Result" />
+  </message>
+  <message name="MobilePosRetSave">
+    <part name="parameters" element="tns:MobilePosRetSave" />
+  </message>
+  <message name="MobilePosRetSave_Result">
+    <part name="parameters" element="tns:MobilePosRetSave_Result" />
+  </message>
   <message name="MobilePosSuspend">
     <part name="parameters" element="tns:MobilePosSuspend" />
   </message>
   <message name="MobilePosSuspend_Result">
     <part name="parameters" element="tns:MobilePosSuspend_Result" />
+  </message>
+  <message name="MobilePosSuspendV2">
+    <part name="parameters" element="tns:MobilePosSuspendV2" />
+  </message>
+  <message name="MobilePosSuspendV2_Result">
+    <part name="parameters" element="tns:MobilePosSuspendV2_Result" />
+  </message>
+  <message name="MobilePosRetSuspended">
+    <part name="parameters" element="tns:MobilePosRetSuspended" />
+  </message>
+  <message name="MobilePosRetSuspended_Result">
+    <part name="parameters" element="tns:MobilePosRetSuspended_Result" />
   </message>
   <message name="MobilePosGetDeviceID">
     <part name="parameters" element="tns:MobilePosGetDeviceID" />
@@ -4938,6 +5321,12 @@
   <message name="SendDocumentImage_Result">
     <part name="parameters" element="tns:SendDocumentImage_Result" />
   </message>
+  <message name="MobilePosRefund">
+    <part name="parameters" element="tns:MobilePosRefund" />
+  </message>
+  <message name="MobilePosRefund_Result">
+    <part name="parameters" element="tns:MobilePosRefund_Result" />
+  </message>
   <message name="ItemSalesInfo">
     <part name="parameters" element="tns:ItemSalesInfo" />
   </message>
@@ -4956,6 +5345,12 @@
   <message name="CustomerOrderCreateV3_Result">
     <part name="parameters" element="tns:CustomerOrderCreateV3_Result" />
   </message>
+  <message name="CustomerOrderCreateV4">
+    <part name="parameters" element="tns:CustomerOrderCreateV4" />
+  </message>
+  <message name="CustomerOrderCreateV4_Result">
+    <part name="parameters" element="tns:CustomerOrderCreateV4_Result" />
+  </message>
   <message name="CustomerOrderGetV2">
     <part name="parameters" element="tns:CustomerOrderGetV2" />
   </message>
@@ -4973,6 +5368,18 @@
   </message>
   <message name="GetDocument_Result">
     <part name="parameters" element="tns:GetDocument_Result" />
+  </message>
+  <message name="MobilePosPriceCheck">
+    <part name="parameters" element="tns:MobilePosPriceCheck" />
+  </message>
+  <message name="MobilePosPriceCheck_Result">
+    <part name="parameters" element="tns:MobilePosPriceCheck_Result" />
+  </message>
+  <message name="MobilePosFloatEnt">
+    <part name="parameters" element="tns:MobilePosFloatEnt" />
+  </message>
+  <message name="MobilePosFloatEnt_Result">
+    <part name="parameters" element="tns:MobilePosFloatEnt_Result" />
   </message>
   <portType name="OmniWrapper_Port">
     <operation name="CustomerOrderCancel">
@@ -5051,9 +5458,29 @@
       <input name="MobilePosPost" message="tns:MobilePosPost" />
       <output name="MobilePosPost_Result" message="tns:MobilePosPost_Result" />
     </operation>
+    <operation name="MobilePosPostPrecalc">
+      <input name="MobilePosPostPrecalc" message="tns:MobilePosPostPrecalc" />
+      <output name="MobilePosPostPrecalc_Result" message="tns:MobilePosPostPrecalc_Result" />
+    </operation>
+    <operation name="MobilePosSave">
+      <input name="MobilePosSave" message="tns:MobilePosSave" />
+      <output name="MobilePosSave_Result" message="tns:MobilePosSave_Result" />
+    </operation>
+    <operation name="MobilePosRetSave">
+      <input name="MobilePosRetSave" message="tns:MobilePosRetSave" />
+      <output name="MobilePosRetSave_Result" message="tns:MobilePosRetSave_Result" />
+    </operation>
     <operation name="MobilePosSuspend">
       <input name="MobilePosSuspend" message="tns:MobilePosSuspend" />
       <output name="MobilePosSuspend_Result" message="tns:MobilePosSuspend_Result" />
+    </operation>
+    <operation name="MobilePosSuspendV2">
+      <input name="MobilePosSuspendV2" message="tns:MobilePosSuspendV2" />
+      <output name="MobilePosSuspendV2_Result" message="tns:MobilePosSuspendV2_Result" />
+    </operation>
+    <operation name="MobilePosRetSuspended">
+      <input name="MobilePosRetSuspended" message="tns:MobilePosRetSuspended" />
+      <output name="MobilePosRetSuspended_Result" message="tns:MobilePosRetSuspended_Result" />
     </operation>
     <operation name="MobilePosGetDeviceID">
       <input name="MobilePosGetDeviceID" message="tns:MobilePosGetDeviceID" />
@@ -5135,6 +5562,10 @@
       <input name="SendDocumentImage" message="tns:SendDocumentImage" />
       <output name="SendDocumentImage_Result" message="tns:SendDocumentImage_Result" />
     </operation>
+    <operation name="MobilePosRefund">
+      <input name="MobilePosRefund" message="tns:MobilePosRefund" />
+      <output name="MobilePosRefund_Result" message="tns:MobilePosRefund_Result" />
+    </operation>
     <operation name="ItemSalesInfo">
       <input name="ItemSalesInfo" message="tns:ItemSalesInfo" />
       <output name="ItemSalesInfo_Result" message="tns:ItemSalesInfo_Result" />
@@ -5147,6 +5578,10 @@
       <input name="CustomerOrderCreateV3" message="tns:CustomerOrderCreateV3" />
       <output name="CustomerOrderCreateV3_Result" message="tns:CustomerOrderCreateV3_Result" />
     </operation>
+    <operation name="CustomerOrderCreateV4">
+      <input name="CustomerOrderCreateV4" message="tns:CustomerOrderCreateV4" />
+      <output name="CustomerOrderCreateV4_Result" message="tns:CustomerOrderCreateV4_Result" />
+    </operation>
     <operation name="CustomerOrderGetV2">
       <input name="CustomerOrderGetV2" message="tns:CustomerOrderGetV2" />
       <output name="CustomerOrderGetV2_Result" message="tns:CustomerOrderGetV2_Result" />
@@ -5158,6 +5593,14 @@
     <operation name="GetDocument">
       <input name="GetDocument" message="tns:GetDocument" />
       <output name="GetDocument_Result" message="tns:GetDocument_Result" />
+    </operation>
+    <operation name="MobilePosPriceCheck">
+      <input name="MobilePosPriceCheck" message="tns:MobilePosPriceCheck" />
+      <output name="MobilePosPriceCheck_Result" message="tns:MobilePosPriceCheck_Result" />
+    </operation>
+    <operation name="MobilePosFloatEnt">
+      <input name="MobilePosFloatEnt" message="tns:MobilePosFloatEnt" />
+      <output name="MobilePosFloatEnt_Result" message="tns:MobilePosFloatEnt_Result" />
     </operation>
   </portType>
   <binding name="OmniWrapper_Binding" type="tns:OmniWrapper_Port">
@@ -5333,12 +5776,57 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="MobilePosPostPrecalc">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosPostPrecalc" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosPostPrecalc">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosPostPrecalc_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="MobilePosSave">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSave" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosSave">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosSave_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="MobilePosRetSave">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRetSave" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosRetSave">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosRetSave_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="MobilePosSuspend">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSuspend" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="MobilePosSuspend">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="MobilePosSuspend_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="MobilePosSuspendV2">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosSuspendV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosSuspendV2">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosSuspendV2_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="MobilePosRetSuspended">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRetSuspended" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosRetSuspended">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosRetSuspended_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -5522,6 +6010,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="MobilePosRefund">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRefund" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosRefund">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosRefund_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="ItemSalesInfo">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:ItemSalesInfo" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="ItemSalesInfo">
@@ -5549,6 +6046,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="CustomerOrderCreateV4">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreateV4" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CustomerOrderCreateV4">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CustomerOrderCreateV4_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="CustomerOrderGetV2">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderGetV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="CustomerOrderGetV2">
@@ -5573,6 +6079,24 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetDocument_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="MobilePosPriceCheck">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosPriceCheck" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosPriceCheck">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosPriceCheck_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="MobilePosFloatEnt">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosFloatEnt" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="MobilePosFloatEnt">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="MobilePosFloatEnt_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

@@ -81,6 +81,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int LogicalOrder { get; set; }
         [DataMember]
+        public int DimensionLogicalOrder { get; set; }
+        [DataMember]
         public string FrameworkCode { get; set; }
     }
 }

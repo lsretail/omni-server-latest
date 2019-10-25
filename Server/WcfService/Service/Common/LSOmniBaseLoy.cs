@@ -10,14 +10,15 @@ using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
-using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSOmni.Service
 {
@@ -59,7 +60,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to ProfileGetAll()");
+                HandleExceptions(ex, "Failed: ProfileGetAll()");
                 return null; //never gets here
             }
         }
@@ -75,7 +76,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ProfilesGetByContactId() cardId:{0}", cardId));
+                HandleExceptions(ex, string.Format("Failed: ProfilesGetByContactId() cardId:{0}", cardId));
                 return null; //never gets here
             }
         }
@@ -115,7 +116,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to SchemeGetAll()");
+                HandleExceptions(ex, "Failed: SchemeGetAll()");
                 return null; //never gets here
             }
         }
@@ -158,7 +159,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ContactGetById() cardId:{0}", cardId));
+                HandleExceptions(ex, string.Format("Failed: ContactGetById() cardId:{0}", cardId));
                 return null; //never gets here
             }
         }
@@ -170,11 +171,11 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "searchType:{0} searchValue:{1}", searchType, search);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return contactBLL.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                return contactBLL.ContactSearch(searchType, search, maxNumberOfRowsReturned, false);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ContactSearch() searchType:{0} searchValue:{1}", searchType, search));
+                HandleExceptions(ex, string.Format("Failed: ContactSearch() searchType:{0} searchValue:{1}", searchType, search));
                 return null; //never gets here
             }
         }
@@ -232,7 +233,7 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 logger.Error(config.LSKey.Key, LogJson(contact));
-                HandleExceptions(ex, "Failed to ContactCreate().");
+                HandleExceptions(ex, "Failed: ContactCreate().");
                 return null; //never gets here
             }
         }
@@ -289,7 +290,7 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 logger.Error(config.LSKey.Key, LogJson(contact));
-                HandleExceptions(ex, "Failed to ContactUpdate().");
+                HandleExceptions(ex, "Failed: ContactUpdate().");
                 return null; //never gets here
             }
         }
@@ -344,7 +345,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to Login() userName: {0}  deviceId:{1}", userName, deviceId));
+                HandleExceptions(ex, string.Format("Failed: Login() userName: {0}  deviceId:{1}", userName, deviceId));
                 return null; //never gets here
             }
         }
@@ -396,7 +397,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to Login() userName: {0} ", userName));
+                HandleExceptions(ex, string.Format("Failed: Login() userName: {0} ", userName));
                 return null; //never gets here
             }
         }
@@ -441,7 +442,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to Logout() userName: {0} deviceId: {1} ", userName, deviceId));
+                HandleExceptions(ex, string.Format("Failed: Logout() userName: {0} deviceId: {1} ", userName, deviceId));
             }
             return false;
         }
@@ -492,7 +493,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to changePassword() userName: {0} ", userName));
+                HandleExceptions(ex, string.Format("Failed: ChangePassword() userName: {0} ", userName));
             }
             return true;
         }
@@ -525,7 +526,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ContactGetPointBalance() cardId:{0}", cardId));
+                HandleExceptions(ex, string.Format("Failed: ContactGetPointBalance() cardId:{0}", cardId));
                 return 0;  //never gets here
             }
         }
@@ -541,7 +542,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to GetPointRate()"));
+                HandleExceptions(ex, string.Format("Failed: GetPointRate()"));
                 return 0;  //never gets here
             }
         }
@@ -616,7 +617,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ItemsGetByPublishedOfferId() pubOfferId:{0} ", pubOfferId));
+                HandleExceptions(ex, string.Format("Failed: ItemsGetByPublishedOfferId() pubOfferId:{0} ", pubOfferId));
                 return null; //never gets here
             }
         }
@@ -810,7 +811,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ItemGetById() itemId:{0}", itemId));
+                HandleExceptions(ex, string.Format("Failed: ItemGetById() itemId:{0}", itemId));
                 return null; //never gets here
             }
         }
@@ -850,7 +851,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ItemGetByBarcode() barcode:{0}", barcode));
+                HandleExceptions(ex, string.Format("Failed: ItemGetByBarcode() barcode:{0}", barcode));
                 return null; //never gets here
             }
         }
@@ -1120,20 +1121,20 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual OneList OneListGetById(string oneListId, ListType listType, bool includeLines)
+        public virtual OneList OneListGetById(string oneListId, bool includeLines)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "oneListId:{0} , includeLines: {1}, listType: {2}", oneListId, includeLines, listType.ToString());
+                logger.Debug(config.LSKey.Key, "oneListId:{0} includeLines:{1}", oneListId, includeLines);
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                OneList list = listBLL.OneListGetById(oneListId, listType, includeLines, false);
+                OneList list = listBLL.OneListGetById(oneListId, includeLines, false);
                 OneListSetLocation(list);
                 return list;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("oneListId:{0}   includeLines: {1}, listType: {2}", oneListId, includeLines, listType.ToString()));
+                HandleExceptions(ex, string.Format("oneListId:{0}", oneListId));
                 return null; //never gets here
             }
         }
@@ -1170,20 +1171,49 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual bool OneListDeleteById(string oneListId, ListType listType)
+        public virtual bool OneListDeleteById(string oneListId)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "oneListId:{0} , listType: {1}", oneListId, listType.ToString());
+                logger.Debug(config.LSKey.Key, "oneListId:{0}", oneListId);
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                listBLL.OneListDeleteById(oneListId, listType);
-                return true;
+                listBLL.OneListDeleteById(oneListId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("oneListId:{0} , listType: {1} ", oneListId, listType.ToString()));
-                return false; //never gets here
+                HandleExceptions(ex, string.Format("oneListId:{0}", oneListId));
             }
+            return true;
+        }
+
+        public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "OneListItem.Id:{0} OneList.Id", item.Id, item.OneListId);
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
+                return listBLL.OneListItemModify(onelistId, item, remove, calculate);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("OneListItem.Id:{0} OneList.Id", item.Id, item.OneListId));
+                return null; //never gets here
+            }
+        }
+
+        public virtual bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "oneListId:{0} cardId:{1} email:{2} status:{3}", oneListId, cardId, email, status);
+                OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
+                listBLL.OneListLinking(oneListId, cardId, email, status);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("oneListId:{0}", oneListId));
+            }
+            return true;
         }
 
         #endregion one list
@@ -1473,13 +1503,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual string OrderCancel(string orderId)
+        public virtual string OrderCancel(string orderId, string storeId, string userId)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "orderId:{0}", orderId);
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                bll.OrderCancel(orderId);
+                bll.OrderCancel(orderId, storeId, userId);
             }
             catch (Exception ex)
             {
@@ -1490,7 +1520,7 @@ namespace LSOmni.Service
 
         #endregion Basket 
 
-        #region hierarchy & Image
+        #region Hierarchy, Menu & Image
 
         /// <summary>
         /// To Get images via URL
@@ -1533,6 +1563,23 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual MobileMenu MenuGet(string storeId, string salesType, bool loadDetails, ImageSize imageSize)
+        {
+            try
+            {
+                logger.Debug("id: {0} storeId:{1}", salesType, storeId);
+                MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
+                MobileMenu mobileMenu = bll.MenuGet(storeId, salesType, loadDetails, imageSize);
+                MenuSetLocation(mobileMenu);
+                return mobileMenu;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("id:{0}  storeId:{1}", salesType, storeId));
+                return null; //never gets here
+            }
+        }
+
         #endregion
 
         #region Ads
@@ -1561,81 +1608,13 @@ namespace LSOmni.Service
 
         #endregion Ads
 
-        #region orderqueue
-
-        public virtual OrderQueue OrderQueueSave(OrderQueue order)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, LogJson(order));
-                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
-                return bll.Save(order);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("orderId: {0} orderXml: {1} ", order.Id, order.OrderXml));
-                return null; //never gets here
-            }
-        }
-
-        public virtual OrderQueue OrderQueueGetById(string orderId)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "orderId: {0}   ", orderId);
-
-                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderGetById(orderId);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("guid: {0}   ", orderId));
-                return null; //never gets here
-            }
-        }
-
-        public virtual bool OrderQueueUpdateStatus(string orderId, OrderQueueStatus status)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "orderId: {0} status: {1}  ", orderId, status.ToString());
-
-                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
-                bll.UpdateStatus(orderId, status);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("orderId: {0} status: {1} ", orderId, status.ToString()));
-                return false; //never gets here
-            }
-        }
-
-        //This does not need to be on the phones
-        public virtual List<OrderQueue> OrderQueueSearch(OrderSearchRequest searchRequest)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, LogJson(searchRequest));
-                OrderQueueBLL bll = new OrderQueueBLL(config, this.deviceId, clientTimeOutInSeconds);
-                return bll.OrderSearch(searchRequest);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("searchRequest: {0}", searchRequest.ToString()));
-                return null; //never gets here
-            }
-        }
-
-        #endregion orderqueue
-
         #region OrderMessage
 
         public virtual void OrderMessageSave(string orderId, int status, string subject, string message)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "OrderId:{0}, Status:{1}, Subject:{2}", orderId, status, subject);
+                logger.Debug(config.LSKey.Key, "OrderId:{0}, Status:{1}, Subject:{2}, Message:{3}", orderId, status, subject, message);
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
                 bll.OrderMessageSave(orderId, status, subject, message);
             }
@@ -1645,13 +1624,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token)
+        public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} token:{3}", orderId, status, amount, token);
                 OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
-                return bll.OrderMessageRequestPayment(orderId, status, amount, token);
+                return bll.OrderMessageRequestPayment(orderId, status, amount, token, authcode, reference);
             }
             catch (Exception ex)
             {

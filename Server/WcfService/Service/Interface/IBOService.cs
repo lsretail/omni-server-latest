@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ServiceModel;
 
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.Service
 {
@@ -25,40 +23,29 @@ namespace LSOmni.Service
 
         #endregion Helpers
 
-        #region OrderQueue
-
-        [OperationContract]
-        OrderQueue OrderQueueSave(OrderQueue order);
-        [OperationContract]
-        OrderQueue OrderQueueGetById(string orderId);
-        [OperationContract]
-        bool OrderQueueUpdateStatus(string orderId, OrderQueueStatus status);
-        [OperationContract]
-        List<OrderQueue> OrderQueueSearch(OrderSearchRequest searchRequest);
-        [OperationContract]
-        SalesEntry OrderCreate(Order request);
-
-        #endregion OrderQueue
-
         #region OrderMessage
 
         [OperationContract]
         void OrderMessageSave(string orderId, int status, string subject, string message);
         [OperationContract]
-        string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token);
+        string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);
 
         #endregion OrderMessage
 
-        #region One List
+        #region OneList
 
         [OperationContract]
         List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines);
         [OperationContract]
-        OneList OneListGetById(string oneListId, ListType listType, bool includeLines);
+        OneList OneListGetById(string oneListId, bool includeLines);
         [OperationContract]
         OneList OneListSave(OneList oneList, bool calculate);
         [OperationContract]
-        bool OneListDeleteById(string oneListId, ListType listType);
+        bool OneListDeleteById(string oneListId);
+        [OperationContract]
+        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+        [OperationContract]
+        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
 
         #endregion One List 
 

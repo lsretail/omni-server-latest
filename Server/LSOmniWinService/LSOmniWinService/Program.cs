@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LSOmni.WinService
 {
@@ -14,7 +10,6 @@ namespace LSOmni.WinService
         /// </summary>
         static void Main(string[] args)
         {
-
             var servicesToRun = new LSOmniService();
             if (Environment.UserInteractive)
             {

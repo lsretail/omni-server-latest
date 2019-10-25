@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using LSRetail.Omni.Domain.DataModel.Base.Favorites;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(Recipe)), KnownType(typeof(MenuDeal)), KnownType(typeof(Product))]
-    public class MenuItem : Item, IFavorite
+    public class MenuItem : Item
     {
         private string name;
 
@@ -88,19 +87,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
             item.DefaultMenuType = this.DefaultMenuType;
             return item;
-        }
-
-        public virtual bool Equals(IFavorite favorite)
-        {
-            // TODO: Check mroe than Id, for example modifiers/recipe?
-            if (Id != favorite.Id)
-                return false;
-
-            MenuItem menuItem = favorite as MenuItem;
-            if (menuItem == null)
-                return false;
-
-            return true;
         }
 
         public virtual void SatisfyModifierGroupsMinSelectionRestrictions() { }

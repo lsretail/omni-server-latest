@@ -46,9 +46,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public ReplItemUnitOfMeasure()
         {
             IsDeleted = false;
-            UnitOfMeasure = string.Empty;
             ItemId = string.Empty;
-            StoreId = string.Empty;
+            Description = string.Empty;
+            ShortDescription = string.Empty;
             Code = string.Empty;
         }
 
@@ -70,13 +70,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string ItemId { get; set; }
         [DataMember]
-        public string StoreId { get; set; }
+        public string Description { get; set; }
+        [DataMember]
+        public string ShortDescription { get; set; }
         [DataMember]
         public string Code { get; set; }
         [DataMember]
         public int Order { get; set; }
-        [DataMember]
-        public string UnitOfMeasure { get; set; }
         [DataMember]
         public decimal QtyPrUOM { get; set; }
         [DataMember]

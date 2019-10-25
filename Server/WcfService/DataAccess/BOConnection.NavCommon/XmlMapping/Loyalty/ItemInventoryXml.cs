@@ -153,51 +153,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 inventory.BaseUnitOfMeasure = node.InnerText;
 
                 decimal temp = 0L;
-                node = nodeLoop.SelectSingleNode("Inventory");
-                if (node == null)
-                    throw new XmlException("Inventory node not found in response xml");
-                if (string.IsNullOrWhiteSpace(node.InnerText) == false)
-                    temp = ConvertTo.SafeDecimal(node.InnerText);
-                inventory.QtyInventory = temp;
-
-                temp = 0L;
-                node = nodeLoop.SelectSingleNode("Qty._Sold_not_Posted");
-                if (node == null)
-                    throw new XmlException("Qty._Sold_not_Posted node not found in response xml");
-                if (string.IsNullOrWhiteSpace(node.InnerText) == false)
-                    temp = ConvertTo.SafeDecimal(node.InnerText);
-                inventory.QtySoldNotPosted = temp;
-
-                temp = 0L;
                 node = nodeLoop.SelectSingleNode("Actual_Inventory");
                 if (node == null)
                     throw new XmlException("Actual_Inventory node not found in response xml");
                 if (string.IsNullOrWhiteSpace(node.InnerText) == false)
                     temp = ConvertTo.SafeDecimal(node.InnerText);
-                inventory.QtyActualInventory = temp;
-
-                temp = 0L;
-                node = nodeLoop.SelectSingleNode("Expected_Stock");
-                if (node == null)
-                {
-                    inventory.QtyExpectedStock = temp;
-                    //throw new XmlException("Expected_Stock node not found in response xml");
-                }
-                else
-                {
-                    if (string.IsNullOrWhiteSpace(node.InnerText) == false)
-                        temp = ConvertTo.SafeDecimal(node.InnerText);
-                    inventory.QtyExpectedStock = temp;
-                }
-
-                temp = 0L;
-                node = nodeLoop.SelectSingleNode("Reorder_Point");
-                if (node != null)
-                {
-                    if (string.IsNullOrWhiteSpace(node.InnerText) == false)
-                        temp = ConvertTo.SafeDecimal(node.InnerText);
-                    inventory.ReorderPoint = temp;
-                }
+                inventory.QtyInventory = temp;
 
                 inventoryList.Add(inventory);
             }

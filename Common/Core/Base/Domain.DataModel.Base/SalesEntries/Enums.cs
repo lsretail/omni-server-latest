@@ -77,4 +77,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [EnumMember]
         Posted = 25
     }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public enum PaymentType
+    {
+        [EnumMember]
+        None,
+        [EnumMember]
+        Payment,
+        [EnumMember]
+        PreAuthorization,
+        [EnumMember]
+        Refund
+    }
 }

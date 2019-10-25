@@ -70,7 +70,6 @@
     <Compile Include="ImageRepository.cs" />
     <Compile Include="NotificationRepository.cs" />
     <Compile Include="OneListRepository.cs" />
-    <Compile Include="OrderQueueRepository.cs" />
     <Compile Include="PayRequestRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushNotificationRepository.cs" />
@@ -92,10 +91,6 @@
     <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\Core\Loyalty.Hospitality\Domain.DataModel.Loyalty.Hospitality\Domain.DataModel.Loyalty.Hospitality.csproj">
-      <Project>{539f8620-b7d5-4925-8038-45412674e776}</Project>
-      <Name>Domain.DataModel.Loyalty.Hospitality</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>

@@ -15,7 +15,6 @@ namespace LSOmni.BLL.Loyalty
         private static LSLogger logger = new LSLogger();
         protected int timeoutInSeconds = 0;
 
-        private static bool SecurityValidateToken = false;
         //ALL  security related code is done in base class
         protected IValidationRepository iValidationRepository;
         
@@ -115,16 +114,23 @@ namespace LSOmni.BLL.Loyalty
                 string ecomUrl = config.SettingsGetByKey(ConfigKey.EComUrl);
 
                 if (string.IsNullOrEmpty(ecomUrl))
+                {
+                    logger.Info(config.LSKey.Key, "ECOM Message Error: Missing Ecom.Url in Appsettings");
                     return "ERROR: Missing Ecom.Url in Appsettings";
+                }
 
                 if (ecomUrl.ToUpper() == "DEMO")
+                {
+                    logger.Info(config.LSKey.Key, "ECOM Message Sent: Demo mode on");
                     return "OK";
+                }
 
                 Uri url = new Uri(ecomUrl + "/" + command);
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
 
+                logger.Info(config.LSKey.Key, "ECOM Sent to:{0} Message:{1}", url.LocalPath, payloadJson);
                 using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
                     streamWriter.Write(payloadJson);
@@ -146,23 +152,6 @@ namespace LSOmni.BLL.Loyalty
         }
 
         #region validation
-
-        protected void ValidateOneList(string oneListId)
-        {
-            if (SecurityValidateToken == false)
-                return;
-
-            /*
-            if (iValidationRepository.ValidateOneList(oneListId, this.contactId) == false)
-            {
-                //throw an error if id passed in is not tied to security token  
-                // security token retrived the ContactId so OK to use it
-
-                string msg = "OneListId and SecurityToken do not match.";
-                throw new LSOmniServiceException(StatusCode.AccessNotAllowed, msg);
-            }
-            */
-        }
 
         private void SecurityTokenCheck()
         {

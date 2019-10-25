@@ -374,32 +374,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return view;
         }
 
-        public string GetWIStoreId()
-        {
-            string storeid = string.Empty;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-                    if (NavVersion < new Version("13.5"))
-                    {
-                        command.CommandText = string.Format("SELECT [Web Store Code] FROM [{0}WI Setup]", navCompanyName);
-                        TraceSqlCommand(command);
-                        storeid = command.ExecuteScalar() as string;
-                    }
-                    if (string.IsNullOrEmpty(storeid))
-                    {
-                        command.CommandText = string.Format("SELECT [Local Store No_] FROM [{0}Retail Setup]", navCompanyName);
-                        TraceSqlCommand(command);
-                        storeid = command.ExecuteScalar() as string;
-                    }
-                    connection.Close();
-                }
-            }
-            return storeid;
-        }
-
         public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)
         {
             List<StoreHours> storeHourList = new List<StoreHours>();

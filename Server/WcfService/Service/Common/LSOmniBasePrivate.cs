@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Linq;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,11 +14,11 @@ using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
+using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using System.Linq;
 
 namespace LSOmni.Service
 {
@@ -134,12 +135,12 @@ namespace LSOmni.Service
 
         private BOConfiguration GetConfig(BOConfiguration config)
         {
+            ConfigBLL bll = new ConfigBLL();
+            string token = config.SecurityToken;
             if (string.IsNullOrEmpty(serverUri))
             {
                 return null;
             }
-
-            ConfigBLL bll = new ConfigBLL();
 
             //Check default LSNAV Appsettings values (single tenant)
             if (ConfigSetting.KeyExists("BOConnection.Nav.UserName"))
@@ -188,12 +189,87 @@ namespace LSOmni.Service
             {
                 throw new LSOmniServiceException(StatusCode.LSKeyInvalid, " Invalid LSRETAIL-KEY");
             }
-   
+
             //Validate securitytoken if not ecommerce
             //TODO: add settings in db for sec token validation
             //config.SecurityCheck = serverUri.ToUpper().Contains("UCSERVICE") == false;
-
+            config.SecurityToken = token;
             return config;
+        }
+
+        private void MenuSetLocation(MobileMenu mobileMenu)
+        {
+            if (mobileMenu == null)
+                return;
+
+            for (int k = 0; k < (mobileMenu.Items != null ? mobileMenu.Items.Count : 0); k++)
+            {
+                //get all the iviews Location
+                if (mobileMenu.Items[k].Images != null && mobileMenu.Items[k].Images.Count > 0)
+                {
+                    for (int m = 0; m < mobileMenu.Items[k].Images.Count; m++)
+                    {
+                        if (mobileMenu.Items[k].Images[m] != null)
+                            mobileMenu.Items[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Items[k].Images[m].Id));
+                    }
+                }
+            }
+
+            //foreach (Menu.Product prod in mobileMenu.Prods)
+            for (int k = 0; k < (mobileMenu.Products != null ? mobileMenu.Products.Count : 0); k++)
+            {
+                //get all the iviews Location
+                if (mobileMenu.Products[k].Images.Count > 0)
+                {
+                    for (int m = 0; m < mobileMenu.Products[k].Images.Count; m++)
+                    {
+                        if (mobileMenu.Products[k].Images[m] != null)
+                            mobileMenu.Products[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Products[k].Images[m].Id));
+                    }
+                }
+            }
+
+            //foreach (Menu.Recipe recipe in mobileMenu.Recipes)
+            for (int k = 0; k < (mobileMenu.Recipes != null ? mobileMenu.Recipes.Count : 0); k++)
+            {
+                //get all the iviews Location
+                if (mobileMenu.Recipes[k].Images.Count > 0)
+                {
+                    for (int m = 0; m < mobileMenu.Recipes[k].Images.Count; m++)
+                    {
+                        if (mobileMenu.Recipes[k].Images[m] != null)
+                            mobileMenu.Recipes[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Recipes[k].Images[m].Id));
+                    }
+                }
+            }
+
+            for (int k = 0; k < (mobileMenu.Deals != null ? mobileMenu.Deals.Count : 0); k++)
+            {
+                //get all the iviews Location
+                if (mobileMenu.Deals[k].Images.Count > 0)
+                {
+                    for (int m = 0; m < mobileMenu.Deals[k].Images.Count; m++)
+                    {
+                        if (mobileMenu.Deals[k].Images[m] != null)
+                            mobileMenu.Deals[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Deals[k].Images[m].Id));
+                    }
+                }
+            }
+
+            for (int k = 0; k < (mobileMenu.MenuNodes != null ? mobileMenu.MenuNodes.Count : 0); k++)
+            {
+                if (mobileMenu.MenuNodes[k].Image != null)
+                    mobileMenu.MenuNodes[k].Image.Location = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].Image.Id));
+
+                if (mobileMenu.MenuNodes[k].MenuNodes != null)
+                {
+                    for (int m = 0; m < mobileMenu.MenuNodes[k].MenuNodes.Count; m++)
+                    {
+                        if (mobileMenu.MenuNodes[k].MenuNodes[m] != null)
+                            mobileMenu.MenuNodes[k].MenuNodes[m].Image.Location = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].MenuNodes[m].Image.Id));
+                    }
+                }
+            }
         }
 
         #endregion private members
@@ -339,31 +415,7 @@ namespace LSOmni.Service
 
             foreach (OneListItem line in list.Items)
             {
-                if (line.Item != null)
-                {
-                    foreach (ImageView iv in line.Item.Images)
-                    {
-                        iv.Location = GetImageStreamUrl(iv);
-                    }
-                    if (line.Item.VariantsRegistration != null)
-                    {
-                        foreach (VariantRegistration variant in line.Item.VariantsRegistration)
-                        {
-                            foreach (ImageView iv2 in variant.Images)
-                            {
-                                iv2.Location = GetImageStreamUrl(iv2);
-                            }
-                        }
-                    }
-                }
-
-                if (line.VariantReg != null && line.VariantReg.Images != null)
-                {
-                    foreach (ImageView iv2 in line.VariantReg.Images)
-                    {
-                        iv2.Location = GetImageStreamUrl(iv2);
-                    }
-                }
+                line.Image.Location = GetImageStreamUrl(line.Image);
             }
         }
 

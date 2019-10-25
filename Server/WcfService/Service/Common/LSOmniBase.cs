@@ -300,7 +300,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed to ImageGetById() id: {0}  imageSize: {1}", id, imageSize.ToString()));
+                HandleExceptions(ex, string.Format("Failed: ImageGetById() id: {0}  imageSize: {1}", id, imageSize.ToString()));
                 return null; // never gets here
             }
         }
@@ -357,6 +357,7 @@ namespace LSOmni.Service
                 return false; //never gets here
             }
         }
+
         public virtual bool PushNotificationDelete(string deviceId)
         {
             try

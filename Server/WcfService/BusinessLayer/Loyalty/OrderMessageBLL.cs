@@ -39,10 +39,10 @@ namespace LSOmni.BLL.Loyalty
             SendToEcom("orderstatus", new { document_id = orderId, status = status });
         }
 
-        public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token)
+        public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference)
         {
             // Status: Unchanged = 0, Changed = 1, Cancelled = 2
-            return SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount });
+            return SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount, authcode = authcode, reference = reference });
         }
 
         #region private
@@ -257,8 +257,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, ex, "OrderMessageSend failed for guid:{0} CardId:{1}", notificationId, cardId);
-                throw;
+                logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for guid:{0} CardId:{1}", notificationId, cardId);
             }
         }
 

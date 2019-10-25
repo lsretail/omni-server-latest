@@ -23,30 +23,43 @@ var
 Procedure IISOnChange (Sender: TObject);
 begin                            
     WizardForm.NextButton.Enabled := False;
-    if (Length(IISPage_txtWcfSiteName.Text) > 0)
+    if (CheckPage_MultiCheckBox.Checked) then
+	begin
+      WizardForm.NextButton.Enabled := True;
+	end
+	else
+	begin
+	  if (Length(IISPage_txtWcfSiteName.Text) > 0) 
       and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
       and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
-    begin
-      WizardForm.NextButton.Enabled := True;
-    end;
+      begin
+        WizardForm.NextButton.Enabled := True;
+      end;
+	end;
 end;
               
 procedure IISCustomForm_Activate(Page: TWizardPage) ;
 begin
-    Log('IISCustomForm_Activate called');
+    Log(Format('IISCustomForm_Activate called (v:%d)', [CheckPage_MultiCheckBox.Checked]));
     WizardForm.NextButton.Enabled := False;
-    if (Length(IISPage_txtWcfSiteName.Text) > 0) 
+    if (CheckPage_MultiCheckBox.Checked) then
+	begin
+      WizardForm.NextButton.Enabled := True;
+	end
+	else
+	begin
+	  if (Length(IISPage_txtWcfSiteName.Text) > 0) 
       and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
       and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
-    begin
-      WizardForm.NextButton.Enabled := True;
+      begin
+        WizardForm.NextButton.Enabled := True;
+	  end;
     end;
 end;
 
 { IISCustomForm_CreatePage }
 function IISCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
-
   IISPage := CreateCustomPage(
     PreviousPageId,
     'IIS Web Application Setup',
@@ -90,8 +103,7 @@ begin
     TabOrder := 1;
     Enabled := True;
     ShowHint := True;
-    Hint     := 'Use -Default Web Site- A new Web Site does not get created';
-    //OnChange := @IISOnChange;
+    Hint := 'Use -Default Web Site- A new Web Site does not get created';
   end;
 
   { IISPage_lblWcfServiceName }
@@ -117,7 +129,6 @@ begin
     Height := ScaleY(21);
     TabOrder := 2;
     Enabled := True;
-    //OnChange := @IISOnChange;
   end;
 
   { IISPage_lblComment1 }
@@ -156,6 +167,7 @@ begin
     Height := ScaleY(21);
     TabOrder := 4;
     Enabled := True;
+    OnChange := @IISOnChange;
   end; 
 
   { IISPage_lblNavAuthentication }
@@ -169,7 +181,6 @@ begin
     Width := ScaleX(450);
     Height := ScaleY(13);
     Enabled := True;
-
   end;
 
   { IISPage_lblNavUser }
@@ -184,7 +195,7 @@ begin
     Height := ScaleY(13);
     Enabled := True;
     ShowHint := True;
-    Hint     := 'Active Directory, local workgroup, or the local computer users. Can be DOMAIN\UserName';
+    Hint := 'Active Directory, local workgroup, or the local computer users. Can be DOMAIN\UserName';
   end;
   { IISPage_txtNavUser }
   IISPage_txtNavUser := TEdit.Create(IISPage);
@@ -198,7 +209,8 @@ begin
     TabOrder := 5;
     Enabled := True;
     ShowHint := True;
-    Hint     := 'Active Directory, local workgroup, or the local computer user. Can be DOMAIN\UserName';
+    OnChange := @IISOnChange;
+    Hint := 'Active Directory, local workgroup, or the local computer user. Can be DOMAIN\UserName';
   end;  
 
   { IISPage_lblNavPwd }

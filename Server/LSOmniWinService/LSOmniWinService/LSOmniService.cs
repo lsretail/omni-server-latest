@@ -54,7 +54,7 @@ namespace LSOmni.WinService
                 CancellationToken.None, TaskCreationOptions.LongRunning, TaskScheduler.Default);
 
                 Thread.Sleep(1000);
-                
+
                 logger.Info("OnStart tPushNotificationProcess.Id: {0}  Status: {1}", tPushNotificationProcess.Id, tPushNotificationProcess.Status);
                 logger.Info("OnStart tDbCleanUp.Id: {0}  Status: {1}", tDbCleanUp.Id, tDbCleanUp.Status);
             }
@@ -71,9 +71,8 @@ namespace LSOmni.WinService
             {
                 // Your stop logic here.
                 logger.Info("OnStop started");
-                
-                logger.Info("OnStop tPushNotificationProcess.Id: {0}  {1}", tPushNotificationProcess.Id, tPushNotificationProcess.Status);
-                logger.Info("OnStop tDbCleanUp.Id: {0}  {1}", tDbCleanUp.Id, tDbCleanUp.Status);
+                logger.Info("OnStop tPushNotificationProcess.Id: {0} - {1}", tPushNotificationProcess.Id, tPushNotificationProcess.Status);
+                logger.Info("OnStop tDbCleanUp.Id: {0} - {1}", tDbCleanUp.Id, tDbCleanUp.Status);
             }
             catch (Exception ex)
             {
@@ -100,8 +99,8 @@ namespace LSOmni.WinService
                     if (ConfigSetting.KeyExists(runtime))
                     {
                         string time = ConfigSetting.GetString(runtime);
-                        timeToRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 
-                                                 Convert.ToInt32(time.Substring(0, 2)), 
+                        timeToRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day,
+                                                 Convert.ToInt32(time.Substring(0, 2)),
                                                  Convert.ToInt32(time.Substring(3, 2)),
                                                  0);
                     }
@@ -143,47 +142,8 @@ namespace LSOmni.WinService
             }
         }
 
-        private bool IsTimeOfDayBetween(DateTime time, TimeSpan startTime, TimeSpan endTime)
-        {
-            //Can run between 10 and 10:30 ... but works fine
-            //does not handle cross days or only run on sundays etc 
-
-            //bool doRunNow = IsTimeOfDayBetween(DateTime.Now, new TimeSpan(22, 0, 0), new TimeSpan(22, 30, 0));
-            //not perfect but works fine
-            if (endTime == startTime)
-            {
-                return true;
-            }
-            else if (endTime < startTime)
-            {
-                return time.TimeOfDay <= endTime ||
-                    time.TimeOfDay >= startTime;
-            }
-            else
-            {
-                return time.TimeOfDay >= startTime &&
-                    time.TimeOfDay <= endTime;
-            }
-        }
-        
-        private string GetQrFolderName()
-        {
-            string qrImageFolderName = string.Empty;
-            string qrImageFolderNameKey = "BackgroundProcessing.QRCode.Image.FolderName"; //key in app.settings
-            if (ConfigSetting.KeyExists(qrImageFolderNameKey))
-            {
-                if (ConfigSetting.KeyExists(qrImageFolderNameKey))
-                    qrImageFolderName = ConfigSetting.GetString(qrImageFolderNameKey);
-
-                //nothing found, default to \Images under current exe file
-                if (string.IsNullOrWhiteSpace(qrImageFolderName))
-                    qrImageFolderName = string.Format(@"{0}\Images", AppDomain.CurrentDomain.BaseDirectory);
-            }
-            return qrImageFolderName;
-
-        }
-
         #region Service
+
         private static bool IsServiceInstalled()
         {
             return ServiceController.GetServices().Any(s => s.ServiceName == CustomServiceInstaller.InstallServiceName);
@@ -202,6 +162,7 @@ namespace LSOmni.WinService
         {
             ManagedInstallerClass.InstallHelper(new string[] { "/u", Assembly.GetExecutingAssembly().Location });
         }
+
         #endregion Service
     }
 }

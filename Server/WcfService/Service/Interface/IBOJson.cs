@@ -37,30 +37,6 @@ namespace LSOmni.Service
         OmniEnvironment Environment();
         #endregion Helpers
 
-        #region OrderQueue
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderQueue OrderQueueSave(OrderQueue order);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderQueue OrderQueueGetById(string orderId);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OrderQueueUpdateStatus(string orderId, OrderQueueStatus status);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<OrderQueue> OrderQueueSearch(OrderSearchRequest searchRequest);
-
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        SalesEntry OrderCreate(Order request);
-
-        #endregion OrderQueue
-
         #region OrderMessage
 
         [OperationContract]
@@ -69,24 +45,30 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token);
+        string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);
 
         #endregion OrderMessage
 
-        #region One List  LOY
+        #region OneList
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines);
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OneList OneListGetById(string oneListId, ListType listType, bool includeLines);
+        OneList OneListGetById(string oneListId, bool includeLines);
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         OneList OneListSave(OneList oneList, bool calculate);
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OneListDeleteById(string oneListId, ListType listType);
+        bool OneListDeleteById(string oneListId);
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
 
         #endregion One List 
 

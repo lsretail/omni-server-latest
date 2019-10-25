@@ -75,11 +75,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.ItemsInStockGet(items, storeId, locationId);
         }
 
+        public virtual string ItemDetailsGetById(string itemId)
+        {
+            ItemRepository itemRep = new ItemRepository(config, NAVVersion);
+            return itemRep.ItemDetailsGetById(itemId);
+        }
+
         #region replication
 
         public virtual List<ReplItem> ReplicateItems(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, NAVVersion);
             return rep.ReplicateItems(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -103,7 +109,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ExtendedVariantValuesRepository rep = new ExtendedVariantValuesRepository(config);
+            ExtendedVariantValuesRepository rep = new ExtendedVariantValuesRepository(config, NAVVersion);
             return rep.ReplicateExtendedVariantValues(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -157,7 +163,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<ReplItemCategory> ReplicateItemCategory(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
             return rep.ReplicateItemCategory(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -175,7 +181,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, NAVVersion);
             return rep.ReplicateProductGroups(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

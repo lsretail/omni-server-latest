@@ -13,9 +13,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     {
         private string sql = string.Empty;
         private string documentId = string.Empty;
+        private string cardCustNo = string.Empty;
 
         public OrderRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
+            cardCustNo = (navVersion > new Version("14.2")) ? "Card or Customer No_" : "Card or Customer number";
+
             if (navVersion > new Version("13.5"))
             {
                 string date = (navVersion > new Version("14.2")) ? "Created" : "Document DateTime";
@@ -172,9 +175,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Finalised Amount],ml.[Tender Type]," +
-                                "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Authorisation Code],ml.[Pre Approved Valid Date],ml.[Card or Customer number]" +
-                                ",ml.[" + documentId + "]";
+                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Tender Type]," +
+                                "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Pre Approved Valid Date]," +
+                                "ml.[" + cardCustNo + "],ml.[" + documentId + "]";
 
                 using (SqlCommand command = connection.CreateCommand())
                 {
@@ -323,13 +326,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (string.IsNullOrEmpty(line.VariantId))
                         {
                             List<ImageView> img = imgrep.ImageGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
-                            if (img != null)
+                            if (img != null && img.Count > 0)
                                 line.ItemImageId = img[0].Id;
                         }
                         else
                         {
                             List<ImageView> img = imgrep.ImageGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
-                            if (img != null)
+                            if (img != null && img.Count > 0)
                                 line.ItemImageId = img[0].Id;
                         }
 
@@ -387,7 +390,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 CurrencyFactor = SQLHelper.GetDecimal(reader["Currency Factor"]),
-                CardNo = SQLHelper.GetString(reader["Card or Customer number"])
+                CardNo = SQLHelper.GetString(reader[cardCustNo])
             };
         }
 

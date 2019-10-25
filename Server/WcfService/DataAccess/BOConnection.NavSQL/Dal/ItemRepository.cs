@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string pgtablename = "Product Group";
         private string pgfieldname = "Product Group Code";
 
-        public ItemRepository(BOConfiguration config) : base(config)
+        public ItemRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             if (NavVersion > new Version("14.2"))
             {
@@ -417,7 +417,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
-            "mt.[" + pgfieldname + "]," +
+            "mt.[" + pgfieldname + "],mt.[Scale Item]," +
             "mt.[Blocked],mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
@@ -439,7 +439,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
-            sql += "[" + pgfieldname + "],";
+            sql += "[" + pgfieldname + "],[Scale Item],";
             sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -536,6 +536,24 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 });
             }
             return item;
+        }
+
+        public string ItemDetailsGetById(string itemId)
+        {
+            string detail = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Html] FROM [" + navCompanyName + "Item HTML] WHERE [Item No_]=@id";
+                    command.Parameters.AddWithValue("@id", itemId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    detail = command.ExecuteScalar() as string;
+                    connection.Close();
+                }
+            }
+            return detail;
         }
 
         public List<LoyItem> ItemLoySearch(string search, string storeId, int maxResult, bool includeDetails)
@@ -638,6 +656,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
                 ProductGroupId = SQLHelper.GetString(reader[pgfieldname]),
                 SalesUomId = SQLHelper.GetString(reader["Sales Unit of Measure"]),
+                ScaleItem = SQLHelper.GetBool(reader["Scale Item"]),
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
                 BlockDiscount = SQLHelper.GetBool(reader["BlockDiscount"]),
                 BlockManualPriceChange = SQLHelper.GetBool(reader["BlockPrice"]),
@@ -675,7 +694,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config);
             item.VariantsRegistration = varrep.VariantRegGetByItemId(item.Id);
 
-            ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config);
+            ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config, NavVersion);
             item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id);
             
             AttributeValueRepository attrrep = new AttributeValueRepository(config);

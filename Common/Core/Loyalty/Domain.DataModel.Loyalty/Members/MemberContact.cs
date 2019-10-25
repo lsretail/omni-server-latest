@@ -10,6 +10,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 {
@@ -26,7 +27,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 
         [DataMember(IsRequired = true)]
         public string UserName { get; set; }
-        [DataMember(IsRequired = true)]
+        [DataMember]
         public string Password { get; set; }
         [DataMember(IsRequired = true)]
         public string Email { get; set; }
@@ -196,15 +197,15 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             return Cards.Find(c => c.Id == id);
         }
 
-        public OneList GetWishList(string cardId)
+        public OneList GetWishList(string cardId, OneList list)
         {
-            OneList list = null;
             if (OneLists.Count > 0 && string.IsNullOrEmpty(cardId) == false)
             {
-                list = OneLists.Find(t => t.ListType == ListType.Wish && t.CardId == cardId);
+                list = OneLists.Find(t => t.ListType == ListType.Wish && t.CardId == cardId && t.Id == list.Id);
             }
+
             if (list == null)
-            { 
+            {
                 list = new OneList()
                 {
                     CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
@@ -212,6 +213,21 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                     Items = new List<OneListItem>()
                 };
             }
+            return list;
+        }
+
+        public OneList CreateOneListWithDescription(string description)
+        {
+            OneList list = null;
+
+            list = new OneList()
+            {
+                CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
+                ListType = ListType.Wish,
+                Description = description,
+                Items = new List<OneListItem>()
+            };
+
             return list;
         }
 
@@ -235,8 +251,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         }
 
         public void AddList(string cardId, OneList list, ListType type)
-        {
-            OneList mylist = OneLists.Find(t => t.ListType == type && t.CardId == cardId);
+        {            
+            OneList mylist = OneLists.Find(t => t.ListType == type && t.CardId == cardId && t.Id == list.Id);
             if (mylist != null)
             {
                 OneLists.Remove(mylist);

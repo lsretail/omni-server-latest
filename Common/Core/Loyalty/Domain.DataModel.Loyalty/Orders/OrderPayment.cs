@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 {
@@ -8,9 +9,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     {
         public OrderPayment()
         {
-            OrderId = string.Empty;
             LineNumber = 1;
-            No = "1";
         }
 
         public void Dispose()
@@ -27,15 +26,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         }
 
         [DataMember]
-        public string OrderId { get; set; }
-        [DataMember]
         public int LineNumber { get; set; }
         [DataMember]
-        public string No { get; set; }
-        [DataMember]
-        public decimal PreApprovedAmount { get; set; }
-        [DataMember]
-        public decimal FinalizedAmount { get; set; }
+        public decimal Amount { get; set; }
         /// <summary>
         /// Omni TenderType.<p/>
         /// Default mapping to NAV: 0=Cash, 1=Card, 2=Coupon, 3=Loyalty Points, 4=Gift Card<p/>
@@ -50,9 +43,16 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public decimal CurrencyFactor { get; set; }
         [DataMember]
-        public string AuthorisationCode { get; set; }
+        public string AuthorizationCode { get; set; }
+        [DataMember]
+        public string TokenNumber { get; set; }
+        [DataMember]
+        public string ExternalReference { get; set; }
         [DataMember]
         public string CardNumber { get; set; }
+        [DataMember]
+        public PaymentType PaymentType { get; set; }
+
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PreApprovedValidDate { get; set; }
     }

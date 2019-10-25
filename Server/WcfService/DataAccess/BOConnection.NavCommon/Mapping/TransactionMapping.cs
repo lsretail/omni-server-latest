@@ -4,6 +4,7 @@ using System.Linq;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Printer;
+using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Retail.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
@@ -298,6 +299,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return transaction;
         }
 
+        public ItemPriceCheckResponse MapFromRootToPriceCheck(NavWS.RootMobileTransaction root)
+        {
+            NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
+
+            ItemPriceCheckResponse rs = new ItemPriceCheckResponse()
+            {
+                Id = header.Id,
+                StoreId = header.StoreId,
+                TerminalId = header.TerminalId,
+                StaffId = header.StaffId,
+                CurrencyCode = header.CurrencyCode,
+                CurrencyFactor = Convert.ToInt32(header.CurrencyFactor),
+                CustomerId = header.CustomerId,
+                CustDiscGroup = header.CustDiscGroup,
+                MemberCardNo = header.MemberCardNo,
+                MemberPriceGroupCode = header.MemberPriceGroupCode
+            };
+
+            if (root.MobileTransactionLine != null)
+            {
+                foreach (NavWS.MobileTransactionLine line in root.MobileTransactionLine)
+                {
+                    rs.ItemPriceCheckLineResponses.Add(new ItemPriceCheckLineResponse()
+                    {
+                        LineNumber = line.LineNo,
+                        LineType = line.LineType,
+                        ItemId = line.Number,
+                        BarcodeId = line.Barcode,
+                        CurrencyCode = line.CurrencyCode,
+                        CurrencyFactor = Convert.ToInt32(line.CurrencyFactor),
+                        VariantId = line.VariantCode,
+                        Uom = line.UomId,
+                        NetPrice = line.NetPrice,
+                        Price = line.Price,
+                        Quantity = line.Quantity,
+                        NetAmount = line.NetAmount
+                    });
+                }
+            }
+            return rs;
+        }
+
         #region Private
 
         private NavWS.MobileTransaction MobileTrans(RetailTransaction transaction)
@@ -356,7 +399,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 RefundedFromStoreNo = transaction.RefundedFromStoreNo ?? string.Empty,
                 RefundedFromPOSTermNo = transaction.RefundedFromTerminalNo ?? string.Empty,
                 RefundedFromTransNo = ConvertTo.SafeInt(transaction.RefundedFromTransNo),
-                RefundedReceiptNo = transaction.RefundedReceiptNo ?? string.Empty
+                RefundedReceiptNo = transaction.RefundedReceiptNo ?? string.Empty,
+                SaleIsReturnSale = transaction.IsRefundByReceiptTransaction
             };
         }
 
@@ -488,7 +532,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TenderDescription = string.Empty,
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
-                RetailImageID = string.Empty,
                 OrigTransLineNo = lineOrgNumber,
                 OrigTransNo = ConvertTo.SafeInt(orgTransNo),
                 OrigTransPos = orgTerminal ?? string.Empty,
@@ -533,8 +576,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty,
-                RetailImageID = string.Empty                
+                OrigTransStore = string.Empty
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
@@ -628,8 +670,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 SalesType = string.Empty,
                 TenderDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty,
-                RetailImageID = string.Empty
+                OrigTransStore = string.Empty
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
@@ -681,7 +722,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 UnknownRetailItem item = new UnknownRetailItem(mobileTransLine.Number);
                 item.SelectedVariant = new UnknownVariantRegistration(mobileTransLine.VariantCode);
                 item.UnitOfMeasure = new UnknownUnitOfMeasure(mobileTransLine.UomId, mobileTransLine.Number);
-                item.Images.Add(new ItemImage(mobileTransLine.RetailImageID));
+                if (NavVersion > new Version("14.2"))
+                    item.Images.Add(new ItemImage(mobileTransLine.RetailImageID));
+
                 saleLine.Item = item;
 
                 saleLine.UnitPrice = new Money(mobileTransLine.NetPrice, transLineCurrency);
@@ -761,12 +804,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Transaction_No = string.IsNullOrEmpty(transactionNo) ? 0 : ConvertTo.SafeInt(transactionNo)
             };
 
-            // TODO, handle large value here.. so far NAV Does not support it
-            if (receiptInfo.ValueAsText.Length > 100)
-                info.Value = receiptInfo.ValueAsText.Substring(0, 99);
-            else
-                info.Value = receiptInfo.ValueAsText;
+            if (receiptInfo.ValueAsText == null)
+            {
+                info.Value = string.Empty;
+                return info;
+            }
 
+            if (receiptInfo.ValueAsText.Length > 100)
+            {
+                if (NavVersion > new Version("14.2"))
+                {
+                    List<string> enc = new List<string>();
+                    enc.Add(ConvertTo.Base64Encode(receiptInfo.ValueAsText));
+                    info.LargeValue = enc.ToArray();
+                    info.Value = string.Empty;
+                }
+                else
+                {
+                    info.Value = receiptInfo.ValueAsText.Substring(0, 99);
+                }
+            }
+            else
+            {
+                info.Value = receiptInfo.ValueAsText;
+            }
             return info;
         }
 

@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string pgtablename = "Product Group";
         private string pgfieldname = "Product Group Code";
 
-        public ItemCategoryRepository(BOConfiguration config) : base(config)
+        public ItemCategoryRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             if (NavVersion > new Version("14.2"))
             {
@@ -248,7 +248,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Description = SQLHelper.GetString(reader["Description"])
             };
 
-            ProductGroupRepository prdrep = new ProductGroupRepository(config);
+            ProductGroupRepository prdrep = new ProductGroupRepository(config, NavVersion);
             itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false);
 
             ImageRepository imgrep = new ImageRepository(config);

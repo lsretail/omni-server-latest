@@ -18,7 +18,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public ItemUOMRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],um.[Description]";
+            sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt.[POS Selection],mt.[Count as 1 on Receipt],mt.[Order],um.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure] mt INNER JOIN [" + navCompanyName + "Unit of Measure] um ON um.[Code]=mt.[Code]";
         }
@@ -181,7 +181,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 Code = SQLHelper.GetString(reader["Code"]),
-                QtyPrUOM = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
+                Description = SQLHelper.GetString(reader["Description"]),
+                ShortDescription = SQLHelper.GetString(reader["Code"]),
+                QtyPrUOM = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure"),
+                Selection = SQLHelper.GetInt32(reader["POS Selection"]),
+                CountAsOne = SQLHelper.GetBool(reader["Count as 1 on Receipt"]),
+                Order = SQLHelper.GetInt32(reader["Order"])
             };
         }
 
@@ -192,7 +197,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["Code"]),
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ShortDescription = SQLHelper.GetString(reader["Description"]),
+                ShortDescription = SQLHelper.GetString(reader["Code"]),
                 QtyPerUom = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure"),
                 Decimals = 0
             };

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ExtendedVariantValuesRepository(BOConfiguration config) : base(config)
+        public ExtendedVariantValuesRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Framework Code],mt.[Item No_],mt.[Dimension],mt.[Code],mt.[Value],mt.[Logical Order]";
 
@@ -30,26 +31,34 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             List<JscKey> keys = GetPrimaryKeys("Extended Variant Values");
 
+            string whereaddon = (string.IsNullOrWhiteSpace(storeId)) ? " AND mt.[Framework Code]<>'' AND mt.[Item No_]<>''" : string.Empty;
+
             // get records remaining
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, whereaddon, "mt.[Item No_]", storeId, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplExtendedVariantValue> list = new List<ReplExtendedVariantValue>();
 
-            // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Item No_]", storeId, true);
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-                    command.CommandText = sql;
+
+                    command.CommandText = "SELECT 1 FROM sys.columns WHERE [Name]='Logical Order' AND Object_ID=Object_ID('[" + navCompanyName + "Extended Variant Dimensions]')";
+                    bool hascol = SQLHelper.GetBool(command.ExecuteScalar());
+
+                    if (hascol)
+                    {
+                        sqlcolumns += ",(SELECT vd.[Logical Order] FROM [" + navCompanyName + "Extended Variant Dimensions] vd " +
+                                      "WHERE vd.[Framework Code]=mt.[Framework Code] AND vd.[Dimension No_]=mt.[Dimension] AND vd.[Item]='') AS DOrder";
+                    }
+                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true); ;
 
                     if (fullReplication)
                     {
@@ -61,7 +70,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             int cnt = 0;
                             while (reader.Read())
                             {
-                                list.Add(ReaderToExtendedVariantValue(reader, out lastKey));
+                                list.Add(ReaderToExtendedVariantValue(reader, hascol, out lastKey));
                                 cnt++;
                             }
                             reader.Close();
@@ -100,7 +109,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             {
                                 while (reader.Read())
                                 {
-                                    list.Add(ReaderToExtendedVariantValue(reader, out string ts));
+                                    list.Add(ReaderToExtendedVariantValue(reader, hascol, out string ts));
                                 }
                                 reader.Close();
                             }
@@ -127,14 +136,24 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT DISTINCT mt.[Code],mt.[Dimension]" + sqlfrom + " WHERE mt.[Item No_]='" + itemId + "'";
                     connection.Open();
+
+                    command.CommandText = "SELECT 1 FROM sys.columns WHERE [Name]='Logical Order' AND Object_ID=Object_ID('[" + navCompanyName + "Extended Variant Dimensions]')";
+                    bool hascol = SQLHelper.GetBool(command.ExecuteScalar());
+
+                    command.CommandText = "SELECT DISTINCT mt.[Code],mt.[Dimension]";
+                    if (hascol)
+                    {
+                        command.CommandText += ",(SELECT vd.[Logical Order] FROM [" + navCompanyName + "Extended Variant Dimensions] vd " +
+                                      "WHERE vd.[Framework Code]=mt.[Framework Code] AND vd.[Dimension No_]=mt.[Dimension] AND vd.[Item]='') AS DOrder";
+                    }
+                    command.CommandText += sqlfrom + " WHERE mt.[Item No_]='" + itemId + "'";
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToVariantExt(reader, itemId));
+                            list.Add(ReaderToVariantExt(reader, itemId, hascol));
                         }
                         reader.Close();
                     }
@@ -151,7 +170,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = GetSQL(false, 0) + sqlcolumns + sqlfrom + 
+                    command.CommandText = GetSQL(false, 0) + sqlcolumns + sqlfrom +
                         string.Format(" WHERE mt.[Item No_]='{0}' AND mt.[Code]='{1}' ORDER BY mt.[Logical Order]", itemid, varcode);
                     connection.Open();
                     TraceSqlCommand(command);
@@ -159,7 +178,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToExtendedVariantValue(reader, out string ts));
+                            list.Add(ReaderToExtendedVariantValue(reader, false, out string ts));
                         }
                         reader.Close();
                     }
@@ -169,11 +188,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        private ReplExtendedVariantValue ReaderToExtendedVariantValue(SqlDataReader reader, out string timestamp)
+        private ReplExtendedVariantValue ReaderToExtendedVariantValue(SqlDataReader reader, bool dorder, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplExtendedVariantValue()
+            ReplExtendedVariantValue extvar = new ReplExtendedVariantValue()
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 Dimensions = SQLHelper.GetString(reader["Dimension"]),
@@ -182,9 +201,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 FrameworkCode = SQLHelper.GetString(reader["Framework Code"]),
                 LogicalOrder = SQLHelper.GetInt32(reader["Logical Order"])
             };
+
+            if (dorder)
+                extvar.DimensionLogicalOrder = SQLHelper.GetInt32(reader["DOrder"]);
+
+            return extvar;
         }
 
-        private VariantExt ReaderToVariantExt(SqlDataReader reader, string itemid)
+        private VariantExt ReaderToVariantExt(SqlDataReader reader, string itemid, bool dorder)
         {
             VariantExt extvar = new VariantExt()
             {
@@ -192,6 +216,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Dimension = SQLHelper.GetString(reader["Dimension"]),
                 Code = SQLHelper.GetString(reader["Code"])
             };
+
+            if (dorder)
+                extvar.DisplayOrder = SQLHelper.GetInt32(reader["DOrder"]);
 
             foreach (ReplExtendedVariantValue var in VariantRegGetValuesByVarCode(extvar.ItemId, extvar.Code))
             {

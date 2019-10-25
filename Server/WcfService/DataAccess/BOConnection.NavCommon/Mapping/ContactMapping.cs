@@ -232,6 +232,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
         private List<ImageView> GetPublishedOfferImages(NavWS.PublishedOfferImages[] imgs, string offerId)
         {
             List<ImageView> list = new List<ImageView>();
+            if (imgs == null)
+                return list;
+
             foreach (NavWS.PublishedOfferImages img in imgs)
             {
                 if (img.KeyValue == offerId)
