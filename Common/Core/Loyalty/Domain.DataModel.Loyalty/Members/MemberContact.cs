@@ -197,11 +197,19 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             return Cards.Find(c => c.Id == id);
         }
 
+        public OneList GetWishList(string cardId)
+        {
+            return GetWishList(cardId, null);
+        }
+
         public OneList GetWishList(string cardId, OneList list)
         {
             if (OneLists.Count > 0 && string.IsNullOrEmpty(cardId) == false)
             {
-                list = OneLists.Find(t => t.ListType == ListType.Wish && t.CardId == cardId && t.Id == list.Id);
+                if (list == null)
+                    list = OneLists.Find(t => t.ListType == ListType.Wish && t.CardId == cardId);
+                else
+                    list = OneLists.Find(t => t.ListType == ListType.Wish && t.CardId == cardId && t.Id == list.Id);
             }
 
             if (list == null)

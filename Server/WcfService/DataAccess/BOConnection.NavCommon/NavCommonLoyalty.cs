@@ -171,11 +171,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             List<NavWS.InventoryBufferIn> lines = new List<NavWS.InventoryBufferIn>();
             foreach (InventoryRequest item in items)
             {
-                lines.Add(new NavWS.InventoryBufferIn()
+                NavWS.InventoryBufferIn buf = lines.Find(b => b.Number.Equals(item.ItemId) && b.Variant.Equals(item.VariantId ?? string.Empty));
+                if (buf == null)
                 {
-                    Number = item.ItemId,
-                    Variant = item.VariantId ?? string.Empty,
-                });
+                    lines.Add(new NavWS.InventoryBufferIn()
+                    {
+                        Number = item.ItemId,
+                        Variant = item.VariantId ?? string.Empty,
+                    });
+                }
             }
 
             NavWS.RootGetInventoryMultipleIn rootin = new NavWS.RootGetInventoryMultipleIn();
