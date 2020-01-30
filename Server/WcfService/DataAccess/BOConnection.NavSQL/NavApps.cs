@@ -21,8 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds,
-            string loyaltySchemeCode)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);

@@ -70,6 +70,11 @@ namespace LSOmni.BLL.Loyalty
 
             string extId = BOLoyConnection.OrderCreate(request, tenderMapping, out string orderId);
 
+            if (request.OrderType == OrderType.ScanPayGo || request.OrderType == OrderType.ScanPayGoSuspend)
+            {
+                return new SalesEntry(extId);
+            }
+
             if (string.IsNullOrEmpty(orderId))
                 return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External, tenderMapping);
 

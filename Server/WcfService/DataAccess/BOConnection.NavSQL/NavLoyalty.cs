@@ -33,7 +33,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
         }
 
-        public virtual string Ping(string ipAddress)
+        public virtual string Ping()
         {
             string ver = NavWSBase.NavVersionToUse(true);
             if (ver.Contains("ERROR"))
@@ -389,14 +389,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
         {
+            SalesEntry entry = null;
             if (type == DocumentIdType.Receipt)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config, NAVVersion);
-                return trepo.SalesEntryGetById(entryId);
+                entry = trepo.SalesEntryGetById(entryId);
             }
-
-            OrderRepository repo = new OrderRepository(config, NAVVersion);
-            SalesEntry entry = repo.OrderGetById(entryId, true, (type == DocumentIdType.External));
+            else
+            {
+                OrderRepository repo = new OrderRepository(config, NAVVersion);
+                entry = repo.OrderGetById(entryId, true, (type == DocumentIdType.External));
+            }
             if (entry == null)
                 return null;
 
@@ -409,7 +412,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                         throw new ApplicationException("TenderType_Mapping failed for type: " + line.TenderType);
                 }
             }
-
             return entry;
         }
 

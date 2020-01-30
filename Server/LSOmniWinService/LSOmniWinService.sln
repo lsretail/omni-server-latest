@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
-VisualStudioVersion = 16.0.29209.62
+VisualStudioVersion = 16.0.29020.237
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LSOmniWinService", "LSOmniWinService\LSOmniWinService.csproj", "{8A1B22A7-7A5C-4883-8D8A-1F6EC0C203D7}"
 EndProject
@@ -30,7 +30,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FireSharpServer", "FireShar
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{F198351D-86E9-4F02-8F11-BB07B0E14F2C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscountEngine", "..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj", "{9EA30C81-B1BE-4FD1-84AF-B668FFD7A53E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DiscountEngine", "..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj", "{430FABC5-1C0B-4621-AB0C-00004BA5CBBD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -22,7 +22,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         protected static LSLogger logger = new LSLogger();
 
         private NavWebReference.RetailWebServices navWebReference = null;
+        private NavWebReference.RetailWebServices navWebQryReference = null;
         public NavWS.OmniWrapper navWS = null;
+        public NavWS.OmniWrapper navQryWS = null;
+        public LSActivity.Activity activityWS = null;
+        public LSActivity15.Activity activity15WS = null;
         private int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
         private static readonly object Locker = new object();
 
@@ -81,21 +85,35 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             //navWsVersion is Unknown for the first time 
             if (NAVVersion == null)
             {
-                navWebReference = new NavWebReference.RetailWebServices();
-                
-                navWebReference.Url = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value;
                 //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
                 string timeout = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value;
+
+                navWebReference = new NavWebReference.RetailWebServices();
+                navWebReference.Url = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value;
                 navWebReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
+                navWebReference.PreAuthenticate = true;
+                navWebReference.AllowAutoRedirect = true;
+
+                string qryurl = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value;
+
+                navWebQryReference = new NavWebReference.RetailWebServices();
+                navWebQryReference.Url = string.IsNullOrEmpty(qryurl) ? navWebReference.Url : qryurl;
+                navWebQryReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
+                navWebQryReference.PreAuthenticate = true;
+                navWebQryReference.AllowAutoRedirect = true;
 
                 //dont set the credentials unless we have them. Can use the app pool too.
                 if (credentials != null)
+                {
                     navWebReference.Credentials = credentials;
+                    navWebQryReference.Credentials = credentials;
+                }
 
-                navWebReference.PreAuthenticate = true;
-                navWebReference.AllowAutoRedirect = true;
                 if (string.IsNullOrEmpty(config.SettingsGetByKey(ConfigKey.Proxy_Server)) == false)
+                {
                     navWebReference.Proxy = GetWebProxy();
+                    navWebQryReference.Proxy = GetWebProxy();
+                }
 
                 NavVersionToUse(true); //check the nav version
             }
@@ -104,15 +122,38 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if ((NAVVersion == null || NAVVersion.Major >= 11))
             {
                 navWS = new NavWS.OmniWrapper();
+                navQryWS = new NavWS.OmniWrapper();
+                activityWS = new LSActivity.Activity();
+                activity15WS = new LSActivity15.Activity();
 
                 navWS.Url = config.SettingsGetByKey(ConfigKey.BOUrl).Replace("RetailWebServices", "OmniWrapper");
                 navWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
-
-                if (credentials != null)
-                    navWS.Credentials = credentials;
-
                 navWS.PreAuthenticate = true;
                 navWS.AllowAutoRedirect = true;
+
+                string qryurl = config.SettingsGetByKey(ConfigKey.BOQryUrl);
+                navQryWS.Url = string.IsNullOrEmpty(qryurl) ? navWS.Url : qryurl.Replace("RetailWebServices", "OmniWrapper");
+                navQryWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+                navQryWS.PreAuthenticate = true;
+                navQryWS.AllowAutoRedirect = true;
+
+                activityWS.Url = config.SettingsGetByKey(ConfigKey.BOUrl).Replace("RetailWebServices", "Activity");
+                activityWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+                activityWS.PreAuthenticate = true;
+                activityWS.AllowAutoRedirect = true;
+
+                activity15WS.Url = config.SettingsGetByKey(ConfigKey.BOUrl).Replace("RetailWebServices", "Activity");
+                activity15WS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+                activity15WS.PreAuthenticate = true;
+                activity15WS.AllowAutoRedirect = true;
+
+                if (credentials != null)
+                {
+                    navWS.Credentials = credentials;
+                    navQryWS.Credentials = credentials;
+                    activityWS.Credentials = credentials;
+                    activity15WS.Credentials = credentials;
+                }
             }
 
             if (NAVVersion > new Version("14.2"))
@@ -163,7 +204,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 throw;
             }
         }
-
 
         public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
         {
@@ -233,7 +273,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         public string NavVersionToUse(bool forceCallToNav = true)
         {
             if (NAVVersion == null)
-                NAVVersion = new Version("14.0");
+                NAVVersion = new Version("15.0");
 
             //this methods is called in PING and in constructor
             try
@@ -255,15 +295,46 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         string respCode = string.Empty;
                         string errorText = string.Empty;
 
+                        if (navWS.Url.Equals(navQryWS.Url) == false)
+                        {
+                            // ping 2nd server first
+                            navQryWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
+                            logger.Info(config.LSKey.Key, "Nav WS2 Query Response > Ver:{0} ErrCode:{1} ErrText:{2}", 
+                                retailVersion, respCode, errorText);
+                            if (respCode != "0000")
+                                throw new LSOmniServiceException(StatusCode.ServerRefusingToRespond, errorText);
+                        }
+
                         navWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
+                        logger.Info(config.LSKey.Key, "Nav WS2 Main Response > Ver:{0} ErrCode:{1} ErrText:{2}", 
+                            retailVersion, respCode, errorText);
+                        if (respCode != "0000")
+                            throw new LSOmniServiceException(StatusCode.ServerRefusingToRespond, errorText);
                     }
                     else
                     {
                         XmlMapping.Loyalty.NavXml navXml = new XmlMapping.Loyalty.NavXml();
                         string xmlRequest = navXml.TestConnectionRequestXML();
-                        string xmlResponse = RunOperation(xmlRequest);
+
+                        string rCode = string.Empty;
+                        string xmlResponse = string.Empty;
+                        if (navWebReference.Url.Equals(navWebQryReference.Url) == false)
+                        {
+                            xmlResponse = RunOperation(xmlRequest, true);
+                            logger.Info(config.LSKey.Key, "Nav Query Version: " + xmlResponse);
+                            rCode = GetResponseCode(ref xmlResponse);
+
+                            //ignore unknown Request_ID 
+                            //the 0004   Unknown Request_ID   TEST_CONNECTION
+                            if (rCode != "0004")
+                            {
+                                HandleResponseCode(ref xmlResponse);
+                            }
+                        }
+
+                        xmlResponse = RunOperation(xmlRequest);
                         logger.Info(config.LSKey.Key, "Nav Version: " + xmlResponse);
-                        string rCode = GetResponseCode(ref xmlResponse);
+                        rCode = GetResponseCode(ref xmlResponse);
 
                         //ignore unknown Request_ID 
                         //the 0004   Unknown Request_ID   TEST_CONNECTION
@@ -276,11 +347,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
                     int st = retailVersion.IndexOf('(');
                     int ed = retailVersion.IndexOf(')');
-                    string vv1 = retailVersion.Substring(st + 1, ed - st - 1);
-                    NAVVersion = new Version(vv1);
-
-                    navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
-                    NAVVersion = new Version(vv1);
+                    if (st == -1)
+                    {
+                        navver = string.Format("LS:{0} [{1}]", NAVVersion, appBuild);
+                    }
+                    else
+                    {
+                        string vv1 = retailVersion.Substring(st + 1, ed - st - 1);
+                        NAVVersion = new Version(vv1);
+                        navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
+                    }
 
                     logger.Info(config.LSKey.Key, "appVer:{0} appBuild:{1} retailVer:{2} retailCopyright:{3} NavVersionToUse:{4}",
                         appVersion, appBuild, retailVersion, retailCopyright, (NAVVersion == null) ? "None" : NAVVersion.ToString());
@@ -335,7 +411,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         }
 
         //run the nav web service operation
-        protected string RunOperation(string xmlRequest)
+        protected string RunOperation(string xmlRequest, bool useQuery = false)
         {
             bool doBase64 = false;
             string originalxmlRequest = "";
@@ -357,7 +433,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             //WebService Request
             string xmlResponse = string.Empty;
-            ExecuteWebRequest(ref xmlRequest, ref xmlResponse);
+            ExecuteWebRequest(ref xmlRequest, ref xmlResponse, useQuery);
 
             stopWatch.Stop();
             if (string.IsNullOrWhiteSpace(xmlResponse))
@@ -403,18 +479,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             // get tables to replicate and current status
             xmlRequest = xml.StartSyncRequestXML(batchSize);
-            xmlResponse = RunOperation(xmlRequest);
+            xmlResponse = RunOperation(xmlRequest, true);
             string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" });
             if (ret == "1921")
             {
                 // App is not registered, so lets register it
                 xmlRequest = xml.RegisterApplicationRequestXML(NAVVersion);
-                xmlResponse = RunOperation(xmlRequest);
+                xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
 
                 // Now try again to start Sync Cycle
                 xmlRequest = xml.StartSyncRequestXML(batchSize);
-                xmlResponse = RunOperation(xmlRequest);
+                xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
             }
             return xml.SyncResponseXML(xmlResponse, out restorePoint);
@@ -426,7 +502,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string xmlResponse;
 
             xmlRequest = xml.RestoreSyncRequestXML(restorePoint);
-            xmlResponse = RunOperation(xmlRequest);
+            xmlResponse = RunOperation(xmlRequest, true);
             string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923" });
             if (ret != null)
                 return new List<XMLTableData>();
@@ -450,7 +526,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 try
                 {
                     xmlRequest = xml.GetTableDataRequestXML(table.TableId);
-                    xmlResponse = RunOperation(xmlRequest);
+                    xmlResponse = RunOperation(xmlRequest, true);
                     HandleResponseCode(ref xmlResponse);
                     XMLTableData ret = xml.GetTableDataResponseXML(xmlResponse, table, out endoftable, out restorePoint);
                     totalrecs = ret.NumberOfValues;
@@ -472,7 +548,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             try
             {
                 xmlRequest = xml.GetSyncStatusRequestXML();
-                xmlResponse = RunOperation(xmlRequest);
+                xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 return xml.GetSyncStatusResponseXML(xmlResponse, tableNo, out restorePoint);
             }
@@ -521,14 +597,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         }
 
         //first time executing this I check if this is nav 7 or 6 web service
-        protected void ExecuteWebRequest(ref string xmlRequest, ref string xmlResponse)
+        protected void ExecuteWebRequest(ref string xmlRequest, ref string xmlResponse, bool useQuery)
         {
+            NavWebReference.RetailWebServices wsToUse = (useQuery) ? navWebQryReference : navWebReference;
+
             try
             {
                 //first time comes in at NavWsVersion.Unknown so defaults to NAV7
                 if (TimeOutInSeconds > 0)
-                    navWebReference.Timeout = (TimeOutInSeconds - 2) * 1000;//-2 to make sure server timeout before client
-                navWebReference.WebRequest(ref xmlRequest, ref xmlResponse);
+                    wsToUse.Timeout = (TimeOutInSeconds - 2) * 1000;//-2 to make sure server timeout before client
+
+                wsToUse.WebRequest(ref xmlRequest, ref xmlResponse);
             }
             catch (Exception ex)
             {
@@ -538,7 +617,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     // Are you connecting to NAV 2013 instead 2009?   7 vs 6
                     lock (Locker)
                     {
-                        navWebReference.WebRequest(ref xmlRequest, ref xmlResponse);
+                        wsToUse.WebRequest(ref xmlRequest, ref xmlResponse);
                     }
                 }
                 else

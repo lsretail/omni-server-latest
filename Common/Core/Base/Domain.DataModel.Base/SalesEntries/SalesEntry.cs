@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class SalesEntry : Entity, IDisposable
     {
         public SalesEntry(string id) : base(id)
@@ -51,6 +51,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         /// </summary>
         [DataMember]
         public string ExternalId { get; set; }
+        [DataMember]
+        public string ReceiptNo { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DocumentRegTime { get; set; }
         [DataMember]

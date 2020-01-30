@@ -22,19 +22,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public PriceRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Item No_],mt.[Sales Type],mt.[Sales Code],mt.[Starting Date],mt.[Ending Date],mt.[Currency Code],mt.[Variant Code],mt.[Unit of Measure Code]," +
-                         "mt.[Minimum Quantity],mt.[Currency Code],mt.[Unit Price],mt.[Price Includes VAT],mt.[Unit Price Including VAT],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]";
+            sqlcolumns = "mt.[Item No_],mt.[Sales Type],mt.[Sales Code],mt.[Starting Date],mt.[Ending Date],mt.[Currency Code]," +
+                         "mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity],mt.[Currency Code],mt.[Unit Price]," +
+                         "mt.[Price Includes VAT],mt.[Unit Price Including VAT],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]";
             sqlfrom = " FROM [" + navCompanyName + "Sales Price] mt";
 
-            sqlMcolumns = "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[Currency Code],mt.[Unit Price],mt.[Offer No_],mt.[Last Modify Date],u.[Qty_ per Unit of Measure]";
+            sqlMcolumns = "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Customer Disc_ Group]," +
+                          "mt.[Loyalty Scheme Code],mt.[Currency Code],mt.[Unit Price],mt.[Offer No_],mt.[Last Modify Date]," +
+                          "u.[Qty_ per Unit of Measure]";
             sqlMfrom = " FROM [" + navCompanyName + "WI Price] mt" +
-                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure] u ON mt.[Item No_] = u.[Item No_] AND mt.[Unit of Measure Code] = u.[Code]";
+                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure] u" +
+                       " ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
         }
 
         public List<ReplPrice> ReplicatePrice(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
+            if (string.IsNullOrWhiteSpace(maxKey))
+                maxKey = "0";
 
             // get all prices for a item that has changed
             List<JscKey> keys = new List<JscKey>()
@@ -46,75 +52,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
             };
 
-            List<JscActions> actions = new List<JscActions>();
-            string prevLastKey = lastKey;
-
             SQLHelper.CheckForSQLInjection(storeId);
 
             // get records remaining
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
-            string sql = string.Empty;
-            string tmplastkey = "0";
-            if (fullReplication)
-            {
-                sql = "SELECT COUNT(*)" + sqlMfrom + GetWhereStatement(true, keys, where, false);
-                recordsRemaining = GetRecordCount(TABLEMOBILEID, lastKey, sql, keys, ref maxKey);
 
-                // get maxkey value for item
-                GetRecordCount(27, tmplastkey, sql, keys, ref maxKey);
-            }
-            else
-            {
-                tmplastkey = lastKey;
-                string mainlastkey = lastKey;
-                string tmpmaxkey = string.Empty;
-                recordsRemaining = 0;
+            string sql = "SELECT COUNT(*)" + sqlMfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCount(TABLEMOBILEID, lastKey, sql, keys, ref maxKey);
 
-                // Use actions from Item,Sales Price,Item Variant,Item Unit of Measure tables and as trigger for price update
-                recordsRemaining = GetRecordCount(27, lastKey, string.Empty, keys, ref maxKey);
-                actions = LoadActions(fullReplication, 27, 0, ref mainlastkey, ref recordsRemaining);
-                bool isdone = tmplastkey.Equals(lastKey);
-
-                recordsRemaining += GetRecordCount(TABLEID, tmplastkey, string.Empty, keys, ref tmpmaxkey);
-                List<JscActions> priceact = LoadActions(fullReplication, TABLEID, batchSize, ref tmplastkey, ref recordsRemaining);
-                tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, keys, ref tmpmaxkey);
-                priceact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
-                tmplastkey = lastKey;
-                recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, keys, ref tmpmaxkey);
-                priceact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
-
-                lastKey = mainlastkey;
-                if (actions.Count == 0)
-                    recordsRemaining = 0;
-
-                foreach (JscActions act in priceact)
-                {
-                    if (act.Type == DDStatementType.Delete)
-                        continue;       // skip delete actions for extra tables
-
-                    int index = act.ParamValue.IndexOf(';');
-                    JscActions newact = new JscActions()
-                    {
-                        id = act.id,
-                        TableId = act.TableId,
-                        Type = act.Type,
-                        ParamValue = (index < 0) ? act.ParamValue : act.ParamValue.Substring(0, index)
-                    };
-
-                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
-                    if (findme == null)
-                    {
-                        actions.Add(newact);
-                    }   
-                }
-            }
-
-            List<ReplPrice> list = new List<ReplPrice>();
+            int rr = 0;
+            string tmplastkey = maxKey;
+            List<JscActions> actions = LoadActions(fullReplication, 27, 0, ref maxKey, ref rr);
+            actions.AddRange(LoadActions(fullReplication, 10000704, 0, ref tmplastkey, ref rr));
+            if (Convert.ToInt64(tmplastkey) > Convert.ToInt64(maxKey))
+                maxKey = tmplastkey;
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlMcolumns + sqlMfrom + GetWhereStatement(fullReplication, keys, where, true);
+            sql = GetSQL(true, batchSize) + sqlMcolumns + sqlMfrom + GetWhereStatement(true, keys, where, true);
 
+            List<ReplPrice> list = new List<ReplPrice>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -122,63 +78,39 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     command.CommandText = sql;
 
-                    if (fullReplication)
+                    JscActions act = new JscActions(lastKey);
+                    SetWhereValues(command, act, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        JscActions act = new JscActions(lastKey);
-                        SetWhereValues(command, act, keys, true, true);
-                        TraceSqlCommand(command);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        int cnt = 0;
+                        while (reader.Read())
                         {
-                            int cnt = 0;
-                            while (reader.Read())
-                            {
-                                list.Add(ReaderToWIPrice(reader, out lastKey));
-                                cnt++;
-                            }
-                            reader.Close();
-                            recordsRemaining -= cnt;
+                            list.Add(ReaderToWIPrice(reader, out lastKey));
+                            cnt++;
                         }
-                        if (recordsRemaining <= 0)
-                            lastKey = maxKey;   // this should be the highest PreAction id;
+                        reader.Close();
+                        recordsRemaining -= cnt;
                     }
-                    else
+
+                    // find deleted items
+                    if (fullReplication == false)
                     {
-                        bool first = true;
-                        foreach (JscActions act in actions)
+                        foreach (JscActions a in actions)
                         {
-                            if (act.Type == DDStatementType.Delete)
+                            if (a.Type == DDStatementType.Delete)
                             {
+                                string[] values = a.ParamValue.Split(new char[] { ';' });
+                                if (values.Length > 2)
+                                    a.ParamValue = values[2];
+                                
                                 list.Add(new ReplPrice()
                                 {
-                                    ItemId = act.ParamValue,
+                                    ItemId = a.ParamValue,
                                     IsDeleted = true
                                 });
-                                continue;
                             }
-
-                            if (SetWhereValues(command, act, keys, first) == false)
-                                continue;
-
-                            TraceSqlCommand(command);
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    list.Add(ReaderToWIPrice(reader, out string ts));
-                                }
-                                reader.Close();
-                            }
-                            first = false;
                         }
-
-                        if (actions.Count == 0)
-                        {
-                            lastKey = prevLastKey;
-                            maxKey = prevLastKey;
-                        }
-
-                        if (string.IsNullOrEmpty(maxKey))
-                            maxKey = lastKey;
                     }
                     connection.Close();
                 }

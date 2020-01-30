@@ -65,6 +65,7 @@
     <Compile Include="..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
       <Link>Properties\Version.cs</Link>
     </Compile>
+    <Compile Include="ActivityBLL.cs" />
     <Compile Include="ActivityLogBLL.cs" />
     <Compile Include="BaseBLL.cs" />
     <Compile Include="CustomBLL.cs" />
@@ -94,6 +95,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
       <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
       <Name>DiscountEngine</Name>
@@ -109,11 +114,6 @@
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>
       <Name>Common</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\DataAccess\Data.SQLServer\Data.SQLServer.csproj">
-      <Project>{52b0506b-47dc-4c47-b268-ad7ecb0fbf3b}</Project>
-      <Name>Data.SQLServer</Name>
       <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\DataAccess\Interfaces\Interfaces.csproj">

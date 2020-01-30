@@ -96,6 +96,5 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
                     return true;
             }
         }
-
     }
 }

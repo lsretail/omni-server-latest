@@ -10,6 +10,7 @@ Source: "..\LSOmniWinService\StopService.cmd"; DestDir: "{app}"; Flags: ignoreve
 Source: "..\LSOmniWinService\bin\Release\LSRetail.Omni.*.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LSOmniWinService\bin\Release\LSOmni.*.dll"; DestDir: "{app}"; Flags: ignoreversion
 
+Source: "..\LSOmniWinService\bin\Release\itextsharp.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LSOmniWinService\bin\Release\Newtonsoft.Json.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LSOmniWinService\bin\Release\NLog.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LSOmniWinService\bin\Release\zxing.dll"; DestDir: "{app}"; Flags: ignoreversion

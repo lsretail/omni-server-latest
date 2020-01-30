@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Log
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum LogLevel
     {
         [EnumMember]
@@ -18,7 +18,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         Trace = 4,
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum LogType
     {
         [EnumMember]
@@ -27,7 +27,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         ExternalAccessory = 1,
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class Log
     {
         [DataMember]

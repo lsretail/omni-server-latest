@@ -36,7 +36,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item", "No.", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -44,19 +44,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             LoyItem item = rep.ItemGet(table);
 
             xmlRequest = xml.GetGeneralWebRequestXML("Item Unit of Measure", "Item No.", item.Id);
-            xmlResponse = RunOperation(xmlRequest);
+            xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
             item.UnitOfMeasures = rep.GetUnitOfMeasure(table);
 
             xmlRequest = xml.GetGeneralWebRequestXML("Item Variant Registration", "Item No.", item.Id);
-            xmlResponse = RunOperation(xmlRequest);
+            xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
             item.VariantsRegistration = rep.GetVariantRegistrations(table);
 
             xmlRequest = xml.GetGeneralWebRequestXML("Extended Variant Values", "Item No.", item.Id);
-            xmlResponse = RunOperation(xmlRequest);
+            xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
             item.VariantsExt = rep.GetVariantExt(table);
@@ -64,7 +64,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             foreach (VariantExt ext in item.VariantsExt)
             {
                 xmlRequest = xml.GetGeneralWebRequestXML("Extended Variant Values", "Item No.", ext.ItemId, "Code", ext.Code);
-                xmlResponse = RunOperation(xmlRequest);
+                xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
                 ext.Values = rep.GetDimValues(table);
@@ -77,7 +77,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Barcodes", "Barcode No.", barcode);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -145,7 +145,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     continue;
 
                 logger.Debug(config.LSKey.Key, "GetItemInventory Response - " + Serialization.ToXml(root, true));
-                foreach (NavWS.WSInventoryBuffer buffer in root.WSInventoryBuffer)
+                foreach (NavWS.WSInventoryBuffer1 buffer in root.WSInventoryBuffer)
                 {
                     if (skipUnAvailableStores && buffer.ActualInventory <= 0)
                         continue;
@@ -238,7 +238,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item", ((NAVVersion > new Version("14.2")) ? "Retail Product Code" : "Product Group Code"), prodGroup);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -254,7 +254,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Variant Registration", "Variant", id, "Item No.", itemId);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -267,7 +267,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML(pgtablename, "Code", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -280,7 +280,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML(pgtablename, "Item Category Code", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -292,7 +292,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Category", "Code", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -305,7 +305,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Category");
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -317,7 +317,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Retail Image", "Code", imageId);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -336,7 +336,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Retail Image Link", "KeyValue", keyvalue, "TableName", tableName);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -524,7 +524,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Member Contact", "E-Mail", email, 1);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -557,7 +557,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NavXml navXml = new NavXml();
             string xmlRequest = navXml.ProfilesRequestXML(string.Empty);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
 
             List<Profile> profileList = new List<Profile>();
@@ -600,7 +600,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Member Scheme");
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -721,7 +721,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Member Contact", fldname, search, maxNumberOfRowsReturned);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -731,7 +731,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             foreach (MemberContact contact in list)
             {
                 xmlRequest = xml.GetGeneralWebRequestXML("Membership Card", "Contact No.", contact.Id);
-                xmlResponse = RunOperation(xmlRequest);
+                xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
                 contact.Cards = rep.CardGet(table);
@@ -745,7 +745,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item", "Search Description", search);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -759,7 +759,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Category", "Description", search);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -773,7 +773,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML(pgtablename, "Description", search);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -787,7 +787,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Member Attribute", "Description", search);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -801,7 +801,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Store", "Name", search);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -822,7 +822,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 BasketXml xml = new BasketXml();
                 string xmlRequest = xml.BasketCalcRequestXML(list, NAVVersion.Major);
-                string xmlResponse = RunOperation(xmlRequest);
+                string xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 return xml.BasketCalcToOrderResponseXML(xmlResponse, NAVVersion.Major);
             }
@@ -834,7 +834,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Request - " + Serialization.ToXml(root, true));
 
-            navWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
+            navQryWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
             if (respCode != "0000")
                 throw new LSOmniServiceException(StatusCode.TransactionCalc, errorText);
 
@@ -938,8 +938,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
             NavWS.RootCustomerOrderFilteredList root = new NavWS.RootCustomerOrderFilteredList();
-            List<NavWS.CustomerOrderHeader1> hd = new List<NavWS.CustomerOrderHeader1>();
-            hd.Add(new NavWS.CustomerOrderHeader1()
+            List<NavWS.CustomerOrderHeader2> hd = new List<NavWS.CustomerOrderHeader2>();
+            hd.Add(new NavWS.CustomerOrderHeader2()
             {
                 MemberCardNo = cardId
             });
@@ -1054,15 +1054,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 string xmlResponse;
                 if (NAVVersion.Major < 10)
                 {
-                    if (request.ClickAndCollectOrder)
+                    switch (request.OrderType)
                     {
-                        ClickCollectXml xmlcac = new ClickCollectXml();
-                        xmlRequest = xmlcac.OrderCreateCACRequestXML(request);
-                    }
-                    else
-                    {
-                        BasketXml xmlbask = new BasketXml();
-                        xmlRequest = xmlbask.BasketPostSaleRequestXML(request);
+                        case OrderType.ClickAndCollect:
+                            ClickCollectXml xmlcac = new ClickCollectXml();
+                            xmlRequest = xmlcac.OrderCreateCACRequestXML(request);
+                            break;
+                        default:
+                            BasketXml xmlbask = new BasketXml();
+                            xmlRequest = xmlbask.BasketPostSaleRequestXML(request);
+                            break;
                     }
                     xmlResponse = RunOperation(xmlRequest);
                     HandleResponseCode(ref xmlResponse);
@@ -1071,7 +1072,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 {
                     if (request.ShipToAddress == null)
                     {
-                        if (request.ClickAndCollectOrder)
+                        if (request.OrderType == OrderType.ClickAndCollect)
                         {
                             request.ShipToAddress = new Address();
                         }
@@ -1091,7 +1092,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             if (request.ShipToAddress == null)
             {
-                if (request.ClickAndCollectOrder)
+                if (request.OrderType == OrderType.ClickAndCollect)
                 {
                     request.ShipToAddress = new Address();
                 }
@@ -1108,7 +1109,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (NAVVersion > new Version("14.2"))
             {
                 NavWS.RootCustomerOrderCreateV4 root = map.MapFromOrderV4ToRoot(request);
-                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV3 Response - " + Serialization.ToXml(root, true));
+                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV4 Response - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreateV4(ref respCode, ref errorText, root, ref orderId);
             }
             else if (NAVVersion > new Version("13.5"))
@@ -1173,7 +1174,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Store", "No.", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -1191,7 +1192,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             else
                 xmlRequest = xml.GetGeneralWebRequestXML("Store");
 
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -1206,7 +1207,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootGetStoreOpeningHours root = new NavWS.RootGetStoreOpeningHours();
 
             logger.Debug(config.LSKey.Key, "GetStoreOpeningHours Store: " + storeId);
-            navWS.GetStoreOpeningHours(ref respCode, ref errorText, storeId, ref root);
+            navQryWS.GetStoreOpeningHours(ref respCode, ref errorText, storeId, ref root);
             if (respCode != "0000")
                 return new List<StoreHours>();  // return empty list, no error
 
@@ -1280,7 +1281,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("POS Terminal", "No.", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -1299,7 +1300,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Currency", "Code", id);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -1311,7 +1312,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Shipping Agent Services", "Shipping Agent Code", agentId);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -1373,7 +1374,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 HierarchyXml xml = new HierarchyXml();
                 string xmlRequest = xml.HierarchyRequestXML(storeId);
-                string xmlResponse = RunOperation(xmlRequest);
+                string xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 list = xml.HierarchyResponseXML(xmlResponse, out nodes);
 
@@ -1381,7 +1382,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 foreach (HierarchyNode node in nodes)
                 {
                     xmlRequest = xml.HierarchyNodeRequestXML(node.HierarchyCode, node.Id);
-                    xmlResponse = RunOperation(xmlRequest);
+                    xmlResponse = RunOperation(xmlRequest, true);
                     HandleResponseCode(ref xmlResponse);
                     node.Leafs = xml.HierarchyNodeResponseXML(xmlResponse);
                 }
@@ -1392,7 +1393,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 string errorText = string.Empty;
                 NavWS.RootGetHierarchy rootRoot = new NavWS.RootGetHierarchy();
                 logger.Debug(config.LSKey.Key, "GetHierarchy - StoreId: {0}", storeId);
-                navWS.GetHierarchy(ref respCode, ref errorText, storeId, ref rootRoot);
+                navQryWS.GetHierarchy(ref respCode, ref errorText, storeId, ref rootRoot);
                 if (respCode != "0000")
                     throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
 
@@ -1427,7 +1428,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
                     logger.Debug(config.LSKey.Key, "GetHierarchyNode - HierarchyCode: {0}, NodeId: {1}, StoreId: {2}, NodeIn: {3}",
                         val.HierarchyCode, val.NodeID, storeId, Serialization.ToXml(rootNodeIn, true));
-                    navWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, rootNodeIn, ref rootNodeOut);
+                    navQryWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, rootNodeIn, ref rootNodeOut);
                     if (respCode != "0000")
                         throw new LSOmniServiceException(StatusCode.NoEntriesFound, errorText);
 
@@ -1507,7 +1508,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             MenuXml menuxml = new MenuXml();
             string xmlRequest = menuxml.MenuGetAllRequestXML(storeId, salesType);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             return menuxml.MenuGetAllResponseXML(xmlResponse, currency);
         }

@@ -11,6 +11,7 @@ using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Setup.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Pos.Items;
 using LSRetail.Omni.Domain.DataModel.Pos.Items.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Pos.Payments;
@@ -227,6 +228,58 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     receiptLines.Add(ReceiptInfoLine(transaction.Id, receiptInfo, tenderLineNumber, transaction.TransactionNumber));
                 }
                 tenderLineNumber++;
+            }
+
+            root.MobileReceiptInfo = receiptLines.ToArray();
+            root.MobileTransactionLine = transLines.ToArray();
+            return root;
+        }
+
+        public NavWS.RootMobileTransaction MapFromOrderToRoot(Order transaction)
+        {
+            NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
+
+            if (string.IsNullOrEmpty(transaction.Id))
+                transaction.Id = Guid.NewGuid().ToString();
+
+            //MobileTrans
+            List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
+            trans.Add(new NavWS.MobileTransaction()
+            {
+                Id = transaction.Id,
+                StoreId = transaction.StoreId,
+                TransactionType = 2,
+                EntryStatus = (int)EntryStatus.Normal,
+                TransDate = DateTime.Now,
+                SaleIsReturnSale = false,
+                MemberCardNo = transaction.CardId,
+                CurrencyFactor = 1,
+                TerminalId = string.Empty,
+                StaffId = string.Empty,
+                ReceiptNo = string.Empty,
+                CurrencyCode = string.Empty,
+                BusinessTAXCode = string.Empty,
+                PriceGroupCode = string.Empty,
+                CustomerId = string.Empty,
+                CustDiscGroup = string.Empty,
+                MemberPriceGroupCode = string.Empty,
+                DiningTblDescription = string.Empty,
+                SalesType = string.Empty,
+                RefundedFromStoreNo = string.Empty,
+                RefundedFromPOSTermNo = string.Empty,
+                RefundedReceiptNo = string.Empty
+            });
+            root.MobileTransaction = trans.ToArray();
+
+            //MobileTransLines
+            List<NavWS.MobileTransactionLine> transLines = new List<NavWS.MobileTransactionLine>();
+            List<NavWS.MobileReceiptInfo> receiptLines = new List<NavWS.MobileReceiptInfo>();
+
+            int lineno = 1;
+            foreach (OrderLine saleLine in transaction.OrderLines)
+            {
+                saleLine.LineNumber = lineno++;
+                transLines.Add(MobileTransLine(transaction.Id, saleLine, transaction.StoreId));
             }
 
             root.MobileReceiptInfo = receiptLines.ToArray();
@@ -542,6 +595,57 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return tline;
         }
 
+        private NavWS.MobileTransactionLine MobileTransLine(string id, OrderLine line, string storeId)
+        {
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(line.LineNumber),
+                EntryStatus = (int)EntryStatus.Normal,
+                LineType = (int)LineType.Item,
+                Number = line.ItemId,
+                StoreId = storeId,
+                CurrencyCode = string.Empty,
+                CurrencyFactor = 1,
+                VariantCode = line.VariantId,
+                UomId = line.UomId,
+                NetPrice = line.NetPrice,
+                Price = line.Price,
+                Quantity = line.Quantity,
+                DiscountAmount = line.DiscountAmount,
+                DiscountPercent = line.DiscountPercent,
+                NetAmount = line.NetAmount,
+                TAXAmount = line.TaxAmount,
+                RecommendedItem = false,
+
+                Barcode = string.Empty,
+                TAXProductCode = string.Empty,
+                TAXBusinessCode = string.Empty,
+                CardOrCustNo = string.Empty,
+                EFTCardNumber = string.Empty,
+                EFTCardName = string.Empty,
+                EFTAuthCode = string.Empty,
+                EFTMessage = string.Empty,
+                StaffId = string.Empty,
+                PriceGroupCode = string.Empty,
+                CouponCode = string.Empty,
+                TerminalId = string.Empty,
+                EFTTransactionNo = string.Empty,
+                SalesType = string.Empty,
+                ItemDescription = string.Empty,
+                LineKitchenStatusCode = string.Empty,
+                RestMenuTypeCode = string.Empty,
+                TenderDescription = string.Empty,
+                UomDescription = string.Empty,
+                VariantDescription = string.Empty,
+                OrigTransPos = string.Empty,
+                OrigTransStore = string.Empty,
+            };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
+        }
+
         private NavWS.MobileTransactionLine MobileTransLine(string id, PublishedOffer offer, int lineNumber, string storeId)
         {
             NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
@@ -613,11 +717,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             if (paymentLine.Payment.TenderType.Function == TenderTypeFunction.Cards)
             {
-                eftAuthCode = GetString(paymentLine.Payment.AuthenticationCode);
-                eftCardNumber = GetString(paymentLine.Payment.CardNumber);
-                eftCardName = GetString(paymentLine.Payment.CardType);
-                eftMessage = GetString(paymentLine.Payment.EFTMessage);
-                eftTransactionId = GetString(paymentLine.Payment.EFTTransactionId);
+                eftAuthCode = XMLHelper.GetString(paymentLine.Payment.AuthenticationCode);
+                eftCardNumber = XMLHelper.GetString(paymentLine.Payment.CardNumber);
+                eftCardName = XMLHelper.GetString(paymentLine.Payment.CardType);
+                eftMessage = XMLHelper.GetString(paymentLine.Payment.EFTMessage);
+                eftTransactionId = XMLHelper.GetString(paymentLine.Payment.EFTTransactionId);
                 eftAuthStatus = paymentLine.Payment.AuthorizationStatus;
                 paymentTransactionType = paymentLine.Payment.TransactionType;
                 verificationMethod = paymentLine.Payment.VerificationMethod;

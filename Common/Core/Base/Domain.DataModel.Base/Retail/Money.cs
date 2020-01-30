@@ -10,7 +10,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
     /// <summary>
     /// This is an immutable Value class.
     /// </summary>
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public sealed class Money
     {
         [DataMember]

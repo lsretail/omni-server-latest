@@ -10,6 +10,7 @@ var
   NavSQLPage_chkSQLAuth: TRadioButton;
   NavSQLPage_chkWindowsAuth: TRadioButton;
   NavSQLPage_ConnectButton : TButton;
+  NavSQLPage_V15CheckBox: TCheckBox; 
   
   NavSQLPage_txtServer: TEdit;
   NavSQLPage_txtUsername: TEdit;
@@ -93,7 +94,11 @@ begin
 
 	ADOCommand := CreateOleObject('ADODB.Command');
 	ADOCommand.ActiveConnection := ADOConnection;
-    ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup]';
+	if NavSQLPage_V15CheckBox.Checked then
+      ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]'
+	else
+      ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup]';
+
 	ADOCommand.CommandType := adCmdText;
     Log('NavSQLPageADOTestConnection query: ' + ADOCommand.CommandText);
 	ADORecordset := ADOCommand.Execute;
@@ -222,6 +227,19 @@ begin
     TabOrder := 3;
   end;
 
+  { NavSQLPage_V15CheckBox }
+  NavSQLPage_V15CheckBox := TCheckBox.Create(NavSQLPage);
+  with NavSQLPage_V15CheckBox do
+  begin
+    Parent := NavSQLPage.Surface;
+    Left := ScaleX(175);
+    Top := ScaleY(74);
+    Width := NavSQLPage.SurfaceWidth;
+    Height := ScaleY(18);
+    Caption := 'BC 15';
+    Checked := False;
+  end;
+
   { lblAuthType }
   NavSQLPage_lblAuthType := TLabel.Create(NavSQLPage);
   with NavSQLPage_lblAuthType do
@@ -229,7 +247,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption :=  'Log on credentials';
     Left := ScaleX(24);
-    Top := ScaleY(82);
+    Top := ScaleY(92);
     Width := ScaleX(87);
     Height := ScaleY(13);
     Enabled := False;
@@ -242,7 +260,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Use Windows Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(98);
+    Top := ScaleY(108);
     Width := ScaleX(177);
     Height := ScaleY(17);
     Checked := True;
@@ -259,7 +277,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Use SQL Server Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(118);
+    Top := ScaleY(128);
     Width := ScaleX(185);
     Height := ScaleY(17);
     TabOrder := 5;
@@ -274,7 +292,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'User (dbowner):' ;
     Left := ScaleX(60);
-    Top := ScaleY(141);
+    Top := ScaleY(151);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := False;
@@ -285,7 +303,7 @@ begin
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(138);
+    Top := ScaleY(148);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := False;
@@ -299,7 +317,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Password:' ;
     Left := ScaleX(60);
-    Top := ScaleY(165);
+    Top := ScaleY(175);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := False;
@@ -310,7 +328,7 @@ begin
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(162);
+    Top := ScaleY(172);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := False;
@@ -323,7 +341,7 @@ begin
     begin
       Parent := NavSQLPage.Surface;
       Left := ScaleX(145);
-      Top := ScaleY(192);
+      Top := ScaleY(202);
       Width := ScaleX(141);
       Height := ScaleY(21);
       Enabled := False;

@@ -148,9 +148,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     throw new XmlException("Item_No node not found in response xml");
                 ola.ItemId = line.Element("Item_No").Value;
 
-                if (line.Element("Variant_Code") == null)
-                    throw new XmlException("Variant_Code node not found in response xml");
-                ola.VariantId = line.Element("Variant_Code").Value;
+                if (line.Element("Variant_Code") != null)
+                    ola.VariantId = line.Element("Variant_Code").Value;
 
                 if (line.Element("Location_Code") == null)
                     throw new XmlException("Location_Code node not found in response xml");
@@ -362,7 +361,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                     new XElement("Customer_Order_Header",
                         new XElement("Document_Id", rq.Id),
-                        new XElement("Store_No.", (rq.ClickAndCollectOrder && string.IsNullOrEmpty(rq.CollectLocation) == false) ? rq.CollectLocation : rq.StoreId),
+                        new XElement("Store_No.", (rq.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(rq.CollectLocation) == false) ? rq.CollectLocation : rq.StoreId),
                         new XElement("Member_Card_No.", rq.CardId),
                         new XElement("Member_Contact_No.", rq.ContactId),
                         new XElement("Member_Contact_Name", rq.ContactName),
@@ -391,7 +390,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         new XElement("Ship_To_Phone_No.", rq.ShipToPhoneNumber),
                         new XElement("Ship_To_Email", rq.ShipToEmail),
                         new XElement("Ship_To_House_Apartment_No.", rq.ShipToAddress.HouseNo),
-                        new XElement("Click_And_Collect_Order", rq.ClickAndCollectOrder),
+                        new XElement("Click_And_Collect_Order", (rq.OrderType == OrderType.ClickAndCollect)),
                         new XElement("Anonymous_Order", string.IsNullOrEmpty(rq.CardId)),
                         new XElement("Collect_Location", string.Empty),
                         new XElement("Created_at_Store", rq.StoreId),

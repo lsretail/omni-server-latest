@@ -130,7 +130,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     continue;
 
                 string xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
-                string xmlResponse = RunOperation(xmlRequest);
+                string xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -211,7 +211,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Hierarchy Date", "Store Code", storeId);
-            string xmlResponse = RunOperation(xmlRequest);
+            string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -222,7 +222,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string hircode = field.Values[0];
 
             xmlRequest = xml.GetGeneralWebRequestXML("Hierarchy", "Hierarchy Code", hircode);
-            xmlResponse = RunOperation(xmlRequest);
+            xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
 
@@ -306,7 +306,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 string xmlResponse;
                 NAVWebXml xml = new NAVWebXml();
                 xmlRequest = xml.GetGeneralWebRequestXML("Shipping Agent Services", "Shipping Agent Code", sa.Id);
-                xmlResponse = RunOperation(xmlRequest);
+                xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
                 sa.Services = GetShippingAgentService(sa.Id);

@@ -186,7 +186,7 @@ namespace LSOmni.Common.Util
 
         public static byte[] NAVUnCompressImage(byte[] image)
         {
-            if (image.Length < 4)
+            if (image == null || image.Length < 4)
                 return image;
 
             byte[] cmp = { 0x02, 0x45, 0x7d, 0x5b };  // Compress bytes in begining of nav image

@@ -22,69 +22,109 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string externalIdString = (navVersion > new Version("13.5")) ? "''" : "NULL";
             string cac = (navVersion > new Version("13.5")) ? "Click and Collect Order" : "ClickAndCollectOrder";
             string cac2 = (navVersion > new Version("13.5")) ? "Click and Collect Order" : "Click And Collect Order";
-            string date = (navVersion > new Version("14.2")) ? "Created" : "Document DateTime";
-            string full = (navVersion > new Version("14.2")) ? "Name" : "Full Name";
             string shipto = (navVersion > new Version("13.5")) ? "Ship-to " : "Ship To ";
-            string shiptoPost = (navVersion > new Version("13.5")) ? "Ship-to " + full : "ShipToFullName";
-            string receiptNo = (navVersion > new Version("14.2")) ? documentId : "Receipt No_";
-            string extralookup = (navVersion > new Version("14.2")) ? "AND (SELECT COUNT(*) FROM [" + navCompanyName + "Transaction Header] WHERE [Customer Order ID]=[Document ID])=0" : string.Empty;
+            string shiptoPost = (navVersion > new Version("13.5")) ? "Ship-to Full Name" : "ShipToFullName";
 
-            sql = "(" +
-                "SELECT mt.[Document No_] AS [Document ID],MAX(mt.[Store No_]) AS [Store No_],MAX(mt.[Date]) AS [Date]," +
-                "MAX(mt.[Member Card No_]) AS [Member Card No_],1 AS [Posted],0 AS [PayCount]," +
-                externalIdString + " AS [External ID],0 AS [Click and Collect Order],'' AS [ShipName]," +
-                "MAX(mt.[Transaction No_]) AS [Transaction No_],SUM(mt.[Quantity]) AS [Quantity]," +
-                "SUM(mt.[Net Amount]) AS [Net Amount],SUM(mt.[Gross Amount]) AS [Gross Amount],SUM(mt.[Discount Amount]) AS [Discount Amount]," +
-                "MAX(st.[Name]) AS [Name],MAX(mt.[POS Terminal No_]) AS [POS Terminal No_],1 AS [Transaction] " +
-                "FROM [" + navCompanyName + "Member Sales Entry] mt " +
-                "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
-                "WHERE [Transaction No_]!=0 GROUP BY [Document No_] " +
-                "UNION " +
-                "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[" + date + "],mt.[Member Card No_], 0 AS Posted," +
-                "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS PayCount," +
-                "mt.[" + externalId + "],mt.[" + cac2 + "],mt.[" + shipto + full + "] AS ShipName," +
-                "'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
-                "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_],0 AS [Transaction] " +
-                "FROM [" + navCompanyName + "Customer Order Header] mt " +
-                "UNION " +
-                "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[" + date + "],mt.[Member Card No_],1 AS Posted," +
-                "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS PayCount," +
-                "mt.[" + externalId + "],mt.[" + cac + "],mt.[" + shiptoPost + "] AS ShipName," +
-                "'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
-                "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_],0 AS [Transaction] " +
-                "FROM [" + navCompanyName + "Posted Customer Order Header] mt " +
-                "WHERE (SELECT COUNT(*) FROM [" + navCompanyName + "Member Sales Entry] se WHERE se.[Document No_]=mt.[" + receiptNo + "])=0" +
-                ") AS SalesEntries WHERE [Member Card No_]=@id " + extralookup + " ORDER BY [Date] DESC";
+            if (navVersion > new Version("14.2"))
+            {
+                sql = "(" +
+                    "SELECT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date]," +
+                    "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC],co.[Ship-to Name] AS [ShipName]," +
+                    "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name],mt.[POS Terminal No_],mt.[Transaction No_] " +
+                    "FROM [" + navCompanyName + "Transaction Header] mt " +
+                    "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
+                    "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                    "UNION " +
+                    "SELECT mt.[Document ID] AS [Document ID],mt.[Store No_],mt.[Created] AS [Date]," +
+                    "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC],mt.[Ship-to Name] AS [ShipName]," +
+                    "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
+                    "FROM [" + navCompanyName + "Customer Order Header] mt " +
+                    "JOIN [" + navCompanyName + "Store] st ON st.[No_]= mt.[Store No_] " +
+                    ") AS SalesEntries " +
+                    "WHERE [Member Card No_]=@id " +
+                    "ORDER BY [Date] DESC";
 
-            sqlSearch = "(" +
-                "SELECT DISTINCT mt.[Document No_] AS [Document ID],MAX(mt.[Store No_]) AS [Store No_],MAX(mt.[Date]) AS [Date]," +
-                "MAX(mt.[Member Card No_]) AS [Member Card No_],1 AS [Posted],0 AS [PayCount]," +
-                externalIdString + " AS [External ID],0 AS [Click and Collect Order],'' AS [ShipName]," +
-                "MAX(mt.[Transaction No_]) AS [Transaction No_],SUM(mt.[Quantity]) AS [Quantity]," +
-                "SUM(mt.[Net Amount]) AS [Net Amount],SUM(mt.[Gross Amount]) AS [Gross Amount],SUM(mt.[Discount Amount]) AS [Discount Amount]," +
-                "MAX(st.[Name]) AS [Name],MAX(mt.[POS Terminal No_]) AS [POS Terminal No_],1 AS [Transaction] " +
-                "FROM [" + navCompanyName + "Member Sales Entry] mt " +
-                "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
-                "INNER JOIN [" + navCompanyName + "Item] i ON mt.[Item No_]=i.[No_] " +
-                "WHERE [Transaction No_]!=0 AND UPPER(i.Description) LIKE UPPER(@search) GROUP BY [Document No_] " +
-                "UNION " +
-                "SELECT DISTINCT mt.[" + documentId + "],mt.[Store No_],mt.[" + date + "],mt.[Member Card No_], 0 AS [Posted]," +
-                "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS [PayCount]," +
-                "mt.[" + externalId + "],mt.[" + cac2 + "],mt.[" + shipto + full + "] AS [ShipName],'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
-                "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_],0 AS [Transaction] " +
-                "FROM [" + navCompanyName + "Customer Order Header] mt " +
-                "INNER JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
-                "WHERE UPPER([Item Description]) LIKE UPPER(@search) " +
-                "UNION " +
-                "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[" + date + "],mt.[Member Card No_],1 AS [Posted]," +
-                "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS [PayCount]," +
-                "mt.[" + externalId + "],mt.[" + cac + "],mt.[" + shiptoPost + "] AS [ShipName],'' AS [Transaction No_], 0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
-                "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_], 0 AS [Transaction] " +
-                "FROM [" + navCompanyName + "Posted Customer Order Header] mt " +
-                "INNER JOIN [" + navCompanyName + "Posted Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
-                "WHERE (SELECT COUNT(*) FROM [" + navCompanyName + "Member Sales Entry] se WHERE se.[Document No_]=mt.[" + receiptNo + "])=0 " +
-                "AND UPPER([Item Description]) LIKE UPPER(@search) " +
-                ") AS SalesEntries WHERE [Member Card No_]=@id " + extralookup + " ORDER BY [Date] DESC";
+                sqlSearch = "(" +
+                    "SELECT DISTINCT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date]," +
+                    "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC],co.[Ship-to Name] AS [ShipName]," +
+                    "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name],mt.[POS Terminal No_],mt.[Transaction No_] " +
+                    "FROM [" + navCompanyName + "Transaction Header] mt " +
+                    "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
+                    "INNER JOIN [" + navCompanyName + "Trans_ Sales Entry] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
+                    "INNER JOIN [" + navCompanyName + "Item] i ON i.[No_]=tl.[Item No_]" +
+                    "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                    "WHERE UPPER(i.[Description]) LIKE UPPER(@search) " +
+                    "UNION " +
+                    "SELECT DISTINCT mt.[Document ID] AS [Document ID],mt.[Store No_],mt.[Created] AS [Date]," +
+                    "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC],mt.[Ship-to Name] AS [ShipName]," +
+                    "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
+                    "FROM [" + navCompanyName + "Customer Order Header] mt " +
+                    "INNER JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[Document ID]=mt.[Document ID] " +
+                    "JOIN [" + navCompanyName + "Store] st ON st.[No_]= mt.[Store No_] " +
+                    "WHERE UPPER(ol.[Item Description]) LIKE UPPER(@search) " +
+                    ") AS SalesEntries " +
+                    "WHERE [Member Card No_]=@id " +
+                    "ORDER BY [Date] DESC";
+            }
+            else
+            {
+                sql = "(" +
+                    "SELECT mt.[Document No_] AS [Document ID],MAX(mt.[Store No_]) AS [Store No_],MAX(mt.[Date]) AS [Date]," +
+                    "MAX(mt.[Member Card No_]) AS [Member Card No_],1 AS [Posted],0 AS [PayCount]," +
+                    externalIdString + " AS [External ID],1 AS [CAC],'' AS [ShipName]," +
+                    "MAX(mt.[Transaction No_]) AS [Transaction No_],SUM(mt.[Quantity]) AS [Quantity]," +
+                    "SUM(mt.[Net Amount]) AS [Net Amount],SUM(mt.[Gross Amount]) AS [Gross Amount],SUM(mt.[Discount Amount]) AS [Discount Amount]," +
+                    "MAX(st.[Name]) AS [Name],MAX(mt.[POS Terminal No_]) AS [POS Terminal No_],1 AS [Transaction] " +
+                    "FROM [" + navCompanyName + "Member Sales Entry] mt " +
+                    "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
+                    "WHERE [Transaction No_]!=0 GROUP BY [Document No_] " +
+                    "UNION " +
+                    "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_], 0 AS Posted," +
+                    "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS PayCount," +
+                    "mt.[" + externalId + "],mt.[" + cac2 + "] AS [CAC],mt.[" + shipto + "Full Name] AS ShipName," +
+                    "'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
+                    "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_],0 AS [Transaction] " +
+                    "FROM [" + navCompanyName + "Customer Order Header] mt " +
+                    "UNION " +
+                    "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_],1 AS Posted," +
+                    "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS PayCount," +
+                    "mt.[" + externalId + "],mt.[" + cac + "] AS [CAC],mt.[" + shiptoPost + "] AS ShipName," +
+                    "'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
+                    "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_],0 AS [Transaction] " +
+                    "FROM [" + navCompanyName + "Posted Customer Order Header] mt " +
+                    "WHERE (SELECT COUNT(*) FROM [" + navCompanyName + "Member Sales Entry] se WHERE se.[Document No_]=mt.[Receipt No_])=0" +
+                    ") AS SalesEntries WHERE [Member Card No_]=@id ORDER BY [Date] DESC";
+
+                sqlSearch = "(" +
+                    "SELECT DISTINCT mt.[Document No_] AS [Document ID],MAX(mt.[Store No_]) AS [Store No_],MAX(mt.[Date]) AS [Date]," +
+                    "MAX(mt.[Member Card No_]) AS [Member Card No_],1 AS [Posted],0 AS [PayCount]," +
+                    externalIdString + " AS [External ID],1 AS [CAC],'' AS [ShipName]," +
+                    "MAX(mt.[Transaction No_]) AS [Transaction No_],SUM(mt.[Quantity]) AS [Quantity]," +
+                    "SUM(mt.[Net Amount]) AS [Net Amount],SUM(mt.[Gross Amount]) AS [Gross Amount],SUM(mt.[Discount Amount]) AS [Discount Amount]," +
+                    "MAX(st.[Name]) AS [Name],MAX(mt.[POS Terminal No_]) AS [POS Terminal No_],1 AS [Transaction] " +
+                    "FROM [" + navCompanyName + "Member Sales Entry] mt " +
+                    "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
+                    "INNER JOIN [" + navCompanyName + "Item] i ON mt.[Item No_]=i.[No_] " +
+                    "WHERE [Transaction No_]!=0 AND UPPER(i.Description) LIKE UPPER(@search) GROUP BY [Document No_] " +
+                    "UNION " +
+                    "SELECT DISTINCT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_], 0 AS [Posted]," +
+                    "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS [PayCount]," +
+                    "mt.[" + externalId + "],mt.[" + cac2 + "] AS [CAC],mt.[" + shipto + "Full Name] AS [ShipName],'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
+                    "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_],0 AS [Transaction] " +
+                    "FROM [" + navCompanyName + "Customer Order Header] mt " +
+                    "INNER JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
+                    "WHERE UPPER([Item Description]) LIKE UPPER(@search) " +
+                    "UNION " +
+                    "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_],1 AS [Posted]," +
+                    "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS [PayCount]," +
+                    "mt.[" + externalId + "],mt.[" + cac + "] AS [CAC],mt.[" + shiptoPost + "] AS [ShipName],'' AS [Transaction No_], 0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
+                    "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [Name],'' AS [POS Terminal No_], 0 AS [Transaction] " +
+                    "FROM [" + navCompanyName + "Posted Customer Order Header] mt " +
+                    "INNER JOIN [" + navCompanyName + "Posted Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
+                    "WHERE (SELECT COUNT(*) FROM [" + navCompanyName + "Member Sales Entry] se WHERE se.[Document No_]=mt.[Receipt No_])=0 " +
+                    "AND UPPER([Item Description]) LIKE UPPER(@search) " +
+                    ") AS SalesEntries WHERE [Member Card No_]=@id ORDER BY [Date] DESC";
+            }
         }
 
         public List<SalesEntry> SalesEntriesByCardId(string cardId, int maxNrOfEntries)
@@ -101,9 +141,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        bool trans = false;
                         while (reader.Read())
                         {
-                            if (SQLHelper.GetBool(reader["Transaction"]))
+                            trans = (NavVersion > new Version("14.2")) ? (SQLHelper.GetInt32(reader["Transaction No_"]) > 0) : SQLHelper.GetBool(reader["Transaction"]);
+                            if (trans)
                                 list.Add(TransactionToSalesEntry(reader, false));
                             else
                                 list.Add(OrderToSalesEntry(reader, false));
@@ -123,13 +165,26 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Transaction No_],MAX(mt.[Member Card No_]) AS [Member Card No_],SUM(mt.[Quantity]) AS [Quantity]," +
-                        "SUM(mt.[Net Amount]) AS [Net Amount],SUM(mt.[Gross Amount]) AS[Gross Amount],SUM(mt.[Discount Amount]) AS[Discount Amount],MAX(mt.[Date]) AS [Date]," +
-                        "MAX(mt.[Store No_]) AS [Store No_], MAX(st.[Name]) AS [Name],MAX(mt.[POS Terminal No_]) AS[POS Terminal No_],MAX(mt.[Document No_]) AS [Document ID] " +
-                        "FROM [" + navCompanyName + "Member Sales Entry] mt " +
-                        "JOIN [" + navCompanyName + "Store] st on st.[No_]=mt.[Store No_] " +
-                        "WHERE [Document No_]=@id " +
-                        "GROUP BY [Transaction No_]";
+                    if (NavVersion > new Version("14.2"))
+                    {
+                        command.CommandText = "SELECT mt.[Member Card No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
+                            "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name],mt.[POS Terminal No_],mt.[Transaction No_]," +
+                            "co.[External ID] AS [External ID],co.[Ship-to Name] AS [ShipName],mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC] " +
+                            "FROM [" + navCompanyName + "Transaction Header] mt " +
+                            "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
+                            "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                            "WHERE [Receipt No_]=@id";
+                    }
+                    else
+                    {
+                        command.CommandText = "SELECT mt.[Transaction No_],MAX(mt.[Member Card No_]) AS [Member Card No_],SUM(mt.[Quantity]) AS [Quantity],1 AS [CAC]," +
+                            "SUM(mt.[Net Amount]) AS [Net Amount],SUM(mt.[Gross Amount]) AS[Gross Amount],SUM(mt.[Discount Amount]) AS[Discount Amount],MAX(mt.[Date]) AS [Date]," +
+                            "MAX(mt.[Store No_]) AS [Store No_], MAX(st.[Name]) AS [Name],MAX(mt.[POS Terminal No_]) AS[POS Terminal No_],MAX(mt.[Document No_]) AS [Document ID] " +
+                            "FROM [" + navCompanyName + "Member Sales Entry] mt " +
+                            "JOIN [" + navCompanyName + "Store] st on st.[No_]=mt.[Store No_] " +
+                            "WHERE [Document No_]=@id " +
+                            "GROUP BY [Transaction No_]";
+                    }
 
                     command.Parameters.AddWithValue("@id", entryId);
                     TraceSqlCommand(command);
@@ -178,9 +233,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        bool trans = false;
                         while (reader.Read())
                         {
-                            if (SQLHelper.GetBool(reader["Transaction"]))
+                            trans = (NavVersion > new Version("14.2")) ? (SQLHelper.GetInt32(reader["Transaction No_"]) > 0) : SQLHelper.GetBool(reader["Transaction"]);
+                            if (trans)
                                 list.Add(TransactionToSalesEntry(reader, includeLines));
                             else
                                 list.Add(OrderToSalesEntry(reader, includeLines));
@@ -233,22 +290,34 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 Id = SQLHelper.GetString(reader["Document ID"]),
                 IdType = DocumentIdType.Receipt,
-                LineItemCount = (int)SQLHelper.GetDecimal(reader, "Quantity", true),
+                LineItemCount = (int)SQLHelper.GetDecimal(reader, "Quantity", false),
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
                 TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
                 TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
                 DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
-                ClickAndCollectOrder = false,
+                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
                 AnonymousOrder = false,
                 Status = SalesEntryStatus.Complete,
                 PaymentStatus = PaymentStatus.Posted,
                 Posted = true,
-                ShippingStatus = ShippingStatus.ShippigNotRequired,
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 StoreName = SQLHelper.GetString(reader["Name"]),
+                ExternalId = SQLHelper.GetString(reader["External ID"]),
+                ShipToName = SQLHelper.GetString(reader["ShipName"])
             };
+
+            if (NavVersion > new Version("14.2"))
+            {
+                entry.ReceiptNo = SQLHelper.GetString(reader["Receipt No_"]);
+                if (string.IsNullOrEmpty(entry.Id))
+                    entry.Id = entry.ReceiptNo;
+            }
+            else
+            {
+                entry.ReceiptNo = entry.Id;
+            }
 
             SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
             entry.PointsRewarded = rewarded;
@@ -256,8 +325,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (includeLines)
             {
-                entry.Lines = TransSalesEntryLinesGet(entry.Id);
-                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, SQLHelper.GetString(reader["POS Terminal No_"]), "");
+                entry.Lines = TransSalesEntryLinesGet(entry.ReceiptNo);
+                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, entry.TerminalId, "");
             }
             return entry;
         }
@@ -273,17 +342,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 Status = SalesEntryStatus.Created,
                 StoreName = SQLHelper.GetString(reader["Name"]),
-                ShipToName = SQLHelper.GetString(reader["ShipName"])
+                ShipToName = SQLHelper.GetString(reader["ShipName"]),
+                ExternalId = SQLHelper.GetString(reader["External ID"]),
+                Posted = SQLHelper.GetBool(reader["Posted"]),
+                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"])
             };
 
-            salesEntry.Posted = SQLHelper.GetBool(reader["Posted"]);
-            salesEntry.ClickAndCollectOrder = SQLHelper.GetBool(reader["Click And Collect Order"]);
             salesEntry.AnonymousOrder = string.IsNullOrEmpty(salesEntry.CardId);
-
-            salesEntry.ExternalId = SQLHelper.GetString(reader["External ID"]);
-
-            int copay = SQLHelper.GetInt32(reader["PayCount"]);
-            salesEntry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
             salesEntry.ShippingStatus = (salesEntry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
 
             OrderLinesGetTotals(salesEntry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
@@ -343,9 +408,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Store No_],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Line No_],ml.[Tender Type],ml.[Amount Tendered],ml.[Currency Code],ml.[Amount in Currency],t.[Description]" +
+                                "ml.[Line No_],ml.[Tender Type],ml.[Exchange Rate],ml.[Currency Code],ml.[Amount in Currency],ml.[Card or Account]" +
                                 " FROM [" + navCompanyName + "Trans_ Payment Entry] ml" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "Tender Type] t ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_]" +
                                 " WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid" +
                                 " ORDER BY ml.[Line No_]";
                     command.Parameters.AddWithValue("@id", transId);
@@ -375,12 +439,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    string orderid = (NavVersion > new Version("14.2")) ? "Customer Order ID" : "External Document No_";
-                    //Awarded points are linked to Sales Invoice Id
-                    command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Sales Invoice Header] WHERE [" + orderid + "]=@id";
+                    string orderid = (NavVersion > new Version("14.2")) ? "Customer Order ID" : "Customer Order No_";
+                    command.CommandText = "SELECT [Receipt No_] FROM [" + navCompanyName + "Transaction Header] WHERE [" + orderid + "]=@id";
                     command.Parameters.AddWithValue("@id", entryId);
                     TraceSqlCommand(command);
-                    logger.Info(config.LSKey.Key, "ORDERID: " + entryId);
+                    logger.Info(config.LSKey.Key, "ReceiptNo: " + entryId);
                     connection.Open();
                     string salesId = (string)command.ExecuteScalar();
 
@@ -467,7 +530,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 LineNumber = ConvertTo.SafeInt(SQLHelper.GetString(reader["Line No_"])),
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
-                Amount = SQLHelper.GetDecimal(reader, "Amount Tendered", false),
+                Amount = SQLHelper.GetDecimal(reader["Amount in Currency"], false),
+                CurrencyFactor = SQLHelper.GetDecimal(reader["Exchange Rate"], false),
+                CardNo = SQLHelper.GetString(reader["Card or Account"]),
+                CurrencyCode = SQLHelper.GetString(reader["Currency Code"])
             };
         }
 

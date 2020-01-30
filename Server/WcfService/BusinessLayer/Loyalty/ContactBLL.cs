@@ -99,7 +99,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 throw new LSOmniServiceException(StatusCode.UserNameExists, "User name already exists: " + contact.UserName);
             }
-            if (BOLoyConnection.ContactGetByEMail(contact.Email, false) != null)
+            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && BOLoyConnection.ContactGetByEMail(contact.Email, false) != null)
             {
                 throw new LSOmniServiceException(StatusCode.EmailExists, "Email already exists: " + contact.UserName);
             }
@@ -168,7 +168,7 @@ namespace LSOmni.BLL.Loyalty
             if (ct == null)
                 throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact not found with CardId: " + contact.Cards.FirstOrDefault().Id);
 
-            if (ct.Email.Trim().ToLower() != contact.Email.Trim().ToLower())
+            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && (ct.Email.Trim().ToLower() != contact.Email.Trim().ToLower()))
             {
                 //if the email has changed, check if the new one exists in db
                 if (BOLoyConnection.ContactGetByEMail(contact.Email, false) != null)
@@ -350,7 +350,7 @@ namespace LSOmni.BLL.Loyalty
 
             //get the username from resetCode, if resetCode is not specified
             MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
-            if (contact == null)
+            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && contact == null)
                 contact = BOLoyConnection.ContactGetByEMail(userNameOrEmail, false);
 
             if (contact == null)

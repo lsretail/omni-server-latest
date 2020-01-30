@@ -34,6 +34,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             Description = string.Empty;
             OpenFrom = new DateTime(1900, 1, 1);
             OpenTo = new DateTime(1900, 1, 1);
+            StartDate = new DateTime(1900, 1, 1);
+            EndDate = new DateTime(1900, 1, 1);
             StoreHourtype = StoreHourType.MainStore;
             Type = StoreHourOpeningType.Normal;
         }
@@ -70,6 +72,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public DateTime OpenFrom { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime OpenTo { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        public DateTime StartDate { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        public DateTime EndDate { get; set; }
         [DataMember]
         public StoreHourOpeningType Type { get; set; }
     }

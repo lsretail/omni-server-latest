@@ -89,11 +89,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public bool Posted { get; set; }
         /// <summary>
-        /// Sales Order or Click and Collect Order
-        /// Click And Collect order are processed in the store at POS Terminal
+        /// Type of Order
+        /// ClickAndCollect order are processed in the store at POS Terminal.  ScanPayGo are for Instore shopping apps.
         /// </summary>
         [DataMember(IsRequired = true)]
-        public bool ClickAndCollectOrder { get; set; }
+        public OrderType OrderType { get; set; }
         /// <summary>
         /// Store to collect Click And Collect Order from
         /// </summary>
@@ -186,6 +186,19 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             return string.Format("Id:{0} StoreId:{1} CardId:{2} ContactId:{3} OrderLineCreateRequests:{4} OrderDiscountLineCreateRequests:{5}",
                 Id, StoreId, CardId, ContactId, req, osldreq);
         }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public enum OrderType
+    {
+        [EnumMember]
+        Sale,
+        [EnumMember]
+        ClickAndCollect,
+        [EnumMember]
+        ScanPayGo,
+        [EnumMember]
+        ScanPayGoSuspend
     }
 }
 

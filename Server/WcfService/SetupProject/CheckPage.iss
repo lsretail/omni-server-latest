@@ -16,8 +16,8 @@ var
 
 procedure CheckCustomForm_Activate(Page: TWizardPage);
 begin
-    Log('CheckCustomForm_Activate called');
-    WizardForm.NextButton.Enabled := True;
+  Log('CheckCustomForm_Activate called');
+  WizardForm.NextButton.Enabled := True;
 end;
 
 procedure OnClickSQL(Sender: TObject);
@@ -155,5 +155,3 @@ begin
 
   Result := CheckPage;
 end;
-
-

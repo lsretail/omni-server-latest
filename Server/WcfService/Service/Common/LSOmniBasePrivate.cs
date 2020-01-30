@@ -34,8 +34,8 @@ namespace LSOmni.Service
                 logger.Info(config.LSKey.Key, "imgView is null");
                 return "";
             }
-            // return http://localhost/LSOmniService/json.svc/ImageStreamGetById?id=66&width=255&height=455
-            return BaseUrlReturnedToClient() + @"/ImageStreamGetById?id=" + imgView.Id + "&width={0}&height={1}";
+            // return http://localhost/LSOmniService/ucjson.svc/ImageStreamGetById?id=66&width=255&height=455
+            return string.Format("{0}/ImageStreamGetById?id={1}&width={2}&height={3}", BaseUrlReturnedToClient(), imgView.Id, imgView.ImgSize.Width, imgView.ImgSize.Height);
         }
 
         private string BaseUrlReturnedToClient()
@@ -56,17 +56,15 @@ namespace LSOmni.Service
             //  baseUriOrignalString =  http://macbookjij.lsretail.local/LSOmniService/Json.svc   
 
             //find the index of .svc just in case some crap is added to baseOriginalString
-            string svc = ".svc"; //http://macbookjij.lsretail.local/LSOmniService/Json.svc/ 
+            string svc = "ucservice.svc"; //http://macbookjij.lsretail.local/LSOmniService/Json.svc/ 
             string srvUrl = baseUriOrignalString.ToLower();  //note orgianlString also has the port number = good
 
             int idx = srvUrl.IndexOf(svc);
             if (idx > 0)
             {
-                srvUrl = srvUrl.Substring(0, idx + 4); // => http://macbookjij.lsretail.local/LSOmniService/json.svc
+                srvUrl = srvUrl.Substring(0, idx); // => http://macbookjij.lsretail.local/LSOmniService/json.svc
+                srvUrl += "ucjson.svc";
             }
-            else
-                logger.Debug(config.LSKey.Key, "baseUriOrignalString {0}  something not correct here..", srvUrl);
-
             return srvUrl;
         }
 
@@ -163,6 +161,8 @@ namespace LSOmni.Service
 
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Url"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Url");
+                if (ConfigSetting.KeyExists("BOConnection.Nav.QryUrl"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.QryUrl");
 
                 if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");
@@ -184,6 +184,10 @@ namespace LSOmni.Service
             else if (ConfigSetting.KeyExists("LSOneConnection.LSOneUser"))
             {
                 //TODO: get LS One config from appsettings
+            }
+            else if (serverUri.Contains("PortalService.svc") || serverUri.Contains("PortalJson.svc"))
+            {
+                config = bll.ConfigGet("");
             }
             else
             {

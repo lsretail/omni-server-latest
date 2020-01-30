@@ -16,6 +16,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         BOUrl = 3,
         [EnumMember]
         EComUrl = 4,
+        [EnumMember]
+        BOQryUrl = 5,
 
         [EnumMember]
         forgotpassword_code_encrypted = 10,
@@ -72,6 +74,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         LSNAV_Version = 1100,  //only useful when all is in LSOmni, MPOS not using this..
         Demo_Print_Enabled = 1110,
         Timezone_HoursOffset = 1111,
+        Allow_Dublicate_Email = 1150,
+
+        ScanPayGo_Terminal = 1181,
+        ScanPayGo_Staff = 1182,
+
         Cache_Image_DurationInMinutes = 1200,
 
         TenderType_Mapping = 1280,

@@ -24,5 +24,11 @@ namespace LSRetail.Omni.DiscountEngine.Interfaces
         /// <param name="offerId"></param>
         /// <returns></returns>
         List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId);
+        /// <summary>
+        /// Gets the price for an item
+        /// </summary>
+        /// <param name="itemId"></param>
+        /// <returns></returns>
+        decimal PriceGetByItem(string storeId, string itemId, string variantId);
     }
 }

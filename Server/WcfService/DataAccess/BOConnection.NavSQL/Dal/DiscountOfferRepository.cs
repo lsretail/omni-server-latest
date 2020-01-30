@@ -14,7 +14,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     public class DiscountOfferRepository : BaseRepository
     {
         // Key: Store No., Priority No., Item No., Variant Code, Customer Disc. Group, Loyalty Scheme Code, From Date, To Date, Minimum Quantity
-        const int TABLEID = 10012862;
+        const int TABLEID = 99001453;
         const int VTABLEID = 99001481;
 
         private string sqlcolumns = string.Empty;
@@ -54,10 +54,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
+            if (string.IsNullOrWhiteSpace(maxKey))
+                maxKey = "0";
 
-            SQLHelper.CheckForSQLInjection(storeId);
-
-            // use actions for 99001453-Periodic Discount table as we only have actions there
+            // get all prices for a item that has changed
             List<JscKey> keys = new List<JscKey>()
             {
                 new JscKey()
@@ -67,23 +67,21 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
             };
 
+            SQLHelper.CheckForSQLInjection(storeId);
+
             // get records remaining
-            string sql = string.Empty;
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
-            if (fullReplication)
-            {
-                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
-            }
 
-            // we use action count for peroidic discounts as WI Discounts does not have any actions
-            recordsRemaining = GetRecordCount(99001453, lastKey, sql, keys, ref maxKey);
+            string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
-            List<JscActions> actions = LoadActions(fullReplication, 99001453, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplDiscount> list = new List<ReplDiscount>();
+            int rr = 0;
+            List<JscActions> actions = LoadActions(fullReplication, TABLEID, 0, ref maxKey, ref rr);
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, where, true);
+            sql = GetSQL(true, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, where, true);
 
+            List<ReplDiscount> list = new List<ReplDiscount>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -91,56 +89,52 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     command.CommandText = sql;
 
-                    if (fullReplication)
+                    JscActions act = new JscActions(lastKey);
+                    SetWhereValues(command, act, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        JscActions act = new JscActions(lastKey);
-                        SetWhereValues(command, act, keys, true, true);
-                        TraceSqlCommand(command);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        int cnt = 0;
+                        while (reader.Read())
                         {
-                            int cnt = 0;
-                            while (reader.Read())
-                            {
-                                list.Add(ReaderToDiscount(reader, out lastKey));
-                                cnt++;
-                            }
-                            reader.Close();
-                            recordsRemaining -= cnt;
+                            list.Add(ReaderToDiscount(reader, out lastKey));
+                            cnt++;
                         }
-                        if (recordsRemaining <= 0)
-                            lastKey = maxKey;   // this should be the highest PreAction id;
+                        reader.Close();
+                        recordsRemaining -= cnt;
                     }
-                    else
+
+                    // find deleted items
+                    if (fullReplication == false)
                     {
-                        bool first = true;
-                        foreach (JscActions act in actions)
+                        foreach (JscActions a in actions)
                         {
-                            if (act.Type == DDStatementType.Delete)
+                            if (a.Type == DDStatementType.Delete)
                             {
                                 list.Add(new ReplDiscount()
                                 {
-                                    OfferNo = act.ParamValue,
+                                    OfferNo = a.ParamValue,
                                     IsDeleted = true
                                 });
                                 continue;
                             }
 
-                            if (SetWhereValues(command, act, keys, first) == false)
-                                continue;
-
-                            TraceSqlCommand(command);
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            // check if this is action for disabled discount
+                            using (SqlCommand command2 = connection.CreateCommand())
                             {
-                                while (reader.Read())
+                                command2.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Periodic Discount] WHERE [No_]=@0 AND [Status]=0";
+                                command2.Parameters.AddWithValue("@0", a.ParamValue);
+                                string no = (string)command2.ExecuteScalar();
+                                if (no != null)
                                 {
-                                    list.Add(ReaderToDiscount(reader, out string ts));
+                                    list.Add(new ReplDiscount()
+                                    {
+                                        OfferNo = no,
+                                        IsDeleted = true
+                                    });
                                 }
-                                reader.Close();
                             }
-                            first = false;
                         }
-                        if (string.IsNullOrEmpty(maxKey))
-                            maxKey = lastKey;
                     }
                     connection.Close();
                 }
@@ -157,6 +151,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
+            if (string.IsNullOrWhiteSpace(maxKey))
+                maxKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
 
@@ -171,22 +167,18 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
 
             // get records remaining
-            string sql = string.Empty;
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
-            if (fullReplication)
-            {
-                sql = "SELECT COUNT(*)" + sqlMMfrom + GetWhereStatement(true, keys, where, false);
-            }
 
-            // we use action count for peroidic discounts as WI Discounts does not have any actions
-            recordsRemaining = GetRecordCount(99001453, lastKey, sql, keys, ref maxKey);
+            string sql = "SELECT COUNT(*)" + sqlMMfrom + GetWhereStatement(true, keys, where, false);
+            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
-            List<JscActions> actions = LoadActions(fullReplication, 99001453, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplDiscount> list = new List<ReplDiscount>();
+            int rr = 0;
+            List<JscActions> actions = LoadActions(fullReplication, TABLEID, 0, ref maxKey, ref rr);
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlMMcolumns + sqlMMfrom + GetWhereStatement(fullReplication, keys, where, true);
+            sql = GetSQL(true, batchSize) + sqlMMcolumns + sqlMMfrom + GetWhereStatement(true, keys, where, true);
 
+            List<ReplDiscount> list = new List<ReplDiscount>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -194,56 +186,51 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
                     command.CommandText = sql;
 
-                    if (fullReplication)
+                    JscActions act = new JscActions(lastKey);
+                    SetWhereValues(command, act, keys, true, true);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        JscActions act = new JscActions(lastKey);
-                        SetWhereValues(command, act, keys, true, true);
-                        TraceSqlCommand(command);
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        int cnt = 0;
+                        while (reader.Read())
                         {
-                            int cnt = 0;
-                            while (reader.Read())
-                            {
-                                list.Add(ReaderToMixMatch(reader, out lastKey));
-                                cnt++;
-                            }
-                            reader.Close();
-                            recordsRemaining -= cnt;
+                            list.Add(ReaderToMixMatch(reader, out lastKey));
+                            cnt++;
                         }
-                        if (recordsRemaining <= 0)
-                            lastKey = maxKey;   // this should be the highest PreAction id;
+                        reader.Close();
+                        recordsRemaining -= cnt;
                     }
-                    else
+
+                    if (fullReplication == false)
                     {
-                        bool first = true;
-                        foreach (JscActions act in actions)
+                        foreach (JscActions a in actions)
                         {
-                            if (act.Type == DDStatementType.Delete)
+                            if (a.Type == DDStatementType.Delete)
                             {
                                 list.Add(new ReplDiscount()
                                 {
-                                    OfferNo = act.ParamValue,
+                                    OfferNo = a.ParamValue,
                                     IsDeleted = true
                                 });
                                 continue;
                             }
 
-                            if (SetWhereValues(command, act, keys, first) == false)
-                                continue;
-
-                            TraceSqlCommand(command);
-                            using (SqlDataReader reader = command.ExecuteReader())
+                            // check if this is action for disabled discount
+                            using (SqlCommand command2 = connection.CreateCommand())
                             {
-                                while (reader.Read())
+                                command2.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Periodic Discount] WHERE [No_]=@0 AND [Status]=0";
+                                command2.Parameters.AddWithValue("@0", a.ParamValue);
+                                string no = (string)command2.ExecuteScalar();
+                                if (no != null)
                                 {
-                                    list.Add(ReaderToMixMatch(reader, out string ts));
+                                    list.Add(new ReplDiscount()
+                                    {
+                                        OfferNo = no,
+                                        IsDeleted = true
+                                    });
                                 }
-                                reader.Close();
                             }
-                            first = false;
                         }
-                        if (string.IsNullOrEmpty(maxKey))
-                            maxKey = lastKey;
                     }
                     connection.Close();
                 }
@@ -374,7 +361,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
         {
-            DiscountEngine engine = new DiscountEngine(new NavRepository(navConnectionString));
+            DiscountEngine engine;
+            if (NavVersion.Major > 14)
+                engine = new DiscountEngine(new Nav15Repository(navConnectionString));
+            else
+                engine = new DiscountEngine(new NavRepository(navConnectionString));
+
             return engine.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 
