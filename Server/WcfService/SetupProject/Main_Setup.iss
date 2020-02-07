@@ -104,6 +104,7 @@ begin
 
   //should only set any texts here..
   CmdMode := GetCommandLineParamBoolean('-Cmd', false);
+
   CheckPage_NavSQLCheckBox.Checked := GetCommandLineParamBoolean('-NavX', true);
   NavSQLPage_txtServer.Text := GetCommandLineParamString('-NavSrv', 'localhost');
   NavSQLPage_txtDBname.Text := GetCommandLineParamString('-NavDb', '');
@@ -112,6 +113,8 @@ begin
   NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', '');
   NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', true);
   NavSQLPage_chkSQLAuth.Checked := GetCommandLineParamBoolean('-NavSau', false);
+  NavSQLPage_V15CheckBox.Checked := GetCommandLineParamBoolean('-Nav15', false);
+
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
   CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', false);
   CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', false);
@@ -121,6 +124,7 @@ begin
   SQLPage_txtPassword.Text := GetCommandLineParamString('-SqlPwd', '');
   SQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-SqlWau', true);
   SQLPage_chkSQLAuth.Checked := GetCommandLineParamBoolean('-SqlSau', false);
+
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSOmniService');
@@ -205,8 +209,7 @@ begin
     end;                                              
  
   except
-    Log('SqlCreateDb error: ' + GetExceptionMessage );
-    MsgBox(GetExceptionMessage, mbError, MB_OK);
+    ErrorMsg('SqlCreateDb', CmdMode);
     Result := False;
   end;      
 end; { SqlCreateDb }
@@ -228,8 +231,7 @@ begin
       ADORunScript(SQLFileList[I]);
     end;     
   except
-    Log('SqlRunScripts error: ' + GetExceptionMessage );
-    MsgBox(GetExceptionMessage, mbError, MB_OK);
+    ErrorMsg('SqlRunScripts', CmdMode);
     Result := False;
   end;   
 end; { SqlRunScripts }
@@ -247,8 +249,7 @@ begin
   //check if we can even parse the xml
   if not ValidationXMLDomExists then
   begin
-	  Log('AppSettingsChangeScript error: Failed to update AppSettings.config file');
-    MsgBox('Failed to update AppSettings.config file'#13'AppSettings.Config file will not get updated'#13'with values entered', mbError, MB_OK);
+    ErrorWarningMsg('Failed to update AppSettings.config file'#13'AppSettings.Config file will not get updated'#13'with values entered', CmdMode);
   end;                   
 
   //standardize on the LSOmniUser
@@ -304,6 +305,8 @@ begin
 
 	if CheckPage_WSCheckBox.Checked then
 	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavWS.dll', ExpandConstant('{app}\{code:WcfDir}'))
+	else if NavSQLPage_V15CheckBox.Checked then
+	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentrAL.dll', ExpandConstant('{app}\{code:WcfDir}'))
 	else
 	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavSQL.dll', ExpandConstant('{app}\{code:WcfDir}'));
 
@@ -329,9 +332,7 @@ begin
       UpdateAppSettingsConfig('SQLConnectionString.LSOmni', omniStr, ExpandConstant('{app}\{code:WcfDir}'));
     end; 
   except
-	Log('AppSettingsChangeScript error: ' + GetExceptionMessage );
-    MsgBox(GetExceptionMessage, mbError, MB_OK);
-    MsgBox('Check the values in the AppSettings.Config file', mbError, MB_OK);
+    ErrorMsg('AppSettingsChangeScript. Check the values in the AppSettings.Config file.', CmdMode);
     Result := False;
   end;      
 end; { NavSqlRunScripts }
@@ -368,7 +369,7 @@ begin
     WizardForm.PreparingLabel.Caption := 'Please wait while creating web application under IIS...';
     
     //  WizardForm.DirEdit.Text has the c:\LS Retail\andWhatHasChangeToo
-    if (not IISCreateWebApplication(IISPage_txtWcfSiteName.Text,IISPage_txtWcfServiceName.Text, WizardForm.DirEdit.Text)) then
+    if (not IISCreateWebApplication(IISPage_txtWcfSiteName.Text,IISPage_txtWcfServiceName.Text, WizardForm.DirEdit.Text, CmdMode)) then
     begin
       doContinue := False;
       Result := 'Something went wrong in the IIS WCF setup...';
@@ -487,21 +488,21 @@ begin
      
   if (Version.Major < 6) then
   begin
-    MsgBox('This setup requires Windows 7 and above.', mbError, MB_OK);
+    ErrorWarningMsg('This setup requires Windows 7 and above.', CmdMode);
     result := False;
   end
   else if not IsDotNetDetected('v4.7', 0) then 
   begin
-    MsgBox('This setup requires Microsoft .NET Framework 4.7'#13#13
+    ErrorWarningMsg('This setup requires Microsoft .NET Framework 4.7'#13#13
            'Please use Windows Update to install this version,'#13
-           'and then re-run this setup program.', mbError, MB_OK);
+           'and then re-run this setup program.', CmdMode);
     result := False;
   end
   else if  not (IsIIS7AboveInstalled) then 
   begin
-    MsgBox('This setup requires IIS 7 and above.'#13#13
+    ErrorWarningMsg('This setup requires IIS 7 and above.'#13#13
            'You can continue the installation of SQL Server scripts.'#13
-           'but will fail on the IIS setup part.', mbError, MB_OK);
+           'but will fail on the IIS setup part.', CmdMode);
     result := True;
   end;
 end;
@@ -532,11 +533,8 @@ end;
 function InitializeUninstall(): Boolean;
 begin
   Result := True;
-  MsgBox('Only files will be removed.' #13#13 'No SQL object or data removed' #13#13 'IIS Web application must be removed with the IIS Manager', mbInformation, MB_OK) 
-
-  //Result := MsgBox('Only files are removed.' #13#13 'SQL scripts', mbConfirmation, MB_YESNO) = idYes;
-  //if Result = False then
-  //  MsgBox('InitializeUninstall:' #13#13 'Ok, bye bye.', mbInformation, MB_OK);
+  if (not CmdMode) then
+	MsgBox('Only files will be removed.' #13#13 'No SQL object or data removed' #13#13 'IIS Web application must be removed with the IIS Manager', mbInformation, MB_OK) 
 end;
 
 // CurPageID values for predefined wizard pages

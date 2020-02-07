@@ -20,7 +20,7 @@ var
 
 
 // enable/disable child text boxes & functions when text has been entered into Server textbox. Makes no sense to populate child items unless a value exists for server.
-Procedure SQLServerOnChange (Sender: TObject);
+procedure SQLServerOnChange (Sender: TObject);
 begin   
   Log('SQLServerOnChange called');
   WizardForm.NextButton.Enabled := False;

@@ -42,6 +42,20 @@ begin
   MsgBox(IntToStr(txtInt), mbInformation, MB_OK);
 end;
 
+procedure ErrorMsg(txtFunction: string; cmdMode: Boolean);
+begin
+  Log(txtFunction + ' Error:' + GetExceptionMessage);
+  if (not cmdMode) then
+    MsgBox(GetExceptionMessage, mbError, MB_OK);
+end;
+
+procedure ErrorWarningMsg(txtData: string; cmdMode: Boolean);
+begin
+  Log(txtData);
+  if (not cmdMode) then
+    MsgBox(txtData, mbError, MB_OK);
+end;
+
 function ValidationXMLDomExists(): Boolean;
 var
   XMLDoc: Variant;

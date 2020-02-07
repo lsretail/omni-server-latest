@@ -56,10 +56,10 @@ namespace LSOmni.BLL
             iConfigRepository.PingOmniDB();
         }
 
-        public virtual string PingWs(string ipAddress)
+        public virtual string PingWs()
         {
-            //Nav returns the version number, Ax returns "AX"
-            return BOLoyConnection.Ping(ipAddress);
+            // Nav returns the version number
+            return BOLoyConnection.Ping();
         }
 
         public virtual string PingNavDb()

@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplTaxSetupResponse : IDisposable
     {
         public ReplTaxSetupResponse()
@@ -40,7 +40,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public List<ReplTaxSetup> TaxSetups { get; set; }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplTaxSetup : IDisposable
     {
         public ReplTaxSetup()

@@ -42,6 +42,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+            List<JscActions> actions2 = LoadActions(fullReplication, 10001412, batchSize, ref lastKey, ref recordsRemaining);
+
             List<ReplExtendedVariantValue> list = new List<ReplExtendedVariantValue>();
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -58,7 +60,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         sqlcolumns += ",(SELECT vd.[Logical Order] FROM [" + navCompanyName + "Extended Variant Dimensions] vd " +
                                       "WHERE vd.[Framework Code]=mt.[Framework Code] AND vd.[Dimension No_]=mt.[Dimension] AND vd.[Item]='') AS DOrder";
                     }
-                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true); ;
+                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true);
 
                     if (fullReplication)
                     {
@@ -101,6 +103,32 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 continue;
                             }
 
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToExtendedVariantValue(reader, hascol, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+
+                        command.CommandText = command.CommandText.Replace("AND mt.[Value]=@3 ", "");
+                        command.CommandText = command.CommandText.Replace("@4", "@3");
+
+                        foreach (JscActions act in actions2)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                continue;
+                            }
+
+                            keys.RemoveAt(3);
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 

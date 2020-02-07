@@ -34,6 +34,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 storehr.DayOfWeek = (dayofweek == 7) ? 0 : dayofweek; //NAV starts with Sunday as 1 but .Net Sunday=0
                 storehr.OpenFrom = ConvertTo.SafeDateTime(storehr.OpenFrom.AddHours(offset));
                 storehr.OpenTo = ConvertTo.SafeDateTime(storehr.OpenTo.AddHours(offset));
+                storehr.StartDate = ConvertTo.SafeDateTime(line.StartingDate.AddHours(offset));
+                storehr.EndDate = ConvertTo.SafeDateTime(line.EndingDate.AddHours(offset));
+
                 list.Add(storehr);
             }
             return list;

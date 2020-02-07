@@ -4,7 +4,7 @@ using Infrastructure.Devices.Printer.Base.Utils;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Printer
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2018")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum PrintLineType
     {
         [EnumMember]
@@ -17,7 +17,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Printer
         LineFeed
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Pos/2018")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class PrintLine
     {
         [DataMember]

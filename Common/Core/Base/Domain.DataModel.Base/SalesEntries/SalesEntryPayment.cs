@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class SalesEntryPayment : IDisposable
     {
         public SalesEntryPayment()

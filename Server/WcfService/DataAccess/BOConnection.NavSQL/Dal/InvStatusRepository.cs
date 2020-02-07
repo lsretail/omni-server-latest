@@ -16,7 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public virtual List<ReplInvStatus> ReplicateInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NavVersion > new Version("14.2"))
+            if (NavVersion > new Version("14.0"))
                 return ReplicateWithCounter(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
 
             return ReplicateNoCounter(storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);

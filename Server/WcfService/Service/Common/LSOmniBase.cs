@@ -163,7 +163,7 @@ namespace LSOmni.Service
             {
                 ConfigBLL bll = new ConfigBLL(config);
                 // Nav returns version number, Ax returns "AX", One returns "LS One"
-                ver = bll.PingWs(clientIPAddress);
+                ver = bll.PingWs();
             }
             catch (Exception ex)
             {

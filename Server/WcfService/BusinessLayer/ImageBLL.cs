@@ -120,16 +120,18 @@ namespace LSOmni.BLL
             ImageFormat imgFormat = Common.Util.ImageConverter.DefaultImgFormat;
             iv.Format = imgFormat.ToString();
             iv.Image = base.Base64GetFromByte(iv.ImgBytes, imgSize, imgFormat);
-
-            var bytes = Convert.FromBase64String(iv.Image);
-            Image img = Common.Util.ImageConverter.ByteToImage(bytes);
-            try
+            if (string.IsNullOrEmpty(iv.Image) == false)
             {
-                iv.AvgColor = Common.Util.ImageConverter.CalculateAverageColor(img);
-            }
-            catch (Exception ex)
-            {
-                logger.Warn(config.LSKey.Key, "Failed to get AvgColor > " + ex.Message);
+                var bytes = Convert.FromBase64String(iv.Image);
+                Image img = Common.Util.ImageConverter.ByteToImage(bytes);
+                try
+                {
+                    iv.AvgColor = Common.Util.ImageConverter.CalculateAverageColor(img);
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(config.LSKey.Key, "Failed to get AvgColor > " + ex.Message);
+                }
             }
             return iv;
         }

@@ -101,6 +101,7 @@
     <Compile Include="Dal\UnitOfMeasureRepository.cs" />
     <Compile Include="Dal\VendorItemMappingRepository.cs" />
     <Compile Include="Dal\VendorRepository.cs" />
+    <Compile Include="NavActivity.cs" />
     <Compile Include="NavApps.cs" />
     <Compile Include="NavBase.cs" />
     <Compile Include="NavCustom.cs" />
@@ -112,6 +113,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
       <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
       <Name>DiscountEngine</Name>

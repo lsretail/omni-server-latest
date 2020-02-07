@@ -56,12 +56,14 @@
     <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
       <Link>Properties\Version.cs</Link>
     </Compile>
+    <Compile Include="Mapping\ActivityMapping.cs" />
     <Compile Include="Mapping\BaseMapping.cs" />
     <Compile Include="Mapping\ContactMapping.cs" />
     <Compile Include="Mapping\OrderMapping.cs" />
     <Compile Include="Mapping\StoreMapping.cs" />
     <Compile Include="Mapping\TransactionMapping.cs" />
     <Compile Include="MemCache..cs" />
+    <Compile Include="NavCommonActivity.cs" />
     <Compile Include="NavCommonBase.cs" />
     <Compile Include="NavCommonLoyalty.cs" />
     <Compile Include="NavCommonReplicate.cs" />
@@ -70,6 +72,16 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LSActivity15\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LSActivity\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="Web References\NavWebReference\Reference.cs" />
     <Compile Include="Web References\NavWS\Reference.cs">
@@ -100,6 +112,106 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\LSActivity15\Activity.wsdl" />
+    <None Include="Web References\LSActivity15\ActivityAdmissionEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityAttributeRespond.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityAvailabilityResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityChargeRespond.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityCustomerEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityMemberDetails.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityMembershipProducts.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivitySubscriptionEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadAllowance.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadLocations.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadMemberships.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadProducts.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadPromotions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadReservations.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadTypes.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\LSActivity\Activity.wsdl" />
+    <None Include="Web References\LSActivity\ActivityAdmissionEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityAttributeRespond.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityAvailabilityResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityChargeRespond.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityCustomerEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityMemberDetails.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityMembershipProducts.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivitySubscriptionEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadAllowance.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadLocations.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadMemberships.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadProducts.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadPromotions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadReservations.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadTypes.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
     <None Include="Web References\NavWebReference\Reference.map" />
     <None Include="Web References\NavWebReference\RetailWebServices.wsdl" />
@@ -203,6 +315,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
       <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
       <Name>DiscountEngine</Name>
@@ -237,16 +353,38 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://DHQSRVOMNI001:8047/Master/WS/Codeunit/OmniWrapper">
+    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/OmniWrapper">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\NavWS\</RelPath>
-      <UpdateFromURL>http://DHQSRVOMNI001:8047/Master/WS/Codeunit/OmniWrapper</UpdateFromURL>
+      <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/OmniWrapper</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
       <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_NavCommon_NavWS_OmniWrapper</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%2520-%2520LS%2520Central/Codeunit/Activity">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LSActivity15\</RelPath>
+      <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%2520-%2520LS%2520Central/Codeunit/Activity</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_NavCommon_LSActivity15_Activity</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://dhqsrvomni005:7447/BC140/WS/Codeunit/Activity">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LSActivity\</RelPath>
+      <UpdateFromURL>http://dhqsrvomni005:7447/BC140/WS/Codeunit/Activity</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_NavCommon_LSActivity_Activity</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

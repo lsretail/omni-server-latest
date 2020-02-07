@@ -99,6 +99,7 @@
     </Compile>
     <Compile Include="Common\LSOmniBase.cs" />
     <Compile Include="Common\LSOmniBaseCustom.cs" />
+    <Compile Include="Common\LSOmniBaseAct.cs" />
     <Compile Include="Common\LSOmniBaseEcomm.cs" />
     <Compile Include="Common\LSOmniBaseLoy.cs" />
     <Compile Include="Common\LSOmniBasePrivate.cs" />
@@ -151,6 +152,10 @@
     <Content Include="WebServices_SSL_Only.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
       <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
       <Name>DiscountEngine</Name>

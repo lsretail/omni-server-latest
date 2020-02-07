@@ -46,7 +46,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         public bool SettingsBoolGetByKey(ConfigKey key)
         {
-            return SettingsGetByKey(key) == "true";
+            return SettingsGetByKey(key).ToLower() == "true";
         }
 
         public decimal SettingsDecimalGetByKey(ConfigKey key)

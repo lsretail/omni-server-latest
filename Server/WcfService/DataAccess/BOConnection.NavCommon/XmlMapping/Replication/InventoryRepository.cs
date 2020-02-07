@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Inventory.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication

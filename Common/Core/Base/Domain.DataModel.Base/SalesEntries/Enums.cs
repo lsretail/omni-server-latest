@@ -3,7 +3,7 @@
 namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
 {
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum LineType
     {
         [EnumMember]
@@ -26,7 +26,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         Unknown = 99,
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum DocumentIdType
     {
         [EnumMember]
@@ -37,7 +37,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         Receipt = 2,
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum SalesEntryStatus
     {
         [EnumMember]
@@ -52,7 +52,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         Canceled = 4,
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum ShippingStatus
     {
         [EnumMember]
@@ -67,7 +67,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         Delivered = 40,
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum PaymentStatus
     {
         [EnumMember]
@@ -78,7 +78,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         Posted = 25
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum PaymentType
     {
         [EnumMember]

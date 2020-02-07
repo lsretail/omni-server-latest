@@ -20,6 +20,8 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
+using LSRetail.Omni.Domain.DataModel.Activity.Activities;
+using LSRetail.Omni.Domain.DataModel.Activity.Client;
 
 namespace LSOmni.Service
 {
@@ -224,11 +226,11 @@ namespace LSOmni.Service
         ///                  <a:Quantity>2.00000000</a:Quantity>
         ///                  <a:TaxAmount>32.00000000</a:TaxAmount>
         ///                  <a:UnitOfMeasureDescription i:nil= "true" />
-        ///                  < a:UnitOfMeasureId/>
+        ///                  <a:UnitOfMeasureId/>
         ///                  <a:VariantDescription>YELLOW/38</a:VariantDescription>
         ///                  <a:VariantId>002</a:VariantId>
         ///                  <a:VariantRegistration xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                     < b:Id>1BAC4050-C3CA-4ADB-A979-D80BC43EC10A</b:Id>
+        ///                     <b:Id>1BAC4050-C3CA-4ADB-A979-D80BC43EC10A</b:Id>
         ///                     <b:Dimension1/>
         ///                     <b:Dimension2/>
         ///                     <b:Dimension3/>
@@ -404,7 +406,7 @@ namespace LSOmni.Service
         Order OneListCalculate(OneList oneList);
 
         /// <summary>
-        /// Add or remove Item in OneList
+        /// Add or remove Item in OneList without sending whole list
         /// </summary>
         /// <param name="onelistId">OneList Id</param>
         /// <param name="item">OneList Item to add or remove</param>
@@ -453,7 +455,6 @@ namespace LSOmni.Service
         ///           <ns:Id></ns:Id>
         ///            <!--AnonymouseOrder leave empty-->
         ///           <ns1:CardId>10021</ns1:CardId>
-        ///           <ns1:ClickAndCollectOrder>false</ns1:ClickAndCollectOrder>
         ///           <ns1:CollectLocation></ns1:CollectLocation>
         ///           <ns1:LineItemCount>1</ns1:LineItemCount>
         ///           <!--OrderLines need to have minimum Price and Net Price set for Order to be valid.Price is unit price and will be used when calculate the Line Total Amount -->
@@ -498,6 +499,7 @@ namespace LSOmni.Service
         ///              </ns1:OrderPayment>
         ///           </ns1:OrderPayments>
         ///           <ns1:OrderStatus>Pending</ns1:OrderStatus>
+        ///           <ns1:OrderType>Sale</ns1:OrderType>
         ///           <ns1:PaymentStatus>PreApproved</ns1:PaymentStatus>
         ///           <ns1:Posted>false</ns1:Posted>
         ///           <ns1:ShipClickAndCollect>false</ns1:ShipClickAndCollect>
@@ -535,7 +537,7 @@ namespace LSOmni.Service
         ///       <OrderCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
         ///          < OrderCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
         ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CO000007 </ Id >
-        ///             < a:AnonymousOrder>false</a:AnonymousOrder>
+        ///             <a:AnonymousOrder>false</a:AnonymousOrder>
         ///             <a:CardId>10021</a:CardId>
         ///             <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
         ///             <a:DiscountLines/>
@@ -546,7 +548,7 @@ namespace LSOmni.Service
         ///             <a:Lines>
         ///                <a:SalesEntryLine>
         ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   < a:Amount>160.00000000000000000000</a:Amount>
+        ///                   <a:Amount>160.00000000000000000000</a:Amount>
         ///                   <a:DiscountAmount>0.00000000000000000000</a:DiscountAmount>
         ///                   <a:DiscountPercent>0.00000000000000000000</a:DiscountPercent>
         ///                   <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
@@ -579,15 +581,15 @@ namespace LSOmni.Service
         ///             <a:PointsUsedInOrder>0</a:PointsUsedInOrder>
         ///             <a:Posted>false</a:Posted>
         ///             <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                < b:Address1>Some Address</b:Address1>
+        ///                <b:Address1>Some Address</b:Address1>
         ///                <b:Address2/>
         ///                <b:CellPhoneNumber i:nil= "true" />
-        ///                < b:City>Some City</b:City>
+        ///                <b:City>Some City</b:City>
         ///                <b:Country/>
         ///                <b:HouseNo/>
         ///                <b:Id/>
         ///                <b:PhoneNumber i:nil= "true" />
-        ///                < b:PostCode>999</b:PostCode>
+        ///                <b:PostCode>999</b:PostCode>
         ///                <b:StateProvinceRegion/>
         ///                <b:Type>Residential</b:Type>
         ///             </a:ShipToAddress>
@@ -600,8 +602,8 @@ namespace LSOmni.Service
         ///             <a:Status>Created</a:Status>
         ///             <a:StoreId>S0013</a:StoreId>
         ///             <a:StoreName i:nil= "true" />
-        ///             < a:TerminalId i:nil= "true" />
-        ///             < a:TotalAmount>160.00000000000000000000</a:TotalAmount>
+        ///             <a:TerminalId i:nil= "true" />
+        ///             <a:TotalAmount>160.00000000000000000000</a:TotalAmount>
         ///             <a:TotalDiscount>0.00000000000000000000</a:TotalDiscount>
         ///             <a:TotalNetAmount>128.00000000000000000000</a:TotalNetAmount>
         ///          </OrderCreateResult>
@@ -693,7 +695,7 @@ namespace LSOmni.Service
         /// Include minimum data needed to be able to process the request
         /// <code language="xml" title="SOAP Sample Request">
         /// <![CDATA[
-        ///<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017" xmlns:lsr="http://schemas.datacontract.org/2004/07/LSRetail.Omni.Domain.DataModel.Loyalty.Baskets" xmlns:arr="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        ///<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
         ///   <soapenv:Header/>
         ///   <soapenv:Body>
         ///      <ser:ContactCreate>
@@ -740,22 +742,22 @@ namespace LSOmni.Service
         ///   <s:Body>
         ///      <ContactCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
         ///         < ContactCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MO000090 </ Id >
-        ///            < a:Account>
-        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MA000088 </ Id >
-        ///               < a:PointBalance>0</a:PointBalance>
+        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MO000090 </Id >
+        ///            <a:Account>
+        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MA000088 </Id >
+        ///               <a:PointBalance>0</a:PointBalance>
         ///               <a:Scheme>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR1 - BRONZE </ Id >
-        ///                  < a:Club>
-        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </ Id >
-        ///                     < a:Name>Cronus Loyalty Club</a:Name>
+        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR1 - BRONZE </Id >
+        ///                  <a:Club>
+        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </Id >
+        ///                     <a:Name>Cronus Loyalty Club</a:Name>
         ///                  </a:Club>
         ///                  <a:Description>Cronus Bronze</a:Description>
         ///                  <a:NextScheme>
-        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR2 - SILVER </ Id >
-        ///                     < a:Club>
-        ///                        <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </ Id >
-        ///                        < a:Name>Cronus Loyalty Club</a:Name>
+        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR2 - SILVER </Id >
+        ///                     <a:Club>
+        ///                        <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </Id >
+        ///                        <a:Name>Cronus Loyalty Club</a:Name>
         ///                     </a:Club>
         ///                     <a:Description>Cronus Silver</a:Description>
         ///                     <a:NextScheme>
@@ -768,24 +770,24 @@ namespace LSOmni.Service
         ///               </a:Scheme>
         ///            </a:Account>
         ///            <a:Addresses xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               < b:Address>
+        ///               <b:Address>
         ///                  <b:Address1>Santa Monica</b:Address1>
         ///                  <b:Address2/>
         ///                  <b:CellPhoneNumber i:nil= "true" />
-        ///                  < b:City>Hollywood</b:City>
+        ///                  <b:City>Hollywood</b:City>
         ///                  <b:Country>US</b:Country>
         ///                  <b:HouseNo i:nil= "true" />
-        ///                  < b:Id/>
+        ///                  <b:Id/>
         ///                  <b:PhoneNumber i:nil= "true" />
-        ///                  < b:PostCode>1001</b:PostCode>
+        ///                  <b:PostCode>1001</b:PostCode>
         ///                  <b:StateProvinceRegion/>
         ///                  <b:Type>Residential</b:Type>
         ///               </b:Address>
         ///            </a:Addresses>
         ///            <a:AlternateId i:nil= "true" />
-        ///            < a:BirthDay>1753-01-01T00:00:00</a:BirthDay>
+        ///            <a:BirthDay>1753-01-01T00:00:00</a:BirthDay>
         ///            <a:Cards xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               < b:Card>
+        ///               <b:Card>
         ///                  <b:Id>10102</b:Id>
         ///                  <b:BlockedBy/>
         ///                  <b:BlockedReason/>
@@ -799,7 +801,7 @@ namespace LSOmni.Service
         ///            </a:Cards>
         ///            <a:Email>Sarah1 @Hollywood.com</a:Email>
         ///            <a:Environment xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               < b:Currency>
+        ///               <b:Currency>
         ///                  <b:Id>GBP</b:Id>
         ///                  <b:AmountRoundingMethod>RoundNearest</b:AmountRoundingMethod>
         ///                  <b:Culture/>
@@ -823,7 +825,7 @@ namespace LSOmni.Service
         ///            <a:LastName>Parker</a:LastName>
         ///            <a:LoggedOnToDevice>
         ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///               < a:BlockedBy i:nil="true"/>
+        ///               <a:BlockedBy i:nil="true"/>
         ///               <a:BlockedDate>1900-01-01T00:00:00</a:BlockedDate>
         ///               <a:BlockedReason i:nil="true"/>
         ///               <a:CardId i:nil="true"/>
@@ -842,7 +844,7 @@ namespace LSOmni.Service
         ///            <a:Notifications>
         ///               <a:Notification>
         ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MN000001 </ Id >
-        ///                  < a:ContactId/>
+        ///                  <a:ContactId/>
         ///                  <a:Created>2019-08-08T14:37:21.1</a:Created>
         ///                  <a:Description>Remember our regular offers</a:Description>
         ///                  <a:Details>Cronus Club Members receive exra discounts</a:Details>
@@ -860,7 +862,7 @@ namespace LSOmni.Service
         ///                           <b:Width>0</b:Width>
         ///                        </b:ImgSize>
         ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://ddlap1/lsomniservice/ucservice.svc/ImageStreamGetById?id=OFFERS&amp;width={0}&amp;height={1}</b:Location>
+        ///                        <b:Location>http://localhost/lsomniservice/ucservice.svc/ImageStreamGetById?id=OFFERS&amp;width={0}&amp;height={1}</b:Location>
         ///                        <b:LocationType>Image</b:LocationType>
         ///                     </b:ImageView>
         ///                  </a:Images>
@@ -870,7 +872,7 @@ namespace LSOmni.Service
         ///               </a:Notification>
         ///               <a:Notification>
         ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MN000002 </ Id >
-        ///                  < a:ContactId/>
+        ///                  <a:ContactId/>
         ///                  <a:Created>2019-08-08T14:37:21.4</a:Created>
         ///                  <a:Description>Call our Help Desk for assistance</a:Description>
         ///                  <a:Details>Our help desk phone number is (212) 555-9999</a:Details>
@@ -888,7 +890,7 @@ namespace LSOmni.Service
         ///                           <b:Width>0</b:Width>
         ///                        </b:ImgSize>
         ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://ddlap1/lsomniservice/ucservice.svc/ImageStreamGetById?id=HELPDESK&amp;width={0}&amp;height={1}</b:Location>
+        ///                        <b:Location>http://localhost/lsomniservice/ucservice.svc/ImageStreamGetById?id=HELPDESK&amp;width={0}&amp;height={1}</b:Location>
         ///                        <b:LocationType>Image</b:LocationType>
         ///                     </b:ImageView>
         ///                  </a:Images>
@@ -921,7 +923,7 @@ namespace LSOmni.Service
         ///                           <b:Width>0</b:Width>
         ///                        </b:ImgSize>
         ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://ddlap1/lsomniservice/ucservice.svc/ImageStreamGetById?id=PUBOFF-UR-CBAG-OM&amp;width={0}&amp;height={1}</b:Location>
+        ///                        <b:Location>http://localhost/lsomniservice/ucservice.svc/ImageStreamGetById?id=PUBOFF-UR-CBAG-OM&amp;width={0}&amp;height={1}</b:Location>
         ///                        <b:LocationType>Image</b:LocationType>
         ///                     </b:ImageView>
         ///                  </b:Images>
@@ -1007,7 +1009,7 @@ namespace LSOmni.Service
         /// Include minimum data needed to be able to process the request
         /// <code language="xml" title="SOAP Sample Request">
         /// <![CDATA[
-        ///<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017" xmlns:arr="http://schemas.microsoft.com/2003/10/Serialization/Arrays">
+        ///<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
         ///   <soapenv:Header/>
         ///   <soapenv:Body>
         ///      <ser:ContactUpdate>
@@ -1367,7 +1369,7 @@ namespace LSOmni.Service
 
         #endregion
 
-        #region menu
+        #region Menu
 
         /// <summary>
         /// Load Hospitality Menu
@@ -1566,7 +1568,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 99001451 - Barcodes
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.  
+        /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1585,7 +1587,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 4 - Currency
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1603,7 +1605,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 330 - Currency Exchange Rate
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1621,7 +1623,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10001413 - Extended Variant Values
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1640,7 +1642,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 99009064 - Retail Image Link
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1658,7 +1660,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 99009063 - Retail Image
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1676,7 +1678,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 5722 - Item Category
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1695,7 +1697,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 27 - Item
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1716,7 +1718,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 5404 - Item Unit of Measure
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1735,7 +1737,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10001414 - Item Variant Registration
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1756,15 +1758,14 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time.<p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// This replication web methods act little different from the others.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last values returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.<p/>
-        /// For update, actions for Item,Sales Price,Item Variant and Item Unit of Measure tables are used to find changes,
-        /// and it may return empty list of prices while records remaining are still not 0.  Keep on calling the function till Records Remaining become 0.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all data again, set LastKey and Maxkey to 0 and perform a full replication.<p/>
+        /// For update, actions for Item and Sales Price tables are used to find deleted changes.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of prices</returns>
@@ -1777,7 +1778,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 7002 - Sales Price
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1796,7 +1797,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 5723 - Product Group
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1815,7 +1816,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10012866 - Store
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1833,7 +1834,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 204 - Unit of Measure
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1851,7 +1852,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 23 - Vendor
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1869,7 +1870,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 27 - Item (Lookup by [Vendor No_])
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -1888,7 +1889,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000784 - Attribute
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1906,7 +1907,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000786 - Attribute Value
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1924,7 +1925,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000785 - Attribute Option Value
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1942,7 +1943,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000971 - Data Translation
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1960,7 +1961,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000920 - Hierarchy (Where Hierarchy Date is active)
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1978,7 +1979,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000921 - Hierarchy Nodes
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -1996,7 +1997,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10000922 - Hierarchy Node Link
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -2018,7 +2019,7 @@ namespace LSOmni.Service
         /// NOTE: It is recommended to replicate item data separately using<p/>
         /// ReplEcomm Item / Prices / ItemUnitOfMeasures / ItemVariantRegistrations / ExtendedVariants / Attribute / AttributeValue / AttributeOptionValue<p/>
         /// Price Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -2040,13 +2041,13 @@ namespace LSOmni.Service
         /// LS Nav/Central Main Table data: 10012862 - WI Discounts
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// This replication web methods act little different from the others.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last values returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of discounts for items</returns>
@@ -2060,13 +2061,13 @@ namespace LSOmni.Service
         /// LS Nav/Central Main Table data: 10012863 - WI Mix and Match Offer
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// This replication web methods act little different from the others.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last values returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of discounts for items</returns>
@@ -2078,7 +2079,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
@@ -2097,7 +2098,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 291 - Shipping Agent
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -2115,7 +2116,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 99009002 - Member Contact (with valid Membership Card)
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -2133,7 +2134,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 9 - Country/Region
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// This function always performs full replication
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
         /// </remarks>
@@ -2148,7 +2149,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 99001462 - Tender Type
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -2166,7 +2167,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 325 - VAT Posting Setup
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
@@ -2188,7 +2189,7 @@ namespace LSOmni.Service
         /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button.
         /// Run Scheduler job with CodeUnit 10012871 - WI Update Inventory which will update the Net Inventory field.
         /// <p/><p/>
-        /// All ReplEcommXX web methods work the same.
+        /// Most ReplEcommXX web methods work the same way.
         /// This function always performs full replication
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
         /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI.
@@ -2200,7 +2201,7 @@ namespace LSOmni.Service
 
         #endregion
 
-        #region search
+        #region Search
 
         [OperationContract]
         SearchRs Search(string cardId, string search, SearchType searchTypes);
@@ -2235,6 +2236,357 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items);
+
+        #endregion
+
+        #region Activity
+
+        /// <summary>
+        /// Confirm Activity Booking
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : ConfirmActivityV2 or V3<p/><p/>
+        /// If property [Paid] is set, then returns details for the retail basket.<p/>
+        /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through Omni will update the Activities payment status and assign the salesorder document as payment document.<p/> 
+        /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
+        /// If [ReservationNo] is blank the system will create new reservation and return the value to ReservationNo.  If ReservationNo is populated parameter then the system will try to add the activity to existing reservation if the reservation exists and is neither cancelled or closed.<p/>
+        /// [PromoCode] is validated and adjusts pricing accordingly.
+        /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Activity/2017">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:ActivityConfirm>
+        ///          <ser:request>
+        ///             <ns:ActivityTime>2019-12-10T13:00:00</ns:ActivityTime>
+        ///             <ns:ContactName>Tom</ns:ContactName>
+        ///             <ns:ContactNo>MO000008</ns:ContactNo>
+        ///             <ns:Location>CAMBRIDGE</ns:Location>
+        ///             <ns:NoOfPeople>1</ns:NoOfPeople>
+        ///             <ns:Paid>false</ns:Paid>
+        ///             <ns:ProductNo>MASSAGE30</ns:ProductNo>
+        ///             <ns:Quantity>1</ns:Quantity>
+        ///             <ns:ReservationNo>RES0044</ns:ReservationNo>
+        ///          </ser:request>
+        ///       </ser:ActivityConfirm>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="request"></param>
+        /// <returns>Activity Number and Booking Reference</returns>
+        [OperationContract]
+        ActivityResponse ActivityConfirm(ActivityRequest request);
+
+        /// <summary>
+        /// Cancel Activity
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : CancelActivity<p/><p/>
+        /// If cancellation charges apply, then those vales will be returned and could be applied to a retail basket.
+        /// </remarks>
+        /// <param name="activityNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ActivityResponse ActivityCancel(string activityNo);
+
+        /// <summary>
+        /// Returns list of available timeslots/prices for a specific location,product and date 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : GetAvailabilityV2<p/><p/>
+        /// Optional to include required resource (if only specific resource) and contactNo for accurate pricing.
+        /// </remarks>
+        /// <param name="locationNo"></param>
+        /// <param name="itemNo"></param>
+        /// <param name="activityDate"></param>
+        /// <param name="contactNo"></param>
+        /// <param name="optionalResource"></param>
+        /// <param name="promoCode"></param>
+        /// <returns></returns>
+        [OperationContract]
+        AvailabilityResponse ActivityAvailabilityGet(string locationNo, string itemNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
+
+        /// <summary>
+        /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : GetAdditionalCharges
+        /// </remarks>
+        /// <param name="activityNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        AdditionalCharge ActivityAdditionalChargesGet(string activityNo);
+
+        /// <summary>
+        /// Change or insert additional charges to Activity
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : SetAdditionalChargesV2
+        /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Activity/2017">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:ActivityAdditionalChargesSet>
+        ///          <ser:request>
+        ///             <ns:ActivityNo>ACT0034</ns:ActivityNo>
+        ///             <ns:DiscountPercentage>0.0</ns:DiscountPercentage>
+        ///             <ns:ItemNo>40020</ns:ItemNo>
+        ///             <ns:LineNo>1</ns:LineNo>
+        ///             <ns:Price>110.0</ns:Price>
+        ///             <ns:ProductType>Item</ns:ProductType>
+        ///             <ns:Quantity>1.0</ns:Quantity>
+        ///             <ns:TotalAmount>110.0</ns:TotalAmount>
+        ///             <ns:UnitOfMeasure></ns:UnitOfMeasure>
+        ///          </ser:request>
+        ///       </ser:ActivityAdditionalChargesSet>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityAdditionalChargesSet(AdditionalCharge request);
+
+        /// <summary>
+        /// Returns list of Attributes which are assigned on a given Activity product, reservation or activity entry
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : GetAttributes
+        /// </remarks>
+        /// <param name="type"></param>
+        /// <param name="linkNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo);
+
+        /// <summary>
+        /// Action to set an attribute value on a given reservation or activity.  If attribute does not exist on the entry then its inserted otherwise updated
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : SetAttribute
+        /// </remarks>
+        /// <param name="type"></param>
+        /// <param name="linkNo"></param>
+        /// <param name="attributeCode"></param>
+        /// <param name="attributeValue"></param>
+        /// <returns></returns>
+        [OperationContract]
+        int ActivityAttributeSet(AttributeType type, string linkNo, string attributeCode, string attributeValue);
+
+        /// <summary>
+        /// Action to create a Reservation header into the LS Reservation table
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : InsertReservation
+        /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
+        /// Include minimum data needed to be able to process the request
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Activity/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///      <ser:ActivityReservationInsert>
+        ///         <ser:request>
+        ///            <ns1:ContactName>Tom</ns1:ContactName>
+        ///            <ns1:ContactNo>MO000008</ns1:ContactNo>
+        ///            <ns1:Description></ns1:Description>
+        ///            <ns1:Email>tom@xxx.com</ns1:Email>
+        ///            <ns1:Internalstatus>0</ns1:Internalstatus>
+        ///            <ns1:Location>CAMBRIDGE</ns1:Location>
+        ///            <ns1:ResDateFrom>2019-10-10</ns1:ResDateFrom>
+        ///            <ns1:ResDateTo>2019-10-10</ns1:ResDateTo>
+        ///            <ns1:ResTimeFrom>13:00:00</ns1:ResTimeFrom>
+        ///            <ns1:ResTimeTo>14:00:00</ns1:ResTimeTo>
+        ///            <ns1:ReservationType>SPA</ns1:ReservationType>
+        ///            <ns1:SalesPerson>AH</ns1:SalesPerson>
+        ///            <ns1:Status></ns1:Status>
+        ///         </ser:request>
+        ///      </ser:ActivityReservationInsert>
+        ///   </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        string ActivityReservationInsert(Reservation request);
+
+        /// <summary>
+        /// Action to force update to a reservation header in the LS Reservation table.  Blank fields will be ignored
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UpdateReservation
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        string ActivityReservationUpdate(Reservation request);
+
+        /// <summary>
+        /// Sell Membership (membership type) to Member Contact
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : SellMembership
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <param name="membersShipType"></param>
+        /// <returns></returns>
+        [OperationContract]
+        MembershipResponse ActivityMembershipSell(string contactNo, string membersShipType);
+
+        /// <summary>
+        /// Cancels a specific membership and validates if cancellation is in order (i.e. compares to commitment period)
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : CancelMembership
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <param name="memberShipNo"></param>
+        /// <param name="comment"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment);
+
+        #endregion
+
+        #region Activity Data Get (Replication)
+
+        /// <summary>
+        /// Returns list of Activity Products
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadActivityProducts
+        /// </remarks>
+        /// <returns></returns>
+        [OperationContract]
+        List<ActivityProduct> ActivityProductsGet();
+
+        /// <summary>
+        /// Returns list of Activity Types
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadActivityTypes
+        /// </remarks>
+        /// <returns></returns>
+        [OperationContract]
+        List<ActivityType> ActivityTypesGet();
+
+        /// <summary>
+        /// Returns list of Activity Locations
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadActivityLocations 
+        /// </remarks>
+        /// <returns></returns>
+        [OperationContract]
+        List<ActivityLocation> ActivityLocationsGet();
+
+        /// <summary>
+        /// Returnx list of Reservations for Member Contact or list of Activities assigned to a Reservation
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : <p/>
+        /// With [contactNo, activityType] UploadClientBookingsV2 <p/>
+        /// With [reservationNo] : UploadReservationActivities
+        /// </remarks>
+        /// <param name="reservationNo">Look up Activities for a Reservation</param>
+        /// <param name="contactNo">Look up Reservations for a Contact</param>
+        /// <param name="activityType">Activity type for Contact Lookup</param>
+        /// <returns></returns>
+        [OperationContract]
+        List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType);
+
+        /// <summary>
+        /// Returns list of Active Promotions (for information purposes only)
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadPromotions
+        /// </remarks>
+        /// <returns></returns>
+        [OperationContract]
+        List<Promotion> ActivityPromotionsGet();
+
+        /// <summary>
+        /// Returns list of Member Contacts issued (sold) allowances
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadPurchasedAllowances
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <returns></returns>
+        [OperationContract]
+        List<Allowance> ActivityAllowancesGet(string contactNo);
+
+        /// <summary>
+        /// Returns list of all entries charged to the Member Contact customer account (A/R). The Account no. is based on the contact business relation settings
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadCustomerEntries
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <param name="customerNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<CustomerEntry> ActivityCustomerEntriesGet(string contactNo, string customerNo);
+
+        /// <summary>
+        /// Returns list of Membership types (products) which are active and can be sold 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadMembershipProducts
+        /// </remarks>
+        /// <returns></returns>
+        [OperationContract]
+        List<MemberProduct> ActivityMembershipProductsGet();
+
+        /// <summary>
+        /// Returns list of all subscription charges posted towards their membership account. Draft unposted entries are not included
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadMembershipSubscriptionCharges
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <returns></returns>
+        [OperationContract]
+        List<SubscriptionEntry> ActivitySubscriptionChargesGet(string contactNo);
+
+        /// <summary>
+        /// Returns list of Member Contact visit registrations
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadAdmissionEntries
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <returns></returns>
+        [OperationContract]
+        List<AdmissionEntry> ActivityAdmissionEntriesGet(string contactNo);
+
+        /// <summary>
+        /// Returns list of the Member Contact current active or on hold memberships
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS : UploadMembershipEntries
+        /// </remarks>
+        /// <param name="contactNo">Member Contact</param>
+        /// <returns></returns>
+        [OperationContract]
+        List<Membership> ActivityMembershipsGet(string contactNo);
 
         #endregion
     }

@@ -188,6 +188,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         PrimaryKeyDuplication = 150,
         [EnumMember]
         ObjectIdMissing = 151,
+        [EnumMember]
+        ObjectMissing = 152,
 
         //only used on client side
         /// <summary>
@@ -447,6 +449,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         //POS - LSOne
         [EnumMember]
         InvalidSuspensionWithPartialPayment = 6001,
+        [EnumMember]
+        NoItemsToSuspend = 6002,
 
         //New Core added
         [EnumMember]
@@ -499,6 +503,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         GetDefaultHospTypeIdError = 10800,
         GetHospTypesError = 10801,
+
+        GetGs1BarcodeSetupsError = 10900,
 
         #endregion
 

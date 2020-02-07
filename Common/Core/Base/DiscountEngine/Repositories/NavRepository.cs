@@ -11,7 +11,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
     /// <summary>
     /// Implements all repository interfaces for NAV 
     /// </summary>
-    public class NavRepository : IDiscountRepository, IPriceRepository
+    public class NavRepository : IDiscountRepository
     {
         private string connectionString = string.Empty;
         private string navCompanyName = string.Empty;
@@ -213,8 +213,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
         public decimal PriceGetByItem(string storeId, string itemId, string variantId)
         {
             string sqlMcolumns = "mt.[Unit Price] ";
-            string sqlMfrom = " FROM [" + navCompanyName + "WI Price] mt" +
-                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure] u ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
+            string sqlMfrom = " FROM [" + navCompanyName + "WI Price] mt";
 
             decimal price = 0m;
             using (SqlConnection connection = new SqlConnection(connectionString))

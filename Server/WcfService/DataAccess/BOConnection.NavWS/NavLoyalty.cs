@@ -32,7 +32,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
         }
 
-        public virtual string Ping(string ipAddress)
+        public virtual string Ping()
         {
             string ver = NavWSBase.NavVersionToUse(true);
             if (ver.Contains("ERROR"))

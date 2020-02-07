@@ -4,13 +4,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public abstract class BaseMapping
     {
-        protected string GetString(string value)
-        {
-            if (value == null)
-                return string.Empty;
-            return value;
-        }
-
         protected int LineNumberToNav(int lineNumber)
         {
             //multiply with 1000 for nav, if not already done!
@@ -28,19 +21,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 return lineNumber;
             }
-        }
-
-        protected DateTime DateAndTimeFromNav(DateTime date, DateTime time)
-        {
-            return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second);
-        }
-
-        internal static DateTime GetSQLNAVDate(DateTime date)
-        {
-            if (date == DateTime.MinValue)
-                return new DateTime(1753, 1, 1);      // this is NULL Date for NAV
-
-            return date;
         }
     }
 }

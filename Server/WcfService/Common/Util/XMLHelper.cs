@@ -248,6 +248,27 @@ namespace LSOmni.Common.Util
             return defaultfieldinfo.GetValue(null);
         }
 
+        static public string GetString(string value)
+        {
+            if (value == null)
+                return string.Empty;
+            return value;
+        }
+
+        static public DateTime GetSQLNAVDate(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                return new DateTime(1753, 1, 1);      // this is NULL Date for NAV
+            return date;
+        }
+
+        static public DateTime GetSQLNAVTime(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                return new DateTime(1754, 1, 1);      // this is NULL Time for NAV
+            return date;
+        }
+
         /// <summary>
         /// Get SQL version of NAV table/field name  ."\/'
         /// </summary>

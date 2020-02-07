@@ -119,7 +119,8 @@ namespace LSOmni.DataAccess.Dal
                             bool advanced = SQLHelper.GetBool(reader["Advanced"]);
                             bool isDefault = false;
 
-                            if (string.IsNullOrEmpty(value)) { 
+                            if (string.IsNullOrEmpty(value))
+                            {
                                 value = defaultValue;
                                 isDefault = true;
                             }
@@ -133,13 +134,21 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
 
-                if (list.Count > 0)
+                // add values that are not found in database
+                foreach (ConfigKey key in Enum.GetValues(typeof(ConfigKey)))
                 {
-                    config = new BOConfiguration(lsKey);
-                    config.Settings = list;
-                    config.LSKey.Description = GetDescription(lsKey);
-                    config.LSKey.Active = ConfigIsActive(lsKey);
+                    TenantSetting set = list.Find(x => x.Key == key.ToString());
+                    if (set == null)
+                    {
+                        list.Add(new TenantSetting(key.ToString(), string.Empty, string.Empty, string.Empty, false, true));
+                    }
                 }
+
+                config = new BOConfiguration(lsKey);
+                config.Settings = list;
+                config.LSKey.Description = GetDescription(lsKey);
+                config.LSKey.Active = ConfigIsActive(lsKey);
+
                 connection.Close();
             }
             config.LSKey.Description = GetDescription(lsKey);

@@ -119,6 +119,24 @@ namespace LSOmni.Common.Util
             return DateTime.SpecifyKind(dt, DateTimeKind.Utc); //specify it as Utc for json to understand
         }
 
+        public static DateTime NavJoinDateAndTime(DateTime date, DateTime time)
+        {
+            return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
+        }
+
+        public static DateTime NavGetDate(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                return new DateTime(1753, 1, 1);
+
+            return new DateTime(date.Year, date.Month, date.Day);
+        }
+
+        public static DateTime NavGetTime(DateTime date)
+        {
+            return new DateTime(1754, 1, 1, date.Hour, date.Minute, date.Second, date.Millisecond);
+        }
+
         public static DateTime SafeDateTime(string value)
         {
             try

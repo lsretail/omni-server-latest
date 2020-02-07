@@ -47,6 +47,7 @@
     <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
       <Link>Properties\Version.cs</Link>
     </Compile>
+    <Compile Include="BOConnection\IActivityBO.cs" />
     <Compile Include="BOConnection\IAppBO.cs" />
     <Compile Include="BOConnection\ICustomBO.cs" />
     <Compile Include="BOConnection\ILoyaltyBO.cs" />
@@ -65,6 +66,10 @@
     <Compile Include="Repository\Loyalty\IValidationRepository.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
       <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
       <Name>DiscountEngine</Name>

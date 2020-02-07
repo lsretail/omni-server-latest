@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
@@ -18,24 +19,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 new NavWS.ContactCreateParameters()
                 {
-                    AccountID = GetString(contact.Account?.Id),
-                    ClubID = GetString(contact.Account?.Scheme?.Club?.Id),
+                    AccountID = XMLHelper.GetString(contact.Account?.Id),
+                    ClubID = XMLHelper.GetString(contact.Account?.Scheme?.Club?.Id),
+                    ExternalID = XMLHelper.GetString(contact.AlternateId),
 
                     FirstName = contact.FirstName,
-                    MiddleName = GetString(contact.MiddleName),
+                    MiddleName = XMLHelper.GetString(contact.MiddleName),
                     LastName = contact.LastName,
                     DateOfBirth = contact.BirthDay,
                     Email = contact.Email,
                     Gender = ((int)contact.Gender).ToString(),
-                    Phone = GetString(contact.Phone),
-                    MobilePhoneNo = GetString(contact.MobilePhone),
+                    Phone = XMLHelper.GetString(contact.Phone),
+                    MobilePhoneNo = XMLHelper.GetString(contact.MobilePhone),
 
-                    Address1 = GetString(addr.Address1),
-                    Address2 = GetString(addr.Address2),
-                    City = GetString(addr.City),
-                    Country = GetString(addr.Country),
-                    PostCode = GetString(addr.PostCode),
-                    StateProvinceRegion = GetString(addr.StateProvinceRegion),
+                    Address1 = XMLHelper.GetString(addr.Address1),
+                    Address2 = XMLHelper.GetString(addr.Address2),
+                    City = XMLHelper.GetString(addr.City),
+                    Country = XMLHelper.GetString(addr.Country),
+                    PostCode = XMLHelper.GetString(addr.PostCode),
+                    StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
 
                     LoginID = contact.UserName,
                     Password = contact.Password,
@@ -44,7 +46,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
                     ContactID = string.Empty,
                     SchemeID = string.Empty,
-                    ExternalID = string.Empty,
                     ExternalSystem = string.Empty
                 }
             };
@@ -79,26 +80,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 new NavWS.ContactCreateParameters1()
                 {
-                    ContactID = contact.Id,
-                    AccountID = accountId,
+                    ContactID = XMLHelper.GetString(contact.Id),
+                    AccountID = XMLHelper.GetString(accountId),
+                    ExternalID = XMLHelper.GetString(contact.AlternateId),
 
                     FirstName = contact.FirstName,
-                    MiddleName = GetString(contact.MiddleName),
+                    MiddleName = XMLHelper.GetString(contact.MiddleName),
                     LastName = contact.LastName,
                     DateOfBirth = contact.BirthDay,
                     Email = contact.Email,
                     Gender = ((int)contact.Gender).ToString(),
-                    Phone = GetString(contact.Phone),
-                    MobilePhoneNo = GetString(contact.MobilePhone),
+                    Phone = XMLHelper.GetString(contact.Phone),
+                    MobilePhoneNo = XMLHelper.GetString(contact.MobilePhone),
 
-                    Address1 = GetString(addr.Address1),
-                    Address2 = GetString(addr.Address2),
-                    City = GetString(addr.City),
-                    Country = GetString(addr.Country),
-                    PostCode = GetString(addr.PostCode),
-                    StateProvinceRegion = GetString(addr.StateProvinceRegion),
+                    Address1 = XMLHelper.GetString(addr.Address1),
+                    Address2 = XMLHelper.GetString(addr.Address2),
+                    City = XMLHelper.GetString(addr.City),
+                    Country = XMLHelper.GetString(addr.Country),
+                    PostCode = XMLHelper.GetString(addr.PostCode),
+                    StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
 
-                    ExternalID = string.Empty,
                     ExternalSystem = string.Empty
                 }
             };
@@ -130,6 +131,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             MemberContact memberContact = new MemberContact()
             {
                 Id = contact.ContactNo,
+                AlternateId = contact.ExternalID,
                 Email = contact.EMail,
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,
@@ -190,7 +192,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Id = offer.No,
                     Description = offer.PrimaryText,
                     Details = offer.SecondaryText,
-                    ExpirationDate = GetSQLNAVDate(offer.EndingDate),
+                    ExpirationDate = XMLHelper.GetSQLNAVDate(offer.EndingDate),
                     OfferId = offer.DiscountNo,
                     Code = (OfferDiscountType)Convert.ToInt32(offer.DiscountType),
                     Type = (OfferType)Convert.ToInt32(offer.OfferCategory),
@@ -216,8 +218,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ContactId = notification.ContactNo,
                     Description = notification.PrimaryText,
                     Details = notification.SecondaryText,
-                    ExpiryDate = GetSQLNAVDate(notification.ValidToDate),
-                    Created = GetSQLNAVDate(notification.ValidFromDate),
+                    ExpiryDate = XMLHelper.GetSQLNAVDate(notification.ValidToDate),
+                    Created = XMLHelper.GetSQLNAVDate(notification.ValidFromDate),
                     Status = NotificationStatus.New,
                     QRText = string.Empty,
                     NotificationTextType = NotificationTextType.Plain,

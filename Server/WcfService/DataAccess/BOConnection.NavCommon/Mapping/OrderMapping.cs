@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Setup.SpecialCase;
@@ -104,7 +105,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
         public SalesEntry MapFromRootToSalesEntry(NavWS.RootCustomerOrderGet root)
         {
-            NavWS.CustomerOrderHeader2 header = root.CustomerOrderHeader.FirstOrDefault();
+            NavWS.CustomerOrderHeader3 header = root.CustomerOrderHeader.FirstOrDefault();
 
             SalesEntry order = new SalesEntry()
             {
@@ -159,7 +160,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             order.Lines = new List<SalesEntryLine>();
             if (root.CustomerOrderLine != null)
             {
-                foreach (NavWS.CustomerOrderLine1 oline in root.CustomerOrderLine)
+                foreach (NavWS.CustomerOrderLine2 oline in root.CustomerOrderLine)
                 {
                     LineType lineType = (LineType)Convert.ToInt32(oline.LineType);
                     if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
@@ -326,7 +327,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             List<SalesEntry> list = new List<SalesEntry>();
             if (root.CustomerOrderHeader != null)
             {
-                foreach (NavWS.CustomerOrderHeader1 header in root.CustomerOrderHeader)
+                foreach (NavWS.CustomerOrderHeader2 header in root.CustomerOrderHeader)
                 {
                     list.Add(new SalesEntry()
                     {
@@ -354,34 +355,34 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 DocumentID = string.Empty,
                 ExternalID = order.Id.ToUpper(),
-                StoreNo = (order.ClickAndCollectOrder && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
-                MemberCardNo = GetString(order.CardId),
-                FullName = GetString(order.ContactName),
+                StoreNo = (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
+                MemberCardNo = XMLHelper.GetString(order.CardId),
+                FullName = XMLHelper.GetString(order.ContactName),
                 SourceType = 1, //NAV POS = 0, Omni = 1
-                Address = GetString(order.ContactAddress.Address1),
-                Address2 = GetString(order.ContactAddress.Address2),
-                HouseApartmentNo = GetString(order.ContactAddress.HouseNo),
-                City = GetString(order.ContactAddress.City),
-                County = GetString(order.ContactAddress.StateProvinceRegion),
-                PostCode = GetString(order.ContactAddress.PostCode),
-                CountryRegionCode = GetString(order.ContactAddress.Country),
-                PhoneNo = GetString(order.PhoneNumber),
-                MobilePhoneNo = GetString(order.MobileNumber),
-                DaytimePhoneNo = GetString(order.DayPhoneNumber),
-                Email = GetString(order.Email),
-                ShipToFullName = GetString(order.ShipToName),
-                ShipToAddress = GetString(order.ShipToAddress.Address1),
-                ShipToAddress2 = GetString(order.ShipToAddress.Address2),
-                ShipToHouseApartmentNo = GetString(order.ShipToAddress.HouseNo),
-                ShipToCity = GetString(order.ShipToAddress.City),
-                ShipToCounty = GetString(order.ShipToAddress.StateProvinceRegion),
-                ShipToPostCode = GetString(order.ShipToAddress.PostCode),
-                ShipToCountryRegionCode = GetString(order.ShipToAddress.Country),
-                ShipToPhoneNo = GetString(order.ShipToPhoneNumber),
-                ShipToEmail = GetString(order.ShipToEmail),
-                ClickAndCollectOrder = order.ClickAndCollectOrder,
-                ShippingAgentCode = GetString(order.ShippingAgentCode),
-                ShippingAgentServiceCode = GetString(order.ShippingAgentServiceCode),
+                Address = XMLHelper.GetString(order.ContactAddress.Address1),
+                Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
+                HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
+                City = XMLHelper.GetString(order.ContactAddress.City),
+                County = XMLHelper.GetString(order.ContactAddress.StateProvinceRegion),
+                PostCode = XMLHelper.GetString(order.ContactAddress.PostCode),
+                CountryRegionCode = XMLHelper.GetString(order.ContactAddress.Country),
+                PhoneNo = XMLHelper.GetString(order.PhoneNumber),
+                MobilePhoneNo = XMLHelper.GetString(order.MobileNumber),
+                DaytimePhoneNo = XMLHelper.GetString(order.DayPhoneNumber),
+                Email = XMLHelper.GetString(order.Email),
+                ShipToFullName = XMLHelper.GetString(order.ShipToName),
+                ShipToAddress = XMLHelper.GetString(order.ShipToAddress.Address1),
+                ShipToAddress2 = XMLHelper.GetString(order.ShipToAddress.Address2),
+                ShipToHouseApartmentNo = XMLHelper.GetString(order.ShipToAddress.HouseNo),
+                ShipToCity = XMLHelper.GetString(order.ShipToAddress.City),
+                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.StateProvinceRegion),
+                ShipToPostCode = XMLHelper.GetString(order.ShipToAddress.PostCode),
+                ShipToCountryRegionCode = XMLHelper.GetString(order.ShipToAddress.Country),
+                ShipToPhoneNo = XMLHelper.GetString(order.ShipToPhoneNumber),
+                ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
+                ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
                 CustomerNo = string.Empty,
                 CreatedAtStore = string.Empty,
                 TerritoryCode = string.Empty,
@@ -403,8 +404,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     LineNo = LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
-                    VariantCode = GetString(line.VariantId),
-                    UnitofMeasureCode = GetString(line.UomId),
+                    VariantCode = XMLHelper.GetString(line.VariantId),
+                    UnitofMeasureCode = XMLHelper.GetString(line.UomId),
                     Quantity = line.Quantity,
                     DiscountAmount = line.DiscountAmount,
                     DiscountPercent = line.DiscountPercent,
@@ -433,10 +434,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         LineNo = LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
-                        OfferNo = GetString(line.OfferNumber),
+                        OfferNo = XMLHelper.GetString(line.OfferNumber),
                         PeriodicDiscType = (int)line.PeriodicDiscType,
-                        PeriodicDiscGroup = GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
-                        Description = GetString(line.Description),
+                        PeriodicDiscGroup = XMLHelper.GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
+                        Description = XMLHelper.GetString(line.Description),
                         DiscountPercent = line.DiscountPercent,
                         DiscountAmount = line.DiscountAmount
                     });
@@ -454,13 +455,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         DocumentID = string.Empty,
                         LineNo = LineNumberToNav(line.LineNumber),
                         PreApprovedAmount = line.Amount,
+                        FinalisedAmount = 0,
                         TenderType = line.TenderType,
-                        CardType = GetString(line.CardType),
-                        CurrencyCode = GetString(line.CurrencyCode),
+                        CardType = XMLHelper.GetString(line.CardType),
+                        CurrencyCode = XMLHelper.GetString(line.CurrencyCode),
                         CurrencyFactor = line.CurrencyFactor,
-                        AuthorisationCode = GetString(line.AuthorizationCode),
-                        PreApprovedValidDate = GetSQLNAVDate(line.PreApprovedValidDate),
-                        CardorCustomernumber = GetString(line.CardNumber),
+                        AuthorisationCode = XMLHelper.GetString(line.AuthorizationCode),
+                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        CardorCustomernumber = XMLHelper.GetString(line.CardNumber),
                         IncomeExpenseAccountNo = string.Empty,
                         StoreNo = string.Empty
                     });
@@ -479,34 +481,34 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 DocumentID = string.Empty,
                 ExternalID = order.Id.ToUpper(),
-                StoreNo = (order.ClickAndCollectOrder && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
-                MemberCardNo = GetString(order.CardId),
-                Name = GetString(order.ContactName),
+                StoreNo = (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
+                MemberCardNo = XMLHelper.GetString(order.CardId),
+                Name = XMLHelper.GetString(order.ContactName),
                 SourceType = 1, //NAV POS = 0, Omni = 1
-                Address = GetString(order.ContactAddress.Address1),
-                Address2 = GetString(order.ContactAddress.Address2),
-                HouseApartmentNo = GetString(order.ContactAddress.HouseNo),
-                City = GetString(order.ContactAddress.City),
-                County = GetString(order.ContactAddress.StateProvinceRegion),
-                PostCode = GetString(order.ContactAddress.PostCode),
-                CountryRegionCode = GetString(order.ContactAddress.Country),
-                PhoneNo = GetString(order.PhoneNumber),
-                MobilePhoneNo = GetString(order.MobileNumber),
-                DaytimePhoneNo = GetString(order.DayPhoneNumber),
-                Email = GetString(order.Email),
-                ShipToName = GetString(order.ShipToName),
-                ShipToAddress = GetString(order.ShipToAddress.Address1),
-                ShipToAddress2 = GetString(order.ShipToAddress.Address2),
-                ShipToHouseApartmentNo = GetString(order.ShipToAddress.HouseNo),
-                ShipToCity = GetString(order.ShipToAddress.City),
-                ShipToCounty = GetString(order.ShipToAddress.StateProvinceRegion),
-                ShipToPostCode = GetString(order.ShipToAddress.PostCode),
-                ShipToCountryRegionCode = GetString(order.ShipToAddress.Country),
-                ShipToPhoneNo = GetString(order.ShipToPhoneNumber),
-                ShipToEmail = GetString(order.ShipToEmail),
-                ClickAndCollectOrder = order.ClickAndCollectOrder,
-                ShippingAgentCode = GetString(order.ShippingAgentCode),
-                ShippingAgentServiceCode = GetString(order.ShippingAgentServiceCode),
+                Address = XMLHelper.GetString(order.ContactAddress.Address1),
+                Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
+                HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
+                City = XMLHelper.GetString(order.ContactAddress.City),
+                County = XMLHelper.GetString(order.ContactAddress.StateProvinceRegion),
+                PostCode = XMLHelper.GetString(order.ContactAddress.PostCode),
+                CountryRegionCode = XMLHelper.GetString(order.ContactAddress.Country),
+                PhoneNo = XMLHelper.GetString(order.PhoneNumber),
+                MobilePhoneNo = XMLHelper.GetString(order.MobileNumber),
+                DaytimePhoneNo = XMLHelper.GetString(order.DayPhoneNumber),
+                Email = XMLHelper.GetString(order.Email),
+                ShipToName = XMLHelper.GetString(order.ShipToName),
+                ShipToAddress = XMLHelper.GetString(order.ShipToAddress.Address1),
+                ShipToAddress2 = XMLHelper.GetString(order.ShipToAddress.Address2),
+                ShipToHouseApartmentNo = XMLHelper.GetString(order.ShipToAddress.HouseNo),
+                ShipToCity = XMLHelper.GetString(order.ShipToAddress.City),
+                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.StateProvinceRegion),
+                ShipToPostCode = XMLHelper.GetString(order.ShipToAddress.PostCode),
+                ShipToCountryRegionCode = XMLHelper.GetString(order.ShipToAddress.Country),
+                ShipToPhoneNo = XMLHelper.GetString(order.ShipToPhoneNumber),
+                ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
+                ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
                 CustomerNo = string.Empty,
                 CreatedAtStore = string.Empty,
                 TerritoryCode = string.Empty,
@@ -527,8 +529,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     LineNo = LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
-                    VariantCode = GetString(line.VariantId),
-                    UnitofMeasureCode = GetString(line.UomId),
+                    VariantCode = XMLHelper.GetString(line.VariantId),
+                    UnitofMeasureCode = XMLHelper.GetString(line.UomId),
                     Quantity = line.Quantity,
                     DiscountAmount = line.DiscountAmount,
                     DiscountPercent = line.DiscountPercent,
@@ -557,10 +559,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         LineNo = LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
-                        OfferNo = GetString(line.OfferNumber),
+                        OfferNo = XMLHelper.GetString(line.OfferNumber),
                         PeriodicDiscType = (int)line.PeriodicDiscType,
-                        PeriodicDiscGroup = GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
-                        Description = GetString(line.Description),
+                        PeriodicDiscGroup = XMLHelper.GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
+                        Description = XMLHelper.GetString(line.Description),
                         DiscountPercent = line.DiscountPercent,
                         DiscountAmount = line.DiscountAmount
                     });
@@ -573,7 +575,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 foreach (OrderPayment line in order.OrderPayments)
                 {
-                    string curcode = GetString(line.CurrencyCode);
+                    string curcode = XMLHelper.GetString(line.CurrencyCode);
                     bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals("LOY", StringComparison.InvariantCultureIgnoreCase);
 
                     payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV4()
@@ -583,14 +585,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         PreApprovedAmount = line.Amount,
                         Type = ((int)line.PaymentType).ToString(),
                         TenderType = line.TenderType,
-                        CardType = GetString(line.CardType),
+                        CardType = XMLHelper.GetString(line.CardType),
                         CurrencyCode = curcode,
                         CurrencyFactor = line.CurrencyFactor,
-                        AuthorizationCode = GetString(line.AuthorizationCode),
-                        TokenNo = GetString(line.TokenNumber),
-                        ExternalReference = GetString(line.ExternalReference),
-                        PreApprovedValidDate = GetSQLNAVDate(line.PreApprovedValidDate),
-                        CardorCustomernumber = GetString(line.CardNumber),
+                        AuthorizationCode = XMLHelper.GetString(line.AuthorizationCode),
+                        TokenNo = XMLHelper.GetString(line.TokenNumber),
+                        ExternalReference = XMLHelper.GetString(line.ExternalReference),
+                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        CardorCustomernumber = XMLHelper.GetString(line.CardNumber),
                         LoyaltyPointpayment = loypayment,
                         IncomeExpenseAccountNo = string.Empty,
                         StoreNo = string.Empty,
@@ -606,38 +608,38 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
         {
             NavWS.RootCustomerOrder root = new NavWS.RootCustomerOrder();
 
-            List<NavWS.CustomerOrderHeader> header = new List<NavWS.CustomerOrderHeader>();
-            header.Add(new NavWS.CustomerOrderHeader()
+            List<NavWS.CustomerOrderHeader1> header = new List<NavWS.CustomerOrderHeader1>();
+            header.Add(new NavWS.CustomerOrderHeader1()
             {
                 DocumentId = order.Id,
-                StoreNo = (order.ClickAndCollectOrder && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
-                MemberCardNo = GetString(order.CardId),
-                FullName = GetString(order.ContactName),
-                Address = GetString(order.ContactAddress.Address1),
-                Address2 = GetString(order.ContactAddress.Address2),
-                HouseApartmentNo = GetString(order.ContactAddress.HouseNo),
-                City = GetString(order.ContactAddress.City),
-                County = GetString(order.ContactAddress.StateProvinceRegion),
-                PostCode = GetString(order.ContactAddress.PostCode),
-                CountryRegionCode = GetString(order.ContactAddress.Country),
-                PhoneNo = GetString(order.PhoneNumber),
-                MobilePhoneNo = GetString(order.MobileNumber),
-                DaytimePhoneNo = GetString(order.DayPhoneNumber),
-                Email = GetString(order.Email),
-                ShipToFullName = GetString(order.ShipToName),
-                ShipToAddress = GetString(order.ShipToAddress.Address1),
-                ShipToAddress2 = GetString(order.ShipToAddress.Address2),
-                ShipToHouseApartmentNo = GetString(order.ShipToAddress.HouseNo),
-                ShipToCity = GetString(order.ShipToAddress.City),
-                ShipToCounty = GetString(order.ShipToAddress.StateProvinceRegion),
-                ShipToPostCode = GetString(order.ShipToAddress.PostCode),
-                ShipToCountryRegionCode = GetString(order.ShipToAddress.Country),
-                ShipToPhoneNo = GetString(order.ShipToPhoneNumber),
-                ShipToEmail = GetString(order.ShipToEmail),
-                ClickAndCollectOrder = order.ClickAndCollectOrder,
+                StoreNo = (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
+                MemberCardNo = XMLHelper.GetString(order.CardId),
+                FullName = XMLHelper.GetString(order.ContactName),
+                Address = XMLHelper.GetString(order.ContactAddress.Address1),
+                Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
+                HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
+                City = XMLHelper.GetString(order.ContactAddress.City),
+                County = XMLHelper.GetString(order.ContactAddress.StateProvinceRegion),
+                PostCode = XMLHelper.GetString(order.ContactAddress.PostCode),
+                CountryRegionCode = XMLHelper.GetString(order.ContactAddress.Country),
+                PhoneNo = XMLHelper.GetString(order.PhoneNumber),
+                MobilePhoneNo = XMLHelper.GetString(order.MobileNumber),
+                DaytimePhoneNo = XMLHelper.GetString(order.DayPhoneNumber),
+                Email = XMLHelper.GetString(order.Email),
+                ShipToFullName = XMLHelper.GetString(order.ShipToName),
+                ShipToAddress = XMLHelper.GetString(order.ShipToAddress.Address1),
+                ShipToAddress2 = XMLHelper.GetString(order.ShipToAddress.Address2),
+                ShipToHouseApartmentNo = XMLHelper.GetString(order.ShipToAddress.HouseNo),
+                ShipToCity = XMLHelper.GetString(order.ShipToAddress.City),
+                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.StateProvinceRegion),
+                ShipToPostCode = XMLHelper.GetString(order.ShipToAddress.PostCode),
+                ShipToCountryRegionCode = XMLHelper.GetString(order.ShipToAddress.Country),
+                ShipToPhoneNo = XMLHelper.GetString(order.ShipToPhoneNumber),
+                ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
+                ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
                 AnonymousOrder = string.IsNullOrEmpty(order.CardId),
-                ShippingAgentCode = GetString(order.ShippingAgentCode),
-                ShippingAgentServiceCode = GetString(order.ShippingAgentServiceCode),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
                 SourcingLocation = string.Empty,
                 ReceiptNo = new string[] { string.Empty }
             });
@@ -647,17 +649,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             root.CustomerOrderHeader = header.ToArray();
 
-            List<NavWS.CustomerOrderLine> orderLines = new List<NavWS.CustomerOrderLine>();
+            List<NavWS.CustomerOrderLine1> orderLines = new List<NavWS.CustomerOrderLine1>();
             foreach (OrderLine line in order.OrderLines)
             {
-                orderLines.Add(new NavWS.CustomerOrderLine()
+                orderLines.Add(new NavWS.CustomerOrderLine1()
                 {
                     DocumentId = order.Id,
                     LineNo = LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
-                    VariantCode = GetString(line.VariantId),
-                    UnitofMeasureCode = GetString(line.UomId),
+                    VariantCode = XMLHelper.GetString(line.VariantId),
+                    UnitofMeasureCode = XMLHelper.GetString(line.UomId),
                     Quantity = line.Quantity,
                     DiscountAmount = line.DiscountAmount,
                     DiscountPercent = line.DiscountPercent,
@@ -683,10 +685,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         LineNo = LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
-                        OfferNo = GetString(line.OfferNumber),
+                        OfferNo = XMLHelper.GetString(line.OfferNumber),
                         PeriodicDiscType = (int)line.PeriodicDiscType,
-                        PeriodicDiscGroup = GetString(line.PeriodicDiscGroup),
-                        Description = GetString(line.Description),
+                        PeriodicDiscGroup = XMLHelper.GetString(line.PeriodicDiscGroup),
+                        Description = XMLHelper.GetString(line.Description),
                         DiscountPercent = line.DiscountPercent,
                         DiscountAmount = line.DiscountAmount
                     });
@@ -705,12 +707,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         LineNo = LineNumberToNav(line.LineNumber),
                         PreApprovedAmount = line.Amount,
                         TenderType = line.TenderType,
-                        CardType = GetString(line.CardType),
-                        CurrencyCode = GetString(line.CurrencyCode),
+                        CardType = XMLHelper.GetString(line.CardType),
+                        CurrencyCode = XMLHelper.GetString(line.CurrencyCode),
                         CurrencyFactor = line.CurrencyFactor,
-                        AuthorisationCode = GetString(line.AuthorizationCode),
-                        PreApprovedValidDate = GetSQLNAVDate(line.PreApprovedValidDate),
-                        CardorCustomernumber = GetString(order.CardId)
+                        AuthorisationCode = XMLHelper.GetString(line.AuthorizationCode),
+                        PreApprovedValidDate = line.PreApprovedValidDate,
+                        CardorCustomernumber = XMLHelper.GetString(order.CardId)
                     });
                 }
             }
@@ -730,7 +732,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 StoreId = list.StoreId.ToUpper(),
                 TransactionType = 2,
                 EntryStatus = (int)EntryStatus.Normal,
-                MemberCardNo = GetString(list.CardId),
+                MemberCardNo = XMLHelper.GetString(list.CardId),
 
                 // fill out null fields
                 BusinessTAXCode = string.Empty,
@@ -875,7 +877,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             if (root.WSInventoryBuffer == null)
                 return resp;
 
-            foreach (NavWS.WSInventoryBuffer1 line in root.WSInventoryBuffer)
+            foreach (NavWS.WSInventoryBuffer line in root.WSInventoryBuffer)
             {
                 resp.Lines.Add(new OrderLineAvailabilityResponse()
                 {
@@ -889,7 +891,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             }
 
             // check for missing items as nav does not return 0 items
-            foreach (NavWS.CustomerOrderLine2 item in rootin.CustomerOrderLine)
+            foreach (NavWS.CustomerOrderLine item in rootin.CustomerOrderLine)
             {
                 OrderLineAvailabilityResponse it = resp.Lines.Find(i => i.ItemId.Equals(item.Number) && i.VariantId.Equals(item.VariantCode));
                 if (it == null)
@@ -908,8 +910,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
         public NavWS.RootCOQtyAvailabilityExtIn MapOneListToInvReq(OneList list)
         {
-            List<NavWS.CustomerOrderHeader3> header = new List<NavWS.CustomerOrderHeader3>();
-            header.Add(new NavWS.CustomerOrderHeader3()
+            List<NavWS.CustomerOrderHeader> header = new List<NavWS.CustomerOrderHeader>();
+            header.Add(new NavWS.CustomerOrderHeader()
             {
                 DocumentID = string.Empty,
                 StoreNo = list.StoreId,
@@ -918,11 +920,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 SourcingOrder = "0"
             });
 
-            List<NavWS.CustomerOrderLine2> lines = new List<NavWS.CustomerOrderLine2>();
+            List<NavWS.CustomerOrderLine> lines = new List<NavWS.CustomerOrderLine>();
             int linenr = 1;
             foreach (OneListItem item in list.Items)
             {
-                lines.Add(new NavWS.CustomerOrderLine2()
+                lines.Add(new NavWS.CustomerOrderLine()
                 {
                     DocumentID = string.Empty,
                     LineNo = LineNumberToNav(linenr++),

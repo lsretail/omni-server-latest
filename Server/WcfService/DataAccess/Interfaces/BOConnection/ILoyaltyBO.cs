@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
     public interface ILoyaltyBO
     {
         int TimeoutInSeconds { set; }
-        string Ping(string ipAddress);
+        string Ping();
 
         #region Contact
 
