@@ -28,7 +28,7 @@ namespace LSOmni.BLL.Loyalty
         {
             //if no ad id is given, get one
             if (pushNotificationRequest == null)
-                throw new ApplicationException("pushNotificationRequest cannot be null");
+                throw new LSOmniException(StatusCode.ObjectMissing, "pushNotificationRequest cannot be null");
 
             try
             {

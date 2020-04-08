@@ -60,7 +60,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (numberOfTrans > 0 && contact != null)
             {
                 contact.SalesEntries = SalesEntriesGetByCardId(card, numberOfTrans, string.Empty);
-                contact.SalesEntries.AddRange(OrderHistoryByCardId(card));
             }
             return contact;
         }
@@ -129,11 +128,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             NavWSBase.CreateDeviceAndLinkToUser(userName, deviceId, deviceFriendlyName, cardId);
         }
 
-        private string GetDefaultDeviceId(string userName)
-        {
-            return ("WEB-" + userName);
-        }
-
         public virtual Device DeviceGetById(string id)
         {
             return NavWSBase.DeviceGetById(id);
@@ -178,7 +172,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ProfileSearch(search);
         }
 
-        public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, bool includeLines)
+        public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions)
         {
             throw new NotImplementedException("NEEDS NAV WS");
         }
@@ -213,7 +207,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
-            return NavWSBase.NotificationsGetByCardId(cardId, numberOfNotifications);
+            return NavWSBase.NotificationsGetByCardId(cardId);
         }
 
         #endregion
@@ -222,12 +216,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
         {
-            return NavWSBase.ItemGetByBarcode(code, storeId);
+            return NavWSBase.ItemGetByBarcode(code);
         }
 
         public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails)
         {
-            return NavWSBase.ItemGetById(id, storeId, culture, includeDetails);
+            return NavWSBase.ItemGetById(id);
         }
 
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)
@@ -302,7 +296,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions, string culture)
         {
-            return NavWSBase.SalesHistory(cardId, maxNumberOfTransactions);
+            List<SalesEntry> list = NavWSBase.SalesHistory(cardId, maxNumberOfTransactions);
+            list.AddRange(NavWSBase.OrderHistoryGet(cardId));
+            return list;
         }
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
@@ -357,11 +353,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.OrderCreate(request, tenderMapping, out orderId);
         }
 
-        public virtual List<SalesEntry> OrderHistoryByCardId(string cardId)
-        {
-            return NavWSBase.OrderHistoryGet(cardId);
-        }
-
         #endregion
 
         #region Offer and Advertisement
@@ -382,7 +373,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual ImageView ImageGetById(string imageId, bool includeBlob)
         {
-            return NavWSBase.ImageGetById(imageId, includeBlob);
+            return NavWSBase.ImageGetById(imageId);
         }
 
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
@@ -492,55 +483,5 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         }
 
         #endregion
-
-        private List<ShippingAgentService> GetShippingAgentService(string agentId)
-        {
-            return NavWSBase.GetShippingAgentService(agentId);
-        }
-
-        private string TenderTypeMapping(string tenderMapping, string tenderType, bool toOmni)
-        {
-            try
-            {
-                int tenderTypeId = -1;
-                if (string.IsNullOrWhiteSpace(tenderMapping))
-                {
-                    return null;
-                }
-
-                // first one is Omni TenderType, 2nd one is the NAV id
-                //tenderMapping: "1=1,2=2,3=3,4=4,6=6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
-                //or can be : "1  =  1  ,2=2,3= 3, 4=4,6 =6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
-
-                string[] commaMapping = tenderMapping.Split(',');  //1=1 or 2=2  etc
-                foreach (string s in commaMapping)
-                {
-                    string[] eqMapping = s.Split('='); //1 1
-                    if (toOmni)
-                    {
-                        if (tenderType == eqMapping[1].Trim())
-                        {
-                            tenderTypeId = Convert.ToInt32(eqMapping[0].Trim());
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (tenderType == eqMapping[0].Trim())
-                        {
-                            tenderTypeId = Convert.ToInt32(eqMapping[1].Trim());
-                            break;
-                        }
-                    }
-                }
-                return tenderTypeId.ToString();
-            }
-            catch (Exception ex)
-            {
-                string msg = string.Format("Error in TenderTypeMapping(tenderMapping:{0} tenderType:{1})", tenderMapping, tenderType.ToString());
-                logger.Error(config.LSKey.Key, msg + ex.Message);
-                throw;
-            }
-        }
     }
 }

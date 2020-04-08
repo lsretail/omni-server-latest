@@ -154,6 +154,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     activityWS.Credentials = credentials;
                     activity15WS.Credentials = credentials;
                 }
+
+                NavVersionToUse(true); //check the nav version
             }
 
             if (NAVVersion > new Version("14.2"))
@@ -232,7 +234,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 // restart to beginning
                 restorepoint = 1;
-                RestoreWebReplication(xml, restorepoint);
+                //RestoreWebReplication(xml, restorepoint);
                 tablist = StartWebReplication(xml, batchSize, ref restorepoint);
             }
             else
@@ -302,14 +304,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                             logger.Info(config.LSKey.Key, "Nav WS2 Query Response > Ver:{0} ErrCode:{1} ErrText:{2}", 
                                 retailVersion, respCode, errorText);
                             if (respCode != "0000")
-                                throw new LSOmniServiceException(StatusCode.ServerRefusingToRespond, errorText);
+                                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
                         }
 
                         navWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
                         logger.Info(config.LSKey.Key, "Nav WS2 Main Response > Ver:{0} ErrCode:{1} ErrText:{2}", 
                             retailVersion, respCode, errorText);
                         if (respCode != "0000")
-                            throw new LSOmniServiceException(StatusCode.ServerRefusingToRespond, errorText);
+                            throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
                     }
                     else
                     {
@@ -349,7 +351,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     int ed = retailVersion.IndexOf(')');
                     if (st == -1)
                     {
-                        navver = string.Format("LS:{0} [{1}]", NAVVersion, appBuild);
+                        if (retailVersion.Contains("LS Central"))
+                        {
+                            string vv1 = retailVersion.Substring(11, retailVersion.Length - 11);
+                            NAVVersion = new Version(vv1);
+                            navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
+                        }
+                        else
+                        {
+                            navver = string.Format("LS:{0} [{1}]", NAVVersion, appBuild);
+                        }
                     }
                     else
                     {
@@ -440,7 +451,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 logger.Error(config.LSKey.Key, "xmlResponse from NAV is empty");
                 logger.Debug(config.LSKey.Key, "xmlRequest: " + xmlRequest);
-                throw new LSOmniServiceException(StatusCode.Error, "xmlResponse from NAV is empty");
+                throw new LSOmniServiceException(StatusCode.NavWSError, "xmlResponse from NAV is empty");
             }
 
             // Get the elapsed time as a TimeSpan value.

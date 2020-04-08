@@ -117,10 +117,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
 
-            NavWS.RootMemberContactCreate1 root = new NavWS.RootMemberContactCreate1();
-            root.ContactCreateParameters = member.ToArray();
-            root.MemberAttributeValue = attr.ToArray();
-            root.Text = new string[1];
+            NavWS.RootMemberContactCreate1 root = new NavWS.RootMemberContactCreate1()
+            {
+                ContactCreateParameters = member.ToArray(),
+                MemberAttributeValue = attr.ToArray(),
+                Text = new string[1]
+            };
             root.Text[0] = string.Empty;
             return root;
         }
@@ -140,7 +142,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 Phone = contact.PhoneNo,
                 MobilePhone = contact.MobilePhoneNo,
-                BirthDay = contact.DateofBirth
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth)
             };
 
             memberContact.Addresses = new List<Address>();
@@ -168,7 +170,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Id = card.CardNo,
                         BlockedBy = card.Blockedby,
                         BlockedReason = card.ReasonBlocked,
-                        DateBlocked = card.DateBlocked,
+                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked),
                         LinkedToAccount = card.LinkedtoAccount,
                         ClubId = card.ClubCode,
                         ContactId = card.ContactNo,

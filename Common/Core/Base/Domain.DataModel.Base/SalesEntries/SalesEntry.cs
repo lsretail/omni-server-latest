@@ -52,7 +52,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public string ExternalId { get; set; }
         [DataMember]
-        public string ReceiptNo { get; set; }
+        public string CustomerOrderNo { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DocumentRegTime { get; set; }
         [DataMember]

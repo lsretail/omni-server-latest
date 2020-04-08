@@ -197,7 +197,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private SalesEntry ReaderToSalesEntry(SqlDataReader reader, bool includeLines)
         {
-            SalesEntry salesEntry = new SalesEntry
+            SalesEntry entry = new SalesEntry
             {
                 Id = SQLHelper.GetString(reader["Document ID"]),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
@@ -217,7 +217,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"])
             };
 
-            salesEntry.ShipToAddress = new Address()
+            entry.ShipToAddress = new Address()
             {
                 Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
                 Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
@@ -229,34 +229,35 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             int copay = SQLHelper.GetInt32(reader["CoPay"]);
-            salesEntry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
-            salesEntry.ShippingStatus = (salesEntry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
-            salesEntry.AnonymousOrder = string.IsNullOrEmpty(salesEntry.CardId);
+            entry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
+            entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
+            entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
+            entry.CustomerOrderNo = entry.Id;
 
-            OrderLinesGetTotals(salesEntry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
-            salesEntry.LineItemCount = cnt;
-            salesEntry.TotalAmount = amt;
-            salesEntry.TotalNetAmount = namt;
-            salesEntry.TotalDiscount = disc;
+            OrderLinesGetTotals(entry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
+            entry.LineItemCount = cnt;
+            entry.TotalAmount = amt;
+            entry.TotalNetAmount = namt;
+            entry.TotalDiscount = disc;
 
-            if (salesEntry.Posted)
+            if (entry.Posted)
             {
-                salesEntry.Status = SalesEntryStatus.Complete;
+                entry.Status = SalesEntryStatus.Complete;
                 SalesEntryRepository srepo = new SalesEntryRepository(config, NavVersion);
-                srepo.SalesEntryPointsGetTotal(salesEntry.Id, out decimal rewarded, out decimal used);
-                salesEntry.PointsRewarded = rewarded;
-                salesEntry.PointsUsedInOrder = used;
+                srepo.SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
+                entry.PointsRewarded = rewarded;
+                entry.PointsUsedInOrder = used;
             }
 
             if (includeLines)
             {
-                salesEntry.Lines = OrderLinesGet(salesEntry.Id);
-                salesEntry.Payments = OrderPayGet(salesEntry.Id);
-                salesEntry.DiscountLines = OrderDiscGet(salesEntry.Id);
+                entry.Lines = OrderLinesGet(entry.Id);
+                entry.Payments = OrderPayGet(entry.Id);
+                entry.DiscountLines = OrderDiscGet(entry.Id);
 
                 ImageRepository imgrep = new ImageRepository(config);
                 List<SalesEntryLine> list = new List<SalesEntryLine>();
-                foreach (SalesEntryLine line in salesEntry.Lines)
+                foreach (SalesEntryLine line in entry.Lines)
                 {
                     SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
                     if (exline == null)
@@ -278,7 +279,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         continue;
                     }
 
-                    SalesEntryDiscountLine dline = salesEntry.DiscountLines.Find(l => l.LineNumber >= line.LineNumber && l.LineNumber < line.LineNumber + 10000);
+                    SalesEntryDiscountLine dline = entry.DiscountLines.Find(l => l.LineNumber >= line.LineNumber && l.LineNumber < line.LineNumber + 10000);
                     if (dline != null)
                     {
                         // update discount line number to match existing record, as we will sum up the orderlines
@@ -291,10 +292,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     exline.TaxAmount += line.TaxAmount;
                     exline.Quantity += line.Quantity;
                 }
-                salesEntry.Lines = list;
+                entry.Lines = list;
             }
 
-            return salesEntry;
+            return entry;
         }
 
         private SalesEntryLine ReaderToOrderLine(SqlDataReader reader)
@@ -346,26 +347,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 PeriodicDiscGroup = SQLHelper.GetString(reader["Periodic Disc_ Group"]),
                 PeriodicDiscType = (PeriodicDiscType)SQLHelper.GetInt32(reader["Periodic Disc_ Type"])
             };
-        }
-
-        private int SaleOrderGetStatus(string id)
-        {
-            int status = 1;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT [Status] FROM [" + navCompanyName + "Sales Header] WHERE [No_]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    var value = command.ExecuteScalar();
-                    if (value != null)
-                        status = (int)value;
-                }
-                connection.Close();
-            }
-            return status;
         }
     }
 }

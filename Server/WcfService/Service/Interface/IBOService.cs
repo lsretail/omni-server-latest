@@ -3,6 +3,7 @@ using System.ServiceModel;
 
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.Service
 {
@@ -27,6 +28,9 @@ namespace LSOmni.Service
 
         [OperationContract]
         void OrderMessageSave(string orderId, int status, string subject, string message);
+
+        [OperationContract]
+        void OrderMessageStatusUpdate(OrderMessage orderMessage);
         [OperationContract]
         string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);
 

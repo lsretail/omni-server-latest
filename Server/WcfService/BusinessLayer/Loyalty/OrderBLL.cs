@@ -27,10 +27,8 @@ namespace LSOmni.BLL.Loyalty
         {
             //validation
             if (request == null)
-            {
-                string msg = "OrderAvailabilityCheck() request is empty";
-                throw new LSOmniServiceException(StatusCode.Error, msg);
-            }
+                throw new LSOmniException(StatusCode.ObjectMissing, "OrderAvailabilityCheck() request is empty");
+
             return BOLoyConnection.OrderAvailabilityCheck(request);
         }
 
@@ -48,10 +46,7 @@ namespace LSOmni.BLL.Loyalty
         {
             //validation
             if (request == null)
-            {
-                string msg = "OrderCreate() request is empty";
-                throw new LSOmniServiceException(StatusCode.Error, msg);
-            }
+                throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
 
             if (string.IsNullOrEmpty(request.CardId) == false)
             {

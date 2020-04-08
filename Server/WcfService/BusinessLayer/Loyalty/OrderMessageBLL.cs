@@ -11,6 +11,8 @@ using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
+using System.Web.Script.Serialization;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -27,7 +29,7 @@ namespace LSOmni.BLL.Loyalty
             iPushRepository = GetDbRepository<IPushNotificationRepository>(config);
         }
 
-        public OrderMessageBLL(BOConfiguration config, int timeoutInSeconds) 
+        public OrderMessageBLL(BOConfiguration config, int timeoutInSeconds)
             : this(config, "", timeoutInSeconds)
         {
         }
@@ -35,8 +37,20 @@ namespace LSOmni.BLL.Loyalty
         public virtual void OrderMessageSave(string orderId, int status, string subject, string message)
         {
             // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
-            CreateNotificationsFromOrderMessage(orderId, status, subject, message);
+            CreateNotificationsFromOrderMessage(orderId, status.ToString(), subject, message);
             SendToEcom("orderstatus", new { document_id = orderId, status = status });
+        }
+
+        public virtual void OrderMessageStatusUpdate(OrderMessage orderMessage)
+        {
+            // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
+            CreateNotificationsFromOrderMessage(orderMessage);
+            string payloadJson = new JavaScriptSerializer().Serialize(orderMessage);
+            int start = payloadJson.IndexOf("MsgSubject");
+            int end = payloadJson.IndexOf("Lines");
+            string newpay = payloadJson.Substring(0, start - 1);
+            newpay += payloadJson.Substring(end - 1, payloadJson.Length - end + 1);
+            SendToEcom("orderstatus", newpay);
         }
 
         public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference)
@@ -200,13 +214,12 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private void CreateNotificationsFromOrderMessage(string orderId, int status, string subject, string message)
+        private void CreateNotificationsFromOrderMessage(string orderId, string orderStatus, string subject, string message)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return;     // nothing to save here
 
             string cardId = "";
-            string orderStatus = status.ToString().ToUpper();
             string notificationId = GuidHelper.NewGuidString();
 
             try
@@ -258,6 +271,49 @@ namespace LSOmni.BLL.Loyalty
             catch (Exception ex)
             {
                 logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for guid:{0} CardId:{1}", notificationId, cardId);
+            }
+        }
+
+        private void CreateNotificationsFromOrderMessage(OrderMessage orderMsg)
+        {
+            if (orderMsg == null || string.IsNullOrEmpty(orderMsg.MsgDetail))
+                return;     // nothing to save here
+
+            string notificationId = GuidHelper.NewGuidString();
+
+            try
+            {
+                if (string.IsNullOrEmpty(orderMsg.CardId))
+                    return;
+
+                ContactBLL contactBLL = new ContactBLL(config, timeoutInSeconds);
+                MemberContact contact = contactBLL.ContactGetByCardId(orderMsg.CardId, false);
+                if (contact == null)
+                {
+                    logger.Error(config.LSKey.Key, "Failed to find contact for cardId:{0}", orderMsg.CardId);
+                    return;
+                }
+
+                iNotificationRepository.OrderMessageNotificationSave(notificationId, orderMsg.OrderId, orderMsg.CardId, orderMsg.MsgSubject, orderMsg.MsgDetail, orderMsg.OrderId);
+                iPushRepository.SavePushNotification(contact.Id, notificationId);
+
+                //if status is ready 
+                if (orderMsg.HeaderStatus.StartsWith("REA"))
+                {
+                    //create qr image 
+                    ImageView iv = new ImageView(notificationId);
+                    iv.DisplayOrder = 0;
+                    iv.LocationType = LocationType.Image;
+                    iv.Location = "";
+                    iv.ImgBytes = GenerateQRCode(orderMsg.OrderId);
+
+                    IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);
+                    imgRepository.SaveImageLink(iv, "Member Notification", "Member Notification: " + notificationId, notificationId, iv.Id, 0);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for guid:{0} CardId:{1}", notificationId, orderMsg.CardId);
             }
         }
 

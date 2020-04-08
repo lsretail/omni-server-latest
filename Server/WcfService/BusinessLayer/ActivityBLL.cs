@@ -37,7 +37,7 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityCancel(activityNo);
         }
 
-        public virtual AvailabilityResponse ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
         {
             return BOActConnection.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode);
         }

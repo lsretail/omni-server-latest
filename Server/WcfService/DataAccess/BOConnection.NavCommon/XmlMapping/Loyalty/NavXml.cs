@@ -522,6 +522,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             cardElement.InnerText = cardId;
             requestBody.AppendChild(cardElement);
 
+            XmlElement devElement = document.CreateElement("DeviceID");
+            devElement.InnerText = string.Empty;
+            requestBody.AppendChild(devElement);
+
             return document.OuterXml;
         }
 

@@ -148,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (trans)
                                 list.Add(TransactionToSalesEntry(reader, false));
                             else
-                                list.Add(OrderToSalesEntry(reader, false));
+                                list.Add(OrderToSalesEntry(reader));
                         }
                         reader.Close();
                     }
@@ -203,7 +203,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return entry;
         }
 
-        public List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, bool includeLines)
+        public List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions)
         {
             List<SalesEntry> list = new List<SalesEntry>();
             if (string.IsNullOrWhiteSpace(search))
@@ -238,9 +238,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             trans = (NavVersion > new Version("14.2")) ? (SQLHelper.GetInt32(reader["Transaction No_"]) > 0) : SQLHelper.GetBool(reader["Transaction"]);
                             if (trans)
-                                list.Add(TransactionToSalesEntry(reader, includeLines));
+                                list.Add(TransactionToSalesEntry(reader, false));
                             else
-                                list.Add(OrderToSalesEntry(reader, includeLines));
+                                list.Add(OrderToSalesEntry(reader));
                         }
                     }
                     connection.Close();
@@ -284,89 +284,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             }
         }
 
-        private SalesEntry TransactionToSalesEntry(SqlDataReader reader, bool includeLines)
-        {
-            SalesEntry entry = new SalesEntry()
-            {
-                Id = SQLHelper.GetString(reader["Document ID"]),
-                IdType = DocumentIdType.Receipt,
-                LineItemCount = (int)SQLHelper.GetDecimal(reader, "Quantity", false),
-                TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
-                TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
-                TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
-                StoreId = SQLHelper.GetString(reader["Store No_"]),
-                CardId = SQLHelper.GetString(reader["Member Card No_"]),
-                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
-                AnonymousOrder = false,
-                Status = SalesEntryStatus.Complete,
-                PaymentStatus = PaymentStatus.Posted,
-                Posted = true,
-                TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
-                StoreName = SQLHelper.GetString(reader["Name"]),
-                ExternalId = SQLHelper.GetString(reader["External ID"]),
-                ShipToName = SQLHelper.GetString(reader["ShipName"])
-            };
-
-            if (NavVersion > new Version("14.2"))
-            {
-                entry.ReceiptNo = SQLHelper.GetString(reader["Receipt No_"]);
-                if (string.IsNullOrEmpty(entry.Id))
-                    entry.Id = entry.ReceiptNo;
-            }
-            else
-            {
-                entry.ReceiptNo = entry.Id;
-            }
-
-            SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
-            entry.PointsRewarded = rewarded;
-            entry.PointsUsedInOrder = used;
-
-            if (includeLines)
-            {
-                entry.Lines = TransSalesEntryLinesGet(entry.ReceiptNo);
-                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, entry.TerminalId, "");
-            }
-            return entry;
-        }
-
-        private SalesEntry OrderToSalesEntry(SqlDataReader reader, bool includeLines)
-        {
-            SalesEntry salesEntry = new SalesEntry
-            {
-                Id = SQLHelper.GetString(reader["Document ID"]),
-                StoreId = SQLHelper.GetString(reader["Store No_"]),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
-                IdType = DocumentIdType.Order,
-                CardId = SQLHelper.GetString(reader["Member Card No_"]),
-                Status = SalesEntryStatus.Created,
-                StoreName = SQLHelper.GetString(reader["Name"]),
-                ShipToName = SQLHelper.GetString(reader["ShipName"]),
-                ExternalId = SQLHelper.GetString(reader["External ID"]),
-                Posted = SQLHelper.GetBool(reader["Posted"]),
-                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"])
-            };
-
-            salesEntry.AnonymousOrder = string.IsNullOrEmpty(salesEntry.CardId);
-            salesEntry.ShippingStatus = (salesEntry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
-
-            OrderLinesGetTotals(salesEntry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
-            salesEntry.LineItemCount = cnt;
-            salesEntry.TotalAmount = amt;
-            salesEntry.TotalNetAmount = namt;
-            salesEntry.TotalDiscount = disc;
-
-            if (salesEntry.Posted)
-            {
-                salesEntry.Status = SalesEntryStatus.Complete;
-                SalesEntryPointsGetTotal(salesEntry.Id, out decimal rewarded, out decimal used);
-                salesEntry.PointsRewarded = rewarded;
-                salesEntry.PointsUsedInOrder = used;
-            }
-            return salesEntry;
-        }
-
         public List<SalesEntryLine> TransSalesEntryLinesGet(string receiptId)
         {
             List<SalesEntryLine> list = new List<SalesEntryLine>();
@@ -400,6 +317,36 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
+        public List<SalesEntryDiscountLine> DiscountLineGet(string receiptNo)
+        {
+            List<SalesEntryDiscountLine> list = new List<SalesEntryDiscountLine>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT ml.[Line No_],ml.[Offer Type],ml.[Offer No_],ml.[Discount Amount]," +
+                                          "pd.[Description],pd.[Type] " +
+                                          "FROM [" + navCompanyName + "Trans_ Discount Entry] ml " +
+                                          "LEFT JOIN [" + navCompanyName + "Periodic Discount] pd ON pd.[No_]=ml.[Offer No_] " +
+                                          "WHERE ml.[Receipt No_]=@id";
+
+                    command.Parameters.AddWithValue("@id", receiptNo);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToDiscountLine(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
         public List<SalesEntryPayment> TransSalesEntryPaymentGet(string transId, string storeId, string terminalId, string culture)
         {
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
@@ -421,7 +368,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(TransToSalesEntryPayment(reader, culture));
+                            list.Add(TransToSalesEntryPayment(reader));
                         }
                         reader.Close();
                     }
@@ -471,6 +418,89 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             }
         }
 
+        private SalesEntry TransactionToSalesEntry(SqlDataReader reader, bool includeLines)
+        {
+            SalesEntry entry = new SalesEntry()
+            {
+                CustomerOrderNo = SQLHelper.GetString(reader["Document ID"]),
+                LineItemCount = (int)SQLHelper.GetDecimal(reader, "Quantity", false),
+                TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
+                TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
+                TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
+                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                CardId = SQLHelper.GetString(reader["Member Card No_"]),
+                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
+                AnonymousOrder = false,
+                Status = SalesEntryStatus.Complete,
+                PaymentStatus = PaymentStatus.Posted,
+                Posted = true,
+                TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
+                StoreName = SQLHelper.GetString(reader["Name"]),
+                ExternalId = SQLHelper.GetString(reader["External ID"]),
+                ShipToName = SQLHelper.GetString(reader["ShipName"])
+            };
+
+            if (NavVersion > new Version("14.2"))
+            {
+                entry.IdType = DocumentIdType.Receipt;
+                entry.Id = SQLHelper.GetString(reader["Receipt No_"]);
+            }
+            else
+            {
+                entry.CustomerOrderNo = entry.Id;
+            }
+
+            SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
+            entry.PointsRewarded = rewarded;
+            entry.PointsUsedInOrder = used;
+
+            if (includeLines)
+            {
+                entry.Lines = TransSalesEntryLinesGet(entry.Id);
+                entry.DiscountLines = DiscountLineGet(entry.Id);
+                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, entry.TerminalId, "");
+            }
+            return entry;
+        }
+
+        private SalesEntry OrderToSalesEntry(SqlDataReader reader)
+        {
+            SalesEntry entry = new SalesEntry
+            {
+                Id = SQLHelper.GetString(reader["Document ID"]),
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                IdType = DocumentIdType.Order,
+                CardId = SQLHelper.GetString(reader["Member Card No_"]),
+                Status = SalesEntryStatus.Created,
+                StoreName = SQLHelper.GetString(reader["Name"]),
+                ShipToName = SQLHelper.GetString(reader["ShipName"]),
+                ExternalId = SQLHelper.GetString(reader["External ID"]),
+                Posted = SQLHelper.GetBool(reader["Posted"]),
+                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"])
+            };
+
+            entry.CustomerOrderNo = entry.Id;
+            entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
+            entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
+
+            OrderLinesGetTotals(entry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
+            entry.LineItemCount = cnt;
+            entry.TotalAmount = amt;
+            entry.TotalNetAmount = namt;
+            entry.TotalDiscount = disc;
+
+            if (entry.Posted)
+            {
+                entry.Status = SalesEntryStatus.Complete;
+                SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
+                entry.PointsRewarded = rewarded;
+                entry.PointsUsedInOrder = used;
+            }
+            return entry;
+        }
+
         private SalesEntryLine TransToSalesEntryLine(SqlDataReader reader)
         {
             SalesEntryLine line = new SalesEntryLine()
@@ -483,7 +513,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 NetPrice = SQLHelper.GetDecimal(reader, "Net Price"),
                 Price = SQLHelper.GetDecimal(reader, "Price"),
-                DiscountAmount = SQLHelper.GetDecimal(reader, "Discount Amount", true),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
                 NetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
                 TaxAmount = SQLHelper.GetDecimal(reader, "VAT Amount", true),
                 ItemDescription = SQLHelper.GetString(reader["Description"]),
@@ -524,7 +554,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return line;
         }
 
-        private SalesEntryPayment TransToSalesEntryPayment(SqlDataReader reader, string culture)
+        private SalesEntryDiscountLine ReaderToDiscountLine(SqlDataReader reader)
+        {
+            SalesEntryDiscountLine line = new SalesEntryDiscountLine()
+            {
+                DiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                OfferNumber = SQLHelper.GetString(reader["Offer No_"]),
+                PeriodicDiscGroup = SQLHelper.GetString(reader["Offer No_"]),
+                DiscountType = DiscountType.PeriodicDisc,
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"])
+            };
+            line.SetDiscType((OfferDiscountType)SQLHelper.GetInt32(reader["Offer Type"]));
+            return line;
+        }
+
+        private SalesEntryPayment TransToSalesEntryPayment(SqlDataReader reader)
         {
             return new SalesEntryPayment()
             {

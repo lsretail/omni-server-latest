@@ -152,7 +152,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Printer
                 case "CODE39":
                     return BarcodeSystem.CODE39;
 
-                case "CODE128": 
+                case "CODE128":
+                case "CODE128_A":
                 case "CODE128_B":
                     return BarcodeSystem.CODE128;
 

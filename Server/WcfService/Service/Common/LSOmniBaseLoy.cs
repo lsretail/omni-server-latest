@@ -329,13 +329,6 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1} ", userName, deviceId);
-
-                //some validation
-                if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
-                {
-                    throw new LSOmniServiceException(StatusCode.UserNamePasswordInvalid, "User name or password are missing.");
-                }
-
                 config.SecurityCheck = false;
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
                 MemberContact contact = contactBLL.Login(userName, password, true, deviceId, clientIPAddress);
@@ -385,13 +378,6 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} ", userName);
-
-                //some validation
-                if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
-                {
-                    throw new LSOmniServiceException(StatusCode.UserNamePasswordInvalid, "User name or password are missing.");
-                }
-
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using securitytoken here, so no security checks
                 return contactBLL.Login(userName, password, false, "", clientIPAddress);
             }
@@ -1609,6 +1595,20 @@ namespace LSOmni.Service
         #endregion Ads
 
         #region OrderMessage
+
+        public virtual void OrderMessageStatusUpdate(OrderMessage orderMessage)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(orderMessage));
+                OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
+                bll.OrderMessageStatusUpdate(orderMessage);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Format("OrderId:{0}, Line count:{1}", orderMessage.OrderId, orderMessage.Lines.Count));
+            }
+        }
 
         public virtual void OrderMessageSave(string orderId, int status, string subject, string message)
         {

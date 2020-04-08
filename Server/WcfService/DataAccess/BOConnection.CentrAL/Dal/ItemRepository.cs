@@ -677,6 +677,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (incldetails == false)
                 return item;
 
+            ItemLocationRepository locrep = new ItemLocationRepository(config);
+            item.Locations = locrep.ItemLocationGetByItemId(item.Id, storeId);
+
             PriceRepository pricerep = new PriceRepository(config);
             item.Prices = pricerep.PricesGetByItemId(item.Id, storeId, culture);
 

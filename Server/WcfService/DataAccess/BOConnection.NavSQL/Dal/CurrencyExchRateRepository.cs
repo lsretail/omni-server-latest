@@ -160,8 +160,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
                 else
                 {
-                    ReplCurrencyExchRate relcur = CurrencyExchRateGetById(code);
-                    exchrate = relcur.CurrencyFactor;
+                    using (ReplCurrencyExchRate relcur = CurrencyExchRateGetById(code))
+                    {
+                        exchrate = relcur.CurrencyFactor;
+                    }
                 }
             }
 

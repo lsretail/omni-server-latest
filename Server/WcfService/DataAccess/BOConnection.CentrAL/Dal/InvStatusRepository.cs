@@ -23,8 +23,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             string sqlcolumns = "mt.[timestamp],mt.[Item No_],mt.[Variant Code],mt.[Store No_],mt.[Net Inventory],mt.[Replication Counter]";
             string sqlfrom = " FROM [" + navCompanyName + "Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
-            string sqlwhere = string.IsNullOrEmpty(storeId) ? string.Empty : " WHERE mt.[Store No_]=@sid AND " + 
-                ((fullReplication) ? "mt.[timestamp]>@cnt" : "mt.[Replication Counter]>@cnt");
+            string sqlwhere = " WHERE " + ((fullReplication) ? "mt.[timestamp]>@cnt" : "mt.[Replication Counter]>@cnt");
+            sqlwhere += string.IsNullOrEmpty(storeId) ? string.Empty : " AND mt.[Store No_]=@sid";
 
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";

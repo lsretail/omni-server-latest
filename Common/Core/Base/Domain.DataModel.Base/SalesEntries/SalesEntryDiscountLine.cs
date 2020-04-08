@@ -63,6 +63,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public string Description { get; set; }
 
+        public void SetDiscType(OfferDiscountType type)
+        {
+            switch (type)
+            {
+                case OfferDiscountType.Multibuy: PeriodicDiscType = PeriodicDiscType.Multibuy; break;
+                case OfferDiscountType.DiscountOffer: PeriodicDiscType = PeriodicDiscType.DiscOffer; break;
+                case OfferDiscountType.ItemPoint: PeriodicDiscType = PeriodicDiscType.ItemPoint; break;
+                case OfferDiscountType.LineDiscount: PeriodicDiscType = PeriodicDiscType.LineDiscount; break;
+                case OfferDiscountType.MixAndMatch: PeriodicDiscType = PeriodicDiscType.MixMatch; break;
+                default: PeriodicDiscType = PeriodicDiscType.Unknown; break;
+            }
+        }
+
         public override string ToString()
         {
             string s = string.Format(@"OrderId: {0} LineNumber: {1} No: {2}  DiscountType: {3}  PeriodicDiscType: {4} OfferNumber: {5}

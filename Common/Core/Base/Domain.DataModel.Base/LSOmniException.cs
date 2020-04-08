@@ -59,6 +59,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base
             this.Message = message;
         }
 
+        /// <summary>
+        /// Constructor with parameters 
+        /// </summary>
+        /// <param name="statusCode"></param>
+        /// <param name="navCode"></param>
+        /// <param name="message"></param>
+        public LSOmniServiceException(StatusCode statusCode, string navCode, string message)
+            : base(string.Format("Error:{0} : [{1}]-{2}", statusCode, navCode, message))
+        {
+            this.StatusCode = statusCode;
+            this.Message = string.Format("[{0}]-{1}", navCode, message);
+        }
+
         public string GetMessage()
         {
             string msg = Message.Replace("\"", "'");

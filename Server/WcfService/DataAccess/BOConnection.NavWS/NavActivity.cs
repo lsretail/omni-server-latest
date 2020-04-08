@@ -25,7 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ActivityCancel(activityNo);
         }
 
-        public virtual AvailabilityResponse ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
         {
             return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode);
         }

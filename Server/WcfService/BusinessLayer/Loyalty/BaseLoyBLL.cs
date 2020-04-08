@@ -17,7 +17,7 @@ namespace LSOmni.BLL.Loyalty
 
         //ALL  security related code is done in base class
         protected IValidationRepository iValidationRepository;
-        
+
         private string contactId;
         private StatusCode securityTokenStatusCode;
         private string localCulture = null;
@@ -64,7 +64,8 @@ namespace LSOmni.BLL.Loyalty
             Init(config.SecurityToken);
             base.DeviceId = deviceId; //keep this order
 
-            if (config.SecurityCheck) { 
+            if (config.SecurityCheck)
+            {
                 SecurityCheck();
             }
         }
@@ -108,9 +109,14 @@ namespace LSOmni.BLL.Loyalty
 
         protected string SendToEcom(string command, object obj)
         {
+            string payloadJson = new JavaScriptSerializer().Serialize(obj);
+            return SendToEcom(command, payloadJson);
+        }
+
+        protected string SendToEcom(string command, string data)
+        {
             try
             {
-                string payloadJson = new JavaScriptSerializer().Serialize(obj);
                 string ecomUrl = config.SettingsGetByKey(ConfigKey.EComUrl);
 
                 if (string.IsNullOrEmpty(ecomUrl))
@@ -121,7 +127,7 @@ namespace LSOmni.BLL.Loyalty
 
                 if (ecomUrl.ToUpper() == "DEMO")
                 {
-                    logger.Info(config.LSKey.Key, "ECOM Message Sent: Demo mode on");
+                    logger.Info(config.LSKey.Key, "ECOM Demo mode on, return OK");
                     return "OK";
                 }
 
@@ -130,19 +136,24 @@ namespace LSOmni.BLL.Loyalty
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
 
-                logger.Info(config.LSKey.Key, "ECOM Sent to:{0} Message:{1}", url.LocalPath, payloadJson);
+                logger.Info(config.LSKey.Key, "ECOM Sent to:{0} Message:{1}", url.LocalPath, data);
                 using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
-                    streamWriter.Write(payloadJson);
+                    streamWriter.Write(data);
                     streamWriter.Flush();
                     streamWriter.Close();
                 }
 
+                string ret = string.Empty;
                 HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    return streamReader.ReadToEnd();
+                    ret = streamReader.ReadToEnd();
                 }
+                char[] charsToTrim = { '"' };
+                ret = ret.Trim(charsToTrim);
+                logger.Info(config.LSKey.Key, "ECOM Result:[{0}]", ret);
+                return ret;
             }
             catch (Exception ex)
             {

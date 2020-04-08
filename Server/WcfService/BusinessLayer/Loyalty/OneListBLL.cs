@@ -62,7 +62,7 @@ namespace LSOmni.BLL.Loyalty
                 return new Order();
 
             if (list.Items.Count == 0)
-                throw new LSOmniServiceException(StatusCode.NoLinesToPost, "No Lines to calculate");
+                throw new LSOmniException(StatusCode.NoLinesToPost, "No Lines to calculate");
 
             CheckItemSetup(list);
 
@@ -101,7 +101,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 int i = list.Items.FindIndex(t => t.Id == item.Id);
                 if (i < 0)
-                    throw new LSOmniException(StatusCode.ItemNotFound, string.Format("OneList Item {0} not found", item.Id));
+                    throw new LSOmniException(StatusCode.OneListNotFound, string.Format("OneList Item {0} not found", item.Id));
 
                 list.Items.RemoveAt(i);
             }

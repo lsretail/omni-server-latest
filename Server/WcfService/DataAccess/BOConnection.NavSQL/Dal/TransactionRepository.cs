@@ -11,6 +11,7 @@ using LSRetail.Omni.Domain.DataModel.Pos.Items;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Discounts;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -27,7 +28,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public TransactionRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sqltransheadcol = "mt.[Transaction No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Receipt No_],mt.[Staff ID],mt.[Trans_ Currency]," +
+            sqltransheadcol = "mt.[Transaction No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Receipt No_],mt.[Refund Receipt No_],mt.[Staff ID],mt.[Trans_ Currency]," +
                               "mt.[No_ of Items],mt.[Net Amount],mt.[Cost Amount],mt.[Gross Amount],mt.[Payment],mt.[Discount Amount],mt.[Date],mt.[Time]";
 
             sqltransheadcol += (navVersion >= new Version("13.4")) ? (navVersion >= new Version("14.2")) ? ",mt.[Customer Order ID] AS OrderNo" : ",mt.[Customer Order No_] AS OrderNo" : ",mt.[Order No_] AS OrderNo";
@@ -88,7 +89,41 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToSaleLine(reader, storeId, currency));
+                            list.Add(ReaderToSaleLine(reader, storeId, terminalId, currency));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<DiscountLine> DiscountLineGet(string transId, string storeId, string terminalId, int lineNo, Currency currency)
+        {
+            List<DiscountLine> list = new List<DiscountLine>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " +
+                            "ml.[Transaction No_],ml.[Store No_],ml.[POS Terminal No_],ml.[Line No_],ml.[Offer No_]," +
+                            "ml.[Offer Type],ml.[Discount Amount],pd.[Description],pd.[Type] " +
+                            "FROM [" + navCompanyName + "Trans_ Discount Entry] ml " +
+                            "LEFT JOIN [" + navCompanyName + "Periodic Discount] pd ON pd.[No_]=ml.[Offer No_] " +
+                            "WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid AND ml.[Line No_]=@no";
+
+                    command.Parameters.AddWithValue("@id", transId);
+                    command.Parameters.AddWithValue("@Sid", storeId);
+                    command.Parameters.AddWithValue("@Tid", terminalId);
+                    command.Parameters.AddWithValue("@no", lineNo);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToDiscountLine(reader, currency));
                         }
                         reader.Close();
                     }
@@ -164,6 +199,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["Transaction No_"]),
                 Terminal = new Terminal(SQLHelper.GetString(reader["POS Terminal No_"])),
                 ReceiptNumber = SQLHelper.GetString(reader["Receipt No_"]),
+                RefundedReceiptNo = SQLHelper.GetString(reader["Refund Receipt No_"]),
                 GrossAmount = new Money(SQLHelper.GetDecimal(reader["Gross Amount"], true), cur),
                 NetAmount = new Money(SQLHelper.GetDecimal(reader["Net Amount"], true), cur),
                 TotalDiscount = new Money(SQLHelper.GetDecimal(reader["Discount Amount"], true), cur),
@@ -192,7 +228,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return trans;
         }
 
-        private SaleLine ReaderToSaleLine(SqlDataReader reader, string storeId, Currency currency)
+        private SaleLine ReaderToSaleLine(SqlDataReader reader, string storeId, string terminalId, Currency currency)
         {
             SaleLine line = new SaleLine()
             {
@@ -229,8 +265,29 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ritem.SelectedVariant = vrepo.VariantRegGetById(vid, ritem.Id);
             }
 
+            decimal discount = SQLHelper.GetDecimal(reader, "Discount Amount", false);
+            if (discount > 0)
+            {
+                line.Discounts = DiscountLineGet(line.Id, storeId, terminalId, line.LineNumber, currency);
+            }
+
             line.Item = ritem;
             return line;
+        }
+
+        private DiscountLine ReaderToDiscountLine(SqlDataReader reader, Currency currency)
+        {
+            return new DiscountLine()
+            {
+                Amount = new Money(SQLHelper.GetDecimal(reader["Discount Amount"]), currency),
+                Description = SQLHelper.GetString(reader["Description"]),
+                EntryType = DiscountEntryType.Amount,
+                No = string.Empty,
+                OfferNo = SQLHelper.GetString(reader["Offer No_"]),
+                Percentage = 0,
+                PeriodicType = (PeriodicDiscType)SQLHelper.GetInt32(reader["Type"]),
+                Type = (DiscountType)SQLHelper.GetInt32(reader["Offer Type"])
+            };
         }
 
         private PaymentLine ReaderToLoyTender(SqlDataReader reader, int lineno, string currency)

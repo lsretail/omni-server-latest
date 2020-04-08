@@ -71,9 +71,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         if (reader.Read())
                         {
-                            view = new ImageView();
-                            view.Id = id;
-                            view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[]);
+                            view = new ImageView()
+                            {
+                                Id = id,
+                                ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[])
+                            };
                         }
                         reader.Close();
                     }

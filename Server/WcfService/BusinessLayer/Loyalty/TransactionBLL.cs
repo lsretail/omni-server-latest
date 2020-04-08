@@ -24,7 +24,7 @@ namespace LSOmni.BLL.Loyalty
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)
         {
             if (string.IsNullOrEmpty(entryId))
-                throw new LSOmniException(StatusCode.Error, "Id can not be empty");
+                throw new LSOmniException(StatusCode.TransacitionIdMissing, "Id can not be empty");
 
             return BOLoyConnection.SalesEntryGet(entryId, type, tenderMapping);
         }

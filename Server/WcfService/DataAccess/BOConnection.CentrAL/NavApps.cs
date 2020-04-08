@@ -97,13 +97,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         public List<ReplBarcodeMask> ReplicateBarcodeMasks(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             BarcodeMaskRepository rep = new BarcodeMaskRepository(config);
-            return rep.ReplicateBarcodeMasks(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            return rep.ReplicateBarcodeMasks(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public List<ReplBarcodeMaskSegment> ReplicateBarcodeMaskSegments(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             BarcodeMaskSegmentRepository rep = new BarcodeMaskSegmentRepository(config);
-            return rep.ReplicateBarcodeMaskSegments(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            return rep.ReplicateBarcodeMaskSegments(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -164,6 +164,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config, NAVVersion);
             return rep.ReplicateItemCategory(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplItemLocation> ReplicateItemLocation(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            ItemLocationRepository rep = new ItemLocationRepository(config);
+            return rep.ReplicateItemLocation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

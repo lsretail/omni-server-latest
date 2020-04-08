@@ -130,33 +130,25 @@ namespace LSOmni.Common.Util
 			}
 		}
 
-		/// <summary>
-		/// Use this function to test Json Serialize if error occurs
-		/// </summary>
-		/// <param name="classname"></param>
-		/// <param name="classdata"></param>
-		/// <example>
-		/// <code>
-		/// TestJsonSerialize(typeof(MobileMenu), mobileMenu);
-		/// </code>
-		/// </example>
-		public static bool TestJsonSerialize(Type classname, object classdata)
-		{
-			try
-			{
-				string json;
-				using (MemoryStream ms = new MemoryStream())
-				{
-					var ser = new System.Runtime.Serialization.Json.DataContractJsonSerializer(classname);
-					ser.WriteObject(ms, classdata);
-					json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
-				}
-				return true;
-			}
-			catch
-			{
-				return false;
-			}
-		}
+        /// <summary>
+        /// Use this function to test Json Serialize if error occurs
+        /// </summary>
+        /// <param name="classname"></param>
+        /// <param name="classdata"></param>
+        /// <example>
+        /// <code>
+        /// TestJsonSerialize(typeof(MobileMenu), mobileMenu);
+        /// </code>
+        /// </example>
+        public static void TestJsonSerialize(Type classname, object classdata)
+        {
+            string json;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var ser = new System.Runtime.Serialization.Json.DataContractJsonSerializer(classname);
+                ser.WriteObject(ms, classdata);
+                json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
+            }
+        }
 	}
 }

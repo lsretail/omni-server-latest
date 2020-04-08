@@ -235,7 +235,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private SalesEntry ReaderToSalesEntry(SqlDataReader reader, bool includeLines)
         {
-            SalesEntry salesEntry = new SalesEntry
+            SalesEntry entry = new SalesEntry
             {
                 Id = SQLHelper.GetString(reader[documentId]),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
@@ -245,22 +245,23 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Status = SalesEntryStatus.Created
             };
 
-            salesEntry.Posted = SQLHelper.GetBool(reader["Posted"]);
-            salesEntry.ClickAndCollectOrder = SQLHelper.GetBool(reader["Click And Collect Order"]);
-            salesEntry.AnonymousOrder = string.IsNullOrEmpty(salesEntry.CardId);
+            entry.CustomerOrderNo = entry.Id;
+            entry.Posted = SQLHelper.GetBool(reader["Posted"]);
+            entry.ClickAndCollectOrder = SQLHelper.GetBool(reader["Click And Collect Order"]);
+            entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
 
-            salesEntry.ShippingAgentCode = SQLHelper.GetString(reader["Shipping Agent Code"]);
-            salesEntry.ShippingAgentServiceCode = SQLHelper.GetString(reader["Shipping Agent Service Code"]);
+            entry.ShippingAgentCode = SQLHelper.GetString(reader["Shipping Agent Code"]);
+            entry.ShippingAgentServiceCode = SQLHelper.GetString(reader["Shipping Agent Service Code"]);
 
             if (NavVersion > new Version("13.5"))
             {
-                salesEntry.ExternalId = SQLHelper.GetString(reader["External ID"]);
+                entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
 
-                salesEntry.ShipToName = SQLHelper.GetString(reader["ShipName"]);
-                salesEntry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]);
-                salesEntry.ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]);
+                entry.ShipToName = SQLHelper.GetString(reader["ShipName"]);
+                entry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]);
+                entry.ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]);
 
-                salesEntry.ShipToAddress = new Address()
+                entry.ShipToAddress = new Address()
                 {
                     Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
                     Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
@@ -273,13 +274,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             }
             else
             {
-                salesEntry.ExternalId = SQLHelper.GetString(reader["Web Trans_ GUID"]);
+                entry.ExternalId = SQLHelper.GetString(reader["Web Trans_ GUID"]);
 
-                salesEntry.ShipToName = SQLHelper.GetString(reader["Ship To Full Name"]);
-                salesEntry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship To Phone No_"]);
-                salesEntry.ShipToEmail = SQLHelper.GetString(reader["Ship To Email"]);
+                entry.ShipToName = SQLHelper.GetString(reader["Ship To Full Name"]);
+                entry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship To Phone No_"]);
+                entry.ShipToEmail = SQLHelper.GetString(reader["Ship To Email"]);
 
-                salesEntry.ShipToAddress = new Address()
+                entry.ShipToAddress = new Address()
                 {
                     Address1 = SQLHelper.GetString(reader["Ship To Address"]),
                     Address2 = SQLHelper.GetString(reader["Ship To Address 2"]),
@@ -292,33 +293,33 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             }
 
             int copay = SQLHelper.GetInt32(reader["CoPay"]);
-            salesEntry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
-            salesEntry.ShippingStatus = (salesEntry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
+            entry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
+            entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
 
-            OrderLinesGetTotals(salesEntry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
-            salesEntry.LineItemCount = cnt;
-            salesEntry.TotalAmount = amt;
-            salesEntry.TotalNetAmount = namt;
-            salesEntry.TotalDiscount = disc;
+            OrderLinesGetTotals(entry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
+            entry.LineItemCount = cnt;
+            entry.TotalAmount = amt;
+            entry.TotalNetAmount = namt;
+            entry.TotalDiscount = disc;
 
-            if (salesEntry.Posted)
+            if (entry.Posted)
             {
-                salesEntry.Status = SalesEntryStatus.Complete;
+                entry.Status = SalesEntryStatus.Complete;
                 SalesEntryRepository srepo = new SalesEntryRepository(config, NavVersion);
-                srepo.SalesEntryPointsGetTotal(string.IsNullOrEmpty(salesEntry.ReceiptNo) ? salesEntry.Id : salesEntry.ReceiptNo, out decimal rewarded, out decimal used);
-                salesEntry.PointsRewarded = rewarded;
-                salesEntry.PointsUsedInOrder = used;
+                srepo.SalesEntryPointsGetTotal(string.IsNullOrEmpty(entry.CustomerOrderNo) ? entry.Id : entry.CustomerOrderNo, out decimal rewarded, out decimal used);
+                entry.PointsRewarded = rewarded;
+                entry.PointsUsedInOrder = used;
             }
 
             if (includeLines)
             {
-                salesEntry.Lines = OrderLinesGet(salesEntry.Id);
-                salesEntry.Payments = OrderPayGet(salesEntry.Id);
-                salesEntry.DiscountLines = OrderDiscGet(salesEntry.Id);
+                entry.Lines = OrderLinesGet(entry.Id);
+                entry.Payments = OrderPayGet(entry.Id);
+                entry.DiscountLines = OrderDiscGet(entry.Id);
 
                 ImageRepository imgrep = new ImageRepository(config);
                 List<SalesEntryLine> list = new List<SalesEntryLine>();
-                foreach (SalesEntryLine line in salesEntry.Lines)
+                foreach (SalesEntryLine line in entry.Lines)
                 {
                     SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
                     if (exline == null)
@@ -340,7 +341,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         continue;
                     }
 
-                    SalesEntryDiscountLine dline = salesEntry.DiscountLines.Find(l => l.LineNumber >= line.LineNumber && l.LineNumber < line.LineNumber + 10000);
+                    SalesEntryDiscountLine dline = entry.DiscountLines.Find(l => l.LineNumber >= line.LineNumber && l.LineNumber < line.LineNumber + 10000);
                     if (dline != null)
                     {
                         // update discount line number to match existing record, as we will sum up the orderlines
@@ -353,10 +354,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     exline.TaxAmount += line.TaxAmount;
                     exline.Quantity += line.Quantity;
                 }
-                salesEntry.Lines = list;
+                entry.Lines = list;
             }
 
-            return salesEntry;
+            return entry;
         }
 
         private SalesEntryLine ReaderToOrderLine(SqlDataReader reader)
@@ -408,26 +409,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 PeriodicDiscGroup = SQLHelper.GetString(reader["Periodic Disc_ Group"]),
                 PeriodicDiscType = (PeriodicDiscType)SQLHelper.GetInt32(reader["Periodic Disc_ Type"])
             };
-        }
-
-        private int SaleOrderGetStatus(string id)
-        {
-            int status = 1;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT [Status] FROM [" + navCompanyName + "Sales Header] WHERE [No_]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    var value = command.ExecuteScalar();
-                    if (value != null)
-                        status = (int)value;
-                }
-                connection.Close();
-            }
-            return status;
         }
     }
 }

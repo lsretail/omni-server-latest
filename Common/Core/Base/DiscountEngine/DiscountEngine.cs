@@ -4,7 +4,6 @@ using System.Linq;
 
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.DiscountEngine.Interfaces;
-using LSRetail.Omni.DiscountEngine.Repositories;
 
 namespace LSRetail.Omni.DiscountEngine
 {
@@ -15,45 +14,6 @@ namespace LSRetail.Omni.DiscountEngine
         public DiscountEngine(IDiscountRepository repository)
         {
             discRepo = repository;
-        }
-
-        public List<ProactiveDiscount> DiscountsGetV15(string storeId, List<string> itemIds, string loyaltySchemeCode)
-        {
-            //Returns all anon discounts, plus loyalty scheme discounts if scheme code is provided
-            List<ProactiveDiscount> discounts = new List<ProactiveDiscount>();
-            foreach (string id in itemIds)
-            {
-                discounts.AddRange(discRepo.DiscountsGetByStoreAndItem(storeId, id));
-            }
-
-            if (string.IsNullOrEmpty(loyaltySchemeCode))
-            {
-                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty).ToList();
-            }
-            else
-            {
-                discounts = discounts.Where(disc => disc.LoyaltySchemeCode == string.Empty || disc.LoyaltySchemeCode == loyaltySchemeCode).ToList();
-            }
-
-            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
-            foreach (ProactiveDiscount disc in discounts)
-            {
-                if (OfferIsValid(disc.Id))
-                {
-                    if (disc.Type == ProactiveDiscountType.MixMatch)
-                    {
-                        disc.ItemIds = discRepo.GetItemIdsByMixAndMatchOffer(storeId, disc.Id);
-                        disc.ItemIds.Remove(disc.ItemId);
-                    }
-                    else if (disc.Type == ProactiveDiscountType.DiscOffer)
-                    {
-                        disc.Price = discRepo.PriceGetByItem(storeId, disc.ItemId, disc.VariantId);
-                        disc.PriceWithDiscount = disc.Price * (1 - disc.Percentage / 100);
-                    }
-                    list.Add(disc);
-                }
-            }
-            return list;
         }
 
         public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
@@ -81,8 +41,9 @@ namespace LSRetail.Omni.DiscountEngine
                 {
                     if (disc.Type == ProactiveDiscountType.MixMatch)
                     {
-                        disc.ItemIds = discRepo.GetItemIdsByMixAndMatchOffer(storeId, disc.Id);
+                        disc.ItemIds = discRepo.GetItemIdsByMixAndMatchOffer(storeId, disc.Id, loyaltySchemeCode);
                         disc.ItemIds.Remove(disc.ItemId);
+                        disc.BenefitItemIds = discRepo.GetBenefitItemIds(disc.Id);
                     }
                     else if (disc.Type == ProactiveDiscountType.DiscOffer)
                     {

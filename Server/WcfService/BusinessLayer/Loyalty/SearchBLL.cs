@@ -42,7 +42,7 @@ namespace LSOmni.BLL.Loyalty
             }
             if ((searchTypes & SearchType.SalesEntry) != 0)
             {
-                searchRs.SalesEntries = BOLoyConnection.SalesEntrySearch(search, cardId, maxResultset, false);
+                searchRs.SalesEntries = BOLoyConnection.SalesEntrySearch(search, cardId, maxResultset);
             }
             if ((searchTypes & SearchType.Store) != 0)
             {

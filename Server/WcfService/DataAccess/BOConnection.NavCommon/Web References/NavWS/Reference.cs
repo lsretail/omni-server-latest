@@ -59,6 +59,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback GetDirectMarketingInfoOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetDocumentListV2OperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetDocumentListOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetDocumentOperationCompleted;
@@ -136,6 +138,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         private System.Threading.SendOrPostCallback SendTransactionHeaderOperationCompleted;
         
         private System.Threading.SendOrPostCallback SendTransactionOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback StoreInvTransactionSendOperationCompleted;
         
         private System.Threading.SendOrPostCallback TestConnectionOperationCompleted;
         
@@ -221,6 +225,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event GetDirectMarketingInfoCompletedEventHandler GetDirectMarketingInfoCompleted;
+        
+        /// <remarks/>
+        public event GetDocumentListV2CompletedEventHandler GetDocumentListV2Completed;
         
         /// <remarks/>
         public event GetDocumentListCompletedEventHandler GetDocumentListCompleted;
@@ -338,6 +345,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event SendTransactionCompletedEventHandler SendTransactionCompleted;
+        
+        /// <remarks/>
+        public event StoreInvTransactionSendCompletedEventHandler StoreInvTransactionSendCompleted;
         
         /// <remarks/>
         public event TestConnectionCompletedEventHandler TestConnectionCompleted;
@@ -921,6 +931,57 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.GetDirectMarketingInfoCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetDirectMarketingInfoCompleted(this, new GetDirectMarketingInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetDocumentListV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetDocumentListV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetDocumentListV2(ref string responseCode, ref string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, ref RootGetDocumentList getDocumentListXML) {
+            object[] results = this.Invoke("GetDocumentListV2", new object[] {
+                        responseCode,
+                        errorText,
+                        pHHT_ID,
+                        pValue_Type,
+                        pValue,
+                        pProcess_Type,
+                        pDocument_Type,
+                        pStore_No,
+                        pLocation_Code,
+                        pItem_No,
+                        getDocumentListXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            getDocumentListXML = ((RootGetDocumentList)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetDocumentListV2Async(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, RootGetDocumentList getDocumentListXML) {
+            this.GetDocumentListV2Async(responseCode, errorText, pHHT_ID, pValue_Type, pValue, pProcess_Type, pDocument_Type, pStore_No, pLocation_Code, pItem_No, getDocumentListXML, null);
+        }
+        
+        /// <remarks/>
+        public void GetDocumentListV2Async(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, RootGetDocumentList getDocumentListXML, object userState) {
+            if ((this.GetDocumentListV2OperationCompleted == null)) {
+                this.GetDocumentListV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDocumentListV2OperationCompleted);
+            }
+            this.InvokeAsync("GetDocumentListV2", new object[] {
+                        responseCode,
+                        errorText,
+                        pHHT_ID,
+                        pValue_Type,
+                        pValue,
+                        pProcess_Type,
+                        pDocument_Type,
+                        pStore_No,
+                        pLocation_Code,
+                        pItem_No,
+                        getDocumentListXML}, this.GetDocumentListV2OperationCompleted, userState);
+        }
+        
+        private void OnGetDocumentListV2OperationCompleted(object arg) {
+            if ((this.GetDocumentListV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetDocumentListV2Completed(this, new GetDocumentListV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2524,6 +2585,40 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInvTransactionSend", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="StoreInvTransactionSend_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void StoreInvTransactionSend(ref string responseCode, ref string errorText, RootStoreInvTransactionSendXML storeInvTransactionSendXML) {
+            object[] results = this.Invoke("StoreInvTransactionSend", new object[] {
+                        responseCode,
+                        errorText,
+                        storeInvTransactionSendXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+        }
+        
+        /// <remarks/>
+        public void StoreInvTransactionSendAsync(string responseCode, string errorText, RootStoreInvTransactionSendXML storeInvTransactionSendXML) {
+            this.StoreInvTransactionSendAsync(responseCode, errorText, storeInvTransactionSendXML, null);
+        }
+        
+        /// <remarks/>
+        public void StoreInvTransactionSendAsync(string responseCode, string errorText, RootStoreInvTransactionSendXML storeInvTransactionSendXML, object userState) {
+            if ((this.StoreInvTransactionSendOperationCompleted == null)) {
+                this.StoreInvTransactionSendOperationCompleted = new System.Threading.SendOrPostCallback(this.OnStoreInvTransactionSendOperationCompleted);
+            }
+            this.InvokeAsync("StoreInvTransactionSend", new object[] {
+                        responseCode,
+                        errorText,
+                        storeInvTransactionSendXML}, this.StoreInvTransactionSendOperationCompleted, userState);
+        }
+        
+        private void OnStoreInvTransactionSendOperationCompleted(object arg) {
+            if ((this.StoreInvTransactionSendCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.StoreInvTransactionSendCompleted(this, new StoreInvTransactionSendCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:TestConnection", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="TestConnection_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void TestConnection(ref string responseCode, ref string errorText, ref string applicationVersion, ref string applicationBuild, ref string lSRetailVersion, ref string lSRetailCopyright) {
             object[] results = this.Invoke("TestConnection", new object[] {
@@ -2703,6 +2798,254 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.sourcingOrderField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033059")]
+    public partial class StoreInvTransactionSendStoreInvLine {
+        
+        private int worksheetSeqNoField;
+        
+        private int lineNoField;
+        
+        private string transactionNoField;
+        
+        private int transactionLineNoField;
+        
+        private string itemNoField;
+        
+        private string barcodeField;
+        
+        private decimal quantityField;
+        
+        private string unitofMeasureCodeField;
+        
+        private string variantCodeField;
+        
+        private decimal competitorPriceField;
+        
+        private string areaCodeField;
+        
+        private string serialNoField;
+        
+        private string lotNoField;
+        
+        private System.DateTime expiryDateField;
+        
+        private string reasonCodeField;
+        
+        private bool endOfTransactionField;
+        
+        public StoreInvTransactionSendStoreInvLine() {
+            this.worksheetSeqNoField = 0;
+            this.lineNoField = 0;
+            this.transactionLineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.competitorPriceField = ((decimal)(0m));
+            this.expiryDateField = new System.DateTime(0);
+            this.endOfTransactionField = false;
+        }
+        
+        /// <remarks/>
+        public int WorksheetSeqNo {
+            get {
+                return this.worksheetSeqNoField;
+            }
+            set {
+                this.worksheetSeqNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransactionNo {
+            get {
+                return this.transactionNoField;
+            }
+            set {
+                this.transactionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TransactionLineNo {
+            get {
+                return this.transactionLineNoField;
+            }
+            set {
+                this.transactionLineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Barcode {
+            get {
+                return this.barcodeField;
+            }
+            set {
+                this.barcodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitofMeasureCode {
+            get {
+                return this.unitofMeasureCodeField;
+            }
+            set {
+                this.unitofMeasureCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal CompetitorPrice {
+            get {
+                return this.competitorPriceField;
+            }
+            set {
+                this.competitorPriceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AreaCode {
+            get {
+                return this.areaCodeField;
+            }
+            set {
+                this.areaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SerialNo {
+            get {
+                return this.serialNoField;
+            }
+            set {
+                this.serialNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LotNo {
+            get {
+                return this.lotNoField;
+            }
+            set {
+                this.lotNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ExpiryDate {
+            get {
+                return this.expiryDateField;
+            }
+            set {
+                this.expiryDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCode {
+            get {
+                return this.reasonCodeField;
+            }
+            set {
+                this.reasonCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool EndOfTransaction {
+            get {
+                return this.endOfTransactionField;
+            }
+            set {
+                this.endOfTransactionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033059")]
+    public partial class RootStoreInvTransactionSendXML {
+        
+        private StoreInvTransactionSendStoreInvLine[] storeInvTransactionSendStoreInvLineField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("StoreInvTransactionSendStoreInvLine")]
+        public StoreInvTransactionSendStoreInvLine[] StoreInvTransactionSendStoreInvLine {
+            get {
+                return this.storeInvTransactionSendStoreInvLineField;
+            }
+            set {
+                this.storeInvTransactionSendStoreInvLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
             }
         }
     }
@@ -37373,7 +37716,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountField;
         
-        private decimal finalisedAmountField;
+        private decimal finalizedAmountField;
         
         private string tenderTypeField;
         
@@ -37383,7 +37726,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
-        private string authorisationCodeField;
+        private string authorizationCodeField;
         
         private System.DateTime preApprovedValidDateField;
         
@@ -37393,7 +37736,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountLCYField;
         
-        private decimal finalisedAmountLCYField;
+        private decimal finalizedAmountLCYField;
         
         private bool loyaltyPointpaymentField;
         
@@ -37412,11 +37755,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public CustomerOrderGetCOPaymentV2() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
-            this.finalisedAmountField = ((decimal)(0m));
+            this.finalizedAmountField = ((decimal)(0m));
             this.currencyFactorField = ((decimal)(0m));
             this.preApprovedValidDateField = new System.DateTime(0);
             this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalisedAmountLCYField = ((decimal)(0m));
+            this.finalizedAmountLCYField = ((decimal)(0m));
             this.loyaltyPointpaymentField = false;
             this.createdField = new System.DateTime(0);
             this.authorizationExpiredField = false;
@@ -37466,10 +37809,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal FinalizedAmount {
             get {
-                return this.finalisedAmountField;
+                return this.finalizedAmountField;
             }
             set {
-                this.finalisedAmountField = value;
+                this.finalizedAmountField = value;
             }
         }
         
@@ -37514,12 +37857,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public string AuthorisationCode {
+        public string AuthorizationCode {
             get {
-                return this.authorisationCodeField;
+                return this.authorizationCodeField;
             }
             set {
-                this.authorisationCodeField = value;
+                this.authorizationCodeField = value;
             }
         }
         
@@ -37566,12 +37909,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public decimal FinalisedAmountLCY {
+        public decimal FinalizedAmountLCY {
             get {
-                return this.finalisedAmountLCYField;
+                return this.finalizedAmountLCYField;
             }
             set {
-                this.finalisedAmountLCYField = value;
+                this.finalizedAmountLCYField = value;
             }
         }
         
@@ -40240,7 +40583,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountField;
         
-        private decimal finalisedAmountField;
+        private decimal finalizedAmountField;
         
         private string tenderTypeField;
         
@@ -40250,7 +40593,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
-        private string authorisationCodeField;
+        private string authorizationCodeField;
         
         private System.DateTime preApprovedValidDateField;
         
@@ -40260,7 +40603,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountLCYField;
         
-        private decimal finalisedAmountLCYField;
+        private decimal finalizedAmountLCYField;
         
         private bool loyaltyPointpaymentField;
         
@@ -40281,11 +40624,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public CustomerOrderCreateCOPaymentV4() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
-            this.finalisedAmountField = ((decimal)(0m));
+            this.finalizedAmountField = ((decimal)(0m));
             this.currencyFactorField = ((decimal)(0m));
             this.preApprovedValidDateField = new System.DateTime(0);
             this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalisedAmountLCYField = ((decimal)(0m));
+            this.finalizedAmountLCYField = ((decimal)(0m));
             this.loyaltyPointpaymentField = false;
             this.depositPaymentField = false;
             this.createdField = new System.DateTime(0);
@@ -40335,10 +40678,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         /// <remarks/>
         public decimal FinalizedAmount {
             get {
-                return this.finalisedAmountField;
+                return this.finalizedAmountField;
             }
             set {
-                this.finalisedAmountField = value;
+                this.finalizedAmountField = value;
             }
         }
         
@@ -40385,10 +40728,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         /// <remarks/>
         public string AuthorizationCode {
             get {
-                return this.authorisationCodeField;
+                return this.authorizationCodeField;
             }
             set {
-                this.authorisationCodeField = value;
+                this.authorizationCodeField = value;
             }
         }
         
@@ -40437,10 +40780,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         /// <remarks/>
         public decimal FinalizedAmountLCY {
             get {
-                return this.finalisedAmountLCYField;
+                return this.finalizedAmountLCYField;
             }
             set {
-                this.finalisedAmountLCYField = value;
+                this.finalizedAmountLCYField = value;
             }
         }
         
@@ -41519,7 +41862,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountField;
         
-        private decimal finalisedAmountField;
+        private decimal finalizedAmountField;
         
         private string tenderTypeField;
         
@@ -41529,7 +41872,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
-        private string authorisationCodeField;
+        private string authorizationCodeField;
         
         private System.DateTime preApprovedValidDateField;
         
@@ -41539,7 +41882,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal preApprovedAmountLCYField;
         
-        private decimal finalisedAmountLCYField;
+        private decimal finalizedAmountLCYField;
         
         private bool loyaltyPointpaymentField;
         
@@ -41560,11 +41903,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public CustomerOrderCreateCOPaymentV3() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
-            this.finalisedAmountField = ((decimal)(0m));
+            this.finalizedAmountField = ((decimal)(0m));
             this.currencyFactorField = ((decimal)(0m));
             this.preApprovedValidDateField = new System.DateTime(0);
             this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalisedAmountLCYField = ((decimal)(0m));
+            this.finalizedAmountLCYField = ((decimal)(0m));
             this.loyaltyPointpaymentField = false;
             this.depositPaymentField = false;
             this.createdField = new System.DateTime(0);
@@ -41612,12 +41955,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public decimal FinalisedAmount {
+        public decimal FinalizedAmount {
             get {
-                return this.finalisedAmountField;
+                return this.finalizedAmountField;
             }
             set {
-                this.finalisedAmountField = value;
+                this.finalizedAmountField = value;
             }
         }
         
@@ -41662,12 +42005,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public string AuthorisationCode {
+        public string AuthorizationCode {
             get {
-                return this.authorisationCodeField;
+                return this.authorizationCodeField;
             }
             set {
-                this.authorisationCodeField = value;
+                this.authorizationCodeField = value;
             }
         }
         
@@ -41714,12 +42057,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public decimal FinalisedAmountLCY {
+        public decimal FinalizedAmountLCY {
             get {
-                return this.finalisedAmountLCYField;
+                return this.finalizedAmountLCYField;
             }
             set {
-                this.finalisedAmountLCYField = value;
+                this.finalizedAmountLCYField = value;
             }
         }
         
@@ -44935,6 +45278,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetDocumentListV2CompletedEventHandler(object sender, GetDocumentListV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetDocumentListV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetDocumentListV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootGetDocumentList getDocumentListXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetDocumentList)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void GetDocumentListCompletedEventHandler(object sender, GetDocumentListCompletedEventArgs e);
     
     /// <remarks/>
@@ -46647,6 +47032,40 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootSendTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void StoreInvTransactionSendCompletedEventHandler(object sender, StoreInvTransactionSendCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class StoreInvTransactionSendCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal StoreInvTransactionSendCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
             }
         }
     }

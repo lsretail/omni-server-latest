@@ -111,22 +111,48 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             return discval;
         }
 
-        public List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId)
+        public List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId, string scheme)
         {
             List<string> ids = new List<string>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + "WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Offer No_]=@id AND [Store No_]=@sid";
+                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + "WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Offer No_]=@id AND [Store No_]=@sid AND ([Loyalty Scheme Code]=@sc OR [Loyalty Scheme Code]='')";
                     command.Parameters.AddWithValue("@id", offerId);
                     command.Parameters.AddWithValue("@sid", storeId);
+                    command.Parameters.AddWithValue("@sc", scheme);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
                             ids.Add(SQLHelper.GetString(reader["Item No_"]));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return ids;
+        }
+
+        public List<string> GetBenefitItemIds(string offerId)
+        {
+            List<string> ids = new List<string>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Periodic Discount Benefits$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Offer No_]=@id";
+                    command.Parameters.AddWithValue("@id", offerId);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ids.Add(SQLHelper.GetString(reader["No_"]));
                         }
                         reader.Close();
                     }

@@ -29,8 +29,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     [System.Web.Services.WebServiceBindingAttribute(Name="Activity_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/Activity")]
     public partial class Activity : System.Web.Services.Protocols.SoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback UploadMembershipProductsOperationCompleted;
-        
         private System.Threading.SendOrPostCallback CancelActivityOperationCompleted;
         
         private System.Threading.SendOrPostCallback CancelMembershipOperationCompleted;
@@ -87,6 +85,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         private System.Threading.SendOrPostCallback UploadMembershipEntriesOperationCompleted;
         
+        private System.Threading.SendOrPostCallback UploadMembershipProductsOperationCompleted;
+        
         private System.Threading.SendOrPostCallback UploadMembershipSubscriptionChargesOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadPromotionsOperationCompleted;
@@ -132,9 +132,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
                 this.useDefaultCredentialsSetExplicitly = true;
             }
         }
-        
-        /// <remarks/>
-        public event UploadMembershipProductsCompletedEventHandler UploadMembershipProductsCompleted;
         
         /// <remarks/>
         public event CancelActivityCompletedEventHandler CancelActivityCompleted;
@@ -221,6 +218,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         public event UploadMembershipEntriesCompletedEventHandler UploadMembershipEntriesCompleted;
         
         /// <remarks/>
+        public event UploadMembershipProductsCompletedEventHandler UploadMembershipProductsCompleted;
+        
+        /// <remarks/>
         public event UploadMembershipSubscriptionChargesCompletedEventHandler UploadMembershipSubscriptionChargesCompleted;
         
         /// <remarks/>
@@ -231,35 +231,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         /// <remarks/>
         public event UploadReservationActivitiesCompletedEventHandler UploadReservationActivitiesCompleted;
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UploadMembershipProducts", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UploadMembershipProducts_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void UploadMembershipProducts(ref ActivityMembershipProducts uploadProducts) {
-            object[] results = this.Invoke("UploadMembershipProducts", new object[] {
-                        uploadProducts});
-            uploadProducts = ((ActivityMembershipProducts)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void UploadMembershipProductsAsync(ActivityMembershipProducts uploadProducts) {
-            this.UploadMembershipProductsAsync(uploadProducts, null);
-        }
-        
-        /// <remarks/>
-        public void UploadMembershipProductsAsync(ActivityMembershipProducts uploadProducts, object userState) {
-            if ((this.UploadMembershipProductsOperationCompleted == null)) {
-                this.UploadMembershipProductsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadMembershipProductsOperationCompleted);
-            }
-            this.InvokeAsync("UploadMembershipProducts", new object[] {
-                        uploadProducts}, this.UploadMembershipProductsOperationCompleted, userState);
-        }
-        
-        private void OnUploadMembershipProductsOperationCompleted(object arg) {
-            if ((this.UploadMembershipProductsCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.UploadMembershipProductsCompleted(this, new UploadMembershipProductsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:CancelActivity", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="CancelActivity_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -1760,6 +1731,35 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UploadMembershipProducts", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UploadMembershipProducts_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void UploadMembershipProducts(ref ActivityMembershipProducts uploadProducts) {
+            object[] results = this.Invoke("UploadMembershipProducts", new object[] {
+                        uploadProducts});
+            uploadProducts = ((ActivityMembershipProducts)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadMembershipProductsAsync(ActivityMembershipProducts uploadProducts) {
+            this.UploadMembershipProductsAsync(uploadProducts, null);
+        }
+        
+        /// <remarks/>
+        public void UploadMembershipProductsAsync(ActivityMembershipProducts uploadProducts, object userState) {
+            if ((this.UploadMembershipProductsOperationCompleted == null)) {
+                this.UploadMembershipProductsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadMembershipProductsOperationCompleted);
+            }
+            this.InvokeAsync("UploadMembershipProducts", new object[] {
+                        uploadProducts}, this.UploadMembershipProductsOperationCompleted, userState);
+        }
+        
+        private void OnUploadMembershipProductsOperationCompleted(object arg) {
+            if ((this.UploadMembershipProductsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadMembershipProductsCompleted(this, new UploadMembershipProductsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UploadMembershipSubscriptionChar" +
             "ges", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UploadMembershipSubscriptionCharges_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void UploadMembershipSubscriptionCharges(string clientNo, ref ActivitySubscriptionEntries activitySubscriptionEntries) {
@@ -1906,21 +1906,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML")]
-    public partial class ActivityMembershipProducts {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
+    public partial class ActivityChargeRespond {
         
-        private MembershipTypes[] membershipTypesField;
+        private ChargeLines[] chargeLinesField;
         
         private string[] textField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("MembershipTypes")]
-        public MembershipTypes[] MembershipTypes {
+        [System.Xml.Serialization.XmlElementAttribute("ChargeLines")]
+        public ChargeLines[] ChargeLines {
             get {
-                return this.membershipTypesField;
+                return this.chargeLinesField;
             }
             set {
-                this.membershipTypesField = value;
+                this.chargeLinesField = value;
             }
         }
         
@@ -1941,148 +1941,77 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML")]
-    public partial class MembershipTypes {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
+    public partial class ChargeLines {
         
-        private string codeField;
+        private string[] activityNoField;
         
-        private string descriptionField;
+        private int lineNoField;
         
-        private string chargeTypeField;
+        private string itemNoField;
         
-        private string accessTypeField;
-        
-        private string statusField;
-        
-        private string expirationCalculationField;
-        
-        private string commitmentPeriodField;
-        
-        private int noOfTimesField;
-        
-        private string retailItemField;
+        private decimal qtyField;
         
         private decimal priceField;
         
-        private int minAgeField;
+        private decimal discountPercentageField;
         
-        private System.DateTime fixedEndDateField;
+        private decimal totalField;
         
-        private string requiresMemberShipField;
+        private string optionalField;
         
-        private string sellingOptionField;
+        private string uomField;
         
-        private int maxAgeField;
+        private string[] invoiceReferenceField;
         
-        private string entryTypeField;
+        private string productTypeField;
         
-        private string subscriptionTypeField;
-        
-        private string memberClubField;
-        
-        private string pricingUpdateField;
-        
-        private System.DateTime fixedIssueDateField;
-        
-        private string priceCommitmentPeriodField;
-        
-        public MembershipTypes() {
-            this.noOfTimesField = 0;
+        public ChargeLines() {
+            this.lineNoField = 0;
+            this.qtyField = ((decimal)(0m));
             this.priceField = ((decimal)(0m));
-            this.minAgeField = 0;
-            this.fixedEndDateField = new System.DateTime(0);
-            this.maxAgeField = 0;
-            this.fixedIssueDateField = new System.DateTime(0);
+            this.discountPercentageField = ((decimal)(0m));
+            this.totalField = ((decimal)(0m));
         }
         
         /// <remarks/>
-        public string Code {
+        [System.Xml.Serialization.XmlElementAttribute("ActivityNo")]
+        public string[] ActivityNo {
             get {
-                return this.codeField;
+                return this.activityNoField;
             }
             set {
-                this.codeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
+                this.activityNoField = value;
             }
         }
         
         /// <remarks/>
-        public string ChargeType {
+        public int LineNo {
             get {
-                return this.chargeTypeField;
+                return this.lineNoField;
             }
             set {
-                this.chargeTypeField = value;
+                this.lineNoField = value;
             }
         }
         
         /// <remarks/>
-        public string AccessType {
+        public string ItemNo {
             get {
-                return this.accessTypeField;
+                return this.itemNoField;
             }
             set {
-                this.accessTypeField = value;
+                this.itemNoField = value;
             }
         }
         
         /// <remarks/>
-        public string Status {
+        public decimal Qty {
             get {
-                return this.statusField;
+                return this.qtyField;
             }
             set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExpirationCalculation {
-            get {
-                return this.expirationCalculationField;
-            }
-            set {
-                this.expirationCalculationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CommitmentPeriod {
-            get {
-                return this.commitmentPeriodField;
-            }
-            set {
-                this.commitmentPeriodField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(0)]
-        public int NoOfTimes {
-            get {
-                return this.noOfTimesField;
-            }
-            set {
-                this.noOfTimesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string RetailItem {
-            get {
-                return this.retailItemField;
-            }
-            set {
-                this.retailItemField = value;
+                this.qtyField = value;
             }
         }
         
@@ -2097,118 +2026,63 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         }
         
         /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(0)]
-        public int MinAge {
+        public decimal DiscountPercentage {
             get {
-                return this.minAgeField;
+                return this.discountPercentageField;
             }
             set {
-                this.minAgeField = value;
+                this.discountPercentageField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime FixedEndDate {
+        public decimal Total {
             get {
-                return this.fixedEndDateField;
+                return this.totalField;
             }
             set {
-                this.fixedEndDateField = value;
+                this.totalField = value;
             }
         }
         
         /// <remarks/>
-        public string RequiresMemberShip {
+        public string Optional {
             get {
-                return this.requiresMemberShipField;
+                return this.optionalField;
             }
             set {
-                this.requiresMemberShipField = value;
+                this.optionalField = value;
             }
         }
         
         /// <remarks/>
-        public string SellingOption {
+        public string Uom {
             get {
-                return this.sellingOptionField;
+                return this.uomField;
             }
             set {
-                this.sellingOptionField = value;
+                this.uomField = value;
             }
         }
         
         /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(0)]
-        public int MaxAge {
+        [System.Xml.Serialization.XmlElementAttribute("InvoiceReference")]
+        public string[] InvoiceReference {
             get {
-                return this.maxAgeField;
+                return this.invoiceReferenceField;
             }
             set {
-                this.maxAgeField = value;
+                this.invoiceReferenceField = value;
             }
         }
         
         /// <remarks/>
-        public string EntryType {
+        public string ProductType {
             get {
-                return this.entryTypeField;
+                return this.productTypeField;
             }
             set {
-                this.entryTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SubscriptionType {
-            get {
-                return this.subscriptionTypeField;
-            }
-            set {
-                this.subscriptionTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberClub {
-            get {
-                return this.memberClubField;
-            }
-            set {
-                this.memberClubField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PricingUpdate {
-            get {
-                return this.pricingUpdateField;
-            }
-            set {
-                this.pricingUpdateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime FixedIssueDate {
-            get {
-                return this.fixedIssueDateField;
-            }
-            set {
-                this.fixedIssueDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PriceCommitmentPeriod {
-            get {
-                return this.priceCommitmentPeriodField;
-            }
-            set {
-                this.priceCommitmentPeriodField = value;
+                this.productTypeField = value;
             }
         }
     }
@@ -2869,6 +2743,318 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             }
             set {
                 this.membershipBatchLinesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML")]
+    public partial class MembershipTypes {
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private string chargeTypeField;
+        
+        private string accessTypeField;
+        
+        private string statusField;
+        
+        private string expirationCalculationField;
+        
+        private string commitmentPeriodField;
+        
+        private int noOfTimesField;
+        
+        private string retailItemField;
+        
+        private decimal priceField;
+        
+        private int minAgeField;
+        
+        private System.DateTime fixedEndDateField;
+        
+        private string requiresMemberShipField;
+        
+        private string sellingOptionField;
+        
+        private int maxAgeField;
+        
+        private string entryTypeField;
+        
+        private string subscriptionTypeField;
+        
+        private string memberClubField;
+        
+        private string pricingUpdateField;
+        
+        private System.DateTime fixedIssueDateField;
+        
+        private string priceCommitmentPeriodField;
+        
+        public MembershipTypes() {
+            this.noOfTimesField = 0;
+            this.priceField = ((decimal)(0m));
+            this.minAgeField = 0;
+            this.fixedEndDateField = new System.DateTime(0);
+            this.maxAgeField = 0;
+            this.fixedIssueDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ChargeType {
+            get {
+                return this.chargeTypeField;
+            }
+            set {
+                this.chargeTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccessType {
+            get {
+                return this.accessTypeField;
+            }
+            set {
+                this.accessTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExpirationCalculation {
+            get {
+                return this.expirationCalculationField;
+            }
+            set {
+                this.expirationCalculationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CommitmentPeriod {
+            get {
+                return this.commitmentPeriodField;
+            }
+            set {
+                this.commitmentPeriodField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int NoOfTimes {
+            get {
+                return this.noOfTimesField;
+            }
+            set {
+                this.noOfTimesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string RetailItem {
+            get {
+                return this.retailItemField;
+            }
+            set {
+                this.retailItemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Price {
+            get {
+                return this.priceField;
+            }
+            set {
+                this.priceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int MinAge {
+            get {
+                return this.minAgeField;
+            }
+            set {
+                this.minAgeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime FixedEndDate {
+            get {
+                return this.fixedEndDateField;
+            }
+            set {
+                this.fixedEndDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string RequiresMemberShip {
+            get {
+                return this.requiresMemberShipField;
+            }
+            set {
+                this.requiresMemberShipField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SellingOption {
+            get {
+                return this.sellingOptionField;
+            }
+            set {
+                this.sellingOptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int MaxAge {
+            get {
+                return this.maxAgeField;
+            }
+            set {
+                this.maxAgeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string EntryType {
+            get {
+                return this.entryTypeField;
+            }
+            set {
+                this.entryTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SubscriptionType {
+            get {
+                return this.subscriptionTypeField;
+            }
+            set {
+                this.subscriptionTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberClub {
+            get {
+                return this.memberClubField;
+            }
+            set {
+                this.memberClubField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PricingUpdate {
+            get {
+                return this.pricingUpdateField;
+            }
+            set {
+                this.pricingUpdateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime FixedIssueDate {
+            get {
+                return this.fixedIssueDateField;
+            }
+            set {
+                this.fixedIssueDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PriceCommitmentPeriod {
+            get {
+                return this.priceCommitmentPeriodField;
+            }
+            set {
+                this.priceCommitmentPeriodField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML")]
+    public partial class ActivityMembershipProducts {
+        
+        private MembershipTypes[] membershipTypesField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MembershipTypes")]
+        public MembershipTypes[] MembershipTypes {
+            get {
+                return this.membershipTypesField;
+            }
+            set {
+                this.membershipTypesField = value;
             }
         }
         
@@ -5029,218 +5215,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
-    public partial class ChargeLines {
-        
-        private string[] activityNoField;
-        
-        private int lineNoField;
-        
-        private string itemNoField;
-        
-        private decimal qtyField;
-        
-        private decimal priceField;
-        
-        private decimal discountPercentageField;
-        
-        private decimal totalField;
-        
-        private string optionalField;
-        
-        private string uomField;
-        
-        private string[] invoiceReferenceField;
-        
-        private string productTypeField;
-        
-        public ChargeLines() {
-            this.lineNoField = 0;
-            this.qtyField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.discountPercentageField = ((decimal)(0m));
-            this.totalField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ActivityNo")]
-        public string[] ActivityNo {
-            get {
-                return this.activityNoField;
-            }
-            set {
-                this.activityNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ItemNo {
-            get {
-                return this.itemNoField;
-            }
-            set {
-                this.itemNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Qty {
-            get {
-                return this.qtyField;
-            }
-            set {
-                this.qtyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercentage {
-            get {
-                return this.discountPercentageField;
-            }
-            set {
-                this.discountPercentageField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Total {
-            get {
-                return this.totalField;
-            }
-            set {
-                this.totalField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Optional {
-            get {
-                return this.optionalField;
-            }
-            set {
-                this.optionalField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Uom {
-            get {
-                return this.uomField;
-            }
-            set {
-                this.uomField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("InvoiceReference")]
-        public string[] InvoiceReference {
-            get {
-                return this.invoiceReferenceField;
-            }
-            set {
-                this.invoiceReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ProductType {
-            get {
-                return this.productTypeField;
-            }
-            set {
-                this.productTypeField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
-    public partial class ActivityChargeRespond {
-        
-        private ChargeLines[] chargeLinesField;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ChargeLines")]
-        public ChargeLines[] ChargeLines {
-            get {
-                return this.chargeLinesField;
-            }
-            set {
-                this.chargeLinesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
-    public delegate void UploadMembershipProductsCompletedEventHandler(object sender, UploadMembershipProductsCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class UploadMembershipProductsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal UploadMembershipProductsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public ActivityMembershipProducts uploadProducts {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((ActivityMembershipProducts)(this.results[0]));
-            }
-        }
-    }
-    
-    /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void CancelActivityCompletedEventHandler(object sender, CancelActivityCompletedEventArgs e);
     
@@ -6404,6 +6378,32 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((ActivityUploadMemberships)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void UploadMembershipProductsCompletedEventHandler(object sender, UploadMembershipProductsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadMembershipProductsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadMembershipProductsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityMembershipProducts uploadProducts {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityMembershipProducts)(this.results[0]));
             }
         }
     }

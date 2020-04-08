@@ -43,6 +43,44 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         void OrderMessageSave(string orderId, int status, string subject, string message);
 
+        /// <summary>
+        /// Send Order Status to ECOM platform and Notifications to Devices
+        /// </summary>
+        /// <remarks>
+        /// Notifications are only sent if MsgSubject/Details are provided, if not only status data will be sent to ECom
+        /// </remarks>
+        /// <example>
+        /// Sample request
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        ///{
+        ///    "orderMessage": {
+        ///        "OrderId": "CO000001",
+        ///        "CardId": "10021",
+        ///        "HeaderStatus": "OPEN",
+        ///        "MsgSubject": "your order 001",
+        ///        "MsgDetail": "is ready for delivery",
+        ///        "Lines":
+        ///        [{
+        ///                "LineNo": "1",
+        ///                "PrevStatus": "OPEN",
+        ///                "NewStatus": "PICKING"
+        ///            }, {
+        ///                "LineNo": "2",
+        ///                "PrevStatus": "OPEN",
+        ///                "NewStatus": "PACKING"
+        ///            }
+        ///        ]
+        ///    }
+        ///}
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="orderMessage"></param>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        void OrderMessageStatusUpdate(OrderMessage orderMessage);
+
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);

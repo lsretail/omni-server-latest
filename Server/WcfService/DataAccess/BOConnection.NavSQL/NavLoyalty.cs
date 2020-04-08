@@ -132,7 +132,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual Scheme SchemeGetById(string schemeId)
         {
-            var rep = new ContactRepository(config, NAVVersion);
+            ContactRepository rep = new ContactRepository(config, NAVVersion);
             if (schemeId.Equals("Ping"))
             {
                 rep.SchemeGetById(schemeId);
@@ -207,10 +207,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ProfileSearch(cardId, search);
         }
 
-        public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, bool includeLines)
+        public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions)
         {
             SalesEntryRepository rep = new SalesEntryRepository(config, NAVVersion);
-            return rep.SalesEntrySearch(search, cardId, maxNumberOfTransactions, includeLines);
+            return rep.SalesEntrySearch(search, cardId, maxNumberOfTransactions);
         }
 
         #endregion
@@ -249,7 +249,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
-            return NavWSBase.NotificationsGetByCardId(cardId, numberOfNotifications);
+            return NavWSBase.NotificationsGetByCardId(cardId);
         }
 
         #endregion
@@ -409,7 +409,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 {
                     line.TenderType = NavWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tendertype between lsomni and nav
                     if (line.TenderType == null)
-                        throw new ApplicationException("TenderType_Mapping failed for type: " + line.TenderType);
+                        throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
                 }
             }
             return entry;
@@ -578,7 +578,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            InvStatusRepository rep = new InvStatusRepository(config);
+            InvStatusRepository rep = new InvStatusRepository(config, NAVVersion);
             return rep.ReplicateInventoryStatus(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

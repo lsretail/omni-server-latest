@@ -23,7 +23,13 @@ namespace LSRetail.Omni.DiscountEngine.Interfaces
         /// </summary>
         /// <param name="offerId"></param>
         /// <returns></returns>
-        List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId);
+        List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId, string scheme);
+        /// <summary>
+        /// Retrieves benefit item lines for an Offer
+        /// </summary>
+        /// <param name="offerId"></param>
+        /// <returns></returns>
+        List<string> GetBenefitItemIds(string offerId);
         /// <summary>
         /// Gets the price for an item
         /// </summary>

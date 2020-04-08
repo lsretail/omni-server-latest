@@ -139,6 +139,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ReplicateItemCategory(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplItemLocation> ReplicateItemLocation(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return NavWSBase.ReplicateItemLocation(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             return NavWSBase.ReplicatePrice(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);

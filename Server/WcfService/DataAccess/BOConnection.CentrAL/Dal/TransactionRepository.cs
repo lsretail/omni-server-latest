@@ -11,34 +11,14 @@ using LSRetail.Omni.Domain.DataModel.Pos.Items;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Discounts;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
     public class TransactionRepository : BaseRepository
     {
-        private string sqltransheadcol = string.Empty;
-        private string sqltransheadfrom = string.Empty;
-
-        private string sqlsalelinecol = string.Empty;
-        private string sqlsalelinefrom = string.Empty;
-
-        private string sqltenderecol = string.Empty;
-        private string sqltenderfrom = string.Empty;
-
         public TransactionRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sqltransheadcol = "mt.[Transaction No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Receipt No_],mt.[Staff ID]," +
-                              "mt.[Trans_ Currency],mt.[No_ of Items],mt.[Net Amount],mt.[Cost Amount],mt.[Gross Amount]," +
-                              "mt.[Payment],mt.[Discount Amount],mt.[Date],mt.[Time],mt.[Customer Order ID] AS OrderNo";
-
-            sqltransheadfrom = " FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
-
-            sqlsalelinecol = "ml.[Transaction No_],ml.[Store No_],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
-                             "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_]";
-            sqlsalelinefrom = " FROM [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml";
-
-            sqltenderecol = "ml.[Store No_],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Line No_],ml.[Tender Type],ml.[Amount Tendered],ml.[Currency Code],ml.[Amount in Currency],t.[Description]";
-            sqltenderfrom = " FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml LEFT OUTER JOIN [" + navCompanyName + "Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d] t ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_]";
         }
 
         public RetailTransaction TransactionGetByReceipt(string receiptNo, string culture, bool includeLines)
@@ -48,11 +28,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    string sqlmain = "SELECT " + sqltransheadcol + sqltransheadfrom;
-                    string sqlwhere = " WHERE mt.[Receipt No_]=@id";
+                    command.CommandText = "SELECT " +
+                                    "mt.[Transaction No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Receipt No_],mt.[Refund Receipt No_],mt.[Staff ID]," +
+                                    "mt.[Trans_ Currency],mt.[No_ of Items],mt.[Net Amount],mt.[Cost Amount],mt.[Gross Amount]," +
+                                    "mt.[Payment],mt.[Discount Amount],mt.[Date],mt.[Time],mt.[Customer Order ID] AS OrderNo " +
+                                    "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                    "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", receiptNo);
-                    command.CommandText = sqlmain + sqlwhere;
                     connection.Open();
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -76,8 +59,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlsalelinecol + sqlsalelinefrom +
-                                          " WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid ORDER BY ml.[Line No_]";
+                    command.CommandText = "SELECT " + 
+                            "ml.[Transaction No_],ml.[Store No_],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
+                            "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_] " +
+                            "FROM [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                            "WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid ORDER BY ml.[Line No_]";
+
                     command.Parameters.AddWithValue("@id", transId);
                     command.Parameters.AddWithValue("@Sid", storeId);
                     command.Parameters.AddWithValue("@Tid", terminalId);
@@ -87,7 +74,41 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToSaleLine(reader, storeId, currency));
+                            list.Add(ReaderToSaleLine(reader, storeId, terminalId, currency));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<DiscountLine> DiscountLineGet(string transId, string storeId, string terminalId, int lineNo, Currency currency)
+        {
+            List<DiscountLine> list = new List<DiscountLine>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " +
+                            "ml.[Transaction No_],ml.[Store No_],ml.[POS Terminal No_],ml.[Line No_],ml.[Offer No_]," +
+                            "ml.[Offer Type],ml.[Discount Amount],pd.[Description],pd.[Type] " +
+                            "FROM [" + navCompanyName + "Trans_ Discount Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                            "LEFT JOIN [" + navCompanyName + "Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] pd ON pd.[No_]=ml.[Offer No_] " +
+                            "WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid AND ml.[Line No_]=@no";
+
+                    command.Parameters.AddWithValue("@id", transId);
+                    command.Parameters.AddWithValue("@Sid", storeId);
+                    command.Parameters.AddWithValue("@Tid", terminalId);
+                    command.Parameters.AddWithValue("@no", lineNo);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToDiscountLine(reader, currency));
                         }
                         reader.Close();
                     }
@@ -104,8 +125,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqltenderecol + sqltenderfrom +
-                                          " WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid ORDER BY ml.[Line No_]";
+                    command.CommandText = "SELECT ml.[Store No_],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Line No_],ml.[Tender Type]," +
+                                          "ml.[Amount Tendered],ml.[Currency Code],ml.[Amount in Currency],t.[Description] " +
+                                          "FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                          "LEFT OUTER JOIN [" + navCompanyName + "Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
+                                          "ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_] " +
+                                          "WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid " +
+                                          "ORDER BY ml.[Line No_]";
                     command.Parameters.AddWithValue("@id", transId);
                     command.Parameters.AddWithValue("@Sid", storeId);
                     command.Parameters.AddWithValue("@Tid", terminalId);
@@ -163,6 +189,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Id = SQLHelper.GetString(reader["Transaction No_"]),
                 Terminal = new Terminal(SQLHelper.GetString(reader["POS Terminal No_"])),
                 ReceiptNumber = SQLHelper.GetString(reader["Receipt No_"]),
+                RefundedReceiptNo = SQLHelper.GetString(reader["Refund Receipt No_"]),
                 GrossAmount = new Money(SQLHelper.GetDecimal(reader["Gross Amount"], true), cur),
                 NetAmount = new Money(SQLHelper.GetDecimal(reader["Net Amount"], true), cur),
                 TotalDiscount = new Money(SQLHelper.GetDecimal(reader["Discount Amount"], true), cur),
@@ -191,7 +218,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return trans;
         }
 
-        private SaleLine ReaderToSaleLine(SqlDataReader reader, string storeId, Currency currency)
+        private SaleLine ReaderToSaleLine(SqlDataReader reader, string storeId, string terminalId, Currency currency)
         {
             SaleLine line = new SaleLine()
             {
@@ -228,8 +255,29 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ritem.SelectedVariant = vrepo.VariantRegGetById(vid, ritem.Id);
             }
 
+            decimal discount = SQLHelper.GetDecimal(reader, "Discount Amount", false);
+            if (discount > 0)
+            {
+                line.Discounts = DiscountLineGet(line.Id, storeId, terminalId, line.LineNumber, currency);
+            }
+
             line.Item = ritem;
             return line;
+        }
+
+        private DiscountLine ReaderToDiscountLine(SqlDataReader reader, Currency currency)
+        {
+            return new DiscountLine()
+            {
+                Amount = new Money(SQLHelper.GetDecimal(reader["Discount Amount"]), currency),
+                Description = SQLHelper.GetString(reader["Description"]),
+                EntryType = DiscountEntryType.Amount,
+                No = string.Empty,
+                OfferNo = SQLHelper.GetString(reader["Offer No_"]),
+                Percentage = 0,
+                PeriodicType = (PeriodicDiscType)SQLHelper.GetInt32(reader["Type"]),
+                Type = (DiscountType)SQLHelper.GetInt32(reader["Offer Type"])
+            };
         }
 
         private PaymentLine ReaderToLoyTender(SqlDataReader reader, int lineno, string currency)

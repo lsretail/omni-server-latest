@@ -27,6 +27,8 @@ namespace LSRetail.Omni.DiscountEngine.DataModels
         [DataMember]
         public List<string> ItemIds { get; set; }
         [DataMember]
+        public List<string> BenefitItemIds { get; set; }
+        [DataMember]
         public string LoyaltySchemeCode { get; set; }
         [DataMember]
         public decimal MinimumQuantity { get; set; }

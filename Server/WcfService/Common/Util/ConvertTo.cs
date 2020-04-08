@@ -137,6 +137,13 @@ namespace LSOmni.Common.Util
             return new DateTime(1754, 1, 1, date.Hour, date.Minute, date.Second, date.Millisecond);
         }
 
+        public static DateTime SafeJsonDate(DateTime date)
+        {
+            if (date == DateTime.MinValue)
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc); //1970 is a safe json year
+            return date;
+        }
+
         public static DateTime SafeDateTime(string value)
         {
             try

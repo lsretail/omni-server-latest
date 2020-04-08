@@ -100,6 +100,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return rep.ReplicateItemCategory(mytable);
         }
 
+        public virtual List<ReplItemLocation> ReplicateItemLocation(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return new List<ReplItemLocation>();  //TODO
+        }
+
         public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             XMLTableData mytable = DoReplication(10012861, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);

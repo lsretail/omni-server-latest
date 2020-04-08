@@ -11,7 +11,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         ActivityResponse ActivityConfirm(ActivityRequest request);
         ActivityResponse ActivityCancel(string activityNo);
-        AvailabilityResponse ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
         AdditionalCharge ActivityAdditionalChargesGet(string activityNo);
         bool ActivityAdditionalChargesSet(AdditionalCharge request);
         AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo);

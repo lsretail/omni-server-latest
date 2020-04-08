@@ -10,7 +10,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     public class InvStatusRepository : BaseRepository
     {
-        public InvStatusRepository(BOConfiguration config) : base(config)
+        public InvStatusRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
         }
 

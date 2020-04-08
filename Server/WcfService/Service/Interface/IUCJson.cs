@@ -1337,10 +1337,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of barcodes</returns>
@@ -1356,10 +1356,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of currencies</returns>
@@ -1375,10 +1375,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of currency rates</returns>
@@ -1395,10 +1395,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of variants</returns>
@@ -1414,10 +1414,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of image links</returns>
@@ -1433,10 +1433,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of images</returns>
@@ -1453,10 +1453,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of item categories</returns>
@@ -1473,10 +1473,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.<p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// For update, actions for Item, Item html and Distirbution tables are used to find changes,
         /// and it may return empty list of items while Records Remaining is still not 0.  Keep on calling the function till Records Remaining become 0.
         /// </remarks>
@@ -1495,10 +1495,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of item unit of measures</returns>
@@ -1515,10 +1515,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of variant registrations</returns>
@@ -1534,13 +1534,12 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time.<p/><p/>
-        /// This replication web methods act little different from the others.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last values returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
         /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey and Maxkey to 0 and perform a full replication.<p/>
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// For update, actions for Item and Sales Price tables are used to find deleted changes.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1558,10 +1557,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of prices</returns>
@@ -1578,10 +1577,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of product groups</returns>
@@ -1597,10 +1596,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of stores</returns>
@@ -1616,10 +1615,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of unit of measures</returns>
@@ -1635,10 +1634,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of vendors</returns>
@@ -1655,10 +1654,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of vendor item mappings</returns>
@@ -1674,10 +1673,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of attributes</returns>
@@ -1693,10 +1692,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of attribute values</returns>
@@ -1712,10 +1711,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of attribute option values</returns>
@@ -1731,10 +1730,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of texts</returns>
@@ -1750,10 +1749,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of Hierarchy objects</returns>
@@ -1769,10 +1768,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of hierarchy nodes</returns>
@@ -1788,10 +1787,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of hierarchy node leafs</returns>
@@ -1812,10 +1811,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.<p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// For update, actions for Item, Item html, Sales Price, Item Variant, Item Unit of Measure, Variants and Distirbution tables are used to find changes,
         /// and it may return empty list of items while Records Remaining is still not 0.  Keep on calling the function till Records Remaining become 0.
         /// </remarks>
@@ -1832,13 +1831,12 @@ namespace LSOmni.Service
         /// LS Nav/Central Main Table data: 10012862 - WI Discounts
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
-        /// This replication web methods act little different from the others.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last values returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
         /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of discounts for items</returns>
@@ -1853,13 +1851,12 @@ namespace LSOmni.Service
         /// LS Nav/Central Main Table data: 10012863 - WI Mix and Match Offer
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
-        /// This replication web methods act little different from the others.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last values returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
         /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of discounts for items</returns>
@@ -1875,10 +1872,10 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distirbution to that store.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of discounts for items</returns>
@@ -1894,10 +1891,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of shipping agents</returns>
@@ -1913,10 +1910,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of Member contacts</returns>
@@ -1948,10 +1945,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of store tender types</returns>
@@ -1967,10 +1964,10 @@ namespace LSOmni.Service
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and lastkey and maxkey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey to the last value returned from previous call. 
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
-        /// To reset replication and get all data again, set LastKey to 0 and perform a full replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calles to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of store tender types</returns>
@@ -2108,7 +2105,7 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         ///     "locationNo": "CAMBRIDGE",
-        ///     "itemNo": "MASSAGE30",
+        ///     "productNo": "MASSAGE30",
         ///     "activityDate": "\/Date(1580580398000)\/",
         ///     "contactNo": "MO000008",
         ///     "optionalResource": "",
@@ -2118,7 +2115,7 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="locationNo"></param>
-        /// <param name="itemNo"></param>
+        /// <param name="productNo"></param>
         /// <param name="activityDate"></param>
         /// <param name="contactNo"></param>
         /// <param name="optionalResource"></param>
@@ -2126,7 +2123,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        AvailabilityResponse ActivityAvailabilityGet(string locationNo, string itemNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product

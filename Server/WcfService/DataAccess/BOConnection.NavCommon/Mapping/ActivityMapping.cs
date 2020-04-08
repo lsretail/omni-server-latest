@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
-using LSRetail.Omni.Domain.DataModel.Pos.Utils;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
@@ -92,10 +91,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ActivityNo = rec.ActivityNo,
                     ItemNo = rec.ProductNo,
                     Description = rec.Description,
-                    DateFrom = rec.DateFrom,
-                    DateTo = rec.DateTo,
-                    TimeFrom = rec.TimeFrom,
-                    TimeTo = rec.TimeTo,
+                    DateFrom = ConvertTo.SafeJsonDate(rec.DateFrom),
+                    DateTo = ConvertTo.SafeJsonDate(rec.DateTo),
+                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom),
+                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo),
                     Quantity = rec.Quantity,
                     UnitPrice = rec.UnitPrice,
                     LineDiscountAmount = rec.LineDiscountAmount,
@@ -129,10 +128,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 list.Add(new Promotion()
                 {
                     ItemNo = rec.ProductNo,
-                    DateFrom = rec.DateFrom,
-                    DateTo = rec.DateTo,
-                    TimeFrom = rec.TimeFrom,
-                    TimeTo = rec.TimeTo,
+                    DateFrom = ConvertTo.SafeJsonDate(rec.DateFrom),
+                    DateTo = ConvertTo.SafeJsonDate(rec.DateTo),
+                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom),
+                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo),
                     ClubMembersOnly = rec.ClubMembersOnly,
                     IsPriceOrDiscount = rec.ClubMembersOnly,
                     PriceOrDiscountValue = rec.PriceOrDiscountValue,
@@ -161,11 +160,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ValidLocation = rec.ValidLocation,
                     Description = rec.Description,
                     QtyIssued = rec.QtyIssued,
-                    DateIssued = rec.DateIssued,
+                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued),
                     UnitPrice = rec.UnitPrice,
                     ClientNo = rec.ClientNo,
                     ClientName = rec.ClientName,
-                    ExpiryDate = rec.ExpiryDate,
+                    ExpiryDate = ConvertTo.SafeJsonDate(rec.ExpiryDate),
                     QuantityConsumed = rec.QuantityConsumed,
                     IssuedTotalAmount = rec.IssuedTotalAmount
                 });
@@ -185,7 +184,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     Id = rec.EntryNo.ToString(),
                     CustomerNo = rec.CustomerNo,
-                    PostingDate = rec.PostingDate,
+                    PostingDate = ConvertTo.SafeJsonDate(rec.PostingDate),
                     DocumentType = rec.DocumentType,
                     DocumentNo = rec.DocumentNo,
                     Description = rec.Description,
@@ -221,8 +220,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Price = rec.Price,
                     MinAge = rec.MinAge,
                     MaxAge = rec.MaxAge,
-                    FixedEndDate = rec.FixedEndDate,
-                    FixedIssueDate = rec.FixedIssueDate,
+                    FixedEndDate = ConvertTo.SafeJsonDate(rec.FixedEndDate),
+                    FixedIssueDate = ConvertTo.SafeJsonDate(rec.FixedIssueDate),
                     RequiresMemberShip = rec.RequiresMemberShip,
                     SellingOption = rec.SellingOption,
                     EntryType = rec.EntryType,
@@ -257,8 +256,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Price = rec.Price,
                     MinAge = rec.MinAge,
                     MaxAge = rec.MaxAge,
-                    FixedEndDate = rec.FixedEndDate,
-                    FixedIssueDate = rec.FixedIssueDate,
+                    FixedEndDate = ConvertTo.SafeJsonDate(rec.FixedEndDate),
+                    FixedIssueDate = ConvertTo.SafeJsonDate(rec.FixedIssueDate),
                     RequiresMemberShip = rec.RequiresMemberShip,
                     SellingOption = rec.SellingOption,
                     EntryType = rec.EntryType,
@@ -292,7 +291,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Comment = rec.Comment,
                     InvoiceNo = rec.InvoiceNo,
                     MembershipNo = rec.MembershipNo,
-                    PostingDate = rec.PostingDate,
+                    PostingDate = ConvertTo.SafeJsonDate(rec.PostingDate),
                     AdditionalCharges = rec.AdditionalCharges,
                     MembershipType = rec.MembershipType,
                     PeriodFrom = rec.PeriodFrom,
@@ -342,30 +341,31 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     MemberName = rec.MemberName,
                     MembershipType = rec.MembershipType,
                     MembershipDescription = rec.MembershipDescription,
-                    DateIssued = rec.DateIssued,
-                    DateCreated = rec.DateCreated,
-                    DateExpires = rec.DateExpires,
-                    DateLastProcessed = rec.DateLastProcessed,
+                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued),
+                    DateCreated = ConvertTo.SafeJsonDate(rec.DateCreated),
+                    DateExpires = ConvertTo.SafeJsonDate(rec.DateExpires),
                     LastProcessBatch = rec.LastProcessBatch,
                     Status = rec.Status,
                     UnitPrice = rec.UnitPrice,
                     Discount = rec.Discount,
                     Amount = rec.Amount,
-                    CommitmentDate = rec.CommitmentDate,
                     DiscountReasonCode = rec.DiscountReasonCode, 
                     AccessID = rec.AccessID,
                     SalesPersonCode = rec.SalesPersonCode,
                     EntryType = rec.EntryType,
                     NoOfVisits = rec.NoofVisits,
-                    OnHoldUntil = rec.OnHoldUntil,
-                    StatusDate = rec.StatusDate,
                     ChargeTo = rec.ChargeTo,
                     ChargeToName = rec.ChargeToName,
-                    AccessFrom = rec.AccessFrom,
-                    AccessUntil = rec.AccessUntil,
                     StatusCode = rec.StatusCode,
                     PaymentMethodCode = rec.PaymentMethodCode,
-                    PriceCommitmentExpires = rec.PriceCommitmentExpires
+
+                    CommitmentDate = ConvertTo.SafeJsonDate(rec.CommitmentDate),
+                    DateLastProcessed = ConvertTo.SafeJsonDate(rec.DateLastProcessed),
+                    StatusDate = ConvertTo.SafeJsonDate(rec.StatusDate),
+                    OnHoldUntil = ConvertTo.SafeJsonDate(rec.OnHoldUntil),
+                    AccessFrom = ConvertTo.SafeJsonDate(rec.AccessFrom),
+                    AccessUntil = ConvertTo.SafeJsonDate(rec.AccessUntil),
+                    PriceCommitmentExpires = ConvertTo.SafeJsonDate(rec.PriceCommitmentExpires)
                 });
             }
             return list;
@@ -386,57 +386,61 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     MemberName = rec.MemberName,
                     MembershipType = rec.MembershipType,
                     MembershipDescription = rec.MembershipDescription,
-                    DateIssued = rec.DateIssued,
-                    DateCreated = rec.DateCreated,
-                    DateExpires = rec.DateExpires,
-                    DateLastProcessed = rec.DateLastProcessed,
+                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued),
+                    DateCreated = ConvertTo.SafeJsonDate(rec.DateCreated),
+                    DateExpires = ConvertTo.SafeJsonDate(rec.DateExpires),
                     LastProcessBatch = rec.LastProcessBatch,
                     Status = rec.Status,
                     UnitPrice = rec.UnitPrice,
                     Discount = rec.Discount,
                     Amount = rec.Amount,
-                    CommitmentDate = rec.CommitmentDate,
                     DiscountReasonCode = rec.DiscountReasonCode,
                     AccessID = rec.AccessID,
                     SalesPersonCode = rec.SalesPersonCode,
                     EntryType = rec.EntryType,
                     NoOfVisits = rec.NoofVisits,
-                    OnHoldUntil = rec.OnHoldUntil,
-                    StatusDate = rec.StatusDate,
                     ChargeTo = rec.ChargeTo,
                     ChargeToName = rec.ChargeToName,
-                    AccessFrom = rec.AccessFrom,
-                    AccessUntil = rec.AccessUntil,
                     StatusCode = rec.StatusCode,
                     PaymentMethodCode = rec.PaymentMethodCode,
-                    PriceCommitmentExpires = rec.PriceCommitmentExpires
+
+                    CommitmentDate = ConvertTo.SafeJsonDate(rec.CommitmentDate),
+                    DateLastProcessed = ConvertTo.SafeJsonDate(rec.DateLastProcessed),
+                    StatusDate = ConvertTo.SafeJsonDate(rec.StatusDate),
+                    OnHoldUntil = ConvertTo.SafeJsonDate(rec.OnHoldUntil),
+                    AccessFrom = ConvertTo.SafeJsonDate(rec.AccessFrom),
+                    AccessUntil = ConvertTo.SafeJsonDate(rec.AccessUntil),
+                    PriceCommitmentExpires = ConvertTo.SafeJsonDate(rec.PriceCommitmentExpires)
                 });
             }
             return list;
         }
 
-        public AvailabilityResponse MapRootToAvailabilityResponse(LSActivity.ActivityAvailabilityResponse root)
+        public List<AvailabilityResponse> MapRootToAvailabilityResponse(LSActivity.ActivityAvailabilityResponse root)
         {
             if (root.AvailabilityWork == null || root.AvailabilityWork.Length == 0)
-                return new AvailabilityResponse();
+                return new List<AvailabilityResponse>();
 
-            LSActivity.AvailabilityWork rec = root.AvailabilityWork[0];
-
-            return new AvailabilityResponse()
+            List<AvailabilityResponse> list = new List<AvailabilityResponse>();
+            foreach (LSActivity.AvailabilityWork rec in root.AvailabilityWork)
             {
-                ItemNo = rec.ProductNo,
-                AvailDate = rec.AvailDate,
-                AvailTime = rec.AvailTime,
-                WeekDay = rec.WeekDay,
-                Availability = rec.Availability,
-                TimeCaption = rec.TimeCaption,
-                Location = rec.Location,
-                Price = rec.Price,
-                OptionalResourceName = string.Concat(rec.OptionalResourceName),
-                OptionalResourceNo = rec.OptionalResourceNo,
-                PriceCurrency = string.Concat(rec.PriceCurrency),
-                Comment = rec.Comment
-            };
+                list.Add(new AvailabilityResponse()
+                {
+                    ItemNo = rec.ProductNo,
+                    AvailDate = ConvertTo.SafeJsonDate(rec.AvailDate),
+                    AvailTime = ConvertTo.NavJoinDateAndTime(rec.AvailDate, rec.AvailTime),
+                    WeekDay = rec.WeekDay,
+                    Availability = rec.Availability,
+                    TimeCaption = rec.TimeCaption,
+                    Location = rec.Location,
+                    Price = rec.Price,
+                    OptionalResourceName = string.Concat(rec.OptionalResourceName),
+                    OptionalResourceNo = rec.OptionalResourceNo,
+                    PriceCurrency = string.Concat(rec.PriceCurrency),
+                    Comment = rec.Comment
+                });
+            }
+            return list;
         }
 
         public AdditionalCharge MapRootToAdditionalCharge(LSActivity.ActivityChargeRespond root)

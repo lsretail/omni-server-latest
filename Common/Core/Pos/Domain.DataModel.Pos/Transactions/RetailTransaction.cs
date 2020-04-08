@@ -94,8 +94,8 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
         [DataMember]
         public decimal PointsRewarded { get; set; }
 
-        [IgnoreDataMember]
-        public int NumberOfSaleLines { get { return SaleLines.Count; } }
+        [DataMember]
+        public int NumberOfSaleLines { get; set; }
 
         [IgnoreDataMember]
         public bool IsRefundByReceiptTransaction
@@ -194,7 +194,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
         }
 
         // For database restoring only
-        public RetailTransaction(Discount manualDiscount, Customer customer, Money netAmount, Money grossAmount, Money incomeExpenseAmount, Money balanceAmount, Money headDiscount, Money totalDiscount, Money paymentAmount, Money taxAmount, int numberOfItems)
+        public RetailTransaction(Discount manualDiscount, Customer customer, Money netAmount, Money grossAmount, Money incomeExpenseAmount, Money balanceAmount, Money headDiscount, Money totalDiscount, Money paymentAmount, Money taxAmount, int numberOfItems, int numberOfSaleLines)
             : base()
         {
             this.SaleLines = new List<SaleLine>();
@@ -205,6 +205,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             this.GrossAmount = grossAmount;
             this.IncomeExpenseAmount = incomeExpenseAmount;
             this.NumberOfItems = numberOfItems;
+            this.NumberOfSaleLines = numberOfSaleLines;
             this.BalanceAmount = balanceAmount;
             this.HeadDiscount = headDiscount;
             this.TotalDiscount = totalDiscount;
@@ -270,7 +271,6 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             SaleLine line = new SaleLine(this.NumberOfTransactionLines + 1, item, quantity, this.Terminal.Store.Currency, PriceCalculator, this.ReturnNextSaleLine);
             line.OriginalTransactionLineNo = originalTransactionLineNo;
             line.FromRecommendation = isFromRecommendation;
-
             this.SaleLines.Add(line);
 
             this.ReturnNextSaleLine = false;
@@ -325,7 +325,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
         public void DecrementQty(int lineNumber)
         {
             SaleLine line = SaleLines.Find(delegate (SaleLine s) { return s.LineNumber == lineNumber; });
-            if (line.Quantity > 1)
+            if (line.Quantity > 0)
                 line.DecrementQty();
 
             Calculate();
@@ -522,12 +522,14 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
         {
             base.Calculate();
             this.NumberOfItems = 0;
+            this.NumberOfSaleLines = 0;
 
             foreach (SaleLine saleLine in SaleLines)
             {
                 if (saleLine.Voided == false)
                 {
                     NumberOfItems += Convert.ToInt32(saleLine.Quantity);
+                    NumberOfSaleLines += 1;
                 }
             }
 

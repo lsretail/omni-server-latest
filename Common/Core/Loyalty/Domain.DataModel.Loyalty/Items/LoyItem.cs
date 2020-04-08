@@ -28,6 +28,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
             VariantsRegistration = new List<VariantRegistration>();
             ItemAttributes = new List<RetailAttribute>();
             UnitOfMeasures = new List<UnitOfMeasure>();
+            Locations = new List<ItemLocation>();
             Images = new List<ImageView>();
 
 #if WCFSERVER  
@@ -62,6 +63,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
                     ItemAttributes.Clear();
                 if (UnitOfMeasures != null)
                     UnitOfMeasures.Clear();
+                if (Locations != null)
+                    Locations.Clear();
             }
         }
 
@@ -93,6 +96,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public List<VariantRegistration> VariantsRegistration { get; set; }
         [DataMember]
         public List<RetailAttribute> ItemAttributes { get; set; }
+        [DataMember]
+        public List<ItemLocation> Locations { get; set; }
         [DataMember]
         public UnitOfMeasure SelectedUnitOfMeasure { get; set; }
         [DataMember]

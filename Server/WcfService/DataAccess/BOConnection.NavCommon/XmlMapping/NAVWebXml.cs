@@ -657,7 +657,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 10012862, 14);
             AddField(body, 10012862, 20);
             AddField(body, 10012862, 21);
-            AddField(body, 10012862, 22);
             AddField(body, 10012862, 23);
 
             // WI Mix & Match Offer
@@ -967,7 +966,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 10012862, 14);
             AddField(body, 10012862, 20);
             AddField(body, 10012862, 21);
-            AddField(body, 10012862, 22);
             AddField(body, 10012862, 23);
 
             // Barcodes
@@ -1073,7 +1071,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 99001633, 1);
             AddField(body, 99001633, 25);
 
-            // Staff Store Link
+            // Customer
             AddTable(body, 18, false);
             AddField(body, 18, 1);
             AddField(body, 18, 2);
@@ -1098,7 +1096,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 99009274, 3);
             AddField(body, 99009274, 10);
             AddField(body, 99009274, 11);
-            AddField(body, 99009274, 12);
 
             // VAT Posting Setup
             AddTable(body, 325, false);

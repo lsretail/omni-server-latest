@@ -23,7 +23,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlfrom = " FROM [" + navCompanyName + "Barcode Mask Segment$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
 
-        public List<ReplBarcodeMaskSegment> ReplicateBarcodeMaskSegments(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplBarcodeMaskSegment> ReplicateBarcodeMaskSegments(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";

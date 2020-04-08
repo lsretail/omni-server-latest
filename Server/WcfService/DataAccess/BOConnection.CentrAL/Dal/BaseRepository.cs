@@ -637,7 +637,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             }
             catch
             {
-                throw new Exception("Invalid LastKey for Full Replication");
+                throw new LSOmniServiceException(StatusCode.Error, "Invalid LastKey for Full Replication");
             }
         }
     }

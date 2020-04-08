@@ -156,6 +156,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         TaskStatusCannotChange = 61,
 
+		[EnumMember]
+		OrderIdNotFound = 71,
+
+		[EnumMember]
+		AddressIsEmpty = 81,
 
         //security related status codes,  ALL methods can return these enums
         /// <summary>
@@ -222,6 +227,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         [EnumMember]
         CouponNotFound = 1210,  //
+        [EnumMember]
+        GiftCardNotFound = 1211,  //
 
         [EnumMember]
         AccountContactIdInvalid = 1220,
@@ -293,9 +300,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         #endregion
 
-
         #region WEB_POS_SALES_HISTORY
-
 
         [EnumMember]
         CustomerNotFound = 1670,
@@ -364,6 +369,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         SchemeInvalid = 1418,
         [EnumMember]
         SchemeClubInvalid = 1419,
+        [EnumMember]
+        ReceiptNoMissing = 1420,
 
         #endregion
 
@@ -459,16 +466,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         //New NAV WS added
         [EnumMember]
         NavWSError = 8000,
-        [EnumMember]
-        TransactionPost = 8010,
-        [EnumMember]
-        TransactionCalc = 8020,
-        [EnumMember]
-        GetHierarchy = 8030,
-        [EnumMember]
-        GetHierarchyNode = 8040,
-        [EnumMember]
-        GetItemInventory = 8050,
 
         #region SQLITE Error Codes 10.000 to 19.999
 
@@ -507,8 +504,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         GetGs1BarcodeSetupsError = 10900,
 
         #endregion
-
     }
-
 }
  

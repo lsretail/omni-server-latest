@@ -121,6 +121,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         command.CommandText = command.CommandText.Replace("AND mt.[Value]=@3 ", "");
                         command.CommandText = command.CommandText.Replace("@4", "@3");
 
+                        keys.RemoveAt(3);
                         foreach (JscActions act in actions2)
                         {
                             if (act.Type == DDStatementType.Delete)
@@ -128,7 +129,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 continue;
                             }
 
-                            keys.RemoveAt(3);
                             if (SetWhereValues(command, act, keys, first) == false)
                                 continue;
 

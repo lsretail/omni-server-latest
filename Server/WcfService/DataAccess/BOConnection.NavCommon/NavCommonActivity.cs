@@ -25,25 +25,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             decimal amount = 0;
             string cur = string.Empty;
             string bookgRef = string.Empty;
-            string resNo = req.ReservationNo;
+            string resNo = XMLHelper.GetString(req.ReservationNo);
             string item = string.Empty;
 
-            logger.Debug(config.LSKey.Key, "ActivityRequest - " + Serialization.ToXml(req, true));
+            logger.Debug(config.LSKey.Key, "ActivityConfirm - " + Serialization.ToXml(req, true));
 
-            if (NAVVersion > new Version("15.0"))
+            if (NAVVersion > new Version("15.1.0.0"))
             {
-                activity15WS.ConfirmActivityV3(req.Location, req.ProductNo, ConvertTo.NavGetDate(req.ActivityTime), ConvertTo.NavGetTime(req.ActivityTime), req.ContactNo, XMLHelper.GetString(req.OptionalResource),
+                activity15WS.ConfirmActivityV3(XMLHelper.GetString(req.Location), XMLHelper.GetString(req.ProductNo), ConvertTo.NavGetDate(req.ActivityTime), ConvertTo.NavGetTime(req.ActivityTime), XMLHelper.GetString(req.ContactNo), XMLHelper.GetString(req.OptionalResource),
                                              XMLHelper.GetString(req.OptionalComment), req.Quantity, req.NoOfPeople, req.Paid, XMLHelper.GetString(req.PromoCode), XMLHelper.GetString(req.ContactName), XMLHelper.GetString(req.Email),
                                              ref actId, ref error, ref price, ref discount, ref amount, ref cur, ref bookgRef, ref resNo, ref item);
             }
             else
             {
-                activityWS.ConfirmActivityV2(req.Location, req.ProductNo, ConvertTo.NavGetDate(req.ActivityTime), ConvertTo.NavGetTime(req.ActivityTime), req.ContactNo, XMLHelper.GetString(req.OptionalResource),
+                activityWS.ConfirmActivityV2(XMLHelper.GetString(req.Location), XMLHelper.GetString(req.ProductNo), ConvertTo.NavGetDate(req.ActivityTime), ConvertTo.NavGetTime(req.ActivityTime), XMLHelper.GetString(req.ContactNo), XMLHelper.GetString(req.OptionalResource),
                                             XMLHelper.GetString(req.OptionalComment), req.Quantity, req.NoOfPeople, req.Paid, XMLHelper.GetString(req.PromoCode), XMLHelper.GetString(req.ContactName), XMLHelper.GetString(req.Email),
                                             ref actId, ref error, ref price, ref discount, ref amount, ref cur, ref bookgRef, ref resNo);
             }
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             ActivityResponse result = new ActivityResponse()
             {
@@ -76,9 +76,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string bookgRef = string.Empty;
             string prod = string.Empty;
 
+            logger.Debug(config.LSKey.Key, string.Format("ActivityCancel: activityNo:{0}", activityNo));
+
             activityWS.CancelActivity(activityNo, ref error, ref prod, ref price, ref qty, ref discount, ref amount, ref cur, ref bookgRef);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             ActivityResponse result = new ActivityResponse()
             {
@@ -96,15 +98,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return result;
         }
 
-        public AvailabilityResponse ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
+        public List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
         {
             string error = string.Empty;
+
+            logger.Debug(config.LSKey.Key, string.Format("ActivityAvailabilityGet: locationNo:{0}, productNo:{1}, activityDate:{2}, contactNo:{3}", 
+                locationNo, productNo, activityDate, contactNo));
 
             LSActivity.ActivityAvailabilityResponse root = new LSActivity.ActivityAvailabilityResponse();
             activityWS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), ref error, ref root);
             logger.Debug(config.LSKey.Key, "ActivityAvailabilityResponse - " + Serialization.ToXml(root, true));
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             ActivityMapping map = new ActivityMapping();
             return map.MapRootToAvailabilityResponse(root);
@@ -112,6 +117,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityAdditionalChargesGet: activityNo:{0}", activityNo));
+
             LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
             activityWS.GetAdditionalCharges(activityNo, ref root);
 
@@ -124,17 +131,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             string error = string.Empty;
 
+            logger.Debug(config.LSKey.Key, "ActivityAdditionalChargesSet - " + Serialization.ToXml(req, true));
+
             LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
             activityWS.SetAdditionalChargesV2(req.ActivityNo, req.LineNo, (int)req.ProductType, req.ItemNo, req.Quantity, req.Price, req.DiscountPercentage, XMLHelper.GetString(req.UnitOfMeasure), ref error);
             logger.Debug(config.LSKey.Key, "SetAdditionalChargesV2 - " + error);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             return true;
         }
 
         public AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityAttributesGet: type:{0}, linkNo:{1}", type, linkNo));
+
             LSActivity.ActivityAttributeRespond root = new LSActivity.ActivityAttributeRespond();
             activityWS.GetAttributes((int)type, linkNo, ref root);
 
@@ -148,10 +159,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string error = string.Empty;
             int seq = 0;
 
+            logger.Debug(config.LSKey.Key, string.Format("ActivityAttributeSet: type:{0}, linkNo:{1}, attrCode:{2}, attrValue:{3}", type, linkNo, attrCode, attrValue));
+
             activityWS.SetAttribute((int)type, linkNo, XMLHelper.GetString(attrCode), XMLHelper.GetString(attrValue), ref seq, ref error);
             logger.Debug(config.LSKey.Key, "SetAttribute - " + error);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             return seq;
         }
@@ -161,6 +174,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string error = string.Empty;
             string resNo = string.Empty;
 
+            logger.Debug(config.LSKey.Key, "ActivityInsertReservation - " + Serialization.ToXml(req, true));
+
             activityWS.InsertReservation(ref resNo, req.ReservationType, 
                                          XMLHelper.GetSQLNAVDate(req.ResDateFrom), XMLHelper.GetSQLNAVTime(req.ResTimeFrom), XMLHelper.GetSQLNAVDate(req.ResDateTo), XMLHelper.GetSQLNAVTime(req.ResTimeTo), 
                                          XMLHelper.GetString(req.CustomerAccount), XMLHelper.GetString(req.Description), XMLHelper.GetString(req.Comment),
@@ -169,7 +184,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                                          ref error);
             logger.Debug(config.LSKey.Key, "InsertReservation - " + error);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             return resNo;
         }
@@ -179,6 +194,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string error = string.Empty;
             string resNo = string.Empty;
 
+            logger.Debug(config.LSKey.Key, "ActivityUpdateReservation - " + Serialization.ToXml(req, true));
+
             activityWS.UpdateReservation(req.Id, req.ReservationType,
                                          XMLHelper.GetSQLNAVDate(req.ResDateFrom), XMLHelper.GetSQLNAVTime(req.ResTimeFrom), XMLHelper.GetSQLNAVDate(req.ResDateTo), XMLHelper.GetSQLNAVTime(req.ResTimeTo),
                                          XMLHelper.GetString(req.CustomerAccount), XMLHelper.GetString(req.Description), XMLHelper.GetString(req.Comment),
@@ -187,7 +204,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                                          ref error);
             logger.Debug(config.LSKey.Key, "UpdateReservation - " + error);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             return resNo;
         }
@@ -201,7 +218,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             decimal discount = 0;
             decimal qty = 0;
 
-            if (NAVVersion > new Version("15.0"))
+            logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipCancel: contactNo:{0}, type:{1}", contactNo, type));
+
+            if (NAVVersion > new Version("15.1.0.0"))
             {
                 activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
             }
@@ -211,7 +230,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             }
             logger.Debug(config.LSKey.Key, "SellMembership - " + error);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             return new MembershipResponse()
             {
@@ -227,7 +246,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             string error = string.Empty;
 
-            if (NAVVersion > new Version("15.0"))
+            logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipCancel: contactNo:{0}, memNo:{1}, comment:{2}", contactNo, memNo, comment));
+
+            if (NAVVersion > new Version("15.1.0.0"))
             {
                 activity15WS.CancelMembership(contactNo, memNo, XMLHelper.GetString(comment), ref error);
             }
@@ -237,7 +258,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             }
             logger.Debug(config.LSKey.Key, "CancelMembership - " + error);
             if (string.IsNullOrEmpty(error) == false)
-                throw new LSOmniServiceException(StatusCode.Error, error);
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             return true;
         }
@@ -278,8 +299,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType)
         {
-            LSActivity.ActivityUploadReservations root = new LSActivity.ActivityUploadReservations();
+            logger.Debug(config.LSKey.Key, string.Format("ActivityReservationsGet: contactNo:{0}, ResNo:{1}, actType:{2}", contactNo, reservationNo, activityType));
 
+            LSActivity.ActivityUploadReservations root = new LSActivity.ActivityUploadReservations();
             if (string.IsNullOrWhiteSpace(reservationNo))
             {
                 activityWS.UploadClientBookingsV2(contactNo, activityType, ref root);
@@ -307,6 +329,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<Allowance> ActivityAllowancesGet(string contactNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityAllowancesGet: contactNo:{0}", contactNo));
+
             LSActivity.ActivityUploadAllowance root = new LSActivity.ActivityUploadAllowance();
             activityWS.UploadPurchasedAllowances(contactNo, ref root);
 
@@ -317,6 +341,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<CustomerEntry> ActivityCustomerEntriesGet(string contactNo, string customerNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityCustomerEntriesGet: contactNo:{0}, customerNo:{1}", contactNo, customerNo));
+
             LSActivity.ActivityCustomerEntries root = new LSActivity.ActivityCustomerEntries();
             activityWS.UploadCustomerEntries(contactNo, customerNo, ref root);
 
@@ -327,7 +353,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<MemberProduct> ActivityMembershipProductsGet()
         {
-            if (NAVVersion > new Version("15.0"))
+            if (NAVVersion > new Version("15.1.0.0"))
             {
                 LSActivity15.ActivityMembershipProducts root = new LSActivity15.ActivityMembershipProducts();
                 activity15WS.UploadMembershipProducts(ref root);
@@ -343,12 +369,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
                 logger.Debug(config.LSKey.Key, "UploadMembershipProducts Response - " + Serialization.ToXml(root, true));
                 ActivityMapping map = new ActivityMapping();
-                return map.MapRootToMemberProduct(root);
+                List<MemberProduct> list = map.MapRootToMemberProduct(root);
+                logger.Debug(config.LSKey.Key, "Return list - " + Serialization.ToXml(list, true));
+                return list;
             }
         }
 
         public List<SubscriptionEntry> ActivitySubscriptionChargesGet(string contactNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivitySubscriptionChargesGet: contactNo:{0}", contactNo));
+
             LSActivity.ActivitySubscriptionEntries root = new LSActivity.ActivitySubscriptionEntries();
             activityWS.UploadMembershipSubscriptionCharges(contactNo, ref root);
 
@@ -359,6 +389,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<AdmissionEntry> ActivityAdmissionEntriesGet(string contactNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityAdmissionEntriesGet: contactNo:{0}", contactNo));
+
             LSActivity.ActivityAdmissionEntries root = new LSActivity.ActivityAdmissionEntries();
             activityWS.UploadAdmissionEntries(contactNo, ref root);
 
@@ -369,8 +401,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<Membership> ActivityMembershipsGet(string contactNo)
         {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipsGet: contactNo:{0}", contactNo));
+
             ActivityMapping map = new ActivityMapping();
-            if (NAVVersion > new Version("15.0"))
+            if (NAVVersion > new Version("15.1.0.0"))
             {
                 LSActivity15.ActivityUploadMemberships root = new LSActivity15.ActivityUploadMemberships();
                 activity15WS.UploadMembershipEntries(contactNo, ref root);

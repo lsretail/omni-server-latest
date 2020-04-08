@@ -2,6 +2,7 @@
 
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -20,7 +21,7 @@ namespace LSOmni.BLL.Loyalty
         {
             //if no ad id is given, get one
             if (activityLog == null)
-                throw new ApplicationException("activityLog cannot be null");
+                throw new LSOmniException(StatusCode.ObjectIdMissing, "activityLog cannot be null");
 
             try
             {

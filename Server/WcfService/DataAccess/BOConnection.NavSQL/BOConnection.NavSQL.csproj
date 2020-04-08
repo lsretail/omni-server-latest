@@ -77,12 +77,11 @@
     <Compile Include="Dal\ImageRepository.cs" />
     <Compile Include="Dal\InvStatusRepository.cs" />
     <Compile Include="Dal\ItemCategoryRepository.cs" />
+    <Compile Include="Dal\ItemLocationRepository.cs" />
     <Compile Include="Dal\ItemRepository.cs" />
     <Compile Include="Dal\ItemUOMRepository.cs" />
     <Compile Include="Dal\ItemVariantRegistrationRepository.cs" />
     <Compile Include="Dal\NavWSRepository.cs" />
-    <Compile Include="Dal\NotificationRepository.cs" />
-    <Compile Include="Dal\OfferRepository.cs" />
     <Compile Include="Dal\SalesEntryRepository.cs" />
     <Compile Include="Dal\OrderRepository.cs" />
     <Compile Include="Dal\PluRepository.cs" />

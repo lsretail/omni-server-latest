@@ -41,7 +41,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Voided = (EntryStatus)header.EntryStatus == EntryStatus.Voided,
                 ReceiptNumber = header.ReceiptNo,
                 TransactionNumber = header.TransactionNo.ToString(),
-                BeginDateTime = header.TransDate,
+                BeginDateTime = ConvertTo.SafeJsonDate(header.TransDate),
                 IncomeExpenseAmount = new Money(header.IncomeExpAmount, transactionCurrency),
                 PointBalance = header.PointBalance,
                 PointsUsedInOrder = header.PointsUsedInBasket,
@@ -187,7 +187,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return transaction;
         }
 
-        public NavWS.RootMobileTransaction MapFromRetailTransactionToRoot(RetailTransaction transaction)
+        public NavWS.RootMobileTransaction MapFromRetailTransactionToRoot(RetailTransaction transaction, bool addDiscountLines)
         {
             NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
 
@@ -208,6 +208,35 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     maxTransLine = saleLine.LineNumber;
 
                 transLines.Add(MobileTransLine(transaction.Id, saleLine, transaction.Terminal.Store.Currency, transaction.Terminal.Store.Id.ToUpper(), transaction.RefundedFromStoreNo, transaction.RefundedFromTerminalNo, transaction.RefundedFromTransNo));
+            }
+
+            if (addDiscountLines)
+            {
+                List<NavWS.MobileTransDiscountLine> discLines = new List<NavWS.MobileTransDiscountLine>();
+                foreach (SaleLine posLine in transaction.SaleLines)
+                {
+                    if (posLine.Discounts.Count == 0)
+                        continue;
+
+                    int discNo = 1;
+                    foreach (DiscountLine disc in posLine.Discounts)
+                    {
+                        discLines.Add(new NavWS.MobileTransDiscountLine()
+                        {
+                            Id = transaction.Id,
+                            LineNo = LineNumberToNav(posLine.LineNumber),
+                            No = discNo++,
+                            DiscountType = (int)disc.Type,
+                            OfferNo = disc.OfferNo,
+                            Description = disc.Description,
+                            PeriodicDiscType = (int)disc.PeriodicType,
+                            DiscountAmount = disc.Amount.Value,
+                            DiscountPercent = disc.Percentage,
+                            PeriodicDiscGroup = string.Empty
+                        }); 
+                    }
+                }
+                root.MobileTransDiscountLine = discLines.ToArray();
             }
 
             if (transaction.LoyaltyContact != null)
@@ -291,7 +320,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
         {
             List<SalesEntry> list = new List<SalesEntry>();
             if (root.MemberSalesEntry == null)
-                return null;
+                return list;
 
             foreach (NavWS.MemberSalesEntry trans in root.MemberSalesEntry)
             {
@@ -299,7 +328,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     Id = trans.DocumentNo,
                     TerminalId = trans.POSTerminalNo,
-                    DocumentRegTime = trans.Date,
+                    DocumentRegTime = ConvertTo.SafeJsonDate(trans.Date),
                     TotalAmount = trans.GrossAmount,
                     LineItemCount = (int)trans.Quantity,
                     StoreName = trans.StoreName,
@@ -322,22 +351,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 NetAmount = new Money(header.NetAmount, transactionCurrency),
                 ReceiptNumber = header.ReceiptNo,
                 Terminal = new Terminal(header.POSTerminalNo),
+                RefundedReceiptNo = header.RefundReceiptNo
             };
 
-            foreach (NavWS.TransSalesEntry entry in root.TransSalesEntry)
+            if (root.TransSalesEntry != null)
             {
-                transaction.SaleLines.Add(new SaleLine()
+                foreach (NavWS.TransSalesEntry entry in root.TransSalesEntry)
                 {
-                    Item = new RetailItem(entry.ItemNo),
-                    Quantity = entry.Quantity,
-                    ReturnQuantity = entry.RefundQty,
-                    NetAmount = new Money(entry.NetAmount, transactionCurrency),
-                    TaxAmount = new Money(entry.VATAmount, transactionCurrency),
-                    UnitPrice = new Money(entry.Price, transactionCurrency),
-                });
+                    transaction.SaleLines.Add(new SaleLine()
+                    {
+                        Item = new RetailItem(entry.ItemNo),
+                        Quantity = entry.Quantity,
+                        ReturnQuantity = entry.RefundQty,
+                        NetAmount = new Money(entry.NetAmount, transactionCurrency),
+                        TaxAmount = new Money(entry.VATAmount, transactionCurrency),
+                        UnitPrice = new Money(entry.Price, transactionCurrency),
+                    });
+                }
             }
 
-            if (root.TransPaymentEntry != null && root.TransPaymentEntry.Length > 0)
+            if (root.TransPaymentEntry != null)
             {
                 int lineno = 1;
                 foreach (NavWS.TransPaymentEntry pay in root.TransPaymentEntry)
@@ -415,7 +448,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             decimal manualTotalDiscPercent = 0m;
             decimal manualTotalDisAmount = 0m;
 
-            if (transaction.ManualDiscount?.Amount.Value > 0)
+            if (transaction.ManualDiscount?.Amount.Value != 0)
             {
                 manualTotalDisAmount = transaction.ManualDiscount.Amount.Value;
                 manualTotalDiscPercent = 0.0M;
@@ -447,6 +480,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 MemberPriceGroupCode = string.Empty,
                 ManualTotalDiscAmount = manualTotalDisAmount,
                 ManualTotalDiscPercent = manualTotalDiscPercent,
+                NetAmount = transaction.NetAmount.Value,
+                GrossAmount = transaction.GrossAmount.Value,
+                LineDiscount = transaction.TotalDiscount.Value,  
+                Payment = transaction.PaymentAmount.Value,
                 DiningTblDescription = string.Empty,
                 SalesType = string.Empty,
                 RefundedFromStoreNo = transaction.RefundedFromStoreNo ?? string.Empty,
@@ -500,6 +537,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 price = saleLine.UnitPriceWithTax.Value;
                 taxAmount = saleLine.TaxAmount.Value;
                 fromRecommend = saleLine.FromRecommendation;
+                discountAmount = saleLine.LineDiscount.Amount.Value;
+                discountPercent = saleLine.LineDiscount.Percentage;
 
                 lineOrgNumber = LineNumberToNav(saleLine.OriginalTransactionLineNo);
                 entryStatus = (saleLine.Voided) ? EntryStatus.Voided : EntryStatus.Normal;
@@ -518,7 +557,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     taxProductCode = retailItem.TaxGroupId;
                 }
 
-                if (saleLine.ManualDiscount.Amount.Value > 0)
+                if (saleLine.ManualDiscount.Amount.Value != 0)
                 {
                     manualDiscountAmount = saleLine.ManualDiscount.Amount.Value;
                     manualDiscountPercent = 0.0M;

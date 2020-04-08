@@ -180,23 +180,23 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             switch (searchType)
             {
                 case CustomerSearchType.CustomerId:
-                    where = string.Format("[No_]='{0}'", search);
-                    order = "[No_]";
+                    where = string.Format("mt.[No_]='{0}'", search);
+                    order = "mt.[No_]";
                     break;
 
                 case CustomerSearchType.Email:
-                    where = string.Format("[E-Mail] LIKE '{0}%' {1}", search, GetDbCICollation());
-                    order = "[E-Mail]";
+                    where = string.Format("mt.[E-Mail] LIKE '{0}%' {1}", search, GetDbCICollation());
+                    order = "mt.[E-Mail]";
                     break;
 
                 case CustomerSearchType.Name:
-                    where = string.Format("[Search Name] LIKE '{0}%' {1}", search, GetDbCICollation());
-                    order = "[Search Name]";
+                    where = string.Format("mt.[Search Name] LIKE '{0}%' {1}", search, GetDbCICollation());
+                    order = "mt.[Search Name]";
                     break;
 
                 case CustomerSearchType.PhoneNumber:
-                    where = string.Format("([Phone No_] LIKE '{0}%' OR [Mobile Phone No_] LIKE '{0}%')", search);
-                    order = "[Phone No_]";
+                    where = string.Format("(mt.[Phone No_] LIKE '{0}%' OR mt2.[Mobile Phone No_] LIKE '{0}%')", search);
+                    order = "mt.[Phone No_]";
                     break;
             }
 

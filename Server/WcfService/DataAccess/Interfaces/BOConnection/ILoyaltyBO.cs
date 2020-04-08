@@ -80,7 +80,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions, string culture);
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping);
         string FormatAmount(decimal amount, string culture);
-        List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, bool includeLines);
+        List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions);
 
         #endregion
 

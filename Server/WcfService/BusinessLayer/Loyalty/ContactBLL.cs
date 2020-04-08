@@ -43,11 +43,11 @@ namespace LSOmni.BLL.Loyalty
         public virtual MemberContact ContactGetByCardId(string cardId, bool includeDetails)
         {
             if(string.IsNullOrWhiteSpace(cardId))
-                throw new LSOmniServiceException(StatusCode.CardIdInvalid, "cardId can not be empty or null");
+                throw new LSOmniException(StatusCode.CardIdInvalid, "cardId can not be empty or null");
 
             MemberContact contact = BOLoyConnection.ContactGetByCardId(cardId, 0, includeDetails);
             if (contact == null)
-                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, string.Format("Contact with card {0} Not found.", cardId));
+                throw new LSOmniException(StatusCode.ContactIdNotFound, string.Format("Contact with card {0} Not found.", cardId));
 
             contact.LoggedOnToDevice = new Device();
             contact.LoggedOnToDevice.SecurityToken = config.SecurityToken;
@@ -78,20 +78,20 @@ namespace LSOmni.BLL.Loyalty
             //minor validation before going further 
             if (contact == null || string.IsNullOrWhiteSpace(contact.UserName) || string.IsNullOrWhiteSpace(contact.Password))
             {
-                throw new LSOmniServiceException(StatusCode.UserNamePasswordInvalid, "User name or password are missing.");
+                throw new LSOmniException(StatusCode.UserNamePasswordInvalid, "User name or password are missing.");
             }
 
             if (Validation.IsValidUserName(contact.UserName) == false)
             {
-                throw new LSOmniServiceException(StatusCode.UserNameInvalid, "Validation of user name failed.");
+                throw new LSOmniException(StatusCode.UserNameInvalid, "Validation of user name failed.");
             }
             if (Validation.IsValidPassword(contact.Password) == false)
             {
-                throw new LSOmniServiceException(StatusCode.PasswordInvalid, "Validation of password failed.");
+                throw new LSOmniException(StatusCode.PasswordInvalid, "Validation of password failed.");
             }
             if (Validation.IsValidEmail(contact.Email) == false)
             {
-                throw new LSOmniServiceException(StatusCode.EmailInvalid, "Validation of email failed.");
+                throw new LSOmniException(StatusCode.EmailInvalid, "Validation of email failed.");
             }
 
             //check if user exist before calling NAV
@@ -139,19 +139,19 @@ namespace LSOmni.BLL.Loyalty
         {
             if (contact == null)
             {
-                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact object can not be empty");
+                throw new LSOmniException(StatusCode.ContactIdNotFound, "Contact object can not be empty");
             }
             if (string.IsNullOrWhiteSpace(contact.Id))
             {
-                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "ContactId can not be empty");
+                throw new LSOmniException(StatusCode.ContactIdNotFound, "ContactId can not be empty");
             }
             if (string.IsNullOrWhiteSpace(contact.UserName))
             {
-                throw new LSOmniServiceException(StatusCode.ParameterInvalid, "User name is missing.");
+                throw new LSOmniException(StatusCode.UserNameInvalid, "User name is missing.");
             }
             if (string.IsNullOrWhiteSpace(contact.Email))
             {
-                throw new LSOmniServiceException(StatusCode.ParameterInvalid, "Email is missing.");
+                throw new LSOmniException(StatusCode.EmailMissing, "Email is missing.");
             }
 
             if (Validation.IsValidEmail(contact.Email) == false)
@@ -183,81 +183,60 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual MemberContact Login(string userName, string password, bool includeDetails, string deviceId = "", string ipAddress = "")
         {
-            try
+            //some validation
+            if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
             {
-                string msg = string.Empty;
-
-                //some validation
-                if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
-                {
-                    msg = "User name or password are missing.";
-                    throw new LSOmniServiceException(StatusCode.UserNamePasswordInvalid, msg);
-                }
-
-                // when deviceId is missing, it defaults to the userName.
-                if (string.IsNullOrWhiteSpace(deviceId))
-                {
-                    deviceId = GetDefaultDeviceId(userName.Trim());//logging in via web app
-                }
-
-                Device dev = BOLoyConnection.DeviceGetById(deviceId);
-                if (dev != null && dev.Status == 3)
-                {
-                    msg = string.Format("Device has been blocked from usage: {0}", deviceId);
-                    throw new LSOmniServiceException(StatusCode.DeviceIsBlocked, msg);
-                }
-
-                MemberContact contact = BOLoyConnection.ContactGetByUserName(userName, includeDetails);
-                if(contact == null)
-                    throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userName);
-
-                if (contact.Cards.Count == 0)
-                {
-                    throw new ApplicationException("cardId not found during login for user: " + userName);
-                }
-
-                NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
-                contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
-
-                OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.OneLists = oneListBLL.OneListGet(contact, true);
-
-                try
-                {
-                    BOLoyConnection.Login(userName, password, contact.Cards[0].Id);
-                }
-                catch (LSOmniServiceException ex)
-                {
-                    throw new LSOmniServiceException(ex.StatusCode, "Login failed > " + ex.Message);  //returning text from 
-                }
-
-                //CALL NAV web service but dont send in the cardId since that will try and link the card to user 
-                //and we only want to link the device to the user
-                BOLoyConnection.CreateDeviceAndLinkToUser(userName, deviceId, ""); //TODO, deviceFriendlyName
-
-                contact.Environment = new OmniEnvironment();
-                CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
-                contact.Environment.Currency = curBLL.CurrencyGetLocal();// CurrencyGetHelper.CurrencyGet();
-                contact.Environment.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
-                contact.Environment.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
-
-                string securityToken = Security.CreateSecurityToken();
-                base.config.SecurityToken = securityToken;
-                this.iDeviceRepository.DeviceSave(deviceId, contact.Id, securityToken);
-
-                Device device = new Device();
-                device.SecurityToken = securityToken;
-                contact.LoggedOnToDevice = device;
-
-                return contact;
+                throw new LSOmniException(StatusCode.UserNamePasswordInvalid, "User name or password are missing");
             }
-            catch (LSOmniServiceException oex)
+
+            // when deviceId is missing, it defaults to the userName.
+            if (string.IsNullOrWhiteSpace(deviceId))
             {
-                if (oex.StatusCode == StatusCode.UserNameNotFound || oex.StatusCode == StatusCode.PasswordInvalid)
-                    throw new LSOmniServiceException(StatusCode.AuthFailed, oex.Message, oex);
-
-                throw;
+                deviceId = GetDefaultDeviceId(userName.Trim());//logging in via web app
             }
+
+            Device dev = BOLoyConnection.DeviceGetById(deviceId);
+            if (dev != null && dev.Status == 3)
+            {
+                throw new LSOmniServiceException(StatusCode.DeviceIsBlocked, string.Format("Device has been blocked from usage: {0}", deviceId));
+            }
+
+            MemberContact contact = BOLoyConnection.ContactGetByUserName(userName, includeDetails);
+            if (contact == null)
+                throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userName);
+
+            if (contact.Cards.Count == 0)
+            {
+                throw new LSOmniServiceException(StatusCode.MemberCardNotFound, "cardId not found during login for user: " + userName);
+            }
+
+            NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
+            contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
+
+            OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
+            contact.OneLists = oneListBLL.OneListGet(contact, true);
+
+            BOLoyConnection.Login(userName, password, contact.Cards[0].Id);
+
+            //CALL NAV web service but dont send in the cardId since that will try and link the card to user 
+            //and we only want to link the device to the user
+            BOLoyConnection.CreateDeviceAndLinkToUser(userName, deviceId, ""); //TODO, deviceFriendlyName
+
+            contact.Environment = new OmniEnvironment();
+            CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
+            contact.Environment.Currency = curBLL.CurrencyGetLocal();// CurrencyGetHelper.CurrencyGet();
+            contact.Environment.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
+            contact.Environment.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
+
+            string securityToken = Security.CreateSecurityToken();
+            base.config.SecurityToken = securityToken;
+            this.iDeviceRepository.DeviceSave(deviceId, contact.Id, securityToken);
+
+            Device device = new Device();
+            device.SecurityToken = securityToken;
+            contact.LoggedOnToDevice = device;
+
+            return contact;
         }
 
         public virtual void Logout(string userName, string deviceId = "", string ipAddress = "")
@@ -275,11 +254,11 @@ namespace LSOmni.BLL.Loyalty
             //minor validation before sending it to NAV web service
             if (Validation.IsValidPassword(newPassword) == false)
             {
-                throw new LSOmniServiceException(StatusCode.PasswordInvalid, "Validation of new password failed.");
+                throw new LSOmniException(StatusCode.PasswordInvalid, "Validation of new password failed.");
             }
             if (Validation.IsValidPassword(oldPassword) == false)
             {
-                throw new LSOmniServiceException(StatusCode.PasswordOldInvalid, "Validation of old password failed.");
+                throw new LSOmniException(StatusCode.PasswordOldInvalid, "Validation of old password failed.");
             }
 
             //CALL NAV web service - it validates the if old pwd is ok or not
@@ -296,7 +275,7 @@ namespace LSOmni.BLL.Loyalty
             //minor validation before sending it to NAV web service
             if (Validation.IsValidPassword(newPassword) == false)
             {
-                throw new LSOmniServiceException(StatusCode.PasswordInvalid, "Validation of new password failed.");
+                throw new LSOmniException(StatusCode.PasswordInvalid, "Validation of new password failed.");
             }
 
             //get the username from resetCode, if resetCode is not specified
