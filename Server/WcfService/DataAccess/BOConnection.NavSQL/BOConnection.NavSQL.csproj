@@ -81,6 +81,7 @@
     <Compile Include="Dal\ItemRepository.cs" />
     <Compile Include="Dal\ItemUOMRepository.cs" />
     <Compile Include="Dal\ItemVariantRegistrationRepository.cs" />
+    <Compile Include="Dal\MyCustomRepository.cs" />
     <Compile Include="Dal\NavWSRepository.cs" />
     <Compile Include="Dal\SalesEntryRepository.cs" />
     <Compile Include="Dal\OrderRepository.cs" />

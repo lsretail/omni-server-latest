@@ -2586,5 +2586,8 @@ namespace LSOmni.Service
         List<Membership> ActivityMembershipsGet(string contactNo);
 
         #endregion
+
+        [OperationContract]
+        string MyCustomFunction(string data);
     }
 }

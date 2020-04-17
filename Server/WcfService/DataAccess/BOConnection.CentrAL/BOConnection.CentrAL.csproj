@@ -71,6 +71,7 @@
     <Compile Include="Dal\CurrencyExchRateRepository.cs" />
     <Compile Include="Dal\CurrencyRepository.cs" />
     <Compile Include="Dal\CustomerRepository.cs" />
+    <Compile Include="Dal\MyCustomRepository.cs" />
     <Compile Include="Dal\DataTranslationRepository.cs" />
     <Compile Include="Dal\DiscountOfferRepository.cs" />
     <Compile Include="Dal\ExtendedVariantValuesRepository.cs" />
@@ -105,6 +106,7 @@
     <Compile Include="NavActivity.cs" />
     <Compile Include="NavApps.cs" />
     <Compile Include="NavBase.cs" />
+    <Compile Include="NavCustom.cs" />
     <Compile Include="NavLoyalty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

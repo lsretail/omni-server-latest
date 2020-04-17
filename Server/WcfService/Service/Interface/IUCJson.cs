@@ -2409,5 +2409,9 @@ namespace LSOmni.Service
         List<Membership> ActivityMembershipsGet(string contactNo);
 
         #endregion
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        string MyCustomFunction(string data);
     }
 }

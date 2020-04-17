@@ -67,6 +67,7 @@
     <Compile Include="NavCommonBase.cs" />
     <Compile Include="NavCommonLoyalty.cs" />
     <Compile Include="NavCommonReplicate.cs" />
+    <Compile Include="NavCommonCustom.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

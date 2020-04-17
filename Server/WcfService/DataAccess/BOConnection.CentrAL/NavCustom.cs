@@ -1,9 +1,9 @@
 ﻿using System;
-using LSOmni.DataAccess.BOConnection.NavSQL.Dal;
+using LSOmni.DataAccess.BOConnection.CentrAL.Dal;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
 
-namespace LSOmni.DataAccess.BOConnection.NavSQL
+namespace LSOmni.DataAccess.BOConnection.CentrAL
 {
     public class NavCustom : NavBase, ICustomBO
     {

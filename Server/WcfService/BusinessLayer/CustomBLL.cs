@@ -9,17 +9,26 @@ namespace LSOmni.BLL
     public class CustomBLL : BaseBLL
     {
         private static LSLogger logger = new LSLogger();
-        private ICustomBO iBOConnection = null;
+        private ICustomBO iBOCustom = null;
+
+        protected ICustomBO BOCustom
+        {
+            get
+            {
+                if (iBOCustom == null)
+                    iBOCustom = GetBORepository<ICustomBO>(config.LSKey.Key);
+                return iBOCustom;
+            }
+        }
 
         public CustomBLL(BOConfiguration config) : base(config)
         {
-            iBOConnection = GetDbRepository<ICustomBO>(config);
         }
 
         public virtual string MyCustomFunction(string data)
         {
             logger.Debug(config.LSKey.Key, "Debug data: " + data);
-            return iBOConnection.MyCustomFunction(data);
+            return BOCustom.MyCustomFunction(data);
         }
     }
 }

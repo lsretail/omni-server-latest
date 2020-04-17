@@ -59,6 +59,7 @@
     <Compile Include="NavActivity.cs" />
     <Compile Include="NavApps.cs" />
     <Compile Include="NavBase.cs" />
+    <Compile Include="NavCustom.cs" />
     <Compile Include="NavLoyalty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
