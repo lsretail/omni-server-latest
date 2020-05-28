@@ -105,20 +105,25 @@ namespace LSOmni.Service
             return sOut; //FormatOutput(sOut);
         }
 
+        protected virtual void HandleExceptions(Exception ex, string errMsg, params object[] args)
+        {
+            HandleExceptions(ex, string.Format(errMsg, args));
+        }
+
         protected virtual void HandleExceptions(Exception ex, string errMsg)
         {
-            //handle all errors in once place
-            //if LoyaltyException is thrown then dont mess with it, let it flow to client
+            logger.Error(config.LSKey.Key, ex, errMsg);
+
             if (ex.GetType() == typeof(LSOmniServiceException))
             {
-                //Authentication failed for statuses etc..
-
                 LSOmniServiceException lEx = (LSOmniServiceException)ex;
-                logger.Error(config.LSKey.Key, lEx, lEx.Message);
-                throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, lEx.Message), exStatusCode);
+                throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, errMsg + " - " + lEx.Message), exStatusCode);
+            }
+            if (ex.GetType() == typeof(LSOmniException))
+            {
+                throw new WebFaultException<LSOmniException>((LSOmniException)ex, exStatusCode);
             }
 
-            logger.Error(config.LSKey.Key, ex, errMsg);
             throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.Error, errMsg + " - " + ex.Message), exStatusCode);
         }
 
@@ -278,7 +283,7 @@ namespace LSOmni.Service
 
         #endregion private members
 
-        #region setlocation
+        #region set location
 
         private void SearchSetLocation(SearchRs rs)
         {

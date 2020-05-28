@@ -77,9 +77,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
 
         public override string ToString()
         {
-            string s = string.Format("StoreId: {0} TerminalId: {1} LastKey: {2} MaxKey: {3} BatchSize: {4} FullReplication: {5}",
+            return string.Format("StoreId:{0} TerminalId:{1} LastKey:{2} MaxKey:{3} BatchSize:{4} FullReplication:{5}",
                 StoreId, TerminalId, LastKey, MaxKey, BatchSize.ToString(), FullReplication.ToString());
-            return s;
         }
     }
 }

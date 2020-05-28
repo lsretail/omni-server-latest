@@ -43,7 +43,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 PointsUsedInOrder = header.PointsUsedInBasket
             };
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             order.OrderDiscountLines = new List<OrderDiscountLine>();
             if (root.MobileTransDiscountLine != null)
             {
@@ -65,7 +65,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
 
-            //now loop thru the lines
+            //now loop through the lines
             order.OrderLines = new List<OrderLine>();
             if (root.MobileTransactionLine != null)
             {
@@ -133,7 +133,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             };
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             order.DiscountLines = new List<SalesEntryDiscountLine>();
             if (root.CustomerOrderDiscountLine != null)
             {
@@ -155,7 +155,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
 
-            //now loop thru the lines
+            //now loop through the lines
             decimal cnt = 0;
             order.Lines = new List<SalesEntryLine>();
             if (root.CustomerOrderLine != null)
@@ -193,7 +193,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             }
             order.LineItemCount = (int)cnt;
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             order.Payments = new List<SalesEntryPayment>();
             if (root.CustomerOrderPayment != null)
             {
@@ -246,7 +246,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             };
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             order.DiscountLines = new List<SalesEntryDiscountLine>();
             if (root.CustomerOrderGetCODiscountLineV2 != null)
             {
@@ -268,7 +268,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
 
-            //now loop thru the lines
+            //now loop through the lines
             order.Lines = new List<SalesEntryLine>();
             if (root.CustomerOrderGetCOLineV2 != null)
             {
@@ -303,7 +303,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             order.Payments = new List<SalesEntryPayment>();
             if (root.CustomerOrderGetCOPaymentV2 != null)
             {
@@ -381,6 +381,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToPhoneNo = XMLHelper.GetString(order.ShipToPhoneNumber),
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
+                ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired),
                 ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
                 ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
                 CustomerNo = string.Empty,
@@ -507,6 +508,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToPhoneNo = XMLHelper.GetString(order.ShipToPhoneNumber),
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
+                ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired),
                 ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
                 ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
                 CustomerNo = string.Empty,

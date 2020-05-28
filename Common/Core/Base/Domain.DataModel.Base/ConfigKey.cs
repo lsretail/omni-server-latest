@@ -79,23 +79,25 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         ScanPayGo_Terminal = 1181,
         ScanPayGo_Staff = 1182,
 
+        Inventory_Mask_IncludeCycleCounting = 1191,
+
         Cache_Image_DurationInMinutes = 1200,
 
         TenderType_Mapping = 1280,
 
-        LSReccomend_AzureAccountKey = 1301,
-        LSReccomend_AzureName = 1302,
-        LSReccomend_EndPointUrl = 1303,
-        LSReccomend_NumberOfRecommendedItems = 1304,
-        LSReccomend_AccountConnection = 1305,
-        LSReccomend_CalculateStock = 1306,
-        LSReccomend_WsURI = 1307,
-        LSReccomend_WsUserName = 1308,
-        LSReccomend_WsPassword = 1309,
-        LSReccomend_WsDomain = 1310,
-        LSReccomend_StoreNo = 1311,
-        LSReccomend_Location = 1312,
-        LSReccomend_MinStock = 1313,
+        LSRecommend_AzureAccountKey = 1301,
+        LSRecommend_AzureName = 1302,
+        LSRecommend_EndPointUrl = 1303,
+        LSRecommend_NumberOfRecommendedItems = 1304,
+        LSRecommend_AccountConnection = 1305,
+        LSRecommend_CalculateStock = 1306,
+        LSRecommend_WsURI = 1307,
+        LSRecommend_WsUserName = 1308,
+        LSRecommend_WsPassword = 1309,
+        LSRecommend_WsDomain = 1310,
+        LSRecommend_StoreNo = 1311,
+        LSRecommend_Location = 1312,
+        LSRecommend_MinStock = 1313,
 #endif
     }
 } 

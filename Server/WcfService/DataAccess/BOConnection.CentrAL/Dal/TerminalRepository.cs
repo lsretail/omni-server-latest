@@ -19,7 +19,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public TerminalRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            // TODO: do NAV 10 version of the device licence ? 
+            // TODO: do NAV 10 version of the device license ? 
             sqltext = "SELECT mt.[No_],mt.[Store No_],mt.[Terminal Type],mt.[Device Type],mt.[Description],mt.[Exit After Each Trans_]," +
                      "mt.[AutoLogoff After (Min_)],mt.[EFT Store No_],mt.[EFT POS Terminal No_],mt.[Hardware Profile]," +
                      "mt.[Interface Profile],mt.[Functionality Profile],mt.[Default Sales Type],mt.[Sales Type Filter]," +
@@ -201,7 +201,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 DeviceType = SQLHelper.GetInt32(reader["Device Type"]),
                 ItemFilterMethod = SQLHelper.GetInt32(reader["Item Filtering Method"]),
                 Store = new Store(SQLHelper.GetString(reader["Store No_"])),
-                StoreInventory = GetStoreInventoryStatus()
+                StoreInventory = true
             };
 
             GetFeatureFlags(term.Features, term.Store.Id, term.Id);

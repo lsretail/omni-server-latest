@@ -76,7 +76,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XDocument doc = XDocument.Parse(responseXml);
             XElement remainingPts = doc.Element("Response").Element("Response_Body").Element("Total_Remaining_Points");
             if (remainingPts == null)
-                throw new XmlException("Total_Remaining_Points node not found in response xml");
+                throw new XmlException("Total_Remaining_Points node not found in response XML");
             return Convert.ToInt64(Math.Floor(ConvertTo.SafeDecimal(remainingPts.Value)));
         }
     }

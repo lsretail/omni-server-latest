@@ -90,7 +90,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             //string text = (string)elIn.Element(name) ?? ""; //if name not found returns blank. But I want a good error msg
 
             if (elIn.Element(name) == null)
-                throw new XmlException(name + " node not found in xml " + elIn.ToString());
+                throw new XmlException(name + " node not found in XML " + elIn.ToString());
             string val = elIn.Element(name).Value;
             if (string.IsNullOrWhiteSpace(defaultValue) == false && string.IsNullOrWhiteSpace(val))
                 val = defaultValue;
@@ -99,20 +99,20 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 		
         private void ValidateXmlDoc()
         {
-            //minimum xml validated
+            //minimum XML validated
             XElement elAd = doc.Element("Advertisements").Element("Advertisement");
             if (elAd == null)
-                throw new XmlException("Advertisements.Advertisement node not found in xml ");
+                throw new XmlException("Advertisements.Advertisement node not found in XML");
             if (elAd.Element("Id") == null)
-                throw new XmlException("Advertisement Id node not found in xml ");
+                throw new XmlException("Advertisement Id node not found in XML");
             if (elAd.Element("Description") == null)
-                throw new XmlException("Advertisement Description node not found in xml ");
+                throw new XmlException("Advertisement Description node not found in XML");
             if (elAd.Element("ExpirationDate") == null)
-                throw new XmlException("Advertisement ExpirationDate node not found in xml ");
+                throw new XmlException("Advertisement ExpirationDate node not found in XML");
             if (elAd.Element("AdType") == null)
-                throw new XmlException("Advertisement AdType MenuNode node not found in xml ");
+                throw new XmlException("Advertisement AdType MenuNode node not found in XML");
             if (elAd.Element("AdValue") == null)
-                throw new XmlException("Advertisement AdValue MenuNode node not found in xml ");
+                throw new XmlException("Advertisement AdValue MenuNode node not found in XML");
         }
     }
 }

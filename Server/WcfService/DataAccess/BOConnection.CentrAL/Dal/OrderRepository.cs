@@ -244,7 +244,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 entry.Status = SalesEntryStatus.Complete;
                 SalesEntryRepository srepo = new SalesEntryRepository(config, NavVersion);
-                srepo.SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
+                srepo.SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                 entry.PointsRewarded = rewarded;
                 entry.PointsUsedInOrder = used;
             }

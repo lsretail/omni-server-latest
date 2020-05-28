@@ -5,7 +5,7 @@ namespace LSOmni.DataAccess.Interface.Repository
 {
     public interface IConfigRepository
     {
-        void ConfigSetByKey(string lsKey, ConfigKey key, string value, string valueType);
+        void ConfigSetByKey(string lsKey, ConfigKey key, string value, string valueType, bool advanced, string comment);
         bool ConfigKeyExists(string lsKey, ConfigKey key);
         void PingOmniDB();
         BOConfiguration ConfigGet(string lsKey);

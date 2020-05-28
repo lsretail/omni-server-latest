@@ -21,7 +21,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("CardNo:{0} ", cardNo));
+                HandleExceptions(ex, "CardNo:{0} ", cardNo);
                 return new GiftCard(string.Empty);
             }
         }
@@ -32,14 +32,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommBarcodes(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest);
                 return null; //never gets here
             }
         }
@@ -48,14 +47,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCurrency(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -64,14 +62,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCurrencyRate(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -80,14 +77,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommExtendedVariants(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -96,14 +92,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommImageLinks(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -112,14 +107,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommImages(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -128,14 +122,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemCategories(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -144,14 +137,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItems(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -160,14 +152,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemUnitOfMeasures(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -176,14 +167,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemVariantRegistrations(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -192,14 +182,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommPrices(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -208,14 +197,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommBasePrices(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -224,14 +212,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommProductGroups(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -240,14 +227,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommStores(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -256,14 +242,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommUnitOfMeasures(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -272,14 +257,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommVendor(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -288,14 +272,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommVendorItemMapping(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -304,14 +287,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommAttribute(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -320,14 +302,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommAttributeValue(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -336,14 +317,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommAttributeOptionValue(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -352,14 +332,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDataTranslation(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -368,14 +347,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchy(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -384,14 +362,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyNode(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -400,14 +377,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyLeaf(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -422,7 +398,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -431,14 +407,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommFullItem(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -447,14 +422,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDiscount(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -463,14 +437,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommMixAndMatch(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -479,14 +452,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDiscountValidation(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -495,14 +467,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommMember(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -511,14 +482,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommShippingAgent(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -527,14 +497,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCountryCode(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -543,14 +512,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommStoreTenderTypes(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }
@@ -559,14 +527,13 @@ namespace LSOmni.Service
         {
             try
             {
-                
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommTaxSetup(replRequest);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("replRequest: {0} ", replRequest.ToString()));
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
                 return null; //never gets here
             }
         }

@@ -306,7 +306,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 entry.Status = SalesEntryStatus.Complete;
                 SalesEntryRepository srepo = new SalesEntryRepository(config, NavVersion);
-                srepo.SalesEntryPointsGetTotal(string.IsNullOrEmpty(entry.CustomerOrderNo) ? entry.Id : entry.CustomerOrderNo, out decimal rewarded, out decimal used);
+                srepo.SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                 entry.PointsRewarded = rewarded;
                 entry.PointsUsedInOrder = used;
             }

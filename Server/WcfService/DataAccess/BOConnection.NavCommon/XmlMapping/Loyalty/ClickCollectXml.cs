@@ -136,7 +136,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement body = doc.Element("Response").Element("Response_Body");
 
             if (body.Element("Preferred_Sourcing_Location") == null)
-                throw new XmlException("Preferred_Sourcing_Location node not found in response xml");
+                throw new XmlException("Preferred_Sourcing_Location node not found in response XML");
             rs.PreferredSourcingLocation = body.Element("Preferred_Sourcing_Location").Value;
 
             IEnumerable<XElement> orderLines = doc.Element("Response").Element("Response_Body").Descendants("WS_Inventory_Buffer");
@@ -145,22 +145,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 OrderLineAvailabilityResponse ola = new OrderLineAvailabilityResponse();
 
                 if (line.Element("Item_No") == null)
-                    throw new XmlException("Item_No node not found in response xml");
+                    throw new XmlException("Item_No node not found in response XML");
                 ola.ItemId = line.Element("Item_No").Value;
 
                 if (line.Element("Variant_Code") != null)
                     ola.VariantId = line.Element("Variant_Code").Value;
 
                 if (line.Element("Location_Code") == null)
-                    throw new XmlException("Location_Code node not found in response xml");
+                    throw new XmlException("Location_Code node not found in response XML");
                 ola.LocationCode = line.Element("Location_Code").Value;
 
                 if (line.Element("Lead_Time__Days_") == null)
-                    throw new XmlException("Lead_Time__Days_ node not found in response xml");
+                    throw new XmlException("Lead_Time__Days_ node not found in response XML");
                 ola.LeadTimeDays = Convert.ToInt32(line.Element("Lead_Time__Days_").Value);
 
                 if (line.Element("Actual_Inventory") == null)
-                    throw new XmlException("Actual_Inventory node not found in response xml");
+                    throw new XmlException("Actual_Inventory node not found in response XML");
                 ola.Quantity = Convert.ToInt32(line.Element("Actual_Inventory").Value);
 
                 rs.Lines.Add(ola);

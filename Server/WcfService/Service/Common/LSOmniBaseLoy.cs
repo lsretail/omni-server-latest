@@ -55,7 +55,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "ProfileGetAll()");
 
-                ContactBLL profileBLL = new ContactBLL(config, clientTimeOutInSeconds); //no security token neede
+                ContactBLL profileBLL = new ContactBLL(config, clientTimeOutInSeconds); //no security token needed
                 return profileBLL.ProfilesGetAll();
             }
             catch (Exception ex)
@@ -76,7 +76,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ProfilesGetByContactId() cardId:{0}", cardId));
+                HandleExceptions(ex, "Failed: ProfilesGetByContactId() cardId:{0}", cardId);
                 return null; //never gets here
             }
         }
@@ -159,7 +159,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ContactGetById() cardId:{0}", cardId));
+                HandleExceptions(ex, "Failed: ContactGetById() cardId:{0}", cardId);
                 return null; //never gets here
             }
         }
@@ -175,7 +175,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ContactSearch() searchType:{0} searchValue:{1}", searchType, search));
+                HandleExceptions(ex, "Failed: ContactSearch() searchType:{0} searchValue:{1}", searchType, search);
                 return null; //never gets here
             }
         }
@@ -224,7 +224,7 @@ namespace LSOmni.Service
                     contact.Cards = new List<Card>();
 
                 logger.Debug(config.LSKey.Key, LogJson(contact));
-                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);//not using securitytoken here, so no security checks
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);//not using security token here, so no security checks
                 MemberContact contactOut = contactBLL.ContactCreate(contact);
                 contactOut.Environment.Version = this.Version();
                 ContactSetLocation(contactOut);
@@ -232,8 +232,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, LogJson(contact));
-                HandleExceptions(ex, "Failed: ContactCreate().");
+                HandleExceptions(ex, "Failed: ContactCreate()");
                 return null; //never gets here
             }
         }
@@ -289,8 +288,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, LogJson(contact));
-                HandleExceptions(ex, "Failed: ContactUpdate().");
+                HandleExceptions(ex, "Failed: ContactUpdate()");
                 return null; //never gets here
             }
         }
@@ -328,9 +326,9 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1} ", userName, deviceId);
+                logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
                 config.SecurityCheck = false;
-                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using securitytoken here in login, so no security checks
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here in login, so no security checks
                 MemberContact contact = contactBLL.Login(userName, password, true, deviceId, clientIPAddress);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
@@ -338,7 +336,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: Login() userName: {0}  deviceId:{1}", userName, deviceId));
+                HandleExceptions(ex, "Failed: Login() userName:{0}  deviceId:{1}", userName, deviceId);
                 return null; //never gets here
             }
         }
@@ -377,13 +375,13 @@ namespace LSOmni.Service
             //security token is in card
             try
             {
-                logger.Debug(config.LSKey.Key, "userName:{0} ", userName);
-                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using securitytoken here, so no security checks
+                logger.Debug(config.LSKey.Key, "userName:{0}", userName);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here, so no security checks
                 return contactBLL.Login(userName, password, false, "", clientIPAddress);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: Login() userName: {0} ", userName));
+                HandleExceptions(ex, "Failed: Login() userName:{0}", userName);
                 return null; //never gets here
             }
         }
@@ -420,7 +418,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "userName: {0} deviceId: {1}", userName, deviceId);
+                logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.Logout(userName, deviceId, clientIPAddress);
@@ -428,7 +426,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: Logout() userName: {0} deviceId: {1} ", userName, deviceId));
+                HandleExceptions(ex, "Failed: Logout() userName:{0} deviceId:{1}", userName, deviceId);
             }
             return false;
         }
@@ -472,14 +470,14 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "userName:{0}  ", userName);
+                logger.Debug(config.LSKey.Key, "userName:{0}", userName);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.ChangePassword(userName, newPassword, oldPassword);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ChangePassword() userName: {0} ", userName));
+                HandleExceptions(ex, "Failed: ChangePassword() userName:{0}", userName);
             }
             return true;
         }
@@ -496,7 +494,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, String.Format("contactid:{0}, cardid:{1}, accountid:{2}", contactId, cardId, accountId));
+                HandleExceptions(ex, "contactid:{0}, cardid:{1}, accountid:{2}", contactId, cardId, accountId);
             }
             return points;
         }
@@ -512,7 +510,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ContactGetPointBalance() cardId:{0}", cardId));
+                HandleExceptions(ex, "Failed: ContactGetPointBalance() cardId:{0}", cardId);
                 return 0;  //never gets here
             }
         }
@@ -528,7 +526,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: GetPointRate()"));
+                HandleExceptions(ex, "Failed: GetPointRate()");
                 return 0;  //never gets here
             }
         }
@@ -537,7 +535,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "deviceid:{0} ", deviceId);
+                logger.Debug(config.LSKey.Key, "deviceid:{0}", deviceId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.DeviceSave(deviceId, deviceFriendlyName, platform, osVersion, manufacturer, model);
@@ -545,7 +543,7 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
 
-                HandleExceptions(ex, String.Format("deviceid:{0} ", deviceId));
+                HandleExceptions(ex, "deviceid:{0}", deviceId);
 
             }
             return true;
@@ -555,14 +553,14 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "userName:{0}  resetCode:{1}", userName, resetCode);
+                logger.Debug(config.LSKey.Key, "userName:{0} resetCode:{1}", userName, resetCode);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.ResetPassword(userName, resetCode, newPassword);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, String.Format("userName:{0}  resetCode:{1}", userName, resetCode));
+                HandleExceptions(ex, "userName:{0} resetCode:{1}", userName, resetCode);
             }
             return true;
         }
@@ -578,7 +576,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, String.Format("userNameOrEmail:{0}", userNameOrEmail));
+                HandleExceptions(ex, "userNameOrEmail:{0}", userNameOrEmail);
             }
             return string.Empty;
         }
@@ -603,7 +601,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ItemsGetByPublishedOfferId() pubOfferId:{0} ", pubOfferId));
+                HandleExceptions(ex, "Failed: ItemsGetByPublishedOfferId() pubOfferId:{0}", pubOfferId);
                 return null; //never gets here
             }
         }
@@ -617,7 +615,7 @@ namespace LSOmni.Service
 
             try
             {
-                logger.Debug(config.LSKey.Key, "itemId:{0}  cardId:{1} ", itemId, cardId);
+                logger.Debug(config.LSKey.Key, "itemId:{0} cardId:{1}", itemId, cardId);
                 OfferBLL bll = new OfferBLL(config, clientTimeOutInSeconds);
                 List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, string.Empty);
                 foreach (PublishedOffer it in list)
@@ -635,7 +633,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("itemId:{0}  cardId:{1} ", itemId, cardId));
+                HandleExceptions(ex, "itemId:{0} cardId:{1}", itemId, cardId);
                 return null; //never gets here
             }
         }
@@ -665,7 +663,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "notificationId:{0}  ", notificationId);
+                logger.Debug(config.LSKey.Key, "notificationId:{0}", notificationId);
 
                 NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
                 Notification notification = notificationBLL.NotificationGetById(notificationId);
@@ -674,7 +672,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("notificationId:{0} ", notificationId));
+                HandleExceptions(ex, "notificationId:{0}", notificationId);
                 return null; //never gets here
             }
         }
@@ -720,7 +718,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications));
+                HandleExceptions(ex, "cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications);
                 return null; //never gets here
             }
         }
@@ -747,13 +745,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "Store: {0}, ItemIds: {1}, LoyaltySchemeCode: {2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
+                logger.Debug(config.LSKey.Key, "Store:{0} ItemIds:{1} LoyaltySchemeCode:{2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
                 OfferBLL bll = new OfferBLL(config, clientTimeOutInSeconds);
                 return bll.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Store: {0}, ItemIds: {1}, LoyaltySchemeCode: {2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode));
+                HandleExceptions(ex, "Store:{0}, ItemIds:{1}, LoyaltySchemeCode:{2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
                 return null; //never gets here
             }
         }
@@ -797,7 +795,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ItemGetById() itemId:{0}", itemId));
+                HandleExceptions(ex, "Failed: ItemGetById() itemId:{0}", itemId);
                 return null; //never gets here
             }
         }
@@ -837,7 +835,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ItemGetByBarcode() barcode:{0}", barcode));
+                HandleExceptions(ex, "Failed: ItemGetByBarcode() barcode:{0}", barcode);
                 return null; //never gets here
             }
         }
@@ -882,8 +880,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("search:{0} maxNumberOfItems:{1} includeDetails:{2}",
-                    search, maxNumberOfItems, includeDetails));
+                HandleExceptions(ex, "search:{0} maxNumberOfItems:{1} includeDetails:{2}", search, maxNumberOfItems, includeDetails);
                 return null; //never gets here
             }
         }
@@ -900,14 +897,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "storeId: {0} itemId: {1} variantId: {2} arrivingInStockInDays: {3}", storeId, itemId, variantId, arrivingInStockInDays);
+                logger.Debug(config.LSKey.Key, "storeId:{0} itemId:{1} variantId:{2} arrivingInStockInDays:{3}", storeId, itemId, variantId, arrivingInStockInDays);
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 return bll.ItemsInStockGet(storeId, itemId, variantId, arrivingInStockInDays);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("storeId: {0} itemId: {1} variantId: {2} arrivingInStockInDays: {3}",
-                    storeId, itemId, variantId, arrivingInStockInDays));
+                HandleExceptions(ex, "storeId:{0} itemId:{1} variantId:{2} arrivingInStockInDays:{3}", storeId, itemId, variantId, arrivingInStockInDays);
                 return null; //never gets here
             }
         }
@@ -922,13 +918,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "storeId: {0} item cnt: {1}", storeId, items.Count);
+                logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, items.Count);
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 return bll.ItemsInStoreGet(items, storeId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("storeId: {0} item cnt: {1}", storeId, items.Count));
+                HandleExceptions(ex, "storeId:{0} itemCnt:{1}", storeId, items.Count);
                 return null; //never gets here
             }
         }
@@ -947,7 +943,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5} ",
+                logger.Debug(config.LSKey.Key, "pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5}",
                     pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
@@ -960,7 +956,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5}", pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails));
+                HandleExceptions(ex, "pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5}", pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
                 return null; //never gets here
             }
         }
@@ -1040,7 +1036,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("itemCategoryId:{0}", itemCategoryId));
+                HandleExceptions(ex, "itemCategoryId:{0}", itemCategoryId);
                 return null; //never gets here
             }
         }
@@ -1071,7 +1067,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "productGroupId:{0} includeDetails:{1} ", productGroupId, includeDetails);
+                logger.Debug(config.LSKey.Key, "productGroupId:{0} includeDetails:{1}", productGroupId, includeDetails);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 ProductGroup pg = itemBLL.ProductGroupGetById(productGroupId, includeDetails);
@@ -1080,7 +1076,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("productGroupId:{0}  includeDetails:{1}", productGroupId, includeDetails));
+                HandleExceptions(ex, "productGroupId:{0} includeDetails:{1}", productGroupId, includeDetails);
                 return null; //never gets here
             }
         }
@@ -1093,7 +1089,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "cardId:{0} , includeLines: {1}, listType: {2}", cardId, includeLines, listType.ToString());
+                logger.Debug(config.LSKey.Key, "cardId:{0} includeLines:{1} listType:{2}", cardId, includeLines, listType.ToString());
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
                 List<OneList> lists = listBLL.OneListGetByCardId(cardId, listType, includeLines);
@@ -1102,7 +1098,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("cardId:{0}   includeLines: {1} , listType: {2}", cardId, includeLines, listType.ToString()));
+                HandleExceptions(ex, "cardId:{0} includeLines:{1} listType:{2}", cardId, includeLines, listType);
                 return null; //never gets here
             }
         }
@@ -1120,7 +1116,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("oneListId:{0}", oneListId));
+                HandleExceptions(ex, "oneListId:{0}", oneListId);
                 return null; //never gets here
             }
         }
@@ -1137,7 +1133,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "");
+                HandleExceptions(ex, string.Empty);
                 return null; //never gets here
             }
         }
@@ -1152,7 +1148,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "");
+                HandleExceptions(ex, string.Empty);
                 return null; //never gets here
             }
         }
@@ -1167,7 +1163,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("oneListId:{0}", oneListId));
+                HandleExceptions(ex, "oneListId:{0}", oneListId);
             }
             return true;
         }
@@ -1182,7 +1178,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("OneListItem.Id:{0} OneList.Id", item.Id, item.OneListId));
+                HandleExceptions(ex, "OneListItem.Id:{0} OneListId:{1}", item.Id, item.OneListId);
                 return null; //never gets here
             }
         }
@@ -1197,7 +1193,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("oneListId:{0}", oneListId));
+                HandleExceptions(ex, "oneListId:{0}", oneListId);
             }
             return true;
         }
@@ -1242,7 +1238,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("StoresGetAll"));
+                HandleExceptions(ex, "StoresGetAll");
                 return null; //never gets here
             }
         }
@@ -1272,7 +1268,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "storeId:{0}  ", storeId);
+                logger.Debug(config.LSKey.Key, "storeId:{0}", storeId);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
                 Store store = storeBLL.StoreGetById(storeId);
@@ -1282,7 +1278,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("storeId:{0}  ", storeId));
+                HandleExceptions(ex, "storeId:{0}", storeId);
                 return null; //never gets here
             }
         }
@@ -1294,7 +1290,7 @@ namespace LSOmni.Service
         /// <param name="longitude">longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers</param>
         /// <param name="maxNumberOfStores">max number of stores returned</param>
-        /// <returns>List of stores within max distance of coords</returns>
+        /// <returns>List of stores within max distance of coordinates</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
         /// <item>
@@ -1329,7 +1325,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("latitude:{0} longitude:{1} maxDistance:{2} maxNumberOfStores:{3}", latitude, longitude, maxDistance, maxNumberOfStores));
+                HandleExceptions(ex, "latitude:{0} longitude:{1} maxDistance:{2} maxNumberOfStores:{3}", latitude, longitude, maxDistance, maxNumberOfStores);
                 return null; //never gets here
             }
         }
@@ -1377,8 +1373,8 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4} maxNumberOfStores:{5}",
-                            itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores));
+                HandleExceptions(ex, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4} maxNumberOfStores:{5}",
+                            itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores);
                 return null; //never gets here
             }
         }
@@ -1423,7 +1419,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("cardId:{0} maxNumberOfTransactions:{1} ", cardId, maxNumberOfTransactions));
+                HandleExceptions(ex, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfTransactions);
                 return null; //never gets here
             }
         }
@@ -1456,7 +1452,7 @@ namespace LSOmni.Service
                 if (cardId == null)
                     cardId = string.Empty;
 
-                logger.Debug(config.LSKey.Key, "cardId:{0} search:{1} searchType:{2} ", cardId, search, searchTypes.ToString());
+                logger.Debug(config.LSKey.Key, "cardId:{0} search:{1} searchType:{2}", cardId, search, searchTypes);
 
                 SearchBLL searchBLL = new SearchBLL(config, clientTimeOutInSeconds);
                 SearchRs searchRs = searchBLL.Search(cardId, search, maxNumberReturned, searchTypes);
@@ -1465,7 +1461,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("cardId:{0} search:{1} searchTypes:{2}", cardId, search, searchTypes.ToString()));
+                HandleExceptions(ex, "cardId:{0} search:{1} searchTypes:{2}", cardId, search, searchTypes);
                 return null; //never gets here
             }
         }
@@ -1484,7 +1480,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("orderId:{0} ", orderId));
+                HandleExceptions(ex, "orderId:{0}", orderId);
                 return null; //never gets here
             }
         }
@@ -1499,7 +1495,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("orderId:{0} ", orderId));
+                HandleExceptions(ex, "orderId:{0}", orderId);
             }
             return string.Empty;
         }
@@ -1519,7 +1515,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "id: {0} width: {1}  height: {1} ", id, width, height);
+                logger.Debug(config.LSKey.Key, "id:{0} width:{1} height:{1}", id, width, height);
                 ImageSize imgSize = new ImageSize(width, height);
                 ImageBLL bll = new ImageBLL(config);
                 ImageView imgView = bll.ImageSizeGetById(id, imgSize);
@@ -1529,7 +1525,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("id: {0} width: {1}  height: {1} ", id, width, height));
+                HandleExceptions(ex, "id:{0} width:{1} height:{1}", id, width, height);
                 return null; //never gets here
             }
         }
@@ -1538,13 +1534,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "storeId: {0}", storeId);
+                logger.Debug(config.LSKey.Key, "storeId:{0}", storeId);
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
                 return bll.HierarchyGet(storeId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("storeId: {0}", storeId));
+                HandleExceptions(ex, "storeId:{0}", storeId);
                 return null; //never gets here
             }
         }
@@ -1553,7 +1549,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug("id: {0} storeId:{1}", salesType, storeId);
+                logger.Debug(config.LSKey.Key, "id:{0} storeId:{1}", salesType, storeId);
                 MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
                 MobileMenu mobileMenu = bll.MenuGet(storeId, salesType, loadDetails, imageSize);
                 MenuSetLocation(mobileMenu);
@@ -1561,7 +1557,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("id:{0}  storeId:{1}", salesType, storeId));
+                HandleExceptions(ex, "id:{0} storeId:{1}", salesType, storeId);
                 return null; //never gets here
             }
         }
@@ -1575,7 +1571,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "id: {0} contactId: {1}", id, contactId);
+                logger.Debug(config.LSKey.Key, "id:{0} contactId:{1}", id, contactId);
 
                 AdvertisementBLL bll = new AdvertisementBLL(config, clientTimeOutInSeconds);
                 List<Advertisement> ads = bll.AdvertisementsGetById(id, contactId);
@@ -1587,7 +1583,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("id: {0} : {1} ", id, contactId));
+                HandleExceptions(ex, "id:{0} : {1}", id, contactId);
                 return null; //never gets here
             }
         }
@@ -1606,7 +1602,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("OrderId:{0}, Line count:{1}", orderMessage.OrderId, orderMessage.Lines.Count));
+                HandleExceptions(ex, "OrderId:{0}, Line count:{1}", orderMessage.OrderId, orderMessage.Lines.Count);
             }
         }
 
@@ -1614,13 +1610,13 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "OrderId:{0}, Status:{1}, Subject:{2}, Message:{3}", orderId, status, subject, message);
+                logger.Debug(config.LSKey.Key, "OrderId:{0} Status:{1} Subject:{2} Message:{3}", orderId, status, subject, message);
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
                 bll.OrderMessageSave(orderId, status, subject, message);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("OrderId:{0}, Status:{1}, Subject:{2}", orderId, status, subject));
+                HandleExceptions(ex, "OrderId:{0} Status:{1} Subject:{2}", orderId, status, subject);
             }
         }
 
@@ -1634,8 +1630,23 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("id:{0} status:{1} amount:{2}", orderId, status, amount));
+                HandleExceptions(ex, "id:{0} status:{1} amount:{2}", orderId, status, amount);
                 return null; //never gets here
+            }
+        }
+
+        public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} token:{3}", orderId, status, amount, token);
+                OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
+                return bll.OrderMessageRequestPaymentEx(orderId, status, amount, token, authcode, reference, ref message);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "id:{0} status:{1} amount:{2}", orderId, status, amount);
+                return false; //never gets here
             }
         }
 
@@ -1653,8 +1664,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, LogJson(request));
-                HandleExceptions(ex, string.Format("id: {0} ", request.Id));
+                HandleExceptions(ex, "id:{0}", request.Id);
                 return null; //never gets here
             }
         }
@@ -1669,8 +1679,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, LogJson(request));
-                HandleExceptions(ex, string.Format("id: {0} ", request.Id));
+                HandleExceptions(ex, "id:{0}", request.Id);
                 return null; //never gets here
             }
         }
@@ -1683,11 +1692,11 @@ namespace LSOmni.Service
         {
             try
             {
-                return LSRecommendsBLLStatic.IsLSRecommendsAvail();
+                LSRecommendsBLL bll = new LSRecommendsBLL(config);
+                return true;
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, ex);
                 HandleExceptions(ex, string.Empty);
                 return false; //never gets here
             }
@@ -1704,18 +1713,12 @@ namespace LSOmni.Service
                 }
                 logger.Debug(config.LSKey.Key, "userId:{0} items:{1} maxNumberOfItems:{2}", userId, itms, maxNumberOfItems);
 
-                if (LSRecommendsBLLStatic.IsLSRecommendsAvail() == false)
-                {
-                    throw new NotImplementedException("LS Recommends is not implemented yet. Missing LS Recommends.dll");
-                }
-
-                LSRecommendsBLL bll = new LSRecommendsBLL(config, clientTimeOutInSeconds);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config);
                 return bll.RecommendedItemsGetByUserId(userId, items, maxNumberOfItems);
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, "userId: {0}", userId);
-                HandleExceptions(ex, string.Format("userId: {0} ", userId));
+                HandleExceptions(ex, "userId:{0}", userId);
                 return null; //never gets here
             }
         }
@@ -1725,34 +1728,23 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config.LSKey.Key, "userId:{0} storeId:{1} items:{2}", userId, storeId, items);
-                if (LSRecommendsBLLStatic.IsLSRecommendsAvail() == false)
-                {
-                    throw new NotImplementedException("LS Recommends is not implemented yet. Missing LS Recommends.dll");
-                }
-
-                LSRecommendsBLL bll = new LSRecommendsBLL(config, clientTimeOutInSeconds);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config);
                 return bll.RecommendedItemsGet(userId, storeId, items);
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, "userId:{0}", userId);
-                HandleExceptions(ex, string.Format("userId:{0} storeId:{1}", userId, storeId));
+                HandleExceptions(ex, "userId:{0} storeId:{1}", userId, storeId);
                 return null; //never gets here
             }
         }
 
-        public void LSRecommendSetting(string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
+        public void LSRecommendSetting(string lsKey, string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "userId:{0} ", wsUserName);
-                if (LSRecommendsBLLStatic.IsLSRecommendsAvail() == false)
-                {
-                    throw new NotImplementedException("LS Recommends is not implemented yet. Missing LS Recommends.dll");
-                }
-
                 LSRecommendsBLL bll = new LSRecommendsBLL(config);
-                bll.LSRecommendSetting(endPointUrl, accountConnection, azureAccountKey, azureName, numberOfRecommendedItems, calculateStock, wsURI, wsUserName, wsPassword, wsDomain, storeNo, location, minStock);
+                bll.LSRecommendSetting(XMLHelper.GetString(lsKey), endPointUrl, accountConnection, azureAccountKey, azureName, numberOfRecommendedItems, calculateStock, wsURI, wsUserName, wsPassword, wsDomain, storeNo, location, minStock);
             }
             catch (Exception ex)
             {

@@ -14,7 +14,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     public class DiscountOfferRepository : BaseRepository
     {
         // Key: Store No., Priority No., Item No., Variant Code, Customer Disc. Group, Loyalty Scheme Code, From Date, To Date, Minimum Quantity
-        const int TABLEID = 99001453;
+        const int DTABLEID = 10012862;
+        const int MTABLEID = 10012863;
         const int VTABLEID = 99001481;
 
         private string sqlcolumns = string.Empty;
@@ -55,7 +56,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
             if (string.IsNullOrWhiteSpace(maxKey))
+            {
                 maxKey = "0";
+                if (int.TryParse(lastKey, out int maxi))
+                {
+                    maxKey = maxi.ToString();
+                    lastKey = "0";
+                }
+            }
 
             // get all prices for a item that has changed
             List<JscKey> keys = new List<JscKey>()
@@ -73,10 +81,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
 
             string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, where, false);
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
+            recordsRemaining = GetRecordCount(DTABLEID, lastKey, sql, keys, ref maxKey);
 
             int rr = 0;
-            List<JscActions> actions = LoadActions(fullReplication, TABLEID, 0, ref maxKey, ref rr);
+            List<JscActions> actions = LoadActions(fullReplication, 99001453, 0, ref maxKey, ref rr);
 
             // get records
             sql = GetSQL(true, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, where, true);
@@ -87,6 +95,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
+
+                    if (fullReplication)
+                    {
+                        command.CommandText = "SELECT MAX([Entry No_]) FROM [" + navCompanyName + "Preaction] WHERE [Table No_]='99001453'";
+                        TraceSqlCommand(command);
+                        var ret = command.ExecuteScalar();
+                        maxKey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                    }
+
                     command.CommandText = sql;
 
                     JscActions act = new JscActions(lastKey);
@@ -152,7 +169,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
             if (string.IsNullOrWhiteSpace(maxKey))
+            {
                 maxKey = "0";
+                if (int.TryParse(lastKey, out int maxi))
+                {
+                    maxKey = maxi.ToString();
+                    lastKey = "0";
+                }
+            }
 
             SQLHelper.CheckForSQLInjection(storeId);
 
@@ -170,10 +194,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
 
             string sql = "SELECT COUNT(*)" + sqlMMfrom + GetWhereStatement(true, keys, where, false);
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
+            recordsRemaining = GetRecordCount(MTABLEID, lastKey, sql, keys, ref maxKey);
 
             int rr = 0;
-            List<JscActions> actions = LoadActions(fullReplication, TABLEID, 0, ref maxKey, ref rr);
+            List<JscActions> actions = LoadActions(fullReplication, 99001453, 0, ref maxKey, ref rr);
 
             // get records
             sql = GetSQL(true, batchSize) + sqlMMcolumns + sqlMMfrom + GetWhereStatement(true, keys, where, true);
@@ -184,6 +208,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
+
+                    if (fullReplication)
+                    {
+                        command.CommandText = "SELECT MAX([Entry No_]) FROM [" + navCompanyName + "Preaction] WHERE [Table No_]='99001453'";
+                        TraceSqlCommand(command);
+                        var ret = command.ExecuteScalar();
+                        maxKey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                    }
+
                     command.CommandText = sql;
 
                     JscActions act = new JscActions(lastKey);

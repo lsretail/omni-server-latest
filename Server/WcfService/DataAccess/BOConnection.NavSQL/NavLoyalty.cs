@@ -150,11 +150,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             NavWSBase.CreateDeviceAndLinkToUser(userName, deviceId, deviceFriendlyName, cardId);
         }
 
-        private string GetDefaultDeviceId(string userName)
-        {
-            return ("WEB-" + userName);
-        }
-
         public virtual Device DeviceGetById(string id)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);

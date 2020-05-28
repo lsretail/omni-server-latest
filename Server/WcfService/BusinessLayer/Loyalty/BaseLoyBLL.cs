@@ -81,7 +81,7 @@ namespace LSOmni.BLL.Loyalty
 
         protected void SecurityCheck()
         {
-            //security_validatetoken  true/false  key can be added to bypass the securitytoken validation. Appsettings table
+            //security_validatetoken  true/false  key can be added to bypass the security token validation. Appsettings table
             SecurityTokenCheck();
 
             //always validate security token and if device is blocked etc.  Will get deviceId and contactId back
@@ -128,7 +128,7 @@ namespace LSOmni.BLL.Loyalty
                 if (ecomUrl.ToUpper() == "DEMO")
                 {
                     logger.Info(config.LSKey.Key, "ECOM Demo mode on, return OK");
-                    return "OK";
+                    return "{ \"success\": true, \"message\": \"Payment posted successfully\" }";
                 }
 
                 Uri url = new Uri(ecomUrl + "/" + command);
@@ -150,8 +150,7 @@ namespace LSOmni.BLL.Loyalty
                 {
                     ret = streamReader.ReadToEnd();
                 }
-                char[] charsToTrim = { '"' };
-                ret = ret.Trim(charsToTrim);
+
                 logger.Info(config.LSKey.Key, "ECOM Result:[{0}]", ret);
                 return ret;
             }

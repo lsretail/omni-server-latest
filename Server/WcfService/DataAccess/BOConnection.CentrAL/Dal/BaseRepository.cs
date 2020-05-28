@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private static readonly Object myLock = new Object();
 
-        public static Version NavVersion = new Version("15.0");
+        public static Version NavVersion = new Version("16.0");
 
         public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {
@@ -62,7 +62,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         //
                         if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
                         {
-                            //decrypte the pwd
+                            //decrypt the pwd
                             builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd);
                         }
                     }
@@ -271,7 +271,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
                         }
                     }
-                    builder.AppendLine(string.Format(" > Paramater {0}: {1}", param.ParameterName, value));
+                    builder.AppendLine(string.Format(" > Parameter {0}: {1}", param.ParameterName, value));
                 }
                 logger.Trace((config == null) ? "Unknown" : config.LSKey.Key, "\r\n" + builder.ToString());
             }
@@ -279,33 +279,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 logger.Error((config == null) ? "Unknown" : config.LSKey.Key, "\r\n" + ex.Message);
             }
-        }
-
-        public bool GetStoreInventoryStatus()
-        {
-            bool status = true;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                connection.Open();
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    try
-                    {
-                        command.CommandText = "SELECT [Use Store Inventory] FROM [" + navCompanyName + "Store Inventory Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]";
-                        TraceSqlCommand(command);
-                        status = SQLHelper.GetBool(command.ExecuteScalar());
-                    }
-                    catch (SqlException ex)
-                    {
-                        if (ex.Number == 208) // table does not exist
-                            status = false;
-                        else if (ex.Number == 207) // table exists but column does not exist
-                            status = true;
-                    }
-                }
-                connection.Close();
-            }
-            return status;
         }
 
         public int GetRecordCount(int tableid, string lastkey, string fullreplsql, List<JscKey> keys, ref string maxkey)

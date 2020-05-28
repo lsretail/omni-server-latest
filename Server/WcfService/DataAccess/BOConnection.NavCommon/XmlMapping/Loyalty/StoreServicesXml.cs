@@ -64,7 +64,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             //string text = (string)elIn.Element(name) ?? ""; //if name not found returns blank. But I want a good error msg
 
             if (elIn.Element(name) == null)
-                throw new XmlException(name + " node not found in xml " + elIn.ToString());
+                throw new XmlException(name + " node not found in XML " + elIn.ToString());
             string val = elIn.Element(name).Value;
             if (string.IsNullOrWhiteSpace(defaultValue) == false && string.IsNullOrWhiteSpace(val))
                 val = defaultValue;

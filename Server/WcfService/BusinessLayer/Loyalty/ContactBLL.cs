@@ -266,10 +266,10 @@ namespace LSOmni.BLL.Loyalty
 
         }
 
-        //if anything fails in resetpwd, simply ask the user to go thru the forgotpassword again..
+        //if anything fails in resetpwd, simply ask the user to go through the forgotpassword again..
         //StatusCode.PasswordInvalid   ask user for better pwd
         //StatusCode.ParameterInvalid, ask user for correct username since it does not match resetcode
-        //  all other errors should as the user to go thru the forgotPassword flow again
+        //  all other errors should as the user to go through the forgotPassword flow again
         public virtual void ResetPassword(string userNameOrEmail, string resetCode, string newPassword)
         {
             //minor validation before sending it to NAV web service

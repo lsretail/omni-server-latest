@@ -35,7 +35,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             </Request>     
              
              */
-            // Create the xml document containe
+            // Create the XML document contain
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -131,7 +131,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
             List<InventoryResponse> inventoryList = new List<InventoryResponse>();
 
-            // Create the xml document containe
+            // Create the XML document contain
             XmlDocument document = new XmlDocument();
             document.LoadXml(responseXml);
 
@@ -144,18 +144,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 XmlNode node = nodeLoop.SelectSingleNode("Store_No");
                 if (node == null)
-                    throw new XmlException("Store_No node not found in response xml");
+                    throw new XmlException("Store_No node not found in response XML");
                 inventory.StoreId = node.InnerText;
 
                 node = nodeLoop.SelectSingleNode("Base_Unit_of_Measure");
                 if (node == null)
-                    throw new XmlException("Base_Unit_of_Measure node not found in response xml");
+                    throw new XmlException("Base_Unit_of_Measure node not found in response XML");
                 inventory.BaseUnitOfMeasure = node.InnerText;
 
                 decimal temp = 0L;
                 node = nodeLoop.SelectSingleNode("Actual_Inventory");
                 if (node == null)
-                    throw new XmlException("Actual_Inventory node not found in response xml");
+                    throw new XmlException("Actual_Inventory node not found in response XML");
                 if (string.IsNullOrWhiteSpace(node.InnerText) == false)
                     temp = ConvertTo.SafeDecimal(node.InnerText);
                 inventory.QtyInventory = temp;

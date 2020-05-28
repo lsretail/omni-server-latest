@@ -93,7 +93,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             transaction.HeadDiscount = new Money(header.TotalDiscount, transactionCurrency);
             transaction.TaxAmount = new Money(transaction.GrossAmount.Value - transaction.NetAmount.Value, transactionCurrency);
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             List<DiscountLine> discounts = new List<DiscountLine>();
             if (root.MobileTransDiscountLine != null)
             {
@@ -115,7 +115,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             transaction.IncomeExpenseLines = new List<IncomeExpenseLine>();
 
-            //now loop thru the lines
+            //now loop through the lines
             transaction.SaleLines = new List<SaleLine>();
             if (root.MobileTransactionLine != null)
             {
@@ -146,7 +146,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 IdType = DocumentIdType.Receipt
             };
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             transaction.DiscountLines = new List<SalesEntryDiscountLine>();
             if (root.TransDiscountEntry != null)
             {
@@ -162,7 +162,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
 
-            //now loop thru the lines
+            //now loop through the lines
             transaction.Lines = new List<SalesEntryLine>();
             if (root.TransSalesEntry != null)
             {

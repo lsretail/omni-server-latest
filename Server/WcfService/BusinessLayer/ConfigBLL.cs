@@ -28,9 +28,9 @@ namespace LSOmni.BLL
             return this.iConfigRepository.ConfigKeyExists(lsKey, key);
         }
 
-        public virtual void ConfigSetByKey(string lsKey, ConfigKey key, string value, string valueType)
+        public virtual void ConfigSetByKey(string lsKey, ConfigKey key, string value, string valueType, bool advanced, string comment)
         {
-            this.iConfigRepository.ConfigSetByKey(lsKey, key, value, valueType);
+            this.iConfigRepository.ConfigSetByKey(lsKey, key, value, valueType, advanced, comment);
         }
 
         public virtual BOConfiguration ConfigGet(string key)

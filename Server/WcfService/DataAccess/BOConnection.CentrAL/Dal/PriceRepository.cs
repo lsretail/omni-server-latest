@@ -45,7 +45,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
             if (string.IsNullOrWhiteSpace(maxKey))
+            {
                 maxKey = "0";
+                if (int.TryParse(lastKey, out int maxi))
+                {
+                    maxKey = maxi.ToString();
+                    lastKey = "0";
+                }
+            }
 
             // get all prices for a item that has changed
             List<JscKey> keys = new List<JscKey>()
@@ -81,6 +88,15 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
+
+                    if (fullReplication)
+                    {
+                        command.CommandText = "SELECT MAX([Entry No_]) FROM [" + navCompanyName + "Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Table No_] IN ('27','10000704')";
+                        TraceSqlCommand(command);
+                        var ret = command.ExecuteScalar();
+                        maxKey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                    }
+
                     command.CommandText = sql;
 
                     JscActions act = new JscActions(lastKey);

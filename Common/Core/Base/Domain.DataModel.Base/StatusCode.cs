@@ -157,9 +157,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         TaskStatusCannotChange = 61,
 
 		[EnumMember]
-		OrderIdNotFound = 71,
-
-		[EnumMember]
 		AddressIsEmpty = 81,
 
         //security related status codes,  ALL methods can return these enums
@@ -183,8 +180,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         /// </summary>
         [EnumMember]
         LSKeyInvalid = 103,
-        //security related status codes, enum range end at 149
-        //security related status codes ends.
+        [EnumMember]
+        LSRecommendSetupMissing = 104,
 
         /// <summary>
         /// Primary key duplication
@@ -297,6 +294,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         PaymentPointsMissing = 1628, //1620 from WEB_POS
         [EnumMember]
         NAVWebFunctionNotFound = 1629,  //error 0004
+        [EnumMember]
+        MemberPointBalanceToLow = 1630,
 
         #endregion
 
@@ -377,6 +376,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         ContactIsBlocked = 2000,  //2000 in nav
 
+        #region Customer Order
+
+        [EnumMember]
+        OrderAlreadyExist = 2201,
+        [EnumMember]
+        OrderIdNotFound = 2202,
+        [EnumMember]
+        PaymentError = 2203,
+
+        #endregion
+
         //not used on client
         InvalidNode = 3030, // 0030 from nav,0030 - Invalid value RETSAVE in Request Node Command  
 
@@ -452,12 +462,20 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         TransferOrderSent = 5015,
         [EnumMember]
         TransferOrderRejected = 5016,
+        [EnumMember]
+        WorksheetNotFound = 5017,
+        [EnumMember]
+        NotReadyForNextCount = 5018,
+        [EnumMember]
+        LinesNotFound = 5019,
 
         //POS - LSOne
         [EnumMember]
         InvalidSuspensionWithPartialPayment = 6001,
         [EnumMember]
         NoItemsToSuspend = 6002,
+        [EnumMember]
+        CannotMixNormalSaleAndReturn = 6003,
 
         //New Core added
         [EnumMember]

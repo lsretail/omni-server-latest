@@ -37,7 +37,7 @@ namespace LSOmni.DataAccess.Dal
                         //
                         if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
                         {
-                            //decrypte the pwd
+                            //decrypt the pwd
                             builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd);
                         }
                     }
@@ -137,7 +137,7 @@ namespace LSOmni.DataAccess.Dal
                     foreach (System.Data.IDataParameter param in command.Parameters)
                     {
                         builder.AppendFormat(
-                            "     Paramater {0}: {1}",
+                            "     Parameter {0}: {1}",
                             param.ParameterName,
                             (param.Value == null ?
                             "NULL" : param.Value.ToString())).AppendLine();

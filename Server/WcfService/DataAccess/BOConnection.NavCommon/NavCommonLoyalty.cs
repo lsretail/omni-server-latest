@@ -138,13 +138,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             foreach (string id in locationIds)
             {
                 navWS.GetItemInventory(ref respCode, ref errorText, itemId, variantId, id, string.Empty, string.Empty, string.Empty, string.Empty, arrivingInStockInDays, ref root);
-                if (respCode != "0000")
-                    throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
+                HandleWS2ResponseCode("GetItemInventory", respCode, errorText);
+                logger.Debug(config.LSKey.Key, "GetItemInventory Response - " + Serialization.ToXml(root, true));
 
                 if (root.WSInventoryBuffer == null)
                     continue;
 
-                logger.Debug(config.LSKey.Key, "GetItemInventory Response - " + Serialization.ToXml(root, true));
                 foreach (NavWS.WSInventoryBuffer1 buffer in root.WSInventoryBuffer)
                 {
                     if (skipUnAvailableStores && buffer.ActualInventory <= 0)
@@ -165,6 +164,37 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
         {
+            List<InventoryResponse> list = new List<InventoryResponse>();
+
+            if (navWS == null || NAVVersion < new Version("13.5"))
+            {
+                OneList olist = new OneList()
+                {
+                    StoreId = storeId
+                };
+                foreach (InventoryRequest ir in items)
+                {
+                    olist.Items.Add(new OneListItem()
+                    {
+                        ItemId = ir.ItemId,
+                        VariantId = ir.VariantId
+                    });
+                }
+                OrderAvailabilityResponse rep = OrderAvailabilityCheck(olist);
+                foreach (OrderLineAvailabilityResponse ol in rep.Lines)
+                {
+                    list.Add(new InventoryResponse()
+                    {
+                        ItemId = ol.ItemId,
+                        VariantId = ol.VariantId,
+                        BaseUnitOfMeasure = ol.UnitOfMeasureId,
+                        QtyInventory = ol.Quantity,
+                        StoreId = storeId
+                    });
+                }
+                return list;
+            }
+
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -187,16 +217,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             NavWS.RootGetInventoryMultipleOut rootout = new NavWS.RootGetInventoryMultipleOut();
 
-            List<InventoryResponse> list = new List<InventoryResponse>();
-
             navWS.GetInventoryMultiple(ref respCode, ref errorText, storeId, locationId, rootin, ref rootout);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
+            HandleWS2ResponseCode("GetInventoryMultiple", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "GetInventoryMultiple Response - " + Serialization.ToXml(rootout, true));
 
             if (rootout.InventoryBufferOut == null)
                 return list;
 
-            logger.Debug(config.LSKey.Key, "GetInventoryMultiple Response - " + Serialization.ToXml(rootout, true));
             foreach (NavWS.InventoryBufferOut buffer in rootout.InventoryBufferOut)
             {
                 list.Add(new InventoryResponse()
@@ -405,9 +432,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             logger.Debug(config.LSKey.Key, "MemberContactCreate Request - " + Serialization.ToXml(root, true));
 
             navWS.MemberContactCreate(ref respCode, ref errorText, ref clubId, ref schmId, ref acctId, ref contId, ref cardId, ref point, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("MemberContactCreate", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberContactCreate Response - ClubId: {0}, SchemeId: {1}, AccountId: {2}, ContactId: {3}, CardId: {4}, PointsRemaining: {5}",
                 clubId, schmId, acctId, contId, cardId, point);
             return cardId;
@@ -439,8 +464,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootMemberContactCreate1 root = map.MapToRoot1(contact, accountId);
             logger.Debug(config.LSKey.Key, "MemberContactUpdate Request - " + Serialization.ToXml(root, true));
             navWS.MemberContactUpdate(ref respCode, ref errorText, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
+            HandleWS2ResponseCode("MemberContactUpdate", respCode, errorText);
         }
 
         public MemberContact ContactGet(string contactId, string accountId, string card, bool includeDetails)
@@ -454,10 +478,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootGetMemberContact rootContact = new NavWS.RootGetMemberContact();
             logger.Debug(config.LSKey.Key, "GetMemberContact - CardId: {0}", card);
             navWS.GetMemberContact(ref respCode, ref errorText, card, accountId, contactId, ref rootContact);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetMemberContact", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberContact Response - " + Serialization.ToXml(rootContact, true));
+            
             contact = map.MapFromRootToContact(rootContact);
 
             NAVWebXml xml = new NAVWebXml();
@@ -493,9 +516,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootGetDirectMarketingInfo rootMarket = new NavWS.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", card);
             navWS.GetDirectMarketingInfo(ref respCode, ref errorText, card, string.Empty, string.Empty, ref rootMarket);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetDirectMarketing Response - " + Serialization.ToXml(rootMarket, true));
 
             contact.PublishedOffers = map.MapFromRootToPublishedOffers(rootMarket);
@@ -576,9 +597,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "GetMemberCard - CardId: {0}", cardId);
             navWS.GetMemberCard(ref respCode, ref errorText, cardId, ref remainingPoints, ref rootCard);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetMemberCard", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberCard Response - " + Serialization.ToXml(rootCard, true));
 
             foreach (NavWS.MemberAttributeList att in rootCard.MemberAttributeList)
@@ -661,9 +680,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "GetMemberCard - CardId: {0}", cardId);
             navWS.GetMemberCard(ref respCode, ref errorText, cardId, ref remainingPoints, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetMemberCard", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberCard Response - Remaining points: {0}", Convert.ToInt64(Math.Floor(remainingPoints)));
             return Convert.ToInt64(Math.Floor(remainingPoints));
         }
@@ -835,11 +852,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Request - " + Serialization.ToXml(root, true));
 
             navQryWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("EcomCalculateBasket", respCode, errorText);
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Response - " + Serialization.ToXml(root, true));
-
             return map.MapFromRootTransactionToOrder(root);
         }
 
@@ -855,8 +869,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string errorText = string.Empty;
             NavWS.RootCustomerOrderStatus root = new NavWS.RootCustomerOrderStatus();
             navWS.CustomerOrderStatus(ref respCode, ref errorText, orderId, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
+            HandleWS2ResponseCode("CustomerOrderStatus", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "CustomerOrderStatus Response - " + Serialization.ToXml(root, true));
 
             return new OrderStatusResponse()
             {
@@ -893,8 +907,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             root.CustomerOrderStatusLog = log.ToArray();
 
             navWS.CustomerOrderCancel(ref respCode, ref errorText, orderId, 0, root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
+            HandleWS2ResponseCode("CustomerOrderCancel", respCode, errorText);
         }
 
         public SalesEntry OrderGet(string id)
@@ -910,10 +923,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 decimal pointEarned = 0;
                 NavWS.RootCustomerOrderGetV2 root = new NavWS.RootCustomerOrderGetV2();
                 navWS.CustomerOrderGetV2(ref respCode, ref errorText, "LOOKUP", id, "P0001", ref root, ref pointEarned, ref pointUsed);
-                if (respCode != "0000")
-                    throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+                HandleWS2ResponseCode("CustomerOrderGet", respCode, errorText);
                 logger.Debug(config.LSKey.Key, "CustomerOrderGetV2 Response - " + Serialization.ToXml(root, true));
+
                 order = map.MapFromRootV2ToSalesEntry(root);
                 order.PointsRewarded = pointEarned;
                 order.PointsUsedInOrder = pointUsed;
@@ -922,10 +934,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 NavWS.RootCustomerOrderGet root = new NavWS.RootCustomerOrderGet();
                 navWS.CustomerOrderGet(ref respCode, ref errorText, "LOOKUP", id, "P0001", ref root);
-                if (respCode != "0000")
-                    throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+                HandleWS2ResponseCode("CustomerOrderGet", respCode, errorText);
                 logger.Debug(config.LSKey.Key, "CustomerOrderGet Response - " + Serialization.ToXml(root, true));
+
                 order = map.MapFromRootToSalesEntry(root);
             }
 
@@ -950,9 +961,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             root.CustomerOrderHeader = hd.ToArray();
 
             navWS.CustomerOrderFilteredList(ref respCode, ref errorText, true, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("CustomerOrderFilteredList", respCode, errorText);
             logger.Debug(config.LSKey.Key, "CustomerOrderFilteredList Response - " + Serialization.ToXml(root, true));
             return map.MapFromRootToSalesEntryHistory(root);
         }
@@ -1010,10 +1019,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
 
             navWS.COQtyAvailability(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
-            if (respCode != "0000")
-                logger.Error(config.LSKey.Key, errorText);
-
+            HandleWS2ResponseCode("COQtyAvailability", respCode, errorText);
             logger.Debug(config.LSKey.Key, "COQtyAvailability Response - " + Serialization.ToXml(rootout, true));
+
             OrderAvailabilityResponse data = map.MapRootToOrderavailabilty(rootin, rootout);
             data.PreferredSourcingLocation = pefSourceLoc;
             return data;
@@ -1049,8 +1057,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 line.LineNumber = lineno++;
             }
 
+            if (request.ShipToAddress == null)
+            {
+                if (request.OrderType == OrderType.ClickAndCollect)
+                {
+                    request.ShipToAddress = new Address();
+                }
+                else
+                {
+                    throw new LSOmniException(StatusCode.AddressIsEmpty, "ShipToAddress can not be null if ClickAndCollectOrder is false");
+                }
+            }
+
             if (request.ContactAddress == null)
-                request.ContactAddress = new Address();
+            {
+                if (request.OrderType == OrderType.ClickAndCollect)
+                {
+                    request.ContactAddress = new Address();
+                }
+                else
+                {
+                    request.ContactAddress = request.ShipToAddress;
+                }
+            }
 
             if (navWS == null)
             {
@@ -1094,18 +1123,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 return request.Id;
             }
 
-            if (request.ShipToAddress == null)
-            {
-                if (request.OrderType == OrderType.ClickAndCollect)
-                {
-                    request.ShipToAddress = new Address();
-                }
-                else
-                {
-                    throw new LSOmniException(StatusCode.AddressIsEmpty, "ShipToAddress can not be null if ClickAndCollectOrder is false");
-                }
-            }
-
             OrderMapping map = new OrderMapping(NAVVersion);
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1128,9 +1145,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 logger.Debug(config.LSKey.Key, "CustomerOrderCreate Response - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
             }
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("CustomerOrderCreate", respCode, errorText);
             return request.Id;
         }
 
@@ -1146,9 +1161,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootGetMemberSalesHistory rootHistory = new NavWS.RootGetMemberSalesHistory();
             logger.Debug(config.LSKey.Key, "GetMemberSalesHistory - CardId: {0}, MaxNoOfHeaders: {1}", cardId, numberOfTrans);
             navWS.GetMemberSalesHistory(ref respCode, ref errorText, string.Empty, string.Empty, cardId, numberOfTrans, ref rootHistory);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetMemberSalesHistory", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberSalesHistory Response - " + Serialization.ToXml(rootHistory, true));
 
             TransactionMapping map = new TransactionMapping(NAVVersion);
@@ -1162,9 +1175,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string errorText = string.Empty;
             NavWS.RootGetTransaction root = new NavWS.RootGetTransaction();
             navWS.GetTransaction(ref respCode, ref errorText, receiptNo, storeId, terminalId, transId, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetTransaction", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetTransaction Response - " + Serialization.ToXml(root, true));
 
             return map.MapFromRootToRetailTransaction(root);
@@ -1212,10 +1223,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "GetStoreOpeningHours Store: " + storeId);
             navQryWS.GetStoreOpeningHours(ref respCode, ref errorText, storeId, ref root);
-            if (respCode != "0000")
-                return new List<StoreHours>();  // return empty list, no error
-
+            HandleWS2ResponseCode("GetStoreOpeningHours", respCode, errorText, new string[] { "1000" } );
             logger.Debug(config.LSKey.Key, "GetStoreOpeningHours Response - " + Serialization.ToXml(root, true));
+
             StoreMapping map = new StoreMapping();
             return map.MapFromRootToOpeningHours(root, offset);
         }
@@ -1356,10 +1366,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", cardId);
             navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
+
             ContactMapping map = new ContactMapping();
             return map.MapFromRootToNotifications(root);
         }
@@ -1398,9 +1407,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 NavWS.RootGetHierarchy rootRoot = new NavWS.RootGetHierarchy();
                 logger.Debug(config.LSKey.Key, "GetHierarchy - StoreId: {0}", storeId);
                 navQryWS.GetHierarchy(ref respCode, ref errorText, storeId, ref rootRoot);
-                if (respCode != "0000")
-                    throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+                HandleWS2ResponseCode("GetHierarchy", respCode, errorText);
                 logger.Debug(config.LSKey.Key, "GetHierarchy Response - " + Serialization.ToXml(rootRoot, true));
 
                 foreach (NavWS.Hierarchy top in rootRoot.Hierarchy)
@@ -1433,9 +1440,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     logger.Debug(config.LSKey.Key, "GetHierarchyNode - HierarchyCode: {0}, NodeId: {1}, StoreId: {2}, NodeIn: {3}",
                         val.HierarchyCode, val.NodeID, storeId, Serialization.ToXml(rootNodeIn, true));
                     navQryWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, rootNodeIn, ref rootNodeOut);
-                    if (respCode != "0000")
-                        throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+                    HandleWS2ResponseCode("GetHierarchyNode", respCode, errorText);
                     logger.Debug(config.LSKey.Key, "GetHierarchyNode Response - " + Serialization.ToXml(rootNodeOut, true));
 
                     if (rootNodeOut.HierarchyNodeLink == null)
@@ -1488,9 +1493,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
             navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, storeId, ref root);
-            if (respCode != "0000")
-                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
             return map.MapFromRootToPublishedOffers(root);
         }
@@ -1510,7 +1513,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public MobileMenu MenuGet(string storeId, string salesType, Currency currency)
         {
-            MenuXml menuxml = new MenuXml();
+            MenuXml menuxml = new MenuXml(config.LSKey.Key);
             string xmlRequest = menuxml.MenuGetAllRequestXML(storeId, salesType);
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);

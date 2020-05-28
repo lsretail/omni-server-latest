@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.Serialization.Json;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
@@ -150,5 +151,15 @@ namespace LSOmni.Common.Util
                 json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
             }
         }
+
+		public static T Deserialize<T>(string json)
+		{
+			T obj = Activator.CreateInstance<T>();
+			MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(json));
+			DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
+			obj = (T)serializer.ReadObject(ms);
+			ms.Close();
+			return obj;
+		}
 	}
 }

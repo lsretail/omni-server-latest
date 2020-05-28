@@ -51,6 +51,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback EcomCalculateBasketOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetActionsFromRemoteDBOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetCrossSellingOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetCustomerCardOperationCompleted;
@@ -83,6 +85,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback GetMemberSalesHistoryOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetReplCountersFromRemoteDBOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetStoreImageOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetStoreOpeningHoursOperationCompleted;
@@ -90,6 +94,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         private System.Threading.SendOrPostCallback GetTransactionOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVendorCardOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback IMDocumentPostOperationCompleted;
         
         private System.Threading.SendOrPostCallback ItemSalesInfoOperationCompleted;
         
@@ -140,6 +146,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         private System.Threading.SendOrPostCallback SendTransactionOperationCompleted;
         
         private System.Threading.SendOrPostCallback StoreInvTransactionSendOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback StoreInventoryLinesGetOperationCompleted;
         
         private System.Threading.SendOrPostCallback TestConnectionOperationCompleted;
         
@@ -215,6 +223,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event EcomCalculateBasketCompletedEventHandler EcomCalculateBasketCompleted;
         
         /// <remarks/>
+        public event GetActionsFromRemoteDBCompletedEventHandler GetActionsFromRemoteDBCompleted;
+        
+        /// <remarks/>
         public event GetCrossSellingCompletedEventHandler GetCrossSellingCompleted;
         
         /// <remarks/>
@@ -263,6 +274,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event GetMemberSalesHistoryCompletedEventHandler GetMemberSalesHistoryCompleted;
         
         /// <remarks/>
+        public event GetReplCountersFromRemoteDBCompletedEventHandler GetReplCountersFromRemoteDBCompleted;
+        
+        /// <remarks/>
         public event GetStoreImageCompletedEventHandler GetStoreImageCompleted;
         
         /// <remarks/>
@@ -273,6 +287,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event GetVendorCardCompletedEventHandler GetVendorCardCompleted;
+        
+        /// <remarks/>
+        public event IMDocumentPostCompletedEventHandler IMDocumentPostCompleted;
         
         /// <remarks/>
         public event ItemSalesInfoCompletedEventHandler ItemSalesInfoCompleted;
@@ -348,6 +365,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event StoreInvTransactionSendCompletedEventHandler StoreInvTransactionSendCompleted;
+        
+        /// <remarks/>
+        public event StoreInventoryLinesGetCompletedEventHandler StoreInventoryLinesGetCompleted;
         
         /// <remarks/>
         public event TestConnectionCompletedEventHandler TestConnectionCompleted;
@@ -769,6 +789,47 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.EcomCalculateBasketCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.EcomCalculateBasketCompleted(this, new EcomCalculateBasketCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetActionsFromRemoteDB", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetActionsFromRemoteDB_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetActionsFromRemoteDB(int tableNo, string entryNoFrom, string entryNoTo, ref RootGetActionsFromRemoteDBXML getActionsFromRemoteDBXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("GetActionsFromRemoteDB", new object[] {
+                        tableNo,
+                        entryNoFrom,
+                        entryNoTo,
+                        getActionsFromRemoteDBXML,
+                        responseCode,
+                        errorText});
+            getActionsFromRemoteDBXML = ((RootGetActionsFromRemoteDBXML)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetActionsFromRemoteDBAsync(int tableNo, string entryNoFrom, string entryNoTo, RootGetActionsFromRemoteDBXML getActionsFromRemoteDBXML, string responseCode, string errorText) {
+            this.GetActionsFromRemoteDBAsync(tableNo, entryNoFrom, entryNoTo, getActionsFromRemoteDBXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void GetActionsFromRemoteDBAsync(int tableNo, string entryNoFrom, string entryNoTo, RootGetActionsFromRemoteDBXML getActionsFromRemoteDBXML, string responseCode, string errorText, object userState) {
+            if ((this.GetActionsFromRemoteDBOperationCompleted == null)) {
+                this.GetActionsFromRemoteDBOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetActionsFromRemoteDBOperationCompleted);
+            }
+            this.InvokeAsync("GetActionsFromRemoteDB", new object[] {
+                        tableNo,
+                        entryNoFrom,
+                        entryNoTo,
+                        getActionsFromRemoteDBXML,
+                        responseCode,
+                        errorText}, this.GetActionsFromRemoteDBOperationCompleted, userState);
+        }
+        
+        private void OnGetActionsFromRemoteDBOperationCompleted(object arg) {
+            if ((this.GetActionsFromRemoteDBCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetActionsFromRemoteDBCompleted(this, new GetActionsFromRemoteDBCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1460,6 +1521,45 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetReplCountersFromRemoteDB", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetReplCountersFromRemoteDB_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetReplCountersFromRemoteDB(int replTableId, string replCountFieldName, ref string replicationCounter, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("GetReplCountersFromRemoteDB", new object[] {
+                        replTableId,
+                        replCountFieldName,
+                        replicationCounter,
+                        responseCode,
+                        errorText});
+            replicationCounter = ((string)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetReplCountersFromRemoteDBAsync(int replTableId, string replCountFieldName, string replicationCounter, string responseCode, string errorText) {
+            this.GetReplCountersFromRemoteDBAsync(replTableId, replCountFieldName, replicationCounter, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void GetReplCountersFromRemoteDBAsync(int replTableId, string replCountFieldName, string replicationCounter, string responseCode, string errorText, object userState) {
+            if ((this.GetReplCountersFromRemoteDBOperationCompleted == null)) {
+                this.GetReplCountersFromRemoteDBOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetReplCountersFromRemoteDBOperationCompleted);
+            }
+            this.InvokeAsync("GetReplCountersFromRemoteDB", new object[] {
+                        replTableId,
+                        replCountFieldName,
+                        replicationCounter,
+                        responseCode,
+                        errorText}, this.GetReplCountersFromRemoteDBOperationCompleted, userState);
+        }
+        
+        private void OnGetReplCountersFromRemoteDBOperationCompleted(object arg) {
+            if ((this.GetReplCountersFromRemoteDBCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetReplCountersFromRemoteDBCompleted(this, new GetReplCountersFromRemoteDBCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetStoreImage", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetStoreImage_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void GetStoreImage(ref string respondCode, ref string errorText, string storeNo, int displayOrder, ref string storeImage) {
             object[] results = this.Invoke("GetStoreImage", new object[] {
@@ -1618,6 +1718,51 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.GetVendorCardCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetVendorCardCompleted(this, new GetVendorCardCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:IMDocumentPost", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="IMDocumentPost_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void IMDocumentPost(string terminalNo, string requestType, string postMethod, int documentType, string documentNo, ref string responseCode, ref string response, ref string errorText) {
+            object[] results = this.Invoke("IMDocumentPost", new object[] {
+                        terminalNo,
+                        requestType,
+                        postMethod,
+                        documentType,
+                        documentNo,
+                        responseCode,
+                        response,
+                        errorText});
+            responseCode = ((string)(results[0]));
+            response = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void IMDocumentPostAsync(string terminalNo, string requestType, string postMethod, int documentType, string documentNo, string responseCode, string response, string errorText) {
+            this.IMDocumentPostAsync(terminalNo, requestType, postMethod, documentType, documentNo, responseCode, response, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void IMDocumentPostAsync(string terminalNo, string requestType, string postMethod, int documentType, string documentNo, string responseCode, string response, string errorText, object userState) {
+            if ((this.IMDocumentPostOperationCompleted == null)) {
+                this.IMDocumentPostOperationCompleted = new System.Threading.SendOrPostCallback(this.OnIMDocumentPostOperationCompleted);
+            }
+            this.InvokeAsync("IMDocumentPost", new object[] {
+                        terminalNo,
+                        requestType,
+                        postMethod,
+                        documentType,
+                        documentNo,
+                        responseCode,
+                        response,
+                        errorText}, this.IMDocumentPostOperationCompleted, userState);
+        }
+        
+        private void OnIMDocumentPostOperationCompleted(object arg) {
+            if ((this.IMDocumentPostCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.IMDocumentPostCompleted(this, new IMDocumentPostCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2619,6 +2764,43 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInventoryLinesGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="StoreInventoryLinesGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void StoreInventoryLinesGet(ref string responseCode, ref string errorText, string worksheetSeqNo, ref RootStoreInventoryGetLines storeInventoryLinesGetXML) {
+            object[] results = this.Invoke("StoreInventoryLinesGet", new object[] {
+                        responseCode,
+                        errorText,
+                        worksheetSeqNo,
+                        storeInventoryLinesGetXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            storeInventoryLinesGetXML = ((RootStoreInventoryGetLines)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void StoreInventoryLinesGetAsync(string responseCode, string errorText, string worksheetSeqNo, RootStoreInventoryGetLines storeInventoryLinesGetXML) {
+            this.StoreInventoryLinesGetAsync(responseCode, errorText, worksheetSeqNo, storeInventoryLinesGetXML, null);
+        }
+        
+        /// <remarks/>
+        public void StoreInventoryLinesGetAsync(string responseCode, string errorText, string worksheetSeqNo, RootStoreInventoryGetLines storeInventoryLinesGetXML, object userState) {
+            if ((this.StoreInventoryLinesGetOperationCompleted == null)) {
+                this.StoreInventoryLinesGetOperationCompleted = new System.Threading.SendOrPostCallback(this.OnStoreInventoryLinesGetOperationCompleted);
+            }
+            this.InvokeAsync("StoreInventoryLinesGet", new object[] {
+                        responseCode,
+                        errorText,
+                        worksheetSeqNo,
+                        storeInventoryLinesGetXML}, this.StoreInventoryLinesGetOperationCompleted, userState);
+        }
+        
+        private void OnStoreInventoryLinesGetOperationCompleted(object arg) {
+            if ((this.StoreInventoryLinesGetCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.StoreInventoryLinesGetCompleted(this, new StoreInventoryLinesGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:TestConnection", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="TestConnection_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void TestConnection(ref string responseCode, ref string errorText, ref string applicationVersion, ref string applicationBuild, ref string lSRetailVersion, ref string lSRetailCopyright) {
             object[] results = this.Invoke("TestConnection", new object[] {
@@ -2798,6 +2980,90 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.sourcingOrderField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10001324")]
+    public partial class StoreInventoryLinesGet {
+        
+        private string itemNoField;
+        
+        private string variantField;
+        
+        private decimal quantityCalculatedField;
+        
+        public StoreInventoryLinesGet() {
+            this.quantityCalculatedField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Variant {
+            get {
+                return this.variantField;
+            }
+            set {
+                this.variantField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal QuantityCalculated {
+            get {
+                return this.quantityCalculatedField;
+            }
+            set {
+                this.quantityCalculatedField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10001324")]
+    public partial class RootStoreInventoryGetLines {
+        
+        private StoreInventoryLinesGet[] storeInventoryLinesGetField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("StoreInventoryLinesGet")]
+        public StoreInventoryLinesGet[] StoreInventoryLinesGet {
+            get {
+                return this.storeInventoryLinesGetField;
+            }
+            set {
+                this.storeInventoryLinesGetField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
             }
         }
     }
@@ -33801,6 +34067,127 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009615")]
+    public partial class Preaction {
+        
+        private int entryNoField;
+        
+        private string locationGroupFilterField;
+        
+        private string actionField;
+        
+        private int tableNoField;
+        
+        private string keyValueField;
+        
+        private string batchField;
+        
+        public Preaction() {
+            this.entryNoField = 0;
+            this.tableNoField = 0;
+        }
+        
+        /// <remarks/>
+        public int EntryNo {
+            get {
+                return this.entryNoField;
+            }
+            set {
+                this.entryNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LocationGroupFilter {
+            get {
+                return this.locationGroupFilterField;
+            }
+            set {
+                this.locationGroupFilterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Action {
+            get {
+                return this.actionField;
+            }
+            set {
+                this.actionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TableNo {
+            get {
+                return this.tableNoField;
+            }
+            set {
+                this.tableNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string KeyValue {
+            get {
+                return this.keyValueField;
+            }
+            set {
+                this.keyValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Batch {
+            get {
+                return this.batchField;
+            }
+            set {
+                this.batchField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009615")]
+    public partial class RootGetActionsFromRemoteDBXML {
+        
+        private Preaction[] preactionField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Preaction")]
+        public Preaction[] Preaction {
+            get {
+                return this.preactionField;
+            }
+            set {
+                this.preactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009610")]
     public partial class MobileTransactionSubLine {
         
@@ -38195,6 +38582,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string retailImageIDField;
         
+        private System.DateTime requestedDeliveryDateField;
+        
         public CustomerOrderGetCOLineV2() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -38210,6 +38599,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.vendorSourcingField = false;
             this.prepaymentAmountField = ((decimal)(0m));
             this.quantityReceivedField = ((decimal)(0m));
+            this.requestedDeliveryDateField = new System.DateTime(0);
         }
         
         /// <remarks/>
@@ -38501,6 +38891,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                 this.retailImageIDField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime RequestedDeliveryDate {
+            get {
+                return this.requestedDeliveryDateField;
+            }
+            set {
+                this.requestedDeliveryDateField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -38621,6 +39023,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal totalPreAuthorizationIntField;
         
+        private System.DateTime requestedDeliveryDateField;
+        
         public CustomerOrderGetCOHeaderV2() {
             this.createdField = new System.DateTime(0);
             this.collectTimeLimitField = new System.DateTime(0);
@@ -38639,6 +39043,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.totalDiscountIntField = ((decimal)(0m));
             this.totalPaymentIntField = ((decimal)(0m));
             this.totalPreAuthorizationIntField = ((decimal)(0m));
+            this.requestedDeliveryDateField = new System.DateTime(0);
         }
         
         /// <remarks/>
@@ -39199,6 +39604,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                 this.totalPreAuthorizationIntField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime RequestedDeliveryDate {
+            get {
+                return this.requestedDeliveryDateField;
+            }
+            set {
+                this.requestedDeliveryDateField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -39315,11 +39732,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string processingStatusField;
         
+        private System.DateTime requestedDeliveryDateField;
+        
         public CustomerOrderHeader2() {
             this.createdField = new System.DateTime(0);
             this.inventoryTransferField = false;
             this.totalAmountField = ((decimal)(0m));
             this.totalQuantityField = ((decimal)(0m));
+            this.requestedDeliveryDateField = new System.DateTime(0);
         }
         
         /// <remarks/>
@@ -39483,6 +39903,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.processingStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime RequestedDeliveryDate {
+            get {
+                return this.requestedDeliveryDateField;
+            }
+            set {
+                this.requestedDeliveryDateField = value;
             }
         }
     }
@@ -41061,6 +41493,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string purchaseOrderNoField;
         
+        private System.DateTime requestedDeliveryDateField;
+        
         public CustomerOrderCreateCOLineV4() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -41074,6 +41508,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             this.inventoryTransferField = false;
             this.vendorSourcingField = false;
             this.prepaymentAmountField = ((decimal)(0m));
+            this.requestedDeliveryDateField = new System.DateTime(0);
         }
         
         /// <remarks/>
@@ -41295,6 +41730,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                 this.purchaseOrderNoField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime RequestedDeliveryDate {
+            get {
+                return this.requestedDeliveryDateField;
+            }
+            set {
+                this.requestedDeliveryDateField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -41379,12 +41826,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private bool shipOrderField;
         
+        private System.DateTime requestedDeliveryDateField;
+        
         public CustomerOrderCreateCOHeaderV4() {
             this.sourceTypeField = 0;
             this.clickAndCollectOrderField = false;
             this.vendorSourcingField = false;
             this.inventoryTransferField = false;
             this.shipOrderField = false;
+            this.requestedDeliveryDateField = new System.DateTime(0);
         }
         
         /// <remarks/>
@@ -41755,6 +42205,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.shipOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime RequestedDeliveryDate {
+            get {
+                return this.requestedDeliveryDateField;
+            }
+            set {
+                this.requestedDeliveryDateField = value;
             }
         }
     }
@@ -45110,6 +45572,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetActionsFromRemoteDBCompletedEventHandler(object sender, GetActionsFromRemoteDBCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetActionsFromRemoteDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetActionsFromRemoteDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public RootGetActionsFromRemoteDBXML getActionsFromRemoteDBXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetActionsFromRemoteDBXML)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void GetCrossSellingCompletedEventHandler(object sender, GetCrossSellingCompletedEventArgs e);
     
     /// <remarks/>
@@ -45790,6 +46294,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetReplCountersFromRemoteDBCompletedEventHandler(object sender, GetReplCountersFromRemoteDBCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetReplCountersFromRemoteDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetReplCountersFromRemoteDBCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string replicationCounter {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void GetStoreImageCompletedEventHandler(object sender, GetStoreImageCompletedEventArgs e);
     
     /// <remarks/>
@@ -45952,6 +46498,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootLeftRightLine)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void IMDocumentPostCompletedEventHandler(object sender, IMDocumentPostCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class IMDocumentPostCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal IMDocumentPostCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string response {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
             }
         }
     }
@@ -47066,6 +47654,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void StoreInventoryLinesGetCompletedEventHandler(object sender, StoreInventoryLinesGetCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class StoreInventoryLinesGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal StoreInventoryLinesGetCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootStoreInventoryGetLines storeInventoryLinesGetXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootStoreInventoryGetLines)(this.results[2]));
             }
         }
     }

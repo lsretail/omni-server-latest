@@ -64,7 +64,7 @@ namespace LSOmni.Service
                     //get uri and port that server listen on
                     if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest != null && WebOperationContext.Current.IncomingRequest.UriTemplateMatch != null)
                     {
-                        // Used when returnin URL back to client
+                        // Used when returning URL back to client
                         //orginalString has the string without any changes made. 
                         // orgstring:     HTTP://www.ConToso.com:80//thick%20and%20thin.htm  
                         // vs formatted   http://www.contoso.com/thick and thin.htm
@@ -130,7 +130,6 @@ namespace LSOmni.Service
             {
                 logger.Error(config.LSKey.Key, "SecurityToken:{0} = [{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}]",
                     HEADER_TOKEN, string.Empty, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
-                logger.Error(config.LSKey.Key, ex, "LSOmniServiceBase() exception");
                 HandleExceptions(ex, ex.Message);
             }
         }
@@ -170,7 +169,7 @@ namespace LSOmni.Service
                 if (ex.Message.Contains("LS One") || (ex.InnerException != null && ex.InnerException.Message.Contains("LS One")))
                 {
                     // We can basically discard this message since the web service is not applicable when using LS One. If we don't set an empty string
-                    // the app will show a duplicate error string which we don't want. The whitespace is here so we don't get a "Succsessfully connected to Nav web service" message.
+                    // the app will show a duplicate error string which we don't want. The whitespace is here so we don't get a "Successfully connected to Nav web service" message.
                     navWs = " ";
                 }
                 else
@@ -300,45 +299,12 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Format("Failed: ImageGetById() id: {0}  imageSize: {1}", id, imageSize.ToString()));
+                HandleExceptions(ex, "Failed: ImageGetById() id:{0} imageSize:{1}", id, imageSize);
                 return null; // never gets here
             }
         }
 
         #endregion images
-
-        #region TenantConfig
-
-        public virtual string TenantConfigGetByKey(ConfigKey key)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "key:{0} languageCode:{1}", key, languageCode);
-                //no security token neede
-                return config.SettingsGetByKey(key);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("key:{0} languageCode:{1}", key, languageCode));
-                return null; //never gets here
-            }
-        }
-
-        public virtual void TenantConfigSetByKey(ConfigKey key, string value)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "key:{0} languageCode:{1} value:{2}", key, languageCode, value);
-                ConfigBLL configBll = new ConfigBLL(); //no security token neede
-                configBll.ConfigSetByKey(config.LSKey.Key, key, value, string.Empty);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Format("key:{0} languageCode:{1}", key, languageCode));
-            }
-        }
-
-        #endregion
 
         #region PushNotification
 
@@ -352,44 +318,11 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, LogJson(pushNotificationRequest));
-                HandleExceptions(ex, string.Format("pushNotificationRequest:{0}  ", pushNotificationRequest.ToString()));
-                return false; //never gets here
-            }
-        }
-
-        public virtual bool PushNotificationDelete(string deviceId)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "deviceId: " + deviceId);
-                PushNotificationBLL bll = new PushNotificationBLL(config, this.deviceId, clientTimeOutInSeconds);
-                return bll.PushNotificationDelete(deviceId);
-            }
-            catch (Exception ex)
-            {
-                logger.Debug(config.LSKey.Key, "deviceId: " + deviceId);
-                HandleExceptions(ex, string.Format("deviceId:{0}  ", deviceId));
+                HandleExceptions(ex, "pushNotificationRequest:{0}", LogJson(pushNotificationRequest));
                 return false; //never gets here
             }
         }
 
         #endregion PushNotification
-
-        public virtual bool ActivityLogSave(ActivityLog activityLog)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, LogJson(activityLog));
-                ActivityLogBLL bll = new ActivityLogBLL(this.deviceId, this.clientIPAddress, clientTimeOutInSeconds); //no security token needed
-                return bll.Save(activityLog);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(config.LSKey.Key, LogJson(activityLog));
-                HandleExceptions(ex, string.Format("activityLog:{0}  ", activityLog.ToString()));
-                return false; //never gets here
-            }
-        }
     }
 }

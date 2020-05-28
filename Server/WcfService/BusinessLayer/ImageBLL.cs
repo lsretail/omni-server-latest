@@ -78,7 +78,7 @@ namespace LSOmni.BLL
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, ex, "Updating the Imagecache faile.");
+                logger.Error(config.LSKey.Key, ex, "Updating the Imagecache failed");
             }
 
             //now the image should be in cache, if not for some reason.. then return null.. not found
@@ -95,7 +95,7 @@ namespace LSOmni.BLL
             return imgSizeView;
         }
 
-        //All original images are retrieved thru this method. Can be from db, UNC or URL
+        //All original images are retrieved through this method. Can be from db, UNC or URL
         private ImageView ImageGetById(string id, ImageSize imgSize, bool includeBlob)
         {
             //get the original image from Image table

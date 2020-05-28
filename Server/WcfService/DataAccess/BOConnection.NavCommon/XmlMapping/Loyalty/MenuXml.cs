@@ -19,9 +19,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         private const string MenuGetAllRequestId = "GET_DYNAMIC_CONTENT"; //"GET_DYN_CONT_HMP_MENUS";
         private XDocument doc = null;
         private XElement elBody = null;
+        private string LSKey = string.Empty;
 
-        public MenuXml()
+        public MenuXml(string lsKey)
         {
+            LSKey = lsKey;
         }
 
         public string MenuGetAllRequestXML(string storeId, string salesType)
@@ -89,7 +91,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             //only one menu for now
             bool defaultMenu = true;
 
-            // Create the xml document containe
+            // Create the XML document contain
             doc = XDocument.Parse(responseXml, LoadOptions.None);
             ValidateXmlDoc();
             elBody = doc.Element("Response").Element("Response_Body"); // use the response_body at the "root" 
@@ -107,7 +109,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 //menu.Ver = version;
                 menu.Description = GetValue(elBody, "Description");
                 //menu.VDes = GetValue(elMenu, "ValidDescription");
-                menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in xml
+                menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in XML
 
                 ParseMenuNodes(menu,"");
                 mobileMenu.MenuNodes.Add(menu); //only one menu now
@@ -133,9 +135,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     //menu.ValidationPeriod
                     //menu.Order  int
                     menu.Description = GetValue(elDCM, "Description");
-                    menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in xml
+                    menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in XML
 
-                    menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in xml
+                    menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in XML
                     menu.ValidationTimeWithinBounds = ConvertTo.SafeBoolean(GetValueOrDefault(elDCM, "TimeWithinBounds"));
                     menu.ValidationEndTimeAfterMidnight = ConvertTo.SafeBoolean(GetValueOrDefault(elDCM, "EndTimeAfterMidnight"));
                     menu.ValidationStartTime = ConvertTo.SafeTime(GetValueOrDefault(elDCM, "StartTime"), true);
@@ -224,7 +226,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 if (string.IsNullOrWhiteSpace(iv.Id) == false)
                     deal.Images.Add(iv);
 
-                //check if a dealline exist
+                //check if a deal line exist
                 if (elBody.Element("OfferLines") == null)
                     break;
 
@@ -606,7 +608,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     else
                     {
                         if (entryType.ToLower().Contains("offer") == false)
-                            logger.Info("NOTE XML PARSE: No menunode item type found for id:{0} - {1}", nodeLine.Id, elMNodeLine.ToString());
+                            logger.Info(LSKey, "NOTE XML PARSE: No menu node item type found for id:{0} - {1}", nodeLine.Id, elMNodeLine.ToString());
                     }
 
                     mNode.MenuNodeLines.Add(nodeLine);
@@ -686,8 +688,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         if (entryType == "RECIPE" && itemType == "RECIPE")
                         {
                             mnLine.NodeLineType = NodeLineType.Recipe;
-                            //logger.Error("ERROR XML PARSE:Items.ItemType=Recipe for DynamicContent.EntryType=Item. Continuing... ItemId:{0} - {1}", 
-                            //    mnLine.Id, elMNode.ToString());
                         }
                         // mnLine.NodeLineType = NodeLineType.Recipe;
                         else if (entryType == "ITEM" && (itemType == "PRODUCT" || itemType == "ITEM"))
@@ -696,7 +696,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         else
                         {
                             if (entryType.ToLower().Contains("offer") == false)
-                                logger.Info("NOTE XML PARSE: No menunode item type found for id:{0} - {1}", mnLine.Id, elMNode.ToString());
+                                logger.Info(LSKey, "NOTE XML PARSE: No menu node item type found for id:{0} - {1}", mnLine.Id, elMNode.ToString());
                         }
                         //
                         mNode.MenuNodeLines.Add(mnLine);

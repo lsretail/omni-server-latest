@@ -144,7 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         bool trans = false;
                         while (reader.Read())
                         {
-                            trans = (NavVersion > new Version("14.2")) ? (SQLHelper.GetInt32(reader["Transaction No_"]) > 0) : SQLHelper.GetBool(reader["Transaction"]);
+                            trans = SQLHelper.GetBool(reader["Posted"]);
                             if (trans)
                                 list.Add(TransactionToSalesEntry(reader, false));
                             else
@@ -347,7 +347,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<SalesEntryPayment> TransSalesEntryPaymentGet(string transId, string storeId, string terminalId, string culture)
+        public List<SalesEntryPayment> TransSalesEntryPaymentGet(string transId, string storeId, string terminalId)
         {
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -378,25 +378,28 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public void SalesEntryPointsGetTotal(string entryId, out decimal rewarded, out decimal used)
+        public void SalesEntryPointsGetTotal(string entryId, string custId, out decimal rewarded, out decimal used)
         {
             rewarded = 0;
             used = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
+                connection.Open();
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    string orderid = (NavVersion > new Version("14.2")) ? "Customer Order ID" : "Customer Order No_";
-                    command.CommandText = "SELECT [Receipt No_] FROM [" + navCompanyName + "Transaction Header] WHERE [" + orderid + "]=@id";
-                    command.Parameters.AddWithValue("@id", entryId);
-                    TraceSqlCommand(command);
-                    logger.Info(config.LSKey.Key, "ReceiptNo: " + entryId);
-                    connection.Open();
-                    string salesId = (string)command.ExecuteScalar();
+                    if (string.IsNullOrEmpty(custId) == false)
+                    {
+                    	//Awarded points are linked to Sales Invoice Id
+                        string orderid = (NavVersion > new Version("14.2")) ? "Customer Order ID" : "External Document No_";
+                        command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Sales Invoice Header] WHERE [" + orderid + "]=@id";
+                        command.Parameters.AddWithValue("@id", custId);
+                        TraceSqlCommand(command);
+                        string salesId = (string)command.ExecuteScalar();
 
-                    //Use salesinvoice id to get Rewarded points for customer orders
-                    if (!string.IsNullOrEmpty(salesId))
-                        entryId = salesId;
+                        //Use salesinvoice id to get Rewarded points for customer orders
+                        if (!string.IsNullOrEmpty(salesId))
+                            entryId = salesId;
+                    }
 
                     //Get Used points with entryId (receiptId/orderId)
                     command.CommandText = "SELECT [Points] FROM [" + navCompanyName + "Member Point Entry] WHERE [Document No_]=@id AND [Entry Type]=1"; //Entry type = 1 is redemption
@@ -416,6 +419,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
                 connection.Close();
             }
+
+            logger.Info(config.LSKey.Key, "Get Point Ballance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
+                entryId, custId, rewarded, used);
         }
 
         private SalesEntry TransactionToSalesEntry(SqlDataReader reader, bool includeLines)
@@ -431,27 +437,29 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
-                AnonymousOrder = false,
-                Status = SalesEntryStatus.Complete,
-                PaymentStatus = PaymentStatus.Posted,
-                Posted = true,
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 StoreName = SQLHelper.GetString(reader["Name"]),
-                ExternalId = SQLHelper.GetString(reader["External ID"]),
-                ShipToName = SQLHelper.GetString(reader["ShipName"])
+                AnonymousOrder = false,
+                Posted = true,
+                Status = SalesEntryStatus.Complete,
+                PaymentStatus = PaymentStatus.Posted,
+                IdType = DocumentIdType.Receipt
             };
 
             if (NavVersion > new Version("14.2"))
             {
-                entry.IdType = DocumentIdType.Receipt;
                 entry.Id = SQLHelper.GetString(reader["Receipt No_"]);
+                entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
+                entry.ShipToName = SQLHelper.GetString(reader["ShipName"]);
             }
             else
             {
-                entry.CustomerOrderNo = entry.Id;
+                entry.Id = entry.CustomerOrderNo;
             }
 
-            SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
+            entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
+
+            SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
             entry.PointsRewarded = rewarded;
             entry.PointsUsedInOrder = used;
 
@@ -459,7 +467,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 entry.Lines = TransSalesEntryLinesGet(entry.Id);
                 entry.DiscountLines = DiscountLineGet(entry.Id);
-                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, entry.TerminalId, "");
+                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, entry.TerminalId);
             }
             return entry;
         }
@@ -494,7 +502,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (entry.Posted)
             {
                 entry.Status = SalesEntryStatus.Complete;
-                SalesEntryPointsGetTotal(entry.Id, out decimal rewarded, out decimal used);
+                SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                 entry.PointsRewarded = rewarded;
                 entry.PointsUsedInOrder = used;
             }

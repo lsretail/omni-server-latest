@@ -27,7 +27,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<LoyItem> ItemsSearch(string search, int maxNumberOfItems, bool includeDetails)
         {
-            return BOLoyConnection.ItemsSearch(search, "", maxNumberOfItems, includeDetails); ;
+            return BOLoyConnection.ItemsSearch(search, string.Empty, maxNumberOfItems, includeDetails); ;
         }
 
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)

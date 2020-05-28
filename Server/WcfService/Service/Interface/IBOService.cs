@@ -31,8 +31,12 @@ namespace LSOmni.Service
 
         [OperationContract]
         void OrderMessageStatusUpdate(OrderMessage orderMessage);
+
         [OperationContract]
         string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);
+
+        [OperationContract]
+        bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message);
 
         #endregion OrderMessage
 
@@ -56,7 +60,7 @@ namespace LSOmni.Service
         #region LSRecommend
 
         [OperationContract]
-        void LSRecommendSetting(string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock);
+        void LSRecommendSetting(string lsKey, string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock);
 
         #endregion
     }

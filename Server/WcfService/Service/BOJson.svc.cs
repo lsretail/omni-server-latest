@@ -1,5 +1,9 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Runtime.Serialization.Json;
 using System.ServiceModel.Web;
+using System.Text;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 
@@ -9,7 +13,6 @@ namespace LSOmni.Service
     public class BOJson : LSOmniBase, IBOJson
     {
         private static LSLogger logger = new LSLogger();
-        private System.Net.HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable;//.RequestedRangeNotSatisfiable; //code=416
 
         public string PingGet()
         {
@@ -21,28 +24,56 @@ namespace LSOmni.Service
         }
 
         #region protected members
+
         protected override void HandleExceptions(Exception ex, string errMsg)
         {
-            //handle all errors in once place
-            //if LoyaltyException is thrown then dont mess with it, let it flow to client
+            logger.Error(config.LSKey.Key, ex, errMsg);
 
+            string json;
             if (ex.GetType() == typeof(LSOmniServiceException))
             {
-                //Authentication failed for statuses etc..
-
                 LSOmniServiceException lEx = (LSOmniServiceException)ex;
-                logger.Error(config.LSKey.Key, lEx, lEx.Message);
-                throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, lEx.Message), exStatusCode);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(WebServiceFault));
+                    ser.WriteObject(ms, new WebServiceFault()
+                    {
+                        FaultCode = (int)lEx.StatusCode,
+                        FaultMessage = errMsg + " - " + lEx.GetMessage()
+                    });
+                    json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
+                }
+                throw new WebFaultException<string>(json, HttpStatusCode.RequestedRangeNotSatisfiable);
             }
-            else
+            if (ex.GetType() == typeof(LSOmniException))
             {
-                logger.Error(config.LSKey.Key, ex, errMsg);
-                throw new WebFaultException<LSOmniException>(new LSOmniException(StatusCode.Error, errMsg + " - " + ex.Message), exStatusCode);
+                LSOmniException lEx = (LSOmniException)ex;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(WebServiceFault));
+                    ser.WriteObject(ms, new WebServiceFault()
+                    {
+                        FaultCode = (int)lEx.StatusCode,
+                        FaultMessage = (errMsg + " - " + lEx.Message + ((lEx.InnerException != null) ? " - " + lEx.InnerException.Message : string.Empty)).Replace("\"", "'")
+                    });
+                    json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
+                }
+                throw new WebFaultException<string>(json, HttpStatusCode.RequestedRangeNotSatisfiable);
             }
-            //throw new System.ServiceModel.Web.WebFaultException<string>("My error description.", System.Net.HttpStatusCode.Conflict); 
-            //WebOperationContext.Current.OutgoingResponse.Headers.Add("Origin", "*"); 
-            //WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                DataContractJsonSerializer ser = new DataContractJsonSerializer(typeof(WebServiceFault));
+                ser.WriteObject(ms, new WebServiceFault()
+                {
+                    FaultCode = (int)StatusCode.Error,
+                    FaultMessage = (errMsg + " - " + ex.Message + ((ex.InnerException != null) ? " - " + ex.InnerException.Message : string.Empty)).Replace("\"", "'")
+                });
+                json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
+            }
+            throw new WebFaultException<string>(json, HttpStatusCode.RequestedRangeNotSatisfiable);
         }
+
         #endregion protected members
     }
 }

@@ -158,7 +158,7 @@ namespace LSOmni.BLL
             }
             catch (Exception ex)
             {
-                //HandleExceptions(ex, "Failed to GetImageFromByte() ");  //dont throw an error but return something
+                //HandleExceptions(ex, "Failed to GetImageFromByte() ");  //don't throw an error but return something
                 string msg = "Base64GetFromByte() failed but returning empty base64 string";
                 if (image == null)
                     msg += " image bytes are null";

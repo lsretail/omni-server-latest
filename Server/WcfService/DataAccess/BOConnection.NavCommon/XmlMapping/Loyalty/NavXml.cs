@@ -93,7 +93,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
             XmlNode node = document.SelectSingleNode("//Total_Remaining_Points");
             if (node == null)
-                throw new XmlException("Total_Remaining_Points node not found in response xml");
+                throw new XmlException("Total_Remaining_Points node not found in response XML");
             double balance = 0L;
             if (string.IsNullOrWhiteSpace(node.InnerText) == false)
                 balance = ConvertTo.SafeDouble(node.InnerText);
@@ -125,7 +125,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
             XmlNode node = document.SelectSingleNode("//CardID");
             if (node == null)
-                throw new XmlException("CardID node not found in response xml");
+                throw new XmlException("CardID node not found in response XML");
             return node.InnerText;
         }
 
@@ -154,7 +154,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 			  </Request_Body>
 			</Request>
 			 */
-            // Create the xml document containe
+            // Create the XML document contain
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -297,7 +297,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 		</Request>
 
 			 */
-            // Create the xml document containe
+            // Create the XML document contain
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -493,7 +493,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 			  </Request_Body>
 			</Request>
 			 */
-            // Create the xml document containe
+            // Create the XML document contain
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -541,7 +541,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 			  </Request_Body>
 			</Request>
 			 */
-            // Create the xml document containe
+            // Create the XML document contain
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -582,7 +582,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 			  </Request_Body>
 			</Request>
 			 */
-            // Create the xml document containe
+            // Create the XML document
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -625,7 +625,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 				</Request_Body>
 			</Request>
 			 */
-            // Create the xml document containe
+            // Create the XML document
             XmlDocument document = new XmlDocument();
 
             // Create the XML Declaration, and append it to XML document
@@ -689,7 +689,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
             List<Profile> profileList = new List<Profile>();
 
-            // Create the xml document containe
+            // Create the XML document
             XmlDocument document = new XmlDocument();
             document.LoadXml(responseXml);
 
@@ -701,30 +701,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 XmlNode node = nodeLoop.SelectSingleNode("Code");
                 if (node == null)
-                    throw new XmlException("Code node not found in response xml");
+                    throw new XmlException("Code node not found in response XML");
                 profile.Id = node.InnerText;
 
                 node = nodeLoop.SelectSingleNode("Description");
                 if (node == null)
-                    throw new XmlException("Description node not found in response xml");
+                    throw new XmlException("Description node not found in response XML");
                 profile.Description = node.InnerText;
 
                 int temp = 0;
                 node = nodeLoop.SelectSingleNode("Attribute_Type");
                 if (node == null)
-                    throw new XmlException("Attribute_Type node not found in response xml");
+                    throw new XmlException("Attribute_Type node not found in response XML");
                 if (!string.IsNullOrWhiteSpace(node.InnerText))
                     temp = Convert.ToInt32(node.InnerText);
                 profile.DataType = (ProfileDataType)temp;
 
                 node = nodeLoop.SelectSingleNode("Default_Value");
                 if (node == null)
-                    throw new XmlException("Default_Value node not found in response xml");
+                    throw new XmlException("Default_Value node not found in response XML");
                 profile.DefaultValue = node.InnerText;
 
                 node = nodeLoop.SelectSingleNode("Mandatory");
                 if (node == null)
-                    throw new XmlException("Mandatory node not found in response xml");
+                    throw new XmlException("Mandatory node not found in response XML");
                 bool bTemp = false;
                 if (!string.IsNullOrWhiteSpace(node.InnerText))
                     bTemp = ConvertTo.SafeBoolean(node.InnerText);
@@ -805,7 +805,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XDocument doc = XDocument.Parse(responseXml);
             XElement xElement = doc.Element("Response").Element("Response_Body").Element("LS_Retail_Version");
             if (xElement == null)
-                throw new XmlException("LS_Retail_Version node not found in response xml");
+                throw new XmlException("LS_Retail_Version node not found in response XML");
             retailVersion = xElement.Value;
 
             xElement = doc.Element("Response").Element("Response_Body").Element("Application_Build");

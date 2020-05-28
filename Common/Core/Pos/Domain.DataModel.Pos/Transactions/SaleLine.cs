@@ -159,19 +159,34 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             Dirty = true;
         }
 
-        public void IncrementQty()
+        public void IncrementQty(decimal returnQuantity = 0)
         {
             if (this.Quantity >= MPOSFeatures.MaximumQty)
                 return;
 
-            this.Quantity++;
+            if (this.Quantity - returnQuantity > -1)
+            {
+                var addtoQuantity = returnQuantity - this.Quantity;
+                this.Quantity = this.Quantity + addtoQuantity;
+            }
+            else
+            {
+                this.Quantity++;
+            }
             ContainsExternalValues = false;
             Dirty = true;
         }
 
         public void DecrementQty()
         {
-            this.Quantity--;
+            if (this.Quantity - 1 >= 0)
+            {
+                this.Quantity--;
+            }
+            else
+            {
+                this.Quantity = 0;
+            }
             ContainsExternalValues = false;
             Dirty = true;
         }

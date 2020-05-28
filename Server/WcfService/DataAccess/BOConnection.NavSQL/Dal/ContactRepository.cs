@@ -136,6 +136,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (maxNumberOfRowsReturned < 1)
                 maxNumberOfRowsReturned = 0;
 
+            SQLHelper.CheckForSQLInjection(search);
+
             List<MemberContact> list = new List<MemberContact>();
             string where = string.Empty;
             string order = string.Empty;
@@ -610,6 +612,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
+            SQLHelper.CheckForSQLInjection(search);
+
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
 
@@ -695,10 +699,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             cont.Cards = CardsGetByContactId(cont.Id, out string username);
             cont.UserName = username;
             cont.Account = AccountGetById(SQLHelper.GetString(reader["Account No_"]));
-            cont.Profiles = ProfileGetByCardId(cont.Cards[0].Id);
+            if (cont.Cards.Count > 0)
+                cont.Profiles = ProfileGetByCardId(cont.Cards[0].Id);
+
             cont.SalesEntries = new List<SalesEntry>();
             cont.OneLists = new List<OneList>();
-
             cont.Addresses = new List<Address>();
             cont.Addresses.Add(new Address()
             {

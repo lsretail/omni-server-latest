@@ -258,7 +258,7 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        public void ConfigSetByKey(string lsKey, ConfigKey key, string value, string valueType)
+        public void ConfigSetByKey(string lsKey, ConfigKey key, string value, string valueType, bool advanced, string comment)
         {
             lock (lockDictionary)
             {
@@ -266,11 +266,17 @@ namespace LSOmni.DataAccess.Dal
                 {
                     using (SqlCommand command = connection.CreateCommand())
                     {
-                        command.CommandText = "IF EXISTS (SELECT [LSKey], [Key] FROM [TenantConfig] WHERE [LSKey]=@lskey AND [Key]=@key) " +
-                            " UPDATE [TenantConfig] SET [Value]=@value WHERE [LSKey]=@lskey AND [Key]=@key";
+                        command.CommandText = "IF NOT EXISTS (SELECT [LSKey],[Key] FROM [TenantConfig] WHERE [LSKey]=@lskey AND [Key]=@key) " +
+                            "INSERT INTO [TenantConfig] ([LSKey],[Key],[Value],[DataType],[Comment],[Advanced]) " +
+                            "VALUES (@lskey,@key,@value,@type,@comm,@adv) " +
+                            "ELSE " +
+                            "UPDATE [TenantConfig] SET [Value]=@value WHERE [LSKey]=@lskey AND [Key]=@key";
                         command.Parameters.AddWithValue("@lskey", lsKey);
                         command.Parameters.AddWithValue("@key", key.ToString());
                         command.Parameters.AddWithValue("@value", value);
+                        command.Parameters.AddWithValue("@type", valueType);
+                        command.Parameters.AddWithValue("@comm", comment);
+                        command.Parameters.AddWithValue("@adv", advanced);
                         TraceSqlCommand(command);
                         connection.Open();
                         command.ExecuteNonQuery();
@@ -406,7 +412,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
                             TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
-                            logger.Info(string.Empty, "TaskLog Cleanup, removed {0} records", cnt);
+                            logger.Info(config.LSKey.Key, "TaskLog Cleanup, removed {0} records", cnt);
                         }
                         catch (Exception ex)
                         {
@@ -420,11 +426,11 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
                             TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
-                            logger.Info(string.Empty, "TaskLogLine Cleanup, removed {0} records", cnt);
+                            logger.Info(config.LSKey.Key, "TaskLogLine Cleanup, removed {0} records", cnt);
                         }
                         catch (Exception ex)
                         {
-                            logger.Error(string.Empty, ex, "TaskLog Cleanup failed");
+                            logger.Error(config.LSKey.Key, ex, "TaskLog Cleanup failed");
                         }
                     }
 
@@ -437,11 +443,11 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysNotify * -1));
                             TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
-                            logger.Info(string.Empty, "Notification Cleanup, removed {0} records", cnt);
+                            logger.Info(config.LSKey.Key, "Notification Cleanup, removed {0} records", cnt);
                         }
                         catch (Exception ex)
                         {
-                            logger.Error(string.Empty, ex, "Notification Cleanup failed");
+                            logger.Error(config.LSKey.Key, ex, "Notification Cleanup failed");
                         }
                     }
 
@@ -473,11 +479,11 @@ namespace LSOmni.DataAccess.Dal
                             {
                                 rep.OneListDeleteById(list.Id);
                             }
-                            logger.Info(string.Empty, "OneList CleanUp, removed {0} records", lists.Count);
+                            logger.Info(config.LSKey.Key, "OneList CleanUp, removed {0} records", lists.Count);
                         }
                         catch (Exception ex)
                         {
-                            logger.Error(string.Empty, ex, "OneList Cleanup failed");
+                            logger.Error(config.LSKey.Key, ex, "OneList Cleanup failed");
                         }
                     }
                 }

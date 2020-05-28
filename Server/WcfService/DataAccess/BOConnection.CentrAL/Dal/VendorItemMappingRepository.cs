@@ -128,7 +128,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 NavProductId = SQLHelper.GetString(reader["No_"]),
                 NavManufacturerItemId = SQLHelper.GetString(reader["Vendor Item No_"]),
 
-                // fixed valeus
+                // fixed values
                 Deleted = false,
                 DisplayOrder = 1,
                 IsFeaturedProduct = true

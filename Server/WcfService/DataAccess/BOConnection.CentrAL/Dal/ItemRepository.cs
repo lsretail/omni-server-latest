@@ -73,7 +73,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
-                // get item html and distirbution changes 
+                // get item HTML and distribution changes 
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
                 tmplastkey = lastKey;
@@ -407,6 +407,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (pageSize < 1)
                 pageSize = 1;
 
+            SQLHelper.CheckForSQLInjection(itemCategoryId);
+            SQLHelper.CheckForSQLInjection(productGroupId);
+            SQLHelper.CheckForSQLInjection(search);
+
+
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
             "mt.[Product Group Code],mt2.[Scale Item]," +
@@ -554,6 +559,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             if (string.IsNullOrWhiteSpace(search))
                 return list;
+
+            SQLHelper.CheckForSQLInjection(search);
 
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);

@@ -21,14 +21,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 storehr.OpenFrom = line.TimeFrom;
                 storehr.OpenTo = line.TimeTo;
 
-                //something is wrong, don't take store hours that have not value
-                if (storehr.OpenFrom == DateTime.MinValue || storehr.OpenTo == DateTime.MinValue)
-                    continue;
-
                 int dayofweek = line.DayNo;
                 storehr.NameOfDay = line.DayName;
                 storehr.StoreId = line.CalendarID;
-                storehr.Description = storehr.NameOfDay;
+                storehr.Description = string.IsNullOrEmpty(line.ReasonClosed) ? storehr.NameOfDay : line.ReasonClosed;
                 storehr.Type = (StoreHourOpeningType)ConvertTo.SafeInt(line.LineType);
 
                 storehr.DayOfWeek = (dayofweek == 7) ? 0 : dayofweek; //NAV starts with Sunday as 1 but .Net Sunday=0

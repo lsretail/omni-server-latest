@@ -8,121 +8,75 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
 namespace LSOmni.BLL.Loyalty
 {
-    //LSRecommendsBLLStatic is just for temp usage while there LS Recommends.dll isn't a part of the official release.
-    //  to give a useful error message back
-    public static class LSRecommendsBLLStatic
-    {
-        private static object lsRecommendsObj = null;
-        private static bool isAvail = false;
-
-        public static bool IsLSRecommendsAvail()
-        {
-            if (lsRecommendsObj == null)
-            {
-                string asm = "";
-                string key = "LSRecommends.AssemblyName"; //key in app.settings
-
-                if (ConfigSetting.KeyExists(key))
-                    asm = ConfigSetting.GetString(key);
-                else
-                    asm = "LSRecommend.dll"; //just in case the key is missing in app.settings file
-
-                string appPath = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase);
-                appPath = appPath.Replace("file:\\", "");
-                asm = appPath + "\\" + asm;
-                if (System.IO.File.Exists(asm))
-                {
-                    isAvail = true;
-                    lsRecommendsObj = new object();
-                }
-            }
-
-            return isAvail;
-        }
-    }
-
     //There is no Interface for LS_Recommends so simply checking if the dll is available in the distribution
     //  read from the appsettings.config
     public class LSRecommendsBLL : BaseLoyBLL
     {
         private static LSLogger logger = new LSLogger();
-        private LSRecommend.LSRecommend lsr;
+        private LSRecommend.LSRecommend lsr = null;
 
         public LSRecommendsBLL(BOConfiguration config) : base(config, 0)
         {
-        }
+            string value = config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl);
+            if (string.IsNullOrEmpty(value))
+                throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "LS Recommend Setup has not yet been sent to Omni from LS Central");
 
-        public LSRecommendsBLL(BOConfiguration config, int timeoutInSeconds) : base (config, timeoutInSeconds)
-        {
             lsr = new LSRecommend.LSRecommend(
-                config.SettingsGetByKey(ConfigKey.LSReccomend_EndPointUrl),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl),
                 string.Empty,   // apiAdminKey
-                config.SettingsGetByKey(ConfigKey.LSReccomend_AzureAccountKey),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_AccountConnection),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_AzureName),
-                config.SettingsIntGetByKey(ConfigKey.LSReccomend_NumberOfRecommendedItems),
-                config.SettingsBoolGetByKey(ConfigKey.LSReccomend_CalculateStock),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_WsURI),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_WsUserName),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_WsPassword),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_WsDomain),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_StoreNo),
-                config.SettingsGetByKey(ConfigKey.LSReccomend_Location),
-                config.SettingsIntGetByKey(ConfigKey.LSReccomend_MinStock)
+                config.SettingsGetByKey(ConfigKey.LSRecommend_AzureAccountKey),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_AccountConnection),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_AzureName),
+                config.SettingsIntGetByKey(ConfigKey.LSRecommend_NumberOfRecommendedItems),
+                config.SettingsBoolGetByKey(ConfigKey.LSRecommend_CalculateStock),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_WsURI),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_WsUserName),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_WsPassword),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_WsDomain),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_StoreNo),
+                config.SettingsGetByKey(ConfigKey.LSRecommend_Location),
+                config.SettingsIntGetByKey(ConfigKey.LSRecommend_MinStock)
             );
         }
 
-        public virtual void LSRecommendSetting(string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
+        public virtual void LSRecommendSetting(string lskey, string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
         {
             ConfigBLL bll = new ConfigBLL();
-
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_EndPointUrl, endPointUrl, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_AccountConnection, accountConnection, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_AzureAccountKey, azureAccountKey, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_AzureName, azureName, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_NumberOfRecommendedItems, numberOfRecommendedItems.ToString(), "int");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_CalculateStock, calculateStock.ToString(), "bool");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsURI, wsURI, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsUserName, wsUserName, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsPassword, wsPassword, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_WsDomain, wsDomain, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_StoreNo, storeNo, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_Location, location, "string");
-            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSReccomend_MinStock, minStock.ToString(), "int");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_EndPointUrl, endPointUrl, "string", true, "Endpoint URI");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AccountConnection, accountConnection, "string", true, "Storage Account Connection");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AzureAccountKey, azureAccountKey, "string", true, "LS Recommend Account Key");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AzureName, azureName, "string", true, "Azure name");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_NumberOfRecommendedItems, numberOfRecommendedItems.ToString(), "int", true, "Number Of Recommended Items");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_CalculateStock, calculateStock.ToString(), "bool", true, "Filter With Regard To Stock");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsURI, wsURI, "string", true, "Web Service URI");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsUserName, wsUserName, "string", true, "Web Service User");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsPassword, wsPassword, "string", true, "Web Service Password");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsDomain, wsDomain, "string", true, "Web Service Domain");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_StoreNo, storeNo, "string", true, "Store No");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_Location, location, "string", true, "Location");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_MinStock, minStock.ToString(), "int", true, "Minimum Item Stock");
         }
 
         public virtual List<RecommendedItem> RecommendedItemsGetByUserId(string userId, List<LoyItem> items, int maxNumberOfItems, double minRating = 0.0)
         {
-            try
+            string lsrItemsIn = string.Empty;
+            foreach (LoyItem itemIn in items)
             {
-                if (maxNumberOfItems < 1)
-                    maxNumberOfItems = 50;
-                List<RecommendedItem> list = new List<RecommendedItem>();
-
-                string lsrItemsIn = string.Empty;
-                foreach (LoyItem itemIn in items)
-                {
-                    lsrItemsIn += itemIn.Id + ",";
-                }
-
-                string[] lsrItems = lsr.GetRecommendation(userId, lsrItemsIn).Split();
-                list = new List<RecommendedItem>();
-                foreach (string itemIn in lsrItems)
-                {
-                    RecommendedItem i = new RecommendedItem();
-                    string[] values = itemIn.Split(new char[] { ':' });
-                    i.Id = values[0];
-                    i.Rating = Convert.ToDecimal(values[1]);
-                    i.Reasoning = values[2];
-                    list.Add(i);
-                }
-                return list;
+                lsrItemsIn += itemIn.Id + ",";
             }
-            catch (LSOmniServiceException ex)
+
+            string[] lsrItems = lsr.GetRecommendation(userId, lsrItemsIn).Split();
+            List<RecommendedItem> list = new List<RecommendedItem>();
+            foreach (string itemIn in lsrItems)
             {
-                logger.Error(config.LSKey.Key, ex, "LSRecommendsGetByUserAndItems failed");
-                throw;
+                RecommendedItem i = new RecommendedItem();
+                string[] values = itemIn.Split(new char[] { ':' });
+                i.Id = values[0];
+                i.Rating = Convert.ToDecimal(values[1]);
+                i.Reasoning = values[2];
+                list.Add(i);
             }
+            return list;
         }
 
         /// <summary>
@@ -134,37 +88,28 @@ namespace LSOmni.BLL.Loyalty
         /// <returns>List of recommended items</returns>
         public virtual List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items)
         {
-            try
+            string lsrRet = lsr.GetRecommendation(userId, items);
+            string[] lsrItems = lsrRet.Split(new char[] { ',' });
+
+            NumberFormatInfo pr = new NumberFormatInfo();
+            pr.NumberDecimalSeparator = ".";
+
+            List<RecommendedItem> list = new List<RecommendedItem>();
+            foreach (string itemIn in lsrItems)
             {
-                List<RecommendedItem> list = new List<RecommendedItem>();
-                string lsrRet = lsr.GetRecommendation(userId, items);
-                string[] lsrItems = lsrRet.Split(new char[] { ',' });
+                if (string.IsNullOrWhiteSpace(itemIn))
+                    continue;
 
-                NumberFormatInfo pr = new NumberFormatInfo();
-                pr.NumberDecimalSeparator = ".";
-
-                list = new List<RecommendedItem>();
-                foreach (string itemIn in lsrItems)
-                {
-                    if (string.IsNullOrWhiteSpace(itemIn))
-                        continue;
-
-                    RecommendedItem i = new RecommendedItem();
-                    string[] values = itemIn.Split(new char[] { ':' });
-                    i.Id = values[0];
-                    i.Rating = Convert.ToDecimal(values[1], pr);
-                    i.Reasoning = values[2];
-                    list.Add(i);
-                }
-
-                logger.Debug(config.LSKey.Key, "Found {0} Recommended Items: {1}", list.Count, lsrRet);
-                return list;
+                RecommendedItem i = new RecommendedItem();
+                string[] values = itemIn.Split(new char[] { ':' });
+                i.Id = values[0];
+                i.Rating = Convert.ToDecimal(values[1], pr);
+                i.Reasoning = values[2];
+                list.Add(i);
             }
-            catch (LSOmniServiceException ex)
-            {
-                logger.Error(config.LSKey.Key, ex, "LSRecommendsGetByUserAndItems failed");
-                throw;
-            }
+
+            logger.Debug(config.LSKey.Key, "Found {0} Recommended Items: {1}", list.Count, lsrRet);
+            return list;
         }
     }
 }

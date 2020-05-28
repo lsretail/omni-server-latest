@@ -20,4 +20,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string PrevStatus { get; set; }
         public string NewStatus { get; set; }
     }
+
+    public class OrderMessageResult
+    {
+        public bool success { get; set; }
+        public string message { get; set; }
+    }
 }

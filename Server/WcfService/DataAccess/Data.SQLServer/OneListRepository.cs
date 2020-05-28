@@ -351,7 +351,7 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT [Id],[OneListId],[DisplayOrderId],[ItemId],[UomId],[VariantId]," +
-                        "[ItemDescription],[VariantDescription],[ImageId],[BarcodeId]," +
+                        "[ItemDescription],[VariantDescription],[ImageId],[BarcodeId],[Location]," +
                         "[Quantity],[NetPrice],[Price],[NetAmount],[TaxAmount],[DiscountAmount],[DiscountPercent],[CreateDate]" +
                         " FROM [OneListItem] WHERE [OneListId]=@id ORDER BY [DisplayOrderid] ASC";
 
@@ -372,6 +372,7 @@ namespace LSOmni.DataAccess.Dal
                                 BarcodeId = SQLHelper.GetString(reader["BarcodeId"]),
                                 ItemId = SQLHelper.GetString(reader["ItemId"]),
                                 ItemDescription = SQLHelper.GetString(reader["ItemDescription"]),
+                                Location = SQLHelper.GetString(reader["Location"]),
                                 VariantId = SQLHelper.GetString(reader["VariantId"]),
                                 VariantDescription = SQLHelper.GetString(reader["VariantDescription"]),
                                 UnitOfMeasureId = SQLHelper.GetString(reader["UomId"]),
@@ -533,8 +534,8 @@ namespace LSOmni.DataAccess.Dal
                 int displayOrderId = 0;
                 command.CommandText = "INSERT INTO [OneListItem] (" +
                     "[Id],[OneListId],[DisplayOrderId],[ItemId],[ItemDescription],[BarcodeId],[UomId],[VariantId],[VariantDescription],[ImageId]," +
-                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate]" +
-                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17)";
+                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location]" +
+                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18)";
 
                 command.Parameters.Clear();
                 command.Parameters.Add("@f0", SqlDbType.NVarChar);
@@ -555,6 +556,7 @@ namespace LSOmni.DataAccess.Dal
                 command.Parameters.Add("@f15", SqlDbType.Decimal);
                 command.Parameters.Add("@f16", SqlDbType.Decimal);
                 command.Parameters.Add("@f17", SqlDbType.DateTime);
+                command.Parameters.Add("@f18", SqlDbType.NVarChar);
 
                 foreach (OneListItem line in listLines)
                 {
@@ -582,6 +584,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters["@f15"].Value = line.DiscountAmount;
                     command.Parameters["@f16"].Value = line.DiscountPercent;
                     command.Parameters["@f17"].Value = DateTime.Now;
+                    command.Parameters["@f18"].Value = line.Location;
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 

@@ -25,8 +25,8 @@ namespace LSOmni.BLL.Loyalty
         public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
         {
             // this new published offers method came with LS Nav 9.00.03
-            // before that it didn't make sense to show the coupons since they couldn't be used in mpos transaciton anyway!
-            // old styld didn't have offerId 
+            // before that it didn't make sense to show the coupons since they couldn't be used in mpos transaction anyway!
+            // old style didn't have offerId 
             return BOLoyConnection.PublishedOffersGet(cardId, itemId, storeId);
         }
     }

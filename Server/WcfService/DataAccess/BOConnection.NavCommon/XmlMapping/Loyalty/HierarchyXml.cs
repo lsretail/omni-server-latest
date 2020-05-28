@@ -68,14 +68,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 Hierarchy hierarchy = new Hierarchy();
 
                 if (hir.Element("Hierarchy_Code") == null)
-                    throw new XmlException("Hierarchy_Code node not found in response xml");
+                    throw new XmlException("Hierarchy_Code node not found in response XML");
                 hierarchy.Id = hir.Element("Hierarchy_Code").Value;
 
                 if (hir.Element("Description") != null)
                     hierarchy.Description = hir.Element("Description").Value;
 
                 if (hir.Element("Type") == null)
-                    throw new XmlException("Type node not found in response xml");
+                    throw new XmlException("Type node not found in response XML");
                 hierarchy.Type = (HierarchyType)Convert.ToInt32(hir.Element("Type").Value);
 
                 rs.Add(hierarchy);
@@ -88,26 +88,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 HierarchyNode node = new HierarchyNode();
 
                 if (nd.Element("Node_ID") == null)
-                    throw new XmlException("Node_ID node not found in response xml");
+                    throw new XmlException("Node_ID node not found in response XML");
                 node.Id = nd.Element("Node_ID").Value;
 
                 if (nd.Element("Description") != null)
                     node.Description = nd.Element("Description").Value;
 
                 if (nd.Element("Indentation") == null)
-                    throw new XmlException("Indentation node not found in response xml");
+                    throw new XmlException("Indentation node not found in response XML");
                 node.Indentation = Convert.ToInt32(nd.Element("Indentation").Value);
 
                 if (nd.Element("Presentation_Order") == null)
-                    throw new XmlException("Presentation_Order node not found in response xml");
+                    throw new XmlException("Presentation_Order node not found in response XML");
                 node.PresentationOrder = Convert.ToInt32(nd.Element("Presentation_Order").Value);
 
                 if (nd.Element("Hierarchy_Code") == null)
-                    throw new XmlException("Hierarchy_Code node not found in response xml");
+                    throw new XmlException("Hierarchy_Code node not found in response XML");
                 node.HierarchyCode = nd.Element("Hierarchy_Code").Value;
 
                 if (nd.Element("Parent_Node_ID") == null)
-                    throw new XmlException("Parent_Node_ID node not found in response xml");
+                    throw new XmlException("Parent_Node_ID node not found in response XML");
                 node.ParentNode = nd.Element("Parent_Node_ID").Value;
 
                 nodes.Add(node);
@@ -169,22 +169,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 HierarchyLeaf node = new HierarchyLeaf();
 
                 if (hir.Element("Hierarchy_Code") == null)
-                    throw new XmlException("Hierarchy_Code node not found in response xml");
+                    throw new XmlException("Hierarchy_Code node not found in response XML");
                 node.Id = hir.Element("Hierarchy_Code").Value;
 
                 if (hir.Element("Node_ID") == null)
-                    throw new XmlException("Node_ID node not found in response xml");
+                    throw new XmlException("Node_ID node not found in response XML");
                 node.Id = hir.Element("Node_ID").Value;
 
                 if (hir.Element("No.") == null)
-                    throw new XmlException("No. node not found in response xml");
+                    throw new XmlException("No. node not found in response XML");
                 node.Id = hir.Element("No.").Value;
 
                 if (hir.Element("Description") != null)
                     node.Description = hir.Element("Description").Value;
 
                 if (hir.Element("Type") == null)
-                    throw new XmlException("Type node not found in response xml");
+                    throw new XmlException("Type node not found in response XML");
                 node.Type = (HierarchyLeafType)Convert.ToInt32(hir.Element("Type").Value);
 
                 rs.Add(node);

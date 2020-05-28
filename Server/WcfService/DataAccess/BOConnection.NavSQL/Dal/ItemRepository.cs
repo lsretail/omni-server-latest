@@ -415,6 +415,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (pageSize < 1)
                 pageSize = 1;
 
+            SQLHelper.CheckForSQLInjection(itemCategoryId);
+            SQLHelper.CheckForSQLInjection(productGroupId);
+            SQLHelper.CheckForSQLInjection(search);
+
+
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
             "mt.[" + pgfieldname + "],mt.[Scale Item]," +
@@ -562,6 +567,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (string.IsNullOrWhiteSpace(search))
                 return list;
+
+            SQLHelper.CheckForSQLInjection(search);
 
             char[] sep = new char[] { ' ' };
             string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);

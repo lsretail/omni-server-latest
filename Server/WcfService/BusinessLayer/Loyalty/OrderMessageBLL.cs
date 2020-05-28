@@ -46,17 +46,40 @@ namespace LSOmni.BLL.Loyalty
             // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
             CreateNotificationsFromOrderMessage(orderMessage);
             string payloadJson = new JavaScriptSerializer().Serialize(orderMessage);
-            int start = payloadJson.IndexOf("MsgSubject");
-            int end = payloadJson.IndexOf("Lines");
-            string newpay = payloadJson.Substring(0, start - 1);
-            newpay += payloadJson.Substring(end - 1, payloadJson.Length - end + 1);
-            SendToEcom("orderstatus", newpay);
+            SendToEcom("orderstatus", payloadJson);
         }
 
         public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference)
         {
-            // Status: Unchanged = 0, Changed = 1, Cancelled = 2
-            return SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount, authcode = authcode, reference = reference });
+            // Status: Unchanged = 0, Changed = 1, Canceled = 2
+            string message = string.Empty;
+            bool success = OrderMessageRequestPaymentEx(orderId, status, amount, token, authcode, reference, ref message);
+            if (success)
+                return "OK";
+            return message;
+        }
+
+        public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message)
+        {
+            // Status: Unchanged = 0, Changed = 1, Canceled = 2
+            string json = SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount, authcode = authcode, reference = reference });
+
+            OrderMessageResult result;
+            if (json.Length > 0 && (json[0] == '{' || json[0] == '['))
+            {
+                if (json[0] == '[') // remove [ ] 
+                    json = json.Substring(1, json.Length - 2);
+
+                result = Serialization.Deserialize<OrderMessageResult>(json);
+                message = result.message;
+                return result.success;
+            }
+
+            char[] charsToTrim = { '"' };
+            json = json.Trim(charsToTrim);
+
+            message = json;
+            return json.Equals("OK", StringComparison.InvariantCultureIgnoreCase);
         }
 
         #region private
@@ -219,7 +242,7 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrWhiteSpace(message))
                 return;     // nothing to save here
 
-            string cardId = "";
+            string cardId = string.Empty;
             string notificationId = GuidHelper.NewGuidString();
 
             try
@@ -228,7 +251,7 @@ namespace LSOmni.BLL.Loyalty
                 XDocument doc = XDocument.Parse(message);
                 XElement elCardNo = doc.Element("OmniMessage").Element("Order").Element("MemberCardNo");
                 if (elCardNo == null)
-                    throw new XmlException("MemberCardNo. node not found in message.Details xml");
+                    throw new XmlException("MemberCardNo. node not found in message.Details XML");
 
                 cardId = elCardNo.Value;
                 if (string.IsNullOrEmpty(cardId))
@@ -241,9 +264,9 @@ namespace LSOmni.BLL.Loyalty
                     return;
                 }
 
-                //parse xml from nav for the Notifications
+                //parse XML from nav for the Notifications
                 string detailsAsHtml = NotificationHtmlFromOrderMessageXml(message, contact);
-                string qrText = "";
+                string qrText = string.Empty;
                 //if status is ready 
                 if (orderStatus.StartsWith("REA"))
                 {
@@ -261,16 +284,20 @@ namespace LSOmni.BLL.Loyalty
                     ImageView iv = new ImageView(notificationId);
                     iv.DisplayOrder = 0;
                     iv.LocationType = LocationType.Image;
-                    iv.Location = "";
+                    iv.Location = string.Empty;
                     iv.ImgBytes = GenerateQRCode(qrText);
 
                     IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);
                     imgRepository.SaveImageLink(iv, "Member Notification", "Member Notification: " + notificationId, notificationId, iv.Id, 0);
                 }
             }
+            catch (XmlException)
+            {
+                // not valid XML order data, as we are missing contact card id, we cannot send message here.  Nav needs to use the new status update function
+            }
             catch (Exception ex)
             {
-                logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for guid:{0} CardId:{1}", notificationId, cardId);
+                logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for GUID:{0} CardId:{1}", notificationId, cardId);
             }
         }
 
@@ -313,7 +340,7 @@ namespace LSOmni.BLL.Loyalty
             }
             catch (Exception ex)
             {
-                logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for guid:{0} CardId:{1}", notificationId, orderMsg.CardId);
+                logger.Warn(config.LSKey.Key, ex, "OrderMessageSend failed for GUID:{0} CardId:{1}", notificationId, orderMsg.CardId);
             }
         }
 
@@ -372,6 +399,6 @@ namespace LSOmni.BLL.Loyalty
             return fileName;
         }
 
-        #endregion qrcode
+        #endregion
     }
 }

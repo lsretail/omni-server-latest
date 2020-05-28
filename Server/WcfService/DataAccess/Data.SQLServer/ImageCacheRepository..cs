@@ -114,7 +114,7 @@ namespace LSOmni.DataAccess.Dal
             if (durationInMinutes <= 0)
                 durationInMinutes = 0; // 
 
-            CacheState state = CacheState.NotExist;//in case nothing got returned default this to notexist
+            CacheState state = CacheState.NotExist;//in case nothing got returned default this to NotExist
             try
             {
                 using (SqlConnection connection = new SqlConnection(sqlConnectionString))

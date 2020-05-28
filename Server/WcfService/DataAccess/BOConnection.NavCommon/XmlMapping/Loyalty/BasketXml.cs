@@ -432,39 +432,39 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XDocument doc = XDocument.Parse(responseXml);
             XElement mobileTrans = doc.Element("Response").Element("Response_Body").Element("MobileTransaction");
             if (mobileTrans.Element("Id") == null)
-                throw new XmlException("Id node not found in response xml");
+                throw new XmlException("Id node not found in response XML");
             rs.Id = mobileTrans.Element("Id").Value;
             rs.Id = rs.Id.Replace("{", "").Replace("}", ""); //strip out the curly brackets
 
             if (mobileTrans.Element("StoreId") == null)
-                throw new XmlException("StoreId node not found in response xml");
+                throw new XmlException("StoreId node not found in response XML");
             rs.StoreId = mobileTrans.Element("StoreId").Value;
 
             if (mobileTrans.Element("TerminalId") == null)
-                throw new XmlException("TerminalId node not found in response xml");
+                throw new XmlException("TerminalId node not found in response XML");
             rs.TransTerminal = mobileTrans.Element("TerminalId").Value;
 
             if (mobileTrans.Element("ReceiptNo") == null)
-                throw new XmlException("ReceiptNo node not found in response xml");
+                throw new XmlException("ReceiptNo node not found in response XML");
             rs.ReceiptNo = mobileTrans.Element("ReceiptNo").Value;
 
             if (mobileTrans.Element("TransactionNo") == null)
-                throw new XmlException("TransactionNo node not found in response xml");
+                throw new XmlException("TransactionNo node not found in response XML");
             rs.TransId = mobileTrans.Element("TransactionNo").Value;
 
             if (mobileTrans.Element("CustomerId") == null)
-                throw new XmlException("CustomerId node not found in response xml");
+                throw new XmlException("CustomerId node not found in response XML");
             rs.ContactId = mobileTrans.Element("CustomerId").Value;
 
             if (mobileTrans.Element("MemberCardNo") == null)
-                throw new XmlException("MemberCardNo node not found in response xml");
+                throw new XmlException("MemberCardNo node not found in response XML");
             rs.CardId = mobileTrans.Element("MemberCardNo").Value;
 
             if (mobileTrans.Element("MemberContactNo") == null)
-                throw new XmlException("MemberContactNo node not found in response xml");
+                throw new XmlException("MemberContactNo node not found in response XML");
             rs.ContactId = mobileTrans.Element("MemberContactNo").Value;
 
-            //now loop thru the lines
+            //now loop through the lines
             IEnumerable<XElement> mobileTransLines = doc.Element("Response").Element("Response_Body").Descendants("MobileTransactionLine");
             foreach (XElement mobileTransLine in mobileTransLines)
             {
@@ -472,57 +472,57 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 //Transaction Id
                 if (mobileTransLine.Element("Id") == null)
-                    throw new XmlException("Id node not found in response xml");
+                    throw new XmlException("Id node not found in response XML");
                 string id = mobileTransLine.Element("Id").Value;
                 id = id.Replace("{", "").Replace("}", ""); //strip out the curly brackets
 
                 if (mobileTransLine.Element("LineNo") == null)
-                    throw new XmlException("LineNo node not found in response xml");
+                    throw new XmlException("LineNo node not found in response XML");
                 rsl.LineNumber = LineNumberFromNav(Convert.ToInt32(mobileTransLine.Element("LineNo").Value));
 
                 if (mobileTransLine.Element("LineType") == null)
-                    throw new XmlException("LineType node not found in response xml");
+                    throw new XmlException("LineType node not found in response XML");
                 rsl.LineType = (LineType)Convert.ToInt32(mobileTransLine.Element("LineType").Value);
 
                 //Item No. or Tender Type
                 if (mobileTransLine.Element("Number") == null)
-                    throw new XmlException("Number node not found in response xml");
+                    throw new XmlException("Number node not found in response XML");
                 rsl.ItemId = mobileTransLine.Element("Number").Value;
 
                 if (mobileTransLine.Element("VariantCode") == null)
-                    throw new XmlException("VariantCode node not found in response xml");
+                    throw new XmlException("VariantCode node not found in response XML");
                 rsl.VariantId = mobileTransLine.Element("VariantCode").Value;
 
                 if (mobileTransLine.Element("UomId") == null)
-                    throw new XmlException("UomId ItemId node not found in response xml");
+                    throw new XmlException("UomId ItemId node not found in response XML");
                 rsl.UomId = mobileTransLine.Element("UomId").Value;
 
                 if (mobileTransLine.Element("NetPrice") == null)
-                    throw new XmlException("NetPrice node not found in response xml");
+                    throw new XmlException("NetPrice node not found in response XML");
                 rsl.NetPrice = ConvertTo.SafeDecimal(mobileTransLine.Element("NetPrice").Value);
 
                 if (mobileTransLine.Element("Price") == null)
-                    throw new XmlException("Price node not found in response xml");
+                    throw new XmlException("Price node not found in response XML");
                 rsl.Price = ConvertTo.SafeDecimal(mobileTransLine.Element("Price").Value);
 
                 if (mobileTransLine.Element("Quantity") == null)
-                    throw new XmlException("Quantity node not found in response xml");
+                    throw new XmlException("Quantity node not found in response XML");
                 rsl.Quantity = ConvertTo.SafeDecimal(mobileTransLine.Element("Quantity").Value);
 
                 if (mobileTransLine.Element("DiscountAmount") == null)
-                    throw new XmlException("DiscountAmount node not found in response xml");
+                    throw new XmlException("DiscountAmount node not found in response XML");
                 rsl.DiscountAmount = ConvertTo.SafeDecimal(mobileTransLine.Element("DiscountAmount").Value);
 
                 if (mobileTransLine.Element("DiscountPercent") == null)
-                    throw new XmlException("DiscountPercent node not found in response xml");
+                    throw new XmlException("DiscountPercent node not found in response XML");
                 rsl.DiscountPercent = ConvertTo.SafeDecimal(mobileTransLine.Element("DiscountPercent").Value);
 
                 if (mobileTransLine.Element("NetAmount") == null)
-                    throw new XmlException("NetAmount node not found in response xml");
+                    throw new XmlException("NetAmount node not found in response XML");
                 rsl.NetAmount = ConvertTo.SafeDecimal(mobileTransLine.Element("NetAmount").Value);
 
                 if (mobileTransLine.Element("TAXAmount") == null)
-                    throw new XmlException("TAXAmount node not found in response xml");
+                    throw new XmlException("TAXAmount node not found in response XML");
                 rsl.TaxAmount = ConvertTo.SafeDecimal(mobileTransLine.Element("TAXAmount").Value);
                 rsl.Amount = rsl.NetAmount + rsl.TaxAmount;
 
@@ -555,55 +555,55 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             rs.TotalNetAmount = totalNetAmount;
             rs.TotalDiscount = totalDiscountAmt;
 
-            //now loop thru the discount lines
+            //now loop through the discount lines
             IEnumerable<XElement> mobileTransDiscLines = doc.Element("Response").Element("Response_Body").Descendants("MobileTransDiscountLine");
             foreach (XElement mobileTransDisc in mobileTransDiscLines)
             {
                 OrderDiscountLine rsld = new OrderDiscountLine();
                 //The ID for the Transaction
                 if (mobileTransDisc.Element("Id") == null)
-                    throw new XmlException("Id node not found in response xml");
+                    throw new XmlException("Id node not found in response XML");
                 string id = mobileTransDisc.Element("Id").Value;
                 id = id.Replace("{", "").Replace("}", ""); //strip out the curly brackets
 
                 //transaction line number
                 if (mobileTransDisc.Element("LineNo") == null)
-                    throw new XmlException("LineNo node not found in response xml");
+                    throw new XmlException("LineNo node not found in response XML");
                 rsld.LineNumber = Convert.ToInt32(mobileTransDisc.Element("LineNo").Value);//no divide by 10000 here!
 
                 //discount line number
                 if (mobileTransDisc.Element("No") == null)
-                    throw new XmlException("No node not found in response xml");
+                    throw new XmlException("No node not found in response XML");
                 rsld.No = mobileTransDisc.Element("No").Value;
 
                 //DiscountType: Periodic Disc.,Customer,InfoCode,Total,Line,Promotion,Deal,Total Discount,Tender Type,Item Point,Line Discount,Member Point,Coupon
                 if (mobileTransDisc.Element("DiscountType") == null)
-                    throw new XmlException("DiscountType node not found in response xml");
+                    throw new XmlException("DiscountType node not found in response XML");
                 rsld.DiscountType = (DiscountType)Convert.ToInt32(mobileTransDisc.Element("DiscountType").Value);
 
                 if (mobileTransDisc.Element("OfferNo") == null)
-                    throw new XmlException("OfferNo node not found in response xml");
+                    throw new XmlException("OfferNo node not found in response XML");
                 rsld.OfferNumber = mobileTransDisc.Element("OfferNo").Value;
 
                 //PeriodicDiscType: Multibuy,Mix&Match,Disc. Offer,Total Discount,Tender Type,Item Point,Line Discount
                 if (mobileTransDisc.Element("PeriodicDiscType") == null)
-                    throw new XmlException("PeriodicDiscType node not found in response xml");
+                    throw new XmlException("PeriodicDiscType node not found in response XML");
                 rsld.PeriodicDiscType = (PeriodicDiscType)Convert.ToInt32(mobileTransDisc.Element("PeriodicDiscType").Value);
 
                 if (mobileTransDisc.Element("PeriodicDiscGroup") == null)
-                    throw new XmlException("PeriodicDiscGroup node not found in response xml");
+                    throw new XmlException("PeriodicDiscGroup node not found in response XML");
                 rsld.PeriodicDiscGroup = mobileTransDisc.Element("PeriodicDiscGroup").Value;
 
                 if (mobileTransDisc.Element("Description") == null)
-                    throw new XmlException("Description node not found in response xml");
+                    throw new XmlException("Description node not found in response XML");
                 rsld.Description = mobileTransDisc.Element("Description").Value;
 
                 if (mobileTransDisc.Element("DiscountPercent") == null)
-                    throw new XmlException("DiscountPercent node not found in response xml");
+                    throw new XmlException("DiscountPercent node not found in response XML");
                 rsld.DiscountPercent = ConvertTo.SafeDecimal(mobileTransDisc.Element("DiscountPercent").Value);
 
                 if (mobileTransDisc.Element("DiscountAmount") == null)
-                    throw new XmlException("DiscountAmount node not found in response xml");
+                    throw new XmlException("DiscountAmount node not found in response XML");
                 rsld.DiscountAmount = ConvertTo.SafeDecimal(mobileTransDisc.Element("DiscountAmount").Value);
 
                 rs.OrderDiscountLines.Add(rsld);

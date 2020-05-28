@@ -456,7 +456,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             // Get the elapsed time as a TimeSpan value.
             TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("NAV ws call. ElapsedTime (mi:sec.msec): {0:00}:{1:00}.{2:000}",
+            string elapsedTime = String.Format("NAV WS call. ElapsedTime (mi:sec.msec): {0:00}:{1:00}.{2:000}",
                 ts.Minutes, ts.Seconds, ts.Milliseconds);
 
             if (logger.IsDebugEnabled)
@@ -515,7 +515,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             xmlRequest = xml.RestoreSyncRequestXML(restorePoint);
             xmlResponse = RunOperation(xmlRequest, true);
             string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923" });
-            if (ret != null)
+            if (string.IsNullOrEmpty(ret) == false)
                 return new List<XMLTableData>();
 
             return xml.SyncResponseXML(xmlResponse, out restorePoint);
@@ -579,16 +579,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 return;
             }
-            //only log xml in debug mode, since passwords are logged
+            //only log XML in debug mode, since passwords are logged
             else if (logger.IsDebugEnabled)
             {
                 xmlRequest = RemoveNode("Password", xmlRequest);
                 xmlRequest = RemoveNode("NewPassword", xmlRequest);
                 xmlRequest = RemoveNode("OldPassword", xmlRequest);
                 XDocument doc = XDocument.Parse(xmlResponse);
-                xmlResponse = doc.ToString();//get better xml parsing
+                xmlResponse = doc.ToString();//get better XML parsing
                 XDocument docRq = XDocument.Parse(xmlRequest);
-                xmlRequest = docRq.ToString();//get better xml parsing
+                xmlRequest = docRq.ToString();//get better XML parsing
                 logger.Debug(config.LSKey.Key, "\r\nNLOG DEBUG MODE ONLY:  {0}\r\n{1}\r\n  \r\n{2}\r\n", elapsedTime, xmlRequest, xmlResponse);
             }
         }
@@ -597,7 +597,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             try
             {
-                //remove a node from xml,, nodeName=Password removes value between <Password>
+                //remove a node from XML,, nodeName=Password removes value between <Password>
                 string regex = "<" + nodeName + ">.*?</" + nodeName + ">"; //strip out 
                 return System.Text.RegularExpressions.Regex.Replace(xml, regex, "<" + nodeName + ">XXX</" + nodeName + ">");
             }
@@ -687,7 +687,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 string navResponseId = ParseResponseCode(doc.GetElementsByTagName("Request_ID"));
                 string navResponseText = ParseResponseText(doc.GetElementsByTagName("Response_Text"));
 
-                //NavResponseCode navResponseCode = (NavResponseCode)Convert.ToInt32(responseCode);
                 StatusCode statusCode = MapResponseToStatusCode(navResponseId, responseCode);
                 string msg = string.Format("navResponseCode: {0} - {1}  [statuscode: {2}]", responseCode, navResponseText, statusCode.ToString());
                 logger.Error(config.LSKey.Key, msg);
@@ -696,23 +695,38 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 {
                     foreach (string code in codesToHandle)
                     {
+                        //expected return codes, so don't throw unexpected exception, rather return the known codes to client  
                         if (code.Equals(responseCode))
                             return code;
                     }
                 }
-                //expected return codes, so dont throw unexpected exception, rather return the known codes to client  
                 throw new LSOmniServiceException(statusCode, msg);
             }
-            return null;
+            return string.Empty;
+        }
+
+        protected string HandleWS2ResponseCode(string funcName, string respCode, string errText, string[] codesToHandle = null)
+        {
+            if (respCode == "0000")
+                return string.Empty;
+
+            StatusCode statusCode = MapResponseToStatusCode(funcName, respCode);
+            logger.Error(config.LSKey.Key, "LS Central Error Code [{0}]:{1} [OmniCode:{2}]", respCode, errText, statusCode);
+
+            if (codesToHandle != null && codesToHandle.Length > 0)
+            {
+                foreach (string code in codesToHandle)
+                {
+                    //expected return codes, so don't throw unexpected exception, rather return the known codes to client  
+                    if (code.Equals(respCode))
+                        return code;
+                }
+            }
+            throw new LSOmniServiceException(statusCode, respCode, errText);
         }
 
         protected StatusCode MapResponseToStatusCode(string navResponseId, string navCode)
         {
-            /*
-                MissingStoreNumber = 1001,
-                MissingTenderLines = 1002,
-             * 
-             * */
             //mapping response code from NAV to LSOmni, but sometimes the same navCode is used for different navResponseId
             // so need to check them both - sometimes
             navResponseId = navResponseId.ToUpper().Trim();
@@ -726,52 +740,35 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     statusCode = StatusCode.NAVWebFunctionNotFound;
                     break;
                 case "0030":
-                    if (navResponseId == "WEB_POS")
-                        statusCode = StatusCode.InvalidNode;
+                    statusCode = StatusCode.InvalidNode;
+                    break;
+                case "0099":
+                    statusCode = StatusCode.GeneralErrorCode;
                     break;
                 case "0131":
                     statusCode = StatusCode.PasswordInvalid;
+                    break;
+                case "0403":
+                    statusCode = StatusCode.ServerRefusingToRespond;
                     break;
                 case "1001":
                     statusCode = StatusCode.Error;
                     if (navResponseId == "GET_DYN_CONT_HMP_MENUS" || navResponseId == "GET_DYNAMIC_CONTENT")
                         statusCode = StatusCode.NoHMPMenuFound;
-                    else if (navResponseId == "MM_LOGIN_CHANGE") // cannot for "MM_CREATE_LOGIN_LINKS")
-                        statusCode = StatusCode.UserNameInvalid;
-                    else if (navResponseId == "IM_GET_CUSTOMER_CARD_01")
+                    if (navResponseId == "IM_GET_CUSTOMER_CARD_01" || navResponseId == "GETCUSTOMERCARD")
                         statusCode = StatusCode.CustomerNotFound;
-                    else if (navResponseId == "IM_GET_ITEM_CARD_01")
+                    if (navResponseId == "IM_GET_ITEM_CARD_01" || navResponseId == "GETITEMCARD")
                         statusCode = StatusCode.ItemNotFound;
-                    else if (navResponseId == "IM_GET_VENDOR_CARD_01")
+                    if (navResponseId == "IM_GET_VENDOR_CARD_01" || navResponseId == "GETVENDORCARD")
                         statusCode = StatusCode.VendorNotFound;
                     break;
                 case "1002":
-                    if (navResponseId == "MM_LOGIN_CHANGE")
-                        statusCode = StatusCode.PasswordInvalid;
-                    else if (navResponseId == "MM_CREATE_LOGIN_LINKS")
+                    if (navResponseId == "MM_CREATE_LOGIN_LINKS")
                         statusCode = StatusCode.UserNameNotFound;
                     break;
                 case "1003":
-                    if (navResponseId == "MM_LOGIN_CHANGE")
-                        statusCode = StatusCode.UserNameInvalid;
-                    else if (navResponseId == "MM_CREATE_LOGIN_LINKS")
+                    if (navResponseId == "MM_CREATE_LOGIN_LINKS")
                         statusCode = StatusCode.MemberCardNotFound;
-                    break;
-                case "1004":
-                    if (navResponseId == "MM_LOGIN_CHANGE")
-                        statusCode = StatusCode.UserNameExists;
-                    break;
-                case "1010":
-                    if (navResponseId == "LOAD_PUBOFFERS_AND_PERSCOUPONS")
-                        statusCode = StatusCode.UserNameExists;
-                    break;
-                case "1011":
-                    if (navResponseId == "LOAD_PUBOFFERS_AND_PERSCOUPONS")
-                        statusCode = StatusCode.ItemNotFound;
-                    break;
-                case "1012":
-                    if (navResponseId == "LOAD_PUBOFFERS_AND_PERSCOUPONS")
-                        statusCode = StatusCode.StoreNotExists;
                     break;
                 case "1013":
                     if (navResponseId == "GET_DYN_CONT_HMP_MENUS" || navResponseId == "GET_DYNAMIC_CONTENT")
@@ -780,10 +777,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 case "1014":
                     if (navResponseId == "GET_DYN_CONT_HMP_MENUS" || navResponseId == "GET_DYNAMIC_CONTENT")
                         statusCode = StatusCode.HMPMenuNoDynamicContentFoundToday;
-                    break;
-                case "1020":
-                    if (navResponseId == "LOAD_PUBOFFERS_AND_PERSCOUPONS")
-                        statusCode = StatusCode.MemberCardNotFound;
                     break;
                 case "1100":
                     statusCode = StatusCode.UserNameExists;
@@ -881,13 +874,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     statusCode = StatusCode.DeviceIdMissing;
                     break;
                 case "1500":
-                    if (navResponseId == "MM_CARD_TO_CONTACT")
-                        statusCode = StatusCode.ContactIdNotFound;
+                    statusCode = StatusCode.ContactIdNotFound;
                     break;
                 case "1600":
                     statusCode = StatusCode.PosNotExists;
                     if (navResponseId == "MM_CARD_TO_CONTACT")
                         statusCode = StatusCode.MemberCardNotFound;
+                    if (navResponseId == "IM_SEND_INVENTORY_TRANSACTION" || navResponseId == "STOREINVTRANSACTIONSEND")
+                        statusCode = StatusCode.WorksheetNotFound;
                     break;
                 case "1601":
                     statusCode = StatusCode.StoreNotExists;
@@ -918,6 +912,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     break;
                 case "1610":
                     statusCode = StatusCode.PriceTooHigh;
+                    if (navResponseId == "IM_SEND_INVENTORY_TRANSACTION" || navResponseId == "STOREINVTRANSACTIONSEND")
+                        statusCode = StatusCode.NotReadyForNextCount;
                     break;
                 case "1611":
                     statusCode = StatusCode.InvalidDiscPercent;
@@ -941,6 +937,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     statusCode = StatusCode.SuspendWithPayment;
                     if (navResponseId == "WEB_POS")
                         statusCode = StatusCode.PaymentPointsMissing; //Payment with member points, %1 missing.
+                    if (navResponseId == "IM_SEND_INVENTORY_TRANSACTION" || navResponseId == "STOREINVTRANSACTIONSEND")
+                        statusCode = StatusCode.LinesNotFound;
+                    if (navResponseId == "STOREINVENTORYLINESGET")
+                        statusCode = StatusCode.LinesNotFound;
                     break;
                 case "1621":
                     statusCode = StatusCode.UnknownSuspError;
@@ -977,13 +977,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 case "1678":
                     statusCode = StatusCode.NoEntriesFound4;
                     break;
-
                 case "1698":
                     statusCode = StatusCode.InvalidPrinterId;
                     break;
                 case "1700":
-                    if (navResponseId == "MM_CARD_TO_CONTACT")
-                        statusCode = StatusCode.CardInvalidInUse;
+                    statusCode = StatusCode.CardInvalidInUse;
                     break;
                 case "1800":
                     statusCode = StatusCode.TerminalIdMissing;
@@ -997,16 +995,36 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     statusCode = StatusCode.EmailMissing;
                     break;
                 case "1900":
-                    if (navResponseId == "MM_CARD_TO_CONTACT")
-                        statusCode = StatusCode.CardInvalidStatus;
+                    statusCode = StatusCode.CardInvalidStatus;
                     break;
                 case "2000":
                     statusCode = StatusCode.InvalidPrintMethod;
                     if (navResponseId == "MM_CARD_TO_CONTACT")
                         statusCode = StatusCode.ContactIsBlocked;
                     break;
-                case "0403":
-                    statusCode = StatusCode.ServerRefusingToRespond;
+                case "2201":
+                    statusCode = StatusCode.OrderAlreadyExist;
+                    break;
+                case "2202":
+                    statusCode = StatusCode.OrderIdNotFound;
+                    break;
+                case "2203":
+                    statusCode = StatusCode.MemberCardNotFound;
+                    break;
+                case "2224":
+                    statusCode = StatusCode.PaymentError;
+                    break;
+                case "2230":
+                    statusCode = StatusCode.CardIdInvalid;
+                    break;
+                case "2231":
+                    statusCode = StatusCode.MemberCardNotFound;
+                    break;
+                case "2252":
+                    statusCode = StatusCode.MemberPointBalanceToLow;
+                    break;
+                case "2253":
+                    statusCode = StatusCode.CardInvalidStatus;
                     break;
                 case "4003":
                     statusCode = StatusCode.DiningTableStatusNotAbleToChange;

@@ -15,8 +15,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         {
             OneListId = string.Empty;
             ItemId = string.Empty;
+            ItemDescription = string.Empty;
             VariantId = string.Empty;
+            VariantDescription = string.Empty;
             UnitOfMeasureId = string.Empty;
+            Location = string.Empty;
             BarcodeId = string.Empty;
             CreateDate = DateTime.Now;
             Detail = string.Empty;
@@ -44,6 +47,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             Price = item.AmtFromVariantsAndUOM(item.SelectedVariant?.Id, item.SelectedUnitOfMeasure?.Id);
             Detail = item.Details;
             VariantRegistration = item.SelectedVariant;
+            if (item.Locations.Count != 0)
+            {
+                Location = item.Locations[0].ShelfCode;
+            }
+            else
+            {
+                Location = string.Empty;
+            }
             if (item.SelectedVariant != null)
             {
                 VariantId = item.SelectedVariant.Id;
@@ -72,6 +83,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string Detail { get; set; }
         [DataMember]
         public string ItemDescription { get; set; }
+        [DataMember]
+        public string Location { get; set; }
         [DataMember]
         public string UnitOfMeasureId { get; set; }
         [DataMember]

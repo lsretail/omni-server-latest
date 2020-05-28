@@ -247,7 +247,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             this.IncomeExpenseLines = new List<IncomeExpenseLine>();
         }
 
-        public void AddSaleLine(RetailItem item, decimal quantity, int originalTransactionLineNo = 0, bool isFromRecommendation = false)
+        public void AddSaleLine(RetailItem item, decimal quantity, int originalTransactionLineNo = 0, bool isFromRecommendation = false, SaleLine saleLine = null)
         {
             // Throw dedicated exceptions for e.g. item blocked, zero price not allowed, must key in price, etc...
 
@@ -271,6 +271,13 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             SaleLine line = new SaleLine(this.NumberOfTransactionLines + 1, item, quantity, this.Terminal.Store.Currency, PriceCalculator, this.ReturnNextSaleLine);
             line.OriginalTransactionLineNo = originalTransactionLineNo;
             line.FromRecommendation = isFromRecommendation;
+            if (saleLine != null)
+            {
+                line.ManualDiscount = saleLine.ManualDiscount;
+                line.LineDiscount = saleLine.LineDiscount;
+                line.Discounts = saleLine.Discounts;
+            }
+
             this.SaleLines.Add(line);
 
             this.ReturnNextSaleLine = false;
@@ -311,10 +318,10 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
                 return IncomeExpenseLines.Find(line => line.LineNumber == lineNr);
         }
 
-        public void IncrementQty(int lineNumber)
+        public void IncrementQty(int lineNumber, decimal returnQuantity = 0)
         {
             SaleLine line = SaleLines.Find(delegate (SaleLine s) { return s.LineNumber == lineNumber; });
-            line.IncrementQty();
+            line.IncrementQty(returnQuantity);
 
             Calculate();
             CheckIfManualDiscountApplies();
