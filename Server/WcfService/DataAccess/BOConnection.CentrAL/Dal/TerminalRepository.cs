@@ -19,11 +19,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public TerminalRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            // TODO: do NAV 10 version of the device license ? 
             sqltext = "SELECT mt.[No_],mt.[Store No_],mt.[Terminal Type],mt.[Device Type],mt.[Description],mt.[Exit After Each Trans_]," +
                      "mt.[AutoLogoff After (Min_)],mt.[EFT Store No_],mt.[EFT POS Terminal No_],mt.[Hardware Profile]," +
                      "mt.[Interface Profile],mt.[Functionality Profile],mt.[Default Sales Type],mt.[Sales Type Filter]," +
                      "mt.[Inventory Main Menu],mt.[Show Numberpad],mt.[Device License Key],mt.[Item Filtering Method]";
+
+            if (NavVersion > new Version("16.1"))
+                sqltext += ",mt.[ASN Quantity Method]";
 
             sqlfrom = " FROM [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
@@ -154,8 +156,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 TerminalType = SQLHelper.GetInt32(reader["Terminal Type"]),
                 DeviceType = SQLHelper.GetInt32(reader["Device Type"]),
                 HospTypeFilter = SQLHelper.GetString(reader["Sales Type Filter"]),
-                DefaultHospType = SQLHelper.GetString(reader["Default Sales Type"])
+                DefaultHospType = SQLHelper.GetString(reader["Default Sales Type"]),
             };
+
+            if (NavVersion > new Version("16.1"))
+                term.ASNQuantityMethod = (DocumentQuantityMethod)SQLHelper.GetInt32(reader["ASN Quantity Method"]);
 
             GetFeatureFlags(term.Features, term.StoreId, term.Id);
             term.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, SQLHelper.GetString(reader["Exit After Each Trans_"]));
@@ -203,6 +208,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Store = new Store(SQLHelper.GetString(reader["Store No_"])),
                 StoreInventory = true
             };
+
+            if (NavVersion > new Version("16.1"))
+                term.ASNQuantityMethod = (DocumentQuantityMethod)SQLHelper.GetInt32(reader["ASN Quantity Method"]);
 
             GetFeatureFlags(term.Features, term.Store.Id, term.Id);
             term.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, SQLHelper.GetString(reader["Exit After Each Trans_"]));

@@ -15,7 +15,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
         }
 
-        public List<SalesEntry> SalesEntriesByCardId(string cardId, int maxNrOfEntries)
+        public List<SalesEntry> SalesEntriesByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNrOfEntries)
         {
             List<SalesEntry> list = new List<SalesEntry>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -24,6 +24,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.Parameters.Clear();
+
+                    string sqlwhere = string.Empty;
+                    if (string.IsNullOrEmpty(storeId) == false)
+                    {
+                        sqlwhere += "AND [Store No_]=@sid ";
+                        command.Parameters.AddWithValue("@sid", storeId);
+                    }
+                    if (date > DateTime.MinValue)
+                    {
+                        sqlwhere += string.Format("AND [Date]{0}@dt ", (dateGreaterThan) ? ">" : "<");
+                        command.Parameters.AddWithValue("@dt", date);
+                    }
+
                     command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : "") + " * FROM (" +
                         "SELECT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date]," +
                         "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC],co.[Ship-to Name] AS [ShipName]," +
@@ -38,7 +51,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]= mt.[Store No_] " +
                         ") AS SalesEntries " +
-                        "WHERE [Member Card No_]=@id " +
+                        "WHERE [Member Card No_]=@id " + sqlwhere +
                         "ORDER BY [Date] DESC";
                     command.Parameters.AddWithValue("@id", cardId);
                     TraceSqlCommand(command);
@@ -253,21 +266,30 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
-        public List<SalesEntryPayment> TransSalesEntryPaymentGet(string transId, string storeId, string terminalId)
+        public List<SalesEntryPayment> TransSalesEntryPaymentGet(string receiptNo, string custOrderNo)
         {
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " +
-                                "ml.[Line No_],ml.[Tender Type],ml.[Exchange Rate],ml.[Currency Code],ml.[Amount in Currency],ml.[Card or Account]" +
-                                " FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid" +
-                                " ORDER BY ml.[Line No_]";
-                    command.Parameters.AddWithValue("@id", transId);
-                    command.Parameters.AddWithValue("@Sid", storeId);
-                    command.Parameters.AddWithValue("@Tid", terminalId);
+                    if (string.IsNullOrEmpty(custOrderNo))
+                    {
+                        command.CommandText = "SELECT " +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS Amt,ml.[Exchange Rate] AS Rate,ml.[Card or Account] AS No " +
+                                    "FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                    "WHERE ml.[Receipt No_]=@id ORDER BY ml.[Line No_]";
+                        command.Parameters.AddWithValue("@id", receiptNo);
+                    }
+                    else
+                    {
+                        command.CommandText = "SELECT " +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
+                                    "FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                    "WHERE ml.[Document ID]=@id ORDER BY ml.[Line No_]";
+                        command.Parameters.AddWithValue("@id", custOrderNo);
+                    }
+
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -302,7 +324,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         TraceSqlCommand(command);
                         string salesId = (string)command.ExecuteScalar();
 
-                        //Use salesinvoice id to get Rewarded points for customer orders
+                        //Use sales invoice id to get Rewarded points for customer orders
                         if (!string.IsNullOrEmpty(salesId))
                             entryId = salesId;
                     }
@@ -364,7 +386,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 entry.Lines = TransSalesEntryLinesGet(entry.Id);
                 entry.DiscountLines = DiscountLineGet(entry.Id);
-                entry.Payments = TransSalesEntryPaymentGet(SQLHelper.GetString(reader["Transaction No_"]), entry.StoreId, entry.TerminalId);
+                entry.Payments = TransSalesEntryPaymentGet(entry.Id, entry.CustomerOrderNo);
             }
             return entry;
         }
@@ -480,9 +502,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 LineNumber = ConvertTo.SafeInt(SQLHelper.GetString(reader["Line No_"])),
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
-                Amount = SQLHelper.GetDecimal(reader["Amount in Currency"], false),
-                CurrencyFactor = SQLHelper.GetDecimal(reader["Exchange Rate"], false),
-                CardNo = SQLHelper.GetString(reader["Card or Account"]),
+                Amount = SQLHelper.GetDecimal(reader["Amt"], false),
+                CurrencyFactor = SQLHelper.GetDecimal(reader["Rate"], false),
+                CardNo = SQLHelper.GetString(reader["No"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"])
             };
         }

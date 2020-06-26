@@ -622,11 +622,11 @@ namespace LSOmni.Service
                 {
                     foreach (ImageView iv in it.Images)
                     {
-                        iv.Location = GetImageStreamUrl(iv);
+                        iv.StreamURL = GetImageStreamUrl(iv);
                     }
                     foreach (OfferDetails od in it.OfferDetails)
                     {
-                        od.Image.Location = GetImageStreamUrl(od.Image);
+                        od.Image.StreamURL = GetImageStreamUrl(od.Image);
                     }
                 }
                 return list;
@@ -1387,7 +1387,7 @@ namespace LSOmni.Service
         /// Get Sales history by card Id
         /// </summary>
         /// <param name="cardId">Card Id</param>
-        /// <param name="maxNumberOfTransactions">max number of transactions returned</param>
+        /// <param name="maxNumberOfEntries">max number of transactions returned</param>
         /// <returns>List of most recent Transactions for a contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1408,18 +1408,34 @@ namespace LSOmni.Service
         /// </item>      
         /// </list>        
         /// </exception>
-        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions)
+        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfEntries)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfTransactions);
+                logger.Debug(config.LSKey.Key, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
                 TransactionBLL transactionBLL = new TransactionBLL(config, clientTimeOutInSeconds);
-                maxNumberOfTransactions = (maxNumberOfTransactions > maxNumberReturned ? maxNumberReturned : maxNumberOfTransactions); //max 1000 should be the limit!
-                return transactionBLL.SalesEntriesGetByCardId(cardId, maxNumberOfTransactions);
+                maxNumberOfEntries = (maxNumberOfEntries > maxNumberReturned ? maxNumberReturned : maxNumberOfEntries); //max 1000 should be the limit!
+                return transactionBLL.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, maxNumberOfEntries);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfTransactions);
+                HandleExceptions(ex, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
+                return null; //never gets here
+            }
+        }
+
+        public virtual List<SalesEntry> SalesEntriesGetByCardIdEx(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
+                TransactionBLL transactionBLL = new TransactionBLL(config, clientTimeOutInSeconds);
+                maxNumberOfEntries = (maxNumberOfEntries > maxNumberReturned ? maxNumberReturned : maxNumberOfEntries); //max 1000 should be the limit!
+                return transactionBLL.SalesEntriesGetByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
                 return null; //never gets here
             }
         }

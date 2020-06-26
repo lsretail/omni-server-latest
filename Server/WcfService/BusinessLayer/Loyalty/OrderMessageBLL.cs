@@ -284,7 +284,6 @@ namespace LSOmni.BLL.Loyalty
                     ImageView iv = new ImageView(notificationId);
                     iv.DisplayOrder = 0;
                     iv.LocationType = LocationType.Image;
-                    iv.Location = string.Empty;
                     iv.ImgBytes = GenerateQRCode(qrText);
 
                     IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);
@@ -331,7 +330,6 @@ namespace LSOmni.BLL.Loyalty
                     ImageView iv = new ImageView(notificationId);
                     iv.DisplayOrder = 0;
                     iv.LocationType = LocationType.Image;
-                    iv.Location = "";
                     iv.ImgBytes = GenerateQRCode(orderMsg.OrderId);
 
                     IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);

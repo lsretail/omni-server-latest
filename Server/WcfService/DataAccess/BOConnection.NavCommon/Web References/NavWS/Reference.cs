@@ -51,6 +51,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback EcomCalculateBasketOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetASNDocumentLinesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetASNDocumentListOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetActionsFromRemoteDBOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetCrossSellingOperationCompleted;
@@ -139,6 +143,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback MobilelPosGetLastReceiptNoOperationCompleted;
         
+        private System.Threading.SendOrPostCallback SendASNScannedLinesOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SendDocumentImageOperationCompleted;
         
         private System.Threading.SendOrPostCallback SendTransactionHeaderOperationCompleted;
@@ -221,6 +227,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event EcomCalculateBasketCompletedEventHandler EcomCalculateBasketCompleted;
+        
+        /// <remarks/>
+        public event GetASNDocumentLinesCompletedEventHandler GetASNDocumentLinesCompleted;
+        
+        /// <remarks/>
+        public event GetASNDocumentListCompletedEventHandler GetASNDocumentListCompleted;
         
         /// <remarks/>
         public event GetActionsFromRemoteDBCompletedEventHandler GetActionsFromRemoteDBCompleted;
@@ -353,6 +365,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event MobilelPosGetLastReceiptNoCompletedEventHandler MobilelPosGetLastReceiptNoCompleted;
+        
+        /// <remarks/>
+        public event SendASNScannedLinesCompletedEventHandler SendASNScannedLinesCompleted;
         
         /// <remarks/>
         public event SendDocumentImageCompletedEventHandler SendDocumentImageCompleted;
@@ -793,6 +808,82 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetASNDocumentLines", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetASNDocumentLines_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetASNDocumentLines(string aSNDocumentNo_p, ref RootGetDocumentLines getASNDocumentLinesXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("GetASNDocumentLines", new object[] {
+                        aSNDocumentNo_p,
+                        getASNDocumentLinesXML,
+                        responseCode,
+                        errorText});
+            getASNDocumentLinesXML = ((RootGetDocumentLines)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetASNDocumentLinesAsync(string aSNDocumentNo_p, RootGetDocumentLines getASNDocumentLinesXML, string responseCode, string errorText) {
+            this.GetASNDocumentLinesAsync(aSNDocumentNo_p, getASNDocumentLinesXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void GetASNDocumentLinesAsync(string aSNDocumentNo_p, RootGetDocumentLines getASNDocumentLinesXML, string responseCode, string errorText, object userState) {
+            if ((this.GetASNDocumentLinesOperationCompleted == null)) {
+                this.GetASNDocumentLinesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetASNDocumentLinesOperationCompleted);
+            }
+            this.InvokeAsync("GetASNDocumentLines", new object[] {
+                        aSNDocumentNo_p,
+                        getASNDocumentLinesXML,
+                        responseCode,
+                        errorText}, this.GetASNDocumentLinesOperationCompleted, userState);
+        }
+        
+        private void OnGetASNDocumentLinesOperationCompleted(object arg) {
+            if ((this.GetASNDocumentLinesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetASNDocumentLinesCompleted(this, new GetASNDocumentLinesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetASNDocumentList", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetASNDocumentList_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetASNDocumentList(string vendorNo_p, string locationCode_p, ref RootGetDocumentList getASNDocumentListXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("GetASNDocumentList", new object[] {
+                        vendorNo_p,
+                        locationCode_p,
+                        getASNDocumentListXML,
+                        responseCode,
+                        errorText});
+            getASNDocumentListXML = ((RootGetDocumentList)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetASNDocumentListAsync(string vendorNo_p, string locationCode_p, RootGetDocumentList getASNDocumentListXML, string responseCode, string errorText) {
+            this.GetASNDocumentListAsync(vendorNo_p, locationCode_p, getASNDocumentListXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void GetASNDocumentListAsync(string vendorNo_p, string locationCode_p, RootGetDocumentList getASNDocumentListXML, string responseCode, string errorText, object userState) {
+            if ((this.GetASNDocumentListOperationCompleted == null)) {
+                this.GetASNDocumentListOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetASNDocumentListOperationCompleted);
+            }
+            this.InvokeAsync("GetASNDocumentList", new object[] {
+                        vendorNo_p,
+                        locationCode_p,
+                        getASNDocumentListXML,
+                        responseCode,
+                        errorText}, this.GetASNDocumentListOperationCompleted, userState);
+        }
+        
+        private void OnGetASNDocumentListOperationCompleted(object arg) {
+            if ((this.GetASNDocumentListCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetASNDocumentListCompleted(this, new GetASNDocumentListCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetActionsFromRemoteDB", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetActionsFromRemoteDB_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void GetActionsFromRemoteDB(int tableNo, string entryNoFrom, string entryNoTo, ref RootGetActionsFromRemoteDBXML getActionsFromRemoteDBXML, ref string responseCode, ref string errorText) {
             object[] results = this.Invoke("GetActionsFromRemoteDB", new object[] {
@@ -997,7 +1088,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetDocumentListV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetDocumentListV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetDocumentListV2(ref string responseCode, ref string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, ref RootGetDocumentList getDocumentListXML) {
+        public void GetDocumentListV2(ref string responseCode, ref string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, ref RootGetDocumentList1 getDocumentListXML) {
             object[] results = this.Invoke("GetDocumentListV2", new object[] {
                         responseCode,
                         errorText,
@@ -1012,16 +1103,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                         getDocumentListXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getDocumentListXML = ((RootGetDocumentList)(results[2]));
+            getDocumentListXML = ((RootGetDocumentList1)(results[2]));
         }
         
         /// <remarks/>
-        public void GetDocumentListV2Async(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, RootGetDocumentList getDocumentListXML) {
+        public void GetDocumentListV2Async(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, RootGetDocumentList1 getDocumentListXML) {
             this.GetDocumentListV2Async(responseCode, errorText, pHHT_ID, pValue_Type, pValue, pProcess_Type, pDocument_Type, pStore_No, pLocation_Code, pItem_No, getDocumentListXML, null);
         }
         
         /// <remarks/>
-        public void GetDocumentListV2Async(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, RootGetDocumentList getDocumentListXML, object userState) {
+        public void GetDocumentListV2Async(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, string pItem_No, RootGetDocumentList1 getDocumentListXML, object userState) {
             if ((this.GetDocumentListV2OperationCompleted == null)) {
                 this.GetDocumentListV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDocumentListV2OperationCompleted);
             }
@@ -1048,7 +1139,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetDocumentList", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetDocumentList_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetDocumentList(ref string responseCode, ref string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, ref RootGetDocumentList getDocumentListXML) {
+        public void GetDocumentList(ref string responseCode, ref string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, ref RootGetDocumentList1 getDocumentListXML) {
             object[] results = this.Invoke("GetDocumentList", new object[] {
                         responseCode,
                         errorText,
@@ -1062,16 +1153,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                         getDocumentListXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            getDocumentListXML = ((RootGetDocumentList)(results[2]));
+            getDocumentListXML = ((RootGetDocumentList1)(results[2]));
         }
         
         /// <remarks/>
-        public void GetDocumentListAsync(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, RootGetDocumentList getDocumentListXML) {
+        public void GetDocumentListAsync(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, RootGetDocumentList1 getDocumentListXML) {
             this.GetDocumentListAsync(responseCode, errorText, pHHT_ID, pValue_Type, pValue, pProcess_Type, pDocument_Type, pStore_No, pLocation_Code, getDocumentListXML, null);
         }
         
         /// <remarks/>
-        public void GetDocumentListAsync(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, RootGetDocumentList getDocumentListXML, object userState) {
+        public void GetDocumentListAsync(string responseCode, string errorText, string pHHT_ID, string pValue_Type, string pValue, string pProcess_Type, string pDocument_Type, string pStore_No, string pLocation_Code, RootGetDocumentList1 getDocumentListXML, object userState) {
             if ((this.GetDocumentListOperationCompleted == null)) {
                 this.GetDocumentListOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDocumentListOperationCompleted);
             }
@@ -2604,6 +2695,43 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.MobilelPosGetLastReceiptNoCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MobilelPosGetLastReceiptNoCompleted(this, new MobilelPosGetLastReceiptNoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SendASNScannedLines", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SendASNScannedLines_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SendASNScannedLines(RootSendASNScannedLines sendASNScannedLinesXML, ref string result, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SendASNScannedLines", new object[] {
+                        sendASNScannedLinesXML,
+                        result,
+                        responseCode,
+                        errorText});
+            result = ((string)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void SendASNScannedLinesAsync(RootSendASNScannedLines sendASNScannedLinesXML, string result, string responseCode, string errorText) {
+            this.SendASNScannedLinesAsync(sendASNScannedLinesXML, result, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SendASNScannedLinesAsync(RootSendASNScannedLines sendASNScannedLinesXML, string result, string responseCode, string errorText, object userState) {
+            if ((this.SendASNScannedLinesOperationCompleted == null)) {
+                this.SendASNScannedLinesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSendASNScannedLinesOperationCompleted);
+            }
+            this.InvokeAsync("SendASNScannedLines", new object[] {
+                        sendASNScannedLinesXML,
+                        result,
+                        responseCode,
+                        errorText}, this.SendASNScannedLinesOperationCompleted, userState);
+        }
+        
+        private void OnSendASNScannedLinesOperationCompleted(object arg) {
+            if ((this.SendASNScannedLinesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SendASNScannedLinesCompleted(this, new SendASNScannedLinesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -17374,6 +17502,166 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.transactionHeaderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009629")]
+    public partial class ASNScannedLines {
+        
+        private string documentNoField;
+        
+        private int lineNoField;
+        
+        private string barcodeField;
+        
+        private string itemNoField;
+        
+        private string variantCodeField;
+        
+        private decimal quantityField;
+        
+        private string unitOfMeasureCodeField;
+        
+        private System.DateTime expiryDateField;
+        
+        private string batchOrLotNumberField;
+        
+        public ASNScannedLines() {
+            this.lineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.expiryDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string DocumentNo {
+            get {
+                return this.documentNoField;
+            }
+            set {
+                this.documentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Barcode {
+            get {
+                return this.barcodeField;
+            }
+            set {
+                this.barcodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitOfMeasureCode {
+            get {
+                return this.unitOfMeasureCodeField;
+            }
+            set {
+                this.unitOfMeasureCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ExpiryDate {
+            get {
+                return this.expiryDateField;
+            }
+            set {
+                this.expiryDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BatchOrLotNumber {
+            get {
+                return this.batchOrLotNumberField;
+            }
+            set {
+                this.batchOrLotNumberField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009629")]
+    public partial class RootSendASNScannedLines {
+        
+        private ASNScannedLines[] aSNScannedLinesField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ASNScannedLines")]
+        public ASNScannedLines[] ASNScannedLines {
+            get {
+                return this.aSNScannedLinesField;
+            }
+            set {
+                this.aSNScannedLinesField = value;
             }
         }
         
@@ -33001,8 +33289,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033050")]
-    public partial class RootGetDocumentList {
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="RootGetDocumentList", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033050")]
+    public partial class RootGetDocumentList1 {
         
         private POSTransInvHeader[] pOSTransInvHeaderField;
         
@@ -34168,6 +34456,300 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.preactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009625")]
+    public partial class ASNDeliveryDocument {
+        
+        private string aSNDocumentNoField;
+        
+        private string vendorNoField;
+        
+        private string vendorNameField;
+        
+        private string trustLevelField;
+        
+        private System.DateTime estimatedArrivalDateField;
+        
+        private string manifestNoField;
+        
+        private string dispatchNoField;
+        
+        public ASNDeliveryDocument() {
+            this.estimatedArrivalDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string ASNDocumentNo {
+            get {
+                return this.aSNDocumentNoField;
+            }
+            set {
+                this.aSNDocumentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VendorNo {
+            get {
+                return this.vendorNoField;
+            }
+            set {
+                this.vendorNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VendorName {
+            get {
+                return this.vendorNameField;
+            }
+            set {
+                this.vendorNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TrustLevel {
+            get {
+                return this.trustLevelField;
+            }
+            set {
+                this.trustLevelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime EstimatedArrivalDate {
+            get {
+                return this.estimatedArrivalDateField;
+            }
+            set {
+                this.estimatedArrivalDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ManifestNo {
+            get {
+                return this.manifestNoField;
+            }
+            set {
+                this.manifestNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DispatchNo {
+            get {
+                return this.dispatchNoField;
+            }
+            set {
+                this.dispatchNoField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009625")]
+    public partial class RootGetDocumentList {
+        
+        private ASNDeliveryDocument[] aSNDeliveryDocumentField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ASNDeliveryDocument")]
+        public ASNDeliveryDocument[] ASNDeliveryDocument {
+            get {
+                return this.aSNDeliveryDocumentField;
+            }
+            set {
+                this.aSNDeliveryDocumentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009626")]
+    public partial class GetASNDocumentLinesXML {
+        
+        private string aSNDocumentNoField;
+        
+        private int aSNDocumentLineNoField;
+        
+        private string itemNoField;
+        
+        private string variantCodeField;
+        
+        private string boxNoField;
+        
+        private decimal remainingQtyField;
+        
+        private string batchLotField;
+        
+        private System.DateTime expirationDateField;
+        
+        private string[] trustLevelField;
+        
+        public GetASNDocumentLinesXML() {
+            this.aSNDocumentLineNoField = 0;
+            this.remainingQtyField = ((decimal)(0m));
+            this.expirationDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string ASNDocumentNo {
+            get {
+                return this.aSNDocumentNoField;
+            }
+            set {
+                this.aSNDocumentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int ASNDocumentLineNo {
+            get {
+                return this.aSNDocumentLineNoField;
+            }
+            set {
+                this.aSNDocumentLineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BoxNo {
+            get {
+                return this.boxNoField;
+            }
+            set {
+                this.boxNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal RemainingQty {
+            get {
+                return this.remainingQtyField;
+            }
+            set {
+                this.remainingQtyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BatchLot {
+            get {
+                return this.batchLotField;
+            }
+            set {
+                this.batchLotField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ExpirationDate {
+            get {
+                return this.expirationDateField;
+            }
+            set {
+                this.expirationDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("TrustLevel")]
+        public string[] TrustLevel {
+            get {
+                return this.trustLevelField;
+            }
+            set {
+                this.trustLevelField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009626")]
+    public partial class RootGetDocumentLines {
+        
+        private GetASNDocumentLinesXML[] getASNDocumentLinesXMLField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("GetASNDocumentLinesXML")]
+        public GetASNDocumentLinesXML[] GetASNDocumentLinesXML {
+            get {
+                return this.getASNDocumentLinesXMLField;
+            }
+            set {
+                this.getASNDocumentLinesXMLField = value;
             }
         }
         
@@ -45572,6 +46154,90 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetASNDocumentLinesCompletedEventHandler(object sender, GetASNDocumentLinesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetASNDocumentLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetASNDocumentLinesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public RootGetDocumentLines getASNDocumentLinesXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetDocumentLines)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetASNDocumentListCompletedEventHandler(object sender, GetASNDocumentListCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetASNDocumentListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetASNDocumentListCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public RootGetDocumentList getASNDocumentListXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetDocumentList)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void GetActionsFromRemoteDBCompletedEventHandler(object sender, GetActionsFromRemoteDBCompletedEventArgs e);
     
     /// <remarks/>
@@ -45814,10 +46480,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public RootGetDocumentList getDocumentListXML {
+        public RootGetDocumentList1 getDocumentListXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((RootGetDocumentList)(this.results[2]));
+                return ((RootGetDocumentList1)(this.results[2]));
             }
         }
     }
@@ -45856,10 +46522,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        public RootGetDocumentList getDocumentListXML {
+        public RootGetDocumentList1 getDocumentListXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((RootGetDocumentList)(this.results[2]));
+                return ((RootGetDocumentList1)(this.results[2]));
             }
         }
     }
@@ -47499,6 +48165,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public string lastReceiptNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void SendASNScannedLinesCompletedEventHandler(object sender, SendASNScannedLinesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SendASNScannedLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SendASNScannedLinesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));

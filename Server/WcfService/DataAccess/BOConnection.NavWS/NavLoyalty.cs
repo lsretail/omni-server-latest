@@ -59,7 +59,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
             if (numberOfTrans > 0 && contact != null)
             {
-                contact.SalesEntries = SalesEntriesGetByCardId(card, numberOfTrans, string.Empty);
+                contact.SalesEntries = SalesEntriesGetByCardId(card, string.Empty, DateTime.MinValue, false, numberOfTrans);
             }
             return contact;
         }
@@ -69,9 +69,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ContactGetByUserName(user, includeDetails);
         }
 
-        public virtual MemberContact ContactGetByEMail(string email, bool includeDetails)
+        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
-            return NavWSBase.ContactGetByEmail(email, includeDetails);
+            return NavWSBase.ContactGetByEmail(searchValue, false);
         }
 
         public virtual double ContactAddCard(string contactId, string accountId, string cardId)
@@ -294,9 +294,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #region Transaction
 
-        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions, string culture)
+        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
         {
-            List<SalesEntry> list = NavWSBase.SalesHistory(cardId, maxNumberOfTransactions);
+            List<SalesEntry> list = NavWSBase.SalesHistory(cardId, maxNumberOfEntries);
             list.AddRange(NavWSBase.OrderHistoryGet(cardId));
             return list;
         }

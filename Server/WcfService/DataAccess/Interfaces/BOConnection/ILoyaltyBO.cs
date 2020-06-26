@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Setup;
+﻿using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using System;
+using System.Collections.Generic;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -29,7 +29,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         double ContactAddCard(string contactId, string accountId, string cardId);
         MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails);
         MemberContact ContactGetByUserName(string user, bool includeDetails);
-        MemberContact ContactGetByEMail(string email, bool includeDetails);
+        MemberContact ContactGet(ContactSearchType searchType, string searchValue);
 
         void Login(string userName, string password, string cardId);
         string ChangePassword(string userName, string newPassword, string oldPassword);
@@ -77,7 +77,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Transaction
 
-        List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions, string culture);
+        List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries);
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping);
         string FormatAmount(decimal amount, string culture);
         List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions);

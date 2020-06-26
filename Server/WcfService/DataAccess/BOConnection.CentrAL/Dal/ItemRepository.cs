@@ -48,7 +48,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            sqlcolumns += ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
+            string col = sqlcolumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
                          "LEFT JOIN [" + navCompanyName + "Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] " +
                          "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
@@ -124,7 +124,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<ReplItem> list = new List<ReplItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -207,7 +207,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            sqlcolumns += ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
+            string col = sqlcolumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
                          "LEFT JOIN [" + navCompanyName + "Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] " +
                          "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
@@ -297,7 +297,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<LoyItem> list = new List<LoyItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

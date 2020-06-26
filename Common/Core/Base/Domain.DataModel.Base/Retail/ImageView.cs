@@ -77,19 +77,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public ImageView(string id) : base(id)
         {
             Image = string.Empty;   //base64 string of image
-            Location = string.Empty; //if locationType is "Url" then this holds the URL to the image
+            StreamURL = string.Empty; //if locationType is "Url" then this holds the URL to the image
+            Location = string.Empty;
             DisplayOrder = 0;
             LocationType = LocationType.Image;
             ImgSize = new ImageSize(); //size of image as stored in database, 200x500 etc. client can determine
             Format = string.Empty; //jpeg, png
             AvgColor = string.Empty;
-            LoadFromFile = false;
 
             ImgBytes = null;  //used on server only, not on client
         }
 
-        public ImageView()
-            : this(string.Empty)
+        public ImageView() : this(string.Empty)
         {
         }
 
@@ -114,10 +113,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
                 Format = Format,
                 Image = Image,
                 ImgSize = ImgSize,
+                StreamURL = StreamURL,
                 Location = Location,
+                Crossfade = Crossfade,
                 LocationType = LocationType,
                 ImgBytes = ImgBytes,
-                LoadFromFile = LoadFromFile,
                 AvgColor = AvgColor
             };
         }
@@ -134,6 +134,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         [DataMember]
         public string Image { get; set; }
         [DataMember]
+        public string StreamURL { get; set; }
+        [DataMember]
         public string Location { get; set; }
         [DataMember]
         public LocationType LocationType { get; set; }
@@ -143,8 +145,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         public ImageSize ImgSize { get; set; }
         [DataMember]
         public string Format { get; set; }
-        [DataMember]
-        public bool LoadFromFile { get; set; }
 
         //not all data goes to wcf clients
         public byte[] ImgBytes { get; set; }

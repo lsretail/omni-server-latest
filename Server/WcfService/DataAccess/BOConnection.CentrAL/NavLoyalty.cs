@@ -65,7 +65,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
                 contact.Profiles = ProfileGetByCardId(card);
                 contact.PublishedOffers = PublishedOffersGet(card, string.Empty, string.Empty);
-                contact.SalesEntries = SalesEntriesGetByCardId(card, numberOfTrans, string.Empty);
+                contact.SalesEntries = SalesEntriesGetByCardId(card, string.Empty, DateTime.MinValue, false, numberOfTrans);
             }
             return contact;
         }
@@ -85,10 +85,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return contact;
         }
 
-        public virtual MemberContact ContactGetByEMail(string email, bool includeDetails)
+        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
-            return rep.ContactGet(ContactSearchType.Email, email);
+            return rep.ContactGet(searchType, searchValue);
         }
 
         public virtual double ContactAddCard(string contactId, string accountId, string cardId)
@@ -235,7 +235,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
-            return NavWSBase.GiftCardGetBalance(cardNo, entryType);
+            ContactRepository rep = new ContactRepository(config, NAVVersion);
+            return rep.GetGiftCartBalance(cardNo, entryType);
+
+            //NAV WS does not work as for now
+            //return NavWSBase.GiftCardGetBalance(cardNo, entryType);
         }
 
         #endregion
@@ -398,10 +402,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return entry;
         }
 
-        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions, string culture)
+        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
         {
             SalesEntryRepository repo = new SalesEntryRepository(config, NAVVersion);
-            return repo.SalesEntriesByCardId(cardId, maxNumberOfTransactions);
+            return repo.SalesEntriesByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
         }
 
         #endregion

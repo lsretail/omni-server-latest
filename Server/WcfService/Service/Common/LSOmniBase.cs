@@ -293,7 +293,7 @@ namespace LSOmni.Service
                 if (imgView != null)
                 {
                     // http://localhost/LSOmniService/json.svc/ImageStreamGetById?width=255&height=455&id=66
-                    imgView.Location = GetImageStreamUrl(imgView);
+                    imgView.StreamURL = GetImageStreamUrl(imgView);
                 }
                 return imgView;
             }

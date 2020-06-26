@@ -616,6 +616,38 @@ namespace LSOmni.Service
         List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfEntries);
 
         /// <summary>
+        /// Get All Sales Entries (Transactions and Orders) by Card Id and optional filter by Store Id and Registration Date
+        /// </summary>
+        /// <param name="cardId">Card Id (Required)</param>
+        /// <param name="storeId">Filter by Store Id</param>
+        /// <param name="date">Filter by Registration Date.  Set Date value to MinValue (0001-01-01) to skip Date Filtering</param>
+        /// <param name="dateGreaterThan">Get Entries Greater (true) or Less (false) than Filter Date</param>
+        /// <param name="maxNumberOfEntries">max number of transactions returned</param>
+        /// <returns>List of most recent Transactions for a contact</returns>
+        /// <exception cref="LSOmniServiceException">StatusCodes returned:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>StatusCode.Error</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.SecurityTokenInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.UserNotLoggedIn</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.DeviceIsBlocked</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.AccessNotAllowed</description>
+        /// </item>
+        /// </list>
+        /// </exception>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<SalesEntry> SalesEntriesGetByCardIdEx(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries);
+
+        /// <summary>
         /// Get the Sale details (order/transaction)
         /// </summary>
         /// <param name="entryId">Sales Entry ID</param>

@@ -40,6 +40,11 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact);
         }
 
+        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
+        {
+            return BOLoyConnection.ContactGet(searchType, searchValue);
+        }
+
         public virtual MemberContact ContactGetByCardId(string cardId, bool includeDetails)
         {
             if(string.IsNullOrWhiteSpace(cardId))
@@ -99,7 +104,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 throw new LSOmniServiceException(StatusCode.UserNameExists, "User name already exists: " + contact.UserName);
             }
-            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && BOLoyConnection.ContactGetByEMail(contact.Email, false) != null)
+            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && BOLoyConnection.ContactGet(ContactSearchType.Email, contact.Email) != null)
             {
                 throw new LSOmniServiceException(StatusCode.EmailExists, "Email already exists: " + contact.UserName);
             }
@@ -171,7 +176,7 @@ namespace LSOmni.BLL.Loyalty
             if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && (ct.Email.Trim().ToLower() != contact.Email.Trim().ToLower()))
             {
                 //if the email has changed, check if the new one exists in db
-                if (BOLoyConnection.ContactGetByEMail(contact.Email, false) != null)
+                if (BOLoyConnection.ContactGet(ContactSearchType.Email, contact.Email) != null)
                 {
                     throw new LSOmniServiceException(StatusCode.EmailExists, string.Format("Email {0} already exists.", contact.Email));
                 }
@@ -281,7 +286,7 @@ namespace LSOmni.BLL.Loyalty
             //get the username from resetCode, if resetCode is not specified
             MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
             if (contact == null)
-                contact = BOLoyConnection.ContactGetByEMail(userNameOrEmail, false);
+                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail);
 
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userNameOrEmail);
@@ -330,7 +335,7 @@ namespace LSOmni.BLL.Loyalty
             //get the username from resetCode, if resetCode is not specified
             MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
             if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && contact == null)
-                contact = BOLoyConnection.ContactGetByEMail(userNameOrEmail, false);
+                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail);
 
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userNameOrEmail);
@@ -347,7 +352,7 @@ namespace LSOmni.BLL.Loyalty
             //get the contactId from either UserName of Email addresses
             MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
             if (contact == null)
-                contact = BOLoyConnection.ContactGetByEMail(userNameOrEmail, false);
+                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail);
 
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userNameOrEmail);

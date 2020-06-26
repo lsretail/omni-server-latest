@@ -273,9 +273,31 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             line.FromRecommendation = isFromRecommendation;
             if (saleLine != null)
             {
-                line.ManualDiscount = saleLine.ManualDiscount;
-                line.LineDiscount = saleLine.LineDiscount;
+                line.ReturnQuantity = saleLine.Quantity;
+            }
+
+            if (saleLine != null && saleLine.Discounts.Count > 0)
+            {
+                if (saleLine.ManualDiscount?.Amount.Value > 0)
+                {
+                    line.ManualDiscount = saleLine.ManualDiscount;
+                }
+
+                if (saleLine.LineDiscount?.Amount.Value > 0)
+                {
+                    line.LineDiscount = saleLine.LineDiscount;
+                }
+
                 line.Discounts = saleLine.Discounts;
+
+                if (saleLine.Discounts[0].Amount.Value < 0)
+                {
+                    line.ManualDiscount.Amount.Value = saleLine.Discounts[0].Amount.Value * -1;
+                }
+                else
+                {
+                    line.ManualDiscount.Amount.Value = saleLine.Discounts[0].Amount.Value;
+                }
             }
 
             this.SaleLines.Add(line);
@@ -536,8 +558,9 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
                 if (saleLine.Voided == false)
                 {
                     NumberOfItems += Convert.ToInt32(saleLine.Quantity);
-                    NumberOfSaleLines += 1;
                 }
+
+                NumberOfSaleLines += 1;
             }
 
             if (calculateSaleLines)

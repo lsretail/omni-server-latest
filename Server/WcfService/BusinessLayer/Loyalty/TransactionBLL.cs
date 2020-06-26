@@ -16,9 +16,9 @@ namespace LSOmni.BLL.Loyalty
             tenderMapping = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);   //will throw exception if not found
         }
 
-        public List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfTransactions)
+        public List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
         {
-            return BOLoyConnection.SalesEntriesGetByCardId(cardId, maxNumberOfTransactions, base.GetAppSettingCurrencyCulture());
+            return BOLoyConnection.SalesEntriesGetByCardId(cardId, storeId, date, dateGreaterThan , maxNumberOfEntries);
         }
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)

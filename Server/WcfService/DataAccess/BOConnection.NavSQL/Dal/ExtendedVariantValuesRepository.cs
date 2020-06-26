@@ -35,6 +35,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records remaining
             string sql = string.Empty;
+            string col = sqlcolumns;
+
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, whereaddon, "mt.[Item No_]", storeId, false);
@@ -57,10 +59,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
                     if (hascol)
                     {
-                        sqlcolumns += ",(SELECT vd.[Logical Order] FROM [" + navCompanyName + "Extended Variant Dimensions] vd " +
+                        col += ",(SELECT vd.[Logical Order] FROM [" + navCompanyName + "Extended Variant Dimensions] vd " +
                                       "WHERE vd.[Framework Code]=mt.[Framework Code] AND vd.[Dimension No_]=mt.[Dimension] AND vd.[Item]='') AS DOrder";
                     }
-                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true);
+                    command.CommandText = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true);
 
                     if (fullReplication)
                     {

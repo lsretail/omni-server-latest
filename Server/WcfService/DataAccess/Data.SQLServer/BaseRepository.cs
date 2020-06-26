@@ -50,7 +50,7 @@ namespace LSOmni.DataAccess.Dal
 
         //simply check if a record exists
         // select count(*)  from xx where y=9. 
-        //using params args to avoid sql injection
+        //using params args to avoid SQL injection
         protected bool DoesRecordExist(string tableName, string whereClause, params object[] args)
         {
             if (string.IsNullOrWhiteSpace(whereClause))
@@ -116,7 +116,7 @@ namespace LSOmni.DataAccess.Dal
         protected void TraceIt(string msg)
         {
             if (logger.IsTraceEnabled)
-                logger.Trace(config.LSKey.Key, "\r\n" + msg);
+                logger.Trace(config?.LSKey.Key, "\r\n" + msg);
         }
 
         protected void TraceSqlCommand(System.Data.IDbCommand command)
@@ -129,7 +129,7 @@ namespace LSOmni.DataAccess.Dal
                     if (command.CommandType == System.Data.CommandType.StoredProcedure)
                         builder.AppendLine("Stored procedure: " + command.CommandText);
                     else
-                        builder.AppendLine("Sql command: " + command.CommandText);
+                        builder.AppendLine("SQL Command:" + command.CommandText);
 
                     if (command.Parameters.Count > 0)
                         builder.AppendLine("With the following parameters.");
@@ -137,16 +137,15 @@ namespace LSOmni.DataAccess.Dal
                     foreach (System.Data.IDataParameter param in command.Parameters)
                     {
                         builder.AppendFormat(
-                            "     Parameter {0}: {1}",
+                            " > Parameter {0}:{1}",
                             param.ParameterName,
-                            (param.Value == null ?
-                            "NULL" : param.Value.ToString())).AppendLine();
+                            (param.Value == null ? "NULL" : param.Value.ToString())).AppendLine();
                     }
-                    logger.Trace(config.LSKey.Key, "\r\n" + builder.ToString());
+                    logger.Trace(config?.LSKey.Key, "\r\n" + builder.ToString());
                 }
                 catch (Exception ex)
                 {
-                    logger.Error(config.LSKey.Key, "\r\n" + ex.Message);
+                    logger.Error(config?.LSKey.Key, "\r\n" + ex.Message);
                 }
             }
         }

@@ -16,6 +16,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         Hospitality = 3
     }
 
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum DocumentQuantityMethod
+    {
+        [EnumMember]
+        None = 0,
+        [EnumMember]
+        QuickScan = 1,
+        [EnumMember]
+        Ask = 2,
+        [EnumMember]
+        SuggestiveQuickScan = 3,
+    }
+
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(UnknownTerminal))]
     [System.Xml.Serialization.XmlInclude(typeof(UnknownTerminal))]
 	public class Terminal : Entity, IAggregateRoot
@@ -70,6 +83,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public string HospTypeFilter { get; set; }
         [DataMember]
         public FeatureFlags Features { get; set; }
+        [DataMember]
+        public DocumentQuantityMethod ASNQuantityMethod { get; set; }
     }
 }
 

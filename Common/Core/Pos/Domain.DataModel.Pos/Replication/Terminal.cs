@@ -108,5 +108,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         public string MainMenuID { get; set; }
         [DataMember]
         public FeatureFlags Features { get; set; }
+        [DataMember]
+        public DocumentQuantityMethod ASNQuantityMethod { get; set; }
     }
 }

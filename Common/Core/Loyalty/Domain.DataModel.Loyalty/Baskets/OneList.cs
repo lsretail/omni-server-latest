@@ -174,7 +174,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public void Clear()
         {
             Id = string.Empty;
-            StoreId = string.Empty;
             Items.Clear();
             PublishedOffers.Clear();
         }

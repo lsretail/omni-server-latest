@@ -28,18 +28,19 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             List<JscKey> keys = GetPrimaryKeys("Vendor");
+            string from = sqlfrom;
 
             if (string.IsNullOrEmpty(storeId) == false)
-                sqlfrom += " LEFT JOIN [" + navCompanyName + "Item] it ON it.[Vendor No_]=mt.[No_]";
+                from += " LEFT JOIN [" + navCompanyName + "Item] it ON it.[Vendor No_]=mt.[No_]";
 
             // get records remaining
             string sql = string.Empty;
             if (fullReplication)
             {
                 if (string.IsNullOrEmpty(storeId))
-                    sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+                    sql = "SELECT COUNT(*)" + from + GetWhereStatement(true, keys, false);
                 else
-                    sql = "SELECT COUNT(DISTINCT mt.[No_])" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
+                    sql = "SELECT COUNT(DISTINCT mt.[No_])" + from + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
@@ -48,9 +49,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records
             if (string.IsNullOrEmpty(storeId))
-                sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
+                sql = GetSQL(fullReplication, batchSize) + sqlcolumns + from + GetWhereStatement(fullReplication, keys, true);
             else
-                sql = GetSQL(fullReplication, batchSize, true, true) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "it.[No_]", storeId, true);
+                sql = GetSQL(fullReplication, batchSize, true, true) + sqlcolumns + from + GetWhereStatementWithStoreDist(fullReplication, keys, "it.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

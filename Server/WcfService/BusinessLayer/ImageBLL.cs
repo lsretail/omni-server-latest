@@ -40,8 +40,7 @@ namespace LSOmni.BLL
         public virtual ImageView ImageSizeGetById(string id, ImageSize imageSize)
         {
             // when NO caching or image is full size, then don't bother saving anything in database...
-            if (config.SettingsIntGetByKey(ConfigKey.Cache_Image_DurationInMinutes) == 0 || 
-                (imageSize.Width == 0 && imageSize.Height == 0))
+            if (config.SettingsIntGetByKey(ConfigKey.Cache_Image_DurationInMinutes) == 0 || (imageSize.Width == 0 && imageSize.Height == 0))
             {
                 return ImageGetById(id, imageSize, true);
             }
@@ -78,7 +77,7 @@ namespace LSOmni.BLL
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, ex, "Updating the Imagecache failed");
+                logger.Error(config.LSKey.Key, ex, "Updating the Image Cache failed");
             }
 
             //now the image should be in cache, if not for some reason.. then return null.. not found
@@ -113,7 +112,7 @@ namespace LSOmni.BLL
             }
             else if (iv.LocationType == LocationType.Url)
             {
-                //get the original image from URL file location
+                // get the original image from URL file location
             }
 
             iv.ImgSize = imgSize;

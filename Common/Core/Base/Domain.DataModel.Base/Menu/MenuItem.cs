@@ -83,7 +83,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
             MenuItem item = (MenuItem)MemberwiseClone();
 
             item.Images = new List<ImageView>();
-            Images.ForEach(x => item.Images.Add(new ImageView(x.Id) { AvgColor = x.AvgColor, DisplayOrder = x.DisplayOrder, Format = x.Format, Image = x.Image, ImgSize = x.ImgSize, Location = x.Location, LocationType = x.LocationType }));
+            Images.ForEach(x => item.Images.Add(new ImageView(x.Id) 
+            { 
+                AvgColor = x.AvgColor, 
+                DisplayOrder = x.DisplayOrder, 
+                Format = x.Format, 
+                Image = x.Image, 
+                ImgSize = x.ImgSize, 
+                Location = x.Location, 
+                StreamURL = x.StreamURL, 
+                LocationType = x.LocationType
+            }));
 
             item.DefaultMenuType = this.DefaultMenuType;
             return item;

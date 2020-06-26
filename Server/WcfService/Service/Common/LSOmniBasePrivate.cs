@@ -219,7 +219,7 @@ namespace LSOmni.Service
                     for (int m = 0; m < mobileMenu.Items[k].Images.Count; m++)
                     {
                         if (mobileMenu.Items[k].Images[m] != null)
-                            mobileMenu.Items[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Items[k].Images[m].Id));
+                            mobileMenu.Items[k].Images[m].StreamURL = GetImageStreamUrl(new ImageView(mobileMenu.Items[k].Images[m].Id));
                     }
                 }
             }
@@ -233,7 +233,7 @@ namespace LSOmni.Service
                     for (int m = 0; m < mobileMenu.Products[k].Images.Count; m++)
                     {
                         if (mobileMenu.Products[k].Images[m] != null)
-                            mobileMenu.Products[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Products[k].Images[m].Id));
+                            mobileMenu.Products[k].Images[m].StreamURL = GetImageStreamUrl(new ImageView(mobileMenu.Products[k].Images[m].Id));
                     }
                 }
             }
@@ -247,7 +247,7 @@ namespace LSOmni.Service
                     for (int m = 0; m < mobileMenu.Recipes[k].Images.Count; m++)
                     {
                         if (mobileMenu.Recipes[k].Images[m] != null)
-                            mobileMenu.Recipes[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Recipes[k].Images[m].Id));
+                            mobileMenu.Recipes[k].Images[m].StreamURL = GetImageStreamUrl(new ImageView(mobileMenu.Recipes[k].Images[m].Id));
                     }
                 }
             }
@@ -260,7 +260,7 @@ namespace LSOmni.Service
                     for (int m = 0; m < mobileMenu.Deals[k].Images.Count; m++)
                     {
                         if (mobileMenu.Deals[k].Images[m] != null)
-                            mobileMenu.Deals[k].Images[m].Location = GetImageStreamUrl(new ImageView(mobileMenu.Deals[k].Images[m].Id));
+                            mobileMenu.Deals[k].Images[m].StreamURL = GetImageStreamUrl(new ImageView(mobileMenu.Deals[k].Images[m].Id));
                     }
                 }
             }
@@ -268,14 +268,14 @@ namespace LSOmni.Service
             for (int k = 0; k < (mobileMenu.MenuNodes != null ? mobileMenu.MenuNodes.Count : 0); k++)
             {
                 if (mobileMenu.MenuNodes[k].Image != null)
-                    mobileMenu.MenuNodes[k].Image.Location = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].Image.Id));
+                    mobileMenu.MenuNodes[k].Image.StreamURL = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].Image.Id));
 
                 if (mobileMenu.MenuNodes[k].MenuNodes != null)
                 {
                     for (int m = 0; m < mobileMenu.MenuNodes[k].MenuNodes.Count; m++)
                     {
                         if (mobileMenu.MenuNodes[k].MenuNodes[m] != null)
-                            mobileMenu.MenuNodes[k].MenuNodes[m].Image.Location = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].MenuNodes[m].Image.Id));
+                            mobileMenu.MenuNodes[k].MenuNodes[m].Image.StreamURL = GetImageStreamUrl(new ImageView(mobileMenu.MenuNodes[k].MenuNodes[m].Image.Id));
                     }
                 }
             }
@@ -325,19 +325,19 @@ namespace LSOmni.Service
 
             foreach (ImageView iv in itemCategory.Images)
             {
-                iv.Location = GetImageStreamUrl(iv);
+                iv.StreamURL = GetImageStreamUrl(iv);
             }
             foreach (ProductGroup pg in itemCategory.ProductGroups)
             {
                 foreach (ImageView iv in pg.Images)
                 {
-                    iv.Location = GetImageStreamUrl(iv);
+                    iv.StreamURL = GetImageStreamUrl(iv);
                 }
                 foreach (LoyItem it in pg.Items)
                 {
                     foreach (ImageView iv in it.Images)
                     {
-                        iv.Location = GetImageStreamUrl(iv);
+                        iv.StreamURL = GetImageStreamUrl(iv);
                     }
                 }
             }
@@ -350,13 +350,13 @@ namespace LSOmni.Service
 
             foreach (ImageView iv in productGroup.Images)
             {
-                iv.Location = GetImageStreamUrl(iv);
+                iv.StreamURL = GetImageStreamUrl(iv);
             }
             foreach (LoyItem it in productGroup.Items)
             {
                 foreach (ImageView iv in it.Images)
                 {
-                    iv.Location = GetImageStreamUrl(iv);
+                    iv.StreamURL = GetImageStreamUrl(iv);
                 }
             }
         }
@@ -368,7 +368,7 @@ namespace LSOmni.Service
 
             foreach (ImageView iv in store.Images)
             {
-                iv.Location = GetImageStreamUrl(iv);
+                iv.StreamURL = GetImageStreamUrl(iv);
             }
         }
 
@@ -378,7 +378,7 @@ namespace LSOmni.Service
                 return;
             foreach (ImageView iv in notification.Images)
             {
-                iv.Location = GetImageStreamUrl(iv);
+                iv.StreamURL = GetImageStreamUrl(iv);
             }
         }
 
@@ -389,20 +389,20 @@ namespace LSOmni.Service
 
             foreach (ImageView iv in item.Images)
             {
-                iv.Location = GetImageStreamUrl(iv);
+                iv.StreamURL = GetImageStreamUrl(iv);
             }
             foreach (VariantRegistration variant in item.VariantsRegistration)
             {
                 foreach (ImageView iv2 in variant.Images)
                 {
-                    iv2.Location = GetImageStreamUrl(iv2);
+                    iv2.StreamURL = GetImageStreamUrl(iv2);
                 }
             }
             foreach (VariantRegistration variant in item.VariantsRegistration)
             {
                 foreach (ImageView iv2 in variant.Images)
                 {
-                    iv2.Location = GetImageStreamUrl(iv2);
+                    iv2.StreamURL = GetImageStreamUrl(iv2);
                 }
             }
         }
@@ -424,7 +424,7 @@ namespace LSOmni.Service
 
             foreach (OneListItem line in list.Items)
             {
-                line.Image.Location = GetImageStreamUrl(line.Image);
+                line.Image.StreamURL = GetImageStreamUrl(line.Image);
             }
         }
 
@@ -441,11 +441,11 @@ namespace LSOmni.Service
             {
                 foreach (ImageView iv in list.Images)
                 {
-                    iv.Location = GetImageStreamUrl(iv);
+                    iv.StreamURL = GetImageStreamUrl(iv);
                 }
                 foreach (OfferDetails od in list.OfferDetails)
                 {
-                    od.Image.Location = GetImageStreamUrl(od.Image);
+                    od.Image.StreamURL = GetImageStreamUrl(od.Image);
                 }
             }
         }
@@ -454,7 +454,7 @@ namespace LSOmni.Service
         {
             if (advertisement != null && advertisement.ImageView != null)
             {
-                advertisement.ImageView.Location = GetImageStreamUrl(advertisement.ImageView);
+                advertisement.ImageView.StreamURL = GetImageStreamUrl(advertisement.ImageView);
             }
         }
 

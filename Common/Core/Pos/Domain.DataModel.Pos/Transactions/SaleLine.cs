@@ -164,15 +164,16 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
             if (this.Quantity >= MPOSFeatures.MaximumQty)
                 return;
 
-            if (this.Quantity - returnQuantity > -1)
-            {
-                var addtoQuantity = returnQuantity - this.Quantity;
-                this.Quantity = this.Quantity + addtoQuantity;
-            }
-            else
+            if (returnQuantity == 0)
             {
                 this.Quantity++;
             }
+            else if (this.Quantity - returnQuantity != 0)
+            {
+                this.Quantity++;
+            }
+
+
             ContainsExternalValues = false;
             Dirty = true;
         }

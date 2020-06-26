@@ -56,7 +56,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            sqlcolumns += ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup] sg " +
+            string col = sqlcolumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup] sg " +
                          "LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group] " +
                          "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
@@ -81,7 +81,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
-                // get item html and distirbution changes 
+                // get item HTML and distribution changes 
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
                 tmplastkey = lastKey;
@@ -132,7 +132,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<ReplItem> list = new List<ReplItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -215,7 +215,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            sqlcolumns += ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup] sg " +
+            string col = sqlcolumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "Store Group Setup] sg " +
                          "LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group] " +
                          "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
@@ -305,7 +305,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             List<LoyItem> list = new List<LoyItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

@@ -31,6 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlfrom = " FROM [" + navCompanyName + "Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                       " LEFT OUTER JOIN [" + navCompanyName + "Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
         }
+
         public List<ReplCustomer> ReplicateMembers(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -131,46 +132,46 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (maxNumberOfRowsReturned < 1)
                 maxNumberOfRowsReturned = 0;
 
-            SQLHelper.CheckForSQLInjection(search);
-
             List<MemberContact> list = new List<MemberContact>();
+            string col = sqlcolumns;
+            string from = sqlfrom;
             string where = string.Empty;
             string order = string.Empty;
-            string like = (exact) ? string.Format("='{0}'", search) : string.Format(" LIKE '%{0}%'", search);
+            string like = (exact) ? "=" : " LIKE ";
 
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
-                    where = string.Format("mt.[Contact No_]{0}", like);
+                    where = string.Format("mt.[Contact No_]{0}@value", like);
                     order = "mt.[Contact No_]";
                     break;
 
                 case ContactSearchType.Email:
-                    where = string.Format("mt.[Search E-Mail]{0} {1}", like, GetDbCICollation());
+                    where = string.Format("mt.[Search E-Mail]{0}@value {1}", like, GetDbCICollation());
                     order = "mt.[Search E-Mail]";
                     break;
 
                 case ContactSearchType.Name:
-                    where = string.Format("mt.[Search Name]{0} {1}", like, GetDbCICollation());
+                    where = string.Format("mt.[Search Name]{0}@value {1}", like, GetDbCICollation());
                     order = "mt.[Search Name]";
                     break;
 
                 case ContactSearchType.PhoneNumber:
-                    where = string.Format("(mt.[Phone No_]{0} OR mt.[Mobile Phone No_]{0})", like);
+                    where = string.Format("(mt.[Phone No_]{0}@value OR mt.[Mobile Phone No_]{0}@value)", like);
                     break;
 
                 case ContactSearchType.CardId:
-                    sqlcolumns += ", mc.[Card No_] ";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
-                    where = string.Format("mc.[Card No_]='{0}'", search);
+                    col += ", mc.[Card No_] ";
+                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    where = "mc.[Card No_]=@value";
                     order = "mc.[Card No_]";
                     break;
 
                 case ContactSearchType.UserName:
-                    sqlcolumns += ", mlc.[Login ID]";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] " +
-                               "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mlc on mc.[Card No_]=mlc.[Card No_]";
-                    where = string.Format("mlc.[Login ID]{0} {1}", like, GetDbCICollation());
+                    col += ", mlc.[Login ID]";
+                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] " +
+                            "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mlc on mc.[Card No_]=mlc.[Card No_]";
+                    where = string.Format("mlc.[Login ID]{0}@value {1}", like, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
             }
@@ -181,9 +182,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 {
                     command.CommandText = string.Format("SELECT{0} {1}{2} WHERE {3}{4}",
                         (maxNumberOfRowsReturned > 0) ? string.Format(" TOP({0})", maxNumberOfRowsReturned) : string.Empty,
-                        sqlcolumns, sqlfrom, where,
+                        col, from, where,
                         (string.IsNullOrWhiteSpace(order)) ? string.Empty : " ORDER BY " + order);
 
+                    command.Parameters.AddWithValue("@value", ((exact) ? search : $"%{search}%"));
                     connection.Open();
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -205,6 +207,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
             MemberContact contact = null;
+            string col = sqlcolumns;
+            string from = sqlfrom;
             string where = string.Empty;
 
             if (string.IsNullOrEmpty(searchValue))
@@ -221,8 +225,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     break;
 
                 case ContactSearchType.CardId:
-                    sqlcolumns += ", mc.[Card No_] ";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    col += ", mc.[Card No_] ";
+                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
                     where = "mc.[Card No_]=@id";
                     break;
             }
@@ -231,7 +235,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE " + where;
+                    command.CommandText = "SELECT " + col + from + " WHERE " + where;
                     command.Parameters.AddWithValue("@id", searchValue);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -367,7 +371,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     connection.Close();
                 }
             }
-            username = list.FirstOrDefault(c => c.LoginId != string.Empty)?.LoginId ?? string.Empty;
+            username = list.FirstOrDefault(c => string.IsNullOrEmpty(c.LoginId) == false)?.LoginId ?? string.Empty;
             return list;
         }
 
@@ -645,6 +649,39 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        public GiftCard GetGiftCartBalance(string cardId, string type)
+        {
+            GiftCard card = new GiftCard(cardId);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Expiring Date] AS Exp, (SELECT SUM([Amount]) " +
+                                          "FROM [" + navCompanyName + "Voucher Entries$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Voucher No_]=mt.[Entry Code] AND [Voucher Type]=mt.[Entry Type]) AS Amt " +
+                                          "FROM [" + navCompanyName + "POS Data Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "WHERE mt.[Entry Type]=@type AND mt.[Entry Code]=@id";
+
+                    command.Parameters.AddWithValue("@id", cardId);
+                    command.Parameters.AddWithValue("@type", type);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
+                            card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return card;
+        }
+
         private ReplCustomer ReaderToCustomer(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
@@ -699,16 +736,18 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             cont.SalesEntries = new List<SalesEntry>();
             cont.OneLists = new List<OneList>();
-            cont.Addresses = new List<Address>();
-            cont.Addresses.Add(new Address()
+            cont.Addresses = new List<Address>()
             {
-                Address1 = SQLHelper.GetString(reader["Address"]),
-                Address2 = SQLHelper.GetString(reader["Address 2"]),
-                City = SQLHelper.GetString(reader["City"]),
-                PostCode = SQLHelper.GetString(reader["Post Code"]),
-                Country = SQLHelper.GetString(reader["Country_Region Code"]),
-                StateProvinceRegion = SQLHelper.GetString(reader["County"])
-            });
+                new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country_Region Code"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"])
+                }
+            };
             return cont;
         }
 

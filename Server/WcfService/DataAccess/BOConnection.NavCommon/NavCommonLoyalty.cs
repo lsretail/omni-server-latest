@@ -212,8 +212,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 }
             }
 
-            NavWS.RootGetInventoryMultipleIn rootin = new NavWS.RootGetInventoryMultipleIn();
-            rootin.InventoryBufferIn = lines.ToArray();
+            NavWS.RootGetInventoryMultipleIn rootin = new NavWS.RootGetInventoryMultipleIn()
+            {
+                InventoryBufferIn = lines.ToArray()
+            };
 
             NavWS.RootGetInventoryMultipleOut rootout = new NavWS.RootGetInventoryMultipleOut();
 

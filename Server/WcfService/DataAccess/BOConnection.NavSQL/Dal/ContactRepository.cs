@@ -136,46 +136,46 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (maxNumberOfRowsReturned < 1)
                 maxNumberOfRowsReturned = 0;
 
-            SQLHelper.CheckForSQLInjection(search);
-
             List<MemberContact> list = new List<MemberContact>();
+            string col = sqlcolumns;
+            string from = sqlfrom;
             string where = string.Empty;
             string order = string.Empty;
-            string like = (exact) ? string.Format("='{0}'", search) : string.Format(" LIKE '%{0}%'", search);
+            string like = (exact) ? "=" : " LIKE ";
 
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
-                    where = string.Format("mt.[Contact No_]{0}", like);
+                    where = string.Format("mt.[Contact No_]{0}@value", like);
                     order = "mt.[Contact No_]";
                     break;
 
                 case ContactSearchType.Email:
-                    where = string.Format("mt.[Search E-Mail]{0} {1}", like, GetDbCICollation());
+                    where = string.Format("mt.[Search E-Mail]{0}@value {1}", like, GetDbCICollation());
                     order = "mt.[Search E-Mail]";
                     break;
 
                 case ContactSearchType.Name:
-                    where = string.Format("mt.[Search Name]{0} {1}", like, GetDbCICollation());
+                    where = string.Format("mt.[Search Name]{0}@value {1}", like, GetDbCICollation());
                     order = "mt.[Search Name]";
                     break;
 
                 case ContactSearchType.PhoneNumber:
-                    where = string.Format("(mt.[Phone No_]{0} OR mt.[Mobile Phone No_]{0})", like);
+                    where = string.Format("(mt.[Phone No_]{0}@value OR mt.[Mobile Phone No_]{0}@value)", like);
                     break;
 
                 case ContactSearchType.CardId:
-                    sqlcolumns += ", mc.[Card No_] ";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
-                    where = string.Format("mc.[Card No_]='{0}'", search);
+                    col += ", mc.[Card No_] ";
+                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    where = "mc.[Card No_]=@value";
                     order = "mc.[Card No_]";
                     break;
 
                 case ContactSearchType.UserName:
-                    sqlcolumns += ", mlc.[Login ID]";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] " +
-                               "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]";
-                    where = string.Format("mlc.[Login ID]{0} {1}", like, GetDbCICollation());
+                    col += ", mlc.[Login ID]";
+                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] " +
+                            "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]";
+                    where = string.Format("mlc.[Login ID]{0}@value {1}", like, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
             }
@@ -186,9 +186,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = string.Format("SELECT{0} {1}{2} WHERE {3}{4}",
                         (maxNumberOfRowsReturned > 0) ? string.Format(" TOP({0})", maxNumberOfRowsReturned) : string.Empty,
-                        sqlcolumns, sqlfrom, where,
+                        col, from, where,
                         (string.IsNullOrWhiteSpace(order)) ? string.Empty : " ORDER BY " + order);
 
+                    command.Parameters.AddWithValue("@value", ((exact) ? search : $"%{search}%"));
                     connection.Open();
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -210,6 +211,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         public MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
             MemberContact contact = null;
+            string col = sqlcolumns;
+            string from = sqlfrom;
             string where = string.Empty;
 
             if (string.IsNullOrEmpty(searchValue))
@@ -226,8 +229,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     break;
 
                 case ContactSearchType.CardId:
-                    sqlcolumns += ", mc.[Card No_] ";
-                    sqlfrom += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] ";
+                    col += ", mc.[Card No_] ";
+                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] ";
                     where = "mc.[Card No_]=@id";
                     break;
             }
@@ -236,7 +239,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE " + where;
+                    command.CommandText = "SELECT " + col + from + " WHERE " + where;
                     command.Parameters.AddWithValue("@id", searchValue);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -372,7 +375,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Close();
                 }
             }
-            username = list.FirstOrDefault(c => c.LoginId != string.Empty)?.LoginId ?? string.Empty;
+            username = list.FirstOrDefault(c => string.IsNullOrEmpty(c.LoginId) == false)?.LoginId ?? string.Empty;
             return list;
         }
 
@@ -648,6 +651,39 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
             }
             return list;
+        }
+
+        public GiftCard GetGiftCartBalance(string cardId, string type)
+        {
+            GiftCard card = new GiftCard(cardId);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Expiring Date] AS Exp, (SELECT SUM([Amount]) " +
+                                          "FROM [" + navCompanyName + "Voucher Entries] " +
+                                          "WHERE [Voucher No_]=mt.[Entry Code] AND [Voucher Type]=mt.[Entry Type]) AS Amt " +
+                                          "FROM [" + navCompanyName + "POS Data Entry] mt " +
+                                          "WHERE mt.[Entry Type]=@type AND mt.[Entry Code]=@id";
+
+                    command.Parameters.AddWithValue("@id", cardId);
+                    command.Parameters.AddWithValue("@type", type);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
+                            card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return card;
         }
 
         private ReplCustomer ReaderToCustomer(SqlDataReader reader, out string timestamp)
