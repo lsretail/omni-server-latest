@@ -96,20 +96,20 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.ContactAddCard(contactId, accountId, cardId);
         }
 
-        public void Login(string userName, string password, string cardId)
+        public MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
-            NavWSBase.Logon(userName, password, cardId);
+            return NavWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
         }
 
         //Change the password in NAV
-        public virtual string ChangePassword(string userName, string newPassword, string oldPassword)
+        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword)
         {
-            return NavWSBase.ChangePassword(userName, newPassword, oldPassword);
+            NavWSBase.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
-        public virtual string ResetPassword(string userName, string newPassword)
+        public virtual string ResetPassword(string userName, string email, string newPassword)
         {
-            return NavWSBase.ResetPassword(userName, newPassword);
+            return NavWSBase.ResetPassword(userName, email, newPassword);
         }
 
         public virtual List<Profile> ProfileGetByCardId(string id)
@@ -144,11 +144,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         #endregion
 
         #region Device
-
-        public virtual void CreateDeviceAndLinkToUser(string userName, string deviceId, string deviceFriendlyName, string cardId = "")
-        {
-            NavWSBase.CreateDeviceAndLinkToUser(userName, deviceId, deviceFriendlyName, cardId);
-        }
 
         public virtual Device DeviceGetById(string id)
         {

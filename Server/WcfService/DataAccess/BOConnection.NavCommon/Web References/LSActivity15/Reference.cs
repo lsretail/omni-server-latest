@@ -43,6 +43,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         private System.Threading.SendOrPostCallback ConfirmReservationOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetActReservationsOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetAdditionalChargesOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetAttributesOperationCompleted;
@@ -153,6 +155,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         /// <remarks/>
         public event ConfirmReservationCompletedEventHandler ConfirmReservationCompleted;
+        
+        /// <remarks/>
+        public event GetActReservationsCompletedEventHandler GetActReservationsCompleted;
         
         /// <remarks/>
         public event GetAdditionalChargesCompletedEventHandler GetAdditionalChargesCompleted;
@@ -797,6 +802,45 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             if ((this.ConfirmReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ConfirmReservationCompleted(this, new ConfirmReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetActReservations", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetActReservations_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetActReservations(string reservationNo, string locationNo, string reservationType, string status, System.DateTime fromDateTime, ref ActivityUploadResHeaders resHeadersRespond) {
+            object[] results = this.Invoke("GetActReservations", new object[] {
+                        reservationNo,
+                        locationNo,
+                        reservationType,
+                        status,
+                        fromDateTime,
+                        resHeadersRespond});
+            resHeadersRespond = ((ActivityUploadResHeaders)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetActReservationsAsync(string reservationNo, string locationNo, string reservationType, string status, System.DateTime fromDateTime, ActivityUploadResHeaders resHeadersRespond) {
+            this.GetActReservationsAsync(reservationNo, locationNo, reservationType, status, fromDateTime, resHeadersRespond, null);
+        }
+        
+        /// <remarks/>
+        public void GetActReservationsAsync(string reservationNo, string locationNo, string reservationType, string status, System.DateTime fromDateTime, ActivityUploadResHeaders resHeadersRespond, object userState) {
+            if ((this.GetActReservationsOperationCompleted == null)) {
+                this.GetActReservationsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetActReservationsOperationCompleted);
+            }
+            this.InvokeAsync("GetActReservations", new object[] {
+                        reservationNo,
+                        locationNo,
+                        reservationType,
+                        status,
+                        fromDateTime,
+                        resHeadersRespond}, this.GetActReservationsOperationCompleted, userState);
+        }
+        
+        private void OnGetActReservationsOperationCompleted(object arg) {
+            if ((this.GetActReservationsCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetActReservationsCompleted(this, new GetActReservationsCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1906,21 +1950,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
-    public partial class ActivityChargeRespond {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityResHeadersXML")]
+    public partial class ActivityUploadResHeaders {
         
-        private ChargeLines[] chargeLinesField;
+        private Reservations[] reservationsField;
         
         private string[] textField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ChargeLines")]
-        public ChargeLines[] ChargeLines {
+        [System.Xml.Serialization.XmlElementAttribute("Reservations")]
+        public Reservations[] Reservations {
             get {
-                return this.chargeLinesField;
+                return this.reservationsField;
             }
             set {
-                this.chargeLinesField = value;
+                this.reservationsField = value;
             }
         }
         
@@ -1941,148 +1985,356 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
-    public partial class ChargeLines {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityResHeadersXML")]
+    public partial class Reservations {
         
-        private string[] activityNoField;
+        private string reservationNoField;
         
-        private int lineNoField;
+        private string reservationTypeField;
         
-        private string itemNoField;
+        private string clientNoField;
         
-        private decimal qtyField;
+        private string clientNameField;
         
-        private decimal priceField;
+        private string descriptionField;
         
-        private decimal discountPercentageField;
+        private System.DateTime fromDateField;
         
-        private decimal totalField;
+        private System.DateTime toDateField;
         
-        private string optionalField;
+        private int noPersonsField;
         
-        private string uomField;
+        private decimal totalActivitiesAmountField;
         
-        private string[] invoiceReferenceField;
+        private decimal totalAdditionalAmountField;
         
-        private string productTypeField;
+        private string statusField;
         
-        public ChargeLines() {
-            this.lineNoField = 0;
-            this.qtyField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.discountPercentageField = ((decimal)(0m));
-            this.totalField = ((decimal)(0m));
+        private string internalStatusField;
+        
+        private string paymentStatusField;
+        
+        private string locationField;
+        
+        private string internalContactField;
+        
+        private string customerAccountField;
+        
+        private string[] balanceField;
+        
+        private string commentField;
+        
+        private string emailField;
+        
+        private System.DateTime timeFromField;
+        
+        private System.DateTime timeToField;
+        
+        private string referenceField;
+        
+        private string mobileField;
+        
+        private string languageField;
+        
+        private string groupNoField;
+        
+        private decimal pOSsalesField;
+        
+        private decimal depositsBalanceField;
+        
+        public Reservations() {
+            this.fromDateField = new System.DateTime(0);
+            this.toDateField = new System.DateTime(0);
+            this.noPersonsField = 0;
+            this.totalActivitiesAmountField = ((decimal)(0m));
+            this.totalAdditionalAmountField = ((decimal)(0m));
+            this.timeFromField = new System.DateTime(0);
+            this.timeToField = new System.DateTime(0);
+            this.pOSsalesField = ((decimal)(0m));
+            this.depositsBalanceField = ((decimal)(0m));
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ActivityNo")]
-        public string[] ActivityNo {
+        public string ReservationNo {
             get {
-                return this.activityNoField;
+                return this.reservationNoField;
             }
             set {
-                this.activityNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ItemNo {
-            get {
-                return this.itemNoField;
-            }
-            set {
-                this.itemNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Qty {
-            get {
-                return this.qtyField;
-            }
-            set {
-                this.qtyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
+                this.reservationNoField = value;
             }
         }
         
         /// <remarks/>
-        public decimal DiscountPercentage {
+        public string ReservationType {
             get {
-                return this.discountPercentageField;
+                return this.reservationTypeField;
             }
             set {
-                this.discountPercentageField = value;
+                this.reservationTypeField = value;
             }
         }
         
         /// <remarks/>
-        public decimal Total {
+        public string ClientNo {
             get {
-                return this.totalField;
+                return this.clientNoField;
             }
             set {
-                this.totalField = value;
+                this.clientNoField = value;
             }
         }
         
         /// <remarks/>
-        public string Optional {
+        public string ClientName {
             get {
-                return this.optionalField;
+                return this.clientNameField;
             }
             set {
-                this.optionalField = value;
+                this.clientNameField = value;
             }
         }
         
         /// <remarks/>
-        public string Uom {
+        public string Description {
             get {
-                return this.uomField;
+                return this.descriptionField;
             }
             set {
-                this.uomField = value;
+                this.descriptionField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("InvoiceReference")]
-        public string[] InvoiceReference {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime FromDate {
             get {
-                return this.invoiceReferenceField;
+                return this.fromDateField;
             }
             set {
-                this.invoiceReferenceField = value;
+                this.fromDateField = value;
             }
         }
         
         /// <remarks/>
-        public string ProductType {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ToDate {
             get {
-                return this.productTypeField;
+                return this.toDateField;
             }
             set {
-                this.productTypeField = value;
+                this.toDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int NoPersons {
+            get {
+                return this.noPersonsField;
+            }
+            set {
+                this.noPersonsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalActivitiesAmount {
+            get {
+                return this.totalActivitiesAmountField;
+            }
+            set {
+                this.totalActivitiesAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TotalAdditionalAmount {
+            get {
+                return this.totalAdditionalAmountField;
+            }
+            set {
+                this.totalAdditionalAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string InternalStatus {
+            get {
+                return this.internalStatusField;
+            }
+            set {
+                this.internalStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PaymentStatus {
+            get {
+                return this.paymentStatusField;
+            }
+            set {
+                this.paymentStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Location {
+            get {
+                return this.locationField;
+            }
+            set {
+                this.locationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string InternalContact {
+            get {
+                return this.internalContactField;
+            }
+            set {
+                this.internalContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerAccount {
+            get {
+                return this.customerAccountField;
+            }
+            set {
+                this.customerAccountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Balance")]
+        public string[] Balance {
+            get {
+                return this.balanceField;
+            }
+            set {
+                this.balanceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Comment {
+            get {
+                return this.commentField;
+            }
+            set {
+                this.commentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime TimeFrom {
+            get {
+                return this.timeFromField;
+            }
+            set {
+                this.timeFromField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime TimeTo {
+            get {
+                return this.timeToField;
+            }
+            set {
+                this.timeToField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Reference {
+            get {
+                return this.referenceField;
+            }
+            set {
+                this.referenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Mobile {
+            get {
+                return this.mobileField;
+            }
+            set {
+                this.mobileField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Language {
+            get {
+                return this.languageField;
+            }
+            set {
+                this.languageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GroupNo {
+            get {
+                return this.groupNoField;
+            }
+            set {
+                this.groupNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal POSsales {
+            get {
+                return this.pOSsalesField;
+            }
+            set {
+                this.pOSsalesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal DepositsBalance {
+            get {
+                return this.depositsBalanceField;
+            }
+            set {
+                this.depositsBalanceField = value;
             }
         }
     }
@@ -5215,6 +5467,192 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     }
     
     /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
+    public partial class ChargeLines {
+        
+        private string[] activityNoField;
+        
+        private int lineNoField;
+        
+        private string itemNoField;
+        
+        private decimal qtyField;
+        
+        private decimal priceField;
+        
+        private decimal discountPercentageField;
+        
+        private decimal totalField;
+        
+        private string optionalField;
+        
+        private string uomField;
+        
+        private string[] invoiceReferenceField;
+        
+        private string productTypeField;
+        
+        public ChargeLines() {
+            this.lineNoField = 0;
+            this.qtyField = ((decimal)(0m));
+            this.priceField = ((decimal)(0m));
+            this.discountPercentageField = ((decimal)(0m));
+            this.totalField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ActivityNo")]
+        public string[] ActivityNo {
+            get {
+                return this.activityNoField;
+            }
+            set {
+                this.activityNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Qty {
+            get {
+                return this.qtyField;
+            }
+            set {
+                this.qtyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Price {
+            get {
+                return this.priceField;
+            }
+            set {
+                this.priceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal DiscountPercentage {
+            get {
+                return this.discountPercentageField;
+            }
+            set {
+                this.discountPercentageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Total {
+            get {
+                return this.totalField;
+            }
+            set {
+                this.totalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Optional {
+            get {
+                return this.optionalField;
+            }
+            set {
+                this.optionalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Uom {
+            get {
+                return this.uomField;
+            }
+            set {
+                this.uomField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("InvoiceReference")]
+        public string[] InvoiceReference {
+            get {
+                return this.invoiceReferenceField;
+            }
+            set {
+                this.invoiceReferenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ProductType {
+            get {
+                return this.productTypeField;
+            }
+            set {
+                this.productTypeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML")]
+    public partial class ActivityChargeRespond {
+        
+        private ChargeLines[] chargeLinesField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ChargeLines")]
+        public ChargeLines[] ChargeLines {
+            get {
+                return this.chargeLinesField;
+            }
+            set {
+                this.chargeLinesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void CancelActivityCompletedEventHandler(object sender, CancelActivityCompletedEventArgs e);
     
@@ -5672,6 +6110,32 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetActReservationsCompletedEventHandler(object sender, GetActReservationsCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetActReservationsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetActReservationsCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityUploadResHeaders resHeadersRespond {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityUploadResHeaders)(this.results[0]));
             }
         }
     }

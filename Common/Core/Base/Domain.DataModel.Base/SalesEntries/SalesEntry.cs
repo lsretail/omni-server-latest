@@ -47,7 +47,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         }
 
         /// <summary>
-        /// SalesEntry Number
+        /// External Id for Sale
         /// </summary>
         [DataMember]
         public string ExternalId { get; set; }

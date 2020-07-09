@@ -226,6 +226,20 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityReservationsHeaderGet");
+                return null; //never gets here
+            }
+        }
+
         public virtual List<Promotion> ActivityPromotionsGet()
         {
             try

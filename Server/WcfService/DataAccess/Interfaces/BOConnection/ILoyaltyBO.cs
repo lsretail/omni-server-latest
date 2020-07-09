@@ -31,9 +31,9 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         MemberContact ContactGetByUserName(string user, bool includeDetails);
         MemberContact ContactGet(ContactSearchType searchType, string searchValue);
 
-        void Login(string userName, string password, string cardId);
-        string ChangePassword(string userName, string newPassword, string oldPassword);
-        string ResetPassword(string userName, string newPassword);
+        MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails);
+        void ChangePassword(string userName, string token, string newPassword, string oldPassword);
+        string ResetPassword(string userName, string email, string newPassword);
 
         List<Profile> ProfileGetByCardId(string id);
         List<Profile> ProfileGetAll();
@@ -46,7 +46,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         Device DeviceGetById(string id);
         bool IsUserLinkedToDeviceId(string userName, string deviceId);
-        void CreateDeviceAndLinkToUser(string userName, string deviceId, string deviceFriendlyName, string cardId = ""); //JIJ v1.1 it changed
 
         #endregion
 

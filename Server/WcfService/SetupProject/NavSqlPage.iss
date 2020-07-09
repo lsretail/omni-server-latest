@@ -118,7 +118,7 @@ begin
 end;
 
 { SQLCustomForm_NextButtonClick }
-// try to connect to supplied db. Dont need to catch errors/close conn on error because a failed connection is never opened.
+// try to connect to supplied db. Don't need to catch errors/close conn on error because a failed connection is never opened.
 function NavSQLCustomForm_NextButtonClick(Page: TWizardPage): Boolean;
 begin
   Log('NavSQLCustomForm_NextButtonClick called');
@@ -236,7 +236,7 @@ begin
     Top := ScaleY(74);
     Width := NavSQLPage.SurfaceWidth;
     Height := ScaleY(18);
-    Caption := 'BC 15';
+    Caption := 'LS Central 15 or later';
     Checked := False;
   end;
 

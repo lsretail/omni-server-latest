@@ -94,6 +94,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ActivityReservationsGet(reservationNo, contactNo, activityType);
         }
 
+        public virtual List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate)
+        {
+            return NavWSBase.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
+        }
+
         public virtual List<Promotion> ActivityPromotionsGet()
         {
             return NavWSBase.ActivityPromotionsGet();

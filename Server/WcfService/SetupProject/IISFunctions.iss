@@ -96,7 +96,7 @@ begin
     applicationCollection.AddElement(virtualDirectoryElement);
     siteCollection.AddElement(applicationElement);
 
-    //now creat the application pool
+    //now create the application pool
     applicationPoolsSection := VarToDisp(adminManager.GetAdminSection('system.applicationHost/applicationPools','MACHINE/WEBROOT/APPHOST'));
     applicationPoolsCollection := VarToDisp(applicationPoolsSection.Collection);
 

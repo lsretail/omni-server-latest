@@ -38,7 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             }
             else
             {
-                activityWS.ConfirmActivityV2(XMLHelper.GetString(req.Location), XMLHelper.GetString(req.ProductNo), ConvertTo.NavGetDate(req.ActivityTime), ConvertTo.NavGetTime(req.ActivityTime), XMLHelper.GetString(req.ContactNo), XMLHelper.GetString(req.OptionalResource),
+                activity15WS.ConfirmActivityV2(XMLHelper.GetString(req.Location), XMLHelper.GetString(req.ProductNo), ConvertTo.NavGetDate(req.ActivityTime), ConvertTo.NavGetTime(req.ActivityTime), XMLHelper.GetString(req.ContactNo), XMLHelper.GetString(req.OptionalResource),
                                             XMLHelper.GetString(req.OptionalComment), req.Quantity, req.NoOfPeople, req.Paid, XMLHelper.GetString(req.PromoCode), XMLHelper.GetString(req.ContactName), XMLHelper.GetString(req.Email),
                                             ref actId, ref error, ref price, ref discount, ref amount, ref cur, ref bookgRef, ref resNo);
             }
@@ -78,7 +78,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, string.Format("ActivityCancel: activityNo:{0}", activityNo));
 
-            activityWS.CancelActivity(activityNo, ref error, ref prod, ref price, ref qty, ref discount, ref amount, ref cur, ref bookgRef);
+            activity15WS.CancelActivity(activityNo, ref error, ref prod, ref price, ref qty, ref discount, ref amount, ref cur, ref bookgRef);
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
@@ -105,8 +105,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             logger.Debug(config.LSKey.Key, string.Format("ActivityAvailabilityGet: locationNo:{0}, productNo:{1}, activityDate:{2}, contactNo:{3}", 
                 locationNo, productNo, activityDate, contactNo));
 
-            LSActivity.ActivityAvailabilityResponse root = new LSActivity.ActivityAvailabilityResponse();
-            activityWS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), ref error, ref root);
+            LSActivity15.ActivityAvailabilityResponse root = new LSActivity15.ActivityAvailabilityResponse();
+            activity15WS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), ref error, ref root);
             logger.Debug(config.LSKey.Key, "ActivityAvailabilityResponse - " + Serialization.ToXml(root, true));
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
@@ -119,8 +119,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAdditionalChargesGet: activityNo:{0}", activityNo));
 
-            LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
-            activityWS.GetAdditionalCharges(activityNo, ref root);
+            LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
+            activity15WS.GetAdditionalCharges(activityNo, ref root);
 
             logger.Debug(config.LSKey.Key, "ActivityChargeRespond - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -133,8 +133,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "ActivityAdditionalChargesSet - " + Serialization.ToXml(req, true));
 
-            LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
-            activityWS.SetAdditionalChargesV2(req.ActivityNo, req.LineNo, (int)req.ProductType, req.ItemNo, req.Quantity, req.Price, req.DiscountPercentage, XMLHelper.GetString(req.UnitOfMeasure), ref error);
+            LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
+            activity15WS.SetAdditionalChargesV2(req.ActivityNo, req.LineNo, (int)req.ProductType, req.ItemNo, req.Quantity, req.Price, req.DiscountPercentage, XMLHelper.GetString(req.UnitOfMeasure), ref error);
             logger.Debug(config.LSKey.Key, "SetAdditionalChargesV2 - " + error);
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
@@ -146,8 +146,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAttributesGet: type:{0}, linkNo:{1}", type, linkNo));
 
-            LSActivity.ActivityAttributeRespond root = new LSActivity.ActivityAttributeRespond();
-            activityWS.GetAttributes((int)type, linkNo, ref root);
+            LSActivity15.ActivityAttributeRespond root = new LSActivity15.ActivityAttributeRespond();
+            activity15WS.GetAttributes((int)type, linkNo, ref root);
 
             logger.Debug(config.LSKey.Key, "ActivityAttributeRespond - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -161,7 +161,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, string.Format("ActivityAttributeSet: type:{0}, linkNo:{1}, attrCode:{2}, attrValue:{3}", type, linkNo, attrCode, attrValue));
 
-            activityWS.SetAttribute((int)type, linkNo, XMLHelper.GetString(attrCode), XMLHelper.GetString(attrValue), ref seq, ref error);
+            activity15WS.SetAttribute((int)type, linkNo, XMLHelper.GetString(attrCode), XMLHelper.GetString(attrValue), ref seq, ref error);
             logger.Debug(config.LSKey.Key, "SetAttribute - " + error);
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
@@ -176,7 +176,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "ActivityInsertReservation - " + Serialization.ToXml(req, true));
 
-            activityWS.InsertReservation(ref resNo, req.ReservationType, 
+            activity15WS.InsertReservation(ref resNo, req.ReservationType, 
                                          XMLHelper.GetSQLNAVDate(req.ResDateFrom), XMLHelper.GetSQLNAVTime(req.ResTimeFrom), XMLHelper.GetSQLNAVDate(req.ResDateTo), XMLHelper.GetSQLNAVTime(req.ResTimeTo), 
                                          XMLHelper.GetString(req.CustomerAccount), XMLHelper.GetString(req.Description), XMLHelper.GetString(req.Comment),
                                          XMLHelper.GetString(req.Reference), XMLHelper.GetString(req.ContactNo), XMLHelper.GetString(req.ContactName), XMLHelper.GetString(req.Email),
@@ -196,7 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "ActivityUpdateReservation - " + Serialization.ToXml(req, true));
 
-            activityWS.UpdateReservation(req.Id, req.ReservationType,
+            activity15WS.UpdateReservation(req.Id, req.ReservationType,
                                          XMLHelper.GetSQLNAVDate(req.ResDateFrom), XMLHelper.GetSQLNAVTime(req.ResTimeFrom), XMLHelper.GetSQLNAVDate(req.ResDateTo), XMLHelper.GetSQLNAVTime(req.ResTimeTo),
                                          XMLHelper.GetString(req.CustomerAccount), XMLHelper.GetString(req.Description), XMLHelper.GetString(req.Comment),
                                          XMLHelper.GetString(req.Reference), XMLHelper.GetString(req.ContactNo), XMLHelper.GetString(req.ContactName), XMLHelper.GetString(req.Email),
@@ -219,15 +219,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             decimal qty = 0;
 
             logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipCancel: contactNo:{0}, type:{1}", contactNo, type));
+            activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
 
-            if (NAVVersion > new Version("15.1.0.0"))
-            {
-                activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
-            }
-            else
-            {
-                activityWS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
-            }
             logger.Debug(config.LSKey.Key, "SellMembership - " + error);
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
@@ -247,15 +240,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string error = string.Empty;
 
             logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipCancel: contactNo:{0}, memNo:{1}, comment:{2}", contactNo, memNo, comment));
+            activity15WS.CancelMembership(contactNo, memNo, XMLHelper.GetString(comment), ref error);
 
-            if (NAVVersion > new Version("15.1.0.0"))
-            {
-                activity15WS.CancelMembership(contactNo, memNo, XMLHelper.GetString(comment), ref error);
-            }
-            else
-            {
-                activityWS.CancelMembership(contactNo, memNo, XMLHelper.GetString(comment), ref error);
-            }
             logger.Debug(config.LSKey.Key, "CancelMembership - " + error);
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
@@ -269,8 +255,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<ActivityProduct> ActivityProductsGet()
         {
-            LSActivity.ActivityUploadProducts root = new LSActivity.ActivityUploadProducts();
-            activityWS.UploadActivityProducts(ref root);
+            LSActivity15.ActivityUploadProducts root = new LSActivity15.ActivityUploadProducts();
+            activity15WS.UploadActivityProducts(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityProducts Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -279,8 +265,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<ActivityType> ActivityTypesGet()
         {
-            LSActivity.ActivityUploadTypes root = new LSActivity.ActivityUploadTypes();
-            activityWS.UploadActivityTypes(ref root);
+            LSActivity15.ActivityUploadTypes root = new LSActivity15.ActivityUploadTypes();
+            activity15WS.UploadActivityTypes(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityTypes Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -289,28 +275,43 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<ActivityLocation> ActivityLocationsGet()
         {
-            LSActivity.ActivityUploadLocations root = new LSActivity.ActivityUploadLocations();
-            activityWS.UploadActivityLocations(ref root);
+            LSActivity15.ActivityUploadLocations root = new LSActivity15.ActivityUploadLocations();
+            activity15WS.UploadActivityLocations(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityLocations Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
             return map.MapRootToActivityLocation(root);
         }
 
+        public List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate)
+        {
+            if (NAVVersion < new Version("16.1"))
+                return new List<ResHeader>();
+
+            logger.Debug(config.LSKey.Key, "GetActReservations Request - ResNo:{0} LocNo:{1} FromDate:{2}", reservationNo, locationNo, fromDate);
+
+            LSActivity15.ActivityUploadResHeaders root = new LSActivity15.ActivityUploadResHeaders();
+            activity15WS.GetActReservations(reservationNo, locationNo, reservationType, status, fromDate, ref root);
+
+            logger.Debug(config.LSKey.Key, "GetActReservations Response - " + Serialization.ToXml(root, true));
+            ActivityMapping map = new ActivityMapping();
+            return map.MapRootToResHeader(root);
+        }
+
         public List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType)
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityReservationsGet: contactNo:{0}, ResNo:{1}, actType:{2}", contactNo, reservationNo, activityType));
 
-            LSActivity.ActivityUploadReservations root = new LSActivity.ActivityUploadReservations();
+            LSActivity15.ActivityUploadReservations root = new LSActivity15.ActivityUploadReservations();
             if (string.IsNullOrWhiteSpace(reservationNo))
             {
-                activityWS.UploadClientBookingsV2(contactNo, activityType, ref root);
+                activity15WS.UploadClientBookingsV2(contactNo, activityType, ref root);
                 logger.Debug(config.LSKey.Key, "UploadClientBookingsV2 Response - " + Serialization.ToXml(root, true));
             }
             else
             {
-                activityWS.UploadReservationActivities(reservationNo, ref root);
-                logger.Debug(config.LSKey.Key, "UploadClientBookingsV2 Response - " + Serialization.ToXml(root, true));
+                activity15WS.UploadReservationActivities(reservationNo, ref root);
+                logger.Debug(config.LSKey.Key, "UploadReservationActivities Response - " + Serialization.ToXml(root, true));
             }
 
             ActivityMapping map = new ActivityMapping();
@@ -319,8 +320,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<Promotion> ActivityPromotionsGet()
         {
-            LSActivity.ActivityUploadPromotions root = new LSActivity.ActivityUploadPromotions();
-            activityWS.UploadPromotions(ref root);
+            LSActivity15.ActivityUploadPromotions root = new LSActivity15.ActivityUploadPromotions();
+            activity15WS.UploadPromotions(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadPromotions Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -331,8 +332,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAllowancesGet: contactNo:{0}", contactNo));
 
-            LSActivity.ActivityUploadAllowance root = new LSActivity.ActivityUploadAllowance();
-            activityWS.UploadPurchasedAllowances(contactNo, ref root);
+            LSActivity15.ActivityUploadAllowance root = new LSActivity15.ActivityUploadAllowance();
+            activity15WS.UploadPurchasedAllowances(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadPurchasedAllowances Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -343,8 +344,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityCustomerEntriesGet: contactNo:{0}, customerNo:{1}", contactNo, customerNo));
 
-            LSActivity.ActivityCustomerEntries root = new LSActivity.ActivityCustomerEntries();
-            activityWS.UploadCustomerEntries(contactNo, customerNo, ref root);
+            LSActivity15.ActivityCustomerEntries root = new LSActivity15.ActivityCustomerEntries();
+            activity15WS.UploadCustomerEntries(contactNo, customerNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadCustomerEntries Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -379,8 +380,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivitySubscriptionChargesGet: contactNo:{0}", contactNo));
 
-            LSActivity.ActivitySubscriptionEntries root = new LSActivity.ActivitySubscriptionEntries();
-            activityWS.UploadMembershipSubscriptionCharges(contactNo, ref root);
+            LSActivity15.ActivitySubscriptionEntries root = new LSActivity15.ActivitySubscriptionEntries();
+            activity15WS.UploadMembershipSubscriptionCharges(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadMembershipSubscriptionCharges Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();
@@ -391,8 +392,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAdmissionEntriesGet: contactNo:{0}", contactNo));
 
-            LSActivity.ActivityAdmissionEntries root = new LSActivity.ActivityAdmissionEntries();
-            activityWS.UploadAdmissionEntries(contactNo, ref root);
+            LSActivity15.ActivityAdmissionEntries root = new LSActivity15.ActivityAdmissionEntries();
+            activity15WS.UploadAdmissionEntries(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadAdmissionEntries Response - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping();

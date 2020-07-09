@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     MiddleName = XMLHelper.GetString(contact.MiddleName),
                     LastName = contact.LastName,
                     DateOfBirth = contact.BirthDay,
-                    Email = contact.Email,
+                    Email = contact.Email.ToLower(),
                     Gender = ((int)contact.Gender).ToString(),
                     Phone = XMLHelper.GetString(contact.Phone),
                     MobilePhoneNo = XMLHelper.GetString(contact.MobilePhone),
@@ -39,7 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     PostCode = XMLHelper.GetString(addr.PostCode),
                     StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
 
-                    LoginID = contact.UserName,
+                    LoginID = contact.UserName.ToLower(),
                     Password = contact.Password,
                     DeviceID = contact.LoggedOnToDevice.Id,
                     DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
@@ -109,6 +109,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 foreach (Profile prof in contact.Profiles)
                 {
+                    if (prof.ContactValue)
+                        continue;
+
                     attr.Add(new NavWS.MemberAttributeValue1()
                     {
                         AttributeCode = prof.Id,
@@ -175,6 +178,81 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         ClubId = card.ClubCode,
                         ContactId = card.ContactNo,
                         Status = (CardStatus)Convert.ToInt32(card.Status)
+                    });
+                }
+            }
+            return memberContact;
+        }
+
+        public MemberContact MapFromRootToLogonContact(NavWS.RootMemberLogon root)
+        {
+            NavWS.MemberContact2 contact = root.MemberContact.FirstOrDefault();
+            MemberContact memberContact = new MemberContact()
+            {
+                Id = contact.ContactNo,
+                AlternateId = contact.ExternalID,
+                Email = contact.EMail,
+                FirstName = contact.FirstName,
+                MiddleName = contact.MiddleName,
+                LastName = contact.Surname,
+                Gender = (Gender)Convert.ToInt32(contact.Gender),
+                MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
+                Phone = contact.PhoneNo,
+                MobilePhone = contact.MobilePhoneNo,
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth)
+            };
+
+            memberContact.Addresses = new List<Address>();
+            memberContact.Addresses.Add(new Address()
+            {
+                Type = AddressType.Residential,
+                Address1 = contact.Address,
+                Address2 = contact.Address2,
+                City = contact.City,
+                PostCode = contact.PostCode,
+                StateProvinceRegion = contact.TerritoryCode,
+                Country = contact.Country
+            });
+
+            memberContact.Account = new Account(contact.AccountNo);
+            memberContact.Account.Scheme = new Scheme(contact.SchemeCode);
+            memberContact.Account.Scheme.Club = new Club(contact.ClubCode);
+
+            if (root.MemberClub != null)
+            {
+                memberContact.Account.Scheme.Club.Name = root.MemberClub.FirstOrDefault().Description;
+            }
+
+            if (root.MembershipCard != null)
+            {
+                foreach (NavWS.MembershipCard3 card in root.MembershipCard)
+                {
+                    memberContact.Cards.Add(new Card()
+                    {
+                        Id = card.CardNo,
+                        BlockedBy = card.Blockedby,
+                        BlockedReason = card.ReasonBlocked,
+                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked),
+                        LinkedToAccount = card.LinkedtoAccount,
+                        ClubId = card.ClubCode,
+                        ContactId = card.ContactNo,
+                        Status = (CardStatus)Convert.ToInt32(card.Status)
+                    });
+                }
+            }
+
+            if (root.MemberAttributeList != null)
+            {
+                foreach (NavWS.MemberAttributeList2 attr in root.MemberAttributeList)
+                {
+                    if (attr.Type != "0")
+                        continue;
+
+                    memberContact.Profiles.Add(new Profile()
+                    {
+                        Id = attr.Code,
+                        Description = attr.Description,
+                        DefaultValue = attr.Value
                     });
                 }
             }

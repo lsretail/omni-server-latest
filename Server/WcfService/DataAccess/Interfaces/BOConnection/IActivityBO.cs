@@ -29,6 +29,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ActivityType> ActivityTypesGet();
         List<ActivityLocation> ActivityLocationsGet();
         List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType);
+        List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate);
         List<Promotion> ActivityPromotionsGet();
         List<Allowance> ActivityAllowancesGet(string contactNo);
         List<CustomerEntry> ActivityCustomerEntriesGet(string contactNo, string customerNo);

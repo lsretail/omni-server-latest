@@ -62,7 +62,7 @@ begin
   IISPage := CreateCustomPage(
     PreviousPageId,
     'IIS Web Application Setup',
-    'Please enter Web Servie Configuration values for IIS'
+    'Please enter Web Service Configuration values for IIS'
   );
  
   { IISPage_lblComment }
@@ -148,7 +148,7 @@ begin
   with IISPage_lblNavUrl do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'Web Service Url:';
+    Caption :=  'Web Service URL:';
     Left := ScaleX(15);
     Top :=IISPage_lblComment1.Top + IISPage_lblComment1.Height + 7;
     Width := ScaleX(108);

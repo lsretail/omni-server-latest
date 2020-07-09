@@ -329,7 +329,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
                 config.SecurityCheck = false;
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here in login, so no security checks
-                MemberContact contact = contactBLL.Login(userName, password, true, deviceId, clientIPAddress);
+                MemberContact contact = contactBLL.Login(userName, password, true, deviceId);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 return contact;
@@ -377,7 +377,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "userName:{0}", userName);
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here, so no security checks
-                return contactBLL.Login(userName, password, false, "", clientIPAddress);
+                return contactBLL.Login(userName, password, false, string.Empty);
             }
             catch (Exception ex)
             {
@@ -579,6 +579,39 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "userNameOrEmail:{0}", userNameOrEmail);
             }
             return string.Empty;
+        }
+
+        public virtual string PasswordReset(string userName, string email)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "userName:{0} email:{1}", userName, email);
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return contactBLL.PasswordReset(userName, email);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "userName:{0} email:{1}", userName, email);
+            }
+            return string.Empty;
+        }
+
+        public virtual bool PasswordChange(string userName, string token, string newPassword, string oldPassword)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "userName:{0} token:{1}", userName, token);
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                contactBLL.PasswordChange(userName, token, newPassword, oldPassword);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "userName:{0} token:{1}", userName, token);
+                return false;
+            }
+            return true;
         }
 
         #endregion contact and account

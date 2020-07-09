@@ -15,10 +15,10 @@ Source: "..\Service\bin\Newtonsoft.Json.dll"; DestDir: "{app}\{code:WcfDir}\bin\
 Source: "LSIcon.ico"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion; 
 
 ; XML files
+Source: "..\Service\Xsl\notification.xsl"; DestDir: "{app}\{code:WcfDir}\Xsl\"; Flags: ignoreversion
+
+; XML files
 Source: "..\Service\Xml\navdata.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
-Source: "..\Service\Xml\navdata_ads.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
-Source: "..\Service\Xml\navdata_StoreFeatures.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
-Source: "..\Service\Xml\OfflinePrintTemplate.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
 
 ; LS Recommend
 Source: "..\..\3rdPartyComponents\LSRecommends\*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion

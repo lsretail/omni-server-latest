@@ -992,6 +992,35 @@ namespace LSOmni.Service
         bool ResetPassword(string userName, string resetCode, string newPassword);
 
         /// <summary>
+        /// Reset current password or request new password for new Member Contact.  
+        /// Send either login or email depending on which function is required.
+        /// </summary>
+        /// <param name="userName">Provide Login Id (UserName) to reset existing password</param>
+        /// <param name="email">Provide Email to create new login password for new Member Contact</param>
+        /// <returns>Token to be included in Email to send to Member Contact.  Send the token with PasswordChange function</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        string PasswordReset(string userName, string email);
+
+        /// <summary>
+        /// Change password for Member Contact.
+        /// Call PasswordReset first if oldPassword is unknown or no login/password exist for Member Contact
+        /// </summary>
+        /// <param name="userName">Login Id or UserName</param>
+        /// <param name="token">Token from PasswordReset</param>
+        /// <param name="newPassword">New Password</param>
+        /// <param name="oldPassword">Previous Password</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// To change password for existing contact: Send userName, newPassword, oldPassword<p/>
+        /// To reset password for existing contact: Send userName, token, newPassword<p/>
+        /// To register new login/password for new contact: Send userName, token, newPassword<p/>
+        /// </remarks>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool PasswordChange(string userName, string token, string newPassword, string oldPassword);
+
+        /// <summary>
         /// Login user
         /// </summary>
         /// <param name="userName">user name</param>
@@ -2352,6 +2381,19 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType);
+
+        /// <summary>
+        /// Look up Reservation Headers
+        /// </summary>
+        /// <param name="reservationNo"></param>
+        /// <param name="reservationType"></param>
+        /// <param name="status"></param>
+        /// <param name="locationNo"></param>
+        /// <param name="fromDate"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate);
 
         /// <summary>
         /// Returns list of Active Promotions (for information purposes only)

@@ -232,6 +232,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         AccountExistsInOtherClub = 1230,
 
+        [EnumMember]
+        NoDiscountAmount = 1240,
+
         /// <summary>
         /// Missing Item Id
         /// </summary>

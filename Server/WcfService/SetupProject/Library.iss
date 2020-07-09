@@ -164,7 +164,7 @@ begin
   Result := '';
   BreakLoop := False;
 
-  { Loop through the passed in arry to find the parameter }
+  { Loop through the passed in array to find the parameter }
   while ((LoopVar < ParamCount) and (not BreakLoop)) do
   begin
     { Determine if the looked for parameter is the next value }

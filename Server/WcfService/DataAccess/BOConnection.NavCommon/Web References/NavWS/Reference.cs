@@ -83,6 +83,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback GetMemberCardOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetMemberContact2OperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetMemberContactOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetMemberInfoForPosOperationCompleted;
@@ -106,6 +108,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         private System.Threading.SendOrPostCallback MemberContactCreateOperationCompleted;
         
         private System.Threading.SendOrPostCallback MemberContactUpdateOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MemberLogonOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MemberPasswordChangeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MemberPasswordResetOperationCompleted;
         
         private System.Threading.SendOrPostCallback MobilePosCalculateV2OperationCompleted;
         
@@ -277,6 +285,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event GetMemberCardCompletedEventHandler GetMemberCardCompleted;
         
         /// <remarks/>
+        public event GetMemberContact2CompletedEventHandler GetMemberContact2Completed;
+        
+        /// <remarks/>
         public event GetMemberContactCompletedEventHandler GetMemberContactCompleted;
         
         /// <remarks/>
@@ -311,6 +322,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event MemberContactUpdateCompletedEventHandler MemberContactUpdateCompleted;
+        
+        /// <remarks/>
+        public event MemberLogonCompletedEventHandler MemberLogonCompleted;
+        
+        /// <remarks/>
+        public event MemberPasswordChangeCompletedEventHandler MemberPasswordChangeCompleted;
+        
+        /// <remarks/>
+        public event MemberPasswordResetCompletedEventHandler MemberPasswordResetCompleted;
         
         /// <remarks/>
         public event MobilePosCalculateV2CompletedEventHandler MobilePosCalculateV2Completed;
@@ -1489,6 +1509,51 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberContact2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberContact2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetMemberContact2(ref string responseCode, ref string errorText, string cardNo, string accountNo, string contactNo, string loginID, string email, ref RootGetMemberContact getMemberContactXML) {
+            object[] results = this.Invoke("GetMemberContact2", new object[] {
+                        responseCode,
+                        errorText,
+                        cardNo,
+                        accountNo,
+                        contactNo,
+                        loginID,
+                        email,
+                        getMemberContactXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            getMemberContactXML = ((RootGetMemberContact)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetMemberContact2Async(string responseCode, string errorText, string cardNo, string accountNo, string contactNo, string loginID, string email, RootGetMemberContact getMemberContactXML) {
+            this.GetMemberContact2Async(responseCode, errorText, cardNo, accountNo, contactNo, loginID, email, getMemberContactXML, null);
+        }
+        
+        /// <remarks/>
+        public void GetMemberContact2Async(string responseCode, string errorText, string cardNo, string accountNo, string contactNo, string loginID, string email, RootGetMemberContact getMemberContactXML, object userState) {
+            if ((this.GetMemberContact2OperationCompleted == null)) {
+                this.GetMemberContact2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemberContact2OperationCompleted);
+            }
+            this.InvokeAsync("GetMemberContact2", new object[] {
+                        responseCode,
+                        errorText,
+                        cardNo,
+                        accountNo,
+                        contactNo,
+                        loginID,
+                        email,
+                        getMemberContactXML}, this.GetMemberContact2OperationCompleted, userState);
+        }
+        
+        private void OnGetMemberContact2OperationCompleted(object arg) {
+            if ((this.GetMemberContact2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetMemberContact2Completed(this, new GetMemberContact2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberContact", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberContact_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void GetMemberContact(ref string responseCode, ref string errorText, string cardNo, string accountNo, string contactNo, ref RootGetMemberContact getMemberContactXML) {
             object[] results = this.Invoke("GetMemberContact", new object[] {
@@ -1981,6 +2046,134 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.MemberContactUpdateCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MemberContactUpdateCompleted(this, new MemberContactUpdateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MemberLogon", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MemberLogon_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MemberLogon(ref string responseCode, ref string errorText, string loginID, string password, string deviceID, string deviceFriendlyName, ref decimal totalRemainingPoints, ref RootMemberLogon memberLogonXML) {
+            object[] results = this.Invoke("MemberLogon", new object[] {
+                        responseCode,
+                        errorText,
+                        loginID,
+                        password,
+                        deviceID,
+                        deviceFriendlyName,
+                        totalRemainingPoints,
+                        memberLogonXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            totalRemainingPoints = ((decimal)(results[2]));
+            memberLogonXML = ((RootMemberLogon)(results[3]));
+        }
+        
+        /// <remarks/>
+        public void MemberLogonAsync(string responseCode, string errorText, string loginID, string password, string deviceID, string deviceFriendlyName, decimal totalRemainingPoints, RootMemberLogon memberLogonXML) {
+            this.MemberLogonAsync(responseCode, errorText, loginID, password, deviceID, deviceFriendlyName, totalRemainingPoints, memberLogonXML, null);
+        }
+        
+        /// <remarks/>
+        public void MemberLogonAsync(string responseCode, string errorText, string loginID, string password, string deviceID, string deviceFriendlyName, decimal totalRemainingPoints, RootMemberLogon memberLogonXML, object userState) {
+            if ((this.MemberLogonOperationCompleted == null)) {
+                this.MemberLogonOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMemberLogonOperationCompleted);
+            }
+            this.InvokeAsync("MemberLogon", new object[] {
+                        responseCode,
+                        errorText,
+                        loginID,
+                        password,
+                        deviceID,
+                        deviceFriendlyName,
+                        totalRemainingPoints,
+                        memberLogonXML}, this.MemberLogonOperationCompleted, userState);
+        }
+        
+        private void OnMemberLogonOperationCompleted(object arg) {
+            if ((this.MemberLogonCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MemberLogonCompleted(this, new MemberLogonCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MemberPasswordChange", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MemberPasswordChange_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MemberPasswordChange(ref string responseCode, ref string errorText, string loginID, string token, string oldPassword, string newPassword) {
+            object[] results = this.Invoke("MemberPasswordChange", new object[] {
+                        responseCode,
+                        errorText,
+                        loginID,
+                        token,
+                        oldPassword,
+                        newPassword});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+        }
+        
+        /// <remarks/>
+        public void MemberPasswordChangeAsync(string responseCode, string errorText, string loginID, string token, string oldPassword, string newPassword) {
+            this.MemberPasswordChangeAsync(responseCode, errorText, loginID, token, oldPassword, newPassword, null);
+        }
+        
+        /// <remarks/>
+        public void MemberPasswordChangeAsync(string responseCode, string errorText, string loginID, string token, string oldPassword, string newPassword, object userState) {
+            if ((this.MemberPasswordChangeOperationCompleted == null)) {
+                this.MemberPasswordChangeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMemberPasswordChangeOperationCompleted);
+            }
+            this.InvokeAsync("MemberPasswordChange", new object[] {
+                        responseCode,
+                        errorText,
+                        loginID,
+                        token,
+                        oldPassword,
+                        newPassword}, this.MemberPasswordChangeOperationCompleted, userState);
+        }
+        
+        private void OnMemberPasswordChangeOperationCompleted(object arg) {
+            if ((this.MemberPasswordChangeCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MemberPasswordChangeCompleted(this, new MemberPasswordChangeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MemberPasswordReset", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MemberPasswordReset_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MemberPasswordReset(ref string responseCode, ref string errorText, string loginID, string email, ref string token, ref System.DateTime expiryOn) {
+            object[] results = this.Invoke("MemberPasswordReset", new object[] {
+                        responseCode,
+                        errorText,
+                        loginID,
+                        email,
+                        token,
+                        expiryOn});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            token = ((string)(results[2]));
+            expiryOn = ((System.DateTime)(results[3]));
+        }
+        
+        /// <remarks/>
+        public void MemberPasswordResetAsync(string responseCode, string errorText, string loginID, string email, string token, System.DateTime expiryOn) {
+            this.MemberPasswordResetAsync(responseCode, errorText, loginID, email, token, expiryOn, null);
+        }
+        
+        /// <remarks/>
+        public void MemberPasswordResetAsync(string responseCode, string errorText, string loginID, string email, string token, System.DateTime expiryOn, object userState) {
+            if ((this.MemberPasswordResetOperationCompleted == null)) {
+                this.MemberPasswordResetOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMemberPasswordResetOperationCompleted);
+            }
+            this.InvokeAsync("MemberPasswordReset", new object[] {
+                        responseCode,
+                        errorText,
+                        loginID,
+                        email,
+                        token,
+                        expiryOn}, this.MemberPasswordResetOperationCompleted, userState);
+        }
+        
+        private void OnMemberPasswordResetOperationCompleted(object arg) {
+            if ((this.MemberPasswordResetCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MemberPasswordResetCompleted(this, new MemberPasswordResetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -20556,6 +20749,1568 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.mobileTransactionSubLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAttributeList", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class MemberAttributeList2 {
+        
+        private string typeField;
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private string valueField;
+        
+        private string actionTypeField;
+        
+        private string limitationTypeField;
+        
+        private string attributeTypeField;
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Value {
+            get {
+                return this.valueField;
+            }
+            set {
+                this.valueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ActionType {
+            get {
+                return this.actionTypeField;
+            }
+            set {
+                this.actionTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LimitationType {
+            get {
+                return this.limitationTypeField;
+            }
+            set {
+                this.limitationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeType {
+            get {
+                return this.attributeTypeField;
+            }
+            set {
+                this.attributeTypeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberClub", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class MemberClub2 {
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private bool pointCalculationField;
+        
+        private string clubTypeField;
+        
+        private string cardRegistrationField;
+        
+        private string startingCardNoField;
+        
+        private int cardNoLengthField;
+        
+        private string barcodeMaskField;
+        
+        private string contactHandlingField;
+        
+        private string defaultSchemeField;
+        
+        private string unassignedAccountNoField;
+        
+        private string showPointsonReceiptField;
+        
+        private string displayMessageonPOSField;
+        
+        private string defaultCustDiscGroupField;
+        
+        private string memberPointTenderTypeField;
+        
+        private string defaultPriceGroupField;
+        
+        private string cardExpirationField;
+        
+        private string unassignedCardExpField;
+        
+        private string pointExpirationField;
+        
+        private string pointRoundingTypeField;
+        
+        private decimal pointRoundingPrecisionField;
+        
+        private decimal pointValueField;
+        
+        private string periodCalcforUpDowngradeField;
+        
+        private decimal minTransAmtforPointCalcField;
+        
+        private string transferredPointTypeField;
+        
+        private string transferredPointExpirField;
+        
+        private string minRemainPeriodforTransField;
+        
+        private decimal transferValueFactorField;
+        
+        private string discBenefitPointTypeField;
+        
+        private string reasonCodesAccountsField;
+        
+        private string reasonCodesContactsField;
+        
+        private string reasonCodesCardsField;
+        
+        private string reasonCodesPointJournalsField;
+        
+        private string accountNoSeriesField;
+        
+        private string cardSetupTypeField;
+        
+        private string cardNoSeriesField;
+        
+        private string contactNoSeriesField;
+        
+        private bool posttoGLField;
+        
+        private string accountNoField;
+        
+        private string balAccountNoField;
+        
+        private string expirationPeriodTypeField;
+        
+        private string showFBPCouponsonReceiptField;
+        
+        public MemberClub2() {
+            this.pointCalculationField = false;
+            this.cardNoLengthField = 0;
+            this.pointRoundingPrecisionField = ((decimal)(0m));
+            this.pointValueField = ((decimal)(0m));
+            this.minTransAmtforPointCalcField = ((decimal)(0m));
+            this.transferValueFactorField = ((decimal)(0m));
+            this.posttoGLField = false;
+        }
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool PointCalculation {
+            get {
+                return this.pointCalculationField;
+            }
+            set {
+                this.pointCalculationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubType {
+            get {
+                return this.clubTypeField;
+            }
+            set {
+                this.clubTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardRegistration {
+            get {
+                return this.cardRegistrationField;
+            }
+            set {
+                this.cardRegistrationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StartingCardNo {
+            get {
+                return this.startingCardNoField;
+            }
+            set {
+                this.startingCardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int CardNoLength {
+            get {
+                return this.cardNoLengthField;
+            }
+            set {
+                this.cardNoLengthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BarcodeMask {
+            get {
+                return this.barcodeMaskField;
+            }
+            set {
+                this.barcodeMaskField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactHandling {
+            get {
+                return this.contactHandlingField;
+            }
+            set {
+                this.contactHandlingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DefaultScheme {
+            get {
+                return this.defaultSchemeField;
+            }
+            set {
+                this.defaultSchemeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnassignedAccountNo {
+            get {
+                return this.unassignedAccountNoField;
+            }
+            set {
+                this.unassignedAccountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShowPointsonReceipt {
+            get {
+                return this.showPointsonReceiptField;
+            }
+            set {
+                this.showPointsonReceiptField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DisplayMessageonPOS {
+            get {
+                return this.displayMessageonPOSField;
+            }
+            set {
+                this.displayMessageonPOSField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DefaultCustDiscGroup {
+            get {
+                return this.defaultCustDiscGroupField;
+            }
+            set {
+                this.defaultCustDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberPointTenderType {
+            get {
+                return this.memberPointTenderTypeField;
+            }
+            set {
+                this.memberPointTenderTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DefaultPriceGroup {
+            get {
+                return this.defaultPriceGroupField;
+            }
+            set {
+                this.defaultPriceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardExpiration {
+            get {
+                return this.cardExpirationField;
+            }
+            set {
+                this.cardExpirationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnassignedCardExp {
+            get {
+                return this.unassignedCardExpField;
+            }
+            set {
+                this.unassignedCardExpField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PointExpiration {
+            get {
+                return this.pointExpirationField;
+            }
+            set {
+                this.pointExpirationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PointRoundingType {
+            get {
+                return this.pointRoundingTypeField;
+            }
+            set {
+                this.pointRoundingTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PointRoundingPrecision {
+            get {
+                return this.pointRoundingPrecisionField;
+            }
+            set {
+                this.pointRoundingPrecisionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PointValue {
+            get {
+                return this.pointValueField;
+            }
+            set {
+                this.pointValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("PeriodCalcforUp-Downgrade")]
+        public string PeriodCalcforUpDowngrade {
+            get {
+                return this.periodCalcforUpDowngradeField;
+            }
+            set {
+                this.periodCalcforUpDowngradeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal MinTransAmtforPointCalc {
+            get {
+                return this.minTransAmtforPointCalcField;
+            }
+            set {
+                this.minTransAmtforPointCalcField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransferredPointType {
+            get {
+                return this.transferredPointTypeField;
+            }
+            set {
+                this.transferredPointTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransferredPointExpir {
+            get {
+                return this.transferredPointExpirField;
+            }
+            set {
+                this.transferredPointExpirField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MinRemainPeriodforTrans {
+            get {
+                return this.minRemainPeriodforTransField;
+            }
+            set {
+                this.minRemainPeriodforTransField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TransferValueFactor {
+            get {
+                return this.transferValueFactorField;
+            }
+            set {
+                this.transferValueFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DiscBenefitPointType {
+            get {
+                return this.discBenefitPointTypeField;
+            }
+            set {
+                this.discBenefitPointTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesAccounts {
+            get {
+                return this.reasonCodesAccountsField;
+            }
+            set {
+                this.reasonCodesAccountsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesContacts {
+            get {
+                return this.reasonCodesContactsField;
+            }
+            set {
+                this.reasonCodesContactsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesCards {
+            get {
+                return this.reasonCodesCardsField;
+            }
+            set {
+                this.reasonCodesCardsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesPointJournals {
+            get {
+                return this.reasonCodesPointJournalsField;
+            }
+            set {
+                this.reasonCodesPointJournalsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNoSeries {
+            get {
+                return this.accountNoSeriesField;
+            }
+            set {
+                this.accountNoSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardSetupType {
+            get {
+                return this.cardSetupTypeField;
+            }
+            set {
+                this.cardSetupTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardNoSeries {
+            get {
+                return this.cardNoSeriesField;
+            }
+            set {
+                this.cardNoSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactNoSeries {
+            get {
+                return this.contactNoSeriesField;
+            }
+            set {
+                this.contactNoSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool PosttoGL {
+            get {
+                return this.posttoGLField;
+            }
+            set {
+                this.posttoGLField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BalAccountNo {
+            get {
+                return this.balAccountNoField;
+            }
+            set {
+                this.balAccountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExpirationPeriodType {
+            get {
+                return this.expirationPeriodTypeField;
+            }
+            set {
+                this.expirationPeriodTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShowFBPCouponsonReceipt {
+            get {
+                return this.showFBPCouponsonReceiptField;
+            }
+            set {
+                this.showFBPCouponsonReceiptField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberContact", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class MemberContact2 {
+        
+        private string accountNoField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string contactNoField;
+        
+        private bool mainContactField;
+        
+        private string nameField;
+        
+        private string searchNameField;
+        
+        private string name2Field;
+        
+        private string addressField;
+        
+        private string address2Field;
+        
+        private string cityField;
+        
+        private string houseApartmentNoField;
+        
+        private string postCodeField;
+        
+        private string eMailField;
+        
+        private string homePageField;
+        
+        private string phoneNoField;
+        
+        private string mobilePhoneNoField;
+        
+        private string territoryCodeField;
+        
+        private string countyField;
+        
+        private string countryField;
+        
+        private string genderField;
+        
+        private System.DateTime dateofBirthField;
+        
+        private string birthdayField;
+        
+        private string maritalStatusField;
+        
+        private bool blockedField;
+        
+        private string reasonBlockedField;
+        
+        private System.DateTime dateBlockedField;
+        
+        private string blockedbyField;
+        
+        private System.DateTime createdDateField;
+        
+        private string createdbyField;
+        
+        private string noSeriesField;
+        
+        private string externalIDField;
+        
+        private string externalSystemField;
+        
+        private string firstNameField;
+        
+        private string middleNameField;
+        
+        private string surnameField;
+        
+        private string salutationCodeField;
+        
+        private string searchEMailField;
+        
+        public MemberContact2() {
+            this.mainContactField = false;
+            this.dateofBirthField = new System.DateTime(0);
+            this.blockedField = false;
+            this.dateBlockedField = new System.DateTime(0);
+            this.createdDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactNo {
+            get {
+                return this.contactNoField;
+            }
+            set {
+                this.contactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool MainContact {
+            get {
+                return this.mainContactField;
+            }
+            set {
+                this.mainContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SearchName {
+            get {
+                return this.searchNameField;
+            }
+            set {
+                this.searchNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Name2 {
+            get {
+                return this.name2Field;
+            }
+            set {
+                this.name2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address2 {
+            get {
+                return this.address2Field;
+            }
+            set {
+                this.address2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string City {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HouseApartmentNo {
+            get {
+                return this.houseApartmentNoField;
+            }
+            set {
+                this.houseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PostCode {
+            get {
+                return this.postCodeField;
+            }
+            set {
+                this.postCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("E-Mail")]
+        public string EMail {
+            get {
+                return this.eMailField;
+            }
+            set {
+                this.eMailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HomePage {
+            get {
+                return this.homePageField;
+            }
+            set {
+                this.homePageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PhoneNo {
+            get {
+                return this.phoneNoField;
+            }
+            set {
+                this.phoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MobilePhoneNo {
+            get {
+                return this.mobilePhoneNoField;
+            }
+            set {
+                this.mobilePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TerritoryCode {
+            get {
+                return this.territoryCodeField;
+            }
+            set {
+                this.territoryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string County {
+            get {
+                return this.countyField;
+            }
+            set {
+                this.countyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Country {
+            get {
+                return this.countryField;
+            }
+            set {
+                this.countryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Gender {
+            get {
+                return this.genderField;
+            }
+            set {
+                this.genderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateofBirth {
+            get {
+                return this.dateofBirthField;
+            }
+            set {
+                this.dateofBirthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Birthday {
+            get {
+                return this.birthdayField;
+            }
+            set {
+                this.birthdayField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MaritalStatus {
+            get {
+                return this.maritalStatusField;
+            }
+            set {
+                this.maritalStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonBlocked {
+            get {
+                return this.reasonBlockedField;
+            }
+            set {
+                this.reasonBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Blockedby {
+            get {
+                return this.blockedbyField;
+            }
+            set {
+                this.blockedbyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime CreatedDate {
+            get {
+                return this.createdDateField;
+            }
+            set {
+                this.createdDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Createdby {
+            get {
+                return this.createdbyField;
+            }
+            set {
+                this.createdbyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string NoSeries {
+            get {
+                return this.noSeriesField;
+            }
+            set {
+                this.noSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalSystem {
+            get {
+                return this.externalSystemField;
+            }
+            set {
+                this.externalSystemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FirstName {
+            get {
+                return this.firstNameField;
+            }
+            set {
+                this.firstNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MiddleName {
+            get {
+                return this.middleNameField;
+            }
+            set {
+                this.middleNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Surname {
+            get {
+                return this.surnameField;
+            }
+            set {
+                this.surnameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalutationCode {
+            get {
+                return this.salutationCodeField;
+            }
+            set {
+                this.salutationCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SearchE-Mail")]
+        public string SearchEMail {
+            get {
+                return this.searchEMailField;
+            }
+            set {
+                this.searchEMailField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class MembershipCard3 {
+        
+        private string cardNoField;
+        
+        private string statusField;
+        
+        private bool linkedtoAccountField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string accountNoField;
+        
+        private string contactNoField;
+        
+        private System.DateTime firstDateUsedField;
+        
+        private System.DateTime lastValidDateField;
+        
+        private string reasonBlockedField;
+        
+        private System.DateTime dateBlockedField;
+        
+        private string blockedbyField;
+        
+        public MembershipCard3() {
+            this.linkedtoAccountField = false;
+            this.firstDateUsedField = new System.DateTime(0);
+            this.lastValidDateField = new System.DateTime(0);
+            this.dateBlockedField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string CardNo {
+            get {
+                return this.cardNoField;
+            }
+            set {
+                this.cardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool LinkedtoAccount {
+            get {
+                return this.linkedtoAccountField;
+            }
+            set {
+                this.linkedtoAccountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactNo {
+            get {
+                return this.contactNoField;
+            }
+            set {
+                this.contactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime FirstDateUsed {
+            get {
+                return this.firstDateUsedField;
+            }
+            set {
+                this.firstDateUsedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime LastValidDate {
+            get {
+                return this.lastValidDateField;
+            }
+            set {
+                this.lastValidDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonBlocked {
+            get {
+                return this.reasonBlockedField;
+            }
+            set {
+                this.reasonBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Blockedby {
+            get {
+                return this.blockedbyField;
+            }
+            set {
+                this.blockedbyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class MemberDevice {
+        
+        private string idField;
+        
+        private string securityTokenField;
+        
+        private string friendlyNameField;
+        
+        private string statusField;
+        
+        private string reasonBlockedField;
+        
+        private System.DateTime dateBlockedField;
+        
+        private string blockedByField;
+        
+        private string systemIdField;
+        
+        public MemberDevice() {
+            this.dateBlockedField = new System.DateTime(0);
+            this.systemIdField = "{00000000-0000-0000-0000-000000000000}";
+        }
+        
+        /// <remarks/>
+        public string ID {
+            get {
+                return this.idField;
+            }
+            set {
+                this.idField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SecurityToken {
+            get {
+                return this.securityTokenField;
+            }
+            set {
+                this.securityTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FriendlyName {
+            get {
+                return this.friendlyNameField;
+            }
+            set {
+                this.friendlyNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonBlocked {
+            get {
+                return this.reasonBlockedField;
+            }
+            set {
+                this.reasonBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BlockedBy {
+            get {
+                return this.blockedByField;
+            }
+            set {
+                this.blockedByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SystemId {
+            get {
+                return this.systemIdField;
+            }
+            set {
+                this.systemIdField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class LoginCardBuffer {
+        
+        private string clubCodeField;
+        
+        private string clubDescriptionField;
+        
+        private string cardNoField;
+        
+        private string clubHolderNameField;
+        
+        private bool blockedField;
+        
+        private string systemIdField;
+        
+        public LoginCardBuffer() {
+            this.blockedField = false;
+            this.systemIdField = "{00000000-0000-0000-0000-000000000000}";
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubDescription {
+            get {
+                return this.clubDescriptionField;
+            }
+            set {
+                this.clubDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardNo {
+            get {
+                return this.cardNoField;
+            }
+            set {
+                this.cardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubHolderName {
+            get {
+                return this.clubHolderNameField;
+            }
+            set {
+                this.clubHolderNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SystemId {
+            get {
+                return this.systemIdField;
+            }
+            set {
+                this.systemIdField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.3752.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033061")]
+    public partial class RootMemberLogon {
+        
+        private LoginCardBuffer[] loginCardBufferField;
+        
+        private MemberDevice[] memberDeviceField;
+        
+        private MembershipCard3[] membershipCardField;
+        
+        private MemberContact2[] memberContactField;
+        
+        private MemberClub2[] memberClubField;
+        
+        private MemberAttributeList2[] memberAttributeListField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("LoginCardBuffer")]
+        public LoginCardBuffer[] LoginCardBuffer {
+            get {
+                return this.loginCardBufferField;
+            }
+            set {
+                this.loginCardBufferField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberDevice")]
+        public MemberDevice[] MemberDevice {
+            get {
+                return this.memberDeviceField;
+            }
+            set {
+                this.memberDeviceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MembershipCard")]
+        public MembershipCard3[] MembershipCard {
+            get {
+                return this.membershipCardField;
+            }
+            set {
+                this.membershipCardField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberContact")]
+        public MemberContact2[] MemberContact {
+            get {
+                return this.memberContactField;
+            }
+            set {
+                this.memberContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberClub")]
+        public MemberClub2[] MemberClub {
+            get {
+                return this.memberClubField;
+            }
+            set {
+                this.memberClubField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAttributeList")]
+        public MemberAttributeList2[] MemberAttributeList {
+            get {
+                return this.memberAttributeListField;
+            }
+            set {
+                this.memberAttributeListField = value;
             }
         }
         
@@ -39162,6 +40917,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal quantityReceivedField;
         
+        private string externalIDField;
+        
         private string retailImageIDField;
         
         private System.DateTime requestedDeliveryDateField;
@@ -39461,6 +41218,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.quantityReceivedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
             }
         }
         
@@ -46834,6 +48601,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void GetMemberContact2CompletedEventHandler(object sender, GetMemberContact2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetMemberContact2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetMemberContact2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootGetMemberContact getMemberContactXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetMemberContact)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
     public delegate void GetMemberContactCompletedEventHandler(object sender, GetMemberContactCompletedEventArgs e);
     
     /// <remarks/>
@@ -47380,6 +49189,140 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootMemberContactCreate1)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MemberLogonCompletedEventHandler(object sender, MemberLogonCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MemberLogonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MemberLogonCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal totalRemainingPoints {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMemberLogon memberLogonXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMemberLogon)(this.results[3]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MemberPasswordChangeCompletedEventHandler(object sender, MemberPasswordChangeCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MemberPasswordChangeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MemberPasswordChangeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    public delegate void MemberPasswordResetCompletedEventHandler(object sender, MemberPasswordResetCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.3752.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MemberPasswordResetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MemberPasswordResetCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string token {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public System.DateTime expiryOn {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((System.DateTime)(this.results[3]));
             }
         }
     }

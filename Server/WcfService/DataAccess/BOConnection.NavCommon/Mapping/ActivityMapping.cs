@@ -8,13 +8,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public class ActivityMapping : BaseMapping
     {
-        public List<ActivityProduct> MapRootToActivityProducts(LSActivity.ActivityUploadProducts root)
+        public List<ActivityProduct> MapRootToActivityProducts(LSActivity15.ActivityUploadProducts root)
         {
             List<ActivityProduct> list = new List<ActivityProduct>();
             if (root.ActivityProducts == null)
                 return list;
 
-            foreach (LSActivity.ActivityProducts rec in root.ActivityProducts)
+            foreach (LSActivity15.ActivityProducts rec in root.ActivityProducts)
             {
                 list.Add(new ActivityProduct()
                 {
@@ -43,13 +43,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<ActivityType> MapRootToActivityType(LSActivity.ActivityUploadTypes root)
+        public List<ActivityType> MapRootToActivityType(LSActivity15.ActivityUploadTypes root)
         {
             List<ActivityType> list = new List<ActivityType>();
             if (root.ActivityTypes == null)
                 return list;
 
-            foreach (LSActivity.ActivityTypes rec in root.ActivityTypes)
+            foreach (LSActivity15.ActivityTypes rec in root.ActivityTypes)
             {
                 list.Add(new ActivityType()
                 {
@@ -60,13 +60,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<ActivityLocation> MapRootToActivityLocation(LSActivity.ActivityUploadLocations root)
+        public List<ActivityLocation> MapRootToActivityLocation(LSActivity15.ActivityUploadLocations root)
         {
             List<ActivityLocation> list = new List<ActivityLocation>();
             if (root.ActivityLocations == null)
                 return list;
 
-            foreach (LSActivity.ActivityLocations rec in root.ActivityLocations)
+            foreach (LSActivity15.ActivityLocations rec in root.ActivityLocations)
             {
                 list.Add(new ActivityLocation()
                 {
@@ -78,13 +78,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<Booking> MapRootToReservations(LSActivity.ActivityUploadReservations root)
+        public List<Booking> MapRootToReservations(LSActivity15.ActivityUploadReservations root)
         {
             List<Booking> list = new List<Booking>();
             if (root.Activities == null)
                 return list;
 
-            foreach (LSActivity.Activities rec in root.Activities)
+            foreach (LSActivity15.Activities rec in root.Activities)
             {
                 list.Add(new Booking()
                 {
@@ -117,13 +117,55 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<Promotion> MapRootToPromotions(LSActivity.ActivityUploadPromotions root)
+        public List<ResHeader> MapRootToResHeader(LSActivity15.ActivityUploadResHeaders root)
+        {
+            List<ResHeader> list = new List<ResHeader>();
+            if (root.Reservations == null)
+                return list;
+
+            foreach (LSActivity15.Reservations rec in root.Reservations)
+            {
+                list.Add(new ResHeader()
+                {
+                    Id = rec.ReservationNo,
+                    Description = rec.Description,
+                    ContactNo = rec.ClientNo,
+                    ContactName = rec.ClientName,
+                    DateFrom = ConvertTo.SafeJsonDate(rec.FromDate),
+                    DateTo = ConvertTo.SafeJsonDate(rec.ToDate),
+                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom),
+                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo),
+                    Status = rec.Status,
+                    PaymentStatus = rec.PaymentStatus,
+                    InternalStatus = rec.InternalStatus,
+                    Location = rec.Location,
+                    NoOfPersons = rec.NoPersons,
+                    Comment = rec.Comment,
+                    EMail = rec.Email,
+                    Balance = string.Concat(rec.Balance),
+                    CustomerAccount = rec.CustomerAccount,
+                    DepositsBalance = rec.DepositsBalance,
+                    GroupNo = rec.GroupNo,
+                    InternalContact = rec.InternalContact,
+                    Language = rec.Language,
+                    MobileNo = rec.Mobile,
+                    POSSale = rec.POSsales,
+                    Reference = rec.Reference,
+                    ReservationType = rec.ReservationType,
+                    TotalActivityCharges = rec.TotalActivitiesAmount,
+                    TotalAdditionalCharges = rec.TotalAdditionalAmount
+                });
+            }
+            return list;
+        }
+
+        public List<Promotion> MapRootToPromotions(LSActivity15.ActivityUploadPromotions root)
         {
             List<Promotion> list = new List<Promotion>();
             if (root.ActivityPromotions == null)
                 return list;
 
-            foreach (LSActivity.ActivityPromotions rec in root.ActivityPromotions)
+            foreach (LSActivity15.ActivityPromotions rec in root.ActivityPromotions)
             {
                 list.Add(new Promotion()
                 {
@@ -145,13 +187,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<Allowance> MapRootToAllowances(LSActivity.ActivityUploadAllowance root)
+        public List<Allowance> MapRootToAllowances(LSActivity15.ActivityUploadAllowance root)
         {
             List<Allowance> list = new List<Allowance>();
             if (root.IssuedAllowance == null)
                 return list;
 
-            foreach (LSActivity.IssuedAllowance rec in root.IssuedAllowance)
+            foreach (LSActivity15.IssuedAllowance rec in root.IssuedAllowance)
             {
                 list.Add(new Allowance()
                 {
@@ -172,13 +214,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<CustomerEntry> MapRootToCustomerEntry(LSActivity.ActivityCustomerEntries root)
+        public List<CustomerEntry> MapRootToCustomerEntry(LSActivity15.ActivityCustomerEntries root)
         {
             List<CustomerEntry> list = new List<CustomerEntry>();
             if (root.CustomerEntries == null)
                 return list;
 
-            foreach (LSActivity.CustomerEntries rec in root.CustomerEntries)
+            foreach (LSActivity15.CustomerEntries rec in root.CustomerEntries)
             {
                 list.Add(new CustomerEntry()
                 {
@@ -270,13 +312,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<SubscriptionEntry> MapRootToSubscriptionEntry(LSActivity.ActivitySubscriptionEntries root)
+        public List<SubscriptionEntry> MapRootToSubscriptionEntry(LSActivity15.ActivitySubscriptionEntries root)
         {
             List<SubscriptionEntry> list = new List<SubscriptionEntry>();
             if (root.MembershipBatchLines == null)
                 return list;
 
-            foreach (LSActivity.MembershipBatchLines rec in root.MembershipBatchLines)
+            foreach (LSActivity15.MembershipBatchLines rec in root.MembershipBatchLines)
             {
                 list.Add(new SubscriptionEntry()
                 {
@@ -301,13 +343,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<AdmissionEntry> MapRootToAdmissionEntry(LSActivity.ActivityAdmissionEntries root)
+        public List<AdmissionEntry> MapRootToAdmissionEntry(LSActivity15.ActivityAdmissionEntries root)
         {
             List<AdmissionEntry> list = new List<AdmissionEntry>();
             if (root.AdmissionEntries == null)
                 return list;
 
-            foreach (LSActivity.AdmissionEntries rec in root.AdmissionEntries)
+            foreach (LSActivity15.AdmissionEntries rec in root.AdmissionEntries)
             {
                 list.Add(new AdmissionEntry()
                 {
@@ -394,7 +436,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     UnitPrice = rec.UnitPrice,
                     Discount = rec.Discount,
                     Amount = rec.Amount,
-                    DiscountReasonCode = rec.DiscountReasonCode,
+                    DiscountReasonCode = rec.DiscountReasonCode, 
                     AccessID = rec.AccessID,
                     SalesPersonCode = rec.SalesPersonCode,
                     EntryType = rec.EntryType,
@@ -416,13 +458,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public List<AvailabilityResponse> MapRootToAvailabilityResponse(LSActivity.ActivityAvailabilityResponse root)
+        public List<AvailabilityResponse> MapRootToAvailabilityResponse(LSActivity15.ActivityAvailabilityResponse root)
         {
             if (root.AvailabilityWork == null || root.AvailabilityWork.Length == 0)
                 return new List<AvailabilityResponse>();
 
             List<AvailabilityResponse> list = new List<AvailabilityResponse>();
-            foreach (LSActivity.AvailabilityWork rec in root.AvailabilityWork)
+            foreach (LSActivity15.AvailabilityWork rec in root.AvailabilityWork)
             {
                 list.Add(new AvailabilityResponse()
                 {
@@ -443,12 +485,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public AdditionalCharge MapRootToAdditionalCharge(LSActivity.ActivityChargeRespond root)
+        public AdditionalCharge MapRootToAdditionalCharge(LSActivity15.ActivityChargeRespond root)
         {
             if (root.ChargeLines == null || root.ChargeLines.Length == 0)
                 return new AdditionalCharge();
 
-            LSActivity.ChargeLines rec = root.ChargeLines[0];
+            LSActivity15.ChargeLines rec = root.ChargeLines[0];
 
             return new AdditionalCharge()
             {
@@ -466,12 +508,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             };
         }
 
-        public AttributeResponse MapRootToAttributeResponse(LSActivity.ActivityAttributeRespond root)
+        public AttributeResponse MapRootToAttributeResponse(LSActivity15.ActivityAttributeRespond root)
         {
             if (root.AttributeLines == null || root.AttributeLines.Length == 0)
                 return new AttributeResponse();
 
-            LSActivity.AttributeLines rec = root.AttributeLines[0];
+            LSActivity15.AttributeLines rec = root.AttributeLines[0];
 
             return new AttributeResponse()
             {

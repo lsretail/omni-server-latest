@@ -79,7 +79,7 @@ begin
   with CheckPage_lblComment1 do
   begin
     Parent := CheckPage.Surface;
-    Caption :=  'Existing sql objects and Web Application get recreated.';
+    Caption :=  'Existing SQL objects and Web Application get recreated.';
     Left := ScaleX(5);
     Top := CheckPage_lblComment.Top + CheckPage_lblComment.Height ;
     Width := ScaleX(400);
@@ -137,7 +137,7 @@ begin
   with CheckPage_lblComment2 do
   begin
     Parent := CheckPage.Surface;
-    Caption :=  'The LSOmniService is created as a Web Application.'#13'You must have administration rights (sysadmin for sql server).'#13
+    Caption :=  'The LSOmniService is created as a Web Application.'#13'You must have administration rights (sysadmin for SQL Server).'#13
          '-->IIS version: ' + GetIISVersionString + ' detected'#13 
          '-->log: ' + expandconstant('{log}') ;
     Left := ScaleX(10);

@@ -469,33 +469,64 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("MemberContactUpdate", respCode, errorText);
         }
 
-        public MemberContact ContactGet(string contactId, string accountId, string card, bool includeDetails)
+        public MemberContact ContactGet(string contactId, string accountId, string card, string loginId, string email, bool includeDetails)
         {
-            MemberContact contact = null;
-
+            string xmlRequest;
+            string xmlResponse;
             string respCode = string.Empty;
             string errorText = string.Empty;
+            XMLTableData table;
+            XMLFieldData field;
+            NAVWebXml xml = new NAVWebXml();
             ContactMapping map = new ContactMapping();
+            MemberContact contact = null;
 
             NavWS.RootGetMemberContact rootContact = new NavWS.RootGetMemberContact();
             logger.Debug(config.LSKey.Key, "GetMemberContact - CardId: {0}", card);
-            navWS.GetMemberContact(ref respCode, ref errorText, card, accountId, contactId, ref rootContact);
+            if (NAVVersion < new Version("16.2"))
+            {
+                if (string.IsNullOrEmpty(loginId) == false)
+                {
+                    xmlRequest = xml.GetGeneralWebRequestXML("Member Login Card", "Login ID", loginId.ToLower(), 1);
+                    xmlResponse = RunOperation(xmlRequest);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                    if (table == null || table.NumberOfValues == 0)
+                        return null;
+
+                    field = table.FieldList.Find(f => f.FieldName.Equals("Card No."));
+                    card = field.Values[0];
+                }
+                navWS.GetMemberContact(ref respCode, ref errorText, card, accountId, contactId, ref rootContact);
+            }
+            else
+            {
+                navWS.GetMemberContact2(ref respCode, ref errorText, card, accountId, contactId, loginId.ToLower(), email.ToLower(), ref rootContact);
+            }
+            if (respCode == "1000") // not found
+                return null;
+
             HandleWS2ResponseCode("GetMemberContact", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberContact Response - " + Serialization.ToXml(rootContact, true));
             
             contact = map.MapFromRootToContact(rootContact);
+            contact.UserName = loginId;
+            card = contact.Cards.FirstOrDefault().Id;
 
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Member Login Card", "Card No.", contact.Cards.FirstOrDefault().Id, 1);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (string.IsNullOrEmpty(loginId))
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("Member Login Card", "Card No.", card, 1);
+                xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            if (table == null || table.NumberOfValues == 0)
-                return null;
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
 
-            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Login ID"));
-            contact.UserName = field.Values[0];
+                field = table.FieldList.Find(f => f.FieldName.Equals("Login ID"));
+                contact.UserName = field.Values[0];
+            }
 
             xmlRequest = xml.GetGeneralWebRequestXML("Member Login", "Login ID", contact.UserName.ToLower(), 1);
             xmlResponse = RunOperation(xmlRequest);
@@ -530,19 +561,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public MemberContact ContactGetByUserName(string username, bool includeDetails)
         {
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Member Login Card", "Login ID", username.ToLower(), 1);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-            if (table == null || table.NumberOfValues == 0)
-                return null;
-
-            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Card No."));
-            string cardid = field.Values[0];
-
-            return ContactGet(string.Empty, string.Empty, cardid, includeDetails);
+            return ContactGet(string.Empty, string.Empty, string.Empty, username, string.Empty, includeDetails);
         }
 
         public MemberContact ContactGetByEmail(string email, bool includeDetails)
@@ -560,7 +579,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string contactId = field.Values[0];
             field = table.FieldList.Find(f => f.FieldName.Equals("Account No."));
             string accountId = field.Values[0];
-            return ContactGet(contactId, accountId, string.Empty, includeDetails);
+            return ContactGet(contactId, accountId, string.Empty, string.Empty, string.Empty, includeDetails);
         }
 
         public double ContactAddCard(string contactId, string accountId, string cardId)
@@ -568,7 +587,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NavXml navXml = new NavXml();
             string xmlRequest = navXml.ContactAddCardRequestXML(contactId, accountId, cardId);
 
-            //return the Encrypted pwd that NAV returned to us
+            //return the Encrypted password that NAV returned to us
             string xmlResponse = RunOperation(xmlRequest);
             HandleResponseCode(ref xmlResponse);
             return navXml.ContactAddCardResponseXml(xmlResponse);
@@ -611,7 +630,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 {
                     Id = att.Code,
                     Description = att.Description,
-                    DefaultValue = att.Value
+                    DefaultValue = att.Value,
+                    ContactValue = true
                 });
             }
             return list;
@@ -629,36 +649,117 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return rep.SchemeGetAll(table);
         }
 
-        public void Logon(string userName, string password, string cardId)
+        public MemberContact Logon(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
-            NavXml navXml = new NavXml();
-            string xmlRequest = navXml.LoginRequestXML(userName, password, cardId);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
+            MemberContact contact = null;
+            if (NAVVersion < new Version("16.2"))
+            {
+                NavXml navXml = new NavXml();
+                NAVWebXml xml = new NAVWebXml();
+                XMLTableData table;
+                XMLFieldData field;
+                string xmlRequest;
+                string xmlResponse;
+
+                xmlRequest = xml.GetGeneralWebRequestXML("Member Login Card", "Login ID", userName.ToLower(), 1);
+                xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                field = table.FieldList.Find(f => f.FieldName.Equals("Card No."));
+                string card = field.Values[0];
+
+                xmlRequest = navXml.LoginRequestXML(userName, password, card);
+                xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+
+                //CALL NAV web service but don't send in the cardId since that will try and link the card to user 
+                //and we only want to link the device to the user
+                xmlRequest = navXml.CreateDeviceAndLinkToUser(userName, deviceID, deviceName, card);
+                xmlResponse = RunOperation(xmlRequest);
+                return contact;
+            }
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            NavWS.RootMemberLogon root = new NavWS.RootMemberLogon();
+            decimal remainingPoints = 0;
+
+            logger.Debug(config.LSKey.Key, "MemberLogon - userName: {0}", userName);
+            navWS.MemberLogon(ref respCode, ref errorText, userName, password, deviceID, deviceName, ref remainingPoints, ref root);
+            HandleWS2ResponseCode("MemberLogon", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MemberLogon Response - " + Serialization.ToXml(root, true));
+            
+            ContactMapping map = new ContactMapping();
+            contact = map.MapFromRootToLogonContact(root);
+            contact.UserName = userName;
+            if (includeDetails)
+                contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
+
+            return contact;
         }
 
         //Change the password in NAV
-        public string ChangePassword(string userName, string newPassword, string oldPassword)
+        public void ChangePassword(string userName, string token, string newPassword, string oldPassword)
         {
-            NavXml navXml = new NavXml();
-            string xmlRequest = navXml.ChangePasswordRequestXML(userName, newPassword, oldPassword);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            return string.Empty;
+            if (NAVVersion < new Version("16.2"))
+            {
+                if (string.IsNullOrEmpty(oldPassword))
+                {
+                    logger.Debug(config.LSKey.Key, "Calling old NAV WS1 ChangePassword works only with oldPassword provided");
+                    return;
+                }
+
+                NavXml navXml = new NavXml();
+                string xmlRequest = navXml.ChangePasswordRequestXML(userName, newPassword, oldPassword);
+                string xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                return;
+            }
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+
+            logger.Debug(config.LSKey.Key, "MemberPasswordChange - UserName:{0} Token:{1}", userName, token);
+            navWS.MemberPasswordChange(ref respCode, ref errorText, userName, token, oldPassword, newPassword);
+            HandleWS2ResponseCode("MemberPasswordChange", respCode, errorText);
         }
 
-        public string ResetPassword(string userName, string newPassword)
+        public string ResetPassword(string userName, string email, string newPassword)
         {
             //Reset the password in NAV
-            //used when a user forgot his pwd, and has been validated (URL sent to him)
+            //used when a user forgot his password, and has been validated (URL sent to him)
 
             //If newPassword is empty then NAV creates a random password ?
-            //return the Encrypted pwd that NAV returned to us
-            NavXml navXml = new NavXml();
-            string xmlRequest = navXml.ResetPasswordRequestXML(userName, newPassword);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            return string.Empty;
+            //return the Encrypted password that NAV returned to us
+            if (NAVVersion < new Version("16.2"))
+            {
+                if (string.IsNullOrEmpty(newPassword))
+                {
+                    logger.Debug(config.LSKey.Key, "Calling old NAV WS1 ResetPassword works only with newPassword provided");
+                    return string.Empty;
+                }
+
+                NavXml navXml = new NavXml();
+                string xmlRequest = navXml.ResetPasswordRequestXML(userName, newPassword);
+                string xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                return string.Empty;
+            }
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            string token = string.Empty;
+            DateTime tokenExp = DateTime.Now.AddMonths(1);
+
+            logger.Debug(config.LSKey.Key, "MemberPasswordReset - UserName:{0} Email:{1}", userName, email);
+            navWS.MemberPasswordReset(ref respCode, ref errorText, userName, email, ref token, ref tokenExp);
+            HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MemberPasswordReset Response - Token:{0}", token);
+            return token;
         }
 
         public long MemberCardGetPoints(string cardId)
@@ -668,7 +769,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             if (navWS == null)
             {
-                MemberCardXml xml = new MemberCardXml();
+                NavXml xml = new NavXml();
                 string xmlRequest = xml.MemberCardRequestXML(cardId);
                 string xmlResponse = RunOperation(xmlRequest);
                 HandleResponseCode(ref xmlResponse);
@@ -970,7 +1071,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
         {
-            //clickncollect
+            // Click N Collect
             if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
 
@@ -1053,7 +1154,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             int lineno = 1;
             foreach (OrderPayment line in request.OrderPayments)
             {
-                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tendertype between lsomni and nav
+                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tender type between LSOmni and Nav
                 if (line.TenderType == null)
                     throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
                 line.LineNumber = lineno++;
@@ -1253,28 +1354,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         #endregion
 
         #region Device
-
-        public void CreateDeviceAndLinkToUser(string userName, string deviceId, string deviceFriendlyName, string cardId = "")
-        {
-            NavXml navXml = new NavXml();
-            string xmlRequest = navXml.CreateDeviceAndLinkToUser(userName, deviceId, deviceFriendlyName, cardId);
-            string xmlResponse = RunOperation(xmlRequest);
-            StatusCode statusCode = GetStatusCode(ref xmlResponse);
-            if (statusCode == StatusCode.Error)
-            {
-                return;
-            }
-            else if (statusCode != StatusCode.OK)
-            {
-                switch (statusCode)
-                {
-                    case StatusCode.DeviceIdMissing: //MissingDeviceId:
-                    case StatusCode.UserNotLoggedIn: //LoginIdNotFound:
-                        return;
-                }
-            }
-            HandleResponseCode(ref xmlResponse);
-        }
 
         public Device DeviceGetById(string id)
         {
@@ -1480,7 +1559,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (navWS == null)
             {
                 //the name of the Nav requestID changed between 9.00.04 and 9.00.05 
-                //TODO need to get the Notifications for this ws call too
+                //TODO need to get the Notifications for this WS call too
                 PublishedOfferXml xml = new PublishedOfferXml();
                 string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, itemId, storeId);
                 string xmlResponse = RunOperation(xmlRequest);

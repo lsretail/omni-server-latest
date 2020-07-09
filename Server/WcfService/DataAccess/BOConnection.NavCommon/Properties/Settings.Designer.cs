@@ -48,8 +48,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/O" +
-            "mniWrapper")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/" +
+            "OmniWrapper")]
         public string LSOmni_DataAccess_BOConnection_NavCommon_NavWS_OmniWrapper {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_NavCommon_NavWS_OmniWrapper"]));
@@ -59,8 +59,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/A" +
-            "ctivity")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/" +
+            "Activity")]
         public string LSOmni_DataAccess_BOConnection_NavCommon_LSActivity15_Activity {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_NavCommon_LSActivity15_Activity"]));

@@ -18,13 +18,12 @@ AppId={{07C464D2-8863-4A44-B30C-A4EBDAE8D246}
 AppName="LS Omni Server version {#VersionNo}"
 AppVersion={#ApplicationVersion}
 AppVerName="LS Omni Server {#ApplicationVersion}"
-AppPublisher=LS Retail, Inc.
+AppPublisher=LS Retail Inc.
 AppPublisherURL=http://www.lsretail.com/
 AppSupportURL=http://www.lsretail.com/
 AppUpdatesURL=http://www.lsretail.com/
-AppReadmeFile=http://www.tr.im/lsomni
 AppComments=LS Omni WCF Service
-AppCopyright=Copyright (C) 2019 LS Retail
+AppCopyright=Copyright (C) 2020 LS Retail
 ;file version
 VersionInfoVersion={#ApplicationVersion}
 ;when changing the DefaultDirName I had to change the AppId !!
@@ -76,7 +75,7 @@ Name: "{group}\{cm:ProgramOnTheWeb,LSOmniService}"; Filename: "http://www.lsreta
 #include "IISPage.iss"
  
 var
-  //the custome pages used, defined in other iss files
+  //the custom pages used, defined in other iss files
   SqlCustomPage : TWizardPage;
   NavSqlCustomPage : TWizardPage;
   IISCustomPage : TWizardPage;
@@ -128,7 +127,7 @@ begin
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSOmniService');
-  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC140/WS/CRONUS LS 1401 W1 Demo/Codeunit/RetailWebServices');
+  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC160/WS/CRONUS LS Central/Codeunit/RetailWebServices');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 

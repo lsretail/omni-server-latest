@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/Activity" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/">
   <types>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/ActivityResHeadersXML" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/ActivityResHeadersXML" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="Reservations">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="ReservationNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ReservationType" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ClientNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ClientName" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Description" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="FromDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ToDate" type="date" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="NoPersons" type="int" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalActivitiesAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="TotalAdditionalAmount" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" name="Status" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="InternalStatus" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="PaymentStatus" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Location" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="InternalContact" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="CustomerAccount" type="string" />
+          <element minOccurs="0" maxOccurs="unbounded" name="Balance" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Comment" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Email" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="00:00:00" name="TimeFrom" type="time" />
+          <element minOccurs="0" maxOccurs="1" default="00:00:00" name="TimeTo" type="time" />
+          <element minOccurs="0" maxOccurs="1" name="Reference" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Mobile" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="Language" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="GroupNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="POSsales" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="0" name="DepositsBalance" type="decimal" />
+        </sequence>
+      </complexType>
+      <complexType name="ActivityUploadResHeaders" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="Reservations" type="tns:Reservations" />
+        </sequence>
+      </complexType>
+      <element name="ActivityUploadResHeaders" type="tns:ActivityUploadResHeaders" />
+    </schema>
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="ChargeLines">
         <sequence>
@@ -590,18 +629,37 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetActReservations">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="locationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="reservationType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="status" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="fromDateTime" type="dateTime" />
+            <element xmlns:q1="urn:microsoft-dynamics-nav/xmlports/ActivityResHeadersXML" minOccurs="1" maxOccurs="1" name="resHeadersRespond" type="q1:ActivityUploadResHeaders" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetActReservations_Result">
+        <complexType>
+          <sequence>
+            <element xmlns:q2="urn:microsoft-dynamics-nav/xmlports/ActivityResHeadersXML" minOccurs="1" maxOccurs="1" name="resHeadersRespond" type="q2:ActivityUploadResHeaders" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetAdditionalCharges">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
-            <element xmlns:q1="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q1:ActivityChargeRespond" />
+            <element xmlns:q3="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q3:ActivityChargeRespond" />
           </sequence>
         </complexType>
       </element>
       <element name="GetAdditionalCharges_Result">
         <complexType>
           <sequence>
-            <element xmlns:q2="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q2:ActivityChargeRespond" />
+            <element xmlns:q4="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q4:ActivityChargeRespond" />
           </sequence>
         </complexType>
       </element>
@@ -610,14 +668,14 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="type" type="int" />
             <element minOccurs="1" maxOccurs="1" name="linkNo" type="string" />
-            <element xmlns:q3="urn:microsoft-dynamics-nav/xmlports/ActivityAttributeRespondXML" minOccurs="1" maxOccurs="1" name="activityAttributeRespond" type="q3:ActivityAttributeRespond" />
+            <element xmlns:q5="urn:microsoft-dynamics-nav/xmlports/ActivityAttributeRespondXML" minOccurs="1" maxOccurs="1" name="activityAttributeRespond" type="q5:ActivityAttributeRespond" />
           </sequence>
         </complexType>
       </element>
       <element name="GetAttributes_Result">
         <complexType>
           <sequence>
-            <element xmlns:q4="urn:microsoft-dynamics-nav/xmlports/ActivityAttributeRespondXML" minOccurs="1" maxOccurs="1" name="activityAttributeRespond" type="q4:ActivityAttributeRespond" />
+            <element xmlns:q6="urn:microsoft-dynamics-nav/xmlports/ActivityAttributeRespondXML" minOccurs="1" maxOccurs="1" name="activityAttributeRespond" type="q6:ActivityAttributeRespond" />
           </sequence>
         </complexType>
       </element>
@@ -631,7 +689,7 @@
             <element minOccurs="1" maxOccurs="1" name="optionalResource" type="string" />
             <element minOccurs="1" maxOccurs="1" name="promoCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
-            <element xmlns:q5="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q5:ActivityAvailabilityResponse" />
+            <element xmlns:q7="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q7:ActivityAvailabilityResponse" />
           </sequence>
         </complexType>
       </element>
@@ -640,7 +698,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
-            <element xmlns:q6="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q6:ActivityAvailabilityResponse" />
+            <element xmlns:q8="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q8:ActivityAvailabilityResponse" />
           </sequence>
         </complexType>
       </element>
@@ -653,7 +711,7 @@
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="optionalResource" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
-            <element xmlns:q7="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q7:ActivityAvailabilityResponse" />
+            <element xmlns:q9="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q9:ActivityAvailabilityResponse" />
           </sequence>
         </complexType>
       </element>
@@ -662,7 +720,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
-            <element xmlns:q8="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q8:ActivityAvailabilityResponse" />
+            <element xmlns:q10="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q10:ActivityAvailabilityResponse" />
           </sequence>
         </complexType>
       </element>
@@ -671,14 +729,14 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="productNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="locationNo" type="string" />
-            <element xmlns:q9="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q9:ActivityChargeRespond" />
+            <element xmlns:q11="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q11:ActivityChargeRespond" />
           </sequence>
         </complexType>
       </element>
       <element name="GetProductCharges_Result">
         <complexType>
           <sequence>
-            <element xmlns:q10="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q10:ActivityChargeRespond" />
+            <element xmlns:q12="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityChargeRespond" type="q12:ActivityChargeRespond" />
           </sequence>
         </complexType>
       </element>
@@ -864,42 +922,42 @@
       <element name="UploadActivityLocations">
         <complexType>
           <sequence>
-            <element xmlns:q11="urn:microsoft-dynamics-nav/xmlports/ActivityUploadLocationsXML" minOccurs="1" maxOccurs="1" name="uploadLocations" type="q11:ActivityUploadLocations" />
+            <element xmlns:q13="urn:microsoft-dynamics-nav/xmlports/ActivityUploadLocationsXML" minOccurs="1" maxOccurs="1" name="uploadLocations" type="q13:ActivityUploadLocations" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadActivityLocations_Result">
         <complexType>
           <sequence>
-            <element xmlns:q12="urn:microsoft-dynamics-nav/xmlports/ActivityUploadLocationsXML" minOccurs="1" maxOccurs="1" name="uploadLocations" type="q12:ActivityUploadLocations" />
+            <element xmlns:q14="urn:microsoft-dynamics-nav/xmlports/ActivityUploadLocationsXML" minOccurs="1" maxOccurs="1" name="uploadLocations" type="q14:ActivityUploadLocations" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadActivityProducts">
         <complexType>
           <sequence>
-            <element xmlns:q13="urn:microsoft-dynamics-nav/xmlports/ActivityUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q13:ActivityUploadProducts" />
+            <element xmlns:q15="urn:microsoft-dynamics-nav/xmlports/ActivityUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q15:ActivityUploadProducts" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadActivityProducts_Result">
         <complexType>
           <sequence>
-            <element xmlns:q14="urn:microsoft-dynamics-nav/xmlports/ActivityUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q14:ActivityUploadProducts" />
+            <element xmlns:q16="urn:microsoft-dynamics-nav/xmlports/ActivityUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q16:ActivityUploadProducts" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadActivityTypes">
         <complexType>
           <sequence>
-            <element xmlns:q15="urn:microsoft-dynamics-nav/xmlports/ActivityUploadTypesXML" minOccurs="1" maxOccurs="1" name="uploadTypes" type="q15:ActivityUploadTypes" />
+            <element xmlns:q17="urn:microsoft-dynamics-nav/xmlports/ActivityUploadTypesXML" minOccurs="1" maxOccurs="1" name="uploadTypes" type="q17:ActivityUploadTypes" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadActivityTypes_Result">
         <complexType>
           <sequence>
-            <element xmlns:q16="urn:microsoft-dynamics-nav/xmlports/ActivityUploadTypesXML" minOccurs="1" maxOccurs="1" name="uploadTypes" type="q16:ActivityUploadTypes" />
+            <element xmlns:q18="urn:microsoft-dynamics-nav/xmlports/ActivityUploadTypesXML" minOccurs="1" maxOccurs="1" name="uploadTypes" type="q18:ActivityUploadTypes" />
           </sequence>
         </complexType>
       </element>
@@ -907,14 +965,14 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element xmlns:q17="urn:microsoft-dynamics-nav/xmlports/ActivityAdmissionEntriesXML" minOccurs="1" maxOccurs="1" name="activityAdmissionEntries" type="q17:ActivityAdmissionEntries" />
+            <element xmlns:q19="urn:microsoft-dynamics-nav/xmlports/ActivityAdmissionEntriesXML" minOccurs="1" maxOccurs="1" name="activityAdmissionEntries" type="q19:ActivityAdmissionEntries" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadAdmissionEntries_Result">
         <complexType>
           <sequence>
-            <element xmlns:q18="urn:microsoft-dynamics-nav/xmlports/ActivityAdmissionEntriesXML" minOccurs="1" maxOccurs="1" name="activityAdmissionEntries" type="q18:ActivityAdmissionEntries" />
+            <element xmlns:q20="urn:microsoft-dynamics-nav/xmlports/ActivityAdmissionEntriesXML" minOccurs="1" maxOccurs="1" name="activityAdmissionEntries" type="q20:ActivityAdmissionEntries" />
           </sequence>
         </complexType>
       </element>
@@ -923,14 +981,14 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="activityType" type="string" />
-            <element xmlns:q19="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q19:ActivityUploadReservations" />
+            <element xmlns:q21="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q21:ActivityUploadReservations" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadClientBookingsV2_Result">
         <complexType>
           <sequence>
-            <element xmlns:q20="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q20:ActivityUploadReservations" />
+            <element xmlns:q22="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q22:ActivityUploadReservations" />
           </sequence>
         </complexType>
       </element>
@@ -938,14 +996,14 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element xmlns:q21="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q21:ActivityUploadReservations" />
+            <element xmlns:q23="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q23:ActivityUploadReservations" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadClientBookings_Result">
         <complexType>
           <sequence>
-            <element xmlns:q22="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q22:ActivityUploadReservations" />
+            <element xmlns:q24="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q24:ActivityUploadReservations" />
           </sequence>
         </complexType>
       </element>
@@ -954,14 +1012,14 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="customerNo" type="string" />
-            <element xmlns:q23="urn:microsoft-dynamics-nav/xmlports/MembershipCustomersEntriesXML" minOccurs="1" maxOccurs="1" name="activityCustomerEntries" type="q23:ActivityCustomerEntries" />
+            <element xmlns:q25="urn:microsoft-dynamics-nav/xmlports/MembershipCustomersEntriesXML" minOccurs="1" maxOccurs="1" name="activityCustomerEntries" type="q25:ActivityCustomerEntries" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadCustomerEntries_Result">
         <complexType>
           <sequence>
-            <element xmlns:q24="urn:microsoft-dynamics-nav/xmlports/MembershipCustomersEntriesXML" minOccurs="1" maxOccurs="1" name="activityCustomerEntries" type="q24:ActivityCustomerEntries" />
+            <element xmlns:q26="urn:microsoft-dynamics-nav/xmlports/MembershipCustomersEntriesXML" minOccurs="1" maxOccurs="1" name="activityCustomerEntries" type="q26:ActivityCustomerEntries" />
           </sequence>
         </complexType>
       </element>
@@ -969,14 +1027,14 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element xmlns:q25="urn:microsoft-dynamics-nav/xmlports/ActivityMemberDetailsXML" minOccurs="1" maxOccurs="1" name="activityMemberDetails" type="q25:ActivityMemberDetails" />
+            <element xmlns:q27="urn:microsoft-dynamics-nav/xmlports/ActivityMemberDetailsXML" minOccurs="1" maxOccurs="1" name="activityMemberDetails" type="q27:ActivityMemberDetails" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadMemberDetails_Result">
         <complexType>
           <sequence>
-            <element xmlns:q26="urn:microsoft-dynamics-nav/xmlports/ActivityMemberDetailsXML" minOccurs="1" maxOccurs="1" name="activityMemberDetails" type="q26:ActivityMemberDetails" />
+            <element xmlns:q28="urn:microsoft-dynamics-nav/xmlports/ActivityMemberDetailsXML" minOccurs="1" maxOccurs="1" name="activityMemberDetails" type="q28:ActivityMemberDetails" />
           </sequence>
         </complexType>
       </element>
@@ -984,28 +1042,28 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element xmlns:q27="urn:microsoft-dynamics-nav/xmlports/ActivityUploadMembershipsXML" minOccurs="1" maxOccurs="1" name="activityUploadMemberships" type="q27:ActivityUploadMemberships" />
+            <element xmlns:q29="urn:microsoft-dynamics-nav/xmlports/ActivityUploadMembershipsXML" minOccurs="1" maxOccurs="1" name="activityUploadMemberships" type="q29:ActivityUploadMemberships" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadMembershipEntries_Result">
         <complexType>
           <sequence>
-            <element xmlns:q28="urn:microsoft-dynamics-nav/xmlports/ActivityUploadMembershipsXML" minOccurs="1" maxOccurs="1" name="activityUploadMemberships" type="q28:ActivityUploadMemberships" />
+            <element xmlns:q30="urn:microsoft-dynamics-nav/xmlports/ActivityUploadMembershipsXML" minOccurs="1" maxOccurs="1" name="activityUploadMemberships" type="q30:ActivityUploadMemberships" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadMembershipProducts">
         <complexType>
           <sequence>
-            <element xmlns:q29="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q29:ActivityMembershipProducts" />
+            <element xmlns:q31="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q31:ActivityMembershipProducts" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadMembershipProducts_Result">
         <complexType>
           <sequence>
-            <element xmlns:q30="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q30:ActivityMembershipProducts" />
+            <element xmlns:q32="urn:microsoft-dynamics-nav/xmlports/MembershipsUploadProductsXML" minOccurs="1" maxOccurs="1" name="uploadProducts" type="q32:ActivityMembershipProducts" />
           </sequence>
         </complexType>
       </element>
@@ -1013,28 +1071,28 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element xmlns:q31="urn:microsoft-dynamics-nav/xmlports/ActivitySubscriptionEntriesXML" minOccurs="1" maxOccurs="1" name="activitySubscriptionEntries" type="q31:ActivitySubscriptionEntries" />
+            <element xmlns:q33="urn:microsoft-dynamics-nav/xmlports/ActivitySubscriptionEntriesXML" minOccurs="1" maxOccurs="1" name="activitySubscriptionEntries" type="q33:ActivitySubscriptionEntries" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadMembershipSubscriptionCharges_Result">
         <complexType>
           <sequence>
-            <element xmlns:q32="urn:microsoft-dynamics-nav/xmlports/ActivitySubscriptionEntriesXML" minOccurs="1" maxOccurs="1" name="activitySubscriptionEntries" type="q32:ActivitySubscriptionEntries" />
+            <element xmlns:q34="urn:microsoft-dynamics-nav/xmlports/ActivitySubscriptionEntriesXML" minOccurs="1" maxOccurs="1" name="activitySubscriptionEntries" type="q34:ActivitySubscriptionEntries" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadPromotions">
         <complexType>
           <sequence>
-            <element xmlns:q33="urn:microsoft-dynamics-nav/xmlports/ActivityPromotionsXML" minOccurs="1" maxOccurs="1" name="activityPromotions" type="q33:ActivityUploadPromotions" />
+            <element xmlns:q35="urn:microsoft-dynamics-nav/xmlports/ActivityPromotionsXML" minOccurs="1" maxOccurs="1" name="activityPromotions" type="q35:ActivityUploadPromotions" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadPromotions_Result">
         <complexType>
           <sequence>
-            <element xmlns:q34="urn:microsoft-dynamics-nav/xmlports/ActivityPromotionsXML" minOccurs="1" maxOccurs="1" name="activityPromotions" type="q34:ActivityUploadPromotions" />
+            <element xmlns:q36="urn:microsoft-dynamics-nav/xmlports/ActivityPromotionsXML" minOccurs="1" maxOccurs="1" name="activityPromotions" type="q36:ActivityUploadPromotions" />
           </sequence>
         </complexType>
       </element>
@@ -1042,14 +1100,14 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element xmlns:q35="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityIssuedAllowance" type="q35:ActivityUploadAllowance" />
+            <element xmlns:q37="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityIssuedAllowance" type="q37:ActivityUploadAllowance" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadPurchasedAllowances_Result">
         <complexType>
           <sequence>
-            <element xmlns:q36="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityIssuedAllowance" type="q36:ActivityUploadAllowance" />
+            <element xmlns:q38="urn:microsoft-dynamics-nav/xmlports/ActivityIssuedAllowanceXML" minOccurs="1" maxOccurs="1" name="activityIssuedAllowance" type="q38:ActivityUploadAllowance" />
           </sequence>
         </complexType>
       </element>
@@ -1057,14 +1115,14 @@
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
-            <element xmlns:q37="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q37:ActivityUploadReservations" />
+            <element xmlns:q39="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q39:ActivityUploadReservations" />
           </sequence>
         </complexType>
       </element>
       <element name="UploadReservationActivities_Result">
         <complexType>
           <sequence>
-            <element xmlns:q38="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q38:ActivityUploadReservations" />
+            <element xmlns:q40="urn:microsoft-dynamics-nav/xmlports/ActivityReservationsXML" minOccurs="1" maxOccurs="1" name="activityReservations" type="q40:ActivityUploadReservations" />
           </sequence>
         </complexType>
       </element>
@@ -1111,6 +1169,12 @@
   </message>
   <message name="ConfirmReservation_Result">
     <part name="parameters" element="tns:ConfirmReservation_Result" />
+  </message>
+  <message name="GetActReservations">
+    <part name="parameters" element="tns:GetActReservations" />
+  </message>
+  <message name="GetActReservations_Result">
+    <part name="parameters" element="tns:GetActReservations_Result" />
   </message>
   <message name="GetAdditionalCharges">
     <part name="parameters" element="tns:GetAdditionalCharges" />
@@ -1297,6 +1361,10 @@
       <input name="ConfirmReservation" message="tns:ConfirmReservation" />
       <output name="ConfirmReservation_Result" message="tns:ConfirmReservation_Result" />
     </operation>
+    <operation name="GetActReservations">
+      <input name="GetActReservations" message="tns:GetActReservations" />
+      <output name="GetActReservations_Result" message="tns:GetActReservations_Result" />
+    </operation>
     <operation name="GetAdditionalCharges">
       <input name="GetAdditionalCharges" message="tns:GetAdditionalCharges" />
       <output name="GetAdditionalCharges_Result" message="tns:GetAdditionalCharges_Result" />
@@ -1464,6 +1532,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="ConfirmReservation_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetActReservations">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:GetActReservations" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetActReservations">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetActReservations_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -1704,7 +1781,7 @@
   </binding>
   <service name="Activity">
     <port name="Activity_Port" binding="tns:Activity_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSCentralRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

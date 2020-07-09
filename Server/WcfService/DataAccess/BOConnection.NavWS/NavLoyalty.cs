@@ -55,7 +55,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails)
         {
-            MemberContact contact = NavWSBase.ContactGet(string.Empty, string.Empty, card, includeDetails);
+            MemberContact contact = NavWSBase.ContactGet(string.Empty, string.Empty, card, string.Empty, string.Empty, includeDetails);
 
             if (numberOfTrans > 0 && contact != null)
             {
@@ -66,12 +66,27 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual MemberContact ContactGetByUserName(string user, bool includeDetails)
         {
-            return NavWSBase.ContactGetByUserName(user, includeDetails);
+            if (NAVVersion < new Version("16.2"))
+                return NavWSBase.ContactGetByUserName(user, includeDetails);
+
+            return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, user, string.Empty, includeDetails);
         }
 
         public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
-            return NavWSBase.ContactGetByEmail(searchValue, false);
+            if (NAVVersion < new Version("16.2"))
+                return NavWSBase.ContactGetByEmail(searchValue, false);
+
+            switch (searchType)
+            {
+                case ContactSearchType.Email:
+                    return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, string.Empty, searchValue, false);
+                case ContactSearchType.CardId:
+                    return NavWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, false);
+                case ContactSearchType.UserName:
+                    return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, false);
+            }
+            return null;
         }
 
         public virtual double ContactAddCard(string contactId, string accountId, string cardId)
@@ -79,20 +94,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return ContactAddCard(contactId, accountId, cardId);
         }
 
-        public void Login(string userName, string password, string cardId)
+        public MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
-            NavWSBase.Logon(userName, password, cardId);
+            return NavWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
         }
 
         //Change the password in NAV
-        public virtual string ChangePassword(string userName, string newPassword, string oldPassword)
+        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword)
         {
-            return NavWSBase.ChangePassword(userName, newPassword, oldPassword);
+            NavWSBase.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
-        public virtual string ResetPassword(string userName, string newPassword)
+        public virtual string ResetPassword(string userName, string email, string newPassword)
         {
-            return NavWSBase.ResetPassword(userName, newPassword);
+            return NavWSBase.ResetPassword(userName, email, newPassword);
         }
 
         public virtual List<Profile> ProfileGetByCardId(string id)
@@ -122,11 +137,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         #endregion
 
         #region Device
-
-        public virtual void CreateDeviceAndLinkToUser(string userName, string deviceId, string deviceFriendlyName, string cardId = "")
-        {
-            NavWSBase.CreateDeviceAndLinkToUser(userName, deviceId, deviceFriendlyName, cardId);
-        }
 
         public virtual Device DeviceGetById(string id)
         {

@@ -186,7 +186,7 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ContactGetByCardId(ct.Cards.FirstOrDefault().Id, 0, false);
         }
 
-        public virtual MemberContact Login(string userName, string password, bool includeDetails, string deviceId = "", string ipAddress = "")
+        public virtual MemberContact Login(string userName, string password, bool includeDetails, string deviceId)
         {
             //some validation
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
@@ -206,26 +206,27 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniServiceException(StatusCode.DeviceIsBlocked, string.Format("Device has been blocked from usage: {0}", deviceId));
             }
 
-            MemberContact contact = BOLoyConnection.ContactGetByUserName(userName, includeDetails);
+            MemberContact contact = BOLoyConnection.Login(userName, password, deviceId, (dev == null) ? string.Empty : dev.DeviceFriendlyName, includeDetails);
             if (contact == null)
-                throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userName);
+            {
+                contact = BOLoyConnection.ContactSearch(ContactSearchType.UserName, userName, 0, true).FirstOrDefault();
+                if (contact == null)
+                    throw new LSOmniServiceException(StatusCode.UserNameNotFound, "Cannot login user " + userName);
+            }
 
             if (contact.Cards.Count == 0)
             {
                 throw new LSOmniServiceException(StatusCode.MemberCardNotFound, "cardId not found during login for user: " + userName);
             }
 
-            NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
-            contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
+            if (includeDetails)
+            {
+                NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
+                contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
 
-            OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-            contact.OneLists = oneListBLL.OneListGet(contact, true);
-
-            BOLoyConnection.Login(userName, password, contact.Cards[0].Id);
-
-            //CALL NAV web service but dont send in the cardId since that will try and link the card to user 
-            //and we only want to link the device to the user
-            BOLoyConnection.CreateDeviceAndLinkToUser(userName, deviceId, ""); //TODO, deviceFriendlyName
+                OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
+                contact.OneLists = oneListBLL.OneListGet(contact, true);
+            }
 
             contact.Environment = new OmniEnvironment();
             CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
@@ -267,7 +268,7 @@ namespace LSOmni.BLL.Loyalty
             }
 
             //CALL NAV web service - it validates the if old pwd is ok or not
-            BOLoyConnection.ChangePassword(userName, newPassword, oldPassword); //
+            BOLoyConnection.ChangePassword(userName, string.Empty, newPassword, oldPassword); //
 
         }
 
@@ -320,31 +321,10 @@ namespace LSOmni.BLL.Loyalty
             }
 
             //CALL NAV web service 
-            BOLoyConnection.ResetPassword(userNameOrEmail, newPassword); //
+            BOLoyConnection.ResetPassword(userNameOrEmail, string.Empty, newPassword); //
 
             //delete security token and resetpasswordDelete failure is 
             iResetPasswordRepository.ResetPasswordDelete(resetCode);
-        }
-
-        public virtual void ForgotPasswordForDevice(string userNameOrEmail, string deviceId)
-        {
-            //email a reset code. 
-            //there are different emails sent for those on devices vs web page
-            //TODO, use deviceId and only allow reset code on that phone?
-
-            //get the username from resetCode, if resetCode is not specified
-            MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
-            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && contact == null)
-                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail);
-
-            if (contact == null)
-                throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userNameOrEmail);
-
-            //create resetCode in db
-            string resetCode = RandomString.GetString(10); //something easier than guid to write on phone
-
-            IResetPasswordRepository iResetPasswordRepository = GetDbRepository<IResetPasswordRepository>(config);
-            iResetPasswordRepository.ResetPasswordSave(resetCode, contact.Id, contact.Email);
         }
 
         public virtual string ForgotPassword(string userNameOrEmail)
@@ -379,6 +359,49 @@ namespace LSOmni.BLL.Loyalty
             iResetPasswordRepository.ResetPasswordSave(resetCode, contact.Id, contact.Email);
 
             return resetCode;
+        }
+
+        public virtual string PasswordReset(string userName, string email)
+        {
+            string token = BOLoyConnection.ResetPassword(userName, email, string.Empty);
+
+            if (config.SettingsBoolGetByKey(ConfigKey.forgotpassword_code_encrypted))
+            {
+                try
+                {
+                    token = StringCipher.Encrypt(token, "System.ServiceHost");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(config.LSKey.Key, ex, "token {0} invalid, encryption failed", token);
+                    throw new LSOmniServiceException(StatusCode.ResetPasswordCodeInvalid, "token could not be encrypted");
+                }
+            }
+            return token;
+        }
+
+        public virtual void PasswordChange(string userName, string token, string newPassword, string oldPassword)
+        {
+            //minor validation before sending it to NAV web service
+            if (Validation.IsValidPassword(newPassword) == false)
+            {
+                throw new LSOmniException(StatusCode.PasswordInvalid, "Validation of new password failed.");
+            }
+
+            if (string.IsNullOrEmpty(token) == false && config.SettingsBoolGetByKey(ConfigKey.forgotpassword_code_encrypted))
+            {
+                try
+                {
+                    token = StringCipher.Decrypt(token, "System.ServiceHost");
+                }
+                catch (Exception ex)
+                {
+                    logger.Error(config.LSKey.Key, ex, "token {0} invalid, decryption failed", token);
+                    throw new LSOmniServiceException(StatusCode.ResetPasswordCodeInvalid, "token could not be decrypted");
+                }
+            }
+
+            BOLoyConnection.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
         #endregion login and accounts

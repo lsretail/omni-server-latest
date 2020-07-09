@@ -71,6 +71,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             "ml.[Net Amount],ml.[Vat Amount],ml.[Amount],ml.[Item Description],ml.[Variant Description]" +
                             ",ml.[Document ID]";
 
+            if (NavVersion > new Version("16.2.0.0"))
+                select += ",ml.[External ID]";
+
             List<SalesEntryLine> list = new List<SalesEntryLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -300,7 +303,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private SalesEntryLine ReaderToOrderLine(SqlDataReader reader)
         {
-            return new SalesEntryLine()
+            SalesEntryLine line = new SalesEntryLine()
             {
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure Code"]),
@@ -318,6 +321,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ItemDescription = SQLHelper.GetString(reader["Item Description"]),
                 VariantDescription = SQLHelper.GetString(reader["Variant Description"])
             };
+
+            if (NavVersion > new Version("16.2.0.0"))
+                line.ExternalId = SQLHelper.GetString(reader["External ID"]);
+
+            return line;
         }
 
         private SalesEntryPayment ReaderToOrderPay(SqlDataReader reader)
