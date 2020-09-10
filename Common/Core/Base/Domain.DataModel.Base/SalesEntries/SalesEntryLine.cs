@@ -64,6 +64,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public string UomId { get; set; }
         [DataMember]
+        public string StoreId { get; set; }
+        [DataMember]
+        public bool ClickAndCollectLine { get; set; }
+        [DataMember]
         public string ItemImageId { get; set; }
         [DataMember]
         public decimal Quantity { get; set; }

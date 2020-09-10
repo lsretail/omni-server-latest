@@ -112,6 +112,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ResetPassword(userName, email, newPassword);
         }
 
+        public virtual void LoginChange(string oldUserName, string newUserName, string password)
+        {
+            NavWSBase.LoginChange(oldUserName, newUserName, password);
+        }
+
         public virtual List<Profile> ProfileGetByCardId(string id)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
@@ -389,7 +394,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             {
                 foreach (SalesEntryPayment line in entry.Payments)
                 {
-                    line.TenderType = NavWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tendertype between lsomni and nav
+                    line.TenderType = NavWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tender type between LSOmni and NAV
                     if (line.TenderType == null)
                         throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
                 }
@@ -481,7 +486,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         #endregion
 
-        #region Ecomm Replication
+        #region EComm Replication
 
         public virtual List<ReplImageLink> ReplEcommImageLinks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
@@ -523,6 +528,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         {
             DataTranslationRepository rep = new DataTranslationRepository(config);
             return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            DataTranslationRepository rep = new DataTranslationRepository(config);
+            return rep.ReplicateEcommDataTranslationLangCode();
         }
 
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

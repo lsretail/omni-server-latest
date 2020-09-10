@@ -19,7 +19,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Base
             Id = (id == null) ? NewKey() : id;
         }
 
-        private string NewKey()
+        protected string NewKey()
         {
             return Guid.NewGuid().ToString().ToUpper();
         }

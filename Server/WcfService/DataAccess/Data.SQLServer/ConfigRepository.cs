@@ -72,8 +72,9 @@ namespace LSOmni.DataAccess.Dal
 
         public bool ConfigKeyExists(string lsKey, ConfigKey key)
         {
-            if (lsKey.IsNullOrEmpty())
+            if (string.IsNullOrEmpty(lsKey))
                 return false;
+
             bool ret = false;
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {

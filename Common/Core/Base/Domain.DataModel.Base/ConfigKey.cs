@@ -50,7 +50,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         SkipBase64Conversion = 503,
 
-        //aswaaq specific
+        // aswaaq specific
         [EnumMember]
         Password_Policy = 620,
         [EnumMember]
@@ -75,6 +75,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         Demo_Print_Enabled = 1110,
         Timezone_HoursOffset = 1111,
         Allow_Dublicate_Email = 1150,
+
+        Hosp_Terminal = 1171,
+        Hosp_Staff = 1172,
 
         ScanPayGo_Terminal = 1181,
         ScanPayGo_Staff = 1182,

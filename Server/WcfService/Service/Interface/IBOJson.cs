@@ -87,7 +87,7 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message);
+        bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string curCode, string token, string authcode, string reference, ref string message);
 
         #endregion OrderMessage
 

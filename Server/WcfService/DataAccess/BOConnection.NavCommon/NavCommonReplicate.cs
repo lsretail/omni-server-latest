@@ -299,6 +299,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return rep.ReplicateDataTranslation(mytable);
         }
 
+        public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            XMLTableData mytable = DoReplication(10000972, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
+
+            ReplicateRepository rep = new ReplicateRepository();
+            return rep.ReplicateDataTranslationLangCode(mytable);
+        }
+
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             XMLTableData mytable = DoReplication(291, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);

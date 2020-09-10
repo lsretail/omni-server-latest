@@ -6,6 +6,7 @@ using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
@@ -19,8 +20,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 new NavWS.ContactCreateParameters()
                 {
+                    ContactID = XMLHelper.GetString(contact.Id),
                     AccountID = XMLHelper.GetString(contact.Account?.Id),
                     ClubID = XMLHelper.GetString(contact.Account?.Scheme?.Club?.Id),
+                    SchemeID = XMLHelper.GetString(contact.Account?.Scheme?.Id),
                     ExternalID = XMLHelper.GetString(contact.AlternateId),
 
                     FirstName = contact.FirstName,
@@ -44,8 +47,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     DeviceID = contact.LoggedOnToDevice.Id,
                     DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
 
-                    ContactID = string.Empty,
-                    SchemeID = string.Empty,
                     ExternalSystem = string.Empty
                 }
             };
@@ -186,6 +187,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
         public MemberContact MapFromRootToLogonContact(NavWS.RootMemberLogon root)
         {
+            if (root.MemberContact == null)
+                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "No Contact found");
+
             NavWS.MemberContact2 contact = root.MemberContact.FirstOrDefault();
             MemberContact memberContact = new MemberContact()
             {
@@ -304,6 +308,27 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     QRText = string.Empty,
                     NotificationTextType = NotificationTextType.Plain,
                     Images = GetMemberNotificationImages(root.MemberNotificationImages, notification.No)
+                });
+            }
+            return list;
+        }
+
+        public List<Profile> MapFromRootToProfiles(NavWS.RootMobileGetProfiles root)
+        {
+            List<Profile> list = new List<Profile>();
+            if (root.MemberAttribute == null)
+                return list;
+
+            foreach (var attr in root.MemberAttribute)
+            {
+                list.Add(new Profile()
+                {
+                    Id = attr.Code,
+                    Description = attr.Description,
+                    DataType = (ProfileDataType)Convert.ToInt32(attr.AttributeType),
+                    DefaultValue = attr.DefaultValue,
+                    Mandatory = attr.Mandatory
+
                 });
             }
             return list;

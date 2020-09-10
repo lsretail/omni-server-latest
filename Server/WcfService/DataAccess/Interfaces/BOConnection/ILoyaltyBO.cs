@@ -34,6 +34,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails);
         void ChangePassword(string userName, string token, string newPassword, string oldPassword);
         string ResetPassword(string userName, string email, string newPassword);
+        void LoginChange(string oldUserName, string newUserName, string password);
 
         List<Profile> ProfileGetByCardId(string id);
         List<Profile> ProfileGetAll();
@@ -147,6 +148,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplDataTranslation> ReplEcommDataTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCustomer> ReplEcommMember(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCountryCode> ReplEcommCountryCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);

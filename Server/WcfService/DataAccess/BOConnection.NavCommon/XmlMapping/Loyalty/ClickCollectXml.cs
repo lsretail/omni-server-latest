@@ -423,7 +423,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("Vat_Amount", ConvertTo.SafeStringDecimal(rq.TaxAmount)),
                     new XElement("Amount", ConvertTo.SafeStringDecimal(rq.Amount)),
                     new XElement("Sourcing_Location", string.Empty),
-                    new XElement("Order_Reference", string.Empty)
+                    new XElement("Order_Reference", rq.OrderId)
                 );
             return root;
         }

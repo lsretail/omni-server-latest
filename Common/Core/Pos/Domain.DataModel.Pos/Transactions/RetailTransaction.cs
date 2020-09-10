@@ -430,7 +430,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 
             // The line discount can never be higher than the gross amount minus the sum of all automatic discounts
             // originating from the external calculation engine (mix and match, etc...) minus the total discount currently on the line
-            if (amount > line.GrossAmount.Value - line.LineDiscount.Amount.Value)
+            if (amount > line.GrossAmount.Value + line.LineDiscount.Amount.Value)
                 throw new LineDiscountHigherThanSaleLineAmountException();
 
             line.SetManualDiscount(amount, 0, DiscountEntryType.Amount);

@@ -404,6 +404,11 @@ namespace LSOmni.BLL.Loyalty
             BOLoyConnection.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
+        public virtual void LoginChange(string oldUserName, string newUserName, string password)
+        {
+            BOLoyConnection.LoginChange(oldUserName, newUserName, password);
+        }
+
         #endregion login and accounts
 
         #region private

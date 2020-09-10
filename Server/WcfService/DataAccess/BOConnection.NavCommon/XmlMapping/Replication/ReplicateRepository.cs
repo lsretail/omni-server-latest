@@ -993,6 +993,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
 
+        public List<ReplDataTranslationLangCode> ReplicateDataTranslationLangCode(XMLTableData table)
+        {
+            List<ReplDataTranslationLangCode> list = new List<ReplDataTranslationLangCode>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                string rec = string.Empty;
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Language Code": rec = field.Values[i]; break;
+                    }
+                }
+                list.Add(new ReplDataTranslationLangCode()
+                {
+                    Code = rec
+                });
+            }
+            return list;
+        }
+
         public List<ReplDiscountValidation> ReplicateDiscountValidations(XMLTableData table)
         {
             List<ReplDiscountValidation> list = new List<ReplDiscountValidation>();

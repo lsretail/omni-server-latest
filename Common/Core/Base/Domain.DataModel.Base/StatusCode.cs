@@ -488,6 +488,14 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [EnumMember]
         NavWSError = 8000,
 
+        //Inventory App codes
+        [EnumMember]
+        CustomerOrderNotFound = 9000,
+        [EnumMember]
+        CustomerOrderItemNotFound = 9001,
+        [EnumMember]
+        CustomerOrderItemAlreadyInBox = 9002,
+
         #region SQLITE Error Codes 10.000 to 19.999
 
         GenericError = 10000,
@@ -523,6 +531,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         GetHospTypesError = 10801,
 
         GetGs1BarcodeSetupsError = 10900,
+
+        SettingsConfigDelete = 11000,
+        SettingsConfigDeleteAll = 11001,
+        SettingsConfigSave = 11002,
 
         #endregion
     }

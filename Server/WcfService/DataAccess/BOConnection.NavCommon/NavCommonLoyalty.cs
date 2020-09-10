@@ -579,18 +579,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string contactId = field.Values[0];
             field = table.FieldList.Find(f => f.FieldName.Equals("Account No."));
             string accountId = field.Values[0];
+
             return ContactGet(contactId, accountId, string.Empty, string.Empty, string.Empty, includeDetails);
         }
 
         public double ContactAddCard(string contactId, string accountId, string cardId)
         {
-            NavXml navXml = new NavXml();
-            string xmlRequest = navXml.ContactAddCardRequestXML(contactId, accountId, cardId);
+            if (NAVVersion < new Version("16.2"))
+            {
+                NavXml navXml = new NavXml();
+                string xmlRequest = navXml.ContactAddCardRequestXML(contactId, accountId, cardId);
+                string xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                return navXml.ContactAddCardResponseXml(xmlResponse);
+            }
 
-            //return the Encrypted password that NAV returned to us
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            return navXml.ContactAddCardResponseXml(xmlResponse);
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            decimal points = 0;
+
+            navWS.MemberCardToContact(ref respCode, ref errorText, cardId, accountId, contactId, ref points);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MemberCardToContact Response - points:", points);
+            return (double)points;
         }
 
         #endregion
@@ -599,12 +610,24 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public List<Profile> ProfileGetAll()
         {
-            NavXml navXml = new NavXml();
-            string xmlRequest = navXml.ProfilesRequestXML(string.Empty);
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
+            if (NAVVersion < new Version("16.2"))
+            {
+                NavXml navXml = new NavXml();
+                string xmlRequest = navXml.ProfilesRequestXML(string.Empty);
+                string xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                return navXml.ProfileResponseXML(xmlResponse);
+            }
 
-            return navXml.ProfileResponseXML(xmlResponse);
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            NavWS.RootMobileGetProfiles root = new NavWS.RootMobileGetProfiles();
+
+            navWS.MobileGetProfiles(ref respCode, ref errorText, string.Empty, string.Empty, ref root);
+            HandleWS2ResponseCode("MobileGetProfiles", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MobileGetProfiles Response - " + Serialization.ToXml(root, true));
+            ContactMapping map = new ContactMapping();
+            return map.MapFromRootToProfiles(root);
         }
 
 
@@ -652,7 +675,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         public MemberContact Logon(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
             MemberContact contact = null;
-            if (NAVVersion < new Version("16.2"))
+            if (NAVVersion < new Version("16.3"))
             {
                 NavXml navXml = new NavXml();
                 NAVWebXml xml = new NAVWebXml();
@@ -760,6 +783,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberPasswordReset Response - Token:{0}", token);
             return token;
+        }
+
+        public void LoginChange(string oldUserName, string newUserName, string password)
+        {
+            NavXml navXml = new NavXml();
+            string xmlRequest = navXml.ChangeLoginRequestXML(oldUserName, newUserName, password);
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
         }
 
         public long MemberCardGetPoints(string cardId)
@@ -1024,8 +1055,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 decimal pointUsed = 0;
                 decimal pointEarned = 0;
-                NavWS.RootCustomerOrderGetV2 root = new NavWS.RootCustomerOrderGetV2();
-                navWS.CustomerOrderGetV2(ref respCode, ref errorText, "LOOKUP", id, "P0001", ref root, ref pointEarned, ref pointUsed);
+                NavWS.RootCustomerOrderGetV3 root = new NavWS.RootCustomerOrderGetV3();
+                navWS.CustomerOrderGetV3(ref respCode, ref errorText, "LOOKUP", id, "P0001", ref root, ref pointEarned, ref pointUsed);
                 HandleWS2ResponseCode("CustomerOrderGet", respCode, errorText);
                 logger.Debug(config.LSKey.Key, "CustomerOrderGetV2 Response - " + Serialization.ToXml(root, true));
 
@@ -1054,9 +1085,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
             NavWS.RootCustomerOrderFilteredList root = new NavWS.RootCustomerOrderFilteredList();
-            List<NavWS.CustomerOrderHeader2> hd = new List<NavWS.CustomerOrderHeader2>()
+            List<NavWS.CustomerOrderHeader3> hd = new List<NavWS.CustomerOrderHeader3>()
             {
-                new NavWS.CustomerOrderHeader2()
+                new NavWS.CustomerOrderHeader3()
                 {
                     MemberCardNo = cardId
                 }
@@ -1117,15 +1148,33 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string errorText = string.Empty;
 
             string pefSourceLoc = string.Empty;
-            NavWS.RootCOQtyAvailabilityExtIn rootin = map.MapOneListToInvReq(request);
             NavWS.RootCOQtyAvailabilityExtOut rootout = new NavWS.RootCOQtyAvailabilityExtOut();
-            logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
 
-            navWS.COQtyAvailability(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
-            HandleWS2ResponseCode("COQtyAvailability", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "COQtyAvailability Response - " + Serialization.ToXml(rootout, true));
+            OrderAvailabilityResponse data;
+            if (NAVVersion < new Version("16.3"))
+            {
+                NavWS.RootCOQtyAvailabilityExtIn rootin = map.MapOneListToInvReq(request);
+                logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
 
-            OrderAvailabilityResponse data = map.MapRootToOrderavailabilty(rootin, rootout);
+                navWS.COQtyAvailability(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
+
+                HandleWS2ResponseCode("COQtyAvailability", respCode, errorText);
+                logger.Debug(config.LSKey.Key, "COQtyAvailability Response - " + Serialization.ToXml(rootout, true));
+
+                data = map.MapRootToOrderavailabilty(rootin, rootout);
+            }
+            else
+            {
+                NavWS.RootCOQtyAvailabilityInV2 rootin = map.MapOneListToInvReq2(request);
+                logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
+
+                navWS.COQtyAvailabilityV2(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
+
+                HandleWS2ResponseCode("COQtyAvailability", respCode, errorText);
+                logger.Debug(config.LSKey.Key, "COQtyAvailability Response - " + Serialization.ToXml(rootout, true));
+
+                data = map.MapRootToOrderavailabilty2(rootin, rootout);
+            }
             data.PreferredSourcingLocation = pefSourceLoc;
             return data;
         }
@@ -1230,7 +1279,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
 
-            if (NAVVersion > new Version("14.2"))
+            if (NAVVersion > new Version("16.2.0.0"))
+            {
+                NavWS.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request);
+                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Response - " + Serialization.ToXml(root, true));
+                navWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
+            }
+            else if (NAVVersion > new Version("14.2"))
             {
                 NavWS.RootCustomerOrderCreateV4 root = map.MapFromOrderV4ToRoot(request);
                 logger.Debug(config.LSKey.Key, "CustomerOrderCreateV4 Response - " + Serialization.ToXml(root, true));

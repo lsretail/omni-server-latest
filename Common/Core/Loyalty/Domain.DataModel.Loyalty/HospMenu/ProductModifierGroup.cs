@@ -4,13 +4,12 @@ using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class ProductModifierGroup : ModifierGroup
     {
         public ProductModifierGroup(string id) : base(id)
         {
             ProductModifiers = new List<ProductModifier>();
-            TextModifiers = new List<TextModifier>();
         }
 
         public ProductModifierGroup() : this(string.Empty)
@@ -19,9 +18,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
         [DataMember]
         public List<ProductModifier> ProductModifiers { get; set; }
-
-        [DataMember]
-        public List<TextModifier> TextModifiers { get; set; }
 
         public override int Selected
         {
@@ -62,8 +58,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
             {
                 if (ProductModifiers != null)
                     ProductModifiers.Clear();
-                if (TextModifiers != null)
-                    TextModifiers.Clear();
             }
         }
 
@@ -71,21 +65,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         /// Make sure that we satisfy the minimum selection restriction.
         /// Do this by adding quantity to productmodifiers (in order, one by one, no preference) until the restriction has been met.
         /// If the restriction has not been met after going through all the productmodifiers, increasing their quantity up to their max quantity, 
-        /// let's start adding quantity to textmodifiers (one by one) until it has been met.
         /// </summary>
         public override void SatisfyMinSelectionRestriction()
         {
             foreach (ProductModifier prodMod in this.ProductModifiers)
                 prodMod.SatisfyMinQuantityRestriction();
 
-            foreach (TextModifier textMod in this.TextModifiers)
-                textMod.SatisfyMinQuantityRestriction();
-
-            if (this.MinimumSelection > 0 && (this.ProductModifiers.Count > 0 || this.TextModifiers.Count > 0))
+            if (this.MinimumSelection > 0 && this.ProductModifiers.Count > 0)
             {
                 decimal currentSelection = 0;
                 this.ProductModifiers.ForEach(x => currentSelection += x.Quantity);
-                this.TextModifiers.ForEach(x => currentSelection += x.Quantity);
 
                 if (currentSelection < this.MinimumSelection)
                 {
@@ -98,7 +87,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
                         currentSelection = 0;
                         this.ProductModifiers.ForEach(x => currentSelection += x.Quantity);
-                        this.TextModifiers.ForEach(x => currentSelection += x.Quantity);
 
                         if (currentSelection >= this.MinimumSelection)
                             break;
@@ -106,21 +94,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
                     if (currentSelection >= this.MinimumSelection)
                         return;
-
-                    foreach (TextModifier textMod in this.TextModifiers)
-                    {
-                        decimal qtyMissing = this.MinimumSelection - currentSelection;
-                        decimal availableQtyToAdd = textMod.MaximumSelection - textMod.Quantity;
-
-                        textMod.Quantity += Math.Min(availableQtyToAdd, qtyMissing);
-
-                        currentSelection = 0;
-                        this.ProductModifiers.ForEach(x => currentSelection += x.Quantity);
-                        this.TextModifiers.ForEach(x => currentSelection += x.Quantity);
-
-                        if (currentSelection >= this.MinimumSelection)
-                            break;
-                    }
                 }
             }
         }

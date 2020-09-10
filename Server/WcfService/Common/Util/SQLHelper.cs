@@ -27,7 +27,16 @@ namespace LSOmni.Common.Util
             if (value == null || value == DBNull.Value)
                 return string.Empty;
 
-            return System.Text.Encoding.Default.GetString(value as byte[]);
+            byte[] data = value as byte[];
+
+            if (data.Length > 1 && data[data.Length - 1] == 0)
+            {
+                byte[] tmp = new byte[data.Length - 1];
+                Buffer.BlockCopy(data, 0, tmp, 0, data.Length - 1);
+                data = tmp;
+            }
+
+            return System.Text.Encoding.UTF8.GetString(data);
         }
 
         /// <summary>

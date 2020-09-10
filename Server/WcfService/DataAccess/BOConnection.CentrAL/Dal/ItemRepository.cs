@@ -38,6 +38,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                          "(SELECT TOP(1) sl.[Block Purchase Return] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
 
+            if (navVersion > new Version("16.2.0.0"))
+            {
+                sqlcolumns += ",(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
+                              "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
+            }
+
             sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
                       "INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] " +
                       "LEFT OUTER JOIN [" + navCompanyName + "Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
@@ -73,16 +79,20 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
-                // get item HTML and distribution changes 
+                // get item HTML
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // get distribution changes 
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
 
                 lastKey = mainlastkey;
-                if (actions.Count == 0)
-                    recordsRemaining = 0;
 
                 foreach (JscActions act in itemact)
                 {
@@ -119,6 +129,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         actions.Add(newact);
                     }
                 }
+
+                if (actions.Count == 0)
+                    recordsRemaining = 0;
             }
 
             List<ReplItem> list = new List<ReplItem>();
@@ -233,28 +246,46 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, string.Empty, keys, ref maxKey);
                 actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
-                // Check for actions from Sales Price,Item Variant,Item Unit of Measure,Variant and Distribution tables
+                // Check for actions from Sales Price
                 recordsRemaining += GetRecordCount(7002, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 List<JscActions> itemact = LoadActions(fullReplication, 7002, batchSize, ref tmplastkey, ref recordsRemaining);
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // Check for actions from Item Variant
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(5401, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 5401, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // Check for actions from Item Unit of Measure
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(5404, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 5404, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // Check for actions from Item Variant Registration
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10001414, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001414, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // Check for actions from Item HTML
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // Check for actions from Distribution tables
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10000704, batchSize, ref tmplastkey, ref recordsRemaining));
 
                 lastKey = mainlastkey;
-                if (actions.Count == 0)
-                    recordsRemaining = 0;
 
                 // combine actions
                 foreach (JscActions act in itemact)
@@ -292,6 +323,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         actions.Add(newact);
                     }
                 }
+
+                if (actions.Count == 0)
+                    recordsRemaining = 0;
             }
 
             List<LoyItem> list = new List<LoyItem>();
@@ -604,7 +638,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplItem()
+            ReplItem item = new ReplItem()
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
@@ -643,6 +677,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
                 MustKeyInComment = 0
             };
+
+            if (NavVersion > new Version("16.2.0.0"))
+            {
+                item.BlockedOnECom = SQLHelper.GetInt32(reader["BlockEcom"]);
+            }
+
+            return item;
         }
 
         private LoyItem ReaderToLoyItem(SqlDataReader reader, string storeId , string culture, bool incldetails, bool hastimestamp, out string timestamp)

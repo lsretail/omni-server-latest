@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using LSRetail.Omni.Domain.DataModel.Base.Base;
-
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

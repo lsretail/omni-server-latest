@@ -17,13 +17,12 @@ AppId={{08C464D2-8863-4A44-B30C-A4EBDAE8D246}
 AppName=LS Omni Windows Service version {#VersionNo}
 AppVersion={#ApplicationVersion}
 AppVerName=LS Omni Windows Service {#ApplicationVersion}
-AppPublisher=LS Retail, Inc.
+AppPublisher=LS Retail Inc.
 AppPublisherURL=http://www.lsretail.com/
 AppSupportURL=http://www.lsretail.com/
 AppUpdatesURL=http://www.lsretail.com/
-AppReadmeFile=http://www.tr.im/lsomni
 AppComments=LS Omni Windows Service
-AppCopyright=Copyright (C) 2016  LS Retail
+AppCopyright=Copyright (C) 2020  LS Retail
 ;file version
 VersionInfoVersion={#ApplicationVersion}
 ;when changing the DefaultDirName I had to change the AppId !!

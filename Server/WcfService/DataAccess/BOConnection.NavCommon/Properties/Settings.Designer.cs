@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.4.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "16.7.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -48,8 +48,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/" +
-            "OmniWrapper")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/O" +
+            "mniWrapper")]
         public string LSOmni_DataAccess_BOConnection_NavCommon_NavWS_OmniWrapper {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_NavCommon_NavWS_OmniWrapper"]));
@@ -59,8 +59,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/" +
-            "Activity")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/A" +
+            "ctivity")]
         public string LSOmni_DataAccess_BOConnection_NavCommon_LSActivity15_Activity {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_NavCommon_LSActivity15_Activity"]));

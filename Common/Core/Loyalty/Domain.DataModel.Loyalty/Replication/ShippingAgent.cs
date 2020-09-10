@@ -26,7 +26,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         {
             if (disposing)
             {
-                ShippingAgent.Clear();
+                if (ShippingAgent != null)
+                    ShippingAgent.Clear();
             }
         }
 

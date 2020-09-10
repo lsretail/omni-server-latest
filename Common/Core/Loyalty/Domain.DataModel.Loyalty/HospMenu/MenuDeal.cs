@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using LSRetail.Omni.Domain.DataModel.Base.Menu.SpecialCase;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
     //discount offer
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class MenuDeal : MenuItem
     {
         public MenuDeal(string id) : base(id)
         {
             DealLines = new List<MenuDealLine>();
-            UnknownDealLines = new List<UnknownDealLine>();
         }
 
         public MenuDeal() : this(string.Empty)
@@ -20,10 +18,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
         [DataMember]
         public List<MenuDealLine> DealLines { get; set; }
-        /// Unknown deal lines are containers for deallines that we get from the BO when retrieving a transaction,
-        /// but aren't part of the menu that the hosp item came from,
-        /// and so aren't part of the hosp item's 'normal' set of deallines (those that are defined in the menu it came from).
-        public List<UnknownDealLine> UnknownDealLines { get; private set; }
 
         public override MenuItem Clone()
         {

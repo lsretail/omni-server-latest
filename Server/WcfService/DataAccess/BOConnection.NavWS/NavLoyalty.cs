@@ -110,6 +110,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ResetPassword(userName, email, newPassword);
         }
 
+        public virtual void LoginChange(string oldUserName, string newUserName, string password)
+        {
+            NavWSBase.LoginChange(oldUserName, newUserName, password);
+        }
+
         public virtual List<Profile> ProfileGetByCardId(string id)
         {
             return NavWSBase.ProfileGetAll();
@@ -406,7 +411,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units)
         {
-            //only loy app?
             throw new NotImplementedException("IS THIS NEEDED?");
         }
 
@@ -429,7 +433,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #endregion
 
-        #region Ecomm Replication
+        #region EComm Replication
 
         public virtual List<ReplImageLink> ReplEcommImageLinks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
@@ -466,6 +470,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return NavWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             return NavWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -488,7 +497,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            //Avensia special request
+            // Avensia special request
             throw new NotImplementedException("Not supported in WS Mode");
         }
 

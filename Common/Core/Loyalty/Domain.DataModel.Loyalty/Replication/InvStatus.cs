@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -25,7 +26,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         {
             if (disposing)
             {
-                Items.Clear();
+                if (Items != null)
+                    Items.Clear();
             }
         }
 

@@ -7,7 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class MenuNode : Entity, IDisposable
     {
         public MenuNode(string id) : base(id)
@@ -113,7 +113,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class MenuNodeLine : IDisposable
     {
         public MenuNodeLine(string id)
@@ -151,7 +151,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         public NodeLineType NodeLineType { get; set; }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public enum NodeLineType
     {
         [EnumMember]

@@ -48,7 +48,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         }
 
         /// <summary>
-        /// Order Document Id
+        /// Order Reference 
         /// </summary>
         [DataMember]
         public string OrderId { get; set; }
@@ -97,9 +97,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 
         public override string ToString()
         {
-            string s = string.Format("LineNumber: {0} ItemId: {1} VariantId: {2} UomId: {3} Quantity: {4} LineType: {5} Amount: {6}",
-                LineNumber, ItemId, VariantId, UomId, Quantity, LineType.ToString(), Amount.ToString());
-            return s;
+            return string.Format("LineNumber: {0} ItemId: {1} VariantId: {2} UomId: {3} Quantity: {4} LineType: {5} Amount: {6}",
+                LineNumber, ItemId, VariantId, UomId, Quantity, LineType, Amount);
         }
     }
 }

@@ -5,7 +5,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public abstract class Modifier : Entity, IDisposable
     {
         protected Modifier()
@@ -58,16 +58,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
         [DataMember]
         public string UnitOfMeasure { get; set; }
-
-        // Read only fields, have to pass data through our system
-        [DataMember]
-        public string ExternalIdRO { get; set; }
-        [DataMember]
-        public string ExternalLineNumberRO { get; set; }
-        [DataMember]
-        public string KitchenStatusRO { get; set; } // Not routed, Not Sent, Sent, PartiallySent, Voided (0,1,2,3,4)
-        [DataMember]
-        public string KitchenStatusCodeRO { get; set; }
 
         public int Selected
         {
@@ -131,20 +121,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
                 return true;
 
             return false;
-        }
-
-        public bool ShouldPromptSendToKitchen
-        {
-            get
-            {
-                if (this.KitchenStatusRO.Equals("1") || this.KitchenStatusRO.Equals("3"))
-                    return true;
-
-                if (this.KitchenStatusRO == "" && (this.Active || this.ExternalLineNumberRO != ""))
-                    return true;
-
-                return false;
-            }
         }
 
         public ModifierType GetModifierType(ModifierGroup group)

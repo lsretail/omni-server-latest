@@ -7,7 +7,6 @@ using System.Xml.Linq;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.Retail.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
@@ -38,8 +37,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 <Terminal_No>P0011</Terminal_No>
               </Request_Body>
             </Request>
-
              */
+
             // Create the XML Declaration, and append it to XML document
             XElement root =
                 new XElement("Request",
@@ -88,7 +87,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             #endregion xml
 
             MobileMenu mobileMenu = new MobileMenu();
-            //only one menu for now
             bool defaultMenu = true;
 
             // Create the XML document contain
@@ -96,70 +94,41 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             ValidateXmlDoc();
             elBody = doc.Element("Response").Element("Response_Body"); // use the response_body at the "root" 
 
-                        
-            //old style, before HMPOS and multi-menu support. There was a Dynamice_Content_Id and Description  
-            if (elBody.Element("Dynamic_Content_Id") != null)
-            {
-                mobileMenu.Id = GetValue(elBody, "Dynamic_Content_Id"); //GetValue(elMenu, "Description");
+            mobileMenu.Id = string.Empty;
+            mobileMenu.Version = string.Empty;
 
+            IEnumerable<XElement> ieDynContMenus = elBody.Descendants("DynamicContentMenu");
+            foreach (XElement elDCM in ieDynContMenus)
+            {
+                string dynContentMenuId = GetValue(elDCM, "DynamicContentId");
                 Menu menu = new Menu();
                 menu.DefaultMenu = defaultMenu; //default menu
-                menu.Id = GetValue(elBody, "Dynamic_Content_Id");
-                //menu.Id = "1";  //missing 
-                //menu.Ver = version;
-                menu.Description = GetValue(elBody, "Description");
-                //menu.VDes = GetValue(elMenu, "ValidDescription");
-                menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in XML
+                menu.Id = dynContentMenuId;
+                menu.Description = GetValue(elDCM, "Description");
+                menu.Image = new ImageView(string.Empty);
 
-                ParseMenuNodes(menu,"");
-                mobileMenu.MenuNodes.Add(menu); //only one menu now
+                menu.ValidationTimeWithinBounds = ConvertTo.SafeBoolean(GetValueOrDefault(elDCM, "TimeWithinBounds"));
+                menu.ValidationEndTimeAfterMidnight = ConvertTo.SafeBoolean(GetValueOrDefault(elDCM, "EndTimeAfterMidnight"));
+                menu.ValidationStartTime = ConvertTo.SafeTime(GetValueOrDefault(elDCM, "StartTime"), true);
+                menu.ValidationEndTime = ConvertTo.SafeTime(GetValueOrDefault(elDCM, "EndTime"), true);
 
-                ParseItems(mobileMenu, currency);
-                ParseProdModGroup(mobileMenu, currency);
-                ParseOffers(mobileMenu, currency);
-                ParseDealGroup(mobileMenu);
-
-                return mobileMenu;
-            }
-            else // if (elBody.Element("DynamicContentMenu") != null)
-            {
-                mobileMenu.Id = "";
-                mobileMenu.Version = "";
-                IEnumerable<XElement> ieDynContMenus = elBody.Descendants("DynamicContentMenu");
-                foreach (XElement elDCM in ieDynContMenus)
+                //check if StartTime or EndTime are 0:00
+                if (menu.ValidationStartTime.TimeOfDay.TotalSeconds == 0.0 && menu.ValidationEndTime.TimeOfDay.TotalSeconds == 0.0)
                 {
-                    string dynContentMenuId = GetValue(elDCM, "DynamicContentId");
-                    Menu menu = new Menu();
-                    menu.DefaultMenu = defaultMenu; //default menu
-                    menu.Id = dynContentMenuId;
-                    //menu.ValidationPeriod
-                    //menu.Order  int
-                    menu.Description = GetValue(elDCM, "Description");
-                    menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in XML
-
-                    menu.Image = new ImageView(""); // new ImageView(GetValue(elBody, "")); //does not exist in XML
-                    menu.ValidationTimeWithinBounds = ConvertTo.SafeBoolean(GetValueOrDefault(elDCM, "TimeWithinBounds"));
-                    menu.ValidationEndTimeAfterMidnight = ConvertTo.SafeBoolean(GetValueOrDefault(elDCM, "EndTimeAfterMidnight"));
-                    menu.ValidationStartTime = ConvertTo.SafeTime(GetValueOrDefault(elDCM, "StartTime"), true);
-                    menu.ValidationEndTime = ConvertTo.SafeTime(GetValueOrDefault(elDCM, "EndTime"), true);
-                    //check if StartTime or EndTime are 0:00
-                    if (menu.ValidationStartTime.TimeOfDay.TotalSeconds == 0.0 && menu.ValidationEndTime.TimeOfDay.TotalSeconds == 0.0)
-                    {
-                        menu.ValidationEndTime = menu.ValidationEndTime.AddHours(23).AddMinutes(59).AddSeconds(59);
-                        menu.ValidationTimeWithinBounds = true;
-                    }
-                    ParseMenuNodes(menu, dynContentMenuId);
-                    mobileMenu.MenuNodes.Add(menu); //only one menu now
-                    defaultMenu = false;
+                    menu.ValidationEndTime = menu.ValidationEndTime.AddHours(23).AddMinutes(59).AddSeconds(59);
+                    menu.ValidationTimeWithinBounds = true;
                 }
 
-                ParseItems(mobileMenu, currency);
-                ParseProdModGroup(mobileMenu, currency);
-                ParseOffers(mobileMenu, currency);
-                ParseDealGroup(mobileMenu);
-
-                return mobileMenu;
+                ParseMenuNodes(menu, dynContentMenuId);
+                mobileMenu.MenuNodes.Add(menu);
+                defaultMenu = false;
             }
+
+            ParseItems(mobileMenu, currency);
+            ParseProdModGroup(mobileMenu, currency);
+            ParseOffers(mobileMenu, currency);
+            ParseDealGroup(mobileMenu);
+            return mobileMenu;
         }
 
         private void ParseDealGroup(MobileMenu mobileMenu)
@@ -173,7 +142,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             {
                 string entryNo = GetValue(elDMG, "EntryNo");
                 DealModifierGroup dmg = new DealModifierGroup();
-                dmg.Id = string.Format("{0}|{1}", GetValue(elDMG, "OfferId"), GetValueOrDefault(elDMG, "OfferLineId", "")); 
+                dmg.Id = string.Format("{0}|{1}", GetValue(elDMG, "OfferId"), GetValueOrDefault(elDMG, "OfferLineId", string.Empty));
 
                 dmg.Description = GetValue(elDMG, "DealModGroupDescription");  //no description
                 dmg.MaximumSelection = ConvertTo.SafeDecimal(GetValue(elDMG, "MaxSelection", "0.0"));
@@ -190,11 +159,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         //PK is the OfferId + OfferLineId + DealModLineId
                         DealModifier dm = new DealModifier();
                         dm.Id = string.Format("{0}|{1}|{2}",
-                            GetValue(elLine, "OfferId"),GetValueOrDefault(elLine, "OfferLineId", ""),GetValueOrDefault(elLine, "DealModLineId", ""));
+                            GetValue(elLine, "OfferId"), GetValueOrDefault(elLine, "OfferLineId", string.Empty), GetValueOrDefault(elLine, "DealModLineId", string.Empty));
 
-                        dm.Item = new MenuItem(GetValueOrDefault(elLine, "ItemId", ""));
-                        dm.Description = GetValueOrDefault(elLine, "Description", "");
-                        dm.DealModifierGroupId = GetValueOrDefault(elLine, "DealModGroupId", "");
+                        dm.Item = new MenuItem(GetValueOrDefault(elLine, "ItemId", string.Empty));
+                        dm.Description = GetValueOrDefault(elLine, "Description", string.Empty);
+                        dm.DealModifierGroupId = GetValueOrDefault(elLine, "DealModGroupId", string.Empty);
                         dm.DisplayOrder = GetDisplayOrderAttributeValue(elLine);
                         dm.Price = ConvertTo.SafeDecimal(GetValue(elLine, "DealModPrice", "0.0"));
                         dm.MaximumSelection = ConvertTo.SafeDecimal(GetValue(elLine, "MaxSelection", "0.0"));
@@ -221,7 +190,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 deal.Id = GetValue(elOffer, "OfferId");
                 deal.Description = GetValue(elOffer, "OfferDescription");
                 deal.Detail = GetValue(elOffer, "OfferSecondaryDescription");
-                deal.Price = new Money(ConvertTo.SafeDecimal(GetValue(elOffer, "OfferPrice", "0.0")), currency);
+                deal.Price = ConvertTo.SafeDecimal(GetValue(elOffer, "OfferPrice", "0.0"));
                 ImageView iv = new ImageView(GetValue(elOffer, "ImageID"));
                 if (string.IsNullOrWhiteSpace(iv.Id) == false)
                     deal.Images.Add(iv);
@@ -248,7 +217,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         dl.DefaultLineId = (string.IsNullOrWhiteSpace(dl.DefaultLineId) ? "0" : dl.DefaultLineId); //make sure it has "0" 
                         //OfferId + OfferLineId + DefaultLineId
                         //  which is the default for OfferModifierGroupItems -> offerid, offerlineid,dealmodlineid
-                        dl.DefaultDealLineItemId = dl.Id + "|" + dl.DefaultLineId; 
+                        dl.DefaultDealLineItemId = dl.Id + "|" + dl.DefaultLineId;
 
                         if (elLine.Element("OfferLineQty") != null)
                             dl.Quantity = ConvertTo.SafeDecimal(GetValue(elLine, "OfferLineQty", "1.0"));
@@ -271,7 +240,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         }
                         else
                         {
-                            //if DefaultLineId is not "0" then add a deallineitem for it with values from OfferModifierGroupItems
+                            //if DefaultLineId is not "0" then add a DealLineItem for it with values from OfferModifierGroupItems
                             if (elBody.Element("OfferModifierGroupItems") != null)
                             {
                                 IEnumerable<XElement> ieItems = elBody.Descendants("OfferModifierGroupItems");
@@ -282,17 +251,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                                     if (parentIdOfferModifierGroupItems == entryNo)
                                     {
                                         MenuDealLineItem dlItem = new MenuDealLineItem();
-                                        dlItem.Id = dl.Id + "|" + GetValueOrDefault(elItem, "DealModLineId", "");
+                                        dlItem.Id = dl.Id + "|" + GetValueOrDefault(elItem, "DealModLineId", string.Empty);
                                         dlItem.ItemId = GetValue(elItem, "ItemId");  //Recipe.
                                         dlItem.PriceAdjustment = ConvertTo.SafeDecimal(GetValue(elItem, "DealModPrice"));
-                                        dlItem.Description = GetValueOrDefault(elItem, "Description", "");
+                                        dlItem.Description = GetValueOrDefault(elItem, "Description", string.Empty);
                                         dl.DealLineItems.Add(dlItem);
                                     }
                                 }
                             }
                         }
 
-                        //Add dealmodifiergroup under the dealline
+                        //Add DealModifierGroup under the DealLine
                         if (elBody.Element("OfferModifierGroups") != null)
                         {
                             IEnumerable<XElement> ieDMGs = elBody.Descendants("OfferModifierGroups");
@@ -302,7 +271,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                                 //entryNoOfferline = parentIdOfferModifierGroup
                                 if (parentIdOfferModifierGroup == entryNo)
                                 {
-                                    var dlDmgId = string.Format("{0}|{1}", GetValue(elDMG, "OfferId"), GetValueOrDefault(elDMG, "OfferLineId", "")); 
+                                    var dlDmgId = string.Format("{0}|{1}", GetValue(elDMG, "OfferId"), GetValueOrDefault(elDMG, "OfferLineId", string.Empty));
                                     dl.DealModifierGroupIds.Add(dlDmgId);
                                 }
                             }
@@ -346,25 +315,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         if (isTextModifier == false)
                         {
                             ProductModifier pm = new ProductModifier();
-                            pm.Id = pmg.Id + "|" + GetValueOrDefault(elLine, "ItemModSubCode",""); 
+                            pm.Id = pmg.Id + "|" + GetValueOrDefault(elLine, "ItemModSubCode", string.Empty);
                             //GetValue(elLine, "EntryNo"); GetValue(elLine, "ItemId"); was ItemId but cant since it is blank often 
                             pm.DisplayOrder = GetDisplayOrderAttributeValue(elLine);
 
                             pm.Price = 0M;
                             pm.Item = new MenuItem(GetValue(elLine, "ItemId")); //this itemId is available when price > 0, but blank when percentage
-                            pm.UnitOfMeasure = GetValue(elLine, "ItemModUoM", "");
-                            pm.Description = GetValueOrDefault(elLine, "Description", "");
+                            pm.UnitOfMeasure = GetValue(elLine, "ItemModUoM", string.Empty);
+                            pm.Description = GetValueOrDefault(elLine, "Description", string.Empty);
                             pm.MaximumSelection = ConvertTo.SafeDecimal(GetValue(elLine, "MaxSelection", "0.0"));
                             pm.MinimumSelection = ConvertTo.SafeDecimal(GetValue(elLine, "MinSelection", "0.0"));
                             pm.Quantity = ConvertTo.SafeDecimal(GetValue(elLine, "ItemModQty", "0.0"));
                             //ItemModPricePercentage has either price or percentage
                             pricePercentage = ConvertTo.SafeDecimal(GetValue(elLine, "ItemModPricePercentage", "0.0"));//was ItemModPrice
-                            //Og ItemModPriceType er nýtt – blankt ef verðið er 0 eða ekki tilgreint (texti), Price – þá er verðið 
-                            //ItemModPricePercentage svæðinu – Percentage – þá er prósenta í ItemModPricePercentage og 
-                            //verðið er reiknað sem prócenta af verði vörunnar sem modifierinn hangir á 
 
-                            //only if ItemModPriceType is Percentage do we need to change the price and calc the percentage
-                            string itemModPriceType = GetValue(elLine, "ItemModPriceType", "").ToUpper();
+                            //only if ItemModPriceType is Percentage do we need to change the price and calculation the percentage
+                            string itemModPriceType = GetValue(elLine, "ItemModPriceType", string.Empty).ToUpper();
                             if (string.IsNullOrWhiteSpace(itemModPriceType) == false && itemModPriceType == "PERCENTAGE")
                             {
                                 //no need to look for things when pct is 0
@@ -372,9 +338,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                                 {
                                     //this does not happen often so OK to use FIND..
                                     string baseItemId = FindItemItByItemModGroupId(pm.Id);//baseItemId has the price for the pm.It
-                                    string itemModUom = GetValue(elLine, "ItemModUoM", "");
+                                    string itemModUom = GetValue(elLine, "ItemModUoM", string.Empty);
                                     decimal price = FindPriceByItemId(baseItemId, itemModUom); //price of itemId
-                                    //Do the rounding basd on Nav MobileCurrency table
+                                    //Do the rounding based on Nav MobileCurrency table
                                     pm.Price = Common.Util.CurrencyGetHelper.RoundToUnit(price * pricePercentage / 100, currency.RoundOffSales, currency.SaleRoundingMethod);  //50%, the pct of the itemPrice
                                 }
                             }
@@ -400,12 +366,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             {
                 string entryNo = GetValue(elItem, "EntryNo");
                 string id = GetValue(elItem, "ItemId");
-                string detail = ""; //JIJ get from from itemhtml table  ItemModRequired
+                string detail = string.Empty; //JIJ get from ItemHTML table  ItemModRequired
                 string desc = GetValue(elItem, "ItemDescription");
                 ImageView iv = new ImageView(GetValue(elItem, "ImageID"));
                 decimal price = ConvertTo.SafeDecimal(GetValue(elItem, "ItemPrice", "0.0"));
                 int itemDefaultMenuType = Convert.ToInt32(GetValue(elItem, "ItemDefaultMenuType"));
                 List<UnitOfMeasure> uoms = FindUOMs(entryNo, id);
+
                 if (uoms.Count == 0)
                 {
                     UnitOfMeasure uom = new UnitOfMeasure();
@@ -423,10 +390,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     prod.Detail = detail;
                     if (string.IsNullOrWhiteSpace(iv.Id) == false)
                         prod.Images.Add(iv);
-                    prod.Price = new Money(price, currency);
+
+                    prod.Price = price;
                     prod.DefaultMenuType = itemDefaultMenuType;
                     prod.DefaultUnitOfMeasure = GetValue(elItem, "ItemUoM");
                     prod.UnitOfMeasures = uoms;
+
                     //get the product mod group for this "item" 
                     if (elBody.Element("ItemModifierGroups") != null)
                     {
@@ -442,7 +411,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         }
                     }
                     mobileMenu.Products.Add(prod);
-
                 }
                 else if (type == "ITEM" && price == 0)
                 {
@@ -462,9 +430,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     recipe.Detail = detail;
                     if (string.IsNullOrWhiteSpace(iv.Id) == false)
                         recipe.Images.Add(iv);
-                    recipe.Price = new Money(price, currency);
+                    recipe.Price = price;
                     recipe.DefaultMenuType = itemDefaultMenuType;
-                    recipe.UnitOfMeasure = new UnknownUnitOfMeasure(GetValue(elItem, "ItemUoM", ""), id);
+                    recipe.UnitOfMeasure = GetValue(elItem, "ItemUoM", string.Empty);
 
                     //get the product mod group for this "item" 
                     if (elBody.Element("ItemModifierGroups") != null)
@@ -480,6 +448,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                             }
                         }
                     }
+
                     if (elBody.Element("Ingredients") != null)
                     {
                         IEnumerable<XElement> ieLines = elBody.Descendants("Ingredients");
@@ -491,7 +460,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                                 Ingredient ing = new Ingredient();
                                 ing.Id = GetValue(elIng, "IngredientItemId"); //the itemId
                                 ing.DisplayOrder = GetDisplayOrderAttributeValue(elIng);
-                                ing.UnitOfMeasure = GetValue(elIng, "BOMUoM", "");
+                                ing.UnitOfMeasure = GetValue(elIng, "BOMUoM", string.Empty);
                                 //PriceReduced contains the price that is deducted on exclusion.
                                 ing.PriceReduction = ConvertTo.SafeDecimal(GetValueOrDefault(elIng, "PriceReduction", "0.0"));
                                 //An ingredient can be marked as PriceReducedOnExclusion. 
@@ -511,24 +480,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         private void GetMenuGroupNode(int level, string entryType, MenuNode mNodeIn, string dynamicContentId)
         {
             MenuNode node = new MenuNode();
-            IEnumerable<XElement> elMenuNodes = null;
-
-            if (string.IsNullOrWhiteSpace(dynamicContentId))
-            {
-                //when only one menu was supported in NAV
-                elMenuNodes = from el in elBody.Elements("DynamicContent")
-                              where (int)el.Element("Level") == level && el.Element("EntryType").Value == entryType
-                              select el;
-            }
-            else
-            {
-                elMenuNodes = from el in elBody.Elements("DynamicContent")
-                              where (string)el.Element("DynamicContentId") == dynamicContentId &&
-                              (int)el.Element("Level") == level && el.Element("EntryType").Value == entryType
-                              select el;
-
-
-            }
+            IEnumerable<XElement> elMenuNodes = from el in elBody.Elements("DynamicContent")
+                                                where (string)el.Element("DynamicContentId") == dynamicContentId &&
+                                                (int)el.Element("Level") == level && el.Element("EntryType").Value == entryType
+                                                select el;
 
             List<MenuNode> menuGroupNode = new List<MenuNode>();
             foreach (XElement elMNode in elMenuNodes)
@@ -545,14 +500,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     mNode.ValidationEndTimeAfterMidnight = ConvertTo.SafeBoolean(GetValue(elMNode, "EndTimeAfterMidnight"));
                     mNode.ValidationStartTime = ConvertTo.SafeTime(GetValue(elMNode, "StartTime"), true);
                     mNode.ValidationEndTime = ConvertTo.SafeTime(GetValue(elMNode, "EndTime"), true);
+
                     //check if StartTime or EndTime are 0:00
                     if (mNode.ValidationStartTime.TimeOfDay.TotalSeconds == 0.0 && mNode.ValidationEndTime.TimeOfDay.TotalSeconds == 0.0)
                     {
                         mNode.ValidationEndTime = mNode.ValidationEndTime.AddHours(23).AddMinutes(59).AddSeconds(59);
                         mNode.ValidationTimeWithinBounds = true;
                     }
+
                     if (mNode.ValidationEndTimeAfterMidnight)
                         mNode.ValidationEndTime = mNode.ValidationEndTime.AddDays(1);
+
                     mNode.PriceGroup = GetValue(elMNode, "EntryPriceGroup");
 
                     GetMenuNodeLines(level + 1, mNode, dynamicContentId);
@@ -565,22 +523,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
         private void GetMenuNodeLines(int level, MenuNode mNode, string dynamicContentId)
         {
-            IEnumerable<XElement> elMenuNodeLines = null;
-
-            if (string.IsNullOrWhiteSpace(dynamicContentId))
-            {
-                //when only one menu was supported in NAV
-                elMenuNodeLines = from el in elBody.Elements("DynamicContent")
-                                  where (int)el.Element("Level") >= level && el.Element("EntryType").Value != ""
-                                  select el;
-            }
-            else
-            {
-                elMenuNodeLines = from el in elBody.Elements("DynamicContent")
-                                  where (string)el.Element("DynamicContentId") == dynamicContentId &&
-                                  (int)el.Element("Level") >= level && el.Element("EntryType").Value != ""
-                                  select el;
-            }
+            IEnumerable<XElement> elMenuNodeLines = from el in elBody.Elements("DynamicContent")
+                                                    where (string)el.Element("DynamicContentId") == dynamicContentId &&
+                                                    (int)el.Element("Level") >= level && el.Element("EntryType").Value != string.Empty
+                                                    select el;
 
             foreach (XElement elMNodeLine in elMenuNodeLines)
             {
@@ -616,33 +562,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             }
         }
 
-        private void ParseMenuItemNodes(Menu menu,string dynamicContentId)
+        private void ParseMenuItemNodes(Menu menu, string dynamicContentId)
         {
             //find the level=1 which are items
             //ParentId = 0 here too. EntryType must be  Item
             IEnumerable<XElement> elMenuNodes = null;
-            if (string.IsNullOrWhiteSpace(dynamicContentId))
-            {
-                //when only one menu was supported in NAV
-                elMenuNodes = from el in elBody.Elements("DynamicContent")
-                              where el.Element("Level").Value == "1" &&
-                              (el.Element("EntryType").Value == "Item" || el.Element("EntryType").Value == "Offer"
-                              || el.Element("EntryType").Value == "Recipe")
-                              select el;
-            }
-            else
-            {
-                elMenuNodes = from el in elBody.Elements("DynamicContent")
-                              where el.Element("DynamicContentId").Value == dynamicContentId &&
-                              el.Element("Level").Value == "1" &&
-                              (el.Element("EntryType").Value == "Item" || el.Element("EntryType").Value == "Offer"
-                              || el.Element("EntryType").Value == "Recipe")
-                              select el;
-            }
+            elMenuNodes = from el in elBody.Elements("DynamicContent")
+                          where el.Element("DynamicContentId").Value == dynamicContentId &&
+                          el.Element("Level").Value == "1" &&
+                          (el.Element("EntryType").Value == "Item" || el.Element("EntryType").Value == "Offer"
+                          || el.Element("EntryType").Value == "Recipe")
+                          select el;
 
             foreach (XElement elMNode in elMenuNodes)
             {
-                //this is the toplevel menu node
+                //this is the top level menu node
                 MenuNode mNode = new MenuNode();
                 mNode.Id = GetValue(elMNode, "EntryNo");
                 mNode.DisplayOrder = GetDisplayOrderAttributeValue(elMNode);// DisplayOrder not in xml, using EntryNo 
@@ -652,16 +586,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 mNode.ValidationEndTimeAfterMidnight = ConvertTo.SafeBoolean(GetValue(elMNode, "EndTimeAfterMidnight"));
                 mNode.ValidationStartTime = ConvertTo.SafeTime(GetValue(elMNode, "StartTime"), true);
                 mNode.ValidationEndTime = ConvertTo.SafeTime(GetValue(elMNode, "EndTime"), true);
+
                 //check if StartTime or EndTime are 0:00
                 if (mNode.ValidationStartTime.TimeOfDay.TotalSeconds == 0.0 && mNode.ValidationEndTime.TimeOfDay.TotalSeconds == 0.0)
                 {
                     mNode.ValidationEndTime = mNode.ValidationEndTime.AddHours(23).AddMinutes(59).AddSeconds(59);
                     mNode.ValidationTimeWithinBounds = true;
                 }
+
                 if (mNode.ValidationEndTimeAfterMidnight)
                     mNode.ValidationEndTime = mNode.ValidationEndTime.AddDays(1);
-                mNode.PriceGroup = GetValue(elMNode, "EntryPriceGroup");
 
+                mNode.PriceGroup = GetValue(elMNode, "EntryPriceGroup");
                 string entryType = GetValue(elMNode, "EntryType").ToUpper();
                 mNode.NodeIsItem = true; //is a item node
 
@@ -691,7 +627,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         }
                         // mnLine.NodeLineType = NodeLineType.Recipe;
                         else if (entryType == "ITEM" && (itemType == "PRODUCT" || itemType == "ITEM"))
+                        {
                             mnLine.NodeLineType = NodeLineType.Product;
+                        }
                         // mnLine.NodeLineType = NodeLineType.Recipe;
                         else
                         {
@@ -706,30 +644,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             }
         }
 
-        private void ParseMenuNodes(Menu menu,string dynamicContentId)
+        private void ParseMenuNodes(Menu menu, string dynamicContentId)
         {
-            ParseMenuItemNodes(menu,dynamicContentId);
+            ParseMenuItemNodes(menu, dynamicContentId);
 
             //find the level=1 which are the menuNodes
             //ParentId = 0 here too. EntryType must be blank
-            IEnumerable<XElement> elMenuNodes = null;
-            if (string.IsNullOrWhiteSpace(dynamicContentId))
-            {
-                //when only one menu was supported in NAV
-                elMenuNodes = from el in elBody.Elements("DynamicContent")
-                              where el.Element("Level").Value == "1" && el.Element("EntryType").Value == ""
-                select el;
-            }
-            else
-            {
-                elMenuNodes = from el in elBody.Elements("DynamicContent")
-                              where el.Element("DynamicContentId").Value == dynamicContentId && el.Element("Level").Value == "1" 
-                select el;
-            }
+            IEnumerable<XElement> elMenuNodes = from el in elBody.Elements("DynamicContent")
+                                                where el.Element("DynamicContentId").Value == dynamicContentId && el.Element("Level").Value == "1"
+                                                select el;
 
             foreach (XElement elMNode in elMenuNodes)
             {
-                //this is the toplevel menu node
+                //this is the top level menu node
                 MenuNode mNode = new MenuNode();
                 mNode.Id = GetValue(elMNode, "EntryNo");
                 mNode.DisplayOrder = GetDisplayOrderAttributeValue(elMNode);// DisplayOrder not in xml, using EntryNo 
@@ -739,16 +666,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 mNode.ValidationEndTimeAfterMidnight = ConvertTo.SafeBoolean(GetValue(elMNode, "EndTimeAfterMidnight"));
                 mNode.ValidationStartTime = ConvertTo.SafeTime(GetValue(elMNode, "StartTime"), true);
                 mNode.ValidationEndTime = ConvertTo.SafeTime(GetValue(elMNode, "EndTime"), true);
+
                 //check if StartTime or EndTime are 0:00
                 if (mNode.ValidationStartTime.TimeOfDay.TotalSeconds == 0.0 && mNode.ValidationEndTime.TimeOfDay.TotalSeconds == 0.0)
                 {
                     mNode.ValidationEndTime = mNode.ValidationEndTime.AddHours(23).AddMinutes(59).AddSeconds(59);
                     mNode.ValidationTimeWithinBounds = true;
                 }
+
                 if (mNode.ValidationEndTimeAfterMidnight)
                     mNode.ValidationEndTime = mNode.ValidationEndTime.AddDays(1);
-                mNode.PriceGroup = GetValue(elMNode, "EntryPriceGroup");
 
+                mNode.PriceGroup = GetValue(elMNode, "EntryPriceGroup");
                 string entryType = GetValue(elMNode, "EntryType");
 
                 for (int i = 2; i <= 10; i++)
@@ -772,9 +701,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 foreach (XElement elUom in elUOMs)
                 {
-                    UnitOfMeasure uom = new UnitOfMeasure();
-                    uom.Description = GetValue(elUom, "Description");
-                    uom.Id = GetValue(elUom, "ItemUoM");
+                    UnitOfMeasure uom = new UnitOfMeasure()
+                    {
+                        Description = GetValue(elUom, "Description"),
+                        Id = GetValue(elUom, "ItemUoM")
+                    };
+
                     uom.Price = FindItemPrice(parentId, uom.Id);
                     list.Add(uom);
                 }
@@ -797,8 +729,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 if (item == null)
                     return 0M;
-                else
-                    return ConvertTo.SafeDecimal(GetValue(item, "ItemPrice", "0"));  //can return Item or Recipe 
+
+                return ConvertTo.SafeDecimal(GetValue(item, "ItemPrice", "0"));  //can return Item or Recipe 
             }
             catch (Exception ex)
             {
@@ -817,19 +749,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 if (item != null)
                     return ConvertTo.SafeDecimal(GetValue(item, "ItemPrice", "0"));  // 
-                else
-                {
-                    //not found in ItemPrice table, look for price in Item table
-                    elItems = elBody.Descendants("Items");
-                    item = (from el in elItems
-                            where el.Element("ItemId").Value == itemId
-                            select el).FirstOrDefault();
-                    if (item != null)
-                        return ConvertTo.SafeDecimal(GetValue(item, "ItemPrice", "0"));  // 
-                    else
-                        return 0M;
-                }
 
+                //not found in ItemPrice table, look for price in Item table
+                elItems = elBody.Descendants("Items");
+                item = (from el in elItems
+                        where el.Element("ItemId").Value == itemId
+                        select el).FirstOrDefault();
+
+                if (item == null)
+                    return 0M;
+
+                return ConvertTo.SafeDecimal(GetValue(item, "ItemPrice", "0"));  // 
             }
             catch (Exception ex)
             {
@@ -861,10 +791,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 XElement item = (from xml2 in elItems
                                  where xml2.Element("ItemId").Value == id
                                  select xml2).FirstOrDefault();
+
                 if (item == null)
-                    return "";
-                else
-                    return GetValue(item, "ItemType");  //can return Item or Recipe 
+                    return string.Empty;
+
+                return GetValue(item, "ItemType");  //can return Item or Recipe 
             }
             catch (Exception ex)
             {
@@ -896,13 +827,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 XElement item = (from xml in elItems
                                  where xml.Element("ItemModGroupId").Value == id
                                  select xml).FirstOrDefault();
+
                 if (item == null)
                     return false;
-                else
-                {
-                    string modReq = GetValue(item, "ItemModRequired");  //can return Item or Recipe 
-                    return ToBool(modReq);
-                }
+
+                string modReq = GetValue(item, "ItemModRequired");  //can return Item or Recipe 
+                return ToBool(modReq);
             }
             catch (Exception ex)
             {
@@ -918,12 +848,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 XElement item = (from xml in elItems
                                  where xml.Element("ItemModGroupId").Value == id
                                  select xml).FirstOrDefault();
+
                 if (item == null)
-                    return "";
-                else
-                {
-                    return GetValue(item, "ItemId");  //can return Item or Recipe 
-                }
+                    return string.Empty;
+
+                return GetValue(item, "ItemId");  //can return Item or Recipe 
             }
             catch (Exception ex)
             {
@@ -939,13 +868,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 XElement item = (from xml2 in elItems
                                  where xml2.Element("ItemId").Value == id
                                  select xml2).FirstOrDefault();
+
                 if (item == null)
                     return false;
-                else
-                {
-                    string modReq = GetValue(item, "ItemModRequired");  //can return Item or Recipe 
-                    return ToBool(modReq);
-                }
+
+                string modReq = GetValue(item, "ItemModRequired");  //can return Item or Recipe 
+                return ToBool(modReq);
             }
             catch (Exception ex)
             {
@@ -955,7 +883,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
         private int GetDisplayOrderAttributeValue(XElement elIn)
         {
-            //if displayorder not found, simply return zero
+            //if display order not found, simply return zero
             string name = "EntryNo";
             string val = "0";
             if (elIn.Element(name) != null)
@@ -969,27 +897,28 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
         private string GetValue(XElement elIn, string name, string defaultValue = "")
         {
-            //string text = (string)elIn.Element(name) ?? ""; //if name not found returns blank. But I want a good error msg
+            //if name not found returns blank. But I want a good error message
             if (elIn.Element(name) == null)
-                throw new XmlException(name + " node not found in xml " + elIn.ToString());
+                throw new XmlException(name + " node not found in XML " + elIn.ToString());
+
             string val = elIn.Element(name).Value;
             if (string.IsNullOrWhiteSpace(defaultValue) == false && string.IsNullOrWhiteSpace(val))
                 val = defaultValue;
+
             return val.Trim();
         }
 
         private string GetValueOrDefault(XElement elIn, string name, string defaultValue = "")
         {
             //never throws an error, even if name not found
-            if (elIn.Element(name) != null)
-            {
-                string val = elIn.Element(name).Value;
-                if (string.IsNullOrWhiteSpace(defaultValue) == false && string.IsNullOrWhiteSpace(val))
-                    val = defaultValue;
-                return val.Trim();
-            }
-            else
+            if (elIn.Element(name) == null)
                 return defaultValue;
+
+            string val = elIn.Element(name).Value;
+            if (string.IsNullOrWhiteSpace(defaultValue) == false && string.IsNullOrWhiteSpace(val))
+                val = defaultValue;
+
+            return val.Trim();
         }
 
         private void ValidateXmlDoc()
@@ -1002,7 +931,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 throw new XmlException("Response Response_Body node not found in xml ");
             if (elResponse.Element("Response_Body").Element("DynamicContent") == null)
                 throw new XmlException("Response Response_Body DynamicContent node not found in xml ");
-
         }
     }
 }

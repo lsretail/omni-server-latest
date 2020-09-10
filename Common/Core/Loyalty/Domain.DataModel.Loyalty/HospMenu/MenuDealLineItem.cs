@@ -4,7 +4,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class MenuDealLineItem : Entity, IDisposable
     {
         public MenuDealLineItem(string id) : base(id)
@@ -42,11 +42,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
         [IgnoreDataMember]
         public MenuItem MenuItem { get; set; }
-
-        public string ExternalIdRO { get; set; }
-        public string ExternalLineNoRO { get; set; }
-        public string KitchenStatusRO { get; set; }
-        public string KitchenStatusCodeRO { get; set; }
 
         public MenuDealLineItem Clone()
         {

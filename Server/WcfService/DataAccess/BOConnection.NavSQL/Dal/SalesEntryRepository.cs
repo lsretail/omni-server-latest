@@ -390,7 +390,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                     "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate," +
                                     ((NavVersion > new Version("13.5")) ? "ml.[Card or Customer No_] AS No " : "ml.[Card or Customer number] AS No ") +
                                     "FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
-                                    "WHERE ml.[" + documentId + "]=@id ORDER BY ml.[Line No_]";
+                                    "WHERE ml.[" + documentId + "]=@id AND [Type]=4 ORDER BY ml.[Line No_]";
                         command.Parameters.AddWithValue("@id", custOrderNo);
                     }
 
@@ -404,6 +404,27 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         }
                         reader.Close();
                     }
+
+                    if (string.IsNullOrEmpty(custOrderNo) == false && list.Count == 0)
+                    {
+                        // did not find any finalized payments lines, so look for pre approved lines
+                        command.CommandText = "SELECT " +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate," +
+                                    ((NavVersion > new Version("13.5")) ? "ml.[Card or Customer No_] AS No " : "ml.[Card or Customer number] AS No ") +
+                                    "FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
+                                    "WHERE ml.[" + documentId + "]=@id AND [Type]=1 ORDER BY ml.[Line No_]";
+                        TraceSqlCommand(command);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                list.Add(TransToSalesEntryPayment(reader));
+                            }
+                            reader.Close();
+                        }
+                    }
+
                     connection.Close();
                 }
             }

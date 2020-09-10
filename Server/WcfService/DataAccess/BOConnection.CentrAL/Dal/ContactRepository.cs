@@ -674,6 +674,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
                             card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
                         }
+                        else
+                        {
+                            connection.Close();
+                            throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift Card not found");
+                        }
                         reader.Close();
                     }
                     connection.Close();

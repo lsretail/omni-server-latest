@@ -7,7 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class IngredientItem : Entity
     {
         public IngredientItem(string id) : base(id)

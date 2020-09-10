@@ -7,7 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class MobileMenu : Entity, IDisposable
     {
         public MobileMenu(string id) : base(id)
@@ -75,12 +75,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         public List<DealModifierGroup> DealModifierGroups { get; set; }
         [DataMember]
         public Currency Currency { get; set; }
-
-#if WCFSERVER
-        //not all data goes to wcf clients
-        //[XmlIgnore] 
-        public string xmlData { get; set; }
-#endif
     }
 }
  

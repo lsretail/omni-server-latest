@@ -156,6 +156,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         /// </summary>
         [DataMember]
         public int BlockDistribution { get; set; }
+        /// <summary>
+        /// Blocked from ECom Web Site
+        /// </summary>
+        [DataMember]
+        public int BlockedOnECom { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateToActivateItem { get; set; }
         [DataMember]

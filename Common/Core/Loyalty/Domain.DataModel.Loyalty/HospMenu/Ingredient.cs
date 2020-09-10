@@ -4,7 +4,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class Ingredient : Entity, IDisposable
     {
         public Ingredient(string id) : base(id)
@@ -55,15 +55,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         [DataMember]
         public bool PriceReductionOnExclusion { get; set; }
 
-        [DataMember]
-        public string ExternalIdRO { get; set; }
-        [DataMember]
-        public string ExternalLineNumberRO { get; set; }
-        [DataMember]
-        public string KitchenStatusRO { get; set; }
-        [DataMember]
-        public string KitchenStatusCodeRO { get; set; }
-
         #region Functions
 
         /// <summary>
@@ -108,20 +99,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
             get
             {
                 if (OriginalQuantity > 0 && Quantity == 0)
-                    return true;
-
-                return false;
-            }
-        }
-
-        public bool ShouldPromptSendToKitchen
-        {
-            get
-            {
-                if (KitchenStatusRO.Equals("1") || KitchenStatusRO.Equals("3")) // NotSent || PartiallySent
-                    return true;
-
-                if (KitchenStatusRO == string.Empty && (QuantityChanged || ExternalLineNumberRO != string.Empty))
                     return true;
 
                 return false;

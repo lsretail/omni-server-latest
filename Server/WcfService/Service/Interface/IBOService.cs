@@ -36,7 +36,7 @@ namespace LSOmni.Service
         string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);
 
         [OperationContract]
-        bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message);
+        bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string curCode, string token, string authcode, string reference, ref string message);
 
         #endregion OrderMessage
 

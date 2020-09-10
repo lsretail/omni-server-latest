@@ -5,7 +5,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class Validation : Entity, IDisposable
     {
         public Validation(string id) : base(id)

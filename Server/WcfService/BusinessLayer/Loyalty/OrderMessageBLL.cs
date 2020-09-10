@@ -53,16 +53,16 @@ namespace LSOmni.BLL.Loyalty
         {
             // Status: Unchanged = 0, Changed = 1, Canceled = 2
             string message = string.Empty;
-            bool success = OrderMessageRequestPaymentEx(orderId, status, amount, token, authcode, reference, ref message);
+            bool success = OrderMessageRequestPaymentEx(orderId, status, amount, string.Empty, token, authcode, reference, ref message);
             if (success)
                 return "OK";
             return message;
         }
 
-        public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message)
+        public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string currencyCode, string token, string authcode, string reference, ref string message)
         {
             // Status: Unchanged = 0, Changed = 1, Canceled = 2
-            string json = SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount, authcode = authcode, reference = reference });
+            string json = SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount, currencyCode = currencyCode, authcode = authcode, reference = reference });
 
             OrderMessageResult result;
             if (json.Length > 0 && (json[0] == '{' || json[0] == '['))

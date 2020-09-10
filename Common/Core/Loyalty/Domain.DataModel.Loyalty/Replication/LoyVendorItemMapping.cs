@@ -25,7 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         {
             if (disposing)
             {
-                Mapping.Clear();
+                if (Mapping != null)
+                    Mapping.Clear();
             }
         }
 

@@ -118,6 +118,34 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
+        public List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode()
+        {
+            List<ReplDataTranslationLangCode> list = new List<ReplDataTranslationLangCode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = "SELECT [Language Code] FROM [" + navCompanyName + "Data Translation Language]";
+
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ReplDataTranslationLangCode()
+                            {
+                                Code = SQLHelper.GetString(reader["Language Code"])
+                            });
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
         private ReplDataTranslation ReaderToDataTranslation(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);

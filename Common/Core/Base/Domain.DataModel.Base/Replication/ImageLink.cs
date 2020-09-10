@@ -25,7 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         {
             if (disposing)
             {
-                ImageLinks.Clear();
+                if (ImageLinks != null)
+                    ImageLinks.Clear();
             }
         }
 

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Menu.SpecialCase;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class Recipe : MenuItem
     {
         public Recipe(string id) : base(id)
@@ -16,8 +15,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
             RecipeLines = new List<RecipeLine>();
             ProductModifierGroupIds = new List<string>();
             ProductModifierGroups = new List<ProductModifierGroup>();
-            UnknownModifiers = new List<UnknownModifier>();
-            UnknownTextModifiers = new List<UnknownTextModifier>();
             Detail = string.Empty;
         }
 
@@ -25,8 +22,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         {
         }
 
-        [DataMember]
-        public bool Drilldown { get; set; }
         [DataMember]
         public List<Ingredient> Ingredients { get; set; }
         [DataMember]
@@ -36,12 +31,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         public List<ProductModifierGroup> ProductModifierGroups { get; set; }
 
         public List<RecipeLine> RecipeLines { get; set; }
-
-        /// Unknown modifiers are modifiers that we get from the BO when retrieving a transaction,
-        /// but aren't part of the menu that the hosp item came from,
-        /// and so aren't part of the hosp item's 'normal' set of modifiers (those that are defined in the menu it came from).
-        public List<UnknownModifier> UnknownModifiers { get; private set; }
-        public List<UnknownTextModifier> UnknownTextModifiers { get; private set; }
 
         public override MenuItem Clone()
         {

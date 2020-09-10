@@ -805,6 +805,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 10000971, 3);
             AddField(body, 10000971, 10);
 
+            // Data Translation Lang Code
+            AddTable(body, 10000972, false);
+            AddField(body, 10000972, 1);
+
             // Shipping agent
             AddTable(body, 291, false);
             AddField(body, 291, 1);

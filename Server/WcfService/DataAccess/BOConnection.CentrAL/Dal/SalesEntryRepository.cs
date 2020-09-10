@@ -37,6 +37,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         command.Parameters.AddWithValue("@dt", date);
                     }
 
+                    string storefield = (NavVersion > new Version("16.2.0.0")) ? "Created at Store" : "Store No_";
+
                     command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : "") + " * FROM (" +
                         "SELECT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date]," +
                         "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC],co.[Ship-to Name] AS [ShipName]," +
@@ -45,11 +47,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "UNION " +
-                        "SELECT mt.[Document ID] AS [Document ID],mt.[Store No_],mt.[Created] AS [Date]," +
+                        "SELECT mt.[Document ID] AS [Document ID],mt.[" + storefield + "],mt.[Created] AS [Date]," +
                         "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC],mt.[Ship-to Name] AS [ShipName]," +
                         "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                        "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]= mt.[Store No_] " +
+                        "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[" + storefield + "] " +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " + sqlwhere +
                         "ORDER BY [Date] DESC";
@@ -284,9 +286,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     else
                     {
                         command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Finalized Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
                                     "FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
-                                    "WHERE ml.[Document ID]=@id ORDER BY ml.[Line No_]";
+                                    "WHERE ml.[Document ID]=@id AND [Type]=4 ORDER BY ml.[Line No_]";
                         command.Parameters.AddWithValue("@id", custOrderNo);
                     }
 
@@ -300,6 +302,26 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         }
                         reader.Close();
                     }
+
+                    if (string.IsNullOrEmpty(custOrderNo) == false && list.Count == 0)
+                    {
+                        // did not find any finalized payments lines, so look for pre approved lines
+                        command.CommandText = "SELECT " +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
+                                    "FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                    "WHERE ml.[Document ID]=@id AND [Type]=1 ORDER BY ml.[Line No_]";
+                        TraceSqlCommand(command);
+
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                list.Add(TransToSalesEntryPayment(reader));
+                            }
+                            reader.Close();
+                        }
+                    }
+
                     connection.Close();
                 }
             }

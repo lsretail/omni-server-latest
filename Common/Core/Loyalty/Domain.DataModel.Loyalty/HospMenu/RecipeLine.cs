@@ -6,7 +6,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Base;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class RecipeLine : Entity, IEquatable<RecipeLine>
     {
         public RecipeLine()
@@ -16,8 +16,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
-        public string ImageHint { get; set; }
         [DataMember]
         public List<ProductModifierGroup> ProductModifierGroups { get; set; }
 

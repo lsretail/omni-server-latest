@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class DealModifier : Modifier, IDisposable
     {
         public DealModifier(string id) : base(id)

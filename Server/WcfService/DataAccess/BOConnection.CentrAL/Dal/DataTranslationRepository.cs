@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+using Microsoft.SqlServer.Server;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
@@ -115,6 +116,34 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (recordsRemaining < 0)
                 recordsRemaining = 0;
 
+            return list;
+        }
+
+        public List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode()
+        {
+            List<ReplDataTranslationLangCode> list = new List<ReplDataTranslationLangCode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = "SELECT [Language Code] FROM [" + navCompanyName + "Data Translation Language$5ecfc871-5d82-43f1-9c54-59685e82318d]";
+
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ReplDataTranslationLangCode()
+                            {
+                                Code = SQLHelper.GetString(reader["Language Code"])
+                            });
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
             return list;
         }
 

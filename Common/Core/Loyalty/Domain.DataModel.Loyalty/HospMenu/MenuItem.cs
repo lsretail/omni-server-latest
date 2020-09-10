@@ -1,14 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017"), KnownType(typeof(Recipe)), KnownType(typeof(MenuDeal)), KnownType(typeof(Product))]
-    public class MenuItem : Item
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017"), KnownType(typeof(Recipe)), KnownType(typeof(MenuDeal)), KnownType(typeof(Product))]
+    public class MenuItem : Entity, IAggregateRoot, IDisposable
     {
         private string name;
+
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string Detail { get; set; }
+        [DataMember]
+        public decimal Price { get; set; }
+        [DataMember]
+        public decimal UnitPrice { get; set; }
+        [DataMember]
+        public string UnitOfMeasure { get; set; }
 
         [DataMember]
         public int DefaultMenuType { get; set; }
@@ -36,8 +48,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
             set { name = value; }
         }
 
-        public MenuItem(string id) : base(id)
+        public MenuItem(string id)
         {
+            Id = id;
             DefaultMenuType = 1; // 1=Starter, 2=main course, MobileRestaurantMenuType
             Images = new List<ImageView>();
         }
@@ -46,12 +59,22 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         {
         }
 
-        #region Functions
-
-        public virtual Money GetFullPrice()
+        public void Dispose()
         {
-            return new Money(FullPrice, this.Price.Currency);
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Images != null)
+                    Images.Clear();
+            }
+        }
+
+        #region Functions
 
         public virtual decimal FullPrice
         {

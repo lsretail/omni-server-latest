@@ -21,7 +21,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "CardNo:{0} ", cardNo);
+                HandleExceptions(ex, "CardNo:{0}", cardNo);
                 return new GiftCard(string.Empty);
             }
         }
@@ -335,6 +335,21 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDataTranslation(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplDataTranslationLangCodeResponse ReplEcommDataTranslationLangCode(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommDataTranslationLangCode(replRequest);
             }
             catch (Exception ex)
             {

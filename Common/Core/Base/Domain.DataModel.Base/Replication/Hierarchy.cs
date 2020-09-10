@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication

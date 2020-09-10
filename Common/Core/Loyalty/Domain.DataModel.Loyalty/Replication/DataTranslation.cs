@@ -25,7 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         {
             if (disposing)
             {
-                Texts.Clear();
+                if (Texts != null)
+                    Texts.Clear();
             }
         }
 
@@ -81,5 +82,70 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         /// </summary>
         [DataMember]
         public string Text { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public class ReplDataTranslationLangCodeResponse : IDisposable
+    {
+        public ReplDataTranslationLangCodeResponse()
+        {
+            LastKey = string.Empty;
+            MaxKey = string.Empty;
+            RecordsRemaining = 0;
+            Codes = new List<ReplDataTranslationLangCode>();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Codes != null)
+                    Codes.Clear();
+            }
+        }
+
+        [DataMember]
+        public string LastKey { get; set; }
+        [DataMember]
+        public string MaxKey { get; set; }
+        [DataMember]
+        public int RecordsRemaining { get; set; }
+        [DataMember]
+        public List<ReplDataTranslationLangCode> Codes { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public class ReplDataTranslationLangCode : IDisposable
+    {
+        public ReplDataTranslationLangCode()
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        [DataMember]
+        public bool IsDeleted { get; set; }
+        /// <summary>
+        /// Translation ID made up by NAV TableNo-FieldNo
+        /// </summary>
+        [DataMember]
+        public string Code { get; set; }
     }
 }

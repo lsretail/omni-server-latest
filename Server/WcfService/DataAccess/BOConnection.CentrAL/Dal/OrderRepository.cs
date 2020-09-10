@@ -72,7 +72,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             ",ml.[Document ID]";
 
             if (NavVersion > new Version("16.2.0.0"))
-                select += ",ml.[External ID]";
+                select += ",ml.[External ID],ml.[Click and Collect Line],ml.[Store No_]";
 
             List<SalesEntryLine> list = new List<SalesEntryLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -323,8 +323,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             if (NavVersion > new Version("16.2.0.0"))
+            {
                 line.ExternalId = SQLHelper.GetString(reader["External ID"]);
-
+                line.StoreId = SQLHelper.GetString(reader["Store No_"]);
+                line.ClickAndCollectLine = SQLHelper.GetBool(reader["Click and Collect Line"]);
+            }
             return line;
         }
 

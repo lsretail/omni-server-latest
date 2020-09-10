@@ -487,14 +487,14 @@ namespace LSOmni.Service
             double points = 0;
             try
             {
-                logger.Debug(config.LSKey.Key, "contactid:{0}, cardid:{1}, accountid:{2}", contactId, cardId, accountId);
+                logger.Debug(config.LSKey.Key, "contactId:{0}, cardId:{1}, accountId:{2}", contactId, cardId, accountId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 points = contactBLL.ContactAddCard(contactId, cardId, accountId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "contactid:{0}, cardid:{1}, accountid:{2}", contactId, cardId, accountId);
+                HandleExceptions(ex, "contactId:{0}, cardId:{1}, accountId:{2}", contactId, cardId, accountId);
             }
             return points;
         }
@@ -535,7 +535,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "deviceid:{0}", deviceId);
+                logger.Debug(config.LSKey.Key, "deviceId:{0}", deviceId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.DeviceSave(deviceId, deviceFriendlyName, platform, osVersion, manufacturer, model);
@@ -543,7 +543,7 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
 
-                HandleExceptions(ex, "deviceid:{0}", deviceId);
+                HandleExceptions(ex, "deviceId:{0}", deviceId);
 
             }
             return true;
@@ -609,6 +609,23 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, "userName:{0} token:{1}", userName, token);
+                return false;
+            }
+            return true;
+        }
+
+        public virtual bool LoginChange(string oldUserName, string newUserName, string password)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "oldUserName:{0} newUserName:{1}", oldUserName, newUserName);
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                contactBLL.LoginChange(oldUserName, newUserName, password);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "oldUserName:{0} newUserName:{1}", oldUserName, newUserName);
                 return false;
             }
             return true;
@@ -791,7 +808,7 @@ namespace LSOmni.Service
 
         #endregion coupon, offer and notification
 
-        #region Item, Itemcategory, productgroup
+        #region Item, ItemCategory, ProductGroup
 
         /// <summary>
         /// Get item by Id
@@ -1684,13 +1701,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string token, string authcode, string reference, ref string message)
+        public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string curCode, string token, string authcode, string reference, ref string message)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} token:{3}", orderId, status, amount, token);
+                logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} cur:{3} token:{4}", orderId, status, amount, curCode, token);
                 OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
-                return bll.OrderMessageRequestPaymentEx(orderId, status, amount, token, authcode, reference, ref message);
+                return bll.OrderMessageRequestPaymentEx(orderId, status, amount, curCode, token, authcode, reference, ref message);
             }
             catch (Exception ex)
             {

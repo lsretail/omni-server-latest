@@ -331,6 +331,21 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplDataTranslationLangCodeResponse ReplEcommDataTranslationLangCode(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplDataTranslationLangCodeResponse rs = new ReplDataTranslationLangCodeResponse();
+            rs.Codes = BOLoyConnection.ReplicateEcommDataTranslationLangCode(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
         public virtual ReplDiscountResponse ReplEcommDiscount(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;

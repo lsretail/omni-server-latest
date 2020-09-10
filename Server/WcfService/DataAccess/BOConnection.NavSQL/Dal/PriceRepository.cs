@@ -39,6 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
+
             if (string.IsNullOrWhiteSpace(maxKey))
             {
                 maxKey = "0";
@@ -70,6 +71,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             int rr = 0;
             string tmplastkey = maxKey;
             List<JscActions> actions = LoadActions(fullReplication, 27, 0, ref maxKey, ref rr);
+
             actions.AddRange(LoadActions(fullReplication, 10000704, 0, ref tmplastkey, ref rr));
             if (Convert.ToInt64(tmplastkey) > Convert.ToInt64(maxKey))
                 maxKey = tmplastkey;

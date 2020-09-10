@@ -54,6 +54,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "SETTINGS PASSWORD":
                     flagName = FeatureFlagName.SettingsPassword;
                     break;
+                case "HIDE VOIDED TRANSACTION":
+                    flagName = FeatureFlagName.HideVoidedTransaction;
+                    break;
             }
 
             Flags.Add(new FeatureFlag()
@@ -130,6 +133,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         UseLoyaltySystem,
         PosShowInventory,
         PosInventoryLookup,
-        SettingsPassword
+        SettingsPassword,
+        HideVoidedTransaction
     }
 }

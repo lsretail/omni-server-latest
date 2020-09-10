@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using LSRetail.Omni.Domain.DataModel.Base.Menu.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class MenuDealLine : IDisposable
     {
         public MenuDealLine(string id)
@@ -15,8 +14,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
             DealLineItems = new List<MenuDealLineItem>();
             DealModifierGroupIds = new List<string>();
             DealModifierGroups = new List<DealModifierGroup>();
-            UnknownDealModifiers = new List<UnknownModifier>();
-            UnknownDealLineItems = new List<UnknownDealLineItem>();
             Images = new List<ImageView>();
         }
 
@@ -81,13 +78,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
                 selectedId = value;
             }
         }
-
-
-        /// Unknown deal line items and deal modifiers is stuff that we get from the BO when retrieving a transaction,
-        /// but aren't part of the menu that the hosp item came from,
-        /// and so aren't part of the hosp item's 'normal' set of deallineitems and modifiers (those that are defined in the menu it came from).
-        public List<UnknownDealLineItem> UnknownDealLineItems { get; private set; }
-        public List<UnknownModifier> UnknownDealModifiers { get; private set; }
 
         public MenuDealLine Clone()
         {
