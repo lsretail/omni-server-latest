@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-
-using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ReplHierarchyLeafResponse : IDisposable
+    public class ReplHierarchyHospModifierResponse : IDisposable
     {
-        public ReplHierarchyLeafResponse()
+        public ReplHierarchyHospModifierResponse()
         {
             LastKey = string.Empty;
             MaxKey = string.Empty;
             RecordsRemaining = 0;
-            Leafs = new List<ReplHierarchyLeaf>();
+            Modifiers = new List<ReplHierarchyHospModifier>();
         }
 
         public void Dispose()
@@ -28,8 +26,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         {
             if (disposing)
             {
-                if (Leafs != null)
-                    Leafs.Clear();
+                if (Modifiers != null)
+                    Modifiers.Clear();
             }
         }
 
@@ -40,19 +38,21 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int RecordsRemaining { get; set; }
         [DataMember]
-        public List<ReplHierarchyLeaf> Leafs { get; set; }
+        public List<ReplHierarchyHospModifier> Modifiers { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ReplHierarchyLeaf : IDisposable
+    public class ReplHierarchyHospModifier : IDisposable
     {
-        public ReplHierarchyLeaf()
+        public ReplHierarchyHospModifier()
         {
             HierarchyCode = string.Empty;
-            NodeId = string.Empty;
-            ImageId = string.Empty;
+            ParentNode = string.Empty;
+            ParentItem = string.Empty;
+            ItemNo = string.Empty;
+            SubCode = string.Empty;
             Description = string.Empty;
-            MemberValue = string.Empty;
+            UnitOfMeasure = string.Empty;
         }
 
         public void Dispose()
@@ -71,33 +71,49 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public bool IsDeleted { get; set; }
         [DataMember]
-        public string Id { get; set; }
-        [DataMember]
         public string HierarchyCode { get; set; }
         [DataMember]
-        public string NodeId { get; set; }
+        public string ParentNode { get; set; }
         [DataMember]
-        public string ImageId { get; set; }
+        public string ParentItem { get; set; }
+        [DataMember]
+        public ModifierType Type { get; set; }
+
+        [DataMember]
+        public string Code { get; set; }
+        [DataMember]
+        public string SubCode { get; set; }
+        [DataMember]
+        public string ItemNo { get; set; }
         [DataMember]
         public string Description { get; set; }
         [DataMember]
-        public HierarchyLeafType Type { get; set; }
+        public string UnitOfMeasure { get; set; }
 
-        /// <summary>
-        /// Default Member Value is Member Scheme, if true, Member Value is Member Club
-        /// </summary>
         [DataMember]
-        public bool IsMemberClub { get; set; }
-        /// <summary>
-        /// Member Scheme or Member Club
-        /// </summary>
+        public int MinSelection { get; set; }
         [DataMember]
-        public string MemberValue { get; set; }
+        public int MaxSelection { get; set; }
         [DataMember]
-        public decimal DealPrice { get; set; }
+        public ModifierPriceType PriceType { get; set; }
         [DataMember]
-        public int ValidationPeriod { get; set; }
+        public bool AlwaysCharge { get; set; }
         [DataMember]
-        public bool IsActive { get; set; }
+        public decimal AmountPercent { get; set; }
+    }
+
+    public enum ModifierType
+    {
+        Item,
+        Time,
+        Text
+    }
+
+    public enum ModifierPriceType
+    {
+        None,
+        FromItem,
+        Amount,
+        Percent
     }
 }

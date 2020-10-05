@@ -511,6 +511,66 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplHierarchyHospDealResponse ReplEcommHierarchyHospDeal(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplHierarchyHospDealResponse rs = new ReplHierarchyHospDealResponse();
+            rs.Items = BOAppConnection.ReplicateHierarchyHospDeal(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
+        public virtual ReplHierarchyHospDealLineResponse ReplEcommHierarchyHospDealLine(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplHierarchyHospDealLineResponse rs = new ReplHierarchyHospDealLineResponse();
+            rs.Items = BOAppConnection.ReplicateHierarchyHospDealLine(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
+        public virtual ReplHierarchyHospRecipeResponse ReplEcommHierarchyHospRecipe(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplHierarchyHospRecipeResponse rs = new ReplHierarchyHospRecipeResponse();
+            rs.Items = BOAppConnection.ReplicateHierarchyHospRecipe(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
+        public virtual ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplHierarchyHospModifierResponse rs = new ReplHierarchyHospModifierResponse();
+            rs.Modifiers = BOAppConnection.ReplicateHierarchyHospModifier(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
+            rs.RecordsRemaining = recordsRemaining;
+            rs.LastKey = lastkey;
+            rs.MaxKey = maxkey;
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Modifiers.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
         public virtual ReplInvStatusResponse ReplEcommInventoryStatus(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;

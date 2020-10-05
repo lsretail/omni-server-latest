@@ -250,6 +250,30 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.ReplicateHierarchyLeaf(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
+            return rep.ReplicateHierarchyHospDeal(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplHierarchyHospDealLine> ReplicateHierarchyHospDealLine(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
+            return rep.ReplicateHierarchyHospDealLine(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplHierarchyHospRecipe> ReplicateHierarchyHospRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
+            return rep.ReplicateHierarchyHospRecipe(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplHierarchyHospModifier> ReplicateHierarchyHospModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
+            return rep.ReplicateHierarchyHospModifier(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         #endregion
     }
 }

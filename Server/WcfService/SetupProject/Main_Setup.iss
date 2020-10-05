@@ -127,7 +127,7 @@ begin
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSOmniService');
-  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC160/WS/CRONUS LS Central/Codeunit/RetailWebServices');
+  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC160/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 

@@ -40,12 +40,12 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
         {
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode);
+                return bll.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo);
             }
             catch (Exception ex)
             {

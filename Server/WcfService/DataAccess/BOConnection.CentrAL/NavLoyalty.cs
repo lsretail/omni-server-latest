@@ -18,6 +18,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL
 {
@@ -339,6 +340,20 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         {
             SalesEntryRepository rep = new SalesEntryRepository(config, NAVVersion);
             return rep.FormatAmountToString(amount, culture);
+        }
+
+        #endregion
+
+        #region Hospitality Order
+
+        public virtual OrderHosp HospOrderCalculate(OneList list)
+        {
+            return NavWSBase.HospOrderCalculate(list);
+        }
+
+        public virtual string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId)
+        {
+            return NavWSBase.HospOrderCreate(request, tenderMapping, out orderId);
         }
 
         #endregion

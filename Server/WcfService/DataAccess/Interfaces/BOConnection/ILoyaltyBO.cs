@@ -1,4 +1,7 @@
-﻿using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
+﻿using System;
+using System.Collections.Generic;
+
+using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -8,11 +11,10 @@ using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using System;
-using System.Collections.Generic;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -104,6 +106,13 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         Store StoreGetById(string id);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
         List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
+
+        #endregion
+
+        #region Hospitality Order
+
+        OrderHosp HospOrderCalculate(OneList list);
+        string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId);
 
         #endregion
 

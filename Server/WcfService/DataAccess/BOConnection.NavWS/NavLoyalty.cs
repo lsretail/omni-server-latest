@@ -17,6 +17,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -327,6 +328,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual string FormatAmount(decimal amount, string culture)
         {
             return amount.ToString();
+        }
+
+        #endregion
+
+        #region Hospitality Order
+
+        public virtual OrderHosp HospOrderCalculate(OneList list)
+        {
+            return NavWSBase.HospOrderCalculate(list);
+        }
+
+        public virtual string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId)
+        {
+            return NavWSBase.HospOrderCreate(request, tenderMapping, out orderId);
         }
 
         #endregion

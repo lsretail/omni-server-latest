@@ -11,7 +11,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
     {
         public Scheme(string id) : base(id)
         {
-            Id = string.Empty;
             Description = string.Empty;
             Perks = string.Empty;
             PointsNeeded = 0;

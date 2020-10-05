@@ -911,7 +911,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetAvailabilityV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetAvailabilityV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public bool GetAvailabilityV2(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+        public bool GetAvailabilityV2(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
             object[] results = this.Invoke("GetAvailabilityV2", new object[] {
                         locationNo,
                         productNo,
@@ -919,6 +919,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
                         clientNo,
                         optionalResource,
                         promoCode,
+                        activityNo,
                         errorString,
                         getAvailabilityResponse});
             errorString = ((string)(results[1]));
@@ -927,12 +928,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         }
         
         /// <remarks/>
-        public void GetAvailabilityV2Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
-            this.GetAvailabilityV2Async(locationNo, productNo, activityDate, clientNo, optionalResource, promoCode, errorString, getAvailabilityResponse, null);
+        public void GetAvailabilityV2Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetAvailabilityV2Async(locationNo, productNo, activityDate, clientNo, optionalResource, promoCode, activityNo, errorString, getAvailabilityResponse, null);
         }
         
         /// <remarks/>
-        public void GetAvailabilityV2Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+        public void GetAvailabilityV2Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
             if ((this.GetAvailabilityV2OperationCompleted == null)) {
                 this.GetAvailabilityV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAvailabilityV2OperationCompleted);
             }
@@ -943,6 +944,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
                         clientNo,
                         optionalResource,
                         promoCode,
+                        activityNo,
                         errorString,
                         getAvailabilityResponse}, this.GetAvailabilityV2OperationCompleted, userState);
         }
@@ -957,13 +959,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetAvailability", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetAvailability_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public bool GetAvailability(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+        public bool GetAvailability(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string activityNo, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
             object[] results = this.Invoke("GetAvailability", new object[] {
                         locationNo,
                         productNo,
                         activityDate,
                         clientNo,
                         optionalResource,
+                        activityNo,
                         errorString,
                         getAvailabilityResponse});
             errorString = ((string)(results[1]));
@@ -972,12 +975,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         }
         
         /// <remarks/>
-        public void GetAvailabilityAsync(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
-            this.GetAvailabilityAsync(locationNo, productNo, activityDate, clientNo, optionalResource, errorString, getAvailabilityResponse, null);
+        public void GetAvailabilityAsync(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string activityNo, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetAvailabilityAsync(locationNo, productNo, activityDate, clientNo, optionalResource, activityNo, errorString, getAvailabilityResponse, null);
         }
         
         /// <remarks/>
-        public void GetAvailabilityAsync(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+        public void GetAvailabilityAsync(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string activityNo, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
             if ((this.GetAvailabilityOperationCompleted == null)) {
                 this.GetAvailabilityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAvailabilityOperationCompleted);
             }
@@ -987,6 +990,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
                         activityDate,
                         clientNo,
                         optionalResource,
+                        activityNo,
                         errorString,
                         getAvailabilityResponse}, this.GetAvailabilityOperationCompleted, userState);
         }

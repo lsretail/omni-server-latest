@@ -78,6 +78,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         Hosp_Terminal = 1171,
         Hosp_Staff = 1172,
+        Hosp_SalesType = 1173,
 
         ScanPayGo_Terminal = 1181,
         ScanPayGo_Staff = 1182,

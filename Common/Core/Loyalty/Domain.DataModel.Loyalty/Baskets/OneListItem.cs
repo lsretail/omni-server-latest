@@ -24,12 +24,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             CreateDate = DateTime.Now;
             Detail = string.Empty;
             Quantity = 0M;
-            DisplayOrderId = 1;
             NetPrice = 0M;
             Price = 0M;
             NetAmount = 0M;
             TaxAmount = 0M;
             OnelistItemDiscounts = new List<OneListItemDiscount>();
+            OnelistSubLines = new List<OneListItemSubLine>();
             VariantRegistration = new VariantRegistration();
         }
 
@@ -74,9 +74,13 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             {
                 if (OnelistItemDiscounts != null)
                     OnelistItemDiscounts.Clear();
+                if (OnelistSubLines != null)
+                    OnelistSubLines.Clear();
             }
         }
 
+        [DataMember]
+        public int LineNumber { get; set; }
         [DataMember(IsRequired = true)]
         public string ItemId { get; set; }
         [DataMember]
@@ -102,13 +106,13 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         [DataMember]
         public string BarcodeId { get; set; }
-        [DataMember]
-        public int DisplayOrderId { get; set; }
 
         [DataMember]
         public decimal NetPrice { get; set; }
         [DataMember]
         public decimal Price { get; set; }
+        [DataMember]
+        public bool PriceModified { get; set; }
         [DataMember]
         public decimal NetAmount { get; set; }
         [DataMember]
@@ -120,11 +124,22 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember]
         public decimal DiscountPercent { get; set; }
         [DataMember]
-        public List<OneListItemDiscount> OnelistItemDiscounts { get; set; } // decimal got truncated
+        public List<OneListItemDiscount> OnelistItemDiscounts { get; set; }
         [DataMember]
         public ImageView Image { get; set; }
         [DataMember]
         public VariantRegistration VariantRegistration { get; set; }
+
+        /// <summary>
+        /// Hospitality Deal (Hierarchy Leaf Type=Deal)
+        /// </summary>
+        [DataMember]
+        public bool IsADeal { get; set; }
+        /// <summary>
+        /// Hospitality Sub Lines
+        /// </summary>
+        [DataMember]
+        public List<OneListItemSubLine> OnelistSubLines { get; set; }
 
         public string OneListId { get; set; }
 
@@ -187,7 +202,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         {
             OneListId = "";
             CreateDate = DateTime.Now;
-            DisplayOrderId = 1;
+            LineNumber = 1;
             Type = OfferDiscountType.Unknown;
         }
 
@@ -207,7 +222,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreateDate { get; set; }
         [DataMember]
-        public int DisplayOrderId { get; set; }
+        public int LineNumber { get; set; }
 
         //not a data member
         public string OneListId { get; set; }

@@ -213,6 +213,30 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ReplicateHierarchyLeaf(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            // TODO ?? 
+            return new List<ReplHierarchyHospDeal>();
+        }
+
+        public virtual List<ReplHierarchyHospDealLine> ReplicateHierarchyHospDealLine(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            // TODO ?? 
+            return new List<ReplHierarchyHospDealLine>();
+        }
+
+        public virtual List<ReplHierarchyHospRecipe> ReplicateHierarchyHospRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            // TODO ?? 
+            return new List<ReplHierarchyHospRecipe>();
+        }
+
+        public virtual List<ReplHierarchyHospModifier> ReplicateHierarchyHospModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            // TODO ?? 
+            return new List<ReplHierarchyHospModifier>();
+        }
+
         #endregion
     }
 }

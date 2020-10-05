@@ -23,6 +23,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon
 {
@@ -717,7 +718,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             logger.Debug(config.LSKey.Key, "MemberLogon Response - " + Serialization.ToXml(root, true));
             
             ContactMapping map = new ContactMapping();
-            contact = map.MapFromRootToLogonContact(root);
+            contact = map.MapFromRootToLogonContact(root, remainingPoints);
             contact.UserName = userName;
             if (includeDetails)
                 contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
@@ -958,6 +959,57 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             SetupRepository rep = new SetupRepository();
             return rep.StoresGet(table);
+        }
+
+        #endregion
+
+        #region Hospitality Order
+
+        public OrderHosp HospOrderCalculate(OneList list)
+        {
+            if (string.IsNullOrWhiteSpace(list.Id))
+                list.Id = GuidHelper.NewGuidString();
+
+            HospitalityXml xml = new HospitalityXml();
+            string xmlRequest = xml.OrderToPOSRequestXML(list, "CALCULATE",
+                config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
+                config.SettingsGetByKey(ConfigKey.Hosp_Staff),
+                config.SettingsGetByKey(ConfigKey.Hosp_SalesType));
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            return xml.TransactionResponseXML(xmlResponse);
+        }
+
+        public string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId)
+        {
+            if (request == null)
+                throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
+
+            orderId = string.Empty;
+            if (string.IsNullOrWhiteSpace(request.Id))
+                request.Id = GuidHelper.NewGuidString();
+
+            // need to map the TenderType enum coming from devices to TenderTypeId that NAV knows
+            if (request.OrderPayments == null)
+                request.OrderPayments = new List<OrderPayment>();
+
+            int lineno = 1;
+            foreach (OrderPayment line in request.OrderPayments)
+            {
+                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tender type between LSOmni and Nav
+                if (line.TenderType == null)
+                    throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                line.LineNumber = lineno++;
+            }
+
+            HospitalityXml xml = new HospitalityXml();
+            string xmlRequest = xml.OrderToPOSRequestXML(request, "POST", 
+                config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
+                config.SettingsGetByKey(ConfigKey.Hosp_Staff),
+                config.SettingsGetByKey(ConfigKey.Hosp_SalesType));
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            return xml.TransactionReceiptNoResponseXML(xmlResponse);
         }
 
         #endregion

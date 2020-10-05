@@ -6,6 +6,7 @@ using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.BLL.Loyalty
@@ -48,12 +49,21 @@ namespace LSOmni.BLL.Loyalty
             CheckItemSetup(list);
 
             if (calculate)
-                list = CalcuateList(list);
+            {
+                if (list.IsHospitality)
+                {
+                    list = CalcuateHospList(list);
+                }
+                else
+                {
+                    list = CalcuateList(list);
+                }
+            }
 
             MemberContact cont = BOLoyConnection.ContactGetByCardId(list.CardId, 0, false);
 
             iRepository.OneListSave(list, (cont == null) ? string.Empty : cont.Name, calculate);
-            return OneListGetById(list.Id, true, includeItemDetails);
+            return list;
         }
 
         public virtual Order OneListCalculate(OneList list)
@@ -88,6 +98,37 @@ namespace LSOmni.BLL.Loyalty
             }
             return order;
         }
+
+        public virtual OrderHosp OneListHospCalculate(OneList list)
+        {
+            if (list.Items == null)
+                return new OrderHosp();
+
+            if (list.Items.Count == 0)
+                throw new LSOmniException(StatusCode.NoLinesToPost, "No Lines to calculate");
+
+            OrderHosp order = BOLoyConnection.HospOrderCalculate(list);
+            foreach (OrderHospLine line in order.OrderLines)
+            {
+                if (string.IsNullOrEmpty(line.ItemImageId) == false)
+                    continue;   // load any missing images if not coming from NAV
+
+                if (string.IsNullOrEmpty(line.VariantId))
+                {
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
+                    if (img != null && img.Count > 0)
+                        line.ItemImageId = img[0].Id;
+                }
+                else
+                {
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
+                    if (img != null && img.Count > 0)
+                        line.ItemImageId = img[0].Id;
+                }
+            }
+            return order;
+        }
+
 
         public virtual void OneListDeleteById(string oneListId)
         {
@@ -202,7 +243,7 @@ namespace LSOmni.BLL.Loyalty
                 OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId);
 
                 OneListItem item = new OneListItem();
-                item.DisplayOrderId = olditem.DisplayOrderId;
+                item.LineNumber = olditem.LineNumber;
                 item.ItemId = line.ItemId;
                 item.ItemDescription = line.ItemDescription;
 
@@ -243,10 +284,10 @@ namespace LSOmni.BLL.Loyalty
 
             foreach (OrderDiscountLine disc in calcResp.OrderDiscountLines)
             {
-                OneListItem line = list.Items.Find(i => i.DisplayOrderId == disc.LineNumber / 10000);
+                OneListItem line = list.Items.Find(i => i.LineNumber == disc.LineNumber / 10000);
                 if (line == null)
                 {
-                    line = list.Items.Find(i => i.DisplayOrderId == disc.LineNumber);
+                    line = list.Items.Find(i => i.LineNumber == disc.LineNumber);
                     if (line == null)
                         continue;
                 }
@@ -264,6 +305,109 @@ namespace LSOmni.BLL.Loyalty
                 discount.Quantity = line.Quantity;
                 line.OnelistItemDiscounts.Add(discount);
             }
+            return list;
+        }
+
+        private OneList CalcuateHospList(OneList list)
+        {
+            if (list.Items.Count == 0)
+                return list;
+
+            list.TotalAmount = 0;
+            list.TotalDiscAmount = 0;
+            list.TotalNetAmount = 0;
+            list.TotalTaxAmount = 0;
+
+            OrderHosp calcResp = BOLoyConnection.HospOrderCalculate(list);
+
+            list.TotalAmount = calcResp.TotalAmount;
+            list.TotalNetAmount = calcResp.TotalNetAmount;
+            list.TotalTaxAmount = calcResp.TotalAmount - calcResp.TotalNetAmount;
+            list.TotalDiscAmount = calcResp.TotalDiscount;
+
+            List<OneListItem> newitems = new List<OneListItem>();
+            foreach (OrderHospLine line in calcResp.OrderLines)
+            {
+                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId);
+
+                OneListItem item = new OneListItem();
+                item.LineNumber = olditem.LineNumber;
+                item.ItemId = line.ItemId;
+                item.IsADeal = line.IsADeal;
+                item.ItemDescription = line.ItemDescription;
+                item.LineNumber = line.LineNumber;
+
+                if (string.IsNullOrEmpty(line.ItemImageId))
+                    item.Image = olditem.Image;
+                else
+                    item.Image = new ImageView(line.ItemImageId);
+
+                item.UnitOfMeasureId = line.UomId;
+                if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    item.UnitOfMeasureId = olditem.UnitOfMeasureId;
+
+                item.VariantId = line.VariantId;
+                item.VariantDescription = line.VariantDescription;
+                if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                {
+                    item.VariantId = olditem.VariantId;
+                    item.VariantDescription = olditem.VariantDescription;
+                }
+
+                item.BarcodeId = olditem.BarcodeId;
+
+                item.Quantity = line.Quantity;
+                item.NetPrice = line.NetPrice;
+                item.Price = line.Price;
+                item.Amount = line.Amount;
+                item.NetAmount = line.NetAmount;
+                item.TaxAmount = line.TaxAmount;
+                item.DiscountAmount = line.DiscountAmount;
+                item.DiscountPercent = line.DiscountPercent;
+
+                item.OnelistItemDiscounts = new List<OneListItemDiscount>();
+                foreach (OrderDiscountLine disc in line.DiscountLines)
+                {
+                    item.OnelistItemDiscounts.Add(new OneListItemDiscount()
+                    {
+                        Description = disc.Description,
+                        DiscountAmount = disc.DiscountAmount,
+                        DiscountPercent = disc.DiscountPercent,
+                        DiscountType = disc.DiscountType,
+                        LineNumber = disc.LineNumber,
+                        No = disc.No,
+                        OfferNumber = disc.OfferNumber,
+                        PeriodicDiscGroup = disc.PeriodicDiscGroup,
+                        PeriodicDiscType = disc.PeriodicDiscType,
+                        Quantity = line.Quantity
+                    });
+                }
+
+                item.OnelistSubLines = new List<OneListItemSubLine>();
+                foreach (OrderHospSubLine sline in line.SubLines)
+                {
+                    item.OnelistSubLines.Add(new OneListItemSubLine()
+                    {
+                        LineNumber = sline.LineNumber,
+                        DealLineId = Convert.ToInt32(sline.DealLineId),
+                        DealModLineId = Convert.ToInt32(sline.DealModifierLineId),
+                        Description = sline.Description,
+                        ItemId = sline.ItemId,
+                        ModifierGroupCode = sline.ModifierGroupCode,
+                        ModifierSubCode = sline.ModifierSubCode,
+                        Quantity = sline.Quantity,
+                        Type = sline.Type,
+                        Uom = sline.Uom,
+                        VariantDescription = sline.VariantDescription,
+                        VariantId = sline.VariantId
+                    });
+                }
+                newitems.Add(item);
+            }
+
+            list.Items.Clear();
+            list.Items = newitems;
+
             return list;
         }
     }

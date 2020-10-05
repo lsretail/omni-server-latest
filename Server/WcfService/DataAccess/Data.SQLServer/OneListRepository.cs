@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.Dal
         public OneListRepository(BOConfiguration config)
             : base(config)
         {
-            sqlcol = "mt.[Id],mt.[ExternalType],mt.[Description],mt.[StoreId],mt.[ListType]," +
+            sqlcol = "mt.[Id],mt.[ExternalType],mt.[Description],mt.[StoreId],mt.[ListType],mt.[IsHospitality]," +
                      "mt.[TotalAmount],mt.[TotalNetAmount],mt.[TotalTaxAmount],mt.[TotalDiscAmount]," +
                      "mt.[ShippingAmount],mt.[CreateDate] ";
 
@@ -153,14 +153,15 @@ namespace LSOmni.DataAccess.Dal
                                                       "WHERE [Id]=@id" +
                                                       " ELSE " +
                                                       "INSERT INTO [OneList] (" +
-                                                      "[Id],[ExternalType],[Description],[ListType],[TotalAmount]," +
+                                                      "[Id],[ExternalType],[Description],[ListType],[IsHospitality],[TotalAmount]," +
                                                       "[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[PointAmount],[CreateDate],[LastAccessed],[StoreId]" +
-                                                      ") VALUES (@id,@f1,@f2,@type,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
+                                                      ") VALUES (@id,@f1,@f2,@type,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
 
                                 command.Parameters.AddWithValue("@id", list.Id);
                                 command.Parameters.AddWithValue("@f1", list.ExternalType);
                                 command.Parameters.AddWithValue("@f2", NullToString(description, 100));
                                 command.Parameters.AddWithValue("@type", (int)list.ListType);
+                                command.Parameters.AddWithValue("@f5", list.IsHospitality);
                                 command.Parameters.AddWithValue("@f6", (calculate) ? list.TotalAmount : 0);
                                 command.Parameters.AddWithValue("@f7", (calculate) ? list.TotalNetAmount : 0);
                                 command.Parameters.AddWithValue("@f8", (calculate) ? list.TotalTaxAmount : 0);
@@ -219,6 +220,12 @@ namespace LSOmni.DataAccess.Dal
                                 command.ExecuteNonQuery();
 
                                 command.CommandText = "DELETE FROM [OneListOffer] WHERE [OneListId]=@id";
+                                command.Parameters.Clear();
+                                command.Parameters.AddWithValue("@id", oneListId);
+                                TraceSqlCommand(command);
+                                command.ExecuteNonQuery();
+
+                                command.CommandText = "DELETE FROM [OneListSubLine] WHERE [OneListId]=@id";
                                 command.Parameters.Clear();
                                 command.Parameters.AddWithValue("@id", oneListId);
                                 TraceSqlCommand(command);
@@ -351,7 +358,7 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT [Id],[OneListId],[DisplayOrderId],[ItemId],[UomId],[VariantId]," +
-                        "[ItemDescription],[VariantDescription],[ImageId],[BarcodeId],[Location]," +
+                        "[ItemDescription],[VariantDescription],[ImageId],[BarcodeId],[Location],[IsADeal]," +
                         "[Quantity],[NetPrice],[Price],[NetAmount],[TaxAmount],[DiscountAmount],[DiscountPercent],[CreateDate]" +
                         " FROM [OneListItem] WHERE [OneListId]=@id ORDER BY [DisplayOrderid] ASC";
 
@@ -366,8 +373,8 @@ namespace LSOmni.DataAccess.Dal
                             {
                                 Id = SQLHelper.GetString(reader["Id"]),
                                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
-                                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
-                                DisplayOrderId = SQLHelper.GetInt32(reader["DisplayOrderId"]),
+                                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                LineNumber = SQLHelper.GetInt32(reader["DisplayOrderId"]),
                                 OneListId = SQLHelper.GetString(reader["OneListId"]),
                                 BarcodeId = SQLHelper.GetString(reader["BarcodeId"]),
                                 ItemId = SQLHelper.GetString(reader["ItemId"]),
@@ -377,15 +384,65 @@ namespace LSOmni.DataAccess.Dal
                                 VariantDescription = SQLHelper.GetString(reader["VariantDescription"]),
                                 UnitOfMeasureId = SQLHelper.GetString(reader["UomId"]),
                                 Image = new ImageView(SQLHelper.GetString(reader["ImageId"])),
-                                Price = SQLHelper.GetDecimal(reader, "Price"),
-                                NetPrice = SQLHelper.GetDecimal(reader, "NetPrice"),
-                                NetAmount = SQLHelper.GetDecimal(reader, "NetAmount"),
-                                TaxAmount = SQLHelper.GetDecimal(reader, "TaxAmount"),
-                                DiscountAmount = SQLHelper.GetDecimal(reader, "DiscountAmount"),
-                                DiscountPercent = SQLHelper.GetDecimal(reader, "DiscountPercent")
+                                Price = SQLHelper.GetDecimal(reader["Price"]),
+                                NetPrice = SQLHelper.GetDecimal(reader["NetPrice"]),
+                                NetAmount = SQLHelper.GetDecimal(reader["NetAmount"]),
+                                TaxAmount = SQLHelper.GetDecimal(reader["TaxAmount"]),
+                                DiscountAmount = SQLHelper.GetDecimal(reader["DiscountAmount"]),
+                                DiscountPercent = SQLHelper.GetDecimal(reader["DiscountPercent"]),
+                                IsADeal = SQLHelper.GetBool(reader["IsADeal"])
                             };
                             line.Amount = line.NetAmount + line.TaxAmount;
+                            line.OnelistSubLines = OneListSubLineGetByItemId(line.OneListId, line.Id);
                             oneLineList.Add(line);
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+            return oneLineList;
+        }
+
+        private List<OneListItemSubLine> OneListSubLineGetByItemId(string oneListId, string itemId)
+        {
+            List<OneListItemSubLine> oneLineList = new List<OneListItemSubLine>();
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Id],[OneListId],[OneListItemId],[LineNumber],[Type],[ItemId],[ItemDescription],[UomId]," +
+                        "[VariantId],[VariantDescription],[Quantity],[DealModLineId],[DealLineId]," +
+                        "[ModifierGroupCode],[ModifierSubCode],[ParentSubLineId]" +
+                        " FROM [OneListSubLine] WHERE [OneListId]=@id AND [OneListItemId]=@item";
+
+                    command.Parameters.AddWithValue("@id", oneListId);
+                    command.Parameters.AddWithValue("@item", itemId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            oneLineList.Add(new OneListItemSubLine()
+                            {
+                                Id = SQLHelper.GetString(reader["Id"]),
+                                OneListId = SQLHelper.GetString(reader["OneListId"]),
+                                OneListItemId = SQLHelper.GetString(reader["OneListItemId"]),
+                                LineNumber = SQLHelper.GetInt32(reader["LineNumber"]),
+                                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                ItemId = SQLHelper.GetString(reader["ItemId"]),
+                                Description = SQLHelper.GetString(reader["ItemDescription"]),
+                                Type = (SubLineType)SQLHelper.GetInt32(reader["Type"]),
+                                VariantId = SQLHelper.GetString(reader["VariantId"]),
+                                VariantDescription = SQLHelper.GetString(reader["VariantDescription"]),
+                                Uom = SQLHelper.GetString(reader["UomId"]),
+                                DealLineId = SQLHelper.GetInt32(reader["DealLineId"]),
+                                DealModLineId = SQLHelper.GetInt32(reader["DealModLineId"]),
+                                ModifierGroupCode = SQLHelper.GetString(reader["ModifierGroupCode"]),
+                                ModifierSubCode = SQLHelper.GetString(reader["ModifierSubCode"]),
+                                ParentSubLineId = SQLHelper.GetInt32(reader["ParentSubLineId"])
+                            });
                         }
                         reader.Close();
                     }
@@ -417,7 +474,7 @@ namespace LSOmni.DataAccess.Dal
                                 Type = (OfferDiscountType)SQLHelper.GetInt32(reader["OfferType"]),
                                 Id = SQLHelper.GetString(reader["OfferId"]),
                                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
-                                DisplayOrderId = SQLHelper.GetInt32(reader["DisplayOrderId"]),
+                                LineNumber = SQLHelper.GetInt32(reader["DisplayOrderId"]),
                                 OneListId = SQLHelper.GetString(reader["OneListId"]),
                             });
                         }
@@ -518,6 +575,12 @@ namespace LSOmni.DataAccess.Dal
                 TraceSqlCommand(command);
                 command.ExecuteNonQuery();
 
+                command.CommandText = "DELETE FROM [OneListSubLine] WHERE [OneListId]=@id";
+                command.Parameters.Clear();
+                command.Parameters.AddWithValue("@id", oneListId);
+                TraceSqlCommand(command);
+                command.ExecuteNonQuery();
+
                 if (calculate)
                 {
                     command.CommandText = "DELETE FROM [OneListItemDiscount] WHERE [OneListId]=@id";
@@ -531,11 +594,10 @@ namespace LSOmni.DataAccess.Dal
                     return;
 
                 //now add the line
-                int displayOrderId = 0;
                 command.CommandText = "INSERT INTO [OneListItem] (" +
                     "[Id],[OneListId],[DisplayOrderId],[ItemId],[ItemDescription],[BarcodeId],[UomId],[VariantId],[VariantDescription],[ImageId]," +
-                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location]" +
-                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18)";
+                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location],[IsADeal]" +
+                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18,@f19)";
 
                 command.Parameters.Clear();
                 command.Parameters.Add("@f0", SqlDbType.NVarChar);
@@ -557,6 +619,7 @@ namespace LSOmni.DataAccess.Dal
                 command.Parameters.Add("@f16", SqlDbType.Decimal);
                 command.Parameters.Add("@f17", SqlDbType.DateTime);
                 command.Parameters.Add("@f18", SqlDbType.NVarChar);
+                command.Parameters.Add("@f19", SqlDbType.TinyInt);
 
                 foreach (OneListItem line in listLines)
                 {
@@ -564,11 +627,10 @@ namespace LSOmni.DataAccess.Dal
                         continue;
 
                     line.Id = GuidHelper.NewGuid().ToString().ToUpper();
-                    displayOrderId++;
 
                     command.Parameters["@f0"].Value = line.Id;
                     command.Parameters["@f1"].Value = oneListId;
-                    command.Parameters["@f2"].Value = displayOrderId;
+                    command.Parameters["@f2"].Value = line.LineNumber;
                     command.Parameters["@f3"].Value = line.ItemId;
                     command.Parameters["@f4"].Value = NullToString(line.ItemDescription, 50);
                     command.Parameters["@f5"].Value = NullToString(line.BarcodeId, 20);
@@ -585,6 +647,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters["@f16"].Value = line.DiscountPercent;
                     command.Parameters["@f17"].Value = DateTime.Now;
                     command.Parameters["@f18"].Value = line.Location;
+                    command.Parameters["@f19"].Value = line.IsADeal;
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 
@@ -629,6 +692,58 @@ namespace LSOmni.DataAccess.Dal
                                 command2.Parameters["@f11"].Value = dline.PeriodicDiscType;
                                 command2.Parameters["@f12"].Value = NullToString(dline.PeriodicDiscGroup, 20);
                                 command2.ExecuteNonQuery();
+                            }
+                        }
+                    }
+
+                    if (line.OnelistSubLines != null && line.OnelistSubLines.Count > 0)
+                    {
+                        using (SqlCommand command3 = db.CreateCommand())
+                        {
+                            command3.Transaction = trans;
+
+                            command3.CommandText = "INSERT INTO [OneListSubLine] (" +
+                                "[Id],[OneListId],[OneListItemId],[Type],[ItemId],[ItemDescription],[UomId]," +
+                                "[VariantId],[VariantDescription],[Quantity],[DealLineId],[DealModLineId]," +
+                                "[ModifierGroupCode],[ModifierSubCode],[ParentSubLineId],[LineNumber]" +
+                                ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15)";
+
+                            command3.Parameters.Add("@f0", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f1", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f2", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f3", SqlDbType.Int);
+                            command3.Parameters.Add("@f4", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f5", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f6", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f7", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f8", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f9", SqlDbType.Decimal);
+                            command3.Parameters.Add("@f10", SqlDbType.Int);
+                            command3.Parameters.Add("@f11", SqlDbType.Int);
+                            command3.Parameters.Add("@f12", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f13", SqlDbType.NVarChar);
+                            command3.Parameters.Add("@f14", SqlDbType.Int);
+                            command3.Parameters.Add("@f15", SqlDbType.Int);
+
+                            foreach (OneListItemSubLine sline in line.OnelistSubLines)
+                            {
+                                command3.Parameters["@f0"].Value = GuidHelper.NewGuid().ToString().ToUpper();
+                                command3.Parameters["@f1"].Value = oneListId;
+                                command3.Parameters["@f2"].Value = line.Id;
+                                command3.Parameters["@f3"].Value = (int)sline.Type;
+                                command3.Parameters["@f4"].Value = sline.ItemId;
+                                command3.Parameters["@f5"].Value = NullToString(sline.Description, 50);
+                                command3.Parameters["@f6"].Value = NullToString(sline.Uom, 10);
+                                command3.Parameters["@f7"].Value = NullToString(sline.VariantId, 20);
+                                command3.Parameters["@f8"].Value = NullToString(sline.VariantDescription, 50);
+                                command3.Parameters["@f9"].Value = sline.Quantity;
+                                command3.Parameters["@f10"].Value = sline.DealLineId;
+                                command3.Parameters["@f11"].Value = sline.DealModLineId;
+                                command3.Parameters["@f12"].Value = NullToString(sline.ModifierGroupCode, 20);
+                                command3.Parameters["@f13"].Value = NullToString(sline.ModifierSubCode, 20);
+                                command3.Parameters["@f14"].Value = sline.ParentSubLineId;
+                                command3.Parameters["@f15"].Value = sline.LineNumber;
+                                command3.ExecuteNonQuery();
                             }
                         }
                     }
@@ -714,6 +829,7 @@ namespace LSOmni.DataAccess.Dal
                 ExternalType = SQLHelper.GetInt32(reader["ExternalType"]),
                 StoreId = SQLHelper.GetString(reader["StoreId"]),
                 ListType = (ListType)SQLHelper.GetInt32(reader["ListType"]),
+                IsHospitality = SQLHelper.GetBool(reader["IsHospitality"]),
                 TotalAmount = SQLHelper.GetDecimal(reader, "TotalAmount"),
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "TotalNetAmount"),
                 TotalTaxAmount = SQLHelper.GetDecimal(reader, "TotalTaxAmount"),

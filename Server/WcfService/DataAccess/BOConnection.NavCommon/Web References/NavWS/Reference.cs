@@ -185,6 +185,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback SetTokenEntryOperationCompleted;
         
+        private System.Threading.SendOrPostCallback StoreInvTransactionSendV2OperationCompleted;
+        
         private System.Threading.SendOrPostCallback StoreInvTransactionSendOperationCompleted;
         
         private System.Threading.SendOrPostCallback StoreInventoryLinesGetOperationCompleted;
@@ -462,6 +464,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event SetTokenEntryCompletedEventHandler SetTokenEntryCompleted;
+        
+        /// <remarks/>
+        public event StoreInvTransactionSendV2CompletedEventHandler StoreInvTransactionSendV2Completed;
         
         /// <remarks/>
         public event StoreInvTransactionSendCompletedEventHandler StoreInvTransactionSendCompleted;
@@ -3644,6 +3649,40 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInvTransactionSendV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="StoreInvTransactionSendV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void StoreInvTransactionSendV2(ref string responseCode, ref string errorText, RootStoreInvTransactionSendV2XML storeInvTransactionSendV2XML) {
+            object[] results = this.Invoke("StoreInvTransactionSendV2", new object[] {
+                        responseCode,
+                        errorText,
+                        storeInvTransactionSendV2XML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+        }
+        
+        /// <remarks/>
+        public void StoreInvTransactionSendV2Async(string responseCode, string errorText, RootStoreInvTransactionSendV2XML storeInvTransactionSendV2XML) {
+            this.StoreInvTransactionSendV2Async(responseCode, errorText, storeInvTransactionSendV2XML, null);
+        }
+        
+        /// <remarks/>
+        public void StoreInvTransactionSendV2Async(string responseCode, string errorText, RootStoreInvTransactionSendV2XML storeInvTransactionSendV2XML, object userState) {
+            if ((this.StoreInvTransactionSendV2OperationCompleted == null)) {
+                this.StoreInvTransactionSendV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnStoreInvTransactionSendV2OperationCompleted);
+            }
+            this.InvokeAsync("StoreInvTransactionSendV2", new object[] {
+                        responseCode,
+                        errorText,
+                        storeInvTransactionSendV2XML}, this.StoreInvTransactionSendV2OperationCompleted, userState);
+        }
+        
+        private void OnStoreInvTransactionSendV2OperationCompleted(object arg) {
+            if ((this.StoreInvTransactionSendV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.StoreInvTransactionSendV2Completed(this, new StoreInvTransactionSendV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInvTransactionSend", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="StoreInvTransactionSend_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void StoreInvTransactionSend(ref string responseCode, ref string errorText, RootStoreInvTransactionSendXML storeInvTransactionSendXML) {
             object[] results = this.Invoke("StoreInvTransactionSend", new object[] {
@@ -4332,6 +4371,254 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.storeInvTransactionSendStoreInvLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033071")]
+    public partial class StoreInvTransactionSendV2StoreInvLine {
+        
+        private int worksheetSeqNoField;
+        
+        private int lineNoField;
+        
+        private string transactionNoField;
+        
+        private int transactionLineNoField;
+        
+        private string itemNoField;
+        
+        private string barcodeField;
+        
+        private decimal quantityField;
+        
+        private string unitofMeasureCodeField;
+        
+        private string variantCodeField;
+        
+        private decimal competitorPriceField;
+        
+        private string areaCodeField;
+        
+        private string serialNoField;
+        
+        private string lotNoField;
+        
+        private System.DateTime expirationDateField;
+        
+        private string reasonCodeField;
+        
+        private bool endOfTransactionField;
+        
+        public StoreInvTransactionSendV2StoreInvLine() {
+            this.worksheetSeqNoField = 0;
+            this.lineNoField = 0;
+            this.transactionLineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.competitorPriceField = ((decimal)(0m));
+            this.expirationDateField = new System.DateTime(0);
+            this.endOfTransactionField = false;
+        }
+        
+        /// <remarks/>
+        public int WorksheetSeqNo {
+            get {
+                return this.worksheetSeqNoField;
+            }
+            set {
+                this.worksheetSeqNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransactionNo {
+            get {
+                return this.transactionNoField;
+            }
+            set {
+                this.transactionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TransactionLineNo {
+            get {
+                return this.transactionLineNoField;
+            }
+            set {
+                this.transactionLineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Barcode {
+            get {
+                return this.barcodeField;
+            }
+            set {
+                this.barcodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitofMeasureCode {
+            get {
+                return this.unitofMeasureCodeField;
+            }
+            set {
+                this.unitofMeasureCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal CompetitorPrice {
+            get {
+                return this.competitorPriceField;
+            }
+            set {
+                this.competitorPriceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AreaCode {
+            get {
+                return this.areaCodeField;
+            }
+            set {
+                this.areaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SerialNo {
+            get {
+                return this.serialNoField;
+            }
+            set {
+                this.serialNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LotNo {
+            get {
+                return this.lotNoField;
+            }
+            set {
+                this.lotNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ExpirationDate {
+            get {
+                return this.expirationDateField;
+            }
+            set {
+                this.expirationDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCode {
+            get {
+                return this.reasonCodeField;
+            }
+            set {
+                this.reasonCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool EndOfTransaction {
+            get {
+                return this.endOfTransactionField;
+            }
+            set {
+                this.endOfTransactionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033071")]
+    public partial class RootStoreInvTransactionSendV2XML {
+        
+        private StoreInvTransactionSendV2StoreInvLine[] storeInvTransactionSendV2StoreInvLineField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("StoreInvTransactionSendV2StoreInvLine")]
+        public StoreInvTransactionSendV2StoreInvLine[] StoreInvTransactionSendV2StoreInvLine {
+            get {
+                return this.storeInvTransactionSendV2StoreInvLineField;
+            }
+            set {
+                this.storeInvTransactionSendV2StoreInvLineField = value;
             }
         }
         
@@ -55810,6 +56097,40 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void StoreInvTransactionSendV2CompletedEventHandler(object sender, StoreInvTransactionSendV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class StoreInvTransactionSendV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal StoreInvTransactionSendV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
             }
         }
     }

@@ -87,6 +87,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
                     mainlastkey = tmplastkey;
 
+                // get item status
+                recordsRemaining += GetRecordCount(10001404, tmplastkey, string.Empty, keys, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 10001404, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
                 // get distribution changes 
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10000704, tmplastkey, string.Empty, keys, ref tmpmaxkey);
@@ -203,7 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             maxKey = prevLastKey;
                         }
 
-                        if (string.IsNullOrEmpty(maxKey))
+                        if (string.IsNullOrEmpty(maxKey) || (Convert.ToInt32(lastKey) > Convert.ToInt32(maxKey)))
                             maxKey = lastKey;
                     }
                     connection.Close();
@@ -279,6 +285,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref tmpmaxkey);
                 itemact.AddRange(LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                // get item status
+                recordsRemaining += GetRecordCount(10001404, tmplastkey, string.Empty, keys, ref tmpmaxkey);
+                itemact.AddRange(LoadActions(fullReplication, 10001404, batchSize, ref tmplastkey, ref recordsRemaining));
                 if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
                     mainlastkey = tmplastkey;
 
@@ -398,7 +410,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             maxKey = prevLastKey;
                         }
 
-                        if (string.IsNullOrEmpty(maxKey))
+                        if (string.IsNullOrEmpty(maxKey) || (Convert.ToInt32(lastKey) > Convert.ToInt32(maxKey)))
                             maxKey = lastKey;
                     }
                     connection.Close();

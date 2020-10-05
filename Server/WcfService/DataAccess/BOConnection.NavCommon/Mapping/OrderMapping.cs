@@ -642,7 +642,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired && order.ShippingStatus != 0),
                 CustomerNo = string.Empty,
-                CreatedAtStore = "S0013",
+                CreatedAtStore = order.StoreId,
                 TerritoryCode = string.Empty
             });
 

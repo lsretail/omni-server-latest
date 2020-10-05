@@ -19,6 +19,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.Service
 {
@@ -1203,6 +1204,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual OrderHosp OneListHospCalculate(OneList oneList)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(oneList));
+                OneListBLL hostBLL = new OneListBLL(config, clientTimeOutInSeconds);
+                return hostBLL.OneListHospCalculate(oneList);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "id:{0}", oneList.Id);
+                return null; //never gets here
+            }
+        }
+
         public virtual bool OneListDeleteById(string oneListId)
         {
             try
@@ -1534,7 +1550,7 @@ namespace LSOmni.Service
 
         #endregion transactions
 
-        #region Basket 
+        #region Order 
 
         public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
@@ -1564,6 +1580,51 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "orderId:{0}", orderId);
             }
             return string.Empty;
+        }
+
+        public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(request));
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
+                return bll.OrderAvailabilityCheck(request);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "id:{0}", request.Id);
+                return null; //never gets here
+            }
+        }
+
+        public virtual SalesEntry OrderCreate(Order request)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(request));
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
+                return bll.OrderCreate(request);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "id:{0}", request.Id);
+                return null; //never gets here
+            }
+        }
+
+        public virtual SalesEntry OrderHospCreate(OrderHosp request)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(request));
+                OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
+                return hostBLL.OrderHospCreate(request);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "id:{0}", request.Id);
+                return null; //never gets here
+            }
         }
 
         #endregion Basket 
@@ -1717,40 +1778,6 @@ namespace LSOmni.Service
         }
 
         #endregion OrderMessage
-
-        #region Click and Collect
-
-        public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, LogJson(request));
-                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                return bll.OrderAvailabilityCheck(request);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "id:{0}", request.Id);
-                return null; //never gets here
-            }
-        }
-
-        public virtual SalesEntry OrderCreate(Order request)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, LogJson(request));
-                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                return bll.OrderCreate(request);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "id:{0}", request.Id);
-                return null; //never gets here
-            }
-        }
-
-        #endregion Click and Collect
 
         #region LS Recommends
 

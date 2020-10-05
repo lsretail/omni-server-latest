@@ -72,6 +72,7 @@
     <Compile Include="Dal\DataTranslationRepository.cs" />
     <Compile Include="Dal\DiscountOfferRepository.cs" />
     <Compile Include="Dal\ExtendedVariantValuesRepository.cs" />
+    <Compile Include="Dal\HierarchyHospLeafRepository.cs" />
     <Compile Include="Dal\HierarchyNodeRepository.cs" />
     <Compile Include="Dal\HierarchyRepository.cs" />
     <Compile Include="Dal\ImageRepository.cs" />

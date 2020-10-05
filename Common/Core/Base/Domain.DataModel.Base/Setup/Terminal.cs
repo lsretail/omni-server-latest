@@ -17,7 +17,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public enum DocumentQuantityMethod
+    public enum AsnQuantityMethod
     {
         [EnumMember]
         None = 0,
@@ -51,6 +51,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             UniqueId = string.Empty;
             MainMenu = string.Empty;
             StoreInventory = true;
+            AsnQuickScanQty = 1m;
         }
 
         [DataMember]
@@ -84,7 +85,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public FeatureFlags Features { get; set; }
         [DataMember]
-        public DocumentQuantityMethod ASNQuantityMethod { get; set; }
+        public AsnQuantityMethod AsnQuantityMethod { get; set; }
+        [DataMember]
+        public decimal AsnQuickScanQty { get; set; }
     }
 }
 

@@ -27,9 +27,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlfromNode = " FROM [" + navCompanyName + ((NavVersion >= new Version("11.01.00")) ? "Hierarchy Nodes] mt" : "Hierarchy Node] mt") +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
 
-            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id]";
+            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
             sqlfromLink = " FROM [" + navCompanyName + "Hierarchy Node Link] mt" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " LEFT OUTER JOIN [" + navCompanyName + "Offer] o ON o.[No_]=mt.[No_]" +
                           " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0" +
                           " AND il.[TableName]=CASE WHEN mt.[Type]=0 THEN 'Item' ELSE 'Offer' END";
         }

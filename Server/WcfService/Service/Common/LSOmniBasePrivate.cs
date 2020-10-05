@@ -148,7 +148,7 @@ namespace LSOmni.Service
             //Check default LSNAV Appsettings values (single tenant)
             if (ConfigSetting.KeyExists("BOConnection.Nav.UserName"))
             {
-                //Get default config
+                //Get default configuration
                 config = bll.ConfigGet("");
                 config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUser.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.UserName");
 
@@ -224,7 +224,6 @@ namespace LSOmni.Service
                 }
             }
 
-            //foreach (Menu.Product prod in mobileMenu.Prods)
             for (int k = 0; k < (mobileMenu.Products != null ? mobileMenu.Products.Count : 0); k++)
             {
                 //get all the iviews Location
@@ -238,7 +237,6 @@ namespace LSOmni.Service
                 }
             }
 
-            //foreach (Menu.Recipe recipe in mobileMenu.Recipes)
             for (int k = 0; k < (mobileMenu.Recipes != null ? mobileMenu.Recipes.Count : 0); k++)
             {
                 //get all the iviews Location
@@ -424,7 +422,8 @@ namespace LSOmni.Service
 
             foreach (OneListItem line in list.Items)
             {
-                line.Image.StreamURL = GetImageStreamUrl(line.Image);
+                if (line.Image != null)
+                    line.Image.StreamURL = GetImageStreamUrl(line.Image);
             }
         }
 
@@ -445,7 +444,8 @@ namespace LSOmni.Service
                 }
                 foreach (OfferDetails od in list.OfferDetails)
                 {
-                    od.Image.StreamURL = GetImageStreamUrl(od.Image);
+                    if (od.Image != null)
+                        od.Image.StreamURL = GetImageStreamUrl(od.Image);
                 }
             }
         }

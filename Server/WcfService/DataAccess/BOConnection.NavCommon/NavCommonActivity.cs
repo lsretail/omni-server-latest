@@ -98,7 +98,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return result;
         }
 
-        public List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
+        public List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
         {
             string error = string.Empty;
 
@@ -106,7 +106,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 locationNo, productNo, activityDate, contactNo));
 
             LSActivity15.ActivityAvailabilityResponse root = new LSActivity15.ActivityAvailabilityResponse();
-            activity15WS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), ref error, ref root);
+            activity15WS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), XMLHelper.GetString(activityNo), ref error, ref root);
             logger.Debug(config.LSKey.Key, "ActivityAvailabilityResponse - " + Serialization.ToXml(root, true));
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);

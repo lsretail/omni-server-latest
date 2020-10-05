@@ -495,6 +495,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         CustomerOrderItemNotFound = 9001,
         [EnumMember]
         CustomerOrderItemAlreadyInBox = 9002,
+        [EnumMember]
+        CustomerOrderItemQuantityTooHigh = 9003,
 
         #region SQLITE Error Codes 10.000 to 19.999
 

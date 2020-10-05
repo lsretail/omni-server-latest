@@ -4,7 +4,6 @@ using LSOmni.DataAccess.Interface.Repository;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL
 {
@@ -16,8 +15,11 @@ namespace LSOmni.BLL
         public ConfigBLL(BOConfiguration config) : base(config)
         {
             this.iConfigRepository = GetDbRepository<IConfigRepository>(config);
-            BOLoyConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key);
+
+            if (config != null)
+                BOLoyConnection = GetBORepository<ILoyaltyBO>(config?.LSKey.Key);
         }
+
         public ConfigBLL() : base(null)
         {
             this.iConfigRepository = GetDbRepository<IConfigRepository>(config);

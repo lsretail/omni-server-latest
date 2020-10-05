@@ -71,6 +71,7 @@
     <Compile Include="Dal\CurrencyExchRateRepository.cs" />
     <Compile Include="Dal\CurrencyRepository.cs" />
     <Compile Include="Dal\CustomerRepository.cs" />
+    <Compile Include="Dal\HierarchyHospLeafRepository.cs" />
     <Compile Include="Dal\MyCustomRepository.cs" />
     <Compile Include="Dal\DataTranslationRepository.cs" />
     <Compile Include="Dal\DiscountOfferRepository.cs" />

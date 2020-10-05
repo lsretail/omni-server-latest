@@ -5,6 +5,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -74,6 +75,15 @@ namespace LSOmni.BLL.Loyalty
                 return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External, tenderMapping);
 
             return BOLoyConnection.SalesEntryGet(orderId, DocumentIdType.Order, tenderMapping);
+        }
+
+        public virtual SalesEntry OrderHospCreate(OrderHosp request)
+        {
+            if (request == null)
+                throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
+
+            string extId = BOLoyConnection.HospOrderCreate(request, tenderMapping, out string orderId);
+            return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.Receipt, tenderMapping);
         }
     }
 }

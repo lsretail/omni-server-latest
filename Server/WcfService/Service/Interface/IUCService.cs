@@ -22,6 +22,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.Service
 {
@@ -406,6 +407,126 @@ namespace LSOmni.Service
         Order OneListCalculate(OneList oneList);
 
         /// <summary>
+        /// Calculates OneList Basket for Hospitality and returns Hospitality Order Object
+        /// </summary>
+        /// <remarks>
+        /// This function can be used to send in Basket and convert it to Hospitality Order.<p/>
+        /// Basic Hospitality Order data is then set for finalize it by setting the Order setting,
+        /// Contact Info, Payment and then it can be posted for Creation
+        /// </remarks>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
+        /// Basket with Item and Recipe modification (remove) and Modifier add-on (add item)
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///     <ser:OneListHospCalculate>
+        ///        <ser:oneList>
+        ///           <ns1:CardId>10021</ns1:CardId>
+        ///           <ns1:IsHospitality>true</ns1:IsHospitality>
+        ///           <ns1:Items>
+        ///              <ns1:OneListItem>
+        ///                 <!-- Chicken -->
+        ///                 <ns1:IsADeal>false</ns1:IsADeal>
+        ///                 <ns1:ItemId>R0001</ns1:ItemId>
+        ///                 <ns1:OnelistSubLines>
+        ///                    <ns1:OneListItemSubLine>
+        ///                       <!-- Remove Recipe Item -->
+        ///                       <ns1:ItemId>R0002</ns1:ItemId>
+        ///                       <ns1:Quantity>0</ns1:Quantity>
+        ///                       <ns1:Type>Modifier</ns1:Type>
+        ///                    </ns1:OneListItemSubLine>
+        ///                    <ns1:OneListItemSubLine>
+        ///                       <!-- Add Modifier -->
+        ///                       <ns1:ModifierGroupCode>POT+RICE</ns1:ModifierGroupCode>
+        ///                       <ns1:ModifierSubCode>01</ns1:ModifierSubCode>
+        ///                       <ns1:Quantity>1</ns1:Quantity>
+        ///                       <ns1:Type>Modifier</ns1:Type>
+        ///                    </ns1:OneListItemSubLine>
+        ///                 </ns1:OnelistSubLines>
+        ///                 <ns1:Quantity>1</ns1:Quantity>
+        ///                 <ns1:UnitOfMeasureId></ns1:UnitOfMeasureId>
+        ///              </ns1:OneListItem>
+        ///           </ns1:Items>
+        ///           <ns1:ListType>Basket</ns1:ListType>
+        ///           <ns1:StoreId>S0005</ns1:StoreId>
+        ///        </ser:oneList>
+        ///     </ser:OneListHospCalculate>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// Basket to order SetMenu Deal (Burger with Drink and Fries) with burger item recipe changes (remove bacon)
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///     <ser:OneListHospCalculate>
+        ///        <ser:oneList>
+        ///           <ns1:CardId>10021</ns1:CardId>
+        ///           <ns1:IsHospitality>true</ns1:IsHospitality>
+        ///           <ns1:Items>
+        ///              <ns1:OneListItem>
+        ///                 <!-- Burger Deal SetMenu -->
+        ///                 <ns1:IsADeal>true</ns1:IsADeal>
+        ///                 <ns1:ItemId>S10024</ns1:ItemId>
+        ///                 <ns1:LineNumber>1</ns1:LineNumber>
+        ///                 <ns1:OnelistSubLines>
+        ///                    <ns1:OneListItemSubLine>
+        ///                       <!-- Burger -->
+        ///                       <ns1:DealLineId>1</ns1:DealLineId>
+        ///                       <ns1:LineNumber>1</ns1:LineNumber>
+        ///                       <ns1:Quantity>1</ns1:Quantity>
+        ///                       <ns1:Type>Deal</ns1:Type>
+        ///                    </ns1:OneListItemSubLine>
+        ///                    <ns1:OneListItemSubLine>
+        ///                       <!-- Remove Bacon -->
+        ///                       <ns1:DealLineId>1</ns1:DealLineId>
+        ///                       <ns1:ItemId>34420</ns1:ItemId>
+        ///                       <ns1:LineNumber>2</ns1:LineNumber>
+        ///                       <ns1:ParentSubLineId>1</ns1:ParentSubLineId>
+        ///                       <ns1:Quantity>0</ns1:Quantity>
+        ///                       <ns1:Type>Modifier</ns1:Type>
+        ///                    </ns1:OneListItemSubLine>
+        ///                    <ns1:OneListItemSubLine>
+        ///                       <!-- Garlic Bread Sticks -->
+        ///                       <ns1:DealLineId>2</ns1:DealLineId>
+        ///                       <ns1:DealModLineId>2</ns1:DealModLineId>
+        ///                       <ns1:Quantity>1</ns1:Quantity>
+        ///                       <ns1:Type>Deal</ns1:Type>
+        ///                       <ns1:Uom>LAR</ns1:Uom>
+        ///                    </ns1:OneListItemSubLine>
+        ///                    <ns1:OneListItemSubLine>
+        ///                       <!-- Cherry Soda -->
+        ///                       <ns1:DealLineId>3</ns1:DealLineId>
+        ///                       <ns1:DealModLineId>2</ns1:DealModLineId>
+        ///                       <ns1:Quantity>1</ns1:Quantity>
+        ///                       <ns1:Type>Deal</ns1:Type>
+        ///                       <ns1:Uom>LAR</ns1:Uom>
+        ///                    </ns1:OneListItemSubLine>
+        ///                 </ns1:OnelistSubLines>
+        ///                 <ns1:Quantity>1</ns1:Quantity>
+        ///                 <ns1:UnitOfMeasureId></ns1:UnitOfMeasureId>
+        ///              </ns1:OneListItem>
+        ///           </ns1:Items>
+        ///           <ns1:ListType>Basket</ns1:ListType>
+        ///           <ns1:StoreId>S0005</ns1:StoreId>
+        ///        </ser:oneList>
+        ///     </ser:OneListHospCalculate>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="oneList">OneList Object</param>
+        /// <returns>Order Object that can be used to Create Order</returns>
+        [OperationContract]
+        OrderHosp OneListHospCalculate(OneList oneList);
+
+        /// <summary>
         /// Add or remove Item in OneList without sending whole list
         /// </summary>
         /// <param name="onelistId">OneList Id</param>
@@ -616,6 +737,165 @@ namespace LSOmni.Service
         /// <returns>SalesEntry object for order if order creation was successful</returns>
         [OperationContract]
         SalesEntry OrderCreate(Order request);
+
+        /// <summary>
+        /// Create a Hospitality Order
+        /// </summary>
+        /// <example>
+        /// This Sample request can be used in SOAP UI application to send request to OMNI.<p/>
+        /// Include minimum data needed to be able to process the request, 
+        /// Sample Order with SetMenu (Burger, Fries and Drink) and remove recipe item (bacon)
+        /// <code language="xml" title="SOAP Sample Request">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///    <soapenv:Header/>
+        ///    <soapenv:Body>
+        ///       <ser:OrderHospCreate>
+        ///          <ser:request>
+        ///             <ns1:CardId>10021</ns1:CardId>
+        ///             <ns1:OrderLines>
+        ///                <ns1:OrderHospLine>
+        ///                   <ns1:Amount>0.0</ns1:Amount>
+        ///                   <ns1:DiscountAmount>0</ns1:DiscountAmount>
+        ///                   <ns1:DiscountLines>
+        ///                   </ns1:DiscountLines>
+        ///                   <ns1:DiscountPercent>0</ns1:DiscountPercent>
+        ///                   <ns1:IsADeal>true</ns1:IsADeal>
+        ///                   <ns1:ItemId>S10024</ns1:ItemId>
+        ///                   <ns1:LineNumber>9750</ns1:LineNumber>
+        ///                   <ns1:LineType>Item</ns1:LineType>
+        ///                   <ns1:NetAmount>7.1</ns1:NetAmount>
+        ///                   <ns1:NetPrice>7.1</ns1:NetPrice>
+        ///                   <ns1:Price>7.1</ns1:Price>
+        ///                   <ns1:Quantity>1</ns1:Quantity>
+        ///                   <ns1:SubLines>
+        ///                      <ns1:OrderHospSubLine>
+        ///                         <ns1:DealId>S10024</ns1:DealId>
+        ///                         <ns1:DealLineCode>10000</ns1:DealLineCode>
+        ///                         <ns1:DealModifierLineCode>0</ns1:DealModifierLineCode>
+        ///                         <ns1:DiscountAmount>0</ns1:DiscountAmount>
+        ///                         <ns1:DiscountPercent>0</ns1:DiscountPercent>
+        ///                         <ns1:ItemId>R0025</ns1:ItemId>
+        ///                         <ns1:LineNumber>10000</ns1:LineNumber>
+        ///                         <ns1:ModifierGroupCode></ns1:ModifierGroupCode>
+        ///                         <ns1:ModifierSubCode></ns1:ModifierSubCode>
+        ///                         <ns1:NetAmount>4.23</ns1:NetAmount>
+        ///                         <ns1:NetPrice>4.23</ns1:NetPrice>
+        ///                         <ns1:ParentIsSubLine>false</ns1:ParentIsSubLine>
+        ///                         <ns1:Price>4.23</ns1:Price>
+        ///                         <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                         <ns1:Quantity>1</ns1:Quantity>
+        ///                         <ns1:TAXAmount>0</ns1:TAXAmount>
+        ///                         <ns1:TextModifiers>
+        ///                         </ns1:TextModifiers>
+        ///                         <ns1:Type>Deal</ns1:Type>
+        ///                         <ns1:Uom/>
+        ///                      </ns1:OrderHospSubLine>
+        ///                      <ns1:OrderHospSubLine>
+        ///                         <ns1:DealId>S10024</ns1:DealId>
+        ///                         <ns1:DealLineCode>20000</ns1:DealLineCode>
+        ///                         <ns1:DealModifierLineCode>20000</ns1:DealModifierLineCode>
+        ///                         <ns1:Description>Fries</ns1:Description>
+        ///                         <ns1:DiscountAmount>0</ns1:DiscountAmount>
+        ///                         <ns1:DiscountPercent>0</ns1:DiscountPercent>
+        ///                         <ns1:ItemId>33410</ns1:ItemId>
+        ///                         <ns1:LineNumber>30000</ns1:LineNumber>
+        ///                         <ns1:ModifierGroupCode></ns1:ModifierGroupCode>
+        ///                         <ns1:ModifierSubCode></ns1:ModifierSubCode>
+        ///                         <ns1:NetAmount>2.21</ns1:NetAmount>
+        ///                         <ns1:NetPrice>2.21</ns1:NetPrice>
+        ///                         <ns1:ParentIsSubLine>false</ns1:ParentIsSubLine>
+        ///                         <ns1:Price>2.21</ns1:Price>
+        ///                         <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                         <ns1:Quantity>1</ns1:Quantity>
+        ///                         <ns1:TAXAmount>0</ns1:TAXAmount>
+        ///                         <ns1:TextModifiers>
+        ///                         </ns1:TextModifiers>
+        ///                         <ns1:Type>Deal</ns1:Type>
+        ///                         <ns1:Uom/>
+        ///                      </ns1:OrderHospSubLine>
+        ///                      <ns1:OrderHospSubLine>
+        ///                         <ns1:DealId>S10024</ns1:DealId>
+        ///                         <ns1:DealLineCode>30000</ns1:DealLineCode>
+        ///                         <ns1:DealModifierLineCode>20000</ns1:DealModifierLineCode>
+        ///                         <ns1:Description>Cola</ns1:Description>
+        ///                         <ns1:DiscountAmount>0</ns1:DiscountAmount>
+        ///                         <ns1:DiscountPercent>0</ns1:DiscountPercent>
+        ///                         <ns1:ItemId>30500</ns1:ItemId>
+        ///                         <ns1:LineNumber>40000</ns1:LineNumber>
+        ///                         <ns1:ModifierGroupCode></ns1:ModifierGroupCode>
+        ///                         <ns1:ModifierSubCode></ns1:ModifierSubCode>
+        ///                         <ns1:NetAmount>0.66</ns1:NetAmount>
+        ///                         <ns1:NetPrice>0.66</ns1:NetPrice>
+        ///                         <ns1:ParentIsSubLine>false</ns1:ParentIsSubLine>
+        ///                         <ns1:Price>0.66</ns1:Price>
+        ///                         <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                         <ns1:Quantity>1</ns1:Quantity>
+        ///                         <ns1:TAXAmount>0</ns1:TAXAmount>
+        ///                         <ns1:TextModifiers>
+        ///                         </ns1:TextModifiers>
+        ///                         <ns1:Type>Deal</ns1:Type>
+        ///                         <ns1:Uom/>
+        ///                      </ns1:OrderHospSubLine>
+        ///                      <ns1:OrderHospSubLine>
+        ///                         <ns1:DealId/>
+        ///                         <ns1:DealLineCode>10000</ns1:DealLineCode>
+        ///                         <ns1:DealModifierLineCode>0</ns1:DealModifierLineCode>
+        ///                         <ns1:Description>Bacon</ns1:Description>
+        ///                         <ns1:DiscountAmount>0</ns1:DiscountAmount>
+        ///                         <ns1:DiscountPercent>0</ns1:DiscountPercent>
+        ///                         <ns1:ItemId>34420</ns1:ItemId>
+        ///                         <ns1:LineNumber>20000</ns1:LineNumber>
+        ///                         <ns1:ModifierGroupCode></ns1:ModifierGroupCode>
+        ///                         <ns1:ModifierSubCode></ns1:ModifierSubCode>
+        ///                         <ns1:NetAmount>0</ns1:NetAmount>
+        ///                         <ns1:NetPrice>0</ns1:NetPrice>
+        ///                         <ns1:ParentIsSubLine>false</ns1:ParentIsSubLine>
+        ///                         <ns1:Price>0</ns1:Price>
+        ///                         <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                         <ns1:Quantity>0</ns1:Quantity>
+        ///                         <ns1:TAXAmount>0</ns1:TAXAmount>
+        ///                         <ns1:TextModifiers>
+        ///                         </ns1:TextModifiers>
+        ///                         <ns1:Type>Modifier</ns1:Type>
+        ///                         <ns1:Uom/>
+        ///                      </ns1:OrderHospSubLine>
+        ///                   </ns1:SubLines>
+        ///                   <ns1:TaxAmount>0</ns1:TaxAmount>
+        ///                   <ns1:TextModifierLines>
+        ///                   </ns1:TextModifierLines>
+        ///                   <ns1:UomId></ns1:UomId>
+        ///                   <ns1:VariantId></ns1:VariantId>
+        ///                </ns1:OrderHospLine>
+        ///             </ns1:OrderLines>
+        ///             <ns1:OrderPayments>
+        ///                <ns1:OrderPayment>
+        ///                   <ns1:Amount>7.1</ns1:Amount>
+        ///                   <ns1:AuthorizationCode>123456</ns1:AuthorizationCode>
+        ///                   <ns1:CardNumber>45XX..5555</ns1:CardNumber>
+        ///                   <ns1:CardType>VISA</ns1:CardType>
+        ///                   <ns1:CurrencyCode></ns1:CurrencyCode>
+        ///                   <ns1:CurrencyFactor>1</ns1:CurrencyFactor>
+        ///                   <ns1:PaymentType>Payment</ns1:PaymentType>
+        ///                   <ns1:PreApprovedValidDate>2030-01-01</ns1:PreApprovedValidDate>
+        ///                   <ns1:TenderType>1</ns1:TenderType>
+        ///                </ns1:OrderPayment>
+        ///             </ns1:OrderPayments>
+        ///             <ns1:StoreId>S0005</ns1:StoreId>
+        ///             <ns1:TotalAmount>7.1</ns1:TotalAmount>
+        ///             <ns1:TotalDiscount>0</ns1:TotalDiscount>
+        ///             <ns1:TotalNetAmount>7.1</ns1:TotalNetAmount>
+        ///          </ser:request>
+        ///       </ser:OrderHospCreate>
+        ///    </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        SalesEntry OrderHospCreate(OrderHosp request);
 
         /// <summary>
         /// Check Status of a Customer Order
@@ -2089,6 +2369,78 @@ namespace LSOmni.Service
         ReplHierarchyLeafResponse ReplEcommHierarchyLeaf(ReplRequest replRequest);
 
         /// <summary>
+        /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 99001651 - Deal Modifier Item
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of hierarchy deals</returns>
+        [OperationContract]
+        ReplHierarchyHospDealResponse ReplEcommHierarchyHospDeal(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 99001651 - Deal Modifier Item
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of hierarchy deal lines</returns>
+        [OperationContract]
+        ReplHierarchyHospDealLineResponse ReplEcommHierarchyHospDealLine(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Hierarchy Hospitality Recipe lines for Node Leafs
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 10000768 - BOM Component
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of hierarchy recipe items</returns>
+        [OperationContract]
+        ReplHierarchyHospRecipeResponse ReplEcommHierarchyHospRecipe(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 99001483 - Information Subcode
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of hierarchy modifier lines</returns>
+        [OperationContract]
+        ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest);
+
+        /// <summary>
         /// Replicate Item with full detailed data (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
@@ -2385,9 +2737,10 @@ namespace LSOmni.Service
         /// <param name="contactNo"></param>
         /// <param name="optionalResource"></param>
         /// <param name="promoCode"></param>
+        /// <param name="activityNo"></param>
         /// <returns></returns>
         [OperationContract]
-        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product

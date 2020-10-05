@@ -22,6 +22,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.Service
 {
@@ -248,6 +249,15 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         Order OneListCalculate(OneList oneList);
+
+        /// <summary>
+        /// Calculate Hospitality Order
+        /// </summary>
+        /// <param name="oneList"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        OrderHosp OneListHospCalculate(OneList oneList);
 
         /// <summary>
         /// Add or remove Item in OneList without sending whole list
@@ -565,6 +575,15 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         SalesEntry OrderCreate(Order request);
+
+        /// <summary>
+        /// Create a Hospitality Order
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        SalesEntry OrderHospCreate(OrderHosp request);
 
         /// <summary>
         /// Check Status of a Customer Order
@@ -1881,6 +1900,25 @@ namespace LSOmni.Service
         ReplHierarchyLeafResponse ReplEcommHierarchyLeaf(ReplRequest replRequest);
 
         /// <summary>
+        /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
+        /// </summary>
+        /// <remarks>
+        /// LS Nav/Central Main Table data: 99001483 - Information Subcode
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of hierarchy modifier lines</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest);
+
+        /// <summary>
         /// Replicate Item with full detailed data (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
@@ -2202,10 +2240,11 @@ namespace LSOmni.Service
         /// <param name="contactNo"></param>
         /// <param name="optionalResource"></param>
         /// <param name="promoCode"></param>
+        /// <param name="activityNo"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product

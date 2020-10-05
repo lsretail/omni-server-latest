@@ -4592,6 +4592,34 @@
       </complexType>
       <element name="RootSetTokenEntry" type="tns:RootSetTokenEntry" />
     </schema>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033071" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033071" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="StoreInvTransactionSendV2StoreInvLine">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" default="0" name="WorksheetSeqNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="TransactionNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="TransactionLineNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="ItemNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Barcode" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Quantity" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="UnitofMeasureCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="VariantCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="CompetitorPrice" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="AreaCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="SerialNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="LotNo" type="string" />
+          <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="ExpirationDate" type="date" />
+          <element minOccurs="1" maxOccurs="1" name="ReasonCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="EndOfTransaction" type="boolean" />
+        </sequence>
+      </complexType>
+      <complexType name="RootStoreInvTransactionSendV2XML" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="StoreInvTransactionSendV2StoreInvLine" type="tns:StoreInvTransactionSendV2StoreInvLine" />
+        </sequence>
+      </complexType>
+      <element name="RootStoreInvTransactionSendV2XML" type="tns:RootStoreInvTransactionSendV2XML" />
+    </schema>
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033059" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033059" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="StoreInvTransactionSendStoreInvLine">
         <sequence>
@@ -6267,12 +6295,29 @@
           </sequence>
         </complexType>
       </element>
+      <element name="StoreInvTransactionSendV2">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q124="urn:microsoft-dynamics-nav/xmlports/x10033071" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendV2XML" type="q124:RootStoreInvTransactionSendV2XML" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="StoreInvTransactionSendV2_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="StoreInvTransactionSend">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q124="urn:microsoft-dynamics-nav/xmlports/x10033059" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendXML" type="q124:RootStoreInvTransactionSendXML" />
+            <element xmlns:q125="urn:microsoft-dynamics-nav/xmlports/x10033059" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendXML" type="q125:RootStoreInvTransactionSendXML" />
           </sequence>
         </complexType>
       </element>
@@ -6290,7 +6335,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="worksheetSeqNo" type="string" />
-            <element xmlns:q125="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q125:RootStoreInventoryGetLines" />
+            <element xmlns:q126="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q126:RootStoreInventoryGetLines" />
           </sequence>
         </complexType>
       </element>
@@ -6299,7 +6344,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q126="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q126:RootStoreInventoryGetLines" />
+            <element xmlns:q127="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q127:RootStoreInventoryGetLines" />
           </sequence>
         </complexType>
       </element>
@@ -6797,6 +6842,12 @@
   <message name="SetTokenEntry_Result">
     <part name="parameters" element="tns:SetTokenEntry_Result" />
   </message>
+  <message name="StoreInvTransactionSendV2">
+    <part name="parameters" element="tns:StoreInvTransactionSendV2" />
+  </message>
+  <message name="StoreInvTransactionSendV2_Result">
+    <part name="parameters" element="tns:StoreInvTransactionSendV2_Result" />
+  </message>
   <message name="StoreInvTransactionSend">
     <part name="parameters" element="tns:StoreInvTransactionSend" />
   </message>
@@ -7127,6 +7178,10 @@
     <operation name="SetTokenEntry">
       <input name="SetTokenEntry" message="tns:SetTokenEntry" />
       <output name="SetTokenEntry_Result" message="tns:SetTokenEntry_Result" />
+    </operation>
+    <operation name="StoreInvTransactionSendV2">
+      <input name="StoreInvTransactionSendV2" message="tns:StoreInvTransactionSendV2" />
+      <output name="StoreInvTransactionSendV2_Result" message="tns:StoreInvTransactionSendV2_Result" />
     </operation>
     <operation name="StoreInvTransactionSend">
       <input name="StoreInvTransactionSend" message="tns:StoreInvTransactionSend" />
@@ -7842,6 +7897,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="SetTokenEntry_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="StoreInvTransactionSendV2">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInvTransactionSendV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="StoreInvTransactionSendV2">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="StoreInvTransactionSendV2_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

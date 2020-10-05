@@ -688,6 +688,7 @@
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="optionalResource" type="string" />
             <element minOccurs="1" maxOccurs="1" name="promoCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
             <element xmlns:q7="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q7:ActivityAvailabilityResponse" />
           </sequence>
@@ -710,6 +711,7 @@
             <element minOccurs="1" maxOccurs="1" name="activityDate" type="date" />
             <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="optionalResource" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="activityNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
             <element xmlns:q9="urn:microsoft-dynamics-nav/xmlports/ActivityAvailabilityResponseXML" minOccurs="1" maxOccurs="1" name="getAvailabilityResponse" type="q9:ActivityAvailabilityResponse" />
           </sequence>

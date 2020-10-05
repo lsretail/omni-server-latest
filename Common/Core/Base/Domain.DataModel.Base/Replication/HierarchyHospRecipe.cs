@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Runtime.Serialization;
-
-using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ReplHierarchyLeafResponse : IDisposable
+    public class ReplHierarchyHospRecipeResponse : IDisposable
     {
-        public ReplHierarchyLeafResponse()
+        public ReplHierarchyHospRecipeResponse()
         {
             LastKey = string.Empty;
             MaxKey = string.Empty;
             RecordsRemaining = 0;
-            Leafs = new List<ReplHierarchyLeaf>();
+            Items = new List<ReplHierarchyHospRecipe>();
         }
 
         public void Dispose()
@@ -28,8 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         {
             if (disposing)
             {
-                if (Leafs != null)
-                    Leafs.Clear();
+                if (Items != null)
+                    Items.Clear();
             }
         }
 
@@ -40,19 +37,21 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int RecordsRemaining { get; set; }
         [DataMember]
-        public List<ReplHierarchyLeaf> Leafs { get; set; }
+        public List<ReplHierarchyHospRecipe> Items { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ReplHierarchyLeaf : IDisposable
+    public class ReplHierarchyHospRecipe : IDisposable
     {
-        public ReplHierarchyLeaf()
+        public ReplHierarchyHospRecipe()
         {
             HierarchyCode = string.Empty;
-            NodeId = string.Empty;
-            ImageId = string.Empty;
+            ParentNode = string.Empty;
+            RecipeNo = string.Empty;
+            ItemNo = string.Empty;
             Description = string.Empty;
-            MemberValue = string.Empty;
+            UnitOfMeasure = string.Empty;
+            ImageId = string.Empty;
         }
 
         public void Dispose()
@@ -71,33 +70,28 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public bool IsDeleted { get; set; }
         [DataMember]
-        public string Id { get; set; }
-        [DataMember]
         public string HierarchyCode { get; set; }
         [DataMember]
-        public string NodeId { get; set; }
+        public string ParentNode { get; set; }
         [DataMember]
-        public string ImageId { get; set; }
+        public string RecipeNo { get; set; }
+
+        [DataMember]
+        public int LineNo { get; set; }
+        [DataMember]
+        public string ItemNo { get; set; }
         [DataMember]
         public string Description { get; set; }
         [DataMember]
-        public HierarchyLeafType Type { get; set; }
+        public string UnitOfMeasure { get; set; }
+        [DataMember]
+        public string ImageId { get; set; }
 
-        /// <summary>
-        /// Default Member Value is Member Scheme, if true, Member Value is Member Club
-        /// </summary>
         [DataMember]
-        public bool IsMemberClub { get; set; }
-        /// <summary>
-        /// Member Scheme or Member Club
-        /// </summary>
+        public decimal QuantityPer { get; set; }
         [DataMember]
-        public string MemberValue { get; set; }
+        public bool Exclusion { get; set; }
         [DataMember]
-        public decimal DealPrice { get; set; }
-        [DataMember]
-        public int ValidationPeriod { get; set; }
-        [DataMember]
-        public bool IsActive { get; set; }
+        public decimal ExclusionPrice { get; set; }
     }
 }

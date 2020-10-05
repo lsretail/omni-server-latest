@@ -185,7 +185,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return memberContact;
         }
 
-        public MemberContact MapFromRootToLogonContact(NavWS.RootMemberLogon root)
+        public MemberContact MapFromRootToLogonContact(NavWS.RootMemberLogon root, decimal pointBalance)
         {
             if (root.MemberContact == null)
                 throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "No Contact found");
@@ -219,6 +219,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             });
 
             memberContact.Account = new Account(contact.AccountNo);
+            memberContact.Account.PointBalance = (long)pointBalance;
             memberContact.Account.Scheme = new Scheme(contact.SchemeCode);
             memberContact.Account.Scheme.Club = new Club(contact.ClubCode);
 

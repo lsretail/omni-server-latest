@@ -109,6 +109,6 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         [DataMember]
         public FeatureFlags Features { get; set; }
         [DataMember]
-        public DocumentQuantityMethod ASNQuantityMethod { get; set; }
+        public AsnQuantityMethod ASNQuantityMethod { get; set; }
     }
 }

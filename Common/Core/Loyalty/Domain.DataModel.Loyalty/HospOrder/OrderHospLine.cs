@@ -1,27 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
-namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
+namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public class OrderLine : Entity, IDisposable
+    public class OrderHospLine : Entity, IDisposable
     {
-        public OrderLine(string id) : base(id)
+        public OrderHospLine(string id) : base(id)
         {
             OrderId = string.Empty;
-            LineNumber = 1;
+            LineNumber = 0;
             ItemId = string.Empty;
             VariantId = string.Empty;
             ItemDescription = string.Empty;
             VariantDescription = string.Empty;
             UomId = string.Empty;
-            ItemImageId = string.Empty;
+            Quantity = 1.0M;
 
             LineType = LineType.Item; //never change this unless you know what you are doing !
-
-            Quantity = 1.0M;
 
             NetPrice = 0.0M;
             Price = 0.0M;
@@ -30,9 +30,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             NetAmount = 0.0M;
             TaxAmount = 0.0M;
             Amount = 0.0M;
+
+            DiscountLines = new List<OrderDiscountLine>();
+            SubLines = new List<OrderHospSubLine>();
         }
 
-        public OrderLine() : this(string.Empty)
+        public OrderHospLine() : this(string.Empty)
         {
         }
 
@@ -50,7 +53,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         }
 
         /// <summary>
-        /// Order Reference 
+        /// Order Document Id
         /// </summary>
         [DataMember]
         public string OrderId { get; set; }
@@ -70,18 +73,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string ItemImageId { get; set; }
         [DataMember(IsRequired = true)]
         public decimal Quantity { get; set; }
-        [DataMember]
-        public decimal QuantityOutstanding { get; set; }
-        [DataMember]
-        public decimal QuantityToInvoice { get; set; }
-        [DataMember]
-        public decimal QuantityToShip { get; set; }
         [DataMember(IsRequired = true)]
         public LineType LineType { get; set; }
         [DataMember]
         public decimal DiscountAmount { get; set; }
         [DataMember]
         public decimal DiscountPercent { get; set; }
+        [DataMember]
+        public bool IsADeal { get; set; }
 
         [DataMember]
         public decimal NetPrice { get; set; }
@@ -91,16 +90,23 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public decimal TaxAmount { get; set; }
         [DataMember]
         public decimal Price { get; set; }
+        [DataMember]
+        public bool PriceModified { get; set; }
         /// <summary>
         /// NetAmount + TaxAmount
         /// </summary>
         [DataMember]
         public decimal Amount { get; set; }
 
+        [DataMember]
+        public List<OrderDiscountLine> DiscountLines { get; set; }
+        [DataMember]
+        public List<OrderHospSubLine> SubLines { get; set; }
+
         public override string ToString()
         {
             return string.Format("LineNumber: {0} ItemId: {1} VariantId: {2} UomId: {3} Quantity: {4} LineType: {5} Amount: {6}",
-                LineNumber, ItemId, VariantId, UomId, Quantity, LineType, Amount);
+                LineNumber, ItemId, VariantId, UomId, Quantity, LineType.ToString(), Amount);
         }
     }
 }

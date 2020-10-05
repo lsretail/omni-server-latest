@@ -26,9 +26,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ActivityCancel(activityNo);
         }
 
-        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
         {
-            return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode);
+            return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo);
         }
 
         public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)

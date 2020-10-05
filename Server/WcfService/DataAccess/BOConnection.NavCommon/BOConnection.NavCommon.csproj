@@ -95,7 +95,7 @@
     <Compile Include="XmlMapping\Loyalty\BasketXml.cs" />
     <Compile Include="XmlMapping\Loyalty\ClickCollectXml.cs" />
     <Compile Include="XmlMapping\Loyalty\HierarchyXml.cs" />
-    <Compile Include="XmlMapping\Loyalty\MemberCardXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\HospitalityXml.cs" />
     <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
     <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
     <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />

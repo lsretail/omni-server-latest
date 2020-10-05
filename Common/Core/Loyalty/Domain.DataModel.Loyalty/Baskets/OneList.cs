@@ -78,6 +78,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember(IsRequired = true)]
         public ListType ListType { get; set; }
         [DataMember]
+        public bool IsHospitality { get; set; }
+        [DataMember]
         public List<OneListItem> Items { get; set; }
         [DataMember]
         public List<OneListPublishedOffer> PublishedOffers { get; set; }

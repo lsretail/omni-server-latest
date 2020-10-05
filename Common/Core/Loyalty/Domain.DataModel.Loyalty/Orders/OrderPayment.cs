@@ -10,6 +10,13 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public OrderPayment()
         {
             LineNumber = 1;
+            AuthorizationCode = string.Empty;
+            TenderType = string.Empty;
+            CardType = string.Empty;
+            CurrencyCode = string.Empty;
+            TokenNumber = string.Empty;
+            ExternalReference = string.Empty;
+            CardNumber = string.Empty;
         }
 
         public void Dispose()

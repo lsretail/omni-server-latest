@@ -27,9 +27,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlfromNode = " FROM [" + navCompanyName + "Hierarchy Nodes$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
 
-            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id]";
+            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
             sqlfromLink = " FROM [" + navCompanyName + "Hierarchy Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " LEFT OUTER JOIN [" + navCompanyName + "Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=mt.[No_]" +
                           " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0" +
                           " AND il.[TableName]=CASE WHEN mt.[Type]=0 THEN 'Item' ELSE 'Offer' END";
         }
@@ -317,7 +318,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["Image Id"]),
+                IsMemberClub = SQLHelper.GetBool(reader["Member Type"]),
+                MemberValue = SQLHelper.GetString(reader["Member Value"]),
+                DealPrice = SQLHelper.GetDecimal(reader["Deal Price"]),
+                ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
+                IsActive = SQLHelper.GetBool(reader["Status"])
             };
         }
 

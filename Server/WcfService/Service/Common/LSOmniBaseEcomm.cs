@@ -403,6 +403,66 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual ReplHierarchyHospDealResponse ReplEcommHierarchyHospDeal(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommHierarchyHospDeal(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplHierarchyHospDealLineResponse ReplEcommHierarchyHospDealLine(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommHierarchyHospDealLine(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplHierarchyHospRecipeResponse ReplEcommHierarchyHospRecipe(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommHierarchyHospRecipe(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommHierarchyHospModifier(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
         public virtual ReplInvStatusResponse ReplEcommInventoryStatus(ReplRequest replRequest)
         {
             try

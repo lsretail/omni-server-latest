@@ -160,7 +160,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             if (NavVersion > new Version("16.1"))
-                term.ASNQuantityMethod = (DocumentQuantityMethod)SQLHelper.GetInt32(reader["ASN Quantity Method"]);
+                term.ASNQuantityMethod = (AsnQuantityMethod)SQLHelper.GetInt32(reader["ASN Quantity Method"]);
 
             GetFeatureFlags(term.Features, term.StoreId, term.Id);
             term.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, SQLHelper.GetString(reader["Exit After Each Trans_"]));
@@ -210,7 +210,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             if (NavVersion > new Version("16.1"))
-                term.ASNQuantityMethod = (DocumentQuantityMethod)SQLHelper.GetInt32(reader["ASN Quantity Method"]);
+                term.AsnQuantityMethod = (AsnQuantityMethod)SQLHelper.GetInt32(reader["ASN Quantity Method"]);
 
             GetFeatureFlags(term.Features, term.Store.Id, term.Id);
             term.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, SQLHelper.GetString(reader["Exit After Each Trans_"]));

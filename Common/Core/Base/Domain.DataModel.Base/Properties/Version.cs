@@ -17,7 +17,7 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("4.10.0")]
-[assembly: AssemblyFileVersion("4.10.0")]
-[assembly: AssemblyInformationalVersion("LS Omni 4.10.0")]
+[assembly: AssemblyVersion("4.12.0")]
+[assembly: AssemblyFileVersion("4.12.0")]
+[assembly: AssemblyInformationalVersion("LS Omni 4.12")]
  
