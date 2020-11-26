@@ -37,7 +37,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                           "u.[Qty_ per Unit of Measure]";
             sqlMfrom = " FROM [" + navCompanyName + "WI Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                        " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] u " +
-                       "ON mt.[Item No_] = u.[Item No_] AND mt.[Unit of Measure Code] = u.[Code]";
+                       " ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
         }
 
         public List<ReplPrice> ReplicatePrice(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -340,8 +340,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price Including VAT"),
                 PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
                 MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
-                StartingDate = SQLHelper.GetDateTime(reader["Starting Date"]),
-                EndingDate = SQLHelper.GetDateTime(reader["Ending Date"]),
+                StartingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Starting Date"])),
+                EndingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Ending Date"])),
                 VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
                 Priority = SQLHelper.GetInt32(reader["Priority"])
             };

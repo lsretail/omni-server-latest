@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Runtime.Serialization;
 
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -70,6 +71,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 
         [DataMember]
         public string Id { get; set; }
+        [DataMember]
+        public string MediaId { get; set; }
+        [DataMember]
+        public ImageSize Size { get; set; }
         [DataMember]
         public bool IsDeleted { get; set; }
         /// <summary>

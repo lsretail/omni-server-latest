@@ -258,14 +258,14 @@ namespace LSOmni.Common.Util
         static public DateTime GetSQLNAVDate(DateTime date)
         {
             if (date == DateTime.MinValue)
-                return new DateTime(1753, 1, 1);      // this is NULL Date for NAV
+                return new DateTime(1753, 1, 1, 0, 0, 0);      // this is NULL Date for NAV
             return date;
         }
 
         static public DateTime GetSQLNAVTime(DateTime date)
         {
             if (date == DateTime.MinValue)
-                return new DateTime(1754, 1, 1);      // this is NULL Time for NAV
+                return new DateTime(1754, 1, 1, 0, 0, 0);      // this is NULL Time for NAV
             return date;
         }
 

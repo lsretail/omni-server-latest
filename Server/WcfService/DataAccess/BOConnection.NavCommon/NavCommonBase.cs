@@ -209,9 +209,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
         {
-            bool endoftable = true;
-            totalrecs = 0;
-
             if (string.IsNullOrEmpty(appid) && string.IsNullOrEmpty(apptype))
             {
                 appid = ecomAppId;
@@ -234,7 +231,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 // restart to beginning
                 restorepoint = 1;
-                //RestoreWebReplication(xml, restorepoint);
+                RestoreWebReplication(xml, restorepoint);
                 tablist = StartWebReplication(xml, batchSize, ref restorepoint);
             }
             else
@@ -261,7 +258,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 }
             }
 
-            XMLTableData data = GetTableData(xml, tablist, tableid, out endoftable, out totalrecs, out resPoint);
+            XMLTableData data = GetTableData(xml, tablist, tableid, out bool endoftable, out totalrecs, out resPoint);
             if (endoftable)
                 totalrecs = 0;
             if (resPoint > 0)
@@ -275,7 +272,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         public string NavVersionToUse(bool forceCallToNav = true)
         {
             if (NAVVersion == null)
-                NAVVersion = new Version("15.0");
+                NAVVersion = new Version("17.0");
 
             //this methods is called in PING and in constructor
             try
@@ -395,7 +392,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         private void Base64StringConvertion(ref string xmlRequest)
         {
             string base64String = Convert.ToBase64String(new UTF8Encoding().GetBytes(xmlRequest));
-            //Dont want to load hundreds of KB in xdoc just to get the requestId
+            //Don't want to load hundreds of KB in xdoc just to get the requestId
             //XDocument doc = XDocument.Parse(xmlRequest); //to get the requstId
             //string reqId = doc.Element("Request").Element("Request_ID").Value;
             int first = xmlRequest.IndexOf("Request_ID>") + "Request_ID>".Length;
@@ -688,7 +685,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 string navResponseText = ParseResponseText(doc.GetElementsByTagName("Response_Text"));
 
                 StatusCode statusCode = MapResponseToStatusCode(navResponseId, responseCode);
-                string msg = string.Format("navResponseCode: {0} - {1}  [statuscode: {2}]", responseCode, navResponseText, statusCode.ToString());
+                string msg = string.Format("navResponseCode: {0}-{1}  [StatusCode: {2}]", responseCode, navResponseText, statusCode.ToString());
                 logger.Error(config.LSKey.Key, msg);
 
                 if (codesToHandle != null && codesToHandle.Length > 0)

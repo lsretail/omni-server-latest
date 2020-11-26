@@ -26,31 +26,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
         public string BasketCalcRequestXML(OneList Rq, int navVersion)
         {
-            #region xml
-            /*
-            <?xml version="1.0" encoding="utf-8" standalone="no"?> <Request>
-              <Request_ID>WI_NC_CALCULATE_BASKET</Request_ID>
-              <Request_Body>
-                <ItemId_Type>ItemNo</ItemId_Type>
-                <MobileTransaction>
-                  <Id>A5055BB7-3894-4438-AA9B-85FDC3804F02</Id>
-                  <MemberContactNo>MO000008</MemberContactNo>
-                  <MemberCardNo>10021</MemberCardNo>
-                </MobileTransaction>
-                <MobileTransactionLine>
-                  <Id>A5055BB7-3894-4438-AA9B-85FDC3804F02</Id>
-                  <LineNo>10000</LineNo>
-                  <Number>40020</Number>
-                  <VariantCode></VariantCode>
-                  <UomId></UomId>
-                  <Quantity>1</Quantity>
-                  <ExternalId>0</ExternalId>
-                </MobileTransactionLine>
-              </Request_Body>
-            </Request>
-             */
-            #endregion xml
-
             // Create the XML Declaration, and append it to XML document
             XElement root;
 
@@ -259,8 +234,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("Bill-to_Post_Code", billingAddress.PostCode),
                     new XElement("Bill-to_County", billingAddress.StateProvinceRegion),
                     new XElement("Bill-to_Country_Region_Code", billingAddress.Country),
-                    new XElement("Phone_No.", header.PhoneNumber),
-                    new XElement("Mobile_Phone_No.", header.MobileNumber),
+                    new XElement("Phone_No.", header.ContactAddress.PhoneNumber),
+                    new XElement("Mobile_Phone_No.", header.ContactAddress.CellPhoneNumber),
                     new XElement("E-Mail", header.Email),
                     new XElement("Shipping_Agent_Code", ""),  //empty
                     new XElement("Shipment_Method_Code", (int)header.ShippingStatus), // ISP (instore pickup), esp
@@ -274,7 +249,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
         private XElement BasketPostSaleLine(string id, OrderLine line)
         {
-            //if CouponCode is not empty then set the linetype = 6  (coupon) and couponcode into barcode
+            //if CouponCode is not empty then set the linetype = 6  (coupon) and coupon code into barcode
             //string barcode = (string.IsNullOrWhiteSpace(line.c) ? "" : line.CouponCode);
             //string lineType = (string.IsNullOrWhiteSpace(line.CouponCode) ? "0" : "6");
 
@@ -283,7 +258,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("Id", id),
                     new XElement("Line_No.", LineNumberToNav(line.LineNumber)),
                     new XElement("LineType", "0"), //new in LS Nav 9.00.03   //LineType=0 is item, 6 is coupon
-                    new XElement("Barcode", string.Empty),   //new in LS Nav 9.00.03   usd for coupon code
+                    new XElement("Barcode", string.Empty),   //new in LS Nav 9.00.03  used for coupon code
                     new XElement("Item_No.", line.ItemId),
                     new XElement("Variant_Code", line.VariantId),
                     new XElement("Quantity", line.Quantity),

@@ -51,7 +51,7 @@ namespace LSOmni.Service
             this.version = "1.0";
             this.languageCode = "";
             this.deviceId = "";
-            this.clientTimeOutInSeconds = 0; // set to 0, read timeout from config file if it is 0
+            this.clientTimeOutInSeconds = 0; // set to 0, read timeout from configuration file if it is 0
             this.config = new BOConfiguration();
 
             try
@@ -61,12 +61,12 @@ namespace LSOmni.Service
                     //get the IPAddress of client
                     var endpoint = (System.ServiceModel.Channels.RemoteEndpointMessageProperty)OperationContext.Current.IncomingMessageProperties[System.ServiceModel.Channels.RemoteEndpointMessageProperty.Name];
                     clientIPAddress = endpoint.Address;
-                    //get uri and port that server listen on
+                    //get URl and port that server listen on
                     if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest != null && WebOperationContext.Current.IncomingRequest.UriTemplateMatch != null)
                     {
                         // Used when returning URL back to client
                         //orginalString has the string without any changes made. 
-                        // orgstring:     HTTP://www.ConToso.com:80//thick%20and%20thin.htm  
+                        // org-string:     HTTP://www.ConToso.com:80//thick%20and%20thin.htm  
                         // vs formatted   http://www.contoso.com/thick and thin.htm
                         //however this does not give us the web request, ex: the ping is missing http://localhost/LSOmniService/json.svc/ping
                         //others may have Uri where the Host may have been changed 
@@ -83,7 +83,7 @@ namespace LSOmni.Service
                 }
 
                 //WebOperationContext.Current.IncomingRequest.Headers["Authorization"]
-                //get the securtytoken from request header
+                //get the security token from request header
                 if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[HEADER_TOKEN] != null)
                     config.SecurityToken = WebOperationContext.Current.IncomingRequest.Headers[HEADER_TOKEN].ToString();
 
@@ -114,7 +114,7 @@ namespace LSOmni.Service
                 if (WebOperationContext.Current != null)
                     userAgent = WebOperationContext.Current.IncomingRequest.Headers["User-Agent"];
 
-                //silverlight must send x instead of empty token!! strip it out
+                //silver light must send x instead of empty token!! strip it out
                 if (config.SecurityToken.ToLower() == "x" || config.SecurityToken.ToLower() == "securitytoken")
                     config.SecurityToken = "";
 
@@ -175,7 +175,7 @@ namespace LSOmni.Service
                 else
                 {
                     if (ex.Message.Contains("401"))
-                        navWs += "[The LS Central Web Service Username or Password is incorrect]";
+                        navWs += "[The LS Central Web Service User name or Password is incorrect]";
                     else
                         navWs = string.Format("[Failed to Ping LS Central Web Service {0}]", ex.Message);
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
@@ -81,7 +82,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public int LineNo { get; set; }
 
         [DataMember]
-        public string ModifierCode { get; set; }
+        public HierarchyDealType Type { get; set; }
+        [DataMember]
+        public string No { get; set; }
         [DataMember]
         public string VariantCode { get; set; }
         [DataMember]

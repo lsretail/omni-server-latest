@@ -31,6 +31,39 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
 
+        public List<ReplGS1BarcodeSetup> ReplicateGS1Setup(XMLTableData table)
+        {
+            List<ReplGS1BarcodeSetup> list = new List<ReplGS1BarcodeSetup>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ReplGS1BarcodeSetup rec = new ReplGS1BarcodeSetup();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Type": rec.Type = GetWebInt(field.Values[i]); break;
+                        case "Identifier": rec.Identifier = field.Values[i]; break;
+                        case "Section Type": rec.SectionType = GetWebInt(field.Values[i]); break;
+                        case "Section Size": rec.SectionSize = GetWebInt(field.Values[i]); break;
+                        case "Identifier Size": rec.IdentifierSize = GetWebInt(field.Values[i]); break;
+                        case "Section Mapping": rec.SectionMapping = GetWebInt(field.Values[i]); break;
+                        case "Mapping Starting Char": rec.MappingStartingChar = GetWebInt(field.Values[i]); break;
+                        case "Preferred Sequence": rec.PreferredSequence = GetWebInt(field.Values[i]); break;
+                        case "Decimals": rec.Decimals = GetWebDecimal(field.Values[i]); break;
+                        case "Value Type": rec.ValueType = GetWebInt(field.Values[i]); break;
+                        case "Value": rec.Value = field.Values[i]; break;
+                        case "Value (Dec)": rec.ValueDec = GetWebDecimal(field.Values[i]); break;
+                        case "Value (Date)": rec.ValueDate = GetWebDateTime(field.Values[i]); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+    
         public List<ReplInvMask> ReplicateInventoryMasks(XMLTableData table)
         {
             List<ReplInvMask> list = new List<ReplInvMask>();

@@ -147,8 +147,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Name = SQLHelper.GetString(reader["Name"]),
                 Url = SQLHelper.GetString(reader["Home Page"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
-                CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
-                PhoneLocal = SQLHelper.GetString(reader["Phone No_"]),
                 TaxGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Group"]),
                 IsBlocked = SQLHelper.GetBool(reader["Blocked"]),
                 InclTax = SQLHelper.GetInt32(reader["Prices Including VAT"]),
@@ -161,7 +159,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     City = SQLHelper.GetString(reader["City"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"])
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"])
                 }
             };
         }

@@ -37,5 +37,33 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             }
             return list;
         }
+
+        public List<ReturnPolicy> MapFromRootToReturnPolicy(NavWS.RootGetReturnPolicy root)
+        {
+            List<ReturnPolicy> list = new List<ReturnPolicy>();
+            if (root.ReturnPolicy == null)
+                return list;
+
+            foreach (NavWS.ReturnPolicy line in root.ReturnPolicy)
+            {
+                list.Add(new ReturnPolicy()
+                {
+                    StoreId = line.Store_No,
+                    StoreGroup = line.Store_Group_Code,
+                    ItemCategory = line.Item_Category_Code,
+                    ProductGroup = line.Retail_Product_Code,
+                    ItemId = line.Item_No,
+                    VariantCode = line.Variant_Code,
+                    VariantDimension1 = line.Variant_Dimension_1_Code,
+                    RefundNotAllowed = line.Refund_not_Allowed,
+                    RefundPeriodLength = line.Refund_Period_Length,
+                    ManagerPrivileges = line.Manager_Privileges,
+                    Message1 = line.Message_1,
+                    Message2 = line.Message_2,
+                    ReturnPolicyHTML = line.Return_Policy_HTML
+                });
+            }
+            return list;
+        }
     }
 }

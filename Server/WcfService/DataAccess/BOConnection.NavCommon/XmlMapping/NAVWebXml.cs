@@ -400,6 +400,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
                             new XElement("Table_Name", tablename),
                             new XElement("Read_Direction", "Forward"),
                             new XElement("Max_Number_Of_Records", maxrows),
+                            new XElement("Ignore_Extra_Fields", 1),
                             new XElement("WS_Table_Filter_Buffer",
                                 new XElement("Field_Index", 1),
                                 new XElement("Field_Name", field),
@@ -1231,6 +1232,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 99001480, 30);
             AddField(body, 99001480, 35);
             AddField(body, 99001480, 40);
+
+            // GS1 DataBar Barcode Setup
+            AddTable(body, 10000936, false);
+            AddField(body, 10000936, 1);
+            AddField(body, 10000936, 2);
+            AddField(body, 10000936, 3);
+            AddField(body, 10000936, 4);
+            AddField(body, 10000936, 5);
+            AddField(body, 10000936, 6);
+            AddField(body, 10000936, 7);
+            AddField(body, 10000936, 8);
+            AddField(body, 10000936, 9);
+            AddField(body, 10000936, 10);
+            AddField(body, 10000936, 100);
+            AddField(body, 10000936, 101);
+            AddField(body, 10000936, 102);
 
             // Store
             AddTable(body, 99001470, false);

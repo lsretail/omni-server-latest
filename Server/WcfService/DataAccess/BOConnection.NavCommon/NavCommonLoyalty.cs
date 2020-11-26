@@ -386,6 +386,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return list;
         }
 
+        public List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        {
+            if (string.IsNullOrWhiteSpace(storeId))
+                throw new LSOmniServiceException(StatusCode.MissingStoreId, "Missing Store Id");
+            if (string.IsNullOrWhiteSpace(cardId))
+                throw new LSOmniServiceException(StatusCode.MemberCardNotFound, "Missing Member Card Id");
+
+            if (items == null && items.Count == 0)
+                return new List<ItemCustomerPrice>();
+
+            OrderMapping map = new OrderMapping(NAVVersion);
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            NavWS.RootMobileTransaction root = map.MapFromCustItemToRoot(storeId, cardId, items);
+
+            logger.Debug(config.LSKey.Key, "EcomGetCustomerPrice Request - " + Serialization.ToXml(root, true));
+
+            navQryWS.EcomGetCustomerPrice(ref respCode, ref errorText, ref root);
+            HandleWS2ResponseCode("EcomGetCustomerPrice", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "EcomGetCustomerPrice Response - " + Serialization.ToXml(root, true));
+            return map.MapFromRootTransactionToItemCustPrice(root);
+        }
+
         #endregion
 
         #region Contact
@@ -850,7 +873,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
             string fldname = "Search Name";
-            search += "*";
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
@@ -861,9 +883,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     break;
                 case ContactSearchType.PhoneNumber:
                     fldname = "Mobile Phone No.";
-                    break;
-                case ContactSearchType.CardId:
-                    fldname = "CardId";
                     break;
                 case ContactSearchType.Name:
                     fldname = "Search Name";
@@ -970,14 +989,20 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
-            HospitalityXml xml = new HospitalityXml();
-            string xmlRequest = xml.OrderToPOSRequestXML(list, "CALCULATE",
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            TransactionMapping map = new TransactionMapping(NAVVersion);
+            NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(list,
                 config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
                 config.SettingsGetByKey(ConfigKey.Hosp_Staff),
                 config.SettingsGetByKey(ConfigKey.Hosp_SalesType));
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
-            return xml.TransactionResponseXML(xmlResponse);
+
+            logger.Debug(config.LSKey.Key, "MobilePosPost Request - " + Serialization.ToXml(root, true));
+
+            navQryWS.MobilePosCalculate(ref respCode, ref errorText, root.MobileTransaction[0].StaffId, ref root);
+            HandleWS2ResponseCode("MobilePosPost", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MobilePosPost Response - " + Serialization.ToXml(root, true));
+            return map.MapFromRootToOrderHosp(root);
         }
 
         public string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId)
@@ -1002,14 +1027,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 line.LineNumber = lineno++;
             }
 
-            HospitalityXml xml = new HospitalityXml();
-            string xmlRequest = xml.OrderToPOSRequestXML(request, "POST", 
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            TransactionMapping map = new TransactionMapping(NAVVersion);
+            NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(request, 
                 config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
                 config.SettingsGetByKey(ConfigKey.Hosp_Staff),
                 config.SettingsGetByKey(ConfigKey.Hosp_SalesType));
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
-            return xml.TransactionReceiptNoResponseXML(xmlResponse);
+
+            logger.Debug(config.LSKey.Key, "MobilePosPost Request - " + Serialization.ToXml(root, true));
+
+            navQryWS.MobilePosPost(ref respCode, ref errorText, root.MobileTransaction[0].StaffId, ref root);
+            HandleWS2ResponseCode("MobilePosPost", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MobilePosPost Response - " + Serialization.ToXml(root, true));
+            if (root.MobileTransaction != null)
+                return root.MobileTransaction[0].ReceiptNo;
+            return string.Empty;
         }
 
         #endregion
@@ -1136,20 +1169,37 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             OrderMapping map = new OrderMapping(NAVVersion);
             string respCode = string.Empty;
             string errorText = string.Empty;
-            NavWS.RootCustomerOrderFilteredList root = new NavWS.RootCustomerOrderFilteredList();
-            List<NavWS.CustomerOrderHeader3> hd = new List<NavWS.CustomerOrderHeader3>()
+
+            if (NAVVersion.Major < 16)
             {
-                new NavWS.CustomerOrderHeader3()
+                NavWS.RootCustomerOrderFilteredList root = new NavWS.RootCustomerOrderFilteredList();
+                List<NavWS.CustomerOrderHeader3> hd = new List<NavWS.CustomerOrderHeader3>();
+                hd.Add(new NavWS.CustomerOrderHeader3()
                 {
                     MemberCardNo = cardId
-                }
-            };
-            root.CustomerOrderHeader = hd.ToArray();
+                });
+                root.CustomerOrderHeader = hd.ToArray();
 
-            navWS.CustomerOrderFilteredList(ref respCode, ref errorText, true, ref root);
-            HandleWS2ResponseCode("CustomerOrderFilteredList", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "CustomerOrderFilteredList Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToSalesEntryHistory(root);
+                navWS.CustomerOrderFilteredList(ref respCode, ref errorText, true, ref root);
+                HandleWS2ResponseCode("CustomerOrderFilteredList", respCode, errorText);
+                logger.Debug(config.LSKey.Key, "CustomerOrderFilteredList Response - " + Serialization.ToXml(root, true));
+                return map.MapFromRootToSalesEntryHistory(root);
+            }
+            else
+            {
+                NavWS.RootCOFilteredListV2 root = new NavWS.RootCOFilteredListV2();
+                List<NavWS.CustomerOrderHeaderV2> hd = new List<NavWS.CustomerOrderHeaderV2>();
+                hd.Add(new NavWS.CustomerOrderHeaderV2()
+                {
+                    MemberCardNo = cardId
+                });
+                root.CustomerOrderHeaderV2 = hd.ToArray();
+
+                navWS.COFilteredListV2(ref respCode, ref errorText, true, ref root);
+                HandleWS2ResponseCode("CustomerOrderFilteredList", respCode, errorText);
+                logger.Debug(config.LSKey.Key, "CustomerOrderFilteredList Response - " + Serialization.ToXml(root, true));
+                return map.MapFromRootToSalesEntryHistory(root);
+            }
         }
 
         public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
@@ -1684,6 +1734,24 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
             return map.MapFromRootToPublishedOffers(root);
+        }
+
+        public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+
+            StoreMapping map = new StoreMapping();
+            NavWS.RootGetReturnPolicy root = new NavWS.RootGetReturnPolicy();
+
+            logger.Debug(config.LSKey.Key, "GetReturnPolicy - storeId:{0}, storeGroup:{1} itemCat:{2} prodGroup:{3}", storeId, storeGroupCode, itemCategory, productGroup);
+            navWS.GetReturnPolicy(ref respCode, ref errorText, storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1, ref root);
+            string ret = HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, new string[] { "1000" });
+            if (ret == "1000")
+                return new List<ReturnPolicy>();
+
+            logger.Debug(config.LSKey.Key, "GetReturnPolicy Response - " + Serialization.ToXml(root, true));
+            return map.MapFromRootToReturnPolicy(root);
         }
 
         public List<Advertisement> AdvertisementsGetById(string id)

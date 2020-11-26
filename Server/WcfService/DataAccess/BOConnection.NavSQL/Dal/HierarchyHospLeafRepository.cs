@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -14,7 +15,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         const int TABLERECIPEID = 90;
         const int TABLEDEALID = 99001503;
         const int TABLEDEALLINEID = 99001651;
-        const int TABLEMODIFIERID = 99001483;
 
         private string sqlcolumnsRecipe = string.Empty;
         private string sqlfromRecipe = string.Empty;
@@ -25,9 +25,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         private string sqlcolumnsDealLine = string.Empty;
         private string sqlfromDealLine = string.Empty;
 
-        private string sqlcolumnsModifier = string.Empty;
-        private string sqlfromModifier = string.Empty;
-
         public HierarchyHospLeafRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumnsRecipe = "nl.[Hierarchy Code],nl.[Node ID],nl.[No_],mt.[Line No_],mt.[Item No_],mt.[Description]," +
@@ -37,7 +34,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                              " INNER JOIN [" + navCompanyName + "BOM Component] mt ON mt.[Parent Item No_]=nl.[No_]" +
                              " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
 
-            sqlcolumnsDeal = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code]," +
+            sqlcolumnsDeal = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type]," +
                              "mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index],il.[Image Id]";
             sqlfromDeal = " FROM [" + navCompanyName + "Hierarchy Node Link] nl" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
@@ -51,13 +48,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
                           " INNER JOIN [" + navCompanyName + "Deal Modifier Item] mt ON mt.[Offer No_]=nl.[No_]" +
                           " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
-
-            sqlcolumnsModifier = "nl.[Hierarchy Code],nl.[Node ID],nl.[No_],mt.[Code],mt.[Subcode],mt.[Description],mt.[Trigger Code],mt.[Price Type]," +
-                                 "mt.[Price Handling],mt.[Amount _Percent],mt.[Unit of Measure],mt.[Max_ Selection],mt.[Min_ Selection]";
-            sqlfromModifier = " FROM [" + navCompanyName + "Hierarchy Node Link] nl" +
-                              " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                              " LEFT OUTER JOIN [" + navCompanyName + "Table Specific Infocode] tsi ON tsi.[Value]=nl.[No_]" +
-                              " INNER JOIN [" + navCompanyName + "Information Subcode] mt ON mt.[Code]=tsi.[Infocode Code]";
         }
 
         public List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -352,103 +342,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<ReplHierarchyHospModifier> ReplicateHierarchyHospModifier(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
-        {
-            if (string.IsNullOrWhiteSpace(lastKey))
-                lastKey = "0";
-
-            SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("Information Subcode");
-            string where = string.Format(" AND nl.[Type]=0 AND hd.[Store Code]='{0}'", storeId);
-
-            // get records remaining
-            string sql = string.Empty;
-            if (fullReplication)
-            {
-                sql = "SELECT COUNT(*)" + sqlfromModifier + GetWhereStatement(true, keys, where, false);
-            }
-            recordsRemaining = GetRecordCount(TABLEMODIFIERID, lastKey, sql, keys, ref maxKey);
-
-            List<JscActions> actions = LoadActions(fullReplication, TABLEMODIFIERID, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplHierarchyHospModifier> list = new List<ReplHierarchyHospModifier>();
-
-            // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumnsModifier + sqlfromModifier + GetWhereStatement(fullReplication, keys, where, true);
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-                    command.CommandText = sql;
-
-                    if (fullReplication)
-                    {
-                        JscActions act = new JscActions(lastKey);
-                        SetWhereValues(command, act, keys, true, true);
-                        TraceSqlCommand(command);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            int cnt = 0;
-                            while (reader.Read())
-                            {
-                                list.Add(ReaderToHierarchyModifier(reader, out lastKey));
-                                cnt++;
-                            }
-                            reader.Close();
-                            recordsRemaining -= cnt;
-                        }
-                        if (recordsRemaining <= 0)
-                            lastKey = maxKey;   // this should be the highest PreAction id;
-                    }
-                    else
-                    {
-                        bool first = true;
-                        foreach (JscActions act in actions)
-                        {
-                            if (act.Type == DDStatementType.Delete)
-                            {
-                                string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 2 || par.Length != keys.Count)
-                                    continue;
-
-                                list.Add(new ReplHierarchyHospModifier()
-                                {
-                                    Code = par[0],
-                                    SubCode = par[1],
-                                    IsDeleted = true
-                                });
-                                continue;
-                            }
-
-                            if (SetWhereValues(command, act, keys, first) == false)
-                                continue;
-
-                            TraceSqlCommand(command);
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    list.Add(ReaderToHierarchyModifier(reader, out string ts));
-                                }
-                                reader.Close();
-                            }
-                            first = false;
-                        }
-                        if (string.IsNullOrEmpty(maxKey))
-                            maxKey = lastKey;
-                    }
-                    connection.Close();
-                }
-            }
-
-            // just in case something goes too far
-            if (recordsRemaining < 0)
-                recordsRemaining = 0;
-
-            return list;
-        }
-
         private ReplHierarchyHospDeal ReaderToHierarchyDeal(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
@@ -459,7 +352,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ParentNode = SQLHelper.GetString(reader["Node ID"]),
                 DealNo = SQLHelper.GetString(reader["Offer No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ModifierCode = SQLHelper.GetString(reader["No_"]),
+                No = SQLHelper.GetString(reader["No_"]),
+                Type = (HierarchyDealType)SQLHelper.GetInt32(reader["Type"]),
                 LineNo = SQLHelper.GetInt32(reader["Line No_"]),
                 VariantCode = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure"]),
@@ -511,28 +405,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ExclusionPrice = SQLHelper.GetDecimal(reader["Price on Exclusion"]),
                 QuantityPer = SQLHelper.GetDecimal(reader["Quantity per"]),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
-            };
-        }
-
-        private ReplHierarchyHospModifier ReaderToHierarchyModifier(SqlDataReader reader, out string timestamp)
-        {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
-
-            return new ReplHierarchyHospModifier()
-            {
-                HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
-                ParentNode = SQLHelper.GetString(reader["Node ID"]),
-                ParentItem = SQLHelper.GetString(reader["No_"]),
-                Description = SQLHelper.GetString(reader["Description"]),
-                Code = SQLHelper.GetString(reader["Code"]),
-                SubCode = SQLHelper.GetString(reader["Subcode"]),
-                ItemNo = SQLHelper.GetString(reader["Trigger Code"]),
-                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure"]),
-                PriceType = (ModifierPriceType)SQLHelper.GetInt32(reader["Price Type"]),
-                AlwaysCharge = (SQLHelper.GetInt32(reader["Price Handling"]) == 1),
-                AmountPercent = SQLHelper.GetDecimal(reader["Amount _Percent"]),
-                MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
-                MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"])
             };
         }
     }

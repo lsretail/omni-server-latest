@@ -112,7 +112,7 @@ begin
   NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', '');
   NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', true);
   NavSQLPage_chkSQLAuth.Checked := GetCommandLineParamBoolean('-NavSau', false);
-  NavSQLPage_V15CheckBox.Checked := GetCommandLineParamBoolean('-Nav15', false);
+  NavSQLPage_V15CheckBox.Checked := GetCommandLineParamBoolean('-Nav15', true);
 
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
   CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', false);

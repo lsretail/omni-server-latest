@@ -18,6 +18,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             VariantDescription = string.Empty;
             UomId = string.Empty;
             ItemImageId = string.Empty;
+            StoreId = string.Empty;
 
             LineType = LineType.Item; //never change this unless you know what you are doing !
 
@@ -66,6 +67,16 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string VariantDescription { get; set; }
         [DataMember]
         public string UomId { get; set; }
+        /// <summary>
+        /// Store to collect the item from
+        /// </summary>
+        [DataMember]
+        public string StoreId { get; set; }
+        /// <summary>
+        /// Click and Collect this line at Store Id set in the line
+        /// </summary>
+        [DataMember]
+        public bool ClickAndCollectLine { get; set; }
         [DataMember]
         public string ItemImageId { get; set; }
         [DataMember(IsRequired = true)]

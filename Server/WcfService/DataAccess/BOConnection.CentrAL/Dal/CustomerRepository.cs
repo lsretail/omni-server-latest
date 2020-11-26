@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -17,10 +18,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public CustomerRepository(BOConfiguration config) : base(config)
+        public CustomerRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[E-Mail],mt.[Home Page]," +
-                         "mt2.[Mobile Phone No_],mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
+                         "mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
+
+            sqlcolumns += (navVersion.Major > 16) ? ",mt.[Mobile Phone No_]" : ",mt2.[Mobile Phone No_]";
 
             sqlfrom = " FROM [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
                       "INNER JOIN [" + navCompanyName + "Customer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_]";
@@ -148,8 +151,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Name = SQLHelper.GetString(reader["Name"]),
                 Url = SQLHelper.GetString(reader["Home Page"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
-                CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
-                PhoneLocal = SQLHelper.GetString(reader["Phone No_"]),
                 TaxGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Group"]),
                 IsBlocked = SQLHelper.GetBool(reader["Blocked"]),
                 InclTax = SQLHelper.GetInt32(reader["Prices Including VAT"]),
@@ -162,7 +163,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     City = SQLHelper.GetString(reader["City"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"])
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"])
                 }
             };
         }
@@ -195,7 +198,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     break;
 
                 case CustomerSearchType.PhoneNumber:
-                    where = string.Format("(mt.[Phone No_] LIKE '{0}%' OR mt2.[Mobile Phone No_] LIKE '{0}%')", search);
+                    where = string.Format("(mt.[Phone No_] LIKE '{0}%' OR {1}.[Mobile Phone No_] LIKE '{0}%')", search, ((NavVersion.Major > 16) ? "mt" : "mt2"));
                     order = "mt.[Phone No_]";
                     break;
             }

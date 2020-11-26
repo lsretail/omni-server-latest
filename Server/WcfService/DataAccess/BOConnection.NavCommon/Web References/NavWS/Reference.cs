@@ -61,6 +61,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.Threading.SendOrPostCallback EcomCalculateBasketOperationCompleted;
         
+        private System.Threading.SendOrPostCallback EcomGetCustomerPriceOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetASNDocumentLinesOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetASNDocumentListOperationCompleted;
@@ -106,6 +108,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         private System.Threading.SendOrPostCallback GetMemberSalesHistoryOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetReplCountersFromRemoteDBOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetReturnPolicyOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetStoreImageOperationCompleted;
         
@@ -280,6 +284,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         public event EcomCalculateBasketCompletedEventHandler EcomCalculateBasketCompleted;
         
         /// <remarks/>
+        public event EcomGetCustomerPriceCompletedEventHandler EcomGetCustomerPriceCompleted;
+        
+        /// <remarks/>
         public event GetASNDocumentLinesCompletedEventHandler GetASNDocumentLinesCompleted;
         
         /// <remarks/>
@@ -347,6 +354,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         /// <remarks/>
         public event GetReplCountersFromRemoteDBCompletedEventHandler GetReplCountersFromRemoteDBCompleted;
+        
+        /// <remarks/>
+        public event GetReturnPolicyCompletedEventHandler GetReturnPolicyCompleted;
         
         /// <remarks/>
         public event GetStoreImageCompletedEventHandler GetStoreImageCompleted;
@@ -1086,6 +1096,41 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.EcomCalculateBasketCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.EcomCalculateBasketCompleted(this, new EcomCalculateBasketCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:EcomGetCustomerPrice", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="EcomGetCustomerPrice_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void EcomGetCustomerPrice(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("EcomGetCustomerPrice", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void EcomGetCustomerPriceAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
+            this.EcomGetCustomerPriceAsync(responseCode, errorText, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void EcomGetCustomerPriceAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.EcomGetCustomerPriceOperationCompleted == null)) {
+                this.EcomGetCustomerPriceOperationCompleted = new System.Threading.SendOrPostCallback(this.OnEcomGetCustomerPriceOperationCompleted);
+            }
+            this.InvokeAsync("EcomGetCustomerPrice", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML}, this.EcomGetCustomerPriceOperationCompleted, userState);
+        }
+        
+        private void OnEcomGetCustomerPriceOperationCompleted(object arg) {
+            if ((this.EcomGetCustomerPriceCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.EcomGetCustomerPriceCompleted(this, new EcomGetCustomerPriceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2068,6 +2113,55 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             if ((this.GetReplCountersFromRemoteDBCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetReplCountersFromRemoteDBCompleted(this, new GetReplCountersFromRemoteDBCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetReturnPolicy", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetReturnPolicy_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetReturnPolicy(ref string responseCode, ref string errorText, string storeNo, string storeGroupCode, string itemCategoryCode, string retailProductCode, string itemNo, string variantCode, string variantDimension1Code, ref RootGetReturnPolicy getReturnPolicyXML) {
+            object[] results = this.Invoke("GetReturnPolicy", new object[] {
+                        responseCode,
+                        errorText,
+                        storeNo,
+                        storeGroupCode,
+                        itemCategoryCode,
+                        retailProductCode,
+                        itemNo,
+                        variantCode,
+                        variantDimension1Code,
+                        getReturnPolicyXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            getReturnPolicyXML = ((RootGetReturnPolicy)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetReturnPolicyAsync(string responseCode, string errorText, string storeNo, string storeGroupCode, string itemCategoryCode, string retailProductCode, string itemNo, string variantCode, string variantDimension1Code, RootGetReturnPolicy getReturnPolicyXML) {
+            this.GetReturnPolicyAsync(responseCode, errorText, storeNo, storeGroupCode, itemCategoryCode, retailProductCode, itemNo, variantCode, variantDimension1Code, getReturnPolicyXML, null);
+        }
+        
+        /// <remarks/>
+        public void GetReturnPolicyAsync(string responseCode, string errorText, string storeNo, string storeGroupCode, string itemCategoryCode, string retailProductCode, string itemNo, string variantCode, string variantDimension1Code, RootGetReturnPolicy getReturnPolicyXML, object userState) {
+            if ((this.GetReturnPolicyOperationCompleted == null)) {
+                this.GetReturnPolicyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetReturnPolicyOperationCompleted);
+            }
+            this.InvokeAsync("GetReturnPolicy", new object[] {
+                        responseCode,
+                        errorText,
+                        storeNo,
+                        storeGroupCode,
+                        itemCategoryCode,
+                        retailProductCode,
+                        itemNo,
+                        variantCode,
+                        variantDimension1Code,
+                        getReturnPolicyXML}, this.GetReturnPolicyOperationCompleted, userState);
+        }
+        
+        private void OnGetReturnPolicyOperationCompleted(object arg) {
+            if ((this.GetReturnPolicyCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetReturnPolicyCompleted(this, new GetReturnPolicyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -9352,6 +9446,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string vatProdPostingGroupField;
         
+        private string genBusPostingGroupField;
+        
+        private string genProdPostingGroupField;
+        
         private string itemDiscGroupField;
         
         private bool noDiscountAllowedField;
@@ -10133,6 +10231,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.vatProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
             }
         }
         
@@ -11823,6 +11941,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string eFTTransNoField;
         
+        private string eFTTransNo1Field;
+        
+        private string eFTTransNo2Field;
+        
         private string eFTBatchNoField;
         
         private string authSourceCodeField;
@@ -11859,6 +11981,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string voidedEFTTransNoField;
         
+        private string voidedEFTTransactionIDField;
+        
         private bool encryptedField;
         
         private bool replicatedField;
@@ -11885,6 +12009,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string StoreNo {
             get {
                 return this.storeNoField;
@@ -11895,6 +12020,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         public string POSTerminalNo {
             get {
                 return this.pOSTerminalNoField;
@@ -11905,6 +12031,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public int EntryNo {
             get {
                 return this.entryNoField;
@@ -11915,6 +12042,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -11925,6 +12053,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -11935,6 +12064,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string ReceiptNo {
             get {
                 return this.receiptNoField;
@@ -11945,6 +12075,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string EFTPOSTerminalNo {
             get {
                 return this.eFTPOSTerminalNoField;
@@ -11955,6 +12086,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string TenderType {
             get {
                 return this.tenderTypeField;
@@ -11965,6 +12097,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public string TransactionType {
             get {
                 return this.transactionTypeField;
@@ -11975,6 +12108,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public bool MSRinput {
             get {
                 return this.mSRinputField;
@@ -11985,7 +12119,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=10)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime Date {
             get {
@@ -11997,7 +12131,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=11)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime Time {
             get {
@@ -12009,6 +12143,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public bool AuthorisationOk {
             get {
                 return this.authorisationOkField;
@@ -12019,6 +12154,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public bool Voided {
             get {
                 return this.voidedField;
@@ -12029,6 +12165,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public string CardNumber {
             get {
                 return this.cardNumberField;
@@ -12039,6 +12176,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string CardType {
             get {
                 return this.cardTypeField;
@@ -12049,6 +12187,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public string CardTypeName {
             get {
                 return this.cardTypeNameField;
@@ -12059,6 +12198,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public string ExpiryDate {
             get {
                 return this.expiryDateField;
@@ -12069,6 +12209,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public string Authcode {
             get {
                 return this.authcodeField;
@@ -12079,6 +12220,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string Rescode {
             get {
                 return this.rescodeField;
@@ -12089,6 +12231,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public string Message {
             get {
                 return this.messageField;
@@ -12099,6 +12242,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string CardClass {
             get {
                 return this.cardClassField;
@@ -12109,6 +12253,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public string EFTMerchantNo {
             get {
                 return this.eFTMerchantNoField;
@@ -12119,6 +12264,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string EFTTerminalID {
             get {
                 return this.eFTTerminalIDField;
@@ -12129,6 +12275,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string EFTTransNo {
             get {
                 return this.eFTTransNoField;
@@ -12139,6 +12286,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=25)]
+        public string EFTTransNo1 {
+            get {
+                return this.eFTTransNo1Field;
+            }
+            set {
+                this.eFTTransNo1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=26)]
+        public string EFTTransNo2 {
+            get {
+                return this.eFTTransNo2Field;
+            }
+            set {
+                this.eFTTransNo2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
         public string EFTBatchNo {
             get {
                 return this.eFTBatchNoField;
@@ -12149,6 +12319,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         public string AuthSourceCode {
             get {
                 return this.authSourceCodeField;
@@ -12159,6 +12330,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
         public string EFTTransTime {
             get {
                 return this.eFTTransTimeField;
@@ -12169,6 +12341,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string EFTTransDate {
             get {
                 return this.eFTTransDateField;
@@ -12179,6 +12352,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public decimal Amount {
             get {
                 return this.amountField;
@@ -12189,6 +12363,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public decimal VAT {
             get {
                 return this.vATField;
@@ -12199,6 +12374,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public decimal Cashback {
             get {
                 return this.cashbackField;
@@ -12209,6 +12385,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public string EFTStoreNo {
             get {
                 return this.eFTStoreNoField;
@@ -12219,6 +12396,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public string EFTServerName {
             get {
                 return this.eFTServerNameField;
@@ -12229,6 +12407,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
         public string EFTVerificationMethod {
             get {
                 return this.eFTVerificationMethodField;
@@ -12239,6 +12418,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public string EFTAuthorizationStatus {
             get {
                 return this.eFTAuthorizationStatusField;
@@ -12249,6 +12429,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public string EFTTransactionType {
             get {
                 return this.eFTTransactionTypeField;
@@ -12259,6 +12440,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public string EFTStaffID {
             get {
                 return this.eFTStaffIDField;
@@ -12269,6 +12451,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime EFTDateTime {
             get {
@@ -12280,6 +12463,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public string ExtraData {
             get {
                 return this.extraDataField;
@@ -12290,6 +12474,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public string VoidedSlipNo {
             get {
                 return this.voidedSlipNoField;
@@ -12300,6 +12485,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public int VoidedEntryNo {
             get {
                 return this.voidedEntryNoField;
@@ -12310,6 +12496,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string VoidedEFTTransNo {
             get {
                 return this.voidedEFTTransNoField;
@@ -12320,6 +12507,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
+        public string VoidedEFTTransactionID {
+            get {
+                return this.voidedEFTTransactionIDField;
+            }
+            set {
+                this.voidedEFTTransactionIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool Encrypted {
             get {
                 return this.encryptedField;
@@ -12330,6 +12529,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public bool Replicated {
             get {
                 return this.replicatedField;
@@ -12340,6 +12540,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
         public int ReplicationCounter {
             get {
                 return this.replicationCounterField;
@@ -15443,7 +15644,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string priceGroupCodeField;
         
+        private string genBusPostingGroupField;
+        
         private string vATBusPostingGroupField;
+        
+        private string genProdPostingGroupField;
+        
+        private string vATProdPostingGroupField;
         
         private string vATCodeField;
         
@@ -15817,12 +16024,42 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
         public string VATBusPostingGroup {
             get {
                 return this.vATBusPostingGroupField;
             }
             set {
                 this.vATBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VATProdPostingGroup {
+            get {
+                return this.vATProdPostingGroupField;
+            }
+            set {
+                this.vATProdPostingGroupField = value;
             }
         }
         
@@ -16773,6 +17010,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string receiptNoField;
         
+        private string genBusPostingGroupField;
+        
         private string vATBusPostingGroupField;
         
         private string storeNoField;
@@ -16974,6 +17213,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.receiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
             }
         }
         
@@ -18016,6 +18265,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string vATBusPostingGroupField;
         
+        private string genBusPostingGroupField;
+        
         private string storeNoField;
         
         private string pOSTerminalNoField;
@@ -18215,6 +18466,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.vATBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
             }
         }
         
@@ -20229,6 +20490,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal tAXAmountField;
         
+        private string vatBusPostingGroupField;
+        
+        private string vatProdPostingGroupField;
+        
+        private string genBusPostingGroupField;
+        
+        private string genProdPostingGroupField;
+        
         private string tAXProductCodeField;
         
         private string tAXBusinessCodeField;
@@ -20468,6 +20737,46 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.tAXAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatBusPostingGroup {
+            get {
+                return this.vatBusPostingGroupField;
+            }
+            set {
+                this.vatBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatProdPostingGroup {
+            get {
+                return this.vatProdPostingGroupField;
+            }
+            set {
+                this.vatProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
             }
         }
         
@@ -20973,6 +21282,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal tAXAmountField;
         
+        private string vatBusPostingGroupField;
+        
+        private string vatProdPostingGroupField;
+        
+        private string genBusPostingGroupField;
+        
+        private string genProdPostingGroupField;
+        
         private string tAXProductCodeField;
         
         private string tAXBusinessCodeField;
@@ -21305,6 +21622,46 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.tAXAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatBusPostingGroup {
+            get {
+                return this.vatBusPostingGroupField;
+            }
+            set {
+                this.vatBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatProdPostingGroup {
+            get {
+                return this.vatProdPostingGroupField;
+            }
+            set {
+                this.vatProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
             }
         }
         
@@ -21731,6 +22088,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
+        private string genBusPostingGroupField;
+        
+        private string vATBusPostingGroupField;
+        
         private string businessTAXCodeField;
         
         private string priceGroupCodeField;
@@ -21927,6 +22288,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.currencyFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VATBusPostingGroup {
+            get {
+                return this.vATBusPostingGroupField;
+            }
+            set {
+                this.vATBusPostingGroupField = value;
             }
         }
         
@@ -25582,6 +25963,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string eFTTransNoField;
         
+        private string eFTTransNo1Field;
+        
+        private string eFTTransNo2Field;
+        
         private string eFTBatchNoField;
         
         private string authSourceCodeField;
@@ -25618,6 +26003,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private string voidedEFTTransNoField;
         
+        private string voidedEFTTransactionIDField;
+        
         private bool encryptedField;
         
         private bool replicatedField;
@@ -25644,6 +26031,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string StoreNo {
             get {
                 return this.storeNoField;
@@ -25654,6 +26042,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         public string POSTerminalNo {
             get {
                 return this.pOSTerminalNoField;
@@ -25664,6 +26053,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public int EntryNo {
             get {
                 return this.entryNoField;
@@ -25674,6 +26064,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -25684,6 +26075,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -25694,6 +26086,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string ReceiptNo {
             get {
                 return this.receiptNoField;
@@ -25704,6 +26097,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string EFTPOSTerminalNo {
             get {
                 return this.eFTPOSTerminalNoField;
@@ -25714,6 +26108,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string TenderType {
             get {
                 return this.tenderTypeField;
@@ -25724,6 +26119,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public string TransactionType {
             get {
                 return this.transactionTypeField;
@@ -25734,6 +26130,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public bool MSRinput {
             get {
                 return this.mSRinputField;
@@ -25744,7 +26141,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=10)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime Date {
             get {
@@ -25756,7 +26153,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=11)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime Time {
             get {
@@ -25768,6 +26165,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public bool AuthorisationOk {
             get {
                 return this.authorisationOkField;
@@ -25778,6 +26176,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public bool Voided {
             get {
                 return this.voidedField;
@@ -25788,6 +26187,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public string CardNumber {
             get {
                 return this.cardNumberField;
@@ -25798,6 +26198,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string CardType {
             get {
                 return this.cardTypeField;
@@ -25808,6 +26209,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public string CardTypeName {
             get {
                 return this.cardTypeNameField;
@@ -25818,6 +26220,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public string ExpiryDate {
             get {
                 return this.expiryDateField;
@@ -25828,6 +26231,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public string Authcode {
             get {
                 return this.authcodeField;
@@ -25838,6 +26242,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string Rescode {
             get {
                 return this.rescodeField;
@@ -25848,6 +26253,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public string Message {
             get {
                 return this.messageField;
@@ -25858,6 +26264,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string CardClass {
             get {
                 return this.cardClassField;
@@ -25868,6 +26275,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public string EFTMerchantNo {
             get {
                 return this.eFTMerchantNoField;
@@ -25878,6 +26286,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string EFTTerminalID {
             get {
                 return this.eFTTerminalIDField;
@@ -25888,6 +26297,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string EFTTransNo {
             get {
                 return this.eFTTransNoField;
@@ -25898,6 +26308,29 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=25)]
+        public string EFTTransNo1 {
+            get {
+                return this.eFTTransNo1Field;
+            }
+            set {
+                this.eFTTransNo1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=26)]
+        public string EFTTransNo2 {
+            get {
+                return this.eFTTransNo2Field;
+            }
+            set {
+                this.eFTTransNo2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
         public string EFTBatchNo {
             get {
                 return this.eFTBatchNoField;
@@ -25908,6 +26341,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         public string AuthSourceCode {
             get {
                 return this.authSourceCodeField;
@@ -25918,6 +26352,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
         public string EFTTransTime {
             get {
                 return this.eFTTransTimeField;
@@ -25928,6 +26363,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string EFTTransDate {
             get {
                 return this.eFTTransDateField;
@@ -25938,6 +26374,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public decimal Amount {
             get {
                 return this.amountField;
@@ -25948,6 +26385,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public decimal VAT {
             get {
                 return this.vATField;
@@ -25958,6 +26396,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public decimal Cashback {
             get {
                 return this.cashbackField;
@@ -25968,6 +26407,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public string EFTStoreNo {
             get {
                 return this.eFTStoreNoField;
@@ -25978,6 +26418,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public string EFTServerName {
             get {
                 return this.eFTServerNameField;
@@ -25988,6 +26429,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
         public string EFTVerificationMethod {
             get {
                 return this.eFTVerificationMethodField;
@@ -25998,6 +26440,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public string EFTAuthorizationStatus {
             get {
                 return this.eFTAuthorizationStatusField;
@@ -26008,6 +26451,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public string EFTTransactionType {
             get {
                 return this.eFTTransactionTypeField;
@@ -26018,6 +26462,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public string EFTStaffID {
             get {
                 return this.eFTStaffIDField;
@@ -26028,6 +26473,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime EFTDateTime {
             get {
@@ -26039,6 +26485,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public string ExtraData {
             get {
                 return this.extraDataField;
@@ -26049,6 +26496,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public string VoidedSlipNo {
             get {
                 return this.voidedSlipNoField;
@@ -26059,6 +26507,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public int VoidedEntryNo {
             get {
                 return this.voidedEntryNoField;
@@ -26069,6 +26518,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string VoidedEFTTransNo {
             get {
                 return this.voidedEFTTransNoField;
@@ -26079,6 +26529,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
+        public string VoidedEFTTransactionID {
+            get {
+                return this.voidedEFTTransactionIDField;
+            }
+            set {
+                this.voidedEFTTransactionIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool Encrypted {
             get {
                 return this.encryptedField;
@@ -26089,6 +26551,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public bool Replicated {
             get {
                 return this.replicatedField;
@@ -26099,6 +26562,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
         public int ReplicationCounter {
             get {
                 return this.replicationCounterField;
@@ -28312,6 +28776,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.DateTime bITimestampField;
         
+        private string genBusPostingGroupField;
+        
+        private string vATBusPostingGroup1Field;
+        
+        private string genProdPostingGroupField;
+        
+        private string vATProdPostingGroupField;
+        
         public TransSalesEntry() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -28381,6 +28853,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -28391,6 +28864,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -28401,6 +28875,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public string ReceiptNo {
             get {
                 return this.receiptNoField;
@@ -28411,6 +28886,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public string BarcodeNo {
             get {
                 return this.barcodeNoField;
@@ -28421,6 +28897,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public string ItemNo {
             get {
                 return this.itemNoField;
@@ -28431,6 +28908,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string SalesStaff {
             get {
                 return this.salesStaffField;
@@ -28441,6 +28919,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string ItemCategoryCode {
             get {
                 return this.itemCategoryCodeField;
@@ -28451,6 +28930,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string ProductGroupCode {
             get {
                 return this.productGroupCodeField;
@@ -28461,6 +28941,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public decimal Price {
             get {
                 return this.priceField;
@@ -28471,6 +28952,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public decimal NetPrice {
             get {
                 return this.netPriceField;
@@ -28481,6 +28963,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=10)]
         public decimal Quantity {
             get {
                 return this.quantityField;
@@ -28491,6 +28974,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=11)]
         public string PriceGroupCode {
             get {
                 return this.priceGroupCodeField;
@@ -28501,6 +28985,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public string VATBusPostingGroup {
             get {
                 return this.vATBusPostingGroupField;
@@ -28511,6 +28996,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public string VATCode {
             get {
                 return this.vATCodeField;
@@ -28521,6 +29007,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public string xTransactionStatus {
             get {
                 return this.xTransactionStatusField;
@@ -28531,6 +29018,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public decimal DiscountAmount {
             get {
                 return this.discountAmountField;
@@ -28541,6 +29029,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public decimal CostAmount {
             get {
                 return this.costAmountField;
@@ -28551,7 +29040,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=17)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime Date {
             get {
@@ -28563,7 +29052,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=18)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime Time {
             get {
@@ -28575,6 +29064,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string ShiftNo {
             get {
                 return this.shiftNoField;
@@ -28585,7 +29075,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=20)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime ShiftDate {
             get {
@@ -28597,6 +29087,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public decimal NetAmount {
             get {
                 return this.netAmountField;
@@ -28607,6 +29098,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public decimal VATAmount {
             get {
                 return this.vATAmountField;
@@ -28617,6 +29109,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string PromotionNo {
             get {
                 return this.promotionNoField;
@@ -28627,6 +29120,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public decimal StandardNetPrice {
             get {
                 return this.standardNetPriceField;
@@ -28637,6 +29131,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=25)]
         public decimal DiscAmountFromStdPrice {
             get {
                 return this.discAmountFromStdPriceField;
@@ -28647,6 +29142,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=26)]
         public string xStatementNo {
             get {
                 return this.xStatementNoField;
@@ -28657,6 +29153,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
         public string CustomerNo {
             get {
                 return this.customerNoField;
@@ -28667,6 +29164,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         public string Section {
             get {
                 return this.sectionField;
@@ -28677,6 +29175,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
         public string Shelf {
             get {
                 return this.shelfField;
@@ -28687,6 +29186,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string StatementCode {
             get {
                 return this.statementCodeField;
@@ -28697,6 +29197,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public string ItemDiscGroup {
             get {
                 return this.itemDiscGroupField;
@@ -28707,6 +29208,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public string TransactionCode {
             get {
                 return this.transactionCodeField;
@@ -28717,6 +29219,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public string StoreNo {
             get {
                 return this.storeNoField;
@@ -28727,6 +29230,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public bool ItemNumberScanned {
             get {
                 return this.itemNumberScannedField;
@@ -28737,6 +29241,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public bool KeyboardItemEntry {
             get {
                 return this.keyboardItemEntryField;
@@ -28747,6 +29252,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
         public bool PriceinBarcode {
             get {
                 return this.priceinBarcodeField;
@@ -28757,6 +29263,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public bool PriceChange {
             get {
                 return this.priceChangeField;
@@ -28767,6 +29274,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public bool WeightManuallyEntered {
             get {
                 return this.weightManuallyEnteredField;
@@ -28777,6 +29285,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public bool LinewasDiscounted {
             get {
                 return this.linewasDiscountedField;
@@ -28787,6 +29296,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         public bool ScaleItem {
             get {
                 return this.scaleItemField;
@@ -28797,6 +29307,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public bool WeightItem {
             get {
                 return this.weightItemField;
@@ -28807,6 +29318,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public bool ReturnNoSale {
             get {
                 return this.returnNoSaleField;
@@ -28817,6 +29329,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public bool ItemCorrectedLine {
             get {
                 return this.itemCorrectedLineField;
@@ -28827,6 +29340,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string TypeofSale {
             get {
                 return this.typeofSaleField;
@@ -28837,6 +29351,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public bool LinkedNonotOrig {
             get {
                 return this.linkedNonotOrigField;
@@ -28847,6 +29362,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool OrigofaLinkedItemList {
             get {
                 return this.origofaLinkedItemListField;
@@ -28857,6 +29373,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public string POSTerminalNo {
             get {
                 return this.pOSTerminalNoField;
@@ -28867,6 +29384,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
         public string StaffID {
             get {
                 return this.staffIDField;
@@ -28877,6 +29395,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=49)]
         public string ItemPostingGroup {
             get {
                 return this.itemPostingGroupField;
@@ -28887,6 +29406,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=50)]
         public decimal TotalRoundedAmt {
             get {
                 return this.totalRoundedAmtField;
@@ -28897,6 +29417,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=51)]
         public decimal Counter {
             get {
                 return this.counterField;
@@ -28907,6 +29428,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=52)]
         public string VariantCode {
             get {
                 return this.variantCodeField;
@@ -28917,6 +29439,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=53)]
         public string SerialNo {
             get {
                 return this.serialNoField;
@@ -28927,6 +29450,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=54)]
         public bool SerialLotNoNotValid {
             get {
                 return this.serialLotNoNotValidField;
@@ -28937,6 +29461,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=55)]
         public string LotNo {
             get {
                 return this.lotNoField;
@@ -28947,7 +29472,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=56)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime ExpirationDate {
             get {
@@ -28959,6 +29484,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=57)]
         public string MemberPointsType {
             get {
                 return this.memberPointsTypeField;
@@ -28969,6 +29495,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=58)]
         public decimal MemberPoints {
             get {
                 return this.memberPointsField;
@@ -28979,6 +29506,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=59)]
         public bool OfferBlockedPoints {
             get {
                 return this.offerBlockedPointsField;
@@ -28989,7 +29517,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=60)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime TransDate {
             get {
@@ -29001,7 +29529,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=61)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime TransTime {
             get {
@@ -29013,6 +29541,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=62)]
         public string PostingExceptionKey {
             get {
                 return this.postingExceptionKeyField;
@@ -29023,6 +29552,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=63)]
         public decimal LineDiscount {
             get {
                 return this.lineDiscountField;
@@ -29033,6 +29563,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=64)]
         public bool Replicated {
             get {
                 return this.replicatedField;
@@ -29043,6 +29574,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=65)]
         public decimal CustomerDiscount {
             get {
                 return this.customerDiscountField;
@@ -29053,6 +29585,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=66)]
         public decimal InfocodeDiscount {
             get {
                 return this.infocodeDiscountField;
@@ -29063,6 +29596,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=67)]
         public decimal CustInvoiceDiscount {
             get {
                 return this.custInvoiceDiscountField;
@@ -29073,6 +29607,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=68)]
         public string UnitofMeasure {
             get {
                 return this.unitofMeasureField;
@@ -29083,6 +29618,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=69)]
         public decimal UOMQuantity {
             get {
                 return this.uOMQuantityField;
@@ -29093,6 +29629,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=70)]
         public decimal UOMPrice {
             get {
                 return this.uOMPriceField;
@@ -29103,6 +29640,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=71)]
         public decimal TotalDiscount {
             get {
                 return this.totalDiscountField;
@@ -29113,6 +29651,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=72)]
         public decimal TotalDisc {
             get {
                 return this.totalDiscField;
@@ -29123,6 +29662,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=73)]
         public int TotDiscInfoLineNo {
             get {
                 return this.totDiscInfoLineNoField;
@@ -29133,6 +29673,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=74)]
         public string PeriodicDiscType {
             get {
                 return this.periodicDiscTypeField;
@@ -29143,6 +29684,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=75)]
         public string PeriodicDiscGroup {
             get {
                 return this.periodicDiscGroupField;
@@ -29153,6 +29695,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=76)]
         public decimal PeriodicDiscount {
             get {
                 return this.periodicDiscountField;
@@ -29163,6 +29706,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=77)]
         public bool DealLine {
             get {
                 return this.dealLineField;
@@ -29173,6 +29717,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=78)]
         public int DealHeaderLineNo {
             get {
                 return this.dealHeaderLineNoField;
@@ -29183,6 +29728,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=79)]
         public int DealLineNo {
             get {
                 return this.dealLineNoField;
@@ -29193,6 +29739,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=80)]
         public decimal DealLineAddedAmt {
             get {
                 return this.dealLineAddedAmtField;
@@ -29203,6 +29750,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=81)]
         public decimal DealModifierAddedAmt {
             get {
                 return this.dealModifierAddedAmtField;
@@ -29213,6 +29761,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=82)]
         public int DealModifierLineNo {
             get {
                 return this.dealModifierLineNoField;
@@ -29223,6 +29772,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=83)]
         public decimal DiscountAmtForPrinting {
             get {
                 return this.discountAmtForPrintingField;
@@ -29233,6 +29783,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=84)]
         public decimal CouponDiscount {
             get {
                 return this.couponDiscountField;
@@ -29243,6 +29794,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=85)]
         public decimal CouponAmtForPrinting {
             get {
                 return this.couponAmtForPrintingField;
@@ -29253,6 +29805,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=86)]
         public int ReplicationCounter {
             get {
                 return this.replicationCounterField;
@@ -29263,6 +29816,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=87)]
         public string SalesType {
             get {
                 return this.salesTypeField;
@@ -29273,6 +29827,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=88)]
         public string OrigfromInfocode {
             get {
                 return this.origfromInfocodeField;
@@ -29283,6 +29838,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=89)]
         public string OrigfromSubcode {
             get {
                 return this.origfromSubcodeField;
@@ -29293,6 +29849,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=90)]
         public int ParentLineNo {
             get {
                 return this.parentLineNoField;
@@ -29303,6 +29860,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=91)]
         public int InfocodeEntryLineNo {
             get {
                 return this.infocodeEntryLineNoField;
@@ -29313,6 +29871,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=92)]
         public int ExcludedBOMLineNo {
             get {
                 return this.excludedBOMLineNoField;
@@ -29323,6 +29882,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=93)]
         public decimal InfocodeSelectedQty {
             get {
                 return this.infocodeSelectedQtyField;
@@ -29333,6 +29893,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=94)]
         public string ParentItemNo {
             get {
                 return this.parentItemNoField;
@@ -29343,6 +29904,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=95)]
         public string OrigTransStore {
             get {
                 return this.origTransStoreField;
@@ -29353,6 +29915,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=96)]
         public string OrigTransPos {
             get {
                 return this.origTransPosField;
@@ -29363,6 +29926,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=97)]
         public int OrigTransNo {
             get {
                 return this.origTransNoField;
@@ -29373,6 +29937,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=98)]
         public int OrigTransLineNo {
             get {
                 return this.origTransLineNoField;
@@ -29383,6 +29948,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=99)]
         public decimal RefundQty {
             get {
                 return this.refundQtyField;
@@ -29393,6 +29959,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=100)]
         public int RefundedLineNo {
             get {
                 return this.refundedLineNoField;
@@ -29403,6 +29970,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=101)]
         public int RefundedTransNo {
             get {
                 return this.refundedTransNoField;
@@ -29413,6 +29981,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=102)]
         public string RefundedPOSNo {
             get {
                 return this.refundedPOSNoField;
@@ -29423,6 +29992,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=103)]
         public string RefundedStoreNo {
             get {
                 return this.refundedStoreNoField;
@@ -29433,6 +30003,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=104)]
         public string CreatedbyStaffID {
             get {
                 return this.createdbyStaffIDField;
@@ -29443,6 +30014,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=105)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime BITimestamp {
             get {
@@ -29450,6 +30022,50 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.bITimestampField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=106)]
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("VATBusPostingGroup", Order=107)]
+        public string VATBusPostingGroup1 {
+            get {
+                return this.vATBusPostingGroup1Field;
+            }
+            set {
+                this.vATBusPostingGroup1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=108)]
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=109)]
+        public string VATProdPostingGroup {
+            get {
+                return this.vATProdPostingGroupField;
+            }
+            set {
+                this.vATProdPostingGroupField = value;
             }
         }
     }
@@ -29603,6 +30219,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         private System.DateTime bITimestampField;
         
         private bool customerOrderField;
+        
+        private string genBusPostingGroupField;
         
         public TransactionHeader() {
             this.transactionNoField = 0;
@@ -30373,6 +30991,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
                 this.customerOrderField = value;
             }
         }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -30759,6 +31387,213 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.retailCalendarLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033219")]
+    public partial class ReturnPolicy {
+        
+        private string store_NoField;
+        
+        private string item_Category_CodeField;
+        
+        private string retail_Product_CodeField;
+        
+        private string item_NoField;
+        
+        private string variant_Dimension_1_CodeField;
+        
+        private string variant_CodeField;
+        
+        private string store_Group_CodeField;
+        
+        private bool refund_not_AllowedField;
+        
+        private bool manager_PrivilegesField;
+        
+        private string refund_Period_LengthField;
+        
+        private string message_1Field;
+        
+        private string message_2Field;
+        
+        private string return_Policy_HTMLField;
+        
+        public ReturnPolicy() {
+            this.refund_not_AllowedField = false;
+            this.manager_PrivilegesField = false;
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Store_No.")]
+        public string Store_No {
+            get {
+                return this.store_NoField;
+            }
+            set {
+                this.store_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Item_Category_Code {
+            get {
+                return this.item_Category_CodeField;
+            }
+            set {
+                this.item_Category_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Retail_Product_Code {
+            get {
+                return this.retail_Product_CodeField;
+            }
+            set {
+                this.retail_Product_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Item_No.")]
+        public string Item_No {
+            get {
+                return this.item_NoField;
+            }
+            set {
+                this.item_NoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Variant_Dimension_1_Code {
+            get {
+                return this.variant_Dimension_1_CodeField;
+            }
+            set {
+                this.variant_Dimension_1_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Variant_Code {
+            get {
+                return this.variant_CodeField;
+            }
+            set {
+                this.variant_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Store_Group_Code {
+            get {
+                return this.store_Group_CodeField;
+            }
+            set {
+                this.store_Group_CodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Refund_not_Allowed {
+            get {
+                return this.refund_not_AllowedField;
+            }
+            set {
+                this.refund_not_AllowedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Manager_Privileges {
+            get {
+                return this.manager_PrivilegesField;
+            }
+            set {
+                this.manager_PrivilegesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Refund_Period_Length {
+            get {
+                return this.refund_Period_LengthField;
+            }
+            set {
+                this.refund_Period_LengthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Message_1 {
+            get {
+                return this.message_1Field;
+            }
+            set {
+                this.message_1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Message_2 {
+            get {
+                return this.message_2Field;
+            }
+            set {
+                this.message_2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Return_Policy_HTML {
+            get {
+                return this.return_Policy_HTMLField;
+            }
+            set {
+                this.return_Policy_HTMLField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033219")]
+    public partial class RootGetReturnPolicy {
+        
+        private ReturnPolicy[] returnPolicyField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ReturnPolicy")]
+        public ReturnPolicy[] ReturnPolicy {
+            get {
+                return this.returnPolicyField;
+            }
+            set {
+                this.returnPolicyField = value;
             }
         }
         
@@ -38417,6 +39252,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal tAXAmountField;
         
+        private string vatBusPostingGroupField;
+        
+        private string vatProdPostingGroupField;
+        
+        private string genBusPostingGroupField;
+        
+        private string genProdPostingGroupField;
+        
         private string tAXProductCodeField;
         
         private string tAXBusinessCodeField;
@@ -38656,6 +39499,46 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.tAXAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatBusPostingGroup {
+            get {
+                return this.vatBusPostingGroupField;
+            }
+            set {
+                this.vatBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatProdPostingGroup {
+            get {
+                return this.vatProdPostingGroupField;
+            }
+            set {
+                this.vatProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
             }
         }
         
@@ -39174,6 +40057,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal tAXAmountField;
         
+        private string vatBusPostingGroupField;
+        
+        private string vatProdPostingGroupField;
+        
+        private string genBusPostingGroupField;
+        
+        private string genProdPostingGroupField;
+        
         private string tAXProductCodeField;
         
         private string tAXBusinessCodeField;
@@ -39508,6 +40399,46 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.tAXAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatBusPostingGroup {
+            get {
+                return this.vatBusPostingGroupField;
+            }
+            set {
+                this.vatBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VatProdPostingGroup {
+            get {
+                return this.vatProdPostingGroupField;
+            }
+            set {
+                this.vatProdPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenProdPostingGroup {
+            get {
+                return this.genProdPostingGroupField;
+            }
+            set {
+                this.genProdPostingGroupField = value;
             }
         }
         
@@ -39944,6 +40875,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private decimal currencyFactorField;
         
+        private string genBusPostingGroupField;
+        
+        private string vATBusPostingGroupField;
+        
         private string businessTAXCodeField;
         
         private string priceGroupCodeField;
@@ -40143,6 +41078,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.currencyFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GenBusPostingGroup {
+            get {
+                return this.genBusPostingGroupField;
+            }
+            set {
+                this.genBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VATBusPostingGroup {
+            get {
+                return this.vATBusPostingGroupField;
+            }
+            set {
+                this.vATBusPostingGroupField = value;
             }
         }
         
@@ -53411,6 +54366,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void EcomGetCustomerPriceCompletedEventHandler(object sender, EcomGetCustomerPriceCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class EcomGetCustomerPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal EcomGetCustomerPriceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetASNDocumentLinesCompletedEventHandler(object sender, GetASNDocumentLinesCompletedEventArgs e);
     
     /// <remarks/>
@@ -54379,6 +55376,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetReturnPolicyCompletedEventHandler(object sender, GetReturnPolicyCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetReturnPolicyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetReturnPolicyCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootGetReturnPolicy getReturnPolicyXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetReturnPolicy)(this.results[2]));
             }
         }
     }

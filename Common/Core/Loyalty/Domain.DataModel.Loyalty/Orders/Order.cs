@@ -61,6 +61,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember(IsRequired = true)]
         public string CardId { get; set; }
+        [DataMember]
+        public string CustomerId { get; set; }
         /// <summary>
         /// Transaction Receipt Number
         /// </summary>
@@ -90,12 +92,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public bool Posted { get; set; }
         /// <summary>
         /// Type of Order
-        /// ClickAndCollect order are processed in the store at POS Terminal.  ScanPayGo are for Instore shopping apps.
+        /// ClickAndCollect order are processed in the store at POS Terminal.  ScanPayGo are for In-store shopping apps.
         /// </summary>
         [DataMember(IsRequired = true)]
         public OrderType OrderType { get; set; }
         /// <summary>
-        /// Store to collect Click And Collect Order from
+        /// Store to collect all Click And Collect Lines from, if left empty, store location and Click And Collect option in lines will be used
         /// </summary>
         [DataMember]
         public string CollectLocation { get; set; }
@@ -107,7 +109,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public List<OrderPayment> OrderPayments { get; set; }
 
         /// <summary>
-        /// Member Contact Id
+        /// Member Contact Id, only used in Older NAV Web services
         /// </summary>
         [DataMember]
         public string ContactId { get; set; }
@@ -118,10 +120,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string Email { get; set; }
         [DataMember]
-        public string PhoneNumber { get; set; }
-        [DataMember]
-        public string MobileNumber { get; set; }
-        [DataMember]
         public string DayPhoneNumber { get; set; }
 
         // shipping info
@@ -131,8 +129,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public Address ShipToAddress { get; set; }
         [DataMember]
         public string ShipToEmail { get; set; }
-        [DataMember]
-        public string ShipToPhoneNumber { get; set; }
+
         [DataMember]
         public string ShippingAgentCode { get; set; }
         [DataMember]
@@ -191,12 +188,24 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public enum OrderType
     {
+        /// <summary>
+        /// Sales Order to be shipped
+        /// </summary>
         [EnumMember]
         Sale,
+        /// <summary>
+        /// Click and Collect Order to be collected at store
+        /// </summary>
         [EnumMember]
         ClickAndCollect,
+        /// <summary>
+        /// Order Created with App to be processed at checkout in store
+        /// </summary>
         [EnumMember]
         ScanPayGo,
+        /// <summary>
+        /// Order created with App that will be retrieved at the POS 
+        /// </summary>
         [EnumMember]
         ScanPayGoSuspend
     }

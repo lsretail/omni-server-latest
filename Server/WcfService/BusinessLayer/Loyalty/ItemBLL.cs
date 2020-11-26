@@ -62,6 +62,11 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, "", includeDetails);
         }
 
+        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        {
+            return BOLoyConnection.ItemCustomerPricesGet(storeId, cardId, items);
+        }
+
         public virtual List<ItemCategory> ItemCategoriesGetAll()
         {
             return BOLoyConnection.ItemCategoriesGet("", string.Empty);

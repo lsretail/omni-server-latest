@@ -82,6 +82,7 @@
     <Compile Include="Dal\InvStatusRepository.cs" />
     <Compile Include="Dal\ItemLocationRepository.cs" />
     <Compile Include="Dal\ItemCategoryRepository.cs" />
+    <Compile Include="Dal\ItemModifierRepository.cs" />
     <Compile Include="Dal\ItemRepository.cs" />
     <Compile Include="Dal\ItemUOMRepository.cs" />
     <Compile Include="Dal\ItemVariantRegistrationRepository.cs" />

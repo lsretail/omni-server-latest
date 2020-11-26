@@ -448,13 +448,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest)
+        public virtual ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchyHospModifier(replRequest);
+                return bll.ReplEcommItemModifier(replRequest);
             }
             catch (Exception ex)
             {

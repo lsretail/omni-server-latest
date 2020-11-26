@@ -74,6 +74,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems);
         List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails);
         UnitOfMeasure ItemUOMGetByIds(string itemid, string uomid);
+        List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items);
 
         #endregion
 
@@ -106,6 +107,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         Store StoreGetById(string id);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
         List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
+        List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1);
 
         #endregion
 

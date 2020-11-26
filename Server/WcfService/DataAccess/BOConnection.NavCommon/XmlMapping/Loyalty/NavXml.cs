@@ -212,14 +212,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             }
             requestBody.AppendChild(genderElement);
 
-            XmlElement phoneElement = document.CreateElement("Phone");
-            phoneElement.InnerText = contact.Phone;
-            requestBody.AppendChild(phoneElement);
-
-            XmlElement mphoneElement = document.CreateElement("MobilePhoneNo");
-            mphoneElement.InnerText = contact.MobilePhone;
-            requestBody.AppendChild(mphoneElement);
-
             Address address = new Address(); //defaults to empty strings
             if (contact.Addresses.Count > 0)
                 address = contact.Addresses[0];
@@ -247,6 +239,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XmlElement countryElement = document.CreateElement("Country");
             countryElement.InnerText = address.Country;
             requestBody.AppendChild(countryElement);
+
+            XmlElement phoneElement = document.CreateElement("Phone");
+            phoneElement.InnerText = address.PhoneNumber;
+            requestBody.AppendChild(phoneElement);
+
+            XmlElement mphoneElement = document.CreateElement("MobilePhoneNo");
+            mphoneElement.InnerText = address.CellPhoneNumber;
+            requestBody.AppendChild(mphoneElement);
+
 
             XmlElement accountIDElement = document.CreateElement("AccountID");
             accountIDElement.InnerText = accountId;
@@ -355,14 +356,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             }
             requestBody.AppendChild(genderElement);
 
-            XmlElement phoneElement = document.CreateElement("Phone");
-            phoneElement.InnerText = contact.Phone;
-            requestBody.AppendChild(phoneElement);
-
-            XmlElement mphoneElement = document.CreateElement("MobilePhoneNo");
-            mphoneElement.InnerText = contact.MobilePhone;
-            requestBody.AppendChild(mphoneElement);
-
             Address address = new Address(); //defaults to empty strings
             if (contact.Addresses != null && contact.Addresses.Count > 0)
                 address = contact.Addresses[0];
@@ -390,6 +383,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XmlElement countryElement = document.CreateElement("Country");
             countryElement.InnerText = address.Country;
             requestBody.AppendChild(countryElement);
+
+            XmlElement phoneElement = document.CreateElement("Phone");
+            phoneElement.InnerText = address.PhoneNumber;
+            requestBody.AppendChild(phoneElement);
+
+            XmlElement mphoneElement = document.CreateElement("MobilePhoneNo");
+            mphoneElement.InnerText = address.CellPhoneNumber;
+            requestBody.AppendChild(mphoneElement);
+
 
             XmlElement clubIIDElement = document.CreateElement("ClubID");
             clubIIDElement.InnerText = contact.Account?.Scheme?.Club?.Id;

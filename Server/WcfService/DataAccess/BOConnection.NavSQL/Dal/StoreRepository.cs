@@ -421,6 +421,96 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return storeHourList;
         }
 
+        public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            List<ReturnPolicy> list = new List<ReturnPolicy>();
+            string prcode = (NavVersion.Major < 14) ? "Product Group Code" : "Retail Product Code";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    string where = string.Empty;
+                    if (string.IsNullOrEmpty(storeId) == false)
+                    {
+                        where += " AND [Store No_]=@p1";
+                        command.Parameters.AddWithValue("@p1", storeId);
+                    }
+                    if (string.IsNullOrEmpty(storeGroupCode) == false)
+                    {
+                        where += " AND [Store Group Code]=@p2";
+                        command.Parameters.AddWithValue("@p2", storeGroupCode);
+                    }
+                    if (string.IsNullOrEmpty(itemCategory) == false)
+                    {
+                        where += " AND [Item Category Code]=@p3";
+                        command.Parameters.AddWithValue("@p3", itemCategory);
+                    }
+                    if (string.IsNullOrEmpty(productGroup) == false)
+                    {
+                        where += " AND [" + prcode + "]=@p4";
+                        command.Parameters.AddWithValue("@p4", productGroup);
+                    }
+                    if (string.IsNullOrEmpty(itemId) == false)
+                    {
+                        where += " AND [Item No_]=@p5";
+                        command.Parameters.AddWithValue("@p5", itemId);
+                    }
+                    if (string.IsNullOrEmpty(variantCode) == false)
+                    {
+                        where += " AND [Variant Code]=@p6";
+                        command.Parameters.AddWithValue("@p6", variantCode);
+                    }
+                    if (string.IsNullOrEmpty(variantDim1) == false)
+                    {
+                        where += " AND [Variant Dimension 1 Code]=@p7";
+                        command.Parameters.AddWithValue("@p7", variantDim1);
+                    }
+
+                    if (string.IsNullOrEmpty(where) == false)
+                    {
+                        where = " WHERE" + where.Substring(4, where.Length - 4);
+                    }
+
+                    command.CommandText = "SELECT [Store No_],[Store Group Code],[Item Category Code],[" + prcode + "]," +
+                                          "[Item No_],[Variant Code],[Variant Dimension 1 Code],[Refund not Allowed]," +
+                                          "[Refund Period Length],[Manager Privileges],[Message 1],[Message 2] " +
+                                          "FROM [" + navCompanyName + "Return Policy]" + where;
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToPolicy(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        private ReturnPolicy ReaderToPolicy(SqlDataReader reader)
+        {
+            return new ReturnPolicy()
+            {
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                StoreGroup = SQLHelper.GetString(reader["Store Group Code"]),
+                ItemCategory = SQLHelper.GetString(reader["Item Category Code"]),
+                ProductGroup = SQLHelper.GetString(reader["Retail Product Code"]),
+                ItemId = SQLHelper.GetString(reader["Item No_"]),
+                VariantCode = SQLHelper.GetString(reader["Variant Code"]),
+                VariantDimension1 = SQLHelper.GetString(reader["Variant Dimension 1 Code"]),
+                RefundNotAllowed = SQLHelper.GetBool(reader["Refund not Allowed"]),
+                ManagerPrivileges = SQLHelper.GetBool(reader["Manager Privileges"]),
+                RefundPeriodLength = SQLHelper.GetString(reader["Refund Period Length"]),
+                Message1 = SQLHelper.GetString(reader["Message 1"]),
+                Message2 = SQLHelper.GetString(reader["Message 2"])
+            };
+        }
+
         private ReplStore ReaderToStore(SqlDataReader reader, bool invmode, out string timestamp)
         {
             ReplStore store = new ReplStore()

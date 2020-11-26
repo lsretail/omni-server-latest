@@ -22,11 +22,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplBarcodeResponse rs = new ReplBarcodeResponse();
-            rs.Barcodes = BOAppConnection.ReplicateBarcodes(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplBarcodeResponse rs = new ReplBarcodeResponse()
+            {
+                Barcodes = BOAppConnection.ReplicateBarcodes(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Barcodes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -37,11 +39,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplItemResponse rs = new ReplItemResponse();
-            rs.Items = BOAppConnection.ReplicateItems(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplItemResponse rs = new ReplItemResponse()
+            {
+                Items = BOAppConnection.ReplicateItems(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -52,11 +56,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplExtendedVariantValuesResponse rs = new ReplExtendedVariantValuesResponse();
-            rs.ExtendedVariantValue = BOAppConnection.ReplicateExtendedVariantValues(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplExtendedVariantValuesResponse rs = new ReplExtendedVariantValuesResponse()
+            {
+                ExtendedVariantValue = BOAppConnection.ReplicateExtendedVariantValues(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ExtendedVariantValue.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -67,11 +73,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplItemCategoryResponse rs = new ReplItemCategoryResponse();
-            rs.ItemCategories = BOAppConnection.ReplicateItemCategory(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplItemCategoryResponse rs = new ReplItemCategoryResponse()
+            {
+                ItemCategories = BOAppConnection.ReplicateItemCategory(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ItemCategories.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -82,11 +90,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplProductGroupResponse rs = new ReplProductGroupResponse();
-            rs.ProductGroups = BOAppConnection.ReplicateProductGroups(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplProductGroupResponse rs = new ReplProductGroupResponse()
+            {
+                ProductGroups = BOAppConnection.ReplicateProductGroups(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ProductGroups.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -97,11 +107,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplStoreResponse rs = new ReplStoreResponse();
-            rs.Stores = BOAppConnection.ReplicateStores(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplStoreResponse rs = new ReplStoreResponse()
+            {
+                Stores = BOAppConnection.ReplicateStores(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Stores.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -112,11 +124,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplItemUnitOfMeasureResponse rs = new ReplItemUnitOfMeasureResponse();
-            rs.ItemUnitOfMeasures = BOAppConnection.ReplicateItemUOM(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplItemUnitOfMeasureResponse rs = new ReplItemUnitOfMeasureResponse()
+            {
+                ItemUnitOfMeasures = BOAppConnection.ReplicateItemUOM(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ItemUnitOfMeasures.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -127,11 +141,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplUnitOfMeasureResponse rs = new ReplUnitOfMeasureResponse();
-            rs.UnitOfMeasures = BOAppConnection.ReplicateUnitOfMeasure(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplUnitOfMeasureResponse rs = new ReplUnitOfMeasureResponse()
+            {
+                UnitOfMeasures = BOAppConnection.ReplicateUnitOfMeasure(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.UnitOfMeasures.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -142,11 +158,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplCurrencyResponse rs = new ReplCurrencyResponse();
-            rs.Currencies = BOAppConnection.ReplicateCurrency(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplCurrencyResponse rs = new ReplCurrencyResponse()
+            {
+                Currencies = BOAppConnection.ReplicateCurrency(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Currencies.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -157,11 +175,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplCurrencyExchRateResponse rs = new ReplCurrencyExchRateResponse();
-            rs.CurrencyExchRates = BOAppConnection.ReplicateCurrencyExchRate(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplCurrencyExchRateResponse rs = new ReplCurrencyExchRateResponse()
+            {
+                CurrencyExchRates = BOAppConnection.ReplicateCurrencyExchRate(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.CurrencyExchRates.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -172,11 +192,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplItemVariantRegistrationResponse rs = new ReplItemVariantRegistrationResponse();
-            rs.ItemVariantRegistrations = BOAppConnection.ReplicateItemVariantRegistration(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplItemVariantRegistrationResponse rs = new ReplItemVariantRegistrationResponse()
+            {
+                ItemVariantRegistrations = BOAppConnection.ReplicateItemVariantRegistration(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ItemVariantRegistrations.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -187,11 +209,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplPriceResponse rs = new ReplPriceResponse();
-            rs.Prices = BOAppConnection.ReplicatePrice(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplPriceResponse rs = new ReplPriceResponse()
+            {
+                Prices = BOAppConnection.ReplicatePrice(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Prices.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -202,11 +226,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplPriceResponse rs = new ReplPriceResponse();
-            rs.Prices = BOAppConnection.ReplicateBasePrice(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplPriceResponse rs = new ReplPriceResponse()
+            {
+                Prices = BOAppConnection.ReplicateBasePrice(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Prices.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -217,11 +243,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplImageResponse rs = new ReplImageResponse();
-            rs.Images = BOLoyConnection.ReplEcommImages(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplImageResponse rs = new ReplImageResponse()
+            {
+                Images = BOLoyConnection.ReplEcommImages(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Images.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -232,11 +260,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplImageLinkResponse rs = new ReplImageLinkResponse();
-            rs.ImageLinks = BOLoyConnection.ReplEcommImageLinks(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplImageLinkResponse rs = new ReplImageLinkResponse()
+            {
+                ImageLinks = BOLoyConnection.ReplEcommImageLinks(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ImageLinks.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -247,11 +277,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplAttributeResponse rs = new ReplAttributeResponse();
-            rs.Attributes = BOLoyConnection.ReplEcommAttribute(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplAttributeResponse rs = new ReplAttributeResponse()
+            {
+                Attributes = BOLoyConnection.ReplEcommAttribute(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Attributes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -262,11 +294,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplAttributeValueResponse rs = new ReplAttributeValueResponse();
-            rs.Values = BOLoyConnection.ReplEcommAttributeValue(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplAttributeValueResponse rs = new ReplAttributeValueResponse()
+            {
+                Values = BOLoyConnection.ReplEcommAttributeValue(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Values.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -277,11 +311,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplAttributeOptionValueResponse rs = new ReplAttributeOptionValueResponse();
-            rs.OptionValues = BOLoyConnection.ReplEcommAttributeOptionValue(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplAttributeOptionValueResponse rs = new ReplAttributeOptionValueResponse()
+            {
+                OptionValues = BOLoyConnection.ReplEcommAttributeOptionValue(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.OptionValues.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -292,11 +328,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplVendorResponse rs = new ReplVendorResponse();
-            rs.Vendors = BOAppConnection.ReplicateVendors(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplVendorResponse rs = new ReplVendorResponse()
+            {
+                Vendors = BOAppConnection.ReplicateVendors(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Vendors.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -307,11 +345,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplLoyVendorItemMappingResponse rs = new ReplLoyVendorItemMappingResponse();
-            rs.Mapping = BOLoyConnection.ReplEcommVendorItemMapping(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplLoyVendorItemMappingResponse rs = new ReplLoyVendorItemMappingResponse()
+            {
+                Mapping = BOLoyConnection.ReplEcommVendorItemMapping(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Mapping.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -322,11 +362,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplDataTranslationResponse rs = new ReplDataTranslationResponse();
-            rs.Texts = BOLoyConnection.ReplEcommDataTranslation(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplDataTranslationResponse rs = new ReplDataTranslationResponse()
+            {
+                Texts = BOLoyConnection.ReplEcommDataTranslation(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Texts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -337,11 +379,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplDataTranslationLangCodeResponse rs = new ReplDataTranslationLangCodeResponse();
-            rs.Codes = BOLoyConnection.ReplicateEcommDataTranslationLangCode(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplDataTranslationLangCodeResponse rs = new ReplDataTranslationLangCodeResponse()
+            {
+                Codes = BOLoyConnection.ReplicateEcommDataTranslationLangCode(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -352,11 +396,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplDiscountResponse rs = new ReplDiscountResponse();
-            rs.Discounts = BOAppConnection.ReplicateDiscounts(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplDiscountResponse rs = new ReplDiscountResponse()
+            {
+                Discounts = BOAppConnection.ReplicateDiscounts(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -367,11 +413,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplDiscountResponse rs = new ReplDiscountResponse();
-            rs.Discounts = BOAppConnection.ReplicateMixAndMatch(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplDiscountResponse rs = new ReplDiscountResponse()
+            {
+                Discounts = BOAppConnection.ReplicateMixAndMatch(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -382,11 +430,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplDiscountValidationResponse rs = new ReplDiscountValidationResponse();
-            rs.DiscountValidations= BOAppConnection.ReplicateDiscountValidations(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplDiscountValidationResponse rs = new ReplDiscountValidationResponse()
+            {
+                DiscountValidations = BOAppConnection.ReplicateDiscountValidations(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.DiscountValidations.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -397,11 +447,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplStoreTenderTypeResponse rs = new ReplStoreTenderTypeResponse();
-            rs.StoreTenderTypes = BOAppConnection.ReplicateStoreTenderType(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplStoreTenderTypeResponse rs = new ReplStoreTenderTypeResponse()
+            {
+                StoreTenderTypes = BOAppConnection.ReplicateStoreTenderType(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.StoreTenderTypes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -412,11 +464,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplTaxSetupResponse rs = new ReplTaxSetupResponse();
-            rs.TaxSetups = BOAppConnection.ReplicateTaxSetup(string.Empty, string.Empty, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplTaxSetupResponse rs = new ReplTaxSetupResponse()
+            {
+                TaxSetups = BOAppConnection.ReplicateTaxSetup(string.Empty, string.Empty, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.TaxSetups.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -427,11 +481,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplShippingAgentResponse rs = new ReplShippingAgentResponse();
-            rs.ShippingAgent = BOLoyConnection.ReplEcommShippingAgent(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplShippingAgentResponse rs = new ReplShippingAgentResponse()
+            {
+                ShippingAgent = BOLoyConnection.ReplEcommShippingAgent(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ShippingAgent.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -442,11 +498,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplCustomerResponse rs = new ReplCustomerResponse();
-            rs.Customers = BOLoyConnection.ReplEcommMember(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplCustomerResponse rs = new ReplCustomerResponse()
+            {
+                Customers = BOLoyConnection.ReplEcommMember(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Customers.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -457,11 +515,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplCountryCodeResponse rs = new ReplCountryCodeResponse();
-            rs.Codes = BOLoyConnection.ReplEcommCountryCode(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplCountryCodeResponse rs = new ReplCountryCodeResponse()
+            {
+                Codes = BOLoyConnection.ReplEcommCountryCode(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -472,11 +532,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyResponse rs = new ReplHierarchyResponse();
-            rs.Hierarchies = BOAppConnection.ReplicateHierarchy(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplHierarchyResponse rs = new ReplHierarchyResponse()
+            {
+                Hierarchies = BOAppConnection.ReplicateHierarchy(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Hierarchies.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -487,11 +549,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyNodeResponse rs = new ReplHierarchyNodeResponse();
-            rs.Nodes = BOAppConnection.ReplicateHierarchyNode(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplHierarchyNodeResponse rs = new ReplHierarchyNodeResponse()
+            {
+                Nodes = BOAppConnection.ReplicateHierarchyNode(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Nodes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -502,11 +566,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyLeafResponse rs = new ReplHierarchyLeafResponse();
-            rs.Leafs = BOAppConnection.ReplicateHierarchyLeaf(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplHierarchyLeafResponse rs = new ReplHierarchyLeafResponse()
+            {
+                Leafs = BOAppConnection.ReplicateHierarchyLeaf(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Leafs.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -517,11 +583,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyHospDealResponse rs = new ReplHierarchyHospDealResponse();
-            rs.Items = BOAppConnection.ReplicateHierarchyHospDeal(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplHierarchyHospDealResponse rs = new ReplHierarchyHospDealResponse()
+            {
+                Items = BOAppConnection.ReplicateHierarchyHospDeal(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -532,11 +600,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyHospDealLineResponse rs = new ReplHierarchyHospDealLineResponse();
-            rs.Items = BOAppConnection.ReplicateHierarchyHospDealLine(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplHierarchyHospDealLineResponse rs = new ReplHierarchyHospDealLineResponse()
+            {
+                Items = BOAppConnection.ReplicateHierarchyHospDealLine(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -547,26 +617,30 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyHospRecipeResponse rs = new ReplHierarchyHospRecipeResponse();
-            rs.Items = BOAppConnection.ReplicateHierarchyHospRecipe(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplHierarchyHospRecipeResponse rs = new ReplHierarchyHospRecipeResponse()
+            {
+                Items = BOAppConnection.ReplicateHierarchyHospRecipe(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
-        public virtual ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest)
+        public virtual ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyHospModifierResponse rs = new ReplHierarchyHospModifierResponse();
-            rs.Modifiers = BOAppConnection.ReplicateHierarchyHospModifier(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            rs.RecordsRemaining = recordsRemaining;
-            rs.LastKey = lastkey;
-            rs.MaxKey = maxkey;
+            ReplItemModifierResponse rs = new ReplItemModifierResponse()
+            {
+                Modifiers = BOAppConnection.ReplicateItemModifier(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Modifiers.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
@@ -577,11 +651,13 @@ namespace LSOmni.BLL.Loyalty
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplInvStatusResponse resp = new ReplInvStatusResponse();
-            resp.Items = BOLoyConnection.ReplEcommInventoryStatus(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
-            resp.RecordsRemaining = recordsRemaining;
-            resp.LastKey = lastkey;
-            resp.MaxKey = maxkey;
+            ReplInvStatusResponse resp = new ReplInvStatusResponse()
+            {
+                Items = BOLoyConnection.ReplEcommInventoryStatus(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining);
             return resp;
         }
@@ -594,11 +670,13 @@ namespace LSOmni.BLL.Loyalty
 
             List<LoyItem> ids = BOLoyConnection.ReplEcommFullItem(replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
 
-            ReplFullItemResponse resp = new ReplFullItemResponse();
-            resp.RecordsRemaining = recordsRemaining;
-            resp.LastKey = lastkey;
-            resp.MaxKey = maxkey;
-            resp.Items = new List<LoyItem>();
+            ReplFullItemResponse resp = new ReplFullItemResponse()
+            {
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey,
+                Items = new List<LoyItem>()
+            };
 
             foreach (LoyItem item in ids)
             {

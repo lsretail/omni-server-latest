@@ -11,30 +11,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
     public class OrderRepository : BaseRepository
     {
-        private string sql = string.Empty;
-
         public OrderRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sql = "SELECT * FROM (" +
-                    "SELECT mt.[Document ID],mt.[Store No_],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
-                    "mt.[Member Card No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
-                    "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
-                    "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name] AS ShipName,mt.[Ship-to Address],mt.[Ship-to Address 2]," +
-                    "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
-                    "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
-                    "mt.[Shipping Agent Service Code], 0 AS Posted," +
-                    "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
-                    "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                    "UNION " +
-                    "SELECT mt.[Document ID],mt.[Store No_],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
-                    "mt.[Member Card No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
-                    "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
-                    "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name] AS ShipName,mt.[Ship-to Address],mt.[Ship-to Address 2]," +
-                    "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
-                    "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
-                    "mt.[Shipping Agent Service Code],1 AS Posted," +
-                    "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
-                    "FROM [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt) AS Orders";
         }
 
         public SalesEntry OrderGetById(string id, bool includeLines, bool external)
@@ -45,9 +23,31 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 connection.Open();
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    string where = external ? "External ID" : "Document ID";
+                    string stId = (NavVersion > new Version("16.2")) ? "mt.[Store No_],mt.[Created at Store]" : "mt.[Store No_]";
+
                     command.Parameters.Clear();
-                    command.CommandText = sql + " WHERE [" + where + "]=@id";
+                    command.CommandText = "SELECT * FROM (" +
+                        "SELECT mt.[Document ID]," + stId + ",mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
+                        "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
+                        "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
+                        "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
+                        "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
+                        "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
+                        "mt.[Shipping Agent Service Code], 0 AS Posted," +
+                        "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
+                        "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                        "UNION " +
+                        "SELECT mt.[Document ID]," + stId + ",mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
+                        "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
+                        "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
+                        "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
+                        "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
+                        "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
+                        "mt.[Shipping Agent Service Code],1 AS Posted," +
+                        "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
+                        "FROM [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt) AS Orders " +
+                        "WHERE [" + ((external) ? "External ID" : "Document ID") + "]=@id";
+
                     command.Parameters.AddWithValue("@id", id.ToUpper());
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -206,7 +206,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
                 IdType = DocumentIdType.Order,
-                CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 Status = SalesEntryStatus.Created,
                 Posted = SQLHelper.GetBool(reader["Posted"]),
                 ClickAndCollectOrder = SQLHelper.GetBool(reader["Click And Collect Order"]),
@@ -215,21 +214,42 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ShippingAgentServiceCode = SQLHelper.GetString(reader["Shipping Agent Service Code"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
 
-                ShipToName = SQLHelper.GetString(reader["ShipName"]),
-                ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]),
-                ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"])
+                CardId = SQLHelper.GetString(reader["Member Card No_"]),
+                CustomerId = SQLHelper.GetString(reader["Customer No_"]),
+
+                ContactName = SQLHelper.GetString(reader["Name"]),
+                ContactDayTimePhoneNo = SQLHelper.GetString(reader["Daytime Phone No_"]),
+                ContactEmail = SQLHelper.GetString(reader["Email"]),
+                ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
+                },
+
+                ShipToName = SQLHelper.GetString(reader["Ship-to Name"]),
+                ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]),
+                ShipToAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
+                    Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["Ship-to City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
+                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
+                }
             };
 
-            entry.ShipToAddress = new Address()
-            {
-                Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
-                Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
-                HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
-                City = SQLHelper.GetString(reader["Ship-to City"]),
-                StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
-                PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
-                Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"])
-            };
+            if (NavVersion > new Version("16.2"))
+                entry.StoreId = SQLHelper.GetString(reader["Created at Store"]);
 
             int copay = SQLHelper.GetInt32(reader["CoPay"]);
             entry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
@@ -262,6 +282,17 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 List<SalesEntryLine> list = new List<SalesEntryLine>();
                 foreach (SalesEntryLine line in entry.Lines)
                 {
+                    if (NavVersion > new Version("16.2"))
+                    {
+                        if (line.ClickAndCollectLine && entry.ClickAndCollectOrder == false)
+                            entry.ClickAndCollectOrder = true;
+                    }
+                    else
+                    {
+                        line.ClickAndCollectLine = entry.ClickAndCollectOrder;
+                        line.StoreId = entry.StoreId;
+                    }
+
                     SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
                     if (exline == null)
                     {

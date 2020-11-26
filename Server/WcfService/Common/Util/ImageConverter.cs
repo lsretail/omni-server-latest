@@ -71,6 +71,9 @@ namespace LSOmni.Common.Util
 
         public static Image ByteToImage(byte[] bytes)
         {
+            if (bytes.Length == 0)
+                return null;
+
             using (MemoryStream ms = new MemoryStream(bytes))
             {
                 return Image.FromStream(ms);

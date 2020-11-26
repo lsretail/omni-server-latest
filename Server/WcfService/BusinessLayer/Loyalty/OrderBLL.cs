@@ -58,10 +58,12 @@ namespace LSOmni.BLL.Loyalty
                     request.ContactId = contact.Id;
                 if (string.IsNullOrEmpty(request.Email))
                     request.Email = contact.Email;
-                if (string.IsNullOrEmpty(request.PhoneNumber))
-                    request.PhoneNumber = contact.MobilePhone;
                 if (string.IsNullOrEmpty(request.ContactName))
                     request.ContactName = contact.Name;
+                if (request.ContactAddress == null && contact.Addresses.Count > 0)
+                {
+                    request.ContactAddress = contact.Addresses[0];
+                }
             }
 
             string extId = BOLoyConnection.OrderCreate(request, tenderMapping, out string orderId);

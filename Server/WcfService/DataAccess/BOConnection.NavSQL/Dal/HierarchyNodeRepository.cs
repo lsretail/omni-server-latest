@@ -318,7 +318,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["Image Id"]),
+                IsMemberClub = SQLHelper.GetBool(reader["Member Type"]),
+                MemberValue = SQLHelper.GetString(reader["Member Value"]),
+                DealPrice = SQLHelper.GetDecimal(reader["Deal Price"]),
+                ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
+                IsActive = SQLHelper.GetBool(reader["Status"])
             };
         }
 

@@ -29,14 +29,9 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
-            List<Notification> notificationlist = null;
-
-            notificationlist = BOLoyConnection.NotificationsGetByCardId(cardId, numberOfNotifications);
-
+            List<Notification> notificationlist = BOLoyConnection.NotificationsGetByCardId(cardId, numberOfNotifications);
             if (notificationlist == null)
                 return new List<Notification>();
-
-            string contactId = notificationlist.FirstOrDefault()?.ContactId;
 
             foreach (Notification notification in notificationlist)
             {
@@ -61,8 +56,7 @@ namespace LSOmni.BLL.Loyalty
             }
 
             iRepository.Save(cardId, notificationlist);
-
-            return iRepository.NotificationsGetByCardId(cardId, numberOfNotifications);
+            return notificationlist;
         }
 
         public virtual void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notifacationStatus)

@@ -32,8 +32,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     DateOfBirth = contact.BirthDay,
                     Email = contact.Email.ToLower(),
                     Gender = ((int)contact.Gender).ToString(),
-                    Phone = XMLHelper.GetString(contact.Phone),
-                    MobilePhoneNo = XMLHelper.GetString(contact.MobilePhone),
 
                     Address1 = XMLHelper.GetString(addr.Address1),
                     Address2 = XMLHelper.GetString(addr.Address2),
@@ -41,6 +39,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Country = XMLHelper.GetString(addr.Country),
                     PostCode = XMLHelper.GetString(addr.PostCode),
                     StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
+                    Phone = XMLHelper.GetString(addr.PhoneNumber),
+                    MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
                     LoginID = contact.UserName.ToLower(),
                     Password = contact.Password,
@@ -91,8 +91,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     DateOfBirth = contact.BirthDay,
                     Email = contact.Email,
                     Gender = ((int)contact.Gender).ToString(),
-                    Phone = XMLHelper.GetString(contact.Phone),
-                    MobilePhoneNo = XMLHelper.GetString(contact.MobilePhone),
 
                     Address1 = XMLHelper.GetString(addr.Address1),
                     Address2 = XMLHelper.GetString(addr.Address2),
@@ -100,6 +98,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Country = XMLHelper.GetString(addr.Country),
                     PostCode = XMLHelper.GetString(addr.PostCode),
                     StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
+                    Phone = XMLHelper.GetString(addr.PhoneNumber),
+                    MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
                     ExternalSystem = string.Empty
                 }
@@ -144,9 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                Phone = contact.PhoneNo,
-                MobilePhone = contact.MobilePhoneNo,
-                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth)
+                BirthDay = ConvertTo.NavDateToDateTime(contact.DateofBirth)
             };
 
             memberContact.Addresses = new List<Address>();
@@ -158,7 +156,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 City = contact.City,
                 PostCode = contact.PostCode,
                 StateProvinceRegion = contact.TerritoryCode,
-                Country = contact.Country
+                Country = contact.Country,
+                PhoneNumber = contact.PhoneNo,
+                CellPhoneNumber = contact.MobilePhoneNo
             });
 
             memberContact.Account = new Account(contact.AccountNo);
@@ -174,7 +174,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Id = card.CardNo,
                         BlockedBy = card.Blockedby,
                         BlockedReason = card.ReasonBlocked,
-                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked),
+                        DateBlocked = ConvertTo.NavDateToDateTime(card.DateBlocked),
                         LinkedToAccount = card.LinkedtoAccount,
                         ClubId = card.ClubCode,
                         ContactId = card.ContactNo,
@@ -201,9 +201,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                Phone = contact.PhoneNo,
-                MobilePhone = contact.MobilePhoneNo,
-                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth)
+                BirthDay = ConvertTo.NavDateToDateTime(contact.DateofBirth)
             };
 
             memberContact.Addresses = new List<Address>();
@@ -215,7 +213,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 City = contact.City,
                 PostCode = contact.PostCode,
                 StateProvinceRegion = contact.TerritoryCode,
-                Country = contact.Country
+                Country = contact.Country,
+                PhoneNumber = contact.PhoneNo,
+                CellPhoneNumber = contact.MobilePhoneNo
             });
 
             memberContact.Account = new Account(contact.AccountNo);
@@ -237,7 +237,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Id = card.CardNo,
                         BlockedBy = card.Blockedby,
                         BlockedReason = card.ReasonBlocked,
-                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked),
+                        DateBlocked = ConvertTo.NavDateToDateTime(card.DateBlocked),
                         LinkedToAccount = card.LinkedtoAccount,
                         ClubId = card.ClubCode,
                         ContactId = card.ContactNo,
@@ -277,7 +277,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Id = offer.No,
                     Description = offer.PrimaryText,
                     Details = offer.SecondaryText,
-                    ExpirationDate = XMLHelper.GetSQLNAVDate(offer.EndingDate),
+                    ExpirationDate = ConvertTo.NavDateToDateTime(offer.EndingDate),
                     OfferId = offer.DiscountNo,
                     Code = (OfferDiscountType)Convert.ToInt32(offer.DiscountType),
                     Type = (OfferType)Convert.ToInt32(offer.OfferCategory),
@@ -303,8 +303,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ContactId = notification.ContactNo,
                     Description = notification.PrimaryText,
                     Details = notification.SecondaryText,
-                    ExpiryDate = XMLHelper.GetSQLNAVDate(notification.ValidToDate),
-                    Created = XMLHelper.GetSQLNAVDate(notification.ValidFromDate),
+                    ExpiryDate = ConvertTo.NavDateToDateTime(notification.ValidToDate),
+                    Created = ConvertTo.NavDateToDateTime(notification.ValidFromDate),
                     Status = NotificationStatus.New,
                     QRText = string.Empty,
                     NotificationTextType = NotificationTextType.Plain,

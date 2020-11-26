@@ -15,8 +15,11 @@ namespace LSOmni.BLL.Loyalty
         private static LSLogger logger = new LSLogger();
         private LSRecommend.LSRecommend lsr = null;
 
-        public LSRecommendsBLL(BOConfiguration config) : base(config, 0)
+        public LSRecommendsBLL(BOConfiguration config, bool settings) : base(config, 0)
         {
+            if (settings)   // sending settings, don't load them
+                return;
+
             string value = config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl);
             if (string.IsNullOrEmpty(value))
                 throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "LS Recommend Setup has not yet been sent to Omni from LS Central");

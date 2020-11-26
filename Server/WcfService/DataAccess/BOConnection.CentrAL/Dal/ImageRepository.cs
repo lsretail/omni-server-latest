@@ -56,7 +56,38 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return view;
         }
 
-        public ImageView ImageGetByMediaId(string id)
+        public ImageView ImageMediaGetByCode(string id, bool includeBlob)
+        {
+            ImageView view = null;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Code],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location]," +
+                                          "mt.[Last Date Modified],tm.[Content],tm.[Height],tm.[Width]" +
+                                          "FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "INNER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                                          "INNER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                                          "WHERE mt.[Code]=@id AND tms.[Company Name]=@cmp";
+                    command.Parameters.AddWithValue("@id", id);
+                    command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                    connection.Open();
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            view = ReaderToMediaImage(reader, includeBlob);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return view;
+        }
+
+        public ImageView ImageMediaGetById(string id)
         {
             ImageView view = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -150,6 +181,28 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return view;
         }
 
+        private ImageView ReaderToMediaImage(SqlDataReader reader, bool includeblob)
+        {
+            ImageView view = new ImageView()
+            {
+                Id = SQLHelper.GetString(reader["Code"]),
+                MediaId = SQLHelper.GetGuid(reader["ID"]),
+                DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
+                Location = SQLHelper.GetString(reader["Image Location"]),
+                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
+                ModifiedTime = SQLHelper.GetDateTime(reader["Last Date Modified"]),
+            };
+
+            if (includeblob)
+            {
+                view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[]);
+                view.ImgSize = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
+                if (view.ImgBytes.Length > 0)
+                    view.LocationType = LocationType.Image;
+            }
+            return view;
+        }
+
         public List<ReplImage> ReplEcommImage(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -238,6 +291,103 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        public List<ReplImage> ReplEcommMediaImage(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
+
+            List<JscKey> keys = GetPrimaryKeys("Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            // get records remaining
+            string sql = string.Empty;
+            if (fullReplication)
+            {
+                sql = "SELECT COUNT(*)" + sqlimgfrom + GetWhereStatement(true, keys, false);
+            }
+            recordsRemaining = GetRecordCount(IMAGE_TABLEID, lastKey, sql, keys, ref maxKey);
+
+            List<JscActions> actions = LoadActions(fullReplication, IMAGE_TABLEID, batchSize, ref lastKey, ref recordsRemaining);
+            List<ReplImage> list = new List<ReplImage>();
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) +
+                    "mt.[Code],tm.[ID],mt.[Type],mt.[Image Location],mt.[Description],tm.[Content],tm.[Height],tm.[Width]" +
+                    "FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                    "INNER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                    "INNER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                    GetWhereStatement(fullReplication, keys, " AND tms.[Company Name]=@cmp", true);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    if (fullReplication)
+                    {
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                        command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int cnt = 0;
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToMediaImage(reader, out lastKey));
+                                cnt++;
+                            }
+                            reader.Close();
+                            recordsRemaining -= cnt;
+                        }
+                        if (recordsRemaining <= 0)
+                            lastKey = maxKey;   // this should be the highest PreAction id;
+                    }
+                    else
+                    {
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                list.Add(new ReplImage()
+                                {
+                                    Id = act.ParamValue,
+                                    IsDeleted = true
+                                });
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            if (first)
+                                command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToMediaImage(reader, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            return list;
+        }
+
         private ReplImage ReaderToImage(SqlDataReader reader, out string timestamp)
         {
             ReplImage img = new ReplImage()
@@ -253,6 +403,34 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 img.Image64 = string.Empty;
             else
                 img.Image64 = Convert.ToBase64String(imgbyte);
+
+            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            return img;
+        }
+
+        private ReplImage ReaderToMediaImage(SqlDataReader reader, out string timestamp)
+        {
+            ReplImage img = new ReplImage()
+            {
+                Id = SQLHelper.GetString(reader["Code"]),
+                Location = SQLHelper.GetString(reader["Image Location"]),
+                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                MediaId = SQLHelper.GetString(reader["ID"])
+            };
+
+            byte[] imgbyte = SQLHelper.GetByteArray(reader["Content"]);
+            if (imgbyte == null)
+            {
+                img.Image64 = string.Empty;
+                img.Size = new ImageSize();
+            }
+            else
+            {
+                img.Image64 = Convert.ToBase64String(imgbyte);
+                img.LocationType = LocationType.Image;
+                img.Size = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
+            }
 
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
             return img;

@@ -205,7 +205,10 @@ namespace LSRetail.Omni.DiscountEngine.Utils
 
             try
             {
-                return Convert.ToDateTime(value);
+                DateTime date = Convert.ToDateTime(value);
+                if ((date.Year == 1754 || date.Year == 1753) && date.Month == 1 && date.Day == 1)
+                    return DateTime.MinValue;
+                return date;
             }
             catch
             {

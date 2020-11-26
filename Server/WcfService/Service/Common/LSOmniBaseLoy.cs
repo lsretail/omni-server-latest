@@ -1012,6 +1012,22 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0} cardId:{1} itemCnt:{2}", storeId, cardId, items.Count);
+
+                ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
+                return itemBLL.ItemCustomerPricesGet(storeId, cardId, items);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} cardId:{1}", storeId, cardId);
+                return null; //never gets here
+            }
+        }
+
         /// <summary>
         /// Get all item categories
         /// </summary>
@@ -1445,6 +1461,21 @@ namespace LSOmni.Service
             }
         }
 
+
+        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            try
+            {
+                StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
+                return storeBLL.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} storeGroup:{1} itemCat:{2} prodGroup:{2}", storeId, storeGroupCode, itemCategory, productGroup);
+                return null; //never gets here
+            }
+        }
+
         #endregion store location
 
         #region transactions
@@ -1785,7 +1816,7 @@ namespace LSOmni.Service
         {
             try
             {
-                LSRecommendsBLL bll = new LSRecommendsBLL(config);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
                 return true;
             }
             catch (Exception ex)
@@ -1806,7 +1837,7 @@ namespace LSOmni.Service
                 }
                 logger.Debug(config.LSKey.Key, "userId:{0} items:{1} maxNumberOfItems:{2}", userId, itms, maxNumberOfItems);
 
-                LSRecommendsBLL bll = new LSRecommendsBLL(config);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
                 return bll.RecommendedItemsGetByUserId(userId, items, maxNumberOfItems);
             }
             catch (Exception ex)
@@ -1821,7 +1852,7 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config.LSKey.Key, "userId:{0} storeId:{1} items:{2}", userId, storeId, items);
-                LSRecommendsBLL bll = new LSRecommendsBLL(config);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
                 return bll.RecommendedItemsGet(userId, storeId, items);
             }
             catch (Exception ex)
@@ -1835,8 +1866,8 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "userId:{0} ", wsUserName);
-                LSRecommendsBLL bll = new LSRecommendsBLL(config);
+                logger.Debug(config.LSKey.Key, "accKey:{0} azName:{1) numItem:{2}", azureAccountKey, azureName, numberOfRecommendedItems);
+                LSRecommendsBLL bll = new LSRecommendsBLL(config, true);
                 bll.LSRecommendSetting(XMLHelper.GetString(lsKey), endPointUrl, accountConnection, azureAccountKey, azureName, numberOfRecommendedItems, calculateStock, wsURI, wsUserName, wsPassword, wsDomain, storeNo, location, minStock);
             }
             catch (Exception ex)

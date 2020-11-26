@@ -41,4 +41,23 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [EnumMember]
         CustomerGroup
     }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum HierarchyDealType
+    {
+        [EnumMember]
+        Item,
+        [EnumMember]
+        ProductGroup,
+        [EnumMember]
+        ItemCategory,
+        [EnumMember]
+        All,
+        [EnumMember]
+        PluMenu,
+        [EnumMember]
+        Modifier,
+        [EnumMember]
+        SpecialGroup
+    }
 }

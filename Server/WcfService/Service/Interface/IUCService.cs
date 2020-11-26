@@ -363,7 +363,6 @@ namespace LSOmni.Service
         ///             <a:OrderPayments/>
         ///             <a:OrderStatus>Pending</a:OrderStatus>
         ///             <a:PaymentStatus>PreApproved</a:PaymentStatus>
-        ///             <a:PhoneNumber i:nil= "true" />
         ///             <a:PointAmount>1600.00</a:PointAmount>
         ///             <a:PointBalance>53632.00</a:PointBalance>
         ///             <a:PointCashAmountNeeded>0.00</a:PointCashAmountNeeded>
@@ -386,7 +385,6 @@ namespace LSOmni.Service
         ///             </a:ShipToAddress>
         ///             <a:ShipToEmail i:nil= "true" />
         ///             <a:ShipToName i:nil= "true" />
-        ///             <a:ShipToPhoneNumber i:nil= "true" />
         ///             <a:ShippingAgentCode i:nil= "true" />
         ///             <a:ShippingAgentServiceCode i:nil= "true" />
         ///             <a:ShippingStatus>ShippigNotRequired</a:ShippingStatus>
@@ -715,7 +713,6 @@ namespace LSOmni.Service
         ///             </a:ShipToAddress>
         ///             <a:ShipToEmail/>
         ///             <a:ShipToName/>
-        ///             <a:ShipToPhoneNumber/>
         ///             <a:ShippingAgentCode/>
         ///             <a:ShippingAgentServiceCode/>
         ///             <a:ShippingStatus>NotYetShipped</a:ShippingStatus>
@@ -1022,8 +1019,10 @@ namespace LSOmni.Service
         ///            <ns1:Addresses>
         ///               <ns:Address>
         ///                  <ns:Address1>Santa Monica</ns:Address1>
+        ///                  <ns:CellPhoneNumber>555-5551</ns:CellPhoneNumber>
         ///                  <ns:City>Hollywood</ns:City>
         ///                  <ns:Country>US</ns:Country>
+        ///                  <ns:PhoneNumber>666-6661</ns:PhoneNumber>
         ///                  <ns:PostCode>1001</ns:PostCode>
         ///                  <ns:StateProvinceRegion></ns:StateProvinceRegion>
         ///                  <ns:Type>Residential</ns:Type>
@@ -1035,9 +1034,7 @@ namespace LSOmni.Service
         ///            <ns1:Initials>Ms</ns1:Initials>
         ///            <ns1:LastName>Parker</ns1:LastName>
         ///            <ns1:MiddleName></ns1:MiddleName>
-        ///            <ns1:MobilePhone>555-5551</ns1:MobilePhone>
         ///            <ns1:Password>SxxInTheCity</ns1:Password>
-        ///            <ns1:Phone>666-6661</ns1:Phone>
         ///            <ns1:UserName>sarah</ns1:UserName>
         ///         </ser:contact>
         ///      </ser:ContactCreate>
@@ -1083,12 +1080,12 @@ namespace LSOmni.Service
         ///               <b:Address>
         ///                  <b:Address1>Santa Monica</b:Address1>
         ///                  <b:Address2/>
-        ///                  <b:CellPhoneNumber i:nil= "true" />
+        ///                  <b:CellPhoneNumber>555-5551</b:CellPhoneNumber>
         ///                  <b:City>Hollywood</b:City>
         ///                  <b:Country>US</b:Country>
         ///                  <b:HouseNo i:nil= "true" />
         ///                  <b:Id/>
-        ///                  <b:PhoneNumber i:nil= "true" />
+        ///                  <b:PhoneNumber>666-6661</b:PhoneNumber>
         ///                  <b:PostCode>1001</b:PostCode>
         ///                  <b:StateProvinceRegion/>
         ///                  <b:Type>Residential</b:Type>
@@ -1149,7 +1146,6 @@ namespace LSOmni.Service
         ///            </a:LoggedOnToDevice>
         ///            <a:MaritalStatus>Unknown</a:MaritalStatus>
         ///            <a:MiddleName/>
-        ///            <a:MobilePhone>555-5551</a:MobilePhone>
         ///            <a:Name>Sarah Parker</a:Name>
         ///            <a:Notifications>
         ///               <a:Notification>
@@ -1211,7 +1207,6 @@ namespace LSOmni.Service
         ///            </a:Notifications>
         ///            <a:OneLists/>
         ///            <a:Password>TI9nX0kjWX3f3LA1EPpwXmMC3cfBC0bKzpcmPlzAWLIJghSYLwbLxFvsakQiPf93kxw6xpY+4KUB41yBsAM/3w==</a:Password>
-        ///            <a:Phone>666-6661</a:Phone>
         ///            <a:Profiles/>
         ///            <a:PublishedOffers xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
         ///               <b:PublishedOffer>
@@ -1328,6 +1323,7 @@ namespace LSOmni.Service
         ///            <ns1:Addresses>
         ///               <ns:Address>
         ///                  <ns:Address1>Santa Monica</ns:Address1>
+        ///                  <ns:CellPhoneNumber>555-5551</ns:CellPhoneNumber>
         ///                  <ns:City>Hollywood</ns:City>
         ///                  <ns:Country>US</ns:Country>
         ///                  <ns:PostCode>1001</ns:PostCode>
@@ -1346,7 +1342,6 @@ namespace LSOmni.Service
         ///            <ns1:Initials>Ms</ns1:Initials>
         ///            <ns1:LastName>Parker</ns1:LastName>
         ///            <ns1:MiddleName></ns1:MiddleName>
-        ///            <ns1:MobilePhone>555-5551</ns1:MobilePhone>
         ///            <ns1:UserName>sarah</ns1:UserName>
         ///         </ser:contact>
         ///      </ser:ContactUpdate>
@@ -1700,6 +1695,9 @@ namespace LSOmni.Service
         ItemCategory ItemCategoriesGetById(string itemCategoryId);
 
         [OperationContract]
+        List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items);
+
+        [OperationContract]
         ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails);
 
         /// <summary>
@@ -1904,6 +1902,20 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores);
+
+        /// <summary>
+        /// Gets Return Policy
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="storeGroupCode"></param>
+        /// <param name="itemCategory"></param>
+        /// <param name="productGroup"></param>
+        /// <param name="itemId"></param>
+        /// <param name="variantCode"></param>
+        /// <param name="variantDim1"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1);
 
         #endregion
 
@@ -2161,6 +2173,8 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Nav/Central Main Table data: 10012866 - Store
+        /// <p/><p/>
+        /// Only store with Loyalty or Mobile Checked will be replicated
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2438,7 +2452,7 @@ namespace LSOmni.Service
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of hierarchy modifier lines</returns>
         [OperationContract]
-        ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest);
+        ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Item with full detailed data (supports Item distribution)<p/>

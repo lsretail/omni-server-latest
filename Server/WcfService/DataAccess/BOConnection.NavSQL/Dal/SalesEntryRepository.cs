@@ -449,7 +449,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         TraceSqlCommand(command);
                         string salesId = (string)command.ExecuteScalar();
 
-                        //Use salesinvoice id to get Rewarded points for customer orders
+                        //Use sales invoice id to get Rewarded points for customer orders
                         if (!string.IsNullOrEmpty(salesId))
                             entryId = salesId;
                     }

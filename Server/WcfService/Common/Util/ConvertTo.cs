@@ -144,6 +144,13 @@ namespace LSOmni.Common.Util
             return date;
         }
 
+        public static DateTime NavDateToDateTime(DateTime date)
+        {
+            if ((date.Year == 1754 || date.Year == 1753) && date.Month == 1 && date.Day == 1)
+                return DateTime.MinValue;
+            return date;
+        }
+
         public static DateTime SafeDateTime(string value)
         {
             try

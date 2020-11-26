@@ -81,17 +81,17 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public List<ReplBarcode> ReplicateBarcodes(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateBarcodes(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplicateBarcodes(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public List<ReplBarcodeMaskSegment> ReplicateBarcodeMaskSegments(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateBarcodeMaskSegments(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplicateBarcodeMaskSegments(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public List<ReplBarcodeMask> ReplicateBarcodeMasks(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateBarcodeMasks(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplicateBarcodeMasks(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -101,7 +101,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateItemUOM(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplicateItemUOM(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -156,7 +156,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateProductGroups(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplicateProductGroups(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, string terminalId)
@@ -191,7 +191,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public List<ReplStoreTenderType> ReplicateStoreTenderType(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateStoreTenderType(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplicateStoreTenderType(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
         public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
@@ -231,10 +231,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return new List<ReplHierarchyHospRecipe>();
         }
 
-        public virtual List<ReplHierarchyHospModifier> ReplicateHierarchyHospModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             // TODO ?? 
-            return new List<ReplHierarchyHospModifier>();
+            return new List<ReplItemModifier>();
         }
 
         #endregion

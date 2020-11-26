@@ -335,8 +335,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price Including VAT"),
                 PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
                 MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
-                StartingDate = SQLHelper.GetDateTime(reader["Starting Date"]),
-                EndingDate = SQLHelper.GetDateTime(reader["Ending Date"]),
+                StartingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Starting Date"])),
+                EndingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Ending Date"])),
                 VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
                 Priority = SQLHelper.GetInt32(reader["Priority"])
             };

@@ -310,7 +310,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                 Status = SQLHelper.GetInt32(reader["Status"]),
                                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                                BlockedDate = SQLHelper.GetDateTime(reader["Date Blocked"])
+                                BlockedDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date Blocked"]))
                             };
                         }
                         reader.Close();
@@ -722,13 +722,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             MemberContact cont = new MemberContact()
             {
                 Id = SQLHelper.GetString(reader["Contact No_"]),
-                Phone = SQLHelper.GetString(reader["Phone No_"]),
-                MobilePhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
                 FirstName = SQLHelper.GetString(reader["First Name"]),
                 MiddleName = SQLHelper.GetString(reader["Middle Name"]),
                 LastName = SQLHelper.GetString(reader["Surname"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
-                BirthDay = SQLHelper.GetDateTime(reader["Date of Birth"]),
+                BirthDay = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date of Birth"])),
                 Gender = (Gender)SQLHelper.GetInt32(reader["Gender"]),
                 MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"])
             };
@@ -750,7 +748,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     City = SQLHelper.GetString(reader["City"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"])
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
                 }
             };
             return cont;
@@ -766,7 +766,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Status = (CardStatus)SQLHelper.GetInt32(reader["Status"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                DateBlocked = SQLHelper.GetDateTime(reader["Date Blocked"]),
+                DateBlocked = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date Blocked"])),
                 LoginId = SQLHelper.GetString(reader["Login ID"])
             };
         }

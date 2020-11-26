@@ -115,7 +115,9 @@ namespace LSOmni.BLL
                 // get the original image from URL file location
             }
 
-            iv.ImgSize = imgSize;
+            if (imgSize.Height != 0 || imgSize.Width != 0)
+                iv.ImgSize = imgSize;
+
             ImageFormat imgFormat = Common.Util.ImageConverter.DefaultImgFormat;
             iv.Format = imgFormat.ToString();
             iv.Image = base.Base64GetFromByte(iv.ImgBytes, imgSize, imgFormat);

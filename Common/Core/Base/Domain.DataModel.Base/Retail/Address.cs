@@ -31,8 +31,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             Address2 = string.Empty;
             City = string.Empty;
             PostCode = string.Empty;
+            HouseNo = string.Empty;
             StateProvinceRegion = string.Empty;
             Country = string.Empty;
+            CellPhoneNumber = string.Empty;
+            PhoneNumber = string.Empty;
         }
 
         public Address() : this(string.Empty)
@@ -62,7 +65,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         [DataMember]
         public string Address1 { get; set; }
         /// <summary>
-        /// Address line 2, Appartment, suite, unit, floor etc
+        /// Address line 2, Apartment, suite, unit, floor etc
         /// </summary>
         [DataMember]
         public string Address2 { get; set; }

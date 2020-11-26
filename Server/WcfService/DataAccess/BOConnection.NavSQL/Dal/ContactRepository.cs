@@ -36,6 +36,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlfrom = " FROM [" + navCompanyName + "Member Contact] mt" +
                       " LEFT OUTER JOIN [" + navCompanyName + "Member Account] ma ON ma.[No_]=mt.[Account No_]";
         }
+
         public List<ReplCustomer> ReplicateMembers(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
@@ -314,7 +315,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 Status = SQLHelper.GetInt32(reader["Status"]),
                                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                                BlockedDate = SQLHelper.GetDateTime(reader["Date Blocked"])
+                                BlockedDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date Blocked"]))
                             };
                         }
                         reader.Close();
@@ -678,6 +679,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
                             card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
                         }
+                        else
+                        {
+                            connection.Close();
+                            throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift Card not found");
+                        }
                         reader.Close();
                     }
                     connection.Close();
@@ -721,13 +727,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             MemberContact cont = new MemberContact()
             {
                 Id = SQLHelper.GetString(reader["Contact No_"]),
-                Phone = SQLHelper.GetString(reader["Phone No_"]),
-                MobilePhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
                 FirstName = SQLHelper.GetString(reader["First Name"]),
                 MiddleName = SQLHelper.GetString(reader["Middle Name"]),
                 LastName = SQLHelper.GetString(reader["Surname"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
-                BirthDay = SQLHelper.GetDateTime(reader["Date of Birth"]),
+                BirthDay = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date of Birth"])),
                 Gender = (Gender)SQLHelper.GetInt32(reader["Gender"]),
                 MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"])
             };
@@ -748,7 +752,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 City = SQLHelper.GetString(reader["City"]),
                 PostCode = SQLHelper.GetString(reader["Post Code"]),
                 Country = SQLHelper.GetString((NavVersion > new Version("13.5")) ? reader["Country_Region Code"] : reader["Country"]),
-                StateProvinceRegion = SQLHelper.GetString(reader["County"])
+                StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
             });
             return cont;
         }
@@ -763,7 +769,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Status = (CardStatus)SQLHelper.GetInt32(reader["Status"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                DateBlocked = SQLHelper.GetDateTime(reader["Date Blocked"]),
+                DateBlocked = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date Blocked"])),
                 LoginId = SQLHelper.GetString(reader["Login ID"])
             };
         }

@@ -8,10 +8,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
     public class Customer : Entity, IAggregateRoot
     {
         [DataMember]
-        public string CellularPhone { get; set; }
-        [DataMember]
-        public string PhoneLocal { get; set; }
-        [DataMember]
         public string Name { get; set; }
         [DataMember]
         public Currency Currency { get; set; }

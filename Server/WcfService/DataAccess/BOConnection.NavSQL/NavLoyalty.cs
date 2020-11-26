@@ -293,6 +293,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ItemUOMGetByIds(itemid, uomid);
         }
 
+        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        {
+            return NavWSBase.ItemCustomerPricesGet(storeId, cardId, items);
+        }
+
         #endregion
 
         #region ItemCategory and ProductGroup and Hierarchy
@@ -421,7 +426,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             {
                 foreach (SalesEntryPayment line in entry.Payments)
                 {
-                    line.TenderType = NavWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map TenderType between LSOmni and NAV
+                    line.TenderType = NavWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tender type between LSOmni and NAV
                     if (line.TenderType == null)
                         throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
                 }
@@ -515,6 +520,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId)
         {
             return NavWSBase.StoreServicesGetByStoreId(storeId);
+        }
+
+        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            return rep.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
         }
 
         #endregion

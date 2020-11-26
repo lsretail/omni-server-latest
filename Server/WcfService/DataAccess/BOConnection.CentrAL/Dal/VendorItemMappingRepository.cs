@@ -10,7 +10,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
     public class VendorItemMappingRepository : BaseRepository
     {
         // Key : NavProductId, NavManufacturerId
-        const int TABLEID = 0;
+        const int TABLEID = 27;
 
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;

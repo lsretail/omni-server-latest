@@ -41,15 +41,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
                     command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : "") + " * FROM (" +
                         "SELECT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date]," +
-                        "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC],co.[Ship-to Name] AS [ShipName]," +
-                        "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name],mt.[POS Terminal No_],mt.[Transaction No_] " +
+                        "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
+                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
+                        "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
+                        "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_] " +
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "UNION " +
                         "SELECT mt.[Document ID] AS [Document ID],mt.[" + storefield + "],mt.[Created] AS [Date]," +
-                        "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC],mt.[Ship-to Name] AS [ShipName]," +
-                        "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
+                        "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC]," +
+                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
+                        "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
+                        "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[" + storefield + "] " +
                         ") AS SalesEntries " +
@@ -82,8 +86,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
-                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name],mt.[POS Terminal No_],mt.[Transaction No_]," +
-                        "co.[External ID] AS [External ID],co.[Ship-to Name] AS [ShipName],mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC] " +
+                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_]," +
+                        "co.[External ID] AS [External ID]," +
+                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
+                        "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
+                        "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC] " +
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
@@ -130,8 +137,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 {
                     command.CommandText = "SELECT " + ((maxNumberOfTransactions > 0) ? "TOP " + maxNumberOfTransactions : "") + " * FROM (" +
                         "SELECT DISTINCT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date]," +
-                        "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC],co.[Ship-to Name] AS [ShipName]," +
-                        "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name],mt.[POS Terminal No_],mt.[Transaction No_] " +
+                        "co.[External ID] AS [External ID],mt.[Member Card No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
+                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
+                        "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
+                        "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_] " +
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "INNER JOIN [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
@@ -140,8 +149,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) " +
                         "UNION " +
                         "SELECT DISTINCT mt.[Document ID] AS [Document ID],mt.[Store No_],mt.[Created] AS [Date]," +
-                        "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC],mt.[Ship-to Name] AS [ShipName]," +
-                        "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
+                        "mt.[External ID],mt.[Member Card No_],0 AS Posted,'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC]," +
+                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
+                        "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
+                        "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "INNER JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ol ON ol.[Document ID]=mt.[Document ID] " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]= mt.[Store No_] " +
@@ -392,10 +403,39 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 PaymentStatus = PaymentStatus.Posted,
                 Posted = true,
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
-                StoreName = SQLHelper.GetString(reader["Name"]),
+                StoreName = SQLHelper.GetString(reader["StName"]),
                 CustomerOrderNo = SQLHelper.GetString(reader["Document ID"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
-                ShipToName = SQLHelper.GetString(reader["ShipName"])
+                
+                ContactName = SQLHelper.GetString(reader["Name"]),
+                ContactDayTimePhoneNo = SQLHelper.GetString(reader["Daytime Phone No_"]),
+                ContactEmail = SQLHelper.GetString(reader["Email"]),
+                ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
+                },
+
+                ShipToName = SQLHelper.GetString(reader["Ship-to Name"]),
+                ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]),
+                ShipToAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
+                    Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["Ship-to City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
+                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
+                }
             };
 
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
@@ -418,16 +458,45 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             SalesEntry entry = new SalesEntry
             {
                 Id = SQLHelper.GetString(reader["Document ID"]),
+                IdType = DocumentIdType.Order,
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
-                IdType = DocumentIdType.Order,
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 Status = SalesEntryStatus.Created,
-                StoreName = SQLHelper.GetString(reader["Name"]),
-                ShipToName = SQLHelper.GetString(reader["ShipName"]),
+                StoreName = SQLHelper.GetString(reader["StName"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
                 Posted = SQLHelper.GetBool(reader["Posted"]),
-                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"])
+                ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
+
+                ContactName = SQLHelper.GetString(reader["Name"]),
+                ContactDayTimePhoneNo = SQLHelper.GetString(reader["Daytime Phone No_"]),
+                ContactEmail = SQLHelper.GetString(reader["Email"]),
+                ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
+                },
+
+                ShipToName = SQLHelper.GetString(reader["Ship-to Name"]),
+                ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]),
+                ShipToAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
+                    Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["Ship-to City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
+                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
+                }
             };
 
             entry.CustomerOrderNo = entry.Id;

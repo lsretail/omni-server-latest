@@ -133,7 +133,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters["@f4"].Value = NullToString(notification.Details);
                                 command.Parameters["@f5"].Value = 0;
                                 command.Parameters["@f6"].Value = notification.Created; //using this for now
-                                command.Parameters["@f7"].Value = (DateTime)notification.ExpiryDate;
+                                command.Parameters["@f7"].Value = XMLHelper.GetSQLNAVDate((DateTime)notification.ExpiryDate);
                                 command.Parameters["@f8"].Value = DateTime.Now;
                                 command.Parameters["@f9"].Value = string.Empty;
                                 command.Parameters["@f10"].Value = DateTime.Now;
@@ -251,7 +251,7 @@ namespace LSOmni.DataAccess.Dal
                 DateLastModified = SQLHelper.GetDateTime(reader["DateLastModified"]),
                 QRText = SQLHelper.GetString(reader["QRText"]),
                 NotificationType = (NotificationType)SQLHelper.GetInt32(reader["NotificationType"]),
-                ExpiryDate = SQLHelper.GetDateTime(reader["ValidTo"]),
+                ExpiryDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["ValidTo"])),
                 Status = (NotificationStatus)SQLHelper.GetInt32(reader["Status"])
             };
 
@@ -261,7 +261,7 @@ namespace LSOmni.DataAccess.Dal
                 notification.NotificationTextType = NotificationTextType.Plain;
 
 
-            if (notification.ExpiryDate != null && notification.ExpiryDate.Value.Hour == 0
+            if (notification.ExpiryDate != null && notification.ExpiryDate != DateTime.MinValue && notification.ExpiryDate.Value.Hour == 0
                 && notification.ExpiryDate.Value.Minute == 0 && notification.ExpiryDate.Value.Second == 0)
             {
                 notification.ExpiryDate = notification.ExpiryDate.Value.AddHours(23).AddMinutes(59).AddSeconds(59);

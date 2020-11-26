@@ -128,7 +128,7 @@ namespace LSRetail.Omni.DiscountEngine
                 }
             }
 
-            if (start == DateTime.Parse("1753-01-01 00:00:00.000") && end == DateTime.Parse("1753-01-01 00:00:00.000"))
+            if (start == DateTime.MinValue && end == DateTime.MinValue)
             {
                 withinBounds = discval.TimeWithinBounds;
                 start = discval.StartTime;
@@ -136,7 +136,7 @@ namespace LSRetail.Omni.DiscountEngine
                 afterMidnight = discval.EndAfterMidnight;
             }
 
-            if (start == DateTime.Parse("1753-01-01 00:00:00.000") && end == DateTime.Parse("1753-01-01 00:00:00.000"))
+            if (start == DateTime.MinValue && end == DateTime.MinValue)
                 return withinBounds;
             if (DateTime.Now >= start && DateTime.Now <= end)
                 return withinBounds;

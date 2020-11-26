@@ -10,7 +10,6 @@ using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 {
@@ -43,10 +42,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 
         [DataMember]
         public List<Address> Addresses { get; set; }
-        [DataMember]
-        public string Phone { get; set; }
-        [DataMember]
-        public string MobilePhone { get; set; }
         [DataMember]
         public Gender Gender { get; set; }
         [DataMember]

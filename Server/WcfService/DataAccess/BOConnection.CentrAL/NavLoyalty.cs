@@ -293,6 +293,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.ItemUOMGetByIds(itemid, uomid);
         }
 
+        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        {
+            return NavWSBase.ItemCustomerPricesGet(storeId, cardId, items);
+        }
+
         #endregion
 
         #region ItemCategory and ProductGroup and Hierarchy
@@ -391,7 +396,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
         {
-            SalesEntry entry = null;
+            SalesEntry entry;
             if (type == DocumentIdType.Receipt)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config, NAVVersion);
@@ -444,7 +449,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         public virtual ImageView ImageGetById(string imageId, bool includeBlob)
         {
             ImageRepository rep = new ImageRepository(config);
-            return rep.ImageGetById(imageId, includeBlob);
+            if (NAVVersion.Major > 16)
+                return rep.ImageMediaGetByCode(imageId, includeBlob);
+            else
+                return rep.ImageGetById(imageId, includeBlob);
         }
 
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
@@ -499,6 +507,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.StoreServicesGetByStoreId(storeId);
         }
 
+        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            return rep.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+        }
+
         #endregion
 
         #region EComm Replication
@@ -512,7 +526,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         public virtual List<ReplImage> ReplEcommImages(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             ImageRepository rep = new ImageRepository(config);
-            return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion.Major > 16)
+                return rep.ReplEcommMediaImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            else
+                return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttribute> ReplEcommAttribute(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

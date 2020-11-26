@@ -16,6 +16,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             VariantDescription = string.Empty;
             UomId = string.Empty;
             ItemImageId = string.Empty;
+            StoreId = string.Empty;
+            ExternalId = string.Empty;
             Quantity = 1.0M;
 
             LineType = LineType.Item; //never change this unless you know what you are doing !

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 using LSOmni.Common.Util;
@@ -11,6 +12,7 @@ using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Setup.SpecialCase;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Pos.Items;
 using LSRetail.Omni.Domain.DataModel.Pos.Items.SpecialCase;
@@ -127,10 +129,115 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return transaction;
         }
 
+        public OrderHosp MapFromRootToOrderHosp(NavWS.RootMobileTransaction root)
+        {
+            NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
+            UnknownCurrency transactionCurrency = new UnknownCurrency(header.CurrencyCode);
+
+            OrderHosp order = new OrderHosp()
+            {
+                Id = header.Id,
+                ReceiptNo = header.ReceiptNo,
+                DocumentRegTime = ConvertTo.SafeJsonDate(header.TransDate),
+                TotalAmount = header.GrossAmount,
+                TotalNetAmount = header.NetAmount,
+                TotalDiscount = header.TotalDiscount,
+                CardId = header.MemberCardNo,
+                StoreId = header.StoreId
+            };
+
+            //now loop through the lines
+            order.OrderLines = new List<OrderHospLine>();
+            if (root.MobileTransactionLine != null)
+            {
+                foreach (NavWS.MobileTransactionLine line in root.MobileTransactionLine)
+                {
+                    OrderHospLine oline = new OrderHospLine()
+                    {
+                        Id = line.Id,
+                        LineType = (LineType)line.LineType,
+                        LineNumber = line.LineNo,
+                        ItemDescription = line.ItemDescription,
+                        VariantId = line.VariantCode,
+                        VariantDescription = line.VariantDescription,
+                        UomId = line.UomId,
+                        NetPrice = line.NetPrice,
+                        Quantity = line.Quantity,
+                        DiscountAmount = line.DiscountAmount,
+                        DiscountPercent = line.DiscountPercent,
+                        NetAmount = line.NetAmount,
+                        TaxAmount = line.TAXAmount,
+                        Amount = line.NetAmount + line.TAXAmount,
+                    };
+
+                    oline.ItemId = (oline.LineType == LineType.Coupon) ? line.CouponCode : line.Number;
+
+                    if (line.ManualPrice > 0)
+                    {
+                        oline.Price = line.ManualPrice;
+                        oline.PriceModified = true;
+                    }
+                    else
+                    {
+                        oline.Price = line.Price;
+                        oline.PriceModified = false;
+                    }
+
+                    if (oline.LineType == LineType.Item || oline.LineType == LineType.Coupon || oline.LineType == LineType.IncomeExpense)
+                    {
+                        if (line.DealItem > 0)
+                        {
+                            //its a deal, get the deal lines from the mobileTransLine 
+                            oline.IsADeal = true;
+                            oline.SubLines.AddRange(DealSubLine(root.MobileTransactionSubLine.ToList(), oline.LineNumber));
+                        }
+
+                        //get the text modifiers from the mobileTransLine 
+                        List<OrderHospSubLine> tmlist = TextModifierSubLine(root.MobileTransactionSubLine.ToList(), oline.LineNumber);
+                        if (tmlist != null && tmlist.Count > 0)
+                        {
+                            oline.SubLines.AddRange(tmlist);
+                        }
+
+                        //get the item modifiers from the mobileTransLine 
+                        List<OrderHospSubLine> modiferLineList = ModifierSubLine(root.MobileTransactionSubLine.ToList(), oline.LineNumber);
+                        if (modiferLineList != null && modiferLineList.Count > 0)
+                        {
+                            oline.SubLines.AddRange(modiferLineList);
+                        }
+
+                        oline.LineNumber = LineNumberFromNav(oline.LineNumber); // MPOS expects to get 1 not 10000
+                        order.OrderLines.Add(oline);
+                    }
+                }
+            }
+
+            //now loop through the discount lines
+            List<DiscountLine> discounts = new List<DiscountLine>();
+            if (root.MobileTransDiscountLine != null)
+            {
+                foreach (NavWS.MobileTransDiscountLine mobileTransDisc in root.MobileTransDiscountLine)
+                {
+                    //DiscountType: Periodic Disc.,Customer,InfoCode,Total,Line,Promotion,Deal,Total Discount,Tender Type,Item Point,Line Discount,Member Point,Coupon
+                    DiscountLine discount = new DiscountLine();
+                    discount.Type = (DiscountType)mobileTransDisc.DiscountType;
+                    discount.PeriodicType = (PeriodicDiscType)mobileTransDisc.PeriodicDiscType;
+                    discount.Percentage = mobileTransDisc.DiscountPercent;
+                    discount.Amount = new Money(mobileTransDisc.DiscountAmount, transactionCurrency);
+                    discount.Description = mobileTransDisc.Description;
+                    discount.No = mobileTransDisc.Id;
+                    discount.OfferNo = mobileTransDisc.OfferNo;
+                    discount.LineNumber = LineNumberFromNav(mobileTransDisc.LineNo);
+                    discounts.Add(discount);
+                }
+            }
+
+            return order;
+        }
+
         public SalesEntry MapFromRootToRetailTransaction(NavWS.RootGetTransaction root)
         {
             NavWS.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
-            UnknownCurrency transactionCurrency = new UnknownCurrency(header.TransCurrency);
 
             SalesEntry transaction = new SalesEntry()
             {
@@ -227,13 +334,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                             LineNo = LineNumberToNav(posLine.LineNumber),
                             No = discNo++,
                             DiscountType = (int)disc.Type,
-                            OfferNo = disc.OfferNo,
-                            Description = disc.Description,
+                            OfferNo = XMLHelper.GetString(disc.OfferNo),
+                            Description = XMLHelper.GetString(disc.Description),
                             PeriodicDiscType = (int)disc.PeriodicType,
                             DiscountAmount = disc.Amount.Value,
                             DiscountPercent = disc.Percentage,
                             PeriodicDiscGroup = string.Empty
-                        }); 
+                        });
                     }
                 }
                 root.MobileTransDiscountLine = discLines.ToArray();
@@ -264,25 +371,214 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootMobileTransaction MapFromOrderToRoot(Order transaction)
+        public NavWS.RootMobileTransaction MapFromOrderToRoot(OrderHosp order, string terminalId, string staffId, string saleType)
         {
             NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
-
-            if (string.IsNullOrEmpty(transaction.Id))
-                transaction.Id = Guid.NewGuid().ToString();
 
             //MobileTrans
             List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
             trans.Add(new NavWS.MobileTransaction()
             {
-                Id = transaction.Id,
-                StoreId = transaction.StoreId,
+                Id = order.Id,
+                StoreId = order.StoreId,
                 TransactionType = 2,
                 EntryStatus = (int)EntryStatus.Normal,
                 TransDate = DateTime.Now,
                 SaleIsReturnSale = false,
-                MemberCardNo = transaction.CardId,
+                MemberCardNo = order.CardId,
                 CurrencyFactor = 1,
+                TerminalId = terminalId,
+                StaffId = staffId,
+                SalesType = saleType,
+
+                ReceiptNo = string.Empty,
+                CurrencyCode = string.Empty,
+                BusinessTAXCode = string.Empty,
+                PriceGroupCode = string.Empty,
+                CustomerId = string.Empty,
+                CustDiscGroup = string.Empty,
+                MemberPriceGroupCode = string.Empty,
+                DiningTblDescription = string.Empty,
+                RefundedFromStoreNo = string.Empty,
+                RefundedFromPOSTermNo = string.Empty,
+                RefundedReceiptNo = string.Empty
+            });
+            root.MobileTransaction = trans.ToArray();
+
+            //MobileTransLines
+            List<NavWS.MobileTransactionLine> transLines = new List<NavWS.MobileTransactionLine>();
+            List<NavWS.MobileTransactionSubLine> subLines = new List<NavWS.MobileTransactionSubLine>();
+            List<NavWS.MobileReceiptInfo> receiptLines = new List<NavWS.MobileReceiptInfo>();
+            List<NavWS.MobileTransDiscountLine> discLines = new List<NavWS.MobileTransDiscountLine>();
+
+            // find highest lineNo count in sub line, if user has set some
+            int LineCounter = 1;
+            foreach (OrderHospLine l in order.OrderLines)
+            {
+                if (LineCounter < l.LineNumber)
+                    LineCounter = l.LineNumber;
+
+                if (l.SubLines != null)
+                {
+                    foreach (OrderHospSubLine s in l.SubLines)
+                    {
+                        if (LineCounter < s.LineNumber)
+                            LineCounter = s.LineNumber;
+                    }
+                }
+            }
+
+            int discNo = 1;
+            foreach (OrderHospLine posLine in order.OrderLines)
+            {
+                if (posLine.LineNumber == 0)
+                    posLine.LineNumber = ++LineCounter;
+
+                transLines.Add(MobileTransLine(order.Id, posLine, staffId));
+                subLines.AddRange(MobileTransSubLine(order.Id, posLine, staffId, ref LineCounter));
+
+                if (posLine.DiscountLines != null)
+                {
+                    foreach (OrderDiscountLine dline in posLine.DiscountLines)
+                    {
+                        discLines.Add(new NavWS.MobileTransDiscountLine()
+                        {
+                            Id = dline.Id,
+                            LineNo = LineNumberToNav(posLine.LineNumber),
+                            No = discNo++,
+                            DiscountType = (int)dline.DiscountType,
+                            OfferNo = XMLHelper.GetString(dline.OfferNumber),
+                            Description = XMLHelper.GetString(dline.Description),
+                            PeriodicDiscType = (int)dline.PeriodicDiscType,
+                            DiscountAmount = dline.DiscountAmount,
+                            DiscountPercent = dline.DiscountPercent,
+                            PeriodicDiscGroup = string.Empty
+                        });
+                    }
+                }
+            }
+
+            if (order.OrderPayments != null)
+            {
+                foreach (OrderPayment tenderLine in order.OrderPayments)
+                {
+                    transLines.Add(TransPaymentLine(order.Id, tenderLine, order.StoreId, terminalId, staffId, ++LineCounter));
+                }
+            }
+
+            root.MobileTransDiscountLine = discLines.ToArray();
+            root.MobileReceiptInfo = receiptLines.ToArray();
+            root.MobileTransactionLine = transLines.ToArray();
+            root.MobileTransactionSubLine = subLines.ToArray();
+            return root;
+        }
+
+        public NavWS.RootMobileTransaction MapFromOrderToRoot(OneList request, string terminalId, string staffId, string saleType)
+        {
+            NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
+
+            //MobileTrans
+            List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
+            trans.Add(new NavWS.MobileTransaction()
+            {
+                Id = request.Id,
+                StoreId = request.StoreId,
+                TransactionType = 2,
+                EntryStatus = (int)EntryStatus.Normal,
+                TransDate = DateTime.Now,
+                SaleIsReturnSale = false,
+                MemberCardNo = XMLHelper.GetString(request.CardId),
+                CurrencyFactor = 1,
+                SalesType = saleType,
+                TerminalId = terminalId,
+                StaffId = staffId,
+
+                ReceiptNo = string.Empty,
+                CurrencyCode = string.Empty,
+                BusinessTAXCode = string.Empty,
+                PriceGroupCode = string.Empty,
+                CustomerId = string.Empty,
+                CustDiscGroup = string.Empty,
+                MemberPriceGroupCode = string.Empty,
+                DiningTblDescription = string.Empty,
+                RefundedFromStoreNo = string.Empty,
+                RefundedFromPOSTermNo = string.Empty,
+                RefundedReceiptNo = string.Empty,
+                VATBusPostingGroup = string.Empty,
+                GenBusPostingGroup = string.Empty
+            });
+            root.MobileTransaction = trans.ToArray();
+
+            //MobileTransLines
+            List<NavWS.MobileTransactionLine> transLines = new List<NavWS.MobileTransactionLine>();
+            List<NavWS.MobileTransactionSubLine> subLines = new List<NavWS.MobileTransactionSubLine>();
+            List<NavWS.MobileReceiptInfo> receiptLines = new List<NavWS.MobileReceiptInfo>();
+            List<NavWS.MobileTransDiscountLine> discLines = new List<NavWS.MobileTransDiscountLine>();
+
+            // find highest lineNo count in sub line, if user has set some
+            int LineCounter = 1;
+            foreach (OneListItem l in request.Items)
+            {
+                if (LineCounter < l.LineNumber)
+                    LineCounter = l.LineNumber;
+
+                if (l.OnelistSubLines != null)
+                {
+                    foreach (OneListItemSubLine s in l.OnelistSubLines)
+                    {
+                        if (LineCounter < s.LineNumber)
+                            LineCounter = s.LineNumber;
+                    }
+                }
+            }
+
+            foreach (OneListItem line in request.Items)
+            {
+                if (line.LineNumber == 0)
+                    line.LineNumber = ++LineCounter;
+
+                transLines.Add(MobileTransLine(request.Id, line, request.StoreId, staffId));
+                subLines.AddRange(MobileTransSubLine(request.Id, line, ref LineCounter, staffId));
+            }
+
+            if (request.PublishedOffers != null)
+            {
+                foreach (OneListPublishedOffer offer in request.PublishedOffers)
+                {
+                    if (offer.LineNumber == 0)
+                        offer.LineNumber = ++LineCounter;
+
+                    transLines.Add(MobileTransLine(request.Id, offer, ++LineCounter, request.StoreId, staffId));
+                }
+            }
+
+            root.MobileTransDiscountLine = discLines.ToArray();
+            root.MobileReceiptInfo = receiptLines.ToArray();
+            root.MobileTransactionLine = transLines.ToArray();
+            root.MobileTransactionSubLine = subLines.ToArray();
+            return root;
+        }
+
+        public NavWS.RootMobileTransaction MapFromOrderToRoot(Order order)
+        {
+            NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
+
+            if (string.IsNullOrEmpty(order.Id))
+                order.Id = Guid.NewGuid().ToString();
+
+            //MobileTrans
+            List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
+            trans.Add(new NavWS.MobileTransaction()
+            {
+                Id = order.Id,
+                StoreId = order.StoreId,
+                TransactionType = 2,
+                EntryStatus = (int)EntryStatus.Normal,
+                TransDate = DateTime.Now,
+                SaleIsReturnSale = false,
+                MemberCardNo = XMLHelper.GetString(order.CardId),
+                CurrencyFactor = 1,
+
                 TerminalId = string.Empty,
                 StaffId = string.Empty,
                 ReceiptNo = string.Empty,
@@ -305,10 +601,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             List<NavWS.MobileReceiptInfo> receiptLines = new List<NavWS.MobileReceiptInfo>();
 
             int lineno = 1;
-            foreach (OrderLine saleLine in transaction.OrderLines)
+            foreach (OrderLine line in order.OrderLines)
             {
-                saleLine.LineNumber = lineno++;
-                transLines.Add(MobileTransLine(transaction.Id, saleLine, transaction.StoreId));
+                line.LineNumber = lineno++;
+                transLines.Add(MobileTransLine(order.Id, line, order.StoreId));
             }
 
             root.MobileReceiptInfo = receiptLines.ToArray();
@@ -482,7 +778,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ManualTotalDiscPercent = manualTotalDiscPercent,
                 NetAmount = transaction.NetAmount.Value,
                 GrossAmount = transaction.GrossAmount.Value,
-                LineDiscount = transaction.TotalDiscount.Value,  
+                LineDiscount = transaction.TotalDiscount.Value,
                 Payment = transaction.PaymentAmount.Value,
                 DiningTblDescription = string.Empty,
                 SalesType = string.Empty,
@@ -589,8 +885,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Barcode = barcode ?? string.Empty,
                 CurrencyCode = currency.Id,
                 CurrencyFactor = 1,
-                VariantCode = variantId ?? string.Empty,
-                UomId = uomId ?? string.Empty,
+                VariantCode = XMLHelper.GetString(variantId),
+                UomId = XMLHelper.GetString(uomId),
                 NetPrice = netPrice,
                 Price = price,
                 Quantity = quantity,
@@ -598,21 +894,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 DiscountPercent = discountPercent,
                 NetAmount = netAmount,
                 TAXAmount = taxAmount,
-                TAXProductCode = taxProductCode,
-                TAXBusinessCode = string.Empty,
+                TAXProductCode = XMLHelper.GetString(taxProductCode),
                 ManualPrice = manualPrice,
-                CardOrCustNo = string.Empty,
                 ManualDiscountAmount = manualDiscountAmount,
                 ManualDiscountPercent = manualDiscountPercent,
+                ExternalId = externalId,
+                StoreId = storeId,
+                RecommendedItem = fromRecommend,
+                OrigTransLineNo = lineOrgNumber,
+                OrigTransNo = ConvertTo.SafeInt(orgTransNo),
+                OrigTransPos = orgTerminal ?? string.Empty,
+                OrigTransStore = orgStore ?? string.Empty,
+
+                CardOrCustNo = string.Empty,
+                TAXBusinessCode = string.Empty,
                 EFTCardNumber = string.Empty,
                 EFTCardName = string.Empty,
                 EFTAuthCode = string.Empty,
                 EFTMessage = string.Empty,
-                ExternalId = externalId,
-                RecommendedItem = fromRecommend,
-
                 StaffId = string.Empty,
-                StoreId = storeId,
                 PriceGroupCode = string.Empty,
                 CouponCode = string.Empty,
                 TerminalId = string.Empty,
@@ -623,11 +923,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 RestMenuTypeCode = string.Empty,
                 TenderDescription = string.Empty,
                 UomDescription = string.Empty,
-                VariantDescription = string.Empty,
-                OrigTransLineNo = lineOrgNumber,
-                OrigTransNo = ConvertTo.SafeInt(orgTransNo),
-                OrigTransPos = orgTerminal ?? string.Empty,
-                OrigTransStore = orgStore ?? string.Empty,
+                VariantDescription = string.Empty
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
@@ -644,10 +940,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LineType = (int)LineType.Item,
                 Number = line.ItemId,
                 StoreId = storeId,
-                CurrencyCode = string.Empty,
                 CurrencyFactor = 1,
-                VariantCode = line.VariantId,
-                UomId = line.UomId,
+                VariantCode = XMLHelper.GetString(line.VariantId),
+                UomId = XMLHelper.GetString(line.UomId),
                 NetPrice = line.NetPrice,
                 Price = line.Price,
                 Quantity = line.Quantity,
@@ -657,6 +952,60 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TAXAmount = line.TaxAmount,
                 RecommendedItem = false,
 
+                CurrencyCode = string.Empty,
+                Barcode = string.Empty,
+                TAXProductCode = string.Empty,
+                TAXBusinessCode = string.Empty,
+                CardOrCustNo = string.Empty,
+                EFTCardNumber = string.Empty,
+                EFTCardName = string.Empty,
+                EFTAuthCode = string.Empty,
+                EFTMessage = string.Empty,
+                StaffId = string.Empty,
+                PriceGroupCode = string.Empty,
+                CouponCode = string.Empty,
+                TerminalId = string.Empty,
+                EFTTransactionNo = string.Empty,
+                SalesType = string.Empty,
+                ItemDescription = string.Empty,
+                LineKitchenStatusCode = string.Empty,
+                RestMenuTypeCode = string.Empty,
+                TenderDescription = string.Empty,
+                UomDescription = string.Empty,
+                VariantDescription = string.Empty,
+                OrigTransPos = string.Empty,
+                OrigTransStore = string.Empty
+            };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
+        }
+
+        private NavWS.MobileTransactionLine MobileTransLine(string id, OneListItem line, string storeId, string staffId)
+        {
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(line.LineNumber),
+                EntryStatus = (int)EntryStatus.Normal,
+                LineType = (int)LineType.Item,
+                Number = line.ItemId,
+                StoreId = storeId,
+                CurrencyFactor = 1,
+                VariantCode = XMLHelper.GetString(line.VariantId),
+                UomId = XMLHelper.GetString(line.UnitOfMeasureId),
+                NetPrice = line.NetPrice,
+                Price = (line.PriceModified) ? 0 : line.Price,
+                Quantity = line.Quantity,
+                DiscountAmount = line.DiscountAmount,
+                DiscountPercent = line.DiscountPercent,
+                NetAmount = line.NetAmount,
+                TAXAmount = line.TaxAmount,
+                ManualPrice = (line.PriceModified) ? line.Price : 0,
+                RecommendedItem = false,
+                DealItem = (line.IsADeal ? 1 : 0),  //0=Item line, 1=Deal line
+
+                CurrencyCode = string.Empty,
                 Barcode = string.Empty,
                 TAXProductCode = string.Empty,
                 TAXBusinessCode = string.Empty,
@@ -679,6 +1028,63 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
                 OrigTransStore = string.Empty,
+                GenBusPostingGroup = string.Empty,
+                GenProdPostingGroup = string.Empty,
+                VatBusPostingGroup = string.Empty,
+                VatProdPostingGroup = string.Empty,
+            };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
+        }
+
+        private NavWS.MobileTransactionLine MobileTransLine(string id, OrderHospLine line, string storeId)
+        {
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(line.LineNumber),
+                EntryStatus = (int)EntryStatus.Normal,
+                LineType = (int)line.LineType,
+                Number = (line.LineType == LineType.Item ? line.ItemId : string.Empty),
+                Barcode = (line.LineType == LineType.Coupon ? line.ItemId : string.Empty),
+                StoreId = storeId,
+                CurrencyCode = string.Empty,
+                CurrencyFactor = 1,
+                VariantCode = XMLHelper.GetString(line.VariantId),
+                UomId = XMLHelper.GetString(line.UomId),
+                NetPrice = line.NetPrice,
+                Price = (line.PriceModified) ? 0 : line.Price,
+                Quantity = line.Quantity,
+                DiscountAmount = line.DiscountAmount,
+                DiscountPercent = line.DiscountPercent,
+                NetAmount = line.NetAmount,
+                TAXAmount = line.TaxAmount,
+                ManualPrice = (line.PriceModified) ? line.Price : 0,
+                RecommendedItem = false,
+                DealItem = (line.IsADeal ? 1 : 0),  //0=Item line, 1=Deal line
+
+                TAXProductCode = string.Empty,
+                TAXBusinessCode = string.Empty,
+                CardOrCustNo = string.Empty,
+                EFTCardNumber = string.Empty,
+                EFTCardName = string.Empty,
+                EFTAuthCode = string.Empty,
+                EFTMessage = string.Empty,
+                StaffId = string.Empty,
+                PriceGroupCode = string.Empty,
+                CouponCode = string.Empty,
+                TerminalId = string.Empty,
+                EFTTransactionNo = string.Empty,
+                SalesType = string.Empty,
+                ItemDescription = string.Empty,
+                LineKitchenStatusCode = string.Empty,
+                RestMenuTypeCode = string.Empty,
+                TenderDescription = string.Empty,
+                UomDescription = string.Empty,
+                VariantDescription = string.Empty,
+                OrigTransPos = string.Empty,
+                OrigTransStore = string.Empty
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
@@ -693,8 +1099,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LineNo = lineNumber,
                 EntryStatus = (int)EntryStatus.Normal,
                 LineType = (int)LineType.Coupon,
+                CouponCode = XMLHelper.GetString(offer.OfferId),
+                Barcode = XMLHelper.GetString(offer.OfferId),
+                StoreId = storeId,
+
                 Number = string.Empty,
-                Barcode = offer.OfferId,
                 CurrencyCode = string.Empty,
                 VariantCode = string.Empty,
                 UomId = string.Empty,
@@ -706,12 +1115,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 EFTAuthCode = string.Empty,
                 EFTMessage = string.Empty,
                 StaffId = string.Empty,
-                StoreId = storeId,
                 PriceGroupCode = string.Empty,
                 TerminalId = string.Empty,
                 EFTTransactionNo = string.Empty,
                 SalesType = string.Empty,
-                CouponCode = offer.OfferId,
                 ItemDescription = string.Empty,
                 LineKitchenStatusCode = string.Empty,
                 RestMenuTypeCode = string.Empty,
@@ -725,6 +1132,194 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 tline.RetailImageID = string.Empty;
             return tline;
         }
+
+        private NavWS.MobileTransactionLine MobileTransLine(string id, OneListPublishedOffer offer, int lineNumber, string storeId, string staffId)
+        {
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(lineNumber),
+                EntryStatus = (int)EntryStatus.Normal,
+                LineType = (int)LineType.Coupon,
+                Barcode = XMLHelper.GetString(offer.Id),
+                CouponCode = XMLHelper.GetString(offer.Id),
+                StaffId = staffId,
+                StoreId = storeId,
+
+                Number = string.Empty,
+                CurrencyCode = string.Empty,
+                VariantCode = string.Empty,
+                UomId = string.Empty,
+                TAXProductCode = string.Empty,
+                TAXBusinessCode = string.Empty,
+                CardOrCustNo = string.Empty,
+                EFTCardNumber = string.Empty,
+                EFTCardName = string.Empty,
+                EFTAuthCode = string.Empty,
+                EFTMessage = string.Empty,
+                PriceGroupCode = string.Empty,
+                TerminalId = string.Empty,
+                EFTTransactionNo = string.Empty,
+                SalesType = string.Empty,
+                ItemDescription = string.Empty,
+                LineKitchenStatusCode = string.Empty,
+                RestMenuTypeCode = string.Empty,
+                TenderDescription = string.Empty,
+                UomDescription = string.Empty,
+                VariantDescription = string.Empty,
+                OrigTransPos = string.Empty,
+                OrigTransStore = string.Empty,
+                GenBusPostingGroup = string.Empty,
+                GenProdPostingGroup = string.Empty,
+                VatBusPostingGroup = string.Empty,
+                VatProdPostingGroup = string.Empty
+            };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
+        }
+
+        private NavWS.MobileTransactionSubLine CreateTransactionSubLine(string id, OneListItemSubLine rq, int parLineNo, string parentItemNo, string staffId)
+        {
+            return new NavWS.MobileTransactionSubLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(rq.LineNumber),
+                ParentLineNo = LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
+                EntryStatus = (int)EntryStatus.Normal,
+                ParentLineIsSubline = (rq.ParentSubLineId > 0) ? 1 : 0,
+                LineType = (int)rq.Type,
+                Number = XMLHelper.GetString(rq.ItemId),
+                VariantCode = XMLHelper.GetString(rq.VariantId),
+                UomId = XMLHelper.GetString(rq.Uom),
+                Quantity = rq.Quantity,
+                Description = XMLHelper.GetString(rq.Description),
+                VariantDescription = XMLHelper.GetString(rq.VariantDescription),
+                UomDescription = XMLHelper.GetString(rq.Uom),
+                StaffId = staffId,
+                ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
+                ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
+                DealLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealLineId),
+                DealModLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealModLineId),
+                DealId = string.IsNullOrEmpty(parentItemNo) ? "0" : parentItemNo,
+
+                Barcode = string.Empty,
+                TAXBusinessCode = string.Empty,
+                TAXProductCode = string.Empty,
+                TransDate = DateTime.Now,
+                GenBusPostingGroup = string.Empty,
+                GenProdPostingGroup = string.Empty,
+                VatBusPostingGroup = string.Empty,
+                VatProdPostingGroup = string.Empty,
+                LineKitchenStatusCode = string.Empty
+            };
+        }
+
+        private NavWS.MobileTransactionSubLine CreateTransactionSubLine(string id, OrderHospSubLine rq, ref int lineNo, int parLineNo, SubLineType subLineType, string staffId)
+        {
+            if (subLineType == SubLineType.Deal)
+            {
+                rq.ModifierGroupCode = string.Empty;
+                rq.ModifierSubCode = string.Empty;
+            }
+            else if (subLineType == SubLineType.Modifier)
+            {
+                rq.DealCode = "0";
+                rq.DealLineId = 0;
+                rq.DealModifierLineId = 0;
+            }
+            else if (subLineType == SubLineType.Text)
+            {
+                rq.ItemId = string.Empty;
+                rq.DealCode = "0";
+                rq.DealLineId = 0;
+                rq.DealModifierLineId = 0;
+            }
+
+            if (rq.LineNumber == 0)
+                rq.LineNumber = ++lineNo;
+
+            return new NavWS.MobileTransactionSubLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(rq.LineNumber),
+                ParentLineNo = LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
+                EntryStatus = (int)EntryStatus.Normal,
+                ParentLineIsSubline = (rq.ParentSubLineId > 0) ? 1 : 0,
+                LineType = (int)subLineType,
+                Number = XMLHelper.GetString(rq.ItemId),
+                VariantCode = XMLHelper.GetString(rq.VariantId),
+                UomId = XMLHelper.GetString(rq.Uom),
+                Quantity = rq.Quantity,
+                NetPrice = rq.NetPrice,
+                Price = rq.Price,
+                DiscountAmount = rq.DiscountAmount,
+                DiscountPercent = rq.DiscountPercent,
+                NetAmount = rq.NetAmount,
+                TAXAmount = rq.TAXAmount,
+                ManualDiscountAmount = rq.ManualDiscountAmount,
+                ManualDiscountPercent = rq.ManualDiscountPercent,
+                Description = XMLHelper.GetString(rq.Description),
+                VariantDescription = XMLHelper.GetString(rq.VariantDescription),
+                UomDescription = XMLHelper.GetString(rq.Uom),
+                StaffId = staffId,
+                ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
+                ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
+                DealLine = rq.DealLineId,
+                DealModLine = rq.DealModifierLineId,
+                DealId = XMLHelper.GetString(rq.DealCode),
+                PriceReductionOnExclusion = (rq.PriceReductionOnExclusion ? 1 : 0),
+
+                Barcode = string.Empty,
+                TAXBusinessCode = string.Empty,
+                TAXProductCode = string.Empty,
+                TransDate = DateTime.Now,
+                GenBusPostingGroup = string.Empty,
+                GenProdPostingGroup = string.Empty,
+                VatBusPostingGroup = string.Empty,
+                VatProdPostingGroup = string.Empty,
+                LineKitchenStatusCode = string.Empty
+            };
+        }
+
+        private List<NavWS.MobileTransactionSubLine> MobileTransSubLine(string id, OrderHospLine posline, string staffId, ref int subLineCounter)
+        {
+            if (posline.SubLines == null)
+                return new List<NavWS.MobileTransactionSubLine>();
+
+            List<NavWS.MobileTransactionSubLine> subLines = new List<NavWS.MobileTransactionSubLine>();
+            foreach (OrderHospSubLine dLine in posline.SubLines)
+            {
+                subLines.Add(CreateTransactionSubLine(id, dLine, ref subLineCounter, posline.LineNumber, dLine.Type, staffId));
+            }
+            return subLines;
+        }
+
+        private List<NavWS.MobileTransactionSubLine> MobileTransSubLine(string id, OneListItem posline, ref int subLineNo, string staffId)
+        {
+            if (posline.OnelistSubLines == null)
+                return new List<NavWS.MobileTransactionSubLine>();
+
+            List<NavWS.MobileTransactionSubLine> subLines = new List<NavWS.MobileTransactionSubLine>();
+            foreach (OneListItemSubLine subLine in posline.OnelistSubLines)
+            {
+                if (subLine.LineNumber == 0)
+                    subLine.LineNumber = ++subLineNo;
+
+                switch (subLine.Type)
+                {
+                    case SubLineType.Modifier:
+                        subLines.Add(CreateTransactionSubLine(id, subLine, posline.LineNumber, string.Empty, staffId));
+                        break;
+
+                    case SubLineType.Deal:
+                        subLines.Add(CreateTransactionSubLine(id, subLine, posline.LineNumber, posline.ItemId, staffId));
+                        break;
+                }
+            }
+            return subLines;
+        }
+
 
         private NavWS.MobileTransactionLine TransPaymentLine(string id, PaymentLine paymentLine, string transactionCurrencyCode, int lineNumber)
         {
@@ -820,6 +1415,52 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return tline;
         }
 
+        private NavWS.MobileTransactionLine TransPaymentLine(string id, OrderPayment paymentLine, string storeId, string terminalId, string staffId, int lineNumber)
+        {
+            int entryStatus = paymentLine.PaymentType == PaymentType.Refund ? (int)EntryStatus.Voided : (int)EntryStatus.Normal; //0=normal, 1=voided
+
+            NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
+            {
+                Id = id,
+                LineNo = LineNumberToNav(lineNumber),
+                EntryStatus = entryStatus,
+                LineType = (int)LineType.Payment,
+                Number = paymentLine.TenderType,
+                CurrencyCode = paymentLine.CurrencyCode,
+                CurrencyFactor = paymentLine.CurrencyFactor,
+                NetAmount = paymentLine.Amount,
+                StoreId = storeId,
+                TerminalId = terminalId,
+                StaffId = staffId,
+                EFTCardNumber = paymentLine.CardNumber,
+                EFTCardName = string.Empty,
+                EFTAuthCode = paymentLine.AuthorizationCode,
+                EFTMessage = string.Empty,
+                EFTTransactionNo = paymentLine.ExternalReference,
+
+                VariantCode = string.Empty,
+                VariantDescription = string.Empty,
+                Barcode = string.Empty,
+                UomDescription = string.Empty,
+                UomId = string.Empty,
+                TAXBusinessCode = string.Empty,
+                TAXProductCode = string.Empty,
+                CardOrCustNo = string.Empty,
+                CouponCode = string.Empty,
+                ItemDescription = string.Empty,
+                LineKitchenStatusCode = string.Empty,
+                PriceGroupCode = string.Empty,
+                RestMenuTypeCode = string.Empty,
+                SalesType = string.Empty,
+                TenderDescription = string.Empty,
+                OrigTransPos = string.Empty,
+                OrigTransStore = string.Empty
+            };
+            if (NavVersion > new Version("14.2"))
+                tline.RetailImageID = string.Empty;
+            return tline;
+        }
+
         private void MobileTransLine(NavWS.MobileTransactionLine mobileTransLine, ref RetailTransaction transaction, List<DiscountLine> discounts, NavWS.MobileReceiptInfo[] receiptInfos)
         {
             LineType lineType = (LineType)mobileTransLine.LineType;
@@ -833,10 +1474,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             //and set the qty to abs value for MPOS
             quantity = Math.Abs(quantity);
 
-            //getting perdiscount totaldiscount - ignore them
+            //getting periodic discount total discount - ignore them
             if (lineType == LineType.Item)
             {
-                SaleLine saleLine = new SaleLine(lineNumber);   //mpos expects to get 1 not 10000
+                SaleLine saleLine = new SaleLine(lineNumber);   // MPOS expects to get 1 not 10000
 
                 saleLine.Quantity = quantity;
                 saleLine.IsReturnLine = isReturnLine;
@@ -997,6 +1638,109 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 receiptInfoList.Add(ri);
             }
             return receiptInfoList;
+        }
+
+        private List<OrderHospSubLine> ModifierSubLine(List<NavWS.MobileTransactionSubLine> mobileTransSubLines, int parentLine, int lineNumber = 0)
+        {
+            //get MobileTransactionSubLine for this parent
+            List<OrderHospSubLine> modLineList = new List<OrderHospSubLine>();
+            List<NavWS.MobileTransactionSubLine> lines = null;
+
+            //now loop thou the modifierSublines
+            if (lineNumber == 0)
+            {
+                lines = mobileTransSubLines.FindAll(l => l.ParentLineNo == parentLine && l.LineType == 0);
+            }
+            else
+            {
+                //sometimes we are getting the sub line for the modifiers under the dealLine
+                lines = mobileTransSubLines.FindAll(l => l.ParentLineNo == parentLine && l.LineType == 1 && l.LineNo == lineNumber && l.DealModLine != 0);
+            }
+
+            foreach (NavWS.MobileTransactionSubLine line in lines)
+            {
+                modLineList.Add(new OrderHospSubLine()
+                {
+                    Type = (SubLineType)line.LineType,
+                    LineNumber = line.LineNo,
+                    ItemId = line.Number,
+                    VariantId = line.VariantCode,
+                    Uom = line.UomId,
+                    NetPrice = line.NetPrice,
+                    Price = line.Price,
+                    Quantity = line.Quantity,
+                    DiscountAmount = line.DiscountAmount,
+                    DiscountPercent = line.DiscountPercent,
+                    NetAmount = line.NetAmount,
+                    TAXAmount = line.TAXAmount,
+                    Amount = line.NetAmount + line.TAXAmount,
+                    ManualDiscountAmount = line.ManualDiscountAmount,
+                    ManualDiscountPercent = line.ManualDiscountPercent,
+                    Description = line.Description,
+                    VariantDescription = line.VariantDescription,
+                    ModifierGroupCode = line.ModifierGroupCode,
+                    ModifierSubCode = line.ModifierSubCode,
+                    DealLineId = Convert.ToInt32(line.DealLine),
+                    DealModifierLineId = Convert.ToInt32(line.DealModLine),
+                    DealCode = line.DealId,
+                    PriceReductionOnExclusion = line.PriceReductionOnExclusion != 0
+                });
+            }
+            return modLineList;
+        }
+
+        private List<OrderHospSubLine> DealSubLine(List<NavWS.MobileTransactionSubLine> mobileTransSubLines, int parentLine)
+        {
+            List<OrderHospSubLine> modLineList = new List<OrderHospSubLine>();
+
+            List<NavWS.MobileTransactionSubLine> lines = mobileTransSubLines.FindAll(l => l.LineType == 1);
+            foreach (NavWS.MobileTransactionSubLine line in lines)
+            {
+                OrderHospSubLine sub = new OrderHospSubLine()
+                {
+                    Type = SubLineType.Deal,
+                    LineNumber = line.LineNo,
+                    DealLineId = line.DealLine,
+                    DealCode = line.DealId,
+                    DealModifierLineId = line.DealModLine,
+                    ItemId = line.Number,
+                    Description = line.Description,
+                    NetPrice = line.NetPrice,
+                    Price = line.Price,
+                    Quantity = line.Quantity,
+                    DiscountAmount = line.DiscountAmount,
+                    DiscountPercent = line.DiscountPercent,
+                    NetAmount = line.NetAmount,
+                    TAXAmount = line.TAXAmount,
+                    Amount = line.NetAmount + line.TAXAmount
+                };
+
+                if (line.ParentLineNo != parentLine && sub.DealLineId != 0)
+                    sub.Type = SubLineType.Modifier;
+
+                modLineList.Add(sub);
+            }
+            return modLineList;
+        }
+
+        private List<OrderHospSubLine> TextModifierSubLine(List<NavWS.MobileTransactionSubLine> mobileTransSubLines, int parentLine)
+        {
+            List<OrderHospSubLine> modLineList = new List<OrderHospSubLine>();
+
+            List<NavWS.MobileTransactionSubLine> lines = mobileTransSubLines.FindAll(l => l.LineType == 2 && l.ParentLineNo == parentLine);
+            foreach (NavWS.MobileTransactionSubLine line in lines)
+            {
+                modLineList.Add(new OrderHospSubLine()
+                {
+                    Type = SubLineType.Text,
+                    LineNumber = line.LineNo,
+                    Description = line.Description,
+                    ModifierGroupCode = line.ModifierGroupCode,
+                    ModifierSubCode = line.ModifierSubCode,
+                    Quantity = line.Quantity,
+                });
+            }
+            return modLineList;
         }
 
         #endregion

@@ -76,16 +76,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
     {
         public ImageView(string id) : base(id)
         {
-            Image = string.Empty;   //base64 string of image
-            StreamURL = string.Empty; //if locationType is "Url" then this holds the URL to the image
+            Image = string.Empty;   // base64 string of image
+            StreamURL = string.Empty; // if locationType is "URL" then this holds the URL to the image
             Location = string.Empty;
             DisplayOrder = 0;
             LocationType = LocationType.Image;
-            ImgSize = new ImageSize(); //size of image as stored in database, 200x500 etc. client can determine
-            Format = string.Empty; //jpeg, png
+            ImgSize = new ImageSize(); // size of image as stored in database, 200x500 etc. client can determine
+            Format = string.Empty; // JPEG, PNG
             AvgColor = string.Empty;
-
-            ImgBytes = null;  //used on server only, not on client
+            ImgBytes = null;  // used on server only, not on client
         }
 
         public ImageView() : this(string.Empty)
@@ -110,6 +109,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             return new ImageView(Id)
             {
                 DisplayOrder = DisplayOrder,
+                MediaId = MediaId,
                 Format = Format,
                 Image = Image,
                 ImgSize = ImgSize,
@@ -130,6 +130,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         }
 
         [DataMember]
+        public Guid MediaId { get; set; }
+        [DataMember]
         public int DisplayOrder { get; set; }
         [DataMember]
         public string Image { get; set; }
@@ -146,7 +148,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         [DataMember]
         public string Format { get; set; }
 
-        //not all data goes to wcf clients
+        //not all data goes to WCF clients
         public byte[] ImgBytes { get; set; }
         public DateTime ModifiedTime { get; set; }
         public bool Crossfade { get; set; }

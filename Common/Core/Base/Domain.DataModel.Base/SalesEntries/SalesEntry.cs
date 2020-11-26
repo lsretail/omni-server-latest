@@ -61,11 +61,31 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string StoreName { get; set; }
         [DataMember]
         public string TerminalId { get; set; }
+
         /// <summary>
         /// Member Contact Card Id
         /// </summary>
         [DataMember]
         public string CardId { get; set; }
+        [DataMember]
+        public string CustomerId { get; set; }
+
+        [DataMember]
+        public string ContactName { get; set; }
+        [DataMember]
+        public Address ContactAddress { get; set; }
+        [DataMember]
+        public string ContactEmail { get; set; }
+        [DataMember]
+        public string ContactDayTimePhoneNo { get; set; }
+
+        // shipping info
+        [DataMember]
+        public string ShipToName { get; set; }
+        [DataMember]
+        public Address ShipToAddress { get; set; }
+        [DataMember]
+        public string ShipToEmail { get; set; }
 
         [DataMember]
         public DocumentIdType IdType { get; set; }
@@ -75,6 +95,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public PaymentStatus PaymentStatus { get; set; }
         [DataMember]
         public ShippingStatus ShippingStatus { get; set; }
+
+        [DataMember]
+        public string ShippingAgentCode { get; set; }
+        [DataMember]
+        public string ShippingAgentServiceCode { get; set; }
 
         [DataMember]
         public decimal TotalNetAmount { get; set; }
@@ -112,19 +137,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public List<SalesEntryPayment> Payments { get; set; }
 
-        // shipping info
-        [DataMember]
-        public string ShipToName { get; set; }
-        [DataMember]
-        public Address ShipToAddress { get; set; }
-        [DataMember]
-        public string ShipToEmail { get; set; }
-        [DataMember]
-        public string ShipToPhoneNumber { get; set; }
-        [DataMember]
-        public string ShippingAgentCode { get; set; }
-        [DataMember]
-        public string ShippingAgentServiceCode { get; set; }
         /// <summary>
         /// Points used as payment in order
         /// </summary>

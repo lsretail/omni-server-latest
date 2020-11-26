@@ -711,8 +711,10 @@ namespace LSOmni.Service
         /// 		},
         /// 		"Addresses": [{
         /// 			"Address1": "Santa Monica",
+        ///             "CellPhoneNumber": "555-5551",
         /// 			"City": "Hollywood",
         /// 			"Country": "US",
+        ///             "PhoneNumber": "666-6661",
         /// 			"PostCode": "1001",
         /// 			"StateProvinceRegion": "",
         /// 			"Type": "0"
@@ -724,10 +726,8 @@ namespace LSOmni.Service
         /// 		"LastName": "Parker",
         /// 		"MaritalStatus": "0",
         /// 		"MiddleName": "",
-        /// 		"MobilePhone": "555-5551",
         /// 		"Name": "Sarah Parker",
         /// 		"Password": "SxxInTheCity",
-        /// 		"Phone": "666-6661",
         /// 		"UserName": "sarah"
         /// 	}
         /// }
@@ -790,12 +790,14 @@ namespace LSOmni.Service
         ///     "Id": "MO000012",
         ///     "Addresses": [{
         ///       "Address1": "Santa Monica",
+        ///       "CellPhoneNumber": "555-5551",
         ///       "City": "Hollywood",
         ///       "Country": "US",
+        ///       "PhoneNumber": "666-6661",
         ///       "PostCode": "1001",
         ///       "StateProvinceRegion": "",
         ///       "Type": "0"
-        ///       }],
+        ///     }],
         ///     "Email": "Sarah@Hollywood.com",
         ///     "FirstName": "Sarah",
         ///     "Gender": "2",
@@ -803,10 +805,8 @@ namespace LSOmni.Service
         ///     "LastName": "Parker",
         ///     "MaritalStatus": "0",
         ///     "MiddleName": "",
-        ///     "MobilePhone": "555-5551",
         ///     "Name": "Sarah Parker",
         ///     "Password": "SxxInTheCity",
-        ///     "Phone": "666-6661",
         ///     "UserName": "sarah"
         ///   }
         /// }
@@ -1196,6 +1196,10 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails);
 
         /// <summary>
@@ -1410,6 +1414,21 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores);
+
+        /// <summary>
+        /// Gets Return Policy
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="storeGroupCode"></param>
+        /// <param name="itemCategory"></param>
+        /// <param name="productGroup"></param>
+        /// <param name="itemId"></param>
+        /// <param name="variantCode"></param>
+        /// <param name="variantDim1"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1);
 
         #endregion
 
@@ -1681,6 +1700,8 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav/Central Main Table data: 10012866 - Store
         /// <p/><p/>
+        /// Only store with Loyalty or Mobile Checked will be replicated
+        /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
@@ -1916,7 +1937,7 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of hierarchy modifier lines</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        ReplHierarchyHospModifierResponse ReplEcommHierarchyHospModifier(ReplRequest replRequest);
+        ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Item with full detailed data (supports Item distribution)<p/>

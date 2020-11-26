@@ -257,10 +257,24 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
 
-                entry.ShipToName = SQLHelper.GetString(reader["ShipName"]);
-                entry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"]);
-                entry.ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]);
+                entry.ContactName = SQLHelper.GetString(reader["Name"]);
+                entry.ContactDayTimePhoneNo = SQLHelper.GetString(reader["Daytime Phone No_"]);
+                entry.ContactEmail = SQLHelper.GetString(reader["Email"]);
+                entry.ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
+                };
 
+                entry.ShipToName = SQLHelper.GetString(reader["ShipName"]);
+                entry.ShipToEmail = SQLHelper.GetString(reader["Ship-to Email"]);
                 entry.ShipToAddress = new Address()
                 {
                     Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
@@ -269,17 +283,32 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     City = SQLHelper.GetString(reader["Ship-to City"]),
                     StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
                     PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
-                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"])
+                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
                 };
             }
             else
             {
                 entry.ExternalId = SQLHelper.GetString(reader["Web Trans_ GUID"]);
 
-                entry.ShipToName = SQLHelper.GetString(reader["Ship To Full Name"]);
-                entry.ShipToPhoneNumber = SQLHelper.GetString(reader["Ship To Phone No_"]);
-                entry.ShipToEmail = SQLHelper.GetString(reader["Ship To Email"]);
+                entry.ContactName = SQLHelper.GetString(reader["Full Name"]);
+                entry.ContactDayTimePhoneNo = SQLHelper.GetString(reader["Daytime Phone No_"]);
+                entry.ContactEmail = SQLHelper.GetString(reader["Email"]);
+                entry.ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House Apartment No_"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    PostCode = SQLHelper.GetString(reader["Post Code"]),
+                    Country = SQLHelper.GetString(reader["Country Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
+                    CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
+                };
 
+                entry.ShipToName = SQLHelper.GetString(reader["Ship To Full Name"]);
+                entry.ShipToEmail = SQLHelper.GetString(reader["Ship To Email"]);
                 entry.ShipToAddress = new Address()
                 {
                     Address1 = SQLHelper.GetString(reader["Ship To Address"]),
@@ -288,7 +317,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     City = SQLHelper.GetString(reader["Ship To City"]),
                     StateProvinceRegion = SQLHelper.GetString(reader["Ship To County"]),
                     PostCode = SQLHelper.GetString(reader["Ship To Post Code"]),
-                    Country = SQLHelper.GetString(reader["Ship To Country Region Code"])
+                    Country = SQLHelper.GetString(reader["Ship To Country Region Code"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Ship To Phone No_"])
                 };
             }
 

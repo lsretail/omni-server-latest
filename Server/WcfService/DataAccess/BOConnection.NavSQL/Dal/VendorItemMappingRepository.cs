@@ -10,7 +10,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     public class VendorItemMappingRepository : BaseRepository
     {
         // Key : NavProductId, NavManufacturerId
-        const int TABLEID = 0;
+        const int TABLEID = 27;
 
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
@@ -128,7 +128,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 NavProductId = SQLHelper.GetString(reader["No_"]),
                 NavManufacturerItemId = SQLHelper.GetString(reader["Vendor Item No_"]),
 
-                // fixed valeus
+                // fixed values
                 Deleted = false,
                 DisplayOrder = 1,
                 IsFeaturedProduct = true

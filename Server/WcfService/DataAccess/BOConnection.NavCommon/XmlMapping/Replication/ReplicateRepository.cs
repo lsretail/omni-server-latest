@@ -258,6 +258,32 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
 
+        public List<ReplItemLocation> ReplicateItemLocation(XMLTableData table)
+        {
+            List<ReplItemLocation> list = new List<ReplItemLocation>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ReplItemLocation rec = new ReplItemLocation();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Item No.": rec.ItemId = field.Values[i]; break;
+                        case "Store No.": rec.StoreId = field.Values[i]; break;
+                        case "Section Code": rec.SectionCode = field.Values[i]; break;
+                        case "Section Description": rec.SectionDescription = field.Values[i]; break;
+                        case "Shelf Code": rec.ShelfCode = field.Values[i]; break;
+                        case "Shelf Description": rec.ShelfDescription = field.Values[i]; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
         public List<ReplPrice> ReplicatePrice(XMLTableData table)
         {
             List<ReplPrice> list = new List<ReplPrice>();

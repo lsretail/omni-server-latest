@@ -240,42 +240,43 @@ namespace LSOmni.BLL.Loyalty
             List<OneListItem> newitems = new List<OneListItem>();
             foreach (OrderLine line in calcResp.OrderLines)
             {
-                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId);
-
-                OneListItem item = new OneListItem();
-                item.LineNumber = olditem.LineNumber;
-                item.ItemId = line.ItemId;
-                item.ItemDescription = line.ItemDescription;
-
-                if (string.IsNullOrEmpty(line.ItemImageId))
-                    item.Image = olditem.Image;
-                else
-                    item.Image = new ImageView(line.ItemImageId);
-
-                item.UnitOfMeasureId = line.UomId;
-                if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
-                    item.UnitOfMeasureId = olditem.UnitOfMeasureId;
-
-                item.VariantId = line.VariantId;
-                item.VariantDescription = line.VariantDescription;
-                if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                OneListItem item = new OneListItem()
                 {
-                    item.VariantId = olditem.VariantId;
-                    item.VariantDescription = olditem.VariantDescription;
+                    ItemId = line.ItemId,
+                    ItemDescription = line.ItemDescription,
+                    UnitOfMeasureId = line.UomId,
+                    VariantId = line.VariantId,
+                    VariantDescription = line.VariantDescription,
+                    LineNumber = line.LineNumber,
+
+                    Image = new ImageView(line.ItemImageId),
+
+                    Quantity = line.Quantity,
+                    NetPrice = line.NetPrice,
+                    Price = line.Price,
+                    Amount = line.Amount,
+                    NetAmount = line.NetAmount,
+                    TaxAmount = line.TaxAmount,
+                    DiscountAmount = line.DiscountAmount,
+                    DiscountPercent = line.DiscountPercent,
+
+                    OnelistItemDiscounts = new List<OneListItemDiscount>()
+                };
+
+                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId);
+                if (olditem != null)
+                {
+                    if (string.IsNullOrEmpty(line.ItemImageId))
+                        item.Image = olditem.Image;
+
+                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    {
+                        item.VariantId = olditem.VariantId;
+                        item.VariantDescription = olditem.VariantDescription;
+                    }
+
+                    item.BarcodeId = olditem.BarcodeId;
                 }
-
-                item.BarcodeId = olditem.BarcodeId;
-
-                item.Quantity = line.Quantity;
-                item.NetPrice = line.NetPrice;
-                item.Price = line.Price;
-                item.Amount = line.Amount;
-                item.NetAmount = line.NetAmount;
-                item.TaxAmount = line.TaxAmount;
-                item.DiscountAmount = line.DiscountAmount;
-                item.DiscountPercent = line.DiscountPercent;
-
-                item.OnelistItemDiscounts = new List<OneListItemDiscount>();
                 newitems.Add(item);
             }
 
@@ -292,17 +293,19 @@ namespace LSOmni.BLL.Loyalty
                         continue;
                 }
 
-                OneListItemDiscount discount = new OneListItemDiscount();
-                discount.Description = disc.Description;
-                discount.DiscountAmount = disc.DiscountAmount;
-                discount.DiscountPercent = disc.DiscountPercent;
-                discount.DiscountType = disc.DiscountType;
-                discount.LineNumber = disc.LineNumber;
-                discount.No = disc.No;
-                discount.OfferNumber = disc.OfferNumber;
-                discount.PeriodicDiscGroup = disc.PeriodicDiscGroup;
-                discount.PeriodicDiscType = disc.PeriodicDiscType;
-                discount.Quantity = line.Quantity;
+                OneListItemDiscount discount = new OneListItemDiscount()
+                {
+                    Description = disc.Description,
+                    DiscountAmount = disc.DiscountAmount,
+                    DiscountPercent = disc.DiscountPercent,
+                    DiscountType = disc.DiscountType,
+                    LineNumber = disc.LineNumber,
+                    No = disc.No,
+                    OfferNumber = disc.OfferNumber,
+                    PeriodicDiscGroup = disc.PeriodicDiscGroup,
+                    PeriodicDiscType = disc.PeriodicDiscType,
+                    Quantity = line.Quantity
+                };
                 line.OnelistItemDiscounts.Add(discount);
             }
             return list;
@@ -328,42 +331,43 @@ namespace LSOmni.BLL.Loyalty
             List<OneListItem> newitems = new List<OneListItem>();
             foreach (OrderHospLine line in calcResp.OrderLines)
             {
-                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId);
-
-                OneListItem item = new OneListItem();
-                item.LineNumber = olditem.LineNumber;
-                item.ItemId = line.ItemId;
-                item.IsADeal = line.IsADeal;
-                item.ItemDescription = line.ItemDescription;
-                item.LineNumber = line.LineNumber;
-
-                if (string.IsNullOrEmpty(line.ItemImageId))
-                    item.Image = olditem.Image;
-                else
-                    item.Image = new ImageView(line.ItemImageId);
-
-                item.UnitOfMeasureId = line.UomId;
-                if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
-                    item.UnitOfMeasureId = olditem.UnitOfMeasureId;
-
-                item.VariantId = line.VariantId;
-                item.VariantDescription = line.VariantDescription;
-                if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                OneListItem item = new OneListItem()
                 {
-                    item.VariantId = olditem.VariantId;
-                    item.VariantDescription = olditem.VariantDescription;
+                    ItemId = line.ItemId,
+                    IsADeal = line.IsADeal,
+                    ItemDescription = line.ItemDescription,
+                    LineNumber = line.LineNumber,
+
+                    Image = new ImageView(line.ItemImageId),
+                    UnitOfMeasureId = line.UomId,
+                    VariantId = line.VariantId,
+                    VariantDescription = line.VariantDescription,
+
+                    Quantity = line.Quantity,
+                    NetPrice = line.NetPrice,
+                    Price = line.Price,
+                    Amount = line.Amount,
+                    NetAmount = line.NetAmount,
+                    TaxAmount = line.TaxAmount,
+                    DiscountAmount = line.DiscountAmount,
+                    DiscountPercent = line.DiscountPercent
+                };
+
+                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId);
+                if (olditem != null)
+                {
+                    if (string.IsNullOrEmpty(line.ItemImageId))
+                        item.Image = olditem.Image;
+
+                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    {
+                        item.VariantId = olditem.VariantId;
+                        item.VariantDescription = olditem.VariantDescription;
+                    }
+
+                    item.BarcodeId = olditem.BarcodeId;
                 }
 
-                item.BarcodeId = olditem.BarcodeId;
-
-                item.Quantity = line.Quantity;
-                item.NetPrice = line.NetPrice;
-                item.Price = line.Price;
-                item.Amount = line.Amount;
-                item.NetAmount = line.NetAmount;
-                item.TaxAmount = line.TaxAmount;
-                item.DiscountAmount = line.DiscountAmount;
-                item.DiscountPercent = line.DiscountPercent;
 
                 item.OnelistItemDiscounts = new List<OneListItemDiscount>();
                 foreach (OrderDiscountLine disc in line.DiscountLines)

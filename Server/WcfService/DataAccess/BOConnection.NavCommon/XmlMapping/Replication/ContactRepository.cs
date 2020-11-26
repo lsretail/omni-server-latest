@@ -75,8 +75,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Post Code": add.PostCode = field.Values[i]; break;
                         case "City": add.City = field.Values[i]; break;
                         case "Country": add.Country = field.Values[i]; break;
-                        case "Phone No.": rec.Phone = field.Values[i]; break;
-                        case "Mobile Phone No.": rec.MobilePhone = field.Values[i]; break;
+                        case "Phone No.": add.PhoneNumber = field.Values[i]; break;
+                        case "Mobile Phone No.": add.CellPhoneNumber = field.Values[i]; break;
                         case "E-Mail": rec.Email = field.Values[i]; break;
                     }
                 }
@@ -159,9 +159,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "City": rec.Address.City = field.Values[i]; break;
                         case "Post Code": rec.Address.PostCode = field.Values[i]; break;
                         case "Country/Region Code": rec.Address.StateProvinceRegion = field.Values[i]; break;
+                        case "Mobile Phone No.": rec.Address.CellPhoneNumber = field.Values[i]; break;
+                        case "Phone No.": rec.Address.PhoneNumber = field.Values[i]; break;
                         case "E-Mail": rec.Email = field.Values[i]; break;
-                        case "Mobile Phone No.": rec.CellularPhone = field.Values[i]; break;
-                        case "Phone No.": rec.PhoneLocal = field.Values[i]; break;
                         case "Currency Code": rec.Currency = new Currency(field.Values[i]); break;
                         case "Blocked": rec.IsBlocked = GetWebBool(field.Values[i]); break;
                         case "Prices Including VAT": rec.InclTax = GetWebBoolInt(field.Values[i]); break;

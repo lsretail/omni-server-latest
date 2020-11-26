@@ -58,5 +58,11 @@ namespace LSOmni.BLL.Loyalty
             }
             return storeListOut;
         }
+
+        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            return BOLoyConnection.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+        }
+
     }
 }

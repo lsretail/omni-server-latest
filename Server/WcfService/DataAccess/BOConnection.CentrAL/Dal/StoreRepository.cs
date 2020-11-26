@@ -341,49 +341,100 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return view;
         }
 
-        public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)
+        public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
         {
-            List<StoreHours> storeHourList = new List<StoreHours>();
+            List<ReturnPolicy> list = new List<ReturnPolicy>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [DayOfWeek],[NameOfDay],[OpenFrom],[OpenTo] " +
-                                          "FROM [" + navCompanyName + "Mobile Store Opening Hours$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
-                                          "WHERE [StoreId]=@id " +
-                                          "ORDER BY [DayOfWeek]";
-                    command.Parameters.AddWithValue("@id", storeId);
+                    string where = string.Empty;
+                    if (string.IsNullOrEmpty(storeId) == false)
+                    {
+                        where += " AND [Store No_]=@p1";
+                        command.Parameters.AddWithValue("@p1", storeId);
+                    }
+                    if (string.IsNullOrEmpty(storeGroupCode) == false)
+                    {
+                        where += " AND [Store Group Code]=@p2";
+                        command.Parameters.AddWithValue("@p2", storeGroupCode);
+                    }
+                    if (string.IsNullOrEmpty(itemCategory) == false)
+                    {
+                        where += " AND [Item Category Code]=@p3";
+                        command.Parameters.AddWithValue("@p3", itemCategory);
+                    }
+                    if (string.IsNullOrEmpty(productGroup) == false)
+                    {
+                        where += " AND [Retail Product Code]=@p4";
+                        command.Parameters.AddWithValue("@p4", productGroup);
+                    }
+                    if (string.IsNullOrEmpty(itemId) == false)
+                    {
+                        where += " AND [Item No_]=@p5";
+                        command.Parameters.AddWithValue("@p5", itemId);
+                    }
+                    if (string.IsNullOrEmpty(variantCode) == false)
+                    {
+                        where += " AND [Variant Code]=@p6";
+                        command.Parameters.AddWithValue("@p6", variantCode);
+                    }
+                    if (string.IsNullOrEmpty(variantDim1) == false)
+                    {
+                        where += " AND [Variant Dimension 1 Code]=@p7";
+                        command.Parameters.AddWithValue("@p7", variantDim1);
+                    }
+
+                    if (string.IsNullOrEmpty(where) == false)
+                    {
+                        where = " WHERE" + where.Substring(4, where.Length - 4);
+                    }
+
+                    command.CommandText = "SELECT [Store No_],[Store Group Code],[Item Category Code],[Retail Product Code]," +
+                                          "[Item No_],[Variant Code],[Variant Dimension 1 Code],[Refund not Allowed]," +
+                                          "[Refund Period Length],[Manager Privileges],[Message 1],[Message 2] " +
+                                          ((NavVersion.Major > 16) ? ",[Return Policy HTML]" : string.Empty) +
+                                          "FROM [" + navCompanyName + "Return Policy$5ecfc871-5d82-43f1-9c54-59685e82318d]" + where;
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            StoreHours storehr = new StoreHours();
-                            storehr.OpenFrom = SQLHelper.GetDateTime(reader["OpenFrom"]);
-                            storehr.OpenTo = SQLHelper.GetDateTime(reader["OpenTo"]);
-
-                            //something is wrong, don't take store hours that have not value
-                            if (storehr.OpenFrom == DateTime.MinValue || storehr.OpenTo == DateTime.MinValue)
-                                continue;
-
-                            int dayofweek = SQLHelper.GetInt32(reader["DayOfWeek"]);
-                            storehr.NameOfDay = SQLHelper.GetString(reader["NameOfDay"]);
-                            storehr.StoreId = storeId;
-                            storehr.Description = storehr.NameOfDay;
-
-                            //NAV can store datetime in UTC in db but UI shows correct. But DD replicates UTC so I need to adjust
-                            storehr.DayOfWeek = (dayofweek == 7) ? 0 : dayofweek;
-                            storehr.OpenFrom = ConvertTo.SafeDateTime(storehr.OpenFrom.AddHours(offset));
-                            storehr.OpenTo = ConvertTo.SafeDateTime(storehr.OpenTo.AddHours(offset));
-                            storeHourList.Add(storehr);
+                            list.Add(ReaderToPolicy(reader));
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
-            return storeHourList;
+            return list;
+        }
+
+        private ReturnPolicy ReaderToPolicy(SqlDataReader reader)
+        {
+            ReturnPolicy pol = new ReturnPolicy()
+            {
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                StoreGroup = SQLHelper.GetString(reader["Store Group Code"]),
+                ItemCategory = SQLHelper.GetString(reader["Item Category Code"]),
+                ProductGroup = SQLHelper.GetString(reader["Retail Product Code"]),
+                ItemId = SQLHelper.GetString(reader["Item No_"]),
+                VariantCode = SQLHelper.GetString(reader["Variant Code"]),
+                VariantDimension1 = SQLHelper.GetString(reader["Variant Dimension 1 Code"]),
+                RefundNotAllowed = SQLHelper.GetBool(reader["Refund not Allowed"]),
+                ManagerPrivileges = SQLHelper.GetBool(reader["Manager Privileges"]),
+                RefundPeriodLength = SQLHelper.GetString(reader["Refund Period Length"]),
+                Message1 = SQLHelper.GetString(reader["Message 1"]),
+                Message2 = SQLHelper.GetString(reader["Message 2"])
+            };
+
+            if (NavVersion.Major > 16)
+            {
+                pol.ReturnPolicyHTML = SQLHelper.GetString(reader["Return Policy HTML"]);
+            }
+
+            return pol;
         }
 
         private ReplStore ReaderToStore(SqlDataReader reader, bool invmode, out string timestamp)

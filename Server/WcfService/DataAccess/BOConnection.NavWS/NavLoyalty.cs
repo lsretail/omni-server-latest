@@ -18,6 +18,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -86,6 +87,8 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     return NavWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, false);
                 case ContactSearchType.UserName:
                     return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, false);
+                case ContactSearchType.ContactNumber:
+                    return NavWSBase.ContactSearch(ContactSearchType.ContactNumber, searchValue, 1).FirstOrDefault();
             }
             return null;
         }
@@ -160,7 +163,28 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
         {
-            return NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+            List<MemberContact> list = new List<MemberContact>();
+            MemberContact cont;
+            switch (searchType)
+            {
+                case ContactSearchType.CardId:
+                    cont = NavWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, false);
+                    if (cont != null)
+                        list.Add(cont);
+                    break;
+                case ContactSearchType.UserName:
+                    cont = NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, false);
+                    if (cont != null)
+                        list.Add(cont);
+                    break;
+                default:
+                    if (exact == false)
+                        search = "*" + search + "*";
+
+                    list = NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                    break;
+            }
+            return list;
         }
 
         public virtual List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails)
@@ -190,7 +214,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions)
         {
-            throw new NotImplementedException("NEEDS NAV WS");
+            return new List<SalesEntry>()
+            {
+                new SalesEntry()
+            };
         }
 
         #endregion
@@ -254,12 +281,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails)
         {
-            return new List<LoyItem>();
+            return new List<LoyItem>()
+            {
+                new LoyItem()
+            };
         }
 
         public virtual UnitOfMeasure ItemUOMGetByIds(string itemid, string uomid)
         {
             return null;
+        }
+
+        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        {
+            return NavWSBase.ItemCustomerPricesGet(storeId, cardId, items);
         }
 
         #endregion
@@ -445,6 +480,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             return NavWSBase.StoreServicesGetByStoreId(storeId);
         }
+
+        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        {
+            return NavWSBase.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+        }
+
 
         #endregion
 

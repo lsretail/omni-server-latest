@@ -62,7 +62,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         //
                         if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
                         {
-                            //decrypte the pwd
+                            //decrypt the pwd
                             builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd);
                         }
                     }
@@ -271,7 +271,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
                         }
                     }
-                    builder.AppendLine(string.Format(" > Paramater {0}: {1}", param.ParameterName, value));
+                    builder.AppendLine(string.Format(" > Parameter {0}: {1}", param.ParameterName, value));
                 }
                 logger.Trace((config == null) ? "Unknown" : config.LSKey.Key, "\r\n" + builder.ToString());
             }
