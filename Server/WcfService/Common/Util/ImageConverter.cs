@@ -51,6 +51,9 @@ namespace LSOmni.Common.Util
 
         public static string BytesToBase64(byte[] imageBytes, ImageSize size, ImageFormat imgFormat)
         {
+            if (imageBytes == null || imageBytes.Length == 0)
+                return string.Empty;
+
             //now check if we need to change the size and format
             if (size.Width <= 0 || size.Height <= 0)
             {
@@ -71,7 +74,7 @@ namespace LSOmni.Common.Util
 
         public static Image ByteToImage(byte[] bytes)
         {
-            if (bytes.Length == 0)
+            if (bytes == null || bytes.Length == 0)
                 return null;
 
             using (MemoryStream ms = new MemoryStream(bytes))

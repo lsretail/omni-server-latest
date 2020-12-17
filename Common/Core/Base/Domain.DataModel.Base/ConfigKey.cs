@@ -18,6 +18,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         EComUrl = 4,
         [EnumMember]
         BOQryUrl = 5,
+        [EnumMember]
+        BOProtocol = 6,
 
         [EnumMember]
         forgotpassword_code_encrypted = 10,

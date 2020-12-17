@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
@@ -350,9 +351,9 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        private List<OneListItem> OneListItemsGetByOneListId(string oneListId)
+        private ObservableCollection<OneListItem> OneListItemsGetByOneListId(string oneListId)
         {
-            List<OneListItem> oneLineList = new List<OneListItem>();
+            ObservableCollection<OneListItem> oneLineList = new ObservableCollection<OneListItem>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -564,7 +565,7 @@ namespace LSOmni.DataAccess.Dal
             return list;
         }
 
-        private void OneListItemSave(string oneListId, List<OneListItem> listLines, SqlConnection db, SqlTransaction trans, bool calculate)
+        private void OneListItemSave(string oneListId, ObservableCollection<OneListItem> listLines, SqlConnection db, SqlTransaction trans, bool calculate)
         {
             using (SqlCommand command = db.CreateCommand())
             {

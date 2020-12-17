@@ -465,12 +465,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
                 CreatedAtStore = string.Empty,
                 TerritoryCode = string.Empty,
                 SourcingLocation = string.Empty,
                 ReceiptNo = string.Empty,
-                ShippingAgentCode = string.Empty,
-                ShippingAgentServiceCode = string.Empty,
                 VendorSourcing = string.Empty,
                 InventoryTransfer = string.Empty,
                 TransactionNo = string.Empty
@@ -603,10 +603,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
                 CreatedAtStore = string.Empty,
                 TerritoryCode = string.Empty,
-                ShippingAgentCode = string.Empty,
-                ShippingAgentServiceCode = string.Empty,
                 InventoryTransfer = string.Empty,
                 SourcingLocation = string.Empty,
                 VendorSourcing = string.Empty
@@ -876,10 +876,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
                 AnonymousOrder = string.IsNullOrEmpty(order.CardId),
+                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
+                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
                 SourcingLocation = string.Empty,
-                ReceiptNo = string.Empty,
-                ShippingAgentServiceCode = string.Empty,
-                ShippingAgentCode = string.Empty
+                ReceiptNo = string.Empty
             });
 
             if (NavVersion > new Version("13.4"))

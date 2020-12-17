@@ -512,7 +512,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             else
                 store.Currency = new Currency(cur);
 
-            ImageRepository imgrepo = new ImageRepository(config);
+            ImageRepository imgrepo = new ImageRepository(config, NavVersion);
             store.Images = imgrepo.ImageGetByKey("Store", store.Id, string.Empty, string.Empty, 0, includeDetails);
             return store;
         }

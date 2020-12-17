@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Serialization;
 
@@ -10,6 +11,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class OneList : Entity, IDisposable
     {
+        private decimal totalAmount;
+
         public OneList(string id) : base(id)
         {
             Description = string.Empty;
@@ -17,7 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             StoreId = string.Empty;
             CreateDate = DateTime.Now;
             ListType = ListType.Basket; // basket, wish
-            Items = new List<OneListItem>();
+            Items = new ObservableCollection<OneListItem>();
             CardLinks = new List<OneListLink>();
             PublishedOffers = new List<OneListPublishedOffer>();
             TotalAmount = 0M;
@@ -27,7 +30,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             PointAmount = 0M;
         }
 
-        public OneList(string id, List<OneListItem> items, bool calculate) : this(id)
+        public OneList(string id, ObservableCollection<OneListItem> items, bool calculate) : this(id)
         {
             Items = items;
             State = BasketState.Normal;
@@ -80,11 +83,21 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember]
         public bool IsHospitality { get; set; }
         [DataMember]
-        public List<OneListItem> Items { get; set; }
+        public ObservableCollection<OneListItem> Items { get; set; }
         [DataMember]
         public List<OneListPublishedOffer> PublishedOffers { get; set; }
+
         [DataMember]
-        public decimal TotalAmount { get; set; }
+        public decimal TotalAmount
+        {
+            get => totalAmount;
+            set
+            {
+                totalAmount = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [DataMember]
         public decimal TotalTaxAmount { get; set; }
         [DataMember]
@@ -101,8 +114,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public OneList Clone()
         {
             OneList clone = (OneList)MemberwiseClone();
-            clone.Items = new List<OneListItem>();
-            clone.Items.AddRange(Items);
+            clone.Items = new ObservableCollection<OneListItem>(Items);
             return clone;
         }
 

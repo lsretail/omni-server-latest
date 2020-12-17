@@ -148,6 +148,9 @@ namespace LSOmni.Service
         /// </exception> 
         public virtual MemberContact ContactGetByCardId(string cardId)
         {
+            if (string.IsNullOrEmpty(cardId))
+                throw new LSOmniServiceException(StatusCode.MemberCardNotFound, "Missing Card Id");
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0}", cardId);
@@ -502,6 +505,9 @@ namespace LSOmni.Service
 
         public virtual long CardGetPointBalance(string cardId)
         {
+            if (string.IsNullOrEmpty(cardId))
+                return 0;
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0}", cardId);

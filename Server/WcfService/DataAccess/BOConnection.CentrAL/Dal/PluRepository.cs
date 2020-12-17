@@ -43,10 +43,22 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         string itemsql;
                         while (reader.Read())
                         {
-                            itemsql = "SELECT it.[No_],it.[Description],it.[Search Description],i.[Code],i.[Image Blob]" +
-                                            " FROM dbo.[" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it" +
-                                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON it.[No_]=il.[KeyValue] AND il.[TableName]='Item' AND il.[Display Order]=0" +
-                                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Code]= il.[Image Id] and i.[Type]=1";
+                            if (NavVersion.Major > 16)
+                            {
+                                itemsql = "SELECT it.[No_],it.[Description],it.[Search Description],i.[Code],tm.[Content] AS Blob" +
+                                                " FROM dbo.[" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it" +
+                                                " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON it.[No_]=il.[KeyValue] AND il.[TableName]='Item' AND il.[Display Order]=0" +
+                                                " LEFT OUTER JOIN [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Code]= il.[Image Id]" +
+                                                " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=i.[Image Mediaset] AND tms.[Company Name]='" + navCompanyName.Substring(0, navCompanyName.Length - 1) + "'" +
+                                                " LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]";
+                            }
+                            else
+                            {
+                                itemsql = "SELECT it.[No_],it.[Description],it.[Search Description],i.[Code],i.[Image Blob] AS Blob" +
+                                                " FROM dbo.[" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it" +
+                                                " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON it.[No_]=il.[KeyValue] AND il.[TableName]='Item' AND il.[Display Order]=0" +
+                                                " LEFT OUTER JOIN [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Code]= il.[Image Id] and i.[Type]=1";
+                            }
 
                             string cmd = SQLHelper.GetString(reader["Command"]);
                             string par = SQLHelper.GetString(reader["Parameter"]);
@@ -121,7 +133,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ItemId = SQLHelper.GetString(reader["No_"]),
                 Descritpion = SQLHelper.GetString(reader["Description"]),
                 ImageId = SQLHelper.GetString(reader["Code"]),
-                ItemImage = SQLHelper.GetByteArray(reader["Image Blob"])
+                ItemImage = SQLHelper.GetByteArray(reader["Blob"])
             };
         }
     }

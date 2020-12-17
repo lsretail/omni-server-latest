@@ -11,6 +11,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class OneListItem : Entity, IDisposable
     {
+        private decimal quantity;
+        private decimal amount;
+
         public OneListItem(string id) : base(id)
         {
             OneListId = string.Empty;
@@ -99,7 +102,15 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string VariantDescription { get; set; }
 
         [DataMember(IsRequired = true)]
-        public decimal Quantity { get; set; }
+        public decimal Quantity
+        {
+            get => quantity;
+            set
+            {
+                quantity = value;
+                NotifyPropertyChanged();
+            }
+        }
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CreateDate { get; set; }
@@ -115,8 +126,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public bool PriceModified { get; set; }
         [DataMember]
         public decimal NetAmount { get; set; }
+
         [DataMember]
-        public decimal Amount { get; set; }
+        public decimal Amount
+        {
+            get => amount;
+            set
+            {
+                amount = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [DataMember]
         public decimal TaxAmount { get; set; }
         [DataMember]

@@ -41,7 +41,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual VariantRegistration VariantRegGetById(string id, string itemId)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, NAVVersion);
             return rep.VariantRegGetById(id, itemId);
         }
 
@@ -120,7 +120,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, bool fullReplication,ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, NAVVersion);
             return rep.ReplicateItemVariantRegistration(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

@@ -278,7 +278,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 entry.Payments = OrderPayGet(entry.Id);
                 entry.DiscountLines = OrderDiscGet(entry.Id);
 
-                ImageRepository imgrep = new ImageRepository(config);
+                ImageRepository imgrep = new ImageRepository(config, NavVersion);
                 List<SalesEntryLine> list = new List<SalesEntryLine>();
                 foreach (SalesEntryLine line in entry.Lines)
                 {

@@ -448,16 +448,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual ImageView ImageGetById(string imageId, bool includeBlob)
         {
-            ImageRepository rep = new ImageRepository(config);
-            if (NAVVersion.Major > 16)
-                return rep.ImageMediaGetByCode(imageId, includeBlob);
-            else
-                return rep.ImageGetById(imageId, includeBlob);
+            ImageRepository rep = new ImageRepository(config, NAVVersion);
+            return rep.ImageGetById(imageId, includeBlob);
         }
 
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
         {
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, NAVVersion);
             return rep.ImageGetByKey(tableName, key1, key2, key3, imgCount, includeBlob);
         }
 
@@ -519,17 +516,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual List<ReplImageLink> ReplEcommImageLinks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, NAVVersion);
             return rep.ReplEcommImageLink(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplImage> ReplEcommImages(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ImageRepository rep = new ImageRepository(config);
-            if (NAVVersion.Major > 16)
-                return rep.ReplEcommMediaImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
-            else
-                return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            ImageRepository rep = new ImageRepository(config, NAVVersion);
+            return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttribute> ReplEcommAttribute(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

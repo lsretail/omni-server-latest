@@ -183,7 +183,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         oline.PriceModified = false;
                     }
 
-                    if (oline.LineType == LineType.Item || oline.LineType == LineType.Coupon || oline.LineType == LineType.IncomeExpense)
+                    if (root.MobileTransactionSubLine != null && 
+                        (oline.LineType == LineType.Item || oline.LineType == LineType.Coupon || oline.LineType == LineType.IncomeExpense))
                     {
                         if (line.DealItem > 0)
                         {
@@ -205,10 +206,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         {
                             oline.SubLines.AddRange(modiferLineList);
                         }
-
-                        oline.LineNumber = LineNumberFromNav(oline.LineNumber); // MPOS expects to get 1 not 10000
-                        order.OrderLines.Add(oline);
                     }
+
+                    oline.LineNumber = LineNumberFromNav(oline.LineNumber); // MPOS expects to get 1 not 10000
+                    order.OrderLines.Add(oline);
                 }
             }
 
@@ -377,7 +378,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             //MobileTrans
             List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
-            trans.Add(new NavWS.MobileTransaction()
+            NavWS.MobileTransaction tran = new NavWS.MobileTransaction()
             {
                 Id = order.Id,
                 StoreId = order.StoreId,
@@ -385,7 +386,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 EntryStatus = (int)EntryStatus.Normal,
                 TransDate = DateTime.Now,
                 SaleIsReturnSale = false,
-                MemberCardNo = order.CardId,
+                MemberCardNo = XMLHelper.GetString(order.CardId),
                 CurrencyFactor = 1,
                 TerminalId = terminalId,
                 StaffId = staffId,
@@ -401,8 +402,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 DiningTblDescription = string.Empty,
                 RefundedFromStoreNo = string.Empty,
                 RefundedFromPOSTermNo = string.Empty,
-                RefundedReceiptNo = string.Empty
-            });
+                RefundedReceiptNo = string.Empty,
+            };
+            if (NavVersion > new Version("16.5"))
+            {
+                tran.VATBusPostingGroup = string.Empty;
+                tran.GenBusPostingGroup = string.Empty;
+            }
+
+            trans.Add(tran);
             root.MobileTransaction = trans.ToArray();
 
             //MobileTransLines
@@ -479,7 +487,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             //MobileTrans
             List<NavWS.MobileTransaction> trans = new List<NavWS.MobileTransaction>();
-            trans.Add(new NavWS.MobileTransaction()
+            NavWS.MobileTransaction tran = new NavWS.MobileTransaction()
             {
                 Id = request.Id,
                 StoreId = request.StoreId,
@@ -503,10 +511,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 DiningTblDescription = string.Empty,
                 RefundedFromStoreNo = string.Empty,
                 RefundedFromPOSTermNo = string.Empty,
-                RefundedReceiptNo = string.Empty,
-                VATBusPostingGroup = string.Empty,
-                GenBusPostingGroup = string.Empty
-            });
+                RefundedReceiptNo = string.Empty
+            };
+            if (NavVersion > new Version("16.5"))
+            {
+                tran.VATBusPostingGroup = string.Empty;
+                tran.GenBusPostingGroup = string.Empty;
+            }
+
+            trans.Add(tran);
             root.MobileTransaction = trans.ToArray();
 
             //MobileTransLines
@@ -728,7 +741,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
         private NavWS.MobileTransaction MobileTrans(RetailTransaction transaction)
         {
             DateTime transDate = DateTime.Now;
-            //if transdate sent from mobile device is within 30 days then use that one 
+            //if transaction date sent from mobile device is within 30 days then use that one 
             if (transaction.BeginDateTime.HasValue && transaction.BeginDateTime > DateTime.Now.AddDays(-30) && transaction.BeginDateTime < DateTime.Now.AddDays(30))
                 transDate = transaction.BeginDateTime.Value; //in xml 2013-04-24T17:02:20.197Z
 
@@ -1027,14 +1040,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty,
-                GenBusPostingGroup = string.Empty,
-                GenProdPostingGroup = string.Empty,
-                VatBusPostingGroup = string.Empty,
-                VatProdPostingGroup = string.Empty,
+                OrigTransStore = string.Empty
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
+
+            if (NavVersion > new Version("16.5"))
+            {
+                tline.GenBusPostingGroup = string.Empty;
+                tline.GenProdPostingGroup = string.Empty;
+                tline.VatBusPostingGroup = string.Empty;
+                tline.VatProdPostingGroup = string.Empty;
+
+            }
             return tline;
         }
 
@@ -1088,6 +1106,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
+
+            if (NavVersion > new Version("16.5"))
+            {
+                tline.GenBusPostingGroup = string.Empty;
+                tline.GenProdPostingGroup = string.Empty;
+                tline.VatBusPostingGroup = string.Empty;
+                tline.VatProdPostingGroup = string.Empty;
+
+            }
             return tline;
         }
 
@@ -1168,20 +1195,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty,
-                GenBusPostingGroup = string.Empty,
-                GenProdPostingGroup = string.Empty,
-                VatBusPostingGroup = string.Empty,
-                VatProdPostingGroup = string.Empty
+                OrigTransStore = string.Empty
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
+
+            if (NavVersion > new Version("16.5"))
+            {
+                tline.GenBusPostingGroup = string.Empty;
+                tline.GenProdPostingGroup = string.Empty;
+                tline.VatBusPostingGroup = string.Empty;
+                tline.VatProdPostingGroup = string.Empty;
+
+            }
             return tline;
         }
 
         private NavWS.MobileTransactionSubLine CreateTransactionSubLine(string id, OneListItemSubLine rq, int parLineNo, string parentItemNo, string staffId)
         {
-            return new NavWS.MobileTransactionSubLine()
+            NavWS.MobileTransactionSubLine tline = new NavWS.MobileTransactionSubLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(rq.LineNumber),
@@ -1207,12 +1239,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TAXBusinessCode = string.Empty,
                 TAXProductCode = string.Empty,
                 TransDate = DateTime.Now,
-                GenBusPostingGroup = string.Empty,
-                GenProdPostingGroup = string.Empty,
-                VatBusPostingGroup = string.Empty,
-                VatProdPostingGroup = string.Empty,
                 LineKitchenStatusCode = string.Empty
             };
+
+            if (NavVersion > new Version("16.5"))
+            {
+                tline.GenBusPostingGroup = string.Empty;
+                tline.GenProdPostingGroup = string.Empty;
+                tline.VatBusPostingGroup = string.Empty;
+                tline.VatProdPostingGroup = string.Empty;
+            }
+            return tline;
         }
 
         private NavWS.MobileTransactionSubLine CreateTransactionSubLine(string id, OrderHospSubLine rq, ref int lineNo, int parLineNo, SubLineType subLineType, string staffId)
@@ -1239,7 +1276,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             if (rq.LineNumber == 0)
                 rq.LineNumber = ++lineNo;
 
-            return new NavWS.MobileTransactionSubLine()
+            NavWS.MobileTransactionSubLine tline = new NavWS.MobileTransactionSubLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(rq.LineNumber),
@@ -1274,12 +1311,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TAXBusinessCode = string.Empty,
                 TAXProductCode = string.Empty,
                 TransDate = DateTime.Now,
-                GenBusPostingGroup = string.Empty,
-                GenProdPostingGroup = string.Empty,
-                VatBusPostingGroup = string.Empty,
-                VatProdPostingGroup = string.Empty,
                 LineKitchenStatusCode = string.Empty
             };
+
+            if (NavVersion > new Version("16.5"))
+            {
+                tline.GenBusPostingGroup = string.Empty;
+                tline.GenProdPostingGroup = string.Empty;
+                tline.VatBusPostingGroup = string.Empty;
+                tline.VatProdPostingGroup = string.Empty;
+
+            }
+            return tline;
         }
 
         private List<NavWS.MobileTransactionSubLine> MobileTransSubLine(string id, OrderHospLine posline, string staffId, ref int subLineCounter)
@@ -1426,18 +1469,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 EntryStatus = entryStatus,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.TenderType,
-                CurrencyCode = paymentLine.CurrencyCode,
+                CurrencyCode = XMLHelper.GetString(paymentLine.CurrencyCode),
                 CurrencyFactor = paymentLine.CurrencyFactor,
                 NetAmount = paymentLine.Amount,
                 StoreId = storeId,
                 TerminalId = terminalId,
                 StaffId = staffId,
-                EFTCardNumber = paymentLine.CardNumber,
-                EFTCardName = string.Empty,
-                EFTAuthCode = paymentLine.AuthorizationCode,
-                EFTMessage = string.Empty,
-                EFTTransactionNo = paymentLine.ExternalReference,
+                EFTCardNumber = XMLHelper.GetString(paymentLine.CardNumber),
+                EFTAuthCode = XMLHelper.GetString(paymentLine.AuthorizationCode),
+                EFTTransactionNo = XMLHelper.GetString(paymentLine.ExternalReference),
 
+                EFTMessage = string.Empty,
+                EFTCardName = string.Empty,
                 VariantCode = string.Empty,
                 VariantDescription = string.Empty,
                 Barcode = string.Empty,
@@ -1458,6 +1501,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             };
             if (NavVersion > new Version("14.2"))
                 tline.RetailImageID = string.Empty;
+
+            if (NavVersion > new Version("16.5"))
+            {
+                tline.GenBusPostingGroup = string.Empty;
+                tline.GenProdPostingGroup = string.Empty;
+                tline.VatBusPostingGroup = string.Empty;
+                tline.VatProdPostingGroup = string.Empty;
+
+            }
             return tline;
         }
 
@@ -1532,7 +1584,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             }
             else if (lineType == LineType.Payment)
             {
-                //getting tenderlines
+                //getting tender lines
                 PaymentLine paymentLine = new PaymentLine(mobileTransLine.LineNo);
 
                 paymentLine.Id = mobileTransLine.LineNo.ToString();
@@ -1544,7 +1596,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 paymentLine.Payment.StaffId = mobileTransLine.StaffId;
                 paymentLine.Payment.TenderType = new TenderType(mobileTransLine.Number);
 
-                paymentLine.Payment.Amount = new Money(mobileTransLine.NetAmount, transLineCurrency); //request sends in netamount
+                paymentLine.Payment.Amount = new Money(mobileTransLine.NetAmount, transLineCurrency); //request sends in net amount
 
                 paymentLine.Voided = entryStatus == EntryStatus.Voided;
                 paymentLine.Payment.CardNumber = mobileTransLine.EFTCardNumber;
@@ -1571,7 +1623,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     paymentLine.Voided = false;
                 }
 
-                //get the mobile receipt info for the tenderline
+                //get the mobile receipt info for the tender line
                 paymentLine.Payment.ReceiptInfo = ReceiptInfoLine(receiptInfos, mobileTransLine.LineNo);
                 transaction.TenderLines.Add(paymentLine);
             }

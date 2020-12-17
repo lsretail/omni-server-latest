@@ -233,7 +233,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeItems, bool includeItemDetail)
         {
-            ImageRepository imgrepo = new ImageRepository(config);
+            ImageRepository imgrepo = new ImageRepository(config, NavVersion);
 
             ProductGroup prgr = new ProductGroup()
             {
@@ -248,7 +248,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 ItemRepository itrep = new ItemRepository(config, NavVersion);
                 prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail);
-                ImageRepository imrep = new ImageRepository(config);
+                ImageRepository imrep = new ImageRepository(config, NavVersion);
                 prgr.Images = imrep.ImageGetByKey("Retail Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }
             else

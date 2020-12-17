@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         const int IMAGE_TABLEID = 99009063;
         const int LINK_TABLEID = 99009064;
 
-        public ImageRepository(BOConfiguration config) : base(config)
+        public ImageRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlimgfields = "mt.[Code],mt.[Type],mt.[Image Location],mt.[Image Blob],mt.[Description]";
             sqlimgfrom = " FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
@@ -32,6 +32,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public ImageView ImageGetById(string id, bool includeBlob)
         {
+            if (NavVersion.Major > 16)
+                return ImageMediaGetByCode(id, includeBlob);
+
             ImageView view = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -46,7 +49,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         if (reader.Read())
                         {
-                            view = ReaderToImage(reader, includeBlob);
+                            view = ReaderToImage(reader, includeBlob, false);
                         }
                         reader.Close();
                     }
@@ -66,8 +69,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.CommandText = "SELECT mt.[Code],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location]," +
                                           "mt.[Last Date Modified],tm.[Content],tm.[Height],tm.[Width]" +
                                           "FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "INNER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
-                                          "INNER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                                          "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                                          "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                                           "WHERE mt.[Code]=@id AND tms.[Company Name]=@cmp";
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
@@ -118,6 +121,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public List<ImageView> ImageGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
         {
+            if (NavVersion.Major > 16)
+                return ImageMediaGetByKey(tableName, key1, key2, key3, imgCount, includeBlob);
+
             try
             {
                 List<ImageView> list = new List<ImageView>();
@@ -150,7 +156,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         {
                             while (reader.Read())
                             {
-                                list.Add(ReaderToImage(reader, includeBlob));
+                                list.Add(ReaderToImage(reader, includeBlob, false));
                             }
                             reader.Close();
                         }
@@ -165,7 +171,58 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             }
         }
 
-        private ImageView ReaderToImage(SqlDataReader reader, bool includeblob)
+        public List<ImageView> ImageMediaGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
+        {
+            try
+            {
+                List<ImageView> list = new List<ImageView>();
+                string sqlcnt = string.Empty;
+                if (imgCount > 0)
+                    sqlcnt = " TOP(" + imgCount.ToString() + ") ";
+
+                string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
+                            ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
+                             sqlimgfrom + " JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
+                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navCompanyName.Substring(0, navCompanyName.Length - 1) + "'" +
+                             " LEFT OUTER JOIN[Tenant Media] tm ON tm.[ID] = tms.[Media ID]" +
+                             " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
+                             " ORDER BY il.[Display Order]";
+
+                string keyvalue = key1;
+                if (string.IsNullOrWhiteSpace(key2) == false)
+                    keyvalue += "," + key2;
+                if (string.IsNullOrWhiteSpace(key3) == false)
+                    keyvalue += "," + key3;
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    using (SqlCommand command = connection.CreateCommand())
+                    {
+                        command.CommandText = sql;
+                        command.Parameters.AddWithValue("@key", keyvalue);
+                        command.Parameters.AddWithValue("@table", tableName);
+                        TraceSqlCommand(command);
+                        connection.Open();
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToImage(reader, includeBlob, true));
+                            }
+                            reader.Close();
+                        }
+                        connection.Close();
+                    }
+                }
+                return list;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        private ImageView ReaderToImage(SqlDataReader reader, bool includeblob, bool media)
         {
             ImageView view = new ImageView()
             {
@@ -177,7 +234,17 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             if (includeblob)
-                view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Image Blob"] as byte[]);
+            {
+                if (media)
+                {
+                    view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[]);
+                    view.ImgSize = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
+                }
+                else
+                {
+                    view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Image Blob"] as byte[]);
+                }
+            }
             return view;
         }
 
@@ -207,6 +274,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
+
+            if (NavVersion.Major > 16)
+                return ReplEcommMediaImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
 
             List<JscKey> keys = GetPrimaryKeys("Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d");
 
@@ -293,9 +363,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public List<ReplImage> ReplEcommMediaImage(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (string.IsNullOrWhiteSpace(lastKey))
-                lastKey = "0";
-
             List<JscKey> keys = GetPrimaryKeys("Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d");
 
             // get records remaining
@@ -313,8 +380,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sql = GetSQL(fullReplication, batchSize) +
                     "mt.[Code],tm.[ID],mt.[Type],mt.[Image Location],mt.[Description],tm.[Content],tm.[Height],tm.[Width]" +
                     "FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                    "INNER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
-                    "INNER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                    "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                    "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                     GetWhereStatement(fullReplication, keys, " AND tms.[Company Name]=@cmp", true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -414,7 +481,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 Id = SQLHelper.GetString(reader["Code"]),
                 Location = SQLHelper.GetString(reader["Image Location"]),
-                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
+                LocationType = LocationType.Image,
                 Description = SQLHelper.GetString(reader["Description"]),
                 MediaId = SQLHelper.GetString(reader["ID"])
             };
@@ -428,7 +495,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             else
             {
                 img.Image64 = Convert.ToBase64String(imgbyte);
-                img.LocationType = LocationType.Image;
                 img.Size = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
             }
 

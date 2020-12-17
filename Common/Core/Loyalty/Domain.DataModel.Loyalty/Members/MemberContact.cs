@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 
 using LSRetail.Omni.Domain.DataModel.Base.Base;
@@ -213,7 +214,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                 {
                     CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
                     ListType = ListType.Wish,
-                    Items = new List<OneListItem>()
+                    Items = new ObservableCollection<OneListItem>()
                 };
             }
             return list;
@@ -228,7 +229,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                 CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
                 ListType = ListType.Wish,
                 Description = description,
-                Items = new List<OneListItem>()
+                Items = new ObservableCollection<OneListItem>()
             };
 
             return list;
@@ -247,7 +248,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                 {
                     CardId = (Cards.Count == 0) ? string.Empty : Cards[0].Id,
                     ListType = ListType.Basket,
-                    Items = new List<OneListItem>()
+                    Items = new ObservableCollection<OneListItem>()
                 };
             }
             return list;

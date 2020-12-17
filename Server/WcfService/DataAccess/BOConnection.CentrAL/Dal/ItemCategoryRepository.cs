@@ -244,7 +244,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             ProductGroupRepository prdrep = new ProductGroupRepository(config, NavVersion);
             itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false);
 
-            ImageRepository imgrep = new ImageRepository(config);
+            ImageRepository imgrep = new ImageRepository(config, NavVersion);
             itemcategory.Images = imgrep.ImageGetByKey("Item Category", itemcategory.Id, string.Empty, string.Empty, 0, false);
 
             return itemcategory;

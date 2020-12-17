@@ -82,6 +82,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(AcceptAllCertifications);
 
+            string protocol = config.SettingsGetByKey(ConfigKey.BOProtocol);
+            if (string.IsNullOrWhiteSpace(protocol) == false)
+            {
+                ServicePointManager.SecurityProtocol = (SecurityProtocolType) EnumHelper.StringToEnum(typeof(SecurityProtocolType), protocol);
+            }
+
             //navWsVersion is Unknown for the first time 
             if (NAVVersion == null)
             {

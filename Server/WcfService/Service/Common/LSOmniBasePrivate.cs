@@ -169,6 +169,9 @@ namespace LSOmni.Service
                 if (ConfigSetting.KeyExists("BOConnection.Nav.QryUrl"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.QryUrl");
 
+                if (ConfigSetting.KeyExists("BOConnection.Nav.Protocol"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOProtocol.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Protocol");
+
                 if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");
 

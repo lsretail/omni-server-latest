@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -16,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ItemVariantRegistrationRepository(BOConfiguration config) : base(config)
+        public ItemVariantRegistrationRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Item No_],mt.[Framework Code],mt.[Variant],mt.[Variant Dimension 1],mt.[Variant Dimension 2]," +
                          "mt.[Variant Dimension 3],mt.[Variant Dimension 4],mt.[Variant Dimension 5],mt.[Variant Dimension 6]";
@@ -205,7 +206,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Dimension6 = SQLHelper.GetString(reader["Variant Dimension 6"])
             };
 
-            ImageRepository imgrepo = new ImageRepository(config);
+            ImageRepository imgrepo = new ImageRepository(config, NavVersion);
             var.Images = imgrepo.ImageGetByKey("Item Variant", itemid, var.Id, string.Empty, 0, false);
             return var;
         }

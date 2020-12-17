@@ -554,7 +554,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     line.VariantDescription += "/" + vartxt;
             }
 
-            ImageRepository imgrep = new ImageRepository(config);
+            ImageRepository imgrep = new ImageRepository(config, NavVersion);
             if (string.IsNullOrEmpty(line.VariantId))
             {
                 List<ImageView> img = imgrep.ImageGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);

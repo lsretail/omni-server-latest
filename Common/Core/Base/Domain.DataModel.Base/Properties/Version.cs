@@ -6,7 +6,7 @@ using System.Reflection;
  
 [assembly: AssemblyProduct("LS UC Services")] 
 [assembly: AssemblyCompany("LS Retail")]
-[assembly: AssemblyCopyright("Copyright 2020 LS Retail")]
+[assembly: AssemblyCopyright("Copyright 2021 LS Retail")]
 [assembly: AssemblyTrademark("LS Retail")]
 [assembly: AssemblyCulture("")]
 
@@ -17,7 +17,7 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("4.13.0")]
-[assembly: AssemblyFileVersion("4.13.0")]
-[assembly: AssemblyInformationalVersion("LS Omni 4.13")]
+[assembly: AssemblyVersion("4.14.0")]
+[assembly: AssemblyFileVersion("4.14.0")]
+[assembly: AssemblyInformationalVersion("LS Omni 4.14")]
  

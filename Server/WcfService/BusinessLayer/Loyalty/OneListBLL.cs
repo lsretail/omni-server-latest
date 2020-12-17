@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Collections.ObjectModel;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -138,13 +138,22 @@ namespace LSOmni.BLL.Loyalty
         public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate)
         {
             OneList list = iRepository.OneListGetById(onelistId, true);
+
+            bool notfound = true;
             if (remove)
             {
-                int i = list.Items.FindIndex(t => t.Id == item.Id);
-                if (i < 0)
-                    throw new LSOmniException(StatusCode.OneListNotFound, string.Format("OneList Item {0} not found", item.Id));
+                for (int i = 0; i < list.Items.Count; i++)
+                {
+                    if (list.Items[i].Id == item.Id)
+                    {
+                        list.Items.RemoveAt(i);
+                        notfound = false;
+                        break;
+                    }
+                }
 
-                list.Items.RemoveAt(i);
+                if (notfound)
+                    throw new LSOmniException(StatusCode.OneListNotFound, string.Format("OneList Item {0} not found", item.Id));
             }
             else
             {
@@ -153,12 +162,17 @@ namespace LSOmni.BLL.Loyalty
                 if (item.VariantId == null)
                     item.VariantId = string.Empty;
 
-                int i = list.Items.FindIndex(t => t.ItemId == item.ItemId && t.VariantId == item.VariantId && t.UnitOfMeasureId == item.UnitOfMeasureId);
-                if (i >= 0)
+                for (int i = 0; i < list.Items.Count; i++)
                 {
-                    list.Items[i].Quantity += item.Quantity;
+                    if (list.Items[i].ItemId == item.ItemId && list.Items[i].VariantId == item.VariantId && list.Items[i].UnitOfMeasureId == item.UnitOfMeasureId)
+                    {
+                        list.Items[i].Quantity += item.Quantity;
+                        notfound = false;
+                        break;
+                    }
                 }
-                else
+
+                if (notfound)
                 {
                     list.Items.Add(item);
                 }
@@ -237,7 +251,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalTaxAmount = calcResp.TotalAmount - calcResp.TotalNetAmount;
             list.TotalDiscAmount = calcResp.TotalDiscount;
 
-            List<OneListItem> newitems = new List<OneListItem>();
+            ObservableCollection<OneListItem> newitems = new ObservableCollection<OneListItem>();
             foreach (OrderLine line in calcResp.OrderLines)
             {
                 OneListItem item = new OneListItem()
@@ -263,19 +277,22 @@ namespace LSOmni.BLL.Loyalty
                     OnelistItemDiscounts = new List<OneListItemDiscount>()
                 };
 
-                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId);
-                if (olditem != null)
+                foreach (OneListItem olditem in list.Items)
                 {
-                    if (string.IsNullOrEmpty(line.ItemImageId))
-                        item.Image = olditem.Image;
-
-                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    if (olditem.ItemId == line.ItemId && olditem.VariantId == line.VariantId)
                     {
-                        item.VariantId = olditem.VariantId;
-                        item.VariantDescription = olditem.VariantDescription;
-                    }
+                        if (string.IsNullOrEmpty(line.ItemImageId))
+                            item.Image = olditem.Image;
 
-                    item.BarcodeId = olditem.BarcodeId;
+                        if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                        {
+                            item.VariantId = olditem.VariantId;
+                            item.VariantDescription = olditem.VariantDescription;
+                        }
+
+                        item.BarcodeId = olditem.BarcodeId;
+                    }
+                    break;
                 }
                 newitems.Add(item);
             }
@@ -285,28 +302,27 @@ namespace LSOmni.BLL.Loyalty
 
             foreach (OrderDiscountLine disc in calcResp.OrderDiscountLines)
             {
-                OneListItem line = list.Items.Find(i => i.LineNumber == disc.LineNumber / 10000);
-                if (line == null)
+                foreach (OneListItem line in list.Items)
                 {
-                    line = list.Items.Find(i => i.LineNumber == disc.LineNumber);
-                    if (line == null)
-                        continue;
+                    if (line.LineNumber == disc.LineNumber / 10000 || line.LineNumber == disc.LineNumber)
+                    {
+                        OneListItemDiscount discount = new OneListItemDiscount()
+                        {
+                            Description = disc.Description,
+                            DiscountAmount = disc.DiscountAmount,
+                            DiscountPercent = disc.DiscountPercent,
+                            DiscountType = disc.DiscountType,
+                            LineNumber = disc.LineNumber,
+                            No = disc.No,
+                            OfferNumber = disc.OfferNumber,
+                            PeriodicDiscGroup = disc.PeriodicDiscGroup,
+                            PeriodicDiscType = disc.PeriodicDiscType,
+                            Quantity = line.Quantity
+                        };
+                        line.OnelistItemDiscounts.Add(discount);
+                        break;
+                    }
                 }
-
-                OneListItemDiscount discount = new OneListItemDiscount()
-                {
-                    Description = disc.Description,
-                    DiscountAmount = disc.DiscountAmount,
-                    DiscountPercent = disc.DiscountPercent,
-                    DiscountType = disc.DiscountType,
-                    LineNumber = disc.LineNumber,
-                    No = disc.No,
-                    OfferNumber = disc.OfferNumber,
-                    PeriodicDiscGroup = disc.PeriodicDiscGroup,
-                    PeriodicDiscType = disc.PeriodicDiscType,
-                    Quantity = line.Quantity
-                };
-                line.OnelistItemDiscounts.Add(discount);
             }
             return list;
         }
@@ -328,7 +344,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalTaxAmount = calcResp.TotalAmount - calcResp.TotalNetAmount;
             list.TotalDiscAmount = calcResp.TotalDiscount;
 
-            List<OneListItem> newitems = new List<OneListItem>();
+            ObservableCollection<OneListItem> newitems = new ObservableCollection<OneListItem>();
             foreach (OrderHospLine line in calcResp.OrderLines)
             {
                 OneListItem item = new OneListItem()
@@ -353,21 +369,24 @@ namespace LSOmni.BLL.Loyalty
                     DiscountPercent = line.DiscountPercent
                 };
 
-                OneListItem olditem = list.Items.Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId);
-                if (olditem != null)
+
+                foreach (OneListItem olditem in list.Items)
                 {
-                    if (string.IsNullOrEmpty(line.ItemImageId))
-                        item.Image = olditem.Image;
-
-                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    if (olditem.ItemId == line.ItemId && olditem.VariantId == line.VariantId)
                     {
-                        item.VariantId = olditem.VariantId;
-                        item.VariantDescription = olditem.VariantDescription;
+                        if (string.IsNullOrEmpty(line.ItemImageId))
+                            item.Image = olditem.Image;
+
+                        if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                        {
+                            item.VariantId = olditem.VariantId;
+                            item.VariantDescription = olditem.VariantDescription;
+                        }
+
+                        item.BarcodeId = olditem.BarcodeId;
+                        break;
                     }
-
-                    item.BarcodeId = olditem.BarcodeId;
                 }
-
 
                 item.OnelistItemDiscounts = new List<OneListItemDiscount>();
                 foreach (OrderDiscountLine disc in line.DiscountLines)

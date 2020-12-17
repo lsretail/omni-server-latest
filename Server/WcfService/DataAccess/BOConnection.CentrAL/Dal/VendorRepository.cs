@@ -28,19 +28,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 lastKey = "0";
 
             List<JscKey> keys = GetPrimaryKeys("Vendor$437dbf0e-84ff-417a-965d-ed2bb9650972");
-            string from = sqlfrom;
-
-            if (string.IsNullOrEmpty(storeId) == false)
-                from += " LEFT JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it ON it.[Vendor No_]=mt.[No_]";
 
             // get records remaining
             string sql = string.Empty;
             if (fullReplication)
             {
-                if (string.IsNullOrEmpty(storeId))
-                    sql = "SELECT COUNT(*)" + from + GetWhereStatement(true, keys, false);
-                else
-                    sql = "SELECT COUNT(DISTINCT mt.[No_])" + from + GetWhereStatementWithStoreDist(true, keys, "it.[No_]", storeId, false);
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
@@ -48,10 +41,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<ReplVendor> list = new List<ReplVendor>();
 
             // get records
-            if (string.IsNullOrEmpty(storeId))
-                sql = GetSQL(fullReplication, batchSize) + sqlcolumns + from + GetWhereStatement(fullReplication, keys, true);
-            else
-                sql = GetSQL(fullReplication, batchSize, true, true) + sqlcolumns + from + GetWhereStatementWithStoreDist(fullReplication, keys, "it.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
