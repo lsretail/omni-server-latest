@@ -76,7 +76,6 @@ namespace LSOmni.BLL.Loyalty
 
             CheckItemSetup(list);
 
-            // temp solution till we get this from NAV
             Order order = BOLoyConnection.BasketCalcToOrder(list);
             foreach (OrderLine line in order.OrderLines)
             {

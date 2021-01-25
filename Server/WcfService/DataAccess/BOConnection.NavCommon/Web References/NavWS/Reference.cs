@@ -19177,6 +19177,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private bool keyboardItemEntryField;
         
+        private string extField1Field;
+        
+        private string extField2Field;
+        
+        private string extField3Field;
+        
         public Trans_Inventory_Lines() {
             this.lineNoField = 0;
             this.quantityField = ((decimal)(0m));
@@ -19332,6 +19338,36 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.keyboardItemEntryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtField1 {
+            get {
+                return this.extField1Field;
+            }
+            set {
+                this.extField1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtField2 {
+            get {
+                return this.extField2Field;
+            }
+            set {
+                this.extField2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtField3 {
+            get {
+                return this.extField3Field;
+            }
+            set {
+                this.extField3Field = value;
             }
         }
     }
@@ -37145,6 +37181,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private bool receiveConfirmScanField;
         
+        private string extField1Field;
+        
+        private string extField2Field;
+        
+        private string extField3Field;
+        
         public POSTransInvLines() {
             this.lineNoField = 0;
             this.quantityField = ((decimal)(0m));
@@ -37322,6 +37364,36 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.receiveConfirmScanField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtField1 {
+            get {
+                return this.extField1Field;
+            }
+            set {
+                this.extField1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtField2 {
+            get {
+                return this.extField2Field;
+            }
+            set {
+                this.extField2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtField3 {
+            get {
+                return this.extField3Field;
+            }
+            set {
+                this.extField3Field = value;
             }
         }
     }

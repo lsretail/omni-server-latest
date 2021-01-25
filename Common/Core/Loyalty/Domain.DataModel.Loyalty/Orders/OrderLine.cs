@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
@@ -31,6 +32,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             NetAmount = 0.0M;
             TaxAmount = 0.0M;
             Amount = 0.0M;
+
+            LineNumbers = new List<int>();
         }
 
         public OrderLine() : this(string.Empty)
@@ -107,6 +110,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public decimal Amount { get; set; }
+
+        public List<int> LineNumbers { get; set; }
 
         public override string ToString()
         {

@@ -43,28 +43,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 PointsUsedInOrder = header.PointsUsedInBasket
             };
 
-            //now loop through the discount lines
-            order.OrderDiscountLines = new List<OrderDiscountLine>();
-            if (root.MobileTransDiscountLine != null)
-            {
-                foreach (NavWS.MobileTransDiscountLine mobileTransDisc in root.MobileTransDiscountLine)
-                {
-                    OrderDiscountLine discount = new OrderDiscountLine()
-                    {
-                        //DiscountType: Periodic Disc.,Customer,InfoCode,Total,Line,Promotion,Deal,Total Discount,Tender Type,Item Point,Line Discount,Member Point,Coupon
-                        DiscountType = (DiscountType)mobileTransDisc.DiscountType,
-                        PeriodicDiscType = (PeriodicDiscType)mobileTransDisc.PeriodicDiscType,
-                        DiscountPercent = mobileTransDisc.DiscountPercent,
-                        DiscountAmount = mobileTransDisc.DiscountAmount,
-                        Description = mobileTransDisc.Description,
-                        No = mobileTransDisc.No.ToString(),
-                        OfferNumber = mobileTransDisc.OfferNo,
-                        LineNumber = LineNumberFromNav(mobileTransDisc.LineNo)
-                    };
-                    order.OrderDiscountLines.Add(discount);
-                }
-            }
-
             //now loop through the lines
             order.OrderLines = new List<OrderLine>();
             if (root.MobileTransactionLine != null)
@@ -75,31 +53,105 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
                         continue;
 
-                    OrderLine line = new OrderLine()
-                    {
-                        LineNumber = LineNumberFromNav(mobileTransLine.LineNo),
-                        ItemId = mobileTransLine.Number,
-                        Quantity = mobileTransLine.Quantity,
-                        QuantityToInvoice = mobileTransLine.Quantity,
-                        DiscountAmount = mobileTransLine.DiscountAmount,
-                        DiscountPercent = mobileTransLine.DiscountPercent,
-                        Price = mobileTransLine.Price,
-                        NetPrice = mobileTransLine.NetPrice,
-                        Amount = mobileTransLine.NetAmount + mobileTransLine.TAXAmount,
-                        NetAmount = mobileTransLine.NetAmount,
-                        TaxAmount = mobileTransLine.TAXAmount,
-                        ItemDescription = mobileTransLine.ItemDescription,
-                        VariantId = mobileTransLine.VariantCode,
-                        VariantDescription = mobileTransLine.VariantDescription,
-                        UomId = mobileTransLine.UomId,
-                        LineType = lineType
-                    };
-                    if (NavVersion > new Version("14.2"))
-                        line.ItemImageId = mobileTransLine.RetailImageID;
+                    OrderLine oline = order.OrderLines.Find(l =>
+                            l.ItemId == mobileTransLine.Number &&
+                            l.VariantId == mobileTransLine.VariantCode &&
+                            l.UomId == mobileTransLine.UomId &&
+                            l.LineType == lineType);
 
-                    order.OrderLines.Add(line);
+                    if (oline == null)
+                    {
+                        OrderLine line = new OrderLine()
+                        {
+                            LineNumber = LineNumberFromNav(mobileTransLine.LineNo),
+                            ItemId = mobileTransLine.Number,
+                            Quantity = mobileTransLine.Quantity,
+                            QuantityToInvoice = mobileTransLine.Quantity,
+                            DiscountAmount = mobileTransLine.DiscountAmount,
+                            DiscountPercent = mobileTransLine.DiscountPercent,
+                            Price = mobileTransLine.Price,
+                            NetPrice = mobileTransLine.NetPrice,
+                            Amount = mobileTransLine.NetAmount + mobileTransLine.TAXAmount,
+                            NetAmount = mobileTransLine.NetAmount,
+                            TaxAmount = mobileTransLine.TAXAmount,
+                            ItemDescription = mobileTransLine.ItemDescription,
+                            VariantId = mobileTransLine.VariantCode,
+                            VariantDescription = mobileTransLine.VariantDescription,
+                            UomId = mobileTransLine.UomId,
+                            LineType = lineType
+                        };
+                        if (NavVersion > new Version("14.2"))
+                            line.ItemImageId = mobileTransLine.RetailImageID;
+
+                        line.LineNumbers.Add(line.LineNumber);
+                        order.OrderLines.Add(line);
+                    }
+                    else
+                    {
+                        oline.DiscountAmount += mobileTransLine.DiscountAmount;
+                        oline.NetAmount += mobileTransLine.NetAmount;
+                        oline.Quantity += mobileTransLine.Quantity;
+                        oline.TaxAmount += mobileTransLine.TAXAmount;
+                        oline.Amount += (mobileTransLine.NetAmount + mobileTransLine.TAXAmount);
+                        oline.LineNumbers.Add(LineNumberFromNav(mobileTransLine.LineNo));
+                    }
                 }
             }
+
+            //now loop through the discount lines
+            order.OrderDiscountLines = new List<OrderDiscountLine>();
+            if (root.MobileTransDiscountLine != null)
+            {
+                foreach (NavWS.MobileTransDiscountLine mobileTransDisc in root.MobileTransDiscountLine)
+                {
+                    if (mobileTransDisc.DiscountAmount == 0 && mobileTransDisc.DiscountPercent == 0)
+                        continue;
+
+                    OrderDiscountLine dline = order.OrderDiscountLines.Find(l =>
+                            l.DiscountType == (DiscountType)mobileTransDisc.DiscountType &&
+                            l.PeriodicDiscType == (PeriodicDiscType)mobileTransDisc.PeriodicDiscType &&
+                            l.PeriodicDiscGroup == mobileTransDisc.PeriodicDiscGroup &&
+                            l.OfferNumber == mobileTransDisc.OfferNo);
+
+                    if (dline != null)
+                    {
+                        // find line, if found we keep that discount
+                        OrderLine oline = order.OrderLines.Find(l => l.LineNumber == LineNumberFromNav(mobileTransDisc.LineNo));
+                        if (oline == null)
+                        {
+                            dline.DiscountAmount += mobileTransDisc.DiscountAmount;
+                            continue;
+                        }
+                    }
+
+                    OrderDiscountLine discount = new OrderDiscountLine()
+                    {
+                        //DiscountType: Periodic Disc.,Customer,InfoCode,Total,Line,Promotion,Deal,Total Discount,Tender Type,Item Point,Line Discount,Member Point,Coupon
+                        DiscountType = (DiscountType)mobileTransDisc.DiscountType,
+                        PeriodicDiscType = (PeriodicDiscType)mobileTransDisc.PeriodicDiscType,
+                        PeriodicDiscGroup = mobileTransDisc.PeriodicDiscGroup,
+                        DiscountPercent = mobileTransDisc.DiscountPercent,
+                        DiscountAmount = mobileTransDisc.DiscountAmount,
+                        Description = mobileTransDisc.Description,
+                        No = mobileTransDisc.No.ToString(),
+                        OfferNumber = mobileTransDisc.OfferNo,
+                        LineNumber = LineNumberFromNav(mobileTransDisc.LineNo)
+                    };
+
+                    // check line number if extra discount
+                    foreach (OrderLine ol in order.OrderLines)
+                    {
+                        if (ol.LineNumbers.Contains(discount.LineNumber))
+                        {
+                            discount.LineNumber = ol.LineNumber;
+                            break;
+                        }
+                    }
+
+                    order.OrderDiscountLines.Add(discount);
+                }
+            }
+
             return order;
         }
 

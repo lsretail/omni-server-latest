@@ -42,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<ReplBarcodeMask> list = new List<ReplBarcodeMask>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(true, keys, true);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {

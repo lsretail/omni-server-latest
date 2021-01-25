@@ -611,15 +611,15 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
-        public virtual ReplHierarchyHospRecipeResponse ReplEcommHierarchyHospRecipe(ReplRequest replRequest)
+        public virtual ReplItemRecipeResponse ReplicateItemRecipe(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplHierarchyHospRecipeResponse rs = new ReplHierarchyHospRecipeResponse()
+            ReplItemRecipeResponse rs = new ReplItemRecipeResponse()
             {
-                Items = BOAppConnection.ReplicateHierarchyHospRecipe(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                Items = BOAppConnection.ReplicateItemRecipe(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
                 RecordsRemaining = recordsRemaining,
                 LastKey = lastkey,
                 MaxKey = maxkey

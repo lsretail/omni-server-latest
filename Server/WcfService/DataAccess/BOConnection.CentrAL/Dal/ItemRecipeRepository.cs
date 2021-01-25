@@ -2,47 +2,50 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
-using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
-namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
+namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
-    public class BarcodeMaskRepository : BaseRepository 
+    public class ItemRecipeRepository : BaseRepository
     {
-        // Key: Entry No_
-        const int TABLEID = 99001459;
+        // Key: Code
+        const int TABLEID = 90;
 
-        private string sqlcolumns = string.Empty;
-        private string sqlfrom = string.Empty;
+        private string sqlcolumnsRecipe = string.Empty;
+        private string sqlfromRecipe = string.Empty;
 
-        public BarcodeMaskRepository(BOConfiguration config) : base(config)
+        public ItemRecipeRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Entry No_],mt.[Mask],mt.[Description],mt.[Type],mt.[Prefix],mt.[Symbology],mt.[Number Series]";
-
-            sqlfrom = " FROM [" + navCompanyName + "Barcode Mask] mt";
+            sqlcolumnsRecipe = "mt.[timestamp],mt.[Parent Item No_],mt.[Item No_],mt.Exclusion,mt.[Price on Exclusion]," +
+                               "mt2.[Description],mt2.[Line No_],mt2.[Unit of Measure Code],mt2.[Quantity per],il.[Image Id]";
+            sqlfromRecipe = " FROM [" + navCompanyName + "BOM Component$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                            " INNER JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt2 ON mt2.[Parent Item No_]=mt.[Parent Item No_] AND mt2.[Line No_]=mt.[Line No_]" +
+                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item' AND [Image Id]<>''";
         }
 
-        public List<ReplBarcodeMask> ReplicateBarcodeMasks(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public List<ReplItemRecipe> ReplicateItemRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            List<JscKey> keys = GetPrimaryKeys("Barcode Mask");
+            SQLHelper.CheckForSQLInjection(storeId);
+            List<JscKey> keys = GetPrimaryKeys("BOM Component$5ecfc871-5d82-43f1-9c54-59685e82318d");
 
             // get records remaining
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
+                sql = "SELECT COUNT(*)" + sqlfromRecipe + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplBarcodeMask> list = new List<ReplBarcodeMask>();
+            List<ReplItemRecipe> list = new List<ReplItemRecipe>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, true);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumnsRecipe + sqlfromRecipe + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -61,7 +64,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             int cnt = 0;
                             while (reader.Read())
                             {
-                                list.Add(ReaderToBarcodeMask(reader, out lastKey));
+                                list.Add(ReaderToRecipe(reader, out lastKey));
                                 cnt++;
                             }
                             reader.Close();
@@ -77,10 +80,15 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                list.Add(new ReplBarcodeMask()
+                                string[] par = act.ParamValue.Split(';');
+                                if (par.Length < 2 || par.Length != keys.Count)
+                                    continue;
+
+                                list.Add(new ReplItemRecipe()
                                 {
-                                    Id = Convert.ToInt32(act.ParamValue),
-                                    Del = true
+                                    RecipeNo = par[0],
+                                    LineNo = Convert.ToInt32(par[1]),
+                                    IsDeleted = true
                                 });
                                 continue;
                             }
@@ -93,7 +101,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             {
                                 while (reader.Read())
                                 {
-                                    list.Add(ReaderToBarcodeMask(reader, out string ts));
+                                    list.Add(ReaderToRecipe(reader, out string ts));
                                 }
                                 reader.Close();
                             }
@@ -113,21 +121,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        private ReplBarcodeMask ReaderToBarcodeMask(SqlDataReader reader, out string timestamp)
+        private ReplItemRecipe ReaderToRecipe(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplBarcodeMask()
+            return new ReplItemRecipe()
             {
-                Id = SQLHelper.GetInt32(reader["Entry No_"]),
-                Mask = SQLHelper.GetString(reader["Mask"]),
+                RecipeNo = SQLHelper.GetString(reader["Parent Item No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                MaskType = SQLHelper.GetInt32(reader["Type"]),
-                Prefix = SQLHelper.GetString(reader["Prefix"]),
-                Symbology = SQLHelper.GetInt32(reader["Symbology"]),
-                NumberSeries = SQLHelper.GetString(reader["Number Series"])
+                LineNo = SQLHelper.GetInt32(reader["Line No_"]),
+                ItemNo = SQLHelper.GetString(reader["Item No_"]),
+                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
+                Exclusion = SQLHelper.GetBool(reader["Exclusion"]),
+                ExclusionPrice = SQLHelper.GetDecimal(reader["Price on Exclusion"]),
+                QuantityPer = SQLHelper.GetDecimal(reader["Quantity per"]),
+                ImageId = SQLHelper.GetString(reader["Image Id"])
             };
         }
     }
 }
- 

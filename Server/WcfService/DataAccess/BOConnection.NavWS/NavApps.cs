@@ -225,10 +225,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return new List<ReplHierarchyHospDealLine>();
         }
 
-        public virtual List<ReplHierarchyHospRecipe> ReplicateHierarchyHospRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             // TODO ?? 
-            return new List<ReplHierarchyHospRecipe>();
+            return new List<ReplItemRecipe>();
         }
 
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

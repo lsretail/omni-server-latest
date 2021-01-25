@@ -12,12 +12,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
     public class HierarchyHospLeafRepository : BaseRepository
     {
         // Key: Hierarchy Code
-        const int TABLERECIPEID = 90;
         const int TABLEDEALID = 99001503;
         const int TABLEDEALLINEID = 99001651;
-
-        private string sqlcolumnsRecipe = string.Empty;
-        private string sqlfromRecipe = string.Empty;
 
         private string sqlcolumnsDeal = string.Empty;
         private string sqlfromDeal = string.Empty;
@@ -27,13 +23,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public HierarchyHospLeafRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sqlcolumnsRecipe = "nl.[Hierarchy Code],nl.[Node ID],nl.[No_],mt.[Line No_],mt.[Item No_],mt.[Description]," +
-                                "mt.[Unit of Measure Code],mt.[Quantity per],mt.Exclusion,mt.[Price on Exclusion],il.[Image Id]";
-            sqlfromRecipe = " FROM [" + navCompanyName + "Hierarchy Node Link] nl" +
-                             " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                             " INNER JOIN [" + navCompanyName + "BOM Component] mt ON mt.[Parent Item No_]=nl.[No_]" +
-                             " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
-
             sqlcolumnsDeal = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type]," +
                              "mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index],il.[Image Id]";
             sqlfromDeal = " FROM [" + navCompanyName + "Hierarchy Node Link] nl" +
@@ -56,7 +45,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("Offer Line");
+            List<JscKey> keys = new List<JscKey>();
+            keys.Add(new JscKey()
+            {
+                FieldName = "Offer No_",
+                FieldType = "nvarchar"
+            });
             string where = string.Format(" AND nl.[Type]=1 AND hd.[Store Code]='{0}'", storeId);
 
             // get records remaining
@@ -65,9 +59,55 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 sql = "SELECT COUNT(*)" + sqlfromDeal + GetWhereStatement(true, keys, where, false);
             }
-            recordsRemaining = GetRecordCount(TABLEDEALID, lastKey, sql, keys, ref maxKey);
 
-            List<JscActions> actions = LoadActions(fullReplication, TABLEDEALID, batchSize, ref lastKey, ref recordsRemaining);
+            string tmplastkey = lastKey;
+            string mainlastkey = lastKey;
+            string tmpmaxkey = string.Empty;
+            recordsRemaining = 0;
+
+            recordsRemaining = GetRecordCount(TABLEDEALID, lastKey, sql, keys, ref maxKey);
+            List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALID, batchSize, ref lastKey, ref recordsRemaining);
+
+            recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref tmpmaxkey);
+            nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
+            if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                mainlastkey = tmplastkey;
+
+            lastKey = mainlastkey;
+
+            List<JscActions> actions = new List<JscActions>();
+            foreach (JscActions act in nodeact)
+            {
+                string[] parvalues = act.ParamValue.Split(';');
+                JscActions newact;
+
+                if (act.Type == DDStatementType.Delete)
+                {
+                    if (act.TableId != TABLEDEALID)
+                        continue;       // skip delete actions for extra tables
+                    
+                    actions.Add(act);
+                    continue;
+                }
+
+                newact = new JscActions()
+                {
+                    id = act.id,
+                    TableId = act.TableId,
+                    Type = act.Type,
+                    ParamValue = (act.TableId == TABLEDEALID) ? parvalues[0] : parvalues[3]
+                };
+
+                JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                if (findme == null)
+                {
+                    actions.Add(newact);
+                }
+            }
+
+            if (actions.Count == 0)
+                recordsRemaining = 0;
+
             List<ReplHierarchyHospDeal> list = new List<ReplHierarchyHospDeal>();
 
             // get records
@@ -107,7 +147,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (act.Type == DDStatementType.Delete)
                             {
                                 string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 2 || par.Length != keys.Count)
+                                if (par.Length < 2)
                                     continue;
 
                                 list.Add(new ReplHierarchyHospDeal()
@@ -153,7 +193,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("Deal Modifier Item$5ecfc871-5d82-43f1-9c54-59685e82318d");
+            List<JscKey> keys = new List<JscKey>();
+            keys.Add(new JscKey()
+            {
+                FieldName = "Offer No_",
+                FieldType = "nvarchar"
+            });
             string where = string.Format(" AND nl.[Type]=1 AND hd.[Store Code]='{0}'", storeId);
 
             // get records remaining
@@ -162,9 +207,55 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 sql = "SELECT COUNT(*)" + sqlfromDealLine + GetWhereStatement(true, keys, where, false);
             }
-            recordsRemaining = GetRecordCount(TABLEDEALLINEID, lastKey, sql, keys, ref maxKey);
 
-            List<JscActions> actions = LoadActions(fullReplication, TABLEDEALLINEID, batchSize, ref lastKey, ref recordsRemaining);
+            string tmplastkey = lastKey;
+            string mainlastkey = lastKey;
+            string tmpmaxkey = string.Empty;
+            recordsRemaining = 0;
+
+            recordsRemaining = GetRecordCount(TABLEDEALLINEID, lastKey, sql, keys, ref maxKey);
+            List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALLINEID, batchSize, ref lastKey, ref recordsRemaining);
+
+            recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref tmpmaxkey);
+            nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
+            if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                mainlastkey = tmplastkey;
+
+            lastKey = mainlastkey;
+
+            List<JscActions> actions = new List<JscActions>();
+            foreach (JscActions act in nodeact)
+            {
+                string[] parvalues = act.ParamValue.Split(';');
+                JscActions newact;
+
+                if (act.Type == DDStatementType.Delete)
+                {
+                    if (act.TableId != TABLEDEALLINEID)
+                        continue;       // skip delete actions for extra tables
+
+                    actions.Add(act);
+                    continue;
+                }
+
+                newact = new JscActions()
+                {
+                    id = act.id,
+                    TableId = act.TableId,
+                    Type = act.Type,
+                    ParamValue = (act.TableId == TABLEDEALLINEID) ? parvalues[0] : parvalues[3]
+                };
+
+                JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                if (findme == null)
+                {
+                    actions.Add(newact);
+                }
+            }
+
+            if (actions.Count == 0)
+                recordsRemaining = 0;
+
             List<ReplHierarchyHospDealLine> list = new List<ReplHierarchyHospDealLine>();
 
             // get records
@@ -204,7 +295,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             if (act.Type == DDStatementType.Delete)
                             {
                                 string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 3 || par.Length != keys.Count)
+                                if (par.Length < 3)
                                     continue;
 
                                 list.Add(new ReplHierarchyHospDealLine()
@@ -231,104 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             }
                             first = false;
                         }
-                        if (string.IsNullOrEmpty(maxKey))
-                            maxKey = lastKey;
-                    }
-                    connection.Close();
-                }
-            }
-
-            // just in case something goes too far
-            if (recordsRemaining < 0)
-                recordsRemaining = 0;
-
-            return list;
-        }
-
-        public List<ReplHierarchyHospRecipe> ReplicateHierarchyHospRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
-        {
-            if (string.IsNullOrWhiteSpace(lastKey))
-                lastKey = "0";
-
-            SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("BOM Component");
-            string where = string.Format(" AND nl.[Type]=0 AND hd.[Store Code]='{0}'", storeId);
-
-            // get records remaining
-            string sql = string.Empty;
-            if (fullReplication)
-            {
-                sql = "SELECT COUNT(*)" + sqlfromRecipe + GetWhereStatement(true, keys, where, false);
-            }
-            recordsRemaining = GetRecordCount(TABLERECIPEID, lastKey, sql, keys, ref maxKey);
-
-            List<JscActions> actions = LoadActions(fullReplication, TABLERECIPEID, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplHierarchyHospRecipe> list = new List<ReplHierarchyHospRecipe>();
-
-            // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumnsRecipe + sqlfromRecipe + GetWhereStatement(fullReplication, keys, where, true);
-
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    connection.Open();
-                    command.CommandText = sql;
-
-                    if (fullReplication)
-                    {
-                        JscActions act = new JscActions(lastKey);
-                        SetWhereValues(command, act, keys, true, true);
-                        TraceSqlCommand(command);
-                        using (SqlDataReader reader = command.ExecuteReader())
-                        {
-                            int cnt = 0;
-                            while (reader.Read())
-                            {
-                                list.Add(ReaderToHierarchyRecipe(reader, out lastKey));
-                                cnt++;
-                            }
-                            reader.Close();
-                            recordsRemaining -= cnt;
-                        }
-                        if (recordsRemaining <= 0)
-                            lastKey = maxKey;   // this should be the highest PreAction id;
-                    }
-                    else
-                    {
-                        bool first = true;
-                        foreach (JscActions act in actions)
-                        {
-                            if (act.Type == DDStatementType.Delete)
-                            {
-                                string[] par = act.ParamValue.Split(';');
-                                if (par.Length < 2 || par.Length != keys.Count)
-                                    continue;
-
-                                list.Add(new ReplHierarchyHospRecipe()
-                                {
-                                    RecipeNo = par[0],
-                                    LineNo = Convert.ToInt32(par[1]),
-                                    IsDeleted = true
-                                });
-                                continue;
-                            }
-
-                            if (SetWhereValues(command, act, keys, first) == false)
-                                continue;
-
-                            TraceSqlCommand(command);
-                            using (SqlDataReader reader = command.ExecuteReader())
-                            {
-                                while (reader.Read())
-                                {
-                                    list.Add(ReaderToHierarchyRecipe(reader, out string ts));
-                                }
-                                reader.Close();
-                            }
-                            first = false;
-                        }
-                        if (string.IsNullOrEmpty(maxKey))
+                        if (string.IsNullOrEmpty(maxKey) || recordsRemaining <= 0)
                             maxKey = lastKey;
                     }
                     connection.Close();
@@ -384,26 +378,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Item Selection"]),
                 AddedAmount = SQLHelper.GetDecimal(reader["Added Amount"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
-            };
-        }
-
-        private ReplHierarchyHospRecipe ReaderToHierarchyRecipe(SqlDataReader reader, out string timestamp)
-        {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
-
-            return new ReplHierarchyHospRecipe()
-            {
-                HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
-                ParentNode = SQLHelper.GetString(reader["Node ID"]),
-                RecipeNo = SQLHelper.GetString(reader["No_"]),
-                Description = SQLHelper.GetString(reader["Description"]),
-                LineNo = SQLHelper.GetInt32(reader["Line No_"]),
-                ItemNo = SQLHelper.GetString(reader["Item No_"]),
-                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
-                Exclusion = SQLHelper.GetBool(reader["Exclusion"]),
-                ExclusionPrice = SQLHelper.GetDecimal(reader["Price on Exclusion"]),
-                QuantityPer = SQLHelper.GetDecimal(reader["Quantity per"]),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
             };
         }

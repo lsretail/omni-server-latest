@@ -312,18 +312,25 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 }
 
                 // Get highest PreAction counter for table as we will start normal replication from that point after FullReplication
-                if (string.IsNullOrWhiteSpace(maxkey) || maxkey == "0")
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    using (SqlCommand command = connection.CreateCommand())
+                    command.CommandText = string.Format("SELECT MAX([Entry No_]) FROM [{0}Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Table No_]='{1}'",
+                        navCompanyName, tableid);
+                    TraceSqlCommand(command);
+                    var ret = command.ExecuteScalar();
+                    string mkey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                    if ((string.IsNullOrWhiteSpace(maxkey) == false) && maxkey != "0")
                     {
-                        command.CommandText = string.Format("SELECT MAX([Entry No_]) FROM [{0}Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Table No_]='{1}'",
-                            navCompanyName, tableid);
-                        TraceSqlCommand(command);
-                        var ret = command.ExecuteScalar();
-                        maxkey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                        // check previous maxkey if less or grater then this mkey
+                        if (Convert.ToInt32(mkey) > Convert.ToInt32(maxkey))
+                            maxkey = mkey;
                     }
+                    else
+                    {
+                        maxkey = mkey;
+                    }
+                    connection.Close();
                 }
-                connection.Close();
             }
             return cnt;
         }
@@ -508,6 +515,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public object GetSQLDataFromKey(string fieldtype, string value)
         {
+            if (string.IsNullOrEmpty(value))
+                return DBNull.Value;
+
             switch (fieldtype)
             {
                 case "datetime":

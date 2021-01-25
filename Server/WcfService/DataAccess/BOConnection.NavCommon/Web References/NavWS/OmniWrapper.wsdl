@@ -1669,6 +1669,9 @@
           <element minOccurs="1" maxOccurs="1" name="VendorNo." type="string" />
           <element minOccurs="1" maxOccurs="1" name="VendorItemNo." type="string" />
           <element minOccurs="1" maxOccurs="1" default="false" name="Receive-ConfirmScan" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="ExtField1" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExtField2" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExtField3" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootGetDocumnet" mixed="true">
@@ -3415,6 +3418,9 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="UOMQty" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="false" name="ItemNoScanned" type="boolean" />
           <element minOccurs="1" maxOccurs="1" default="false" name="KeyboardItemEntry" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="ExtField1" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExtField2" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="ExtField3" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootSendDocument" mixed="true">

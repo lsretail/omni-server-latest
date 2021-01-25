@@ -433,13 +433,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual ReplHierarchyHospRecipeResponse ReplEcommHierarchyHospRecipe(ReplRequest replRequest)
+        public virtual ReplItemRecipeResponse ReplEcommItemRecipe(ReplRequest replRequest)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHierarchyHospRecipe(replRequest);
+                return bll.ReplicateItemRecipe(replRequest);
             }
             catch (Exception ex)
             {

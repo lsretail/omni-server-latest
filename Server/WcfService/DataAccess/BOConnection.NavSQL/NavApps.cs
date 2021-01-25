@@ -292,16 +292,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateHierarchyHospDealLine(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplHierarchyHospRecipe> ReplicateHierarchyHospRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+
+        public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
             {
                 logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplHierarchyHospRecipe>();
+                return new List<ReplItemRecipe>();
             }
 
-            HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
-            return rep.ReplicateHierarchyHospRecipe(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            ItemRecipeRepository rep = new ItemRecipeRepository(config);
+            return rep.ReplicateItemRecipe(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

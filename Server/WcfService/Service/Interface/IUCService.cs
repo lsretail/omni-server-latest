@@ -2434,7 +2434,7 @@ namespace LSOmni.Service
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of hierarchy recipe items</returns>
         [OperationContract]
-        ReplHierarchyHospRecipeResponse ReplEcommHierarchyHospRecipe(ReplRequest replRequest);
+        ReplItemRecipeResponse ReplEcommItemRecipe(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
