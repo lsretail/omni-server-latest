@@ -84,7 +84,14 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 }
                 catch
                 {
-                    return defaultValue;
+                    try
+                    {
+                        return flag.value.Equals("Yes", StringComparison.OrdinalIgnoreCase);
+                    }
+                    catch
+                    {
+                        return defaultValue;
+                    }
                 }
             }
         }

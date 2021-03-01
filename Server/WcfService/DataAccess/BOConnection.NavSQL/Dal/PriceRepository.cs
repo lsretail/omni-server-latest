@@ -377,7 +377,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
-                Amt = SQLHelper.GetDecimal(reader, "Unit Price")
+                Amt = SQLHelper.GetDecimal(reader, "Unit Price"),
+                NetAmt = SQLHelper.GetDecimal(reader, "Unit Price")
             };
 
             price.Amount = FormatAmount(price.Amt, culture);

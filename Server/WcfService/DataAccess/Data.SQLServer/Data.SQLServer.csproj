@@ -77,10 +77,10 @@
     <Compile Include="ValidationRepository.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SQLScripts\LSOmniDelete.sql" />
-    <Content Include="SQLScripts\LSOmniServiceDbInitData.sql" />
-    <Content Include="SQLScripts\LSOmniServiceDbObjects.sql" />
-    <Content Include="SQLScripts\LSOmniServiceDbPermissions.sql" />
+    <Content Include="SQLScripts\LSCommerceDelete.sql" />
+    <Content Include="SQLScripts\LSCommerceServiceDbInitData.sql" />
+    <Content Include="SQLScripts\LSCommerceServiceDbObjects.sql" />
+    <Content Include="SQLScripts\LSCommerceServiceDbPermissions.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />

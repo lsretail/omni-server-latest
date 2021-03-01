@@ -4,7 +4,7 @@ using System.Reflection;
 // the next time this code is regenerated.
 // 
  
-[assembly: AssemblyProduct("LS UC Services")] 
+[assembly: AssemblyProduct("LS Commerce Service")] 
 [assembly: AssemblyCompany("LS Retail")]
 [assembly: AssemblyCopyright("Copyright 2021 LS Retail")]
 [assembly: AssemblyTrademark("LS Retail")]
@@ -17,7 +17,7 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("4.15.0")]
-[assembly: AssemblyFileVersion("4.15.0")]
-[assembly: AssemblyInformationalVersion("LS Omni 4.15")]
+[assembly: AssemblyVersion("4.16.0")]
+[assembly: AssemblyFileVersion("4.16.0")]
+[assembly: AssemblyInformationalVersion("LS Commerce Service 4.16")]
  

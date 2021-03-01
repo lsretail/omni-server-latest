@@ -45,6 +45,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             ItemId = item.Id;
             ItemDescription = item.Description;
             UnitOfMeasureId = item.SelectedUnitOfMeasure?.Id;
+            UnitOfMeasureDescription = item.SelectedUnitOfMeasure?.Description;
             Image = item.DefaultImage;
             Quantity = qty;
             Price = item.AmtFromVariantsAndUOM(item.SelectedVariant?.Id, item.SelectedUnitOfMeasure?.Id);
@@ -82,6 +83,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
+        /// <summary>
+        /// Unique line number used to identify the line in LS Central
+        /// </summary>
         [DataMember]
         public int LineNumber { get; set; }
         [DataMember(IsRequired = true)]
@@ -199,10 +203,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             return Id.GetHashCode();
         }
 
-        public virtual object Clone()
+        public virtual OneListItem Clone()
         {
             // Shallow copy here should be enough (just keep the references to item, variant, uom)
-            return this.MemberwiseClone();
+            return (OneListItem)MemberwiseClone();
         }
 
         public override string ToString()

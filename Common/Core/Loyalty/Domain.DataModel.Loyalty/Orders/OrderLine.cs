@@ -84,12 +84,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string ItemImageId { get; set; }
         [DataMember(IsRequired = true)]
         public decimal Quantity { get; set; }
-        [DataMember]
-        public decimal QuantityOutstanding { get; set; }
-        [DataMember]
-        public decimal QuantityToInvoice { get; set; }
-        [DataMember]
-        public decimal QuantityToShip { get; set; }
         [DataMember(IsRequired = true)]
         public LineType LineType { get; set; }
         [DataMember]

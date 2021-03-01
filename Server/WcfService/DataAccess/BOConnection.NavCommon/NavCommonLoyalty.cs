@@ -991,11 +991,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             string respCode = string.Empty;
             string errorText = string.Empty;
+            string[] saleType = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(',');
+
             TransactionMapping map = new TransactionMapping(NAVVersion);
             NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(list,
                 config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
                 config.SettingsGetByKey(ConfigKey.Hosp_Staff),
-                config.SettingsGetByKey(ConfigKey.Hosp_SalesType));
+                saleType[0]);
 
             logger.Debug(config.LSKey.Key, "MobilePosPost Request - " + Serialization.ToXml(root, true));
 
@@ -1029,11 +1031,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             string respCode = string.Empty;
             string errorText = string.Empty;
+            string[] saleType = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(',');
+
             TransactionMapping map = new TransactionMapping(NAVVersion);
             NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(request, 
                 config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
                 config.SettingsGetByKey(ConfigKey.Hosp_Staff),
-                config.SettingsGetByKey(ConfigKey.Hosp_SalesType));
+                saleType[0]);
 
             logger.Debug(config.LSKey.Key, "MobilePosPost Request - " + Serialization.ToXml(root, true));
 
@@ -1384,25 +1388,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (NAVVersion > new Version("16.2.0.0"))
             {
                 NavWS.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request);
-                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Response - " + Serialization.ToXml(root, true));
+                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
             }
             else if (NAVVersion > new Version("14.2"))
             {
                 NavWS.RootCustomerOrderCreateV4 root = map.MapFromOrderV4ToRoot(request);
-                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV4 Response - " + Serialization.ToXml(root, true));
+                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV4 Request - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreateV4(ref respCode, ref errorText, root, ref orderId);
             }
             else if (NAVVersion > new Version("13.5"))
             {
                 NavWS.RootCustomerOrderCreateV2 root = map.MapFromOrderV2ToRoot(request);
-                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV2 Response - " + Serialization.ToXml(root, true));
+                logger.Debug(config.LSKey.Key, "CustomerOrderCreateV2 Request - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreateV2(ref respCode, ref errorText, root, ref orderId);
             }
             else
             {
                 NavWS.RootCustomerOrder root = map.MapFromOrderToRoot(request);
-                logger.Debug(config.LSKey.Key, "CustomerOrderCreate Response - " + Serialization.ToXml(root, true));
+                logger.Debug(config.LSKey.Key, "CustomerOrderCreate Request - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreate(ref respCode, ref errorText, root);
             }
             HandleWS2ResponseCode("CustomerOrderCreate", respCode, errorText);

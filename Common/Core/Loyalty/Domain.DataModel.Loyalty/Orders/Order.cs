@@ -13,9 +13,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     { 
         public Order(string id) : base(id)
         {
-            OrderStatus = SalesEntryStatus.Pending;
             ShippingStatus = ShippingStatus.ShippigNotRequired;
-            PaymentStatus = PaymentStatus.PreApproved;
 
             OrderLines = new List<OrderLine>();
             OrderDiscountLines = new List<OrderDiscountLine>();
@@ -47,13 +45,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             }
         }
 
-        /// <summary>
-        /// Order Number
-        /// </summary>
-        [DataMember]
-        public string DocumentId { get; set; }
-        [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        public DateTime DocumentRegTime { get; set; }
         [DataMember(IsRequired = true)]
         public string StoreId { get; set; }
         /// <summary>
@@ -70,10 +61,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string ReceiptNo { get; set; }
 
         [DataMember]
-        public SalesEntryStatus OrderStatus { get; set; }
-        [DataMember]
-        public PaymentStatus PaymentStatus { get; set; }
-        [DataMember]
         public ShippingStatus ShippingStatus { get; set; }
 
         [DataMember]
@@ -82,14 +69,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public decimal TotalAmount { get; set; }
         [DataMember]
         public decimal TotalDiscount { get; set; }
-        [DataMember]
-        public int LineItemCount { get; set; }
 
-        /// <summary>
-        /// True if Order has already been Posted in Accounting
-        /// </summary>
-        [DataMember]
-        public bool Posted { get; set; }
         /// <summary>
         /// Type of Order
         /// ClickAndCollect order are processed in the store at POS Terminal.  ScanPayGo are for In-store shopping apps.
@@ -163,7 +143,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 
         // local properties to find transactions
         public string TransId { get; set; }
-        public string TransStore { get; set; }
         public string TransTerminal { get; set; }
 
         public override string ToString()

@@ -133,7 +133,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public decimal UnitsPerParcel { get; set; }
         [DataMember]
         public decimal UnitVolume { get; set; }
-
 #if WCFSERVER
         //not all data goes to wcf clients
         public byte[] ImgBytes { get; set; }

@@ -66,7 +66,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                             LineNumber = LineNumberFromNav(mobileTransLine.LineNo),
                             ItemId = mobileTransLine.Number,
                             Quantity = mobileTransLine.Quantity,
-                            QuantityToInvoice = mobileTransLine.Quantity,
                             DiscountAmount = mobileTransLine.DiscountAmount,
                             DiscountPercent = mobileTransLine.DiscountPercent,
                             Price = mobileTransLine.Price,
@@ -790,7 +789,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired && order.ShippingStatus != 0),
                 CreatedAtStore = order.StoreId,
-                TerritoryCode = string.Empty,
+                TerritoryCode = string.Empty
             });
 
             bool useHeaderCAC = false;
@@ -829,6 +828,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     PurchaseOrderNo = string.Empty,
                     SourcingLocation = string.Empty,
                     InventoryTransfer = false,
+                    VendorSourcing = false,
+                    VendorSourcing1 = false,
+                    ShipOrder = false,
                     StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
                     ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
                     SourcingLocation1 = string.Empty,

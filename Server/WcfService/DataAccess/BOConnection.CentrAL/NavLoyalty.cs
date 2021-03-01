@@ -36,7 +36,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual string Ping()
         {
-            string ver = NavWSBase.NavVersionToUse(true);
+            string ver = NavWSBase.NavVersionToUse(true, true);
             if (ver.Contains("ERROR"))
                 throw new ApplicationException(ver);
 

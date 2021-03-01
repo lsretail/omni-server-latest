@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class SalesEntryLine : Entity, IDisposable
     {
+        private ImageView image;
+
         public SalesEntryLine(string id) : base(id)
         {
             LineNumber = 1;
@@ -29,6 +32,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             NetAmount = 0.0M;
             TaxAmount = 0.0M;
             Amount = 0.0M;
+
+            //Added for SPG
+            Image = new ImageView();
         }
 
         public SalesEntryLine() : this(string.Empty)
@@ -93,6 +99,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         /// </summary>
         [DataMember]
         public decimal Amount { get; set; }
+
+        [IgnoreDataMember]
+        public ImageView Image
+        {
+            get => image;
+            set
+            {
+                image = value; 
+                NotifyPropertyChanged();
+            }
+            
+        }
 
         public override string ToString()
         {

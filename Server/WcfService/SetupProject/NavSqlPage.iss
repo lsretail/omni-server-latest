@@ -142,7 +142,7 @@ function NavSQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   NavSQLPage := CreateCustomPage(
     PreviousPageId,
-    'LS Nav/LS Central SQL Server Database used by the LS Omni Server',
+    'LS Nav/LS Central SQL Server Database used by the LS Commerce Service',
     'Configures SQL parameters and permissions in the LS Nav/LS Central Database'
   );
  

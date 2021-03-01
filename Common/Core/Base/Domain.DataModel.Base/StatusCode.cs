@@ -497,6 +497,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         CustomerOrderItemAlreadyInBox = 9002,
         [EnumMember]
         CustomerOrderItemQuantityTooHigh = 9003,
+        [EnumMember]
+        CustomerOrderAlreadyScanned = 9004,
 
         #region SQLITE Error Codes 10.000 to 19.999
 

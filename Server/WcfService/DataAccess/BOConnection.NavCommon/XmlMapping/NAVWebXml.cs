@@ -366,6 +366,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
                         new XElement("Request_Body",
                             new XElement("Table_Name", tablename),
                             new XElement("Read_Direction", "Forward"),
+                            new XElement("Ignore_Extra_Fields", 1),
                             new XElement("Max_Number_Of_Records", "0")
                         )
                     ));
@@ -438,6 +439,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
                             new XElement("Table_Name", tablename),
                             new XElement("Read_Direction", "Forward"),
                             new XElement("Max_Number_Of_Records", maxrows),
+                            new XElement("Ignore_Extra_Fields", 1),
                             new XElement("WS_Table_Filter_Buffer",
                                 new XElement("Field_Index", 1),
                                 new XElement("Field_Name", field1),
@@ -452,6 +454,82 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
 
             return doc.ToString();
         }
+
+        public string GetBatchWebRequestXML(string tablename, List<string> fields, List<XMLFieldData> filter, string lastKey, int maxrows = 0)
+        {
+            #region xml
+            /*
+            <Request>
+              <Request_ID>GET_TABLE_DATA</Request_ID>
+              <Request_Body>
+                <Table_Name>Retail Image</Table_Name>
+                <Read_Direction>Forward</Read_Direction>
+                <Max_Number_Of_Records>0</Max_Number_Of_Records>
+                <WS_Table_Filter_Buffer>
+                  <Field_Index>1</Field_Index>
+                  <Field_Name>Code</Field_Name>
+                  <Filter>10010</Filter>
+                </WS_Table_Filter_Buffer>
+              </Request_Body>
+            </Request >
+            */
+            #endregion
+
+            XDocument doc = new XDocument(new XDeclaration("1.0", wsEncoding, "no"));
+
+            XElement body = new XElement("Request_Body",
+                                new XElement("Table_Name", tablename),
+                                new XElement("Read_Direction", "Forward"),
+                                new XElement("Max_Number_Of_Records", maxrows),
+                                new XElement("Ignore_Extra_Fields", 1)
+                            );
+
+            int index = 1;
+            if (fields != null)
+            {
+                foreach (string fld in fields)
+                {
+                    body.Add(new XElement("WS_Table_Field_Buffer",
+                                new XElement("Field_Index", index++),
+                                new XElement("Field_Name", fld)
+                            ));
+                }
+            }
+
+            index = 1;
+            string values;
+            foreach (XMLFieldData fld in filter)
+            {
+                values = string.Empty;
+                foreach (string val in fld.Values)
+                {
+                    if (string.IsNullOrEmpty(values) == false)
+                        values += "|";
+                    values += val;
+                }
+
+                body.Add(new XElement("WS_Table_Filter_Buffer",
+                            new XElement("Field_Index", index++),
+                            new XElement("Field_Name", fld.FieldName),
+                            new XElement("Filter", values)
+                        ));
+            }
+
+            if (string.IsNullOrEmpty(lastKey) == false || lastKey == "0")
+            {
+                body.Add(new XElement("WS_Table_Record_Buffer",
+                            new XElement("Key", lastKey)
+                        ));
+            }
+
+            doc.Add(new XElement("Request",
+                        new XElement("Request_ID", "GET_TABLE_DATA"),
+                        body
+                    ));
+
+            return doc.ToString();
+        }
+
 
         public XMLTableData GetGeneralWebResponseXML(string responseXml)
         {
@@ -634,16 +712,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 5404, 1);
             AddField(body, 5404, 2);
             AddField(body, 5404, 3);
-
-            // WI Price
-            AddTable(body, 10012861, true);
-            AddField(body, 10012861, 2);
-            AddField(body, 10012861, 3);
-            AddField(body, 10012861, 10);
-            AddField(body, 10012861, 11);
-            AddField(body, 10012861, 12);
-            AddField(body, 10012861, 20);
-            AddField(body, 10012861, 21);
 
             // WI Discounts
             AddTable(body, 10012862, true);
@@ -846,13 +914,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddTable(body, 9, false);
             AddField(body, 9, 1);
             AddField(body, 9, 2);
-
-            // Inventory Lookup Table
-            AddTable(body, 99001608, false);
-            AddField(body, 99001608, 10);
-            AddField(body, 99001608, 15);
-            AddField(body, 99001608, 25);
-            AddField(body, 99001608, 120);
         }
 
         private void AddMPosTableData(XElement body, Version navVer)
@@ -948,16 +1009,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 5404, 2);
             AddField(body, 5404, 3);
 
-            // WI Price
-            AddTable(body, 10012861, true);
-            AddField(body, 10012861, 2);
-            AddField(body, 10012861, 3);
-            AddField(body, 10012861, 10);
-            AddField(body, 10012861, 11);
-            AddField(body, 10012861, 12);
-            AddField(body, 10012861, 20);
-            AddField(body, 10012861, 21);
-
             // WI Discounts
             AddTable(body, 10012862, true);
             AddField(body, 10012862, 1);
@@ -972,6 +1023,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 10012862, 20);
             AddField(body, 10012862, 21);
             AddField(body, 10012862, 23);
+
+            // Item Section Locations
+            AddTable(body, 99001533, false);
+            AddField(body, 99001533, 1);
+            AddField(body, 99001533, 2);
+            AddField(body, 99001533, 5);
+            AddField(body, 99001533, 6);
+            AddField(body, 99001533, 10);
+            AddField(body, 99001533, 11);
 
             // Barcodes
             AddTable(body, 99001451, false);
@@ -1196,16 +1256,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 5404, 2);
             AddField(body, 5404, 3);
 
-            // WI Price
-            AddTable(body, 10012861, true);
-            AddField(body, 10012861, 2);
-            AddField(body, 10012861, 3);
-            AddField(body, 10012861, 10);
-            AddField(body, 10012861, 11);
-            AddField(body, 10012861, 12);
-            AddField(body, 10012861, 20);
-            AddField(body, 10012861, 21);
-
             // Barcodes
             AddTable(body, 99001451, false);
             AddField(body, 99001451, 1);
@@ -1279,6 +1329,31 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 99001461, 112);
             AddField(body, 99001461, 1100);
             AddField(body, 99001461, 1101);
+
+            // Customer
+            AddTable(body, 18, false);
+            AddField(body, 18, 1);
+            AddField(body, 18, 2);
+            AddField(body, 18, 5);
+            AddField(body, 18, 7);
+            AddField(body, 18, 9);
+            AddField(body, 18, 22);
+            AddField(body, 18, 35);
+            AddField(body, 18, 39);
+            AddField(body, 18, 82);
+            AddField(body, 18, 91);
+            AddField(body, 18, 92);
+            AddField(body, 18, 102);
+            AddField(body, 18, 103);
+            AddField(body, 18, 110);
+            AddField(body, 18, 10012701);
+
+            // Vendors
+            AddTable(body, 23, false);
+            AddField(body, 23, 1);
+            AddField(body, 23, 2);
+            AddField(body, 23, 39);
+            AddField(body, 23, 54);
 
             // Inventory Location List
             AddTable(body, 10012808, false);

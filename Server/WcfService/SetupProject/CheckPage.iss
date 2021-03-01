@@ -58,7 +58,7 @@ begin
   CheckPage := CreateCustomPage(
     PreviousPageId,
     'Installation options.',
-    'NOTE: All installation parts must be completed for'#13'a full setup of LS Omni Server.'
+    'NOTE: All installation parts must be completed for'#13'a full setup of LS Commerce Service.'
   );
  
   { CheckPage_lblComment }
@@ -90,7 +90,7 @@ begin
   CheckPage_SQLCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_SQLCheckBox.Width := CheckPage.SurfaceWidth;
   CheckPage_SQLCheckBox.Height := ScaleY(22);
-  CheckPage_SQLCheckBox.Caption := 'Create LSOmni SQL Server database';
+  CheckPage_SQLCheckBox.Caption := 'Create LS Commerce Service Database';
   CheckPage_SQLCheckBox.Checked := True;
   CheckPage_SQLCheckBox.Parent := CheckPage.Surface;
   CheckPage_SQLCheckBox.Top := CheckPage_lblComment.Top + CheckPage_lblComment.Height + 25;
@@ -127,7 +127,7 @@ begin
   CheckPage_IISCheckBox := TCheckBox.Create(CheckPage);
   CheckPage_IISCheckBox.Width := CheckPage.SurfaceWidth;
   CheckPage_IISCheckBox.Height := ScaleY(30);
-  CheckPage_IISCheckBox.Caption := 'Create LSOmniService WCF service under IIS 7+';
+  CheckPage_IISCheckBox.Caption := 'Create LSCommerceService under IIS 7+';
   CheckPage_IISCheckBox.Checked := True;
   CheckPage_IISCheckBox.Parent := CheckPage.Surface;
   CheckPage_IISCheckBox.Top := CheckPage_NavSQLCheckBox.Top + CheckPage_NavSQLCheckBox.Height;
@@ -137,7 +137,7 @@ begin
   with CheckPage_lblComment2 do
   begin
     Parent := CheckPage.Surface;
-    Caption :=  'The LSOmniService is created as a Web Application.'#13'You must have administration rights (sysadmin for SQL Server).'#13
+    Caption :=  'The LSCommerceService is created as a Web Application.'#13'You must have administration rights (sysadmin for sql server).'#13
          '-->IIS version: ' + GetIISVersionString + ' detected'#13 
          '-->log: ' + expandconstant('{log}') ;
     Left := ScaleX(10);

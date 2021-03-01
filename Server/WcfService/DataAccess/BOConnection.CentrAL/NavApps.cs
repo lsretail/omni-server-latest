@@ -174,13 +174,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            PriceRepository rep = new PriceRepository(config);
+            PriceRepository rep = new PriceRepository(config, NAVVersion);
             return rep.ReplicatePrice(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            PriceRepository rep = new PriceRepository(config);
+            PriceRepository rep = new PriceRepository(config, NAVVersion);
             return rep.ReplicateAllPrice(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

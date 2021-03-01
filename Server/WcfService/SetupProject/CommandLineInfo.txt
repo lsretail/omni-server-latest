@@ -11,12 +11,12 @@ OmniServer Setup Parameters and default values
 -NavSau 	true			Use SQL Server Authentication for LS Central
 -Nav15		false			Use LS Central Version 15 or later
 
--SqlX 		true			Create LSOmni SQL Server database
--SqlDb 		LSOmni			LS Omni SQL Database name
--SqlSrv 	localhost		LS Omni SQL Server name
--SqlUsr 	LSOmniUser		LS Omni SQL User name
--SqlPwd 	LSOmniUser		LS Omni SQL User password
--SqlWau 	false			Use Windows Authentication for LS Omni SQL
+-SqlX 		true			Create LS Commerce Service Database
+-SqlDb 		LSOmni			LS Commerce Service SQL Database name
+-SqlSrv 	localhost		LS Commerce Service SQL Server name
+-SqlUsr 	LSOmniUser		LS Commerce Service SQL User name
+-SqlPwd 	LSOmniUser		LS Commerce Service SQL User password
+-SqlWau 	false			Use Windows Authentication for LS Commerce Service SQL Server
 -SqlSau 	true			Use SQL Server Authentication for LS Omni
 -MultiX		false			Use Multi-Tenant Mode
 -WSX		false			Use Web Service Mode

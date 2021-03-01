@@ -19,9 +19,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public HierarchyRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type]";
+            sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
+            sqlfrom = " FROM [" + navCompanyName + "Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                      "INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
                       "ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
         }
 
@@ -188,7 +189,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"])
+                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
+                StartDate = SQLHelper.GetDateTime(reader["Start Date"])
             };
         }
 
@@ -198,7 +200,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"])
+                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
+                StartDate = SQLHelper.GetDateTime(reader["Start Date"])
             };
 
             val.Attributes = HierarchyAttributeGet(val.Id);

@@ -50,6 +50,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Get Published Offers for Member Card Id
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : LOAD_MEMBER_DIR_MARK_INFO<p/>
+        /// LS Central WS2 : GetDirectMarketingInfo<p/><p/>
+        /// </remarks>
         /// <param name="cardId">Member Card Id to look for</param>
         /// <param name="itemId">Only show Offers for this item</param>
         /// <returns></returns>
@@ -81,6 +85,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get balance of a gift card.
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetDataEntryBalance<p/><p/>
+        /// </remarks>
         /// <param name="cardNo">Gift card number</param>
         /// <returns></returns>
         [OperationContract]
@@ -98,6 +105,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Get all Order Notification for a Contact
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : LOAD_MEMBER_DIR_MARK_INFO<p/>
+        /// LS Central WS2 : GetDirectMarketingInfo<p/><p/>
+        /// </remarks>
         /// <param name="cardId">Card Id</param>
         /// <param name="numberOfNotifications">Number of notifications to return</param>
         /// <returns></returns>
@@ -157,7 +168,7 @@ namespace LSOmni.Service
         /// OneList can be saved, for both Member Contact and Anonymous Users.
         /// Member Contact can have one or more Member Cards and each Card can have one WishList and one Basket
         /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
-        /// as Omni does not store any information for Anonymous Users.<p/>
+        /// as LS Commerce Service does not store any information for Anonymous Users.<p/>
         /// Used OneListGetById to get the OneList back.
         /// </remarks>
         /// <example>
@@ -193,6 +204,8 @@ namespace LSOmni.Service
         /// Calculates OneList Basket Object and returns Order Object
         /// </summary>
         /// <remarks>
+        /// LS Nav  WS1 : ECOMM_CALCULATE_BASKET<p/>
+        /// LS Central WS2 : EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
         /// Contact Info, Payment and then it can be posted for Creation
@@ -251,7 +264,7 @@ namespace LSOmni.Service
         Order OneListCalculate(OneList oneList);
 
         /// <summary>
-        /// Calculate Hospitality Order
+        /// Calculates OneList Basket for Hospitality and returns Hospitality Order Object
         /// </summary>
         /// <param name="oneList"></param>
         /// <returns></returns>
@@ -309,6 +322,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Check the quantity available of items in order for certain store, Use with LS Nav 11.0 and later
         /// </summary>
+        /// <remarks>
+        /// LS Nav  WS1 : CO_QTY_AVAILABILITY_EXT<p/>
+        /// LS Central WS2 : COQtyAvailabilityV2<p/><p/>
+        /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -318,6 +335,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
         /// </summary>
+        /// <remarks>
+        /// LS Nav  WS1 : CUSTOMER_ORDER_CREATE_EXT<p/>
+        /// LS Central WS2 : CustomerOrderCreateVx<p/><p/>
+        /// </remarks>
         /// <example>
         /// Sample requests including minimum data needed to be able to process the request in OMNI<p/>
         /// Order to be shipped to Customer
@@ -588,6 +609,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Check Status of a Customer Order
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : CustomerOrderStatus<p/><p/>
+        /// </remarks>
         /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
@@ -597,6 +621,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Cancel Customer Order
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : CustomerOrderCancel<p/><p/>
+        /// </remarks>
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
         /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
@@ -684,8 +711,8 @@ namespace LSOmni.Service
         /// Create a new contact
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central WS1 : MM_MOBILE_CONTACT_CREATE<p/><p/>
-        /// LS Nav/Central WS2 : MemberContactCreate<p/><p/>
+        /// LS Nav WS1 : MM_MOBILE_CONTACT_CREATE<p/>
+        /// LS Central WS2 : MemberContactCreate<p/><p/>
         /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Nav/Central<p/>
         /// Contact will be assigned to a Member Account.
         /// Member Account has Club and Club has Scheme level.<p/>
@@ -775,8 +802,8 @@ namespace LSOmni.Service
         /// Update a contact
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central WS1 : MM_MOBILE_CONTACT_UPDATE<p/><p/>
-        /// LS Nav/Central WS2 : MemberContactUpdate<p/><p/>
+        /// LS Nav WS1 : MM_MOBILE_CONTACT_UPDATE<p/>
+        /// LS Central WS2 : MemberContactUpdate<p/><p/>
         /// Contact Id, User name and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
         /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Nav/Central
@@ -879,13 +906,28 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
 
+        /// <summary>
+        /// Add new card to existing Member Contact
+        /// </summary>
+        /// <remarks>
+        /// LS Nav  WS1 : MM_CARD_TO_CONTACT<p/>
+        /// LS Central WS2 : MemberCardToContact<p/><p/>
+        /// </remarks>
+        /// <param name="contactId"></param>
+        /// <param name="cardId"></param>
+        /// <param name="accountId"></param>
+        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         double ContactAddCard(string contactId, string cardId, string accountId);
 
         /// <summary>
-        /// 
+        /// Get Point balance for Member Card
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : GET_MEMBER_CARD<p/>
+        /// LS Central WS2 : GetMemberCard<p/><p/>
+        /// </remarks>
         /// <param name="cardId"></param>
         /// <returns></returns>
         [OperationContract]
@@ -908,7 +950,8 @@ namespace LSOmni.Service
         /// Change password
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central WS1 : MM_MOBILE_PWD_CHANGE
+        /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
+        /// LS Central WS2 : MemberPasswordChange<p/><p/>
         /// </remarks>
         /// <param name="userName">user name (Nav/Central:LoginID)</param>
         /// <param name="newPassword">new password (Nav/Central:NewPassword)</param>
@@ -950,7 +993,7 @@ namespace LSOmni.Service
         /// Request a ResetCode to use in Email to send to Member Contact
         /// </summary>
         /// <remarks>
-        /// Settings for this function are found in Omni Database - AppSettings table
+        /// Settings for this function are found in LS Commerce Service Database - TenantConfig table
         /// <ul>
         /// <li>forgotpassword_code_encrypted: Reset Code is Encrypted</li>
         /// </ul>
@@ -975,6 +1018,8 @@ namespace LSOmni.Service
         /// Send in Reset Password request for Member contact
         /// </summary>
         /// <remarks>
+        /// LS Nav WS1 : MM_MOBILE_PWD_RESET<p/>
+        /// LS Central WS2 : MemberPasswordReset<p/><p/>
         /// If anything fails, simply ask the user to go through the ForgotPassword again..<p/>
         /// Error PasswordInvalid = ask user for better password<p/>
         /// Error ParameterInvalid = ask user for correct userName since it does not match resetCode<p/>
@@ -1014,6 +1059,10 @@ namespace LSOmni.Service
         /// Reset current password or request new password for new Member Contact.  
         /// Send either login or email depending on which function is required.
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : MM_MOBILE_PWD_RESET<p/>
+        /// LS Central WS2 : MemberPasswordReset<p/><p/>
+        /// </remarks>
         /// <param name="userName">Provide Login Id (UserName) to reset existing password</param>
         /// <param name="email">Provide Email to create new login password for new Member Contact</param>
         /// <returns>Token to be included in Email to send to Member Contact.  Send the token with PasswordChange function</returns>
@@ -1025,16 +1074,18 @@ namespace LSOmni.Service
         /// Change password for Member Contact.
         /// Call PasswordReset first if oldPassword is unknown or no login/password exist for Member Contact
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
+        /// LS Central WS2 : MemberPasswordChange<p/><p/>
+        /// To change password for existing contact: Send userName, newPassword, oldPassword<p/>
+        /// To reset password for existing contact: Send userName, token, newPassword<p/>
+        /// To register new login/password for new contact: Send userName, token, newPassword<p/>
+        /// </remarks>
         /// <param name="userName">Login Id or UserName</param>
         /// <param name="token">Token from PasswordReset</param>
         /// <param name="newPassword">New Password</param>
         /// <param name="oldPassword">Previous Password</param>
         /// <returns></returns>
-        /// <remarks>
-        /// To change password for existing contact: Send userName, newPassword, oldPassword<p/>
-        /// To reset password for existing contact: Send userName, token, newPassword<p/>
-        /// To register new login/password for new contact: Send userName, token, newPassword<p/>
-        /// </remarks>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool PasswordChange(string userName, string token, string newPassword, string oldPassword);
@@ -1042,6 +1093,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Change Login Id for Member Contact
         /// </summary>
+        /// <remarks>
+        /// LS Nav  WS1 : MM_LOGIN_CHANGE<p/><p/>
+        /// </remarks>
         /// <param name="oldUserName">Current Login Id</param>
         /// <param name="newUserName">New Login Id</param>
         /// <param name="password">Current Password</param>
@@ -1053,6 +1107,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Login user
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : MM_MOBILE_LOGON<p/>
+        /// LS Central WS2 : MemberLogon<p/><p/>
+        /// </remarks>
         /// <param name="userName">user name</param>
         /// <param name="password">password</param>
         /// <param name="deviceId">device Id. Should be empty for non device user (web apps)</param>
@@ -1084,8 +1142,12 @@ namespace LSOmni.Service
         MemberContact Login(string userName, string password, string deviceId);
 
         /// <summary>
-        /// Login user from web page.
+        /// Login user from web page.  This function is light version of Login and returns less data.
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : MM_MOBILE_LOGON<p/>
+        /// LS Central WS2 : MemberLogon<p/><p/>
+        /// </remarks>
         /// <param name="userName">user name</param>
         /// <param name="password">password</param>
         /// <returns>Returns contact but only Contact and Card object have data</returns>
@@ -1123,8 +1185,8 @@ namespace LSOmni.Service
         /// Get stock status of an item from one or all stores
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central WS1 : MM_MOBILE_GET_ITEMS_IN_STOCK<p/>
-        /// LS Nav/Central WS2 : GetItemInventory<p/><p/>
+        /// LS Nav WS1 : MM_MOBILE_GET_ITEMS_IN_STOCK<p/>
+        /// LS Central WS2 : GetItemInventory<p/><p/>
         /// If storeId is empty, only store that are marked in LS Nav/Central with check box Loyalty or Mobile checked (Omni Section) will be returned
         /// </remarks>
         /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
@@ -1140,7 +1202,7 @@ namespace LSOmni.Service
         /// Get stock status for list of items from one or all stores
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central WS2 : GetInventoryMultiple<p/><p/>
+        /// LS Central WS2 : GetInventoryMultiple<p/><p/>
         /// If storeId is empty, all store that have item available will be returned
         /// </remarks>
         /// <example>
@@ -1206,6 +1268,8 @@ namespace LSOmni.Service
         /// Gets Hierarchy setup for a Store with all Leafs and Nodes
         /// </summary>
         /// <remarks>
+        /// LS Nav WS1 : GET_HIERARCHY<p/>
+        /// LS Central WS2 : GetHierarchy, GetHierarchyNode<p/><p/>
         /// It is recommended for large hierarchies to use the hierarchy replication functions.
         /// It will give option on getting only changes, instead of always have to get the whole hierarchy like this function does.
         /// </remarks>
@@ -1239,6 +1303,8 @@ namespace LSOmni.Service
         /// Gets all Member Attributes that are available to assign to a Member Contact
         /// </summary>
         /// <remarks>
+        /// LS Nav WS1 : MM_MOBILE_GET_PROFILES<p/>
+        /// LS Central WS2 : MobileGetProfiles<p/><p/>
         /// Only Member Attributes of type Boolean and Lookup Type None and are valid in Default Club will be selected
         /// </remarks>
         /// <returns>List of Member Attributes</returns>
@@ -1250,7 +1316,8 @@ namespace LSOmni.Service
         /// Gets all Member Attributes for a Contact
         /// </summary>
         /// <remarks>
-        /// Member Attribute Value has to have Value Yes or No, even in other languages as Omni Server uses that Text to determent if the Attribute is selected or not for the Contact
+        /// LS Central WS2 : GetMemberCard<p/><p/>
+        /// Member Attribute Value has to have Value Yes or No, even in other languages as LS Commerce Service uses that Text to determent if the Attribute is selected or not for the Contact
         /// </remarks>
         /// <param name="cardId"></param>
         /// <returns></returns>
@@ -2207,7 +2274,7 @@ namespace LSOmni.Service
         #region LS Recommends
 
         /// <summary>
-        /// Checks if LS Recommend is active in Omni Server
+        /// Checks if LS Recommend is active in LS Commerce Service
         /// </summary>
         /// <returns></returns>
         [OperationContract]
@@ -2244,9 +2311,9 @@ namespace LSOmni.Service
         /// Confirm Activity Booking
         /// </summary>
         /// <remarks>
-        /// LS Central WS : ConfirmActivityV2 or V3<p/><p/>
+        /// LS Central WS2 : ConfirmActivityV2 or V3<p/><p/>
         /// If property [Paid] is set, then returns details for the retail basket.<p/>
-        /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through Omni will update the Activities payment status and assign the sales order document as payment document.<p/> 
+        /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through LS Commerce Service will update the Activities payment status and assign the sales order document as payment document.<p/> 
         /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
         /// If [ReservationNo] is blank the system will create new reservation and return the value to ReservationNo.  If ReservationNo is populated parameter then the system will try to add the activity to existing reservation if the reservation exists and is neither canceled or closed.<p/>
         /// [PromoCode] is validated and adjusts pricing accordingly.
@@ -2281,7 +2348,7 @@ namespace LSOmni.Service
         /// Cancel Activity
         /// </summary>
         /// <remarks>
-        /// LS Central WS : CancelActivity<p/><p/>
+        /// LS Central WS2 : CancelActivity<p/><p/>
         /// If cancellation charges apply, then those vales will be returned and could be applied to a retail basket.
         /// </remarks>
         /// <param name="activityNo"></param>
@@ -2291,10 +2358,10 @@ namespace LSOmni.Service
         ActivityResponse ActivityCancel(string activityNo);
 
         /// <summary>
-        /// Returns list of available time slots/prices for a specific location,product and date 
+        /// Returns list of available time-slots/prices for a specific location,product and date 
         /// </summary>
         /// <remarks>
-        /// LS Central WS : GetAvailabilityV2<p/><p/>
+        /// LS Central WS2 : GetAvailabilityV2<p/><p/>
         /// Optional to include required resource (if only specific resource) and contactNo for accurate pricing.
         /// </remarks>
         /// <example>
@@ -2328,7 +2395,7 @@ namespace LSOmni.Service
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product
         /// </summary>
         /// <remarks>
-        /// LS Central WS : GetAdditionalCharges
+        /// LS Central WS2 : GetAdditionalCharges<p/><p/>
         /// </remarks>
         /// <param name="activityNo"></param>
         /// <returns></returns>
@@ -2340,7 +2407,7 @@ namespace LSOmni.Service
         /// Change or insert additional charges to Activity
         /// </summary>
         /// <remarks>
-        /// LS Central WS : SetAdditionalChargesV2
+        /// LS Central WS2 : SetAdditionalChargesV2<p/><p/>
         /// </remarks>
         /// <example>
         /// Sample request including minimum data needed to be able to process the request in OMNI
@@ -2372,7 +2439,7 @@ namespace LSOmni.Service
         /// Returns list of Attributes which are assigned on a given Activity product, reservation or activity entry
         /// </summary>
         /// <remarks>
-        /// LS Central WS : GetAttributes
+        /// LS Central WS2 : GetAttributes<p/><p/>
         /// </remarks>
         /// <param name="type"></param>
         /// <param name="linkNo"></param>
@@ -2385,7 +2452,7 @@ namespace LSOmni.Service
         /// Action to set an attribute value on a given reservation or activity.  If attribute does not exist on the entry then its inserted otherwise updated
         /// </summary>
         /// <remarks>
-        /// LS Central WS : SetAttribute
+        /// LS Central WS2 : SetAttribute<p/><p/>
         /// </remarks>
         /// <param name="type"></param>
         /// <param name="linkNo"></param>
@@ -2400,7 +2467,7 @@ namespace LSOmni.Service
         /// Action to create a Reservation header into the LS Reservation table
         /// </summary>
         /// <remarks>
-        /// LS Central WS : InsertReservation
+        /// LS Central WS2 : InsertReservation<p/><p/>
         /// </remarks>
         /// <example>
         /// Sample request including minimum data needed to be able to process the request in OMNI
@@ -2436,7 +2503,7 @@ namespace LSOmni.Service
         /// Action to force update to a reservation header in the LS Reservation table.  Blank fields will be ignored
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UpdateReservation
+        /// LS Central WS2 : UpdateReservation<p/><p/>
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -2448,7 +2515,7 @@ namespace LSOmni.Service
         /// Sell Membership (membership type) to Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Central WS : SellMembership
+        /// LS Central WS2 : SellMembership<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <param name="membersShipType"></param>
@@ -2461,7 +2528,7 @@ namespace LSOmni.Service
         /// Cancels a specific membership and validates if cancellation is in order (i.e. compares to commitment period)
         /// </summary>
         /// <remarks>
-        /// LS Central WS : CancelMembership
+        /// LS Central WS2 : CancelMembership<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <param name="memberShipNo"></param>
@@ -2479,7 +2546,7 @@ namespace LSOmni.Service
         /// Returns list of Activity Products
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadActivityProducts
+        /// LS Central WS2 : UploadActivityProducts<p/><p/>
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -2490,7 +2557,7 @@ namespace LSOmni.Service
         /// Returns list of Activity Types
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadActivityTypes
+        /// LS Central WS2 : UploadActivityTypes<p/><p/>
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -2501,7 +2568,7 @@ namespace LSOmni.Service
         /// Returns list of Activity Locations
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadActivityLocations 
+        /// LS Central WS2 : UploadActivityLocations<p/><p/>
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -2512,9 +2579,9 @@ namespace LSOmni.Service
         /// Returns list of Reservations for Member Contact or list of Activities assigned to a Reservation
         /// </summary>
         /// <remarks>
-        /// LS Central WS : <p/>
-        /// With [contactNo, activityType] UploadClientBookingsV2 <p/>
-        /// With [reservationNo] : UploadReservationActivities
+        /// LS Central WS2 : <p/>
+        /// With [contactNo, activityType] UploadClientBookingsV2<p/>
+        /// With [reservationNo] : UploadReservationActivities<p/><p/>
         /// </remarks>
         /// <param name="reservationNo">Look up Activities for a Reservation</param>
         /// <param name="contactNo">Look up Reservations for a Contact</param>
@@ -2541,7 +2608,7 @@ namespace LSOmni.Service
         /// Returns list of Active Promotions (for information purposes only)
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadPromotions
+        /// LS Central WS2 : UploadPromotions<p/><p/>
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -2552,7 +2619,7 @@ namespace LSOmni.Service
         /// Returns list of Member Contacts issued (sold) allowances
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadPurchasedAllowances
+        /// LS Central WS2 : UploadPurchasedAllowances<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -2564,7 +2631,7 @@ namespace LSOmni.Service
         /// Returns list of all entries charged to the Member Contact customer account (A/R). The Account no. is based on the contact business relation settings
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadCustomerEntries
+        /// LS Central WS2 : UploadCustomerEntries<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <param name="customerNo"></param>
@@ -2577,7 +2644,7 @@ namespace LSOmni.Service
         /// Returns list of Membership types (products) which are active and can be sold 
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadMembershipProducts
+        /// LS Central WS2 : UploadMembershipProducts<p/><p/>
         /// </remarks>
         /// <returns></returns>
         [OperationContract]
@@ -2588,7 +2655,7 @@ namespace LSOmni.Service
         /// Returns list of all subscription charges posted towards their membership account. Draft unposted entries are not included
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadMembershipSubscriptionCharges
+        /// LS Central WS2 : UploadMembershipSubscriptionCharges<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -2600,7 +2667,7 @@ namespace LSOmni.Service
         /// Returns list of Member Contact visit registrations
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadAdmissionEntries
+        /// LS Central WS2 : UploadAdmissionEntries<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>
@@ -2612,7 +2679,7 @@ namespace LSOmni.Service
         /// Returns list of the Member Contact current active or on hold memberships
         /// </summary>
         /// <remarks>
-        /// LS Central WS : UploadMembershipEntries
+        /// LS Central WS2 : UploadMembershipEntries<p/><p/>
         /// </remarks>
         /// <param name="contactNo">Member Contact</param>
         /// <returns></returns>

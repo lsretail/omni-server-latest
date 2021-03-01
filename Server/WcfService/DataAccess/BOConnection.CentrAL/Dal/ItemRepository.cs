@@ -21,9 +21,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public ItemRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt2.[Keying in Price],mt2.[Keying in Quantity],mt2.[No Discount Allowed]," +
-                         "mt2.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt2.[Zero Price Valid]," +
-                         "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price]," +
-                         "mt.[Product Group Code]," +
+                         "mt2.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt2.[Zero Price Valid],mt.[Sales Unit of Measure]," +
+                         "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt2.[Retail Product Code]," +
                          "mt.[Gross Weight],mt2.[Season Code],mt.[Item Category Code],mt2.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
@@ -421,7 +420,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE [Product Group Code]=@id";
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE [Retail Product Code]=@id";
                     command.Parameters.AddWithValue("@id", productGroupId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -452,7 +451,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
-            "mt.[Product Group Code],mt2.[Scale Item]," +
+            "mt2.[Retail Product Code],mt2.[Scale Item]," +
             "mt.[Blocked],mt.[Gross Weight],mt2.[Season Code],mt.[Item Category Code],mt2.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
@@ -462,7 +461,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
             sqlfrom +
-            " LEFT OUTER JOIN [" + navCompanyName + "Product Group$437dbf0e-84ff-417a-965d-ed2bb9650972] pg ON pg.[Code]=mt.[Product Group Code]" +
+            " LEFT OUTER JOIN [" + navCompanyName + "Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[Retail Product Code]" +
             " WHERE (1=1)";
 
             if (string.IsNullOrWhiteSpace(itemCategoryId) == false)
@@ -474,7 +473,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
-            sql += "[Product Group Code],[Scale Item],";
+            sql += "[Retail Product Code],[Scale Item],";
             sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -537,7 +536,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             LoyItem item = ItemLoyGetById(bcode.ItemId, storeId, string.Empty, true);
 
             item.Prices.Clear();
-            PriceRepository prepo = new PriceRepository(config);
+            PriceRepository prepo = new PriceRepository(config, NavVersion);
             Price price = prepo.PriceGetByIds(bcode.ItemId, storeId, bcode.VariantId, bcode.UnitOfMeasureId, culture);
             if (price == null)
             {
@@ -650,7 +649,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 KeyingInPrice = SQLHelper.GetInt32(reader["Keying in Price"]),
                 KeyingInQty = SQLHelper.GetInt32(reader["Keying in Quantity"]),
                 NoDiscountAllowed = SQLHelper.GetInt32(reader["No Discount Allowed"]),
-                ProductGroupId = SQLHelper.GetString(reader["Product Group Code"]),
+                ProductGroupId = SQLHelper.GetString(reader["Retail Product Code"]),
                 ScaleItem = SQLHelper.GetInt32(reader["Scale Item"]),
                 TaxItemGroupId = SQLHelper.GetString(reader["VAT Prod_ Posting Group"]),
                 BaseUnitOfMeasure = SQLHelper.GetString(reader["Base Unit of Measure"]),
@@ -698,7 +697,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 Details = SQLHelper.GetStringByte(reader["Html"]),
 
-                ProductGroupId = SQLHelper.GetString(reader["Product Group Code"]),
+                ProductGroupId = SQLHelper.GetString(reader["Retail Product Code"]),
                 SalesUomId = SQLHelper.GetString(reader["Sales Unit of Measure"]),
                 ScaleItem = SQLHelper.GetBool(reader["Scale Item"]),
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
@@ -732,7 +731,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             ItemLocationRepository locrep = new ItemLocationRepository(config);
             item.Locations = locrep.ItemLocationGetByItemId(item.Id, storeId);
 
-            PriceRepository pricerep = new PriceRepository(config);
+            PriceRepository pricerep = new PriceRepository(config, NavVersion);
             item.Prices = pricerep.PricesGetByItemId(item.Id, storeId, culture);
 
             ItemUOMRepository uomrep = new ItemUOMRepository(config);

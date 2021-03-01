@@ -7,7 +7,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
 {
     public class InventoryRepository : BaseRepository
     {
-        public List<ReplInvLocation> ReplicateLocations(XMLTableData table)
+        public List<ReplInvLocation> ReplicateLocations(XMLTableData table, string storeId)
         {
             List<ReplInvLocation> list = new List<ReplInvLocation>();
             if (table == null)
@@ -26,7 +26,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Location Name": rec.Name = field.Values[i]; break;
                     }
                 }
-                list.Add(rec);
+                if (rec.StoreId == storeId)
+                    list.Add(rec);
             }
             return list;
         }
@@ -64,7 +65,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
     
-        public List<ReplInvMask> ReplicateInventoryMasks(XMLTableData table)
+        public List<ReplInvMask> ReplicateInventoryMasks(XMLTableData table, int maxlines)
         {
             List<ReplInvMask> list = new List<ReplInvMask>();
             if (table == null)
@@ -83,7 +84,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Location Code": rec.Location = field.Values[i]; break;
                         case "Default UoM": rec.Unit = GetWebInt(field.Values[i]); break;
                         case "Use Area": rec.UseArea = GetWebBool(field.Values[i]); break;
-
+                        case "StoreInvTransaction Max Lines": rec.MaxLinesToSend = GetWebInt(field.Values[i]); break;
                         case "Quantity Method": rec.QuantityMethod = GetWebInt(field.Values[i]); break;
                         case "Quick-default Quantity": rec.QuickDefaultQuantity = GetWebInt(field.Values[i]); break;
                         case "Reason Code": rec.ReasonCode = field.Values[i]; break;
@@ -92,6 +93,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     }
                 }
                 rec.SearchForItemBy = 4;
+                if (rec.MaxLinesToSend == 0)
+                    rec.MaxLinesToSend = maxlines;
+
+                //Central flipped enum values 1 & 2 when using store inventory 
+                if (rec.Unit == 1)
+                {
+                    rec.Unit = 2;
+                }
+                else if (rec.Unit == 2)
+                {
+                    rec.Unit = 1;
+                }
+
                 list.Add(rec);
             }
             return list;

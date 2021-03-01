@@ -31,7 +31,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         /// <summary>
         /// Omni TenderType.<p/>
         /// Default mapping to NAV: 0=Cash, 1=Card, 2=Coupon, 3=Loyalty Points, 4=Gift Card<p/>
-        /// Tendertype Mapping can be modified in LSOmni Database - Appsettings table - Key:TenderType_Mapping
+        /// Tender type Mapping can be modified in LSOmni Database - TenantConfig table - Key:TenderType_Mapping
         /// </summary>
         [DataMember]
         public string TenderType { get; set; }

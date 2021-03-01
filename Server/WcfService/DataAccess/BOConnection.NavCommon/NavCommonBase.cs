@@ -121,7 +121,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     navWebQryReference.Proxy = GetWebProxy();
                 }
 
-                NavVersionToUse(true); //check the nav version
+                NavVersionToUse(true, false); //check the nav version
             }
 
             // Use NAV Web Service V2
@@ -160,8 +160,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     activityWS.Credentials = credentials;
                     activity15WS.Credentials = credentials;
                 }
-
-                NavVersionToUse(true); //check the nav version
             }
 
             if (NAVVersion > new Version("14.2"))
@@ -178,7 +176,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     return null;
                 }
 
-                // first one is Omni TenderType, 2nd one is the NAV id
+                // first one is LS Commerce Service TenderType, 2nd one is the NAV id
                 //tenderMapping: "1=1,2=2,3=3,4=4,6=6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
                 //or can be : "1  =  1  ,2=2,3= 3, 4=4,6 =6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
 
@@ -275,7 +273,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         }
 
 
-        public string NavVersionToUse(bool forceCallToNav = true)
+        public string NavVersionToUse(bool forceCallToNav, bool v2call)
         {
             if (NAVVersion == null)
                 NAVVersion = new Version("17.0");
@@ -295,7 +293,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     string retailCopyright = string.Empty;
                     string retailVersion = string.Empty;
 
-                    if (navWS != null && NAVVersion.Major > 13)
+                    if (navWS != null && NAVVersion.Major > 13 && v2call)
                     {
                         string respCode = string.Empty;
                         string errorText = string.Empty;
@@ -338,7 +336,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         }
 
                         xmlResponse = RunOperation(xmlRequest);
-                        logger.Info(config.LSKey.Key, "Nav Version: " + xmlResponse);
                         rCode = GetResponseCode(ref xmlResponse);
 
                         //ignore unknown Request_ID 
@@ -494,8 +491,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             // get tables to replicate and current status
             xmlRequest = xml.StartSyncRequestXML(batchSize);
             xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" });
-            if (ret == "1921")
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" }, false);
+            if (string.IsNullOrEmpty(ret) == false)
             {
                 // App is not registered, so lets register it
                 xmlRequest = xml.RegisterApplicationRequestXML(NAVVersion);
@@ -517,7 +514,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             xmlRequest = xml.RestoreSyncRequestXML(restorePoint);
             xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923" });
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923" }, false);
             if (string.IsNullOrEmpty(ret) == false)
                 return new List<XMLTableData>();
 
@@ -680,7 +677,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return node.InnerText;
         }
 
-        protected string HandleResponseCode(ref string xmlResponse, string[] codesToHandle = null)
+        protected string HandleResponseCode(ref string xmlResponse, string[] codesToHandle = null, bool useMsgText = false)
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xmlResponse);
@@ -698,6 +695,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 {
                     foreach (string code in codesToHandle)
                     {
+                        if (useMsgText)
+                        {
+                            if (navResponseText.Contains(code))
+                                return responseCode;
+
+                            continue;
+                        }
+
                         //expected return codes, so don't throw unexpected exception, rather return the known codes to client  
                         if (code.Equals(responseCode))
                             return code;

@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private string sqlMcolumns = string.Empty;
         private string sqlMfrom = string.Empty;
 
-        public PriceRepository(BOConfiguration config) : base(config)
+        public PriceRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Item No_],mt.[Sales Type],mt.[Sales Code],mt.[Starting Date],mt.[Ending Date],mt.[Currency Code]," +
                          "mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity],mt.[Currency Code],mt.[Unit Price]," +
@@ -38,6 +38,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlMfrom = " FROM [" + navCompanyName + "WI Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                        " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] u " +
                        " ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
+
+            if (version > new Version("17.2.0.0"))
+            {
+                sqlMcolumns += ",mt.[Net Unit Price]";
+            }
         }
 
         public List<ReplPrice> ReplicatePrice(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -336,10 +341,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
-                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price Including VAT"),
+                UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price Including VAT"]),
                 PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
-                MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
+                MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]),
                 StartingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Starting Date"])),
                 EndingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Ending Date"])),
                 VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
@@ -357,7 +362,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplPrice()
+            ReplPrice price = new ReplPrice()
             {
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
@@ -366,12 +371,22 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
-                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price"),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price"]),
                 PriceInclVat = true,
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
                 QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
+
+            if (NavVersion < new Version("17.3"))
+            {
+                price.UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]);
+            }
+            else
+            {
+                price.UnitPrice = SQLHelper.GetDecimal(reader["Net Unit Price"]);
+            }
+
+            return price;
         }
 
         private Price ReaderToLoyPrice(SqlDataReader reader, string culture)
@@ -386,6 +401,15 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             price.Amount = FormatAmount(price.Amt, culture);
+            if (NavVersion < new Version("17.3"))
+            {
+                price.NetAmt = SQLHelper.GetDecimal(reader["Unit Price"]);
+            }
+            else
+            {
+                price.NetAmt = SQLHelper.GetDecimal(reader["Net Unit Price"]);
+            }
+
             return price;
         }
     }

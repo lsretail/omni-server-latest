@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
@@ -19,6 +20,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         public string Description { get; set; }
         [DataMember]
         public HierarchyType Type { get; set; }
+        [DataMember]
+        public DateTime StartDate { get; set; }
         [DataMember]
         public List<HierarchyNode> Nodes { get; set; }
         [DataMember]

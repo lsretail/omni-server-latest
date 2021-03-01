@@ -31,7 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             List<JscKey> keys = GetPrimaryKeys("Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d");
             string prevLastKey = lastKey;
-            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it ON it.[Product Group Code]=mt.[Code]";
+            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[Retail Product Code]=mt.[Code]";
 
             // get records remaining
             string sql = string.Empty;

@@ -38,6 +38,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
+        /// <summary>
+        /// Unique Line number used to identify the line in LS Central.  Note: Line number cannot be same between 2 different items.
+        /// </summary>
         [DataMember]
         public int LineNumber { get; set; }
         /// <summary>

@@ -36,7 +36,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual string Ping()
         {
-            string ver = NavWSBase.NavVersionToUse(true);
+            string ver = NavWSBase.NavVersionToUse(true, true);
             if (ver.Contains("ERROR"))
                 throw new ApplicationException(ver);
 
@@ -518,7 +518,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            throw new NotImplementedException("IS THIS NEEDED?");
+            return new List<ReplLoyVendorItemMapping>();
         }
 
         public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -548,7 +548,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

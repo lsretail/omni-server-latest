@@ -15,24 +15,24 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{07C464D2-8863-4A44-B30C-A4EBDAE8D246}
-AppName="LS Omni Server version {#VersionNo}"
+AppName="LS Commerce Service Version {#VersionNo}"
 AppVersion={#ApplicationVersion}
-AppVerName="LS Omni Server {#ApplicationVersion}"
+AppVerName="LS Commerce Service {#ApplicationVersion}"
 AppPublisher=LS Retail Inc.
 AppPublisherURL=http://www.lsretail.com/
 AppSupportURL=http://www.lsretail.com/
 AppUpdatesURL=http://www.lsretail.com/
-AppComments=LS Omni WCF Service
-AppCopyright=Copyright (C) 2020 LS Retail
+AppComments=LS Commerce Service
+AppCopyright=Copyright (C) 2021 LS Retail
 ;file version
 VersionInfoVersion={#ApplicationVersion}
 ;when changing the DefaultDirName I had to change the AppId !!
-DefaultDirName=C:\LS Retail\LSOmni
+DefaultDirName=C:\LS Retail\LSCommerce
 DefaultGroupName=notused
 DisableProgramGroupPage=yes
 DisableDirPage=no
 DirExistsWarning=yes
-OutputBaseFilename="LSOmni.Service.Central.Setup.{#VersionNo}"
+OutputBaseFilename="LSCommerce.Service.Central.Setup.{#VersionNo}"
 SetupIconFile=LSIcon.ico
 UninstallDisplayIcon={app}\{code:WcfDir}\bin\LSIcon.ico
 Compression=lzma             
@@ -53,15 +53,15 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 ; sql files
 ; DestDir: {app}; Source: Files\*; Excludes: "*.m,.svn,private"; Flags: recursesubdirs
-Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbInitData.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
-Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbObjects.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
-Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSOmniServiceDbPermissions.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
+Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSCommerceServiceDbInitData.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
+Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSCommerceServiceDbObjects.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
+Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSCommerceServiceDbPermissions.sql"; DestDir: "{app}\Sql\SqlScripts\"; Flags: ignoreversion
 
 ;all files should be in other include files
 #include "FilesInclude.iss"
 
 [Icons]
-Name: "{group}\{cm:ProgramOnTheWeb,LSOmniService}"; Filename: "http://www.lsretail.com/"
+Name: "{group}\{cm:ProgramOnTheWeb,LSCommerceService}"; Filename: "http://www.lsretail.com/"
 
 [Code]
 //tried to have code in other files
@@ -117,7 +117,7 @@ begin
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
   CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', false);
   CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', false);
-  SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'LSOmni');
+  SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'LSCommerce');
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
   SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', '');
   SQLPage_txtPassword.Text := GetCommandLineParamString('-SqlPwd', '');
@@ -126,16 +126,16 @@ begin
 
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
-  IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSOmniService');
+  IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSCommerceService');
   IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC160/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 
   //should only set the file here..
   //will be executed in this order
-  SQLFileList.Add('LSOmniServiceDbObjects.sql');
-  SQLFileList.Add('LSOmniServiceDbPermissions.sql');
-  SQLFileList.Add('LSOmniServiceDbInitData.sql');
+  SQLFileList.Add('LSCommerceServiceDbObjects.sql');
+  SQLFileList.Add('LSCommerceServiceDbPermissions.sql');
+  SQLFileList.Add('LSCommerceServiceDbInitData.sql');
 end;
 
 function WcfDir(Param: String): String;
@@ -187,7 +187,7 @@ begin
       msg := 'SQL Server mixed authentication mode is not enabled on ' + SQLPage_txtServer.Text + ' '#13
       msg := msg + 'You need this to continue the easy way. You can use Windows Authentication only but '#13
       msg := msg + 'then you need to change the config files manually.'#13
-      msg := msg + 'See LS Omni Server Installation doc'#13
+      msg := msg + 'See LS Commerce Service Installation doc'#13
       msg := msg + 'Quit the setup?'
       if (not CmdMode) and (MsgBox(msg, mbConfirmation, MB_YESNO) = idYes ) then
       begin
@@ -198,10 +198,10 @@ begin
     // Check if trying to create tables in the NAV database
     if (Result and ADOCheckIsNavDB()) then
     begin
-      msg := 'You are trying to create the LS Omni SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
-      msg := msg + 'This database is a LS Nav/Central database and you are not allowed to create the LSOmni database objects'#13
+      msg := 'You are trying to create the LS Commerce Service SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
+      msg := msg + 'This database is a LS Nav/Central database and you are not allowed to create the LS Commerce Service Database objects'#13
       msg := msg + 'in the LS Nav/Central Database'#13
-      msg := msg + 'See LS Omni Server Installation doc'#13
+      msg := msg + 'See LS Commerce Service Installation doc'#13
       if (not CmdMode) then
         MsgBox(msg, mbConfirmation, MB_OK);
       Result := False;
@@ -251,7 +251,7 @@ begin
     ErrorWarningMsg('Failed to update AppSettings.config file'#13'AppSettings.Config file will not get updated'#13'with values entered', CmdMode);
   end;                   
 
-  //standardize on the LSOmniUser
+  //standardize on the LSCommerceUser
   navCompany := Trim(NavSQLPage_txtNavCompany.Text); //no dont add + '$'; 
   StringChangeEx(navCompany, '.', '_', True);
   Result := True;
@@ -278,12 +278,12 @@ begin
 	if (Length(NavSQLPage_txtUsername.Text) > 0) then
 	  user := NavSQLPage_txtUsername.Text
 	else
-	  user := 'LSOmniUser';
+	  user := 'LSCommerceUser';
 
 	if (Length(NavSQLPage_txtPassword.Text) > 0) then
 	  pwd := NavSQLPage_txtPassword.Text
 	else
-	  pwd := 'LSOmniUser';
+	  pwd := 'LSCommerceUser';
 
     // NAV connection string
     if CheckPage_NavSQLCheckBox.Checked then
@@ -312,17 +312,17 @@ begin
 	if (Length(SQLPage_txtUsername.Text) > 0) then
 	  user := SQLPage_txtUsername.Text
 	else
-	  user := 'LSOmniUser';
+	  user := 'LSCommerceUser';
 
 	if (Length(SQLPage_txtPassword.Text) > 0) then
 	  pwd := SQLPage_txtPassword.Text
 	else
-	  pwd := 'LSOmniUser';
+	  pwd := 'LSCommerceUser';
 
-    // LSOmni database string
+    // LS Commerce Service Database string
     if CheckPage_SQLCheckBox.Checked then
     begin
-      Log('Update LS Omni SQL Settings');
+      Log('Update LS Commerce Service SQL Settings');
       omniStr := 'Data Source=' + Trim(SQLPage_txtServer.Text);
       omniStr := omniStr + ';Initial Catalog=' + Trim(SQLPage_txtDBname.Text);
       omniStr := omniStr + ';User ID=' + Trim(user);

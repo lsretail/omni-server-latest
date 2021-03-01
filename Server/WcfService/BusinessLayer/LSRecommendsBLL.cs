@@ -22,7 +22,7 @@ namespace LSOmni.BLL.Loyalty
 
             string value = config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl);
             if (string.IsNullOrEmpty(value))
-                throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "LS Recommend Setup has not yet been sent to Omni from LS Central");
+                throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "LS Recommend Setup has not yet been sent to LS Commerce Service from LS Central");
 
             lsr = new LSRecommend.LSRecommend(
                 config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl),

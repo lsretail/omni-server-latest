@@ -47,6 +47,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public List<LoyItem> Items { get; set; }
         [DataMember]
         public List<ImageView> Images { get; set; }
+
+        [IgnoreDataMember]
+        public ImageView DefaultImage
+        {
+            get { return (Images != null && Images.Count > 0) ? Images[0] : null; }
+        }
     }
 }
  

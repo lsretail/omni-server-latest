@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -48,12 +48,32 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Unit Volume": rec.UnitVolume = GetWebDecimal(field.Values[i]); break;
                     }
                 }
-
-                // TODO: Get HTML Description
-
                 list.Add(rec);
             }
             return list;
+        }
+
+        public void ReplicateItemsHtml(XMLTableData table, List<ReplItem> list)
+        {
+            if (table == null)
+                return;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                string item = string.Empty;
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Item No.": item = field.Values[i]; break;
+                        case "Html": 
+                            ReplItem it = list.Find(f => f.Id == item);
+                            if (it != null)
+                                it.Details = ConvertTo.Base64Decode(field.Values[i]);
+                            break;
+                    }
+                }
+            }
         }
 
         public List<ReplBarcode> ReplicateBarcodes(XMLTableData table)
@@ -102,7 +122,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Char": rec.Char = field.Values[i]; break;
                     }
                 }
-                rec.Id = Convert.ToInt32(string.Format("{0}{1}", rec.MaskId, rec.Number));
+                rec.Id = i + 1;
                 list.Add(rec);
             }
             return list;
@@ -284,7 +304,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
 
-        public List<ReplPrice> ReplicatePrice(XMLTableData table)
+        public List<ReplPrice> ReplicatePrice(XMLTableData table, ref string lastKey)
         {
             List<ReplPrice> list = new List<ReplPrice>();
             if (table == null)
@@ -304,15 +324,20 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Customer Disc. Group": rec.CustomerDiscountGroup = field.Values[i]; break;
                         case "Loyalty Scheme Code": rec.LoyaltySchemeCode = field.Values[i]; break;
                         case "Currency Code": rec.CurrencyCode = field.Values[i]; break;
+                        case "Last Modify Date": rec.ModifyDate = GetWebDateTime(field.Values[i]); break;
                         case "Unit Price": rec.UnitPrice = GetWebDecimal(field.Values[i]); break;
                     }
                 }
+                rec.PriceInclVat = true;
+                rec.UnitPriceInclVat = rec.UnitPrice;
+
+                lastKey = string.Format($"{rec.StoreId};{rec.ItemId};{rec.VariantId};{rec.UnitOfMeasure};{rec.CustomerDiscountGroup};{rec.LoyaltySchemeCode}");
                 list.Add(rec);
             }
             return list;
         }
 
-        public List<ReplDiscount> ReplicateDiscounts(XMLTableData table)
+        public List<ReplDiscount> ReplicateDiscounts(XMLTableData table, ref string lastKey)
         {
             List<ReplDiscount> list = new List<ReplDiscount>();
             if (table == null)
@@ -342,13 +367,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                 }
 
                 // TODO: get detailed info for discount - update NAV CU?
-
+                lastKey = string.Format($"{rec.StoreId};{rec.PriorityNo};{rec.ItemId};{rec.VariantId};{rec.CustomerDiscountGroup};{rec.LoyaltySchemeCode};{rec.FromDate};{rec.ToDate};{rec.MinimumQuantity}");
                 list.Add(rec);
             }
             return list;
         }
 
-        public List<ReplHierarchy> ReplicateHierarchy(XMLTableData table)
+        public List<ReplHierarchy> ReplicateHierarchy(XMLTableData table, DateTime startdate)
         {
             List<ReplHierarchy> list = new List<ReplHierarchy>();
             if (table == null)
@@ -366,6 +391,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Type": rec.Type = (HierarchyType)GetWebInt(field.Values[i]); break;
                     }
                 }
+                rec.StartDate = startdate;
                 list.Add(rec);
             }
             return list;
@@ -1206,11 +1232,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             return list;
         }
 
-        public List<ReplInvStatus> ReplicateInvStatus(XMLTableData table)
+        public List<ReplInvStatus> ReplicateInvStatus(XMLTableData table, ref string lastKey, ref string maxKey)
         {
             List<ReplInvStatus> list = new List<ReplInvStatus>();
             if (table == null)
                 return list;
+
+            if (string.IsNullOrEmpty(maxKey))
+                maxKey = "0";
+
+            string serialno = string.Empty;
+            string lotno = string.Empty;
+            int replcnt = 0;
 
             for (int i = 0; i < table.NumberOfValues; i++)
             {
@@ -1223,8 +1256,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Variant Code": rec.VariantId = field.Values[i]; break;
                         case "Store No.": rec.StoreId = field.Values[i]; break;
                         case "Net Inventory": rec.Quantity = GetWebDecimal(field.Values[i]); break;
+                        case "Serial No.": serialno = field.Values[i]; break;
+                        case "Lot No.": lotno = field.Values[i]; break;
+                        case "Replication Counter": replcnt = GetWebInt(field.Values[i]); break;
                     }
                 }
+
+                if (replcnt > Convert.ToInt32(maxKey))
+                    maxKey = replcnt.ToString();
+
+                lastKey = string.Format($"{rec.ItemId};{rec.VariantId};{rec.StoreId};{lotno};{serialno}");
                 list.Add(rec);
             }
             return list;

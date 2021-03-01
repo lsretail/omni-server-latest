@@ -120,7 +120,7 @@ function SQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   SQLPage := CreateCustomPage(
     PreviousPageId,
-    'SQL Sever database for LS Omni Server',
+    'SQL Sever database for LS Commerce Service',
     'Creates SQL objects in a new or existing database'
   );
  

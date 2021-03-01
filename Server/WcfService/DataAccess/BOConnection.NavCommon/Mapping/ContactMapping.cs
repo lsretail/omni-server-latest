@@ -110,9 +110,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 foreach (Profile prof in contact.Profiles)
                 {
-                    if (prof.ContactValue)
-                        continue;
-
                     attr.Add(new NavWS.MemberAttributeValue1()
                     {
                         AttributeCode = prof.Id,
@@ -250,14 +247,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 foreach (NavWS.MemberAttributeList2 attr in root.MemberAttributeList)
                 {
-                    if (attr.Type != "0")
+                    if (attr.Type != "0" || attr.AttributeType != "4")
                         continue;
 
                     memberContact.Profiles.Add(new Profile()
                     {
                         Id = attr.Code,
                         Description = attr.Description,
-                        DefaultValue = attr.Value
+                        ContactValue = (attr.Value.ToUpper().Equals("YES")),
+                        DataType = (ProfileDataType)Convert.ToInt32(attr.AttributeType)
                     });
                 }
             }

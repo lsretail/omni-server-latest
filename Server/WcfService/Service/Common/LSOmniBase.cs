@@ -154,7 +154,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                omniDb = string.Format("[Failed to connect to LSOmni DB {0}]", ex.Message);
+                omniDb = string.Format("[Failed to connect to LS Commerce Service DB {0}]", ex.Message);
                 logger.Error(config.LSKey.Key, ex, omniDb);
             }
 
@@ -175,7 +175,7 @@ namespace LSOmni.Service
                 else
                 {
                     if (ex.Message.Contains("401"))
-                        navWs += "[The LS Central Web Service User name or Password is incorrect]";
+                        navWs += "[The LS Central WS User name or Password is incorrect]";
                     else
                         navWs = string.Format("[Failed to Ping LS Central Web Service {0}]", ex.Message);
                 }
@@ -200,14 +200,14 @@ namespace LSOmni.Service
                 logger.Error(config.LSKey.Key, ex, navDb);
             }
 
-            string omniver = string.Format(" OMNI:{0}", Version());
+            string omniver = string.Format(" LS Commerce Service:{0}", Version());
 
             //any errors ?
             string msg = "";
             if (omniDb.Length > 0 || navWs.Length > 0 || navDb.Length > 0)
             {
                 if (omniDb.Length == 0)
-                    msg += " [Successfully connected to LS Omni DB]" + omniver;
+                    msg += " [Successfully connected to LS Commerce Service DB]" + omniver;
 
                 if (ver.Contains("One"))
                 {
@@ -219,7 +219,7 @@ namespace LSOmni.Service
                     if (navDb.Length == 0)
                         msg += " [Successfully connected to LS Central DB]";
                     if (navWs.Length == 0)
-                        msg += " [Successfully connected to LS Central Web Service] " + ver;
+                        msg += " [Successfully connected to LS Central WS] " + ver;
                 }
 
                 //collect the failure
@@ -237,11 +237,11 @@ namespace LSOmni.Service
             {
                 if (ver.Contains("One"))
                 {
-                    msg = "Successfully connected to [LSOmni DB] & [LSOne DB] " + omniver;
+                    msg = "Successfully connected to [LS Commerce Service DB] & [LS One DB] " + omniver;
                 }
                 else
                 {
-                    msg = "Successfully connected to [LSOmni DB] & [LSCentral DB] & [LSCentral WS] " + ver + omniver;
+                    msg = "Successfully connected to [LS Commerce Service DB] & [LS Central DB] & [LS Central WS] " + ver + omniver;
                 }
 
                 logger.Debug(config.LSKey.Key, "PONG OK {0} ", msg);

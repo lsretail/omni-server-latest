@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumnsRecipe = "mt.[timestamp],mt.[Parent Item No_],mt.[Item No_],mt.Exclusion,mt.[Price on Exclusion]," +
                                "mt.[Description],mt.[Line No_],mt.[Unit of Measure Code],mt.[Quantity per],il.[Image Id]";
             sqlfromRecipe = " FROM [" + navCompanyName + "BOM Component] mt" +
-                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
+                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
         }
 
         public List<ReplItemRecipe> ReplicateItemRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

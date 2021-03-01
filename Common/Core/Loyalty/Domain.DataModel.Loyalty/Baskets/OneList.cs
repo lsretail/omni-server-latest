@@ -12,6 +12,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     public class OneList : Entity, IDisposable
     {
         private decimal totalAmount;
+        private string cardLinkNames;
 
         public OneList(string id) : base(id)
         {
@@ -71,6 +72,33 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string CardId { get; set; }
         [DataMember]
         public List<OneListLink> CardLinks { get; set; }
+
+        [IgnoreDataMember]
+        public string GetNamesFromCardLinks
+        {
+            get
+            {
+                OneListLink lastItem = CardLinks.Last();
+                foreach (var name in CardLinks)
+                {
+                    if (name.Equals(lastItem))
+                    {
+                        cardLinkNames += name.Name;
+                    }
+                    else
+                    {
+                        cardLinkNames += name.Name + ", ";
+                    }
+                }
+
+                return cardLinkNames;
+            }
+            set
+            {
+                cardLinkNames = value;
+                NotifyPropertyChanged();
+            }
+        }
         /// <summary>
         /// Type indicator to use in external system
         /// </summary>
@@ -190,6 +218,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             Id = string.Empty;
             Items.Clear();
             PublishedOffers.Clear();
+
+            CalculateBasket();
         }
 
         public bool IsEmpty

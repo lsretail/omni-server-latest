@@ -75,6 +75,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                     return;
                 }
 
+                // don't mess up the other fields if they have been set
+                if (string.IsNullOrEmpty(FirstName) == false && string.IsNullOrEmpty(MiddleName) == false && string.IsNullOrEmpty(LastName) == false)
+                {
+                    return;
+                }
+
                 string[] names = value.Split(' ');
                 if (names.Count() == 1)
                 {
@@ -95,6 +101,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                     LastName = names[names.Count() - 1];
                     for (int i = 1; i < (names.Count() - 1); i++)
                     {
+                        if (i > 1)
+                            MiddleName += " ";
+
                         MiddleName += names[i];
                     }
                 }
