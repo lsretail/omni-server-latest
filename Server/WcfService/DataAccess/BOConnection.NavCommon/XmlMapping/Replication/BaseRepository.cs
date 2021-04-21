@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
@@ -42,6 +43,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
             if (string.IsNullOrEmpty(value))
                 return 0;
             return Convert.ToDecimal(value);
+        }
+
+        internal static string ToNAVDate(DateTime dt)
+        {
+            if (dt == null || dt == DateTime.MinValue)
+                return string.Empty;
+            return string.Format("{0}{1}{2}", dt.Day.ToString("D2"), dt.Month.ToString("D2"), dt.Year);
         }
     }
 }

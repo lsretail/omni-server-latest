@@ -224,11 +224,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NAVWebXml xml = new NAVWebXml(storeId, appid, apptype);
             List<XMLTableData> tablist = new List<XMLTableData>();
 
-            if (restorepoint == -1)
+            if (restorepoint > 0)
             {
                 // restore everything
                 RestoreWebReplication(xml, restorepoint);
-                restorepoint = 0;
             }
 
             if (restorepoint == 0)
@@ -491,7 +490,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             // get tables to replicate and current status
             xmlRequest = xml.StartSyncRequestXML(batchSize);
             xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" }, false);
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "0099" }, false);
             if (string.IsNullOrEmpty(ret) == false)
             {
                 // App is not registered, so lets register it
@@ -514,7 +513,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             xmlRequest = xml.RestoreSyncRequestXML(restorePoint);
             xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923" }, false);
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923", "0099" }, false);
             if (string.IsNullOrEmpty(ret) == false)
                 return new List<XMLTableData>();
 

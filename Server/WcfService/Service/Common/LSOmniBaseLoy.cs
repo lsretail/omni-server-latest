@@ -159,6 +159,8 @@ namespace LSOmni.Service
                 MemberContact contact = contactBLL.ContactGetByCardId(cardId, true);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
+                if (config.IsJson && logger.IsDebugEnabled)
+                    Serialization.TestJsonSerialize(typeof(MemberContact), contact);
                 return contact;
             }
             catch (Exception ex)
@@ -336,6 +338,8 @@ namespace LSOmni.Service
                 MemberContact contact = contactBLL.Login(userName, password, true, deviceId);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
+                if (config.IsJson && logger.IsDebugEnabled)
+                    Serialization.TestJsonSerialize(typeof(MemberContact), contact);
                 return contact;
             }
             catch (Exception ex)
@@ -1640,7 +1644,10 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, LogJson(request));
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                return bll.OrderCreate(request);
+                SalesEntry data = bll.OrderCreate(request);
+                if (config.IsJson && logger.IsDebugEnabled)
+                    Serialization.TestJsonSerialize(typeof(SalesEntry), data);
+                return data;
             }
             catch (Exception ex)
             {
@@ -1655,11 +1662,60 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, LogJson(request));
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                return hostBLL.OrderHospCreate(request);
+                SalesEntry data = hostBLL.OrderHospCreate(request);
+                if (config.IsJson && logger.IsDebugEnabled)
+                    Serialization.TestJsonSerialize(typeof(SalesEntry), data);
+                return data;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "id:{0}", request.Id);
+                return null; //never gets here
+            }
+        }
+
+        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
+                OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
+                return hostBLL.HospOrderEstimatedTime(storeId, orderId);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} orderId:{1}", storeId, orderId);
+                return 0; //never gets here
+            }
+        }
+
+        public virtual bool HospOrderCancel(string storeId, string orderId)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
+                OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
+                hostBLL.HospOrderCancel(storeId, orderId);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} orderId:{1}", storeId, orderId);
+                return false;
+            }
+        }
+
+        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
+                OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
+                return hostBLL.HospOrderKotStatus(storeId, orderId);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} orderId:{1}", storeId, orderId);
                 return null; //never gets here
             }
         }

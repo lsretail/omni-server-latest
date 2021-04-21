@@ -2,19 +2,17 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
-
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ReplHierarchyResponse : IDisposable
+    public class ReplCollectionResponse : IDisposable
     {
-        public ReplHierarchyResponse()
+        public ReplCollectionResponse()
         {
             LastKey = string.Empty;
             MaxKey = string.Empty;
             RecordsRemaining = 0;
-            Hierarchies = new List<ReplHierarchy>();
+            Collection = new List<ReplCollection>();
         }
 
         public void Dispose()
@@ -27,8 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         {
             if (disposing)
             {
-                if (Hierarchies != null)
-                    Hierarchies.Clear();
+                if (Collection != null)
+                    Collection.Clear();
             }
         }
 
@@ -39,18 +37,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int RecordsRemaining { get; set; }
         [DataMember]
-        public List<ReplHierarchy> Hierarchies { get; set; }
+        public List<ReplCollection> Collection { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ReplHierarchy : IDisposable
+    public class ReplCollection : IDisposable
     {
-        public ReplHierarchy()
+        public ReplCollection()
         {
-            Description = string.Empty;
-            Id = string.Empty;
-            SalesType = string.Empty;
-            ValidationScheduleId = string.Empty;
+            IsDeleted = false;
+            UnitOfMeasureId = string.Empty;
+            ItemId = string.Empty;
+            VariantId = string.Empty;
         }
 
         public void Dispose()
@@ -69,18 +67,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public bool IsDeleted { get; set; }
         [DataMember]
-        public string Id { get; set; }
+        public string UnitOfMeasureId { get; set; }
         [DataMember]
-        public string Description { get; set; }
+        public string ItemId { get; set; }
         [DataMember]
-        public DateTime StartDate { get; set; }
+        public string VariantId { get; set; }
         [DataMember]
-        public HierarchyType Type { get; set; }
-        [DataMember]
-        public int Priority { get; set; }
-        [DataMember]
-        public string SalesType { get; set; }
-        [DataMember]
-        public string ValidationScheduleId { get; set; }
+        public decimal Quantity { get; set; }
     }
 }

@@ -15,9 +15,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
     {
         private Version NavVersion;
 
-        public OrderMapping(Version navVersion)
+        public OrderMapping(Version navVersion, bool json)
         {
             NavVersion = navVersion;
+            IsJson = json;
         }
 
         public Order MapFromRootTransactionToOrder(NavWS.RootMobileTransaction root)
@@ -137,6 +138,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         LineNumber = LineNumberFromNav(mobileTransDisc.LineNo)
                     };
 
+                    if (discount.DiscountType == DiscountType.Coupon)
+                    {
+                        NavWS.MobileTransactionLine tline = root.MobileTransactionLine.ToList().Find(l => l.LineType == 6);
+                        if (tline != null)
+                            discount.OfferNumber = tline.CouponCode;
+                    }
+
                     // check line number if extra discount
                     foreach (OrderLine ol in order.OrderLines)
                     {
@@ -188,7 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ExternalId = header.ExternalID,
                 ClickAndCollectOrder = header.ClickandCollectOrder,
                 AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
-                DocumentRegTime = ConvertTo.SafeJsonDate(header.DocumentDateTime),
+                DocumentRegTime = ConvertTo.SafeJsonDate(header.DocumentDateTime, IsJson),
 
                 CardId = header.MemberCardNo,
                 CustomerId = header.CustomerNo,
@@ -314,7 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ExternalId = header.ExternalID,
                 ClickAndCollectOrder = header.ClickandCollectOrder,
                 AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
-                DocumentRegTime = ConvertTo.SafeJsonDate(header.Created),
+                DocumentRegTime = ConvertTo.SafeJsonDate(header.Created, IsJson),
                 TotalAmount = header.TotalAmount,
                 TotalDiscount = header.TotalDiscount,
                 LineItemCount = (int)header.TotalQuantity,
@@ -445,7 +453,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         CardId = header.MemberCardNo,
                         StoreName = header.CreatedatStore,
                         AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
-                        DocumentRegTime = ConvertTo.SafeJsonDate(header.Created),
+                        DocumentRegTime = ConvertTo.SafeJsonDate(header.Created, IsJson),
                         ShipToName = header.FullName,
                         TotalAmount = header.TotalAmount,
                         LineItemCount = (int)header.TotalQuantity
@@ -469,7 +477,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         CardId = header.MemberCardNo,
                         StoreName = header.CreatedatStore,
                         AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
-                        DocumentRegTime = ConvertTo.SafeJsonDate(header.Created),
+                        DocumentRegTime = ConvertTo.SafeJsonDate(header.Created, IsJson),
                         ShipToName = header.FullName,
                         TotalAmount = header.TotalAmount,
                         LineItemCount = (int)header.TotalQuantity
@@ -827,13 +835,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     LeadTimeCalculation = string.Empty,
                     PurchaseOrderNo = string.Empty,
                     SourcingLocation = string.Empty,
+                    SourcingLocation1 = string.Empty,
                     InventoryTransfer = false,
+                    InventoryTransfer1 = false,
                     VendorSourcing = false,
                     VendorSourcing1 = false,
                     ShipOrder = false,
                     StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
                     ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
-                    SourcingLocation1 = string.Empty,
                     TerminalNo = string.Empty
                 });
             }

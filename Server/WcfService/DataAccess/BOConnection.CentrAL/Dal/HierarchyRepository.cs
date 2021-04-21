@@ -20,6 +20,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public HierarchyRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date]";
+            if (navVersion > new Version("17.4"))
+                sqlcolumns += ",hd.[Priority],hd.[Sales Type Filter],hd.[Validation Schedule ID]";
 
             sqlfrom = " FROM [" + navCompanyName + "Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                       "INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
@@ -185,13 +187,21 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplHierarchy()
+            ReplHierarchy hierarchy = new ReplHierarchy()
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
-                StartDate = SQLHelper.GetDateTime(reader["Start Date"])
+                StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Start Date"]), config.IsJson),
             };
+
+            if (NavVersion > new Version("17.4"))
+            {
+                hierarchy.Priority = SQLHelper.GetInt32(reader["Priority"]);
+                hierarchy.SalesType = SQLHelper.GetString(reader["Sales Type Filter"]);
+                hierarchy.ValidationScheduleId = SQLHelper.GetString(reader["Validation Schedule ID"]);
+            }
+            return hierarchy;
         }
 
         private Hierarchy ReaderToHierarchy(SqlDataReader reader)
@@ -201,10 +211,17 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
-                StartDate = SQLHelper.GetDateTime(reader["Start Date"])
+                StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Start Date"]), config.IsJson)
             };
 
             val.Attributes = HierarchyAttributeGet(val.Id);
+
+            if (NavVersion > new Version("17.4"))
+            {
+                val.Priority = SQLHelper.GetInt32(reader["Priority"]);
+                val.SalesType = SQLHelper.GetString(reader["Sales Type Filter"]);
+                val.ValidationScheduleId = SQLHelper.GetString(reader["Validation Schedule ID"]);
+            }
             return val;
         }
 

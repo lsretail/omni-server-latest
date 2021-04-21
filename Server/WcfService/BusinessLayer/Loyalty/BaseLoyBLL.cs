@@ -35,7 +35,7 @@ namespace LSOmni.BLL.Loyalty
             get
             {
                 if (iLoyBOConnection == null)
-                    iLoyBOConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key);
+                    iLoyBOConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key, config.IsJson);
                 iLoyBOConnection.TimeoutInSeconds = this.timeoutInSeconds;
                 return iLoyBOConnection;
             }
@@ -46,7 +46,7 @@ namespace LSOmni.BLL.Loyalty
             get
             {
                 if (iAppBOConnection == null)
-                    iAppBOConnection = GetBORepository<IAppBO>(config.LSKey.Key);
+                    iAppBOConnection = GetBORepository<IAppBO>(config.LSKey.Key, config.IsJson);
                 return iAppBOConnection;
             }
         }

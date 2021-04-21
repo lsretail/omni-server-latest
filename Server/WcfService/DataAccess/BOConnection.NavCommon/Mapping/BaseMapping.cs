@@ -4,6 +4,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public abstract class BaseMapping
     {
+        protected bool IsJson = false;
+
         protected int LineNumberToNav(int lineNumber)
         {
             //multiply with 1000 for nav, if not already done!

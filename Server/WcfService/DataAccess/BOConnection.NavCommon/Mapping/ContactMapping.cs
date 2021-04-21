@@ -12,6 +12,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public class ContactMapping : BaseMapping
     {
+        public ContactMapping(bool json)
+        {
+            IsJson = json;
+        }
+
         public NavWS.RootMemberContactCreate MapToRoot(MemberContact contact)
         {
             Address addr = (contact.Addresses == null || contact.Addresses.Count == 0) ? new Address() : contact.Addresses[0];
@@ -141,7 +146,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                BirthDay = ConvertTo.NavDateToDateTime(contact.DateofBirth)
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
             };
 
             memberContact.Addresses = new List<Address>();
@@ -171,7 +176,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Id = card.CardNo,
                         BlockedBy = card.Blockedby,
                         BlockedReason = card.ReasonBlocked,
-                        DateBlocked = ConvertTo.NavDateToDateTime(card.DateBlocked),
+                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked, IsJson),
                         LinkedToAccount = card.LinkedtoAccount,
                         ClubId = card.ClubCode,
                         ContactId = card.ContactNo,
@@ -198,7 +203,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                BirthDay = ConvertTo.NavDateToDateTime(contact.DateofBirth)
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
             };
 
             memberContact.Addresses = new List<Address>();
@@ -234,7 +239,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Id = card.CardNo,
                         BlockedBy = card.Blockedby,
                         BlockedReason = card.ReasonBlocked,
-                        DateBlocked = ConvertTo.NavDateToDateTime(card.DateBlocked),
+                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked, IsJson),
                         LinkedToAccount = card.LinkedtoAccount,
                         ClubId = card.ClubCode,
                         ContactId = card.ContactNo,
@@ -275,7 +280,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Id = offer.No,
                     Description = offer.PrimaryText,
                     Details = offer.SecondaryText,
-                    ExpirationDate = ConvertTo.NavDateToDateTime(offer.EndingDate),
+                    ExpirationDate = ConvertTo.SafeJsonDate(offer.EndingDate, IsJson),
                     OfferId = offer.DiscountNo,
                     Code = (OfferDiscountType)Convert.ToInt32(offer.DiscountType),
                     Type = (OfferType)Convert.ToInt32(offer.OfferCategory),
@@ -301,8 +306,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ContactId = notification.ContactNo,
                     Description = notification.PrimaryText,
                     Details = notification.SecondaryText,
-                    ExpiryDate = ConvertTo.NavDateToDateTime(notification.ValidToDate),
-                    Created = ConvertTo.NavDateToDateTime(notification.ValidFromDate),
+                    ExpiryDate = ConvertTo.SafeJsonDate(notification.ValidToDate, IsJson),
+                    Created = ConvertTo.SafeJsonDate(notification.ValidFromDate, IsJson),
                     Status = NotificationStatus.New,
                     QRText = string.Empty,
                     NotificationTextType = NotificationTextType.Plain,
@@ -365,13 +370,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 if (line.OfferNo == offerId)
                 {
-                    list.Add(new OfferDetails()
+                    OfferDetails det = new OfferDetails()
                     {
                         Description = line.Description,
                         LineNumber = line.LineNo.ToString(),
-                        Image = new ImageView(root.PublishedOfferDetailLineImages.FirstOrDefault(x => x.KeyValue == offerId)?.ImageId),
                         OfferId = line.OfferNo
-                    });
+                    };
+                    if (root.PublishedOfferDetailLineImages != null)
+                        det.Image = new ImageView(root.PublishedOfferDetailLineImages.FirstOrDefault(x => x.KeyValue == offerId)?.ImageId);
+
+                    list.Add(det);
                 }
             }
             return list;

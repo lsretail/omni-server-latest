@@ -28,6 +28,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
 
             sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
+            if (NavVersion > new Version("17.4"))
+                sqlcolumnsLink += ",mt.[Item Unit of Measure],mt.[Sort Order]";
+
             sqlfromLink = " FROM [" + navCompanyName + "Hierarchy Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
                           " LEFT OUTER JOIN [" + navCompanyName + "Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=mt.[No_]" +
@@ -311,7 +314,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplHierarchyLeaf()
+            ReplHierarchyLeaf rec = new ReplHierarchyLeaf()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 NodeId = SQLHelper.GetString(reader["Node ID"]),
@@ -325,6 +328,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
                 IsActive = SQLHelper.GetBool(reader["Status"])
             };
+
+            if (NavVersion > new Version("17.4"))
+            {
+                rec.ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]);
+                rec.SortOrder = SQLHelper.GetInt32(reader["Sort Order"]);
+            }
+            return rec;
         }
 
         private HierarchyNode ReaderToHierarchyNode(SqlDataReader reader, string storeId)
@@ -347,7 +357,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private HierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader)
         {
-            return new HierarchyLeaf()
+            HierarchyLeaf rec = new HierarchyLeaf()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 ParentNode = SQLHelper.GetString(reader["Node ID"]),
@@ -356,6 +366,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
             };
+
+            if (NavVersion > new Version("17.4"))
+            {
+                rec.ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]);
+                rec.SortOrder = SQLHelper.GetInt32(reader["Sort Order"]);
+            }
+            return rec;
         }
     }
 }

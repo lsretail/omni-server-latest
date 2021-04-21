@@ -125,7 +125,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT TOP(1) " + sqlcolumns + sqlfrom + " WHERE [Currency Code]=@id";
+                    command.CommandText = "SELECT TOP(1) " + sqlcolumns + sqlfrom + " WHERE mt.[Currency Code]=@id";
                     command.Parameters.AddWithValue("@id", code);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -156,7 +156,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 string code = SQLHelper.GetString(reader["Relational Currency Code"]);
                 if (string.IsNullOrWhiteSpace(code))
                 {
-                    exchrate = ((1 / SQLHelper.GetDecimal(reader, "Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "Relational Exch_ Rate Amount"));
+                    if (SQLHelper.GetDecimal(reader, "Exchange Rate Amount") != 0)
+                    {
+                        exchrate = ((1 / SQLHelper.GetDecimal(reader, "Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "Relational Exch_ Rate Amount"));
+                    }
                 }
                 else
                 {

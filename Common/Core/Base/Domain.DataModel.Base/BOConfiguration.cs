@@ -17,6 +17,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         [DataMember]
         public List<TenantSetting> Settings { get; set; }
 
+        public bool IsJson { get; set; }
+
         public BOConfiguration() : this(string.Empty)
         {
         }

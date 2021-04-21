@@ -7,7 +7,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
     public class OrderHospLine : Entity, IDisposable
     {
         public OrderHospLine(string id) : base(id)
@@ -31,7 +31,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
             TaxAmount = 0.0M;
             Amount = 0.0M;
 
-            DiscountLines = new List<OrderDiscountLine>();
             SubLines = new List<OrderHospSubLine>();
         }
 
@@ -98,8 +97,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         [DataMember]
         public decimal Amount { get; set; }
 
-        [DataMember]
-        public List<OrderDiscountLine> DiscountLines { get; set; }
         [DataMember]
         public List<OrderHospSubLine> SubLines { get; set; }
 

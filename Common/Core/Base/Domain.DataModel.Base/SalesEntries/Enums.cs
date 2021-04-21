@@ -35,6 +35,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         External = 1,
         [EnumMember]
         Receipt = 2,
+        [EnumMember]
+        HospOrder = 3,
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

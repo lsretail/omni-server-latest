@@ -131,13 +131,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 body.Add(MobileTransLine(Rq.Id, posLine, staff));
                 MobileTransSubLine(body, Rq.Id, posLine, staff, ref LineCounter);
+            }
 
-                if (posLine.DiscountLines != null)
+            if (Rq.OrderDiscountLines != null)
+            {
+                foreach (OrderDiscountLine dline in Rq.OrderDiscountLines)
                 {
-                    foreach (OrderDiscountLine dline in posLine.DiscountLines)
-                    {
-                        body.Add(MobileTransDiscoutLine(Rq.Id, dline));
-                    }
+                    body.Add(MobileTransDiscoutLine(Rq.Id, dline));
                 }
             }
 
@@ -439,7 +439,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 if (LineType.Item == lineType || LineType.Coupon == lineType)
                 {
                     int idx = FindLineIndex(rs.OrderLines, rsld.LineNumber);
-                    rs.OrderLines[idx].DiscountLines.Add(rsld);
+                    rs.OrderDiscountLines.Add(rsld);
                 }
             }
             return rs;

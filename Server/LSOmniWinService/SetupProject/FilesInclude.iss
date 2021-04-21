@@ -17,8 +17,8 @@ Source: "..\LSOmniWinService\bin\Release\zxing.dll"; DestDir: "{app}"; Flags: ig
 Source: "..\LSOmniWinService\bin\Release\FirebaseNet.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "..\LSOmniWinService\bin\Release\netstandard.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-Source: "..\LSOmniWinService\bin\Release\LSOmni.WinService.exe.config"; DestDir: "{app}"; Flags: ignoreversion
-Source: "..\LSOmniWinService\bin\Release\LSOmni.WinService.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LSOmniWinService\bin\Release\LSCommerce.WinService.exe.config"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\LSOmniWinService\bin\Release\LSCommerce.WinService.exe"; DestDir: "{app}"; Flags: ignoreversion
 
 [Dirs]
 Name: "{app}\logs"; Permissions: everyone-modify

@@ -2,15 +2,25 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
     public class OrderHosp : Entity, IDisposable
     { 
         public OrderHosp(string id) : base(id)
         {
+            StoreId = string.Empty;
+            CardId = string.Empty;
+            Name = string.Empty;
+            BillToName = string.Empty;
+            Email = string.Empty;
+            Directions = string.Empty;
+            ReceiptNo = string.Empty;
+            RestaurantNo = string.Empty;
+
             OrderLines = new List<OrderHospLine>();
             OrderPayments = new List<OrderPayment>();
         }
@@ -45,16 +55,39 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         public DateTime DocumentRegTime { get; set; }
         [DataMember(IsRequired = true)]
         public string StoreId { get; set; }
+        
         /// <summary>
         /// Member Contact Card Id
         /// </summary>
         [DataMember]
         public string CardId { get; set; }
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string BillToName { get; set; }
+        [DataMember]
+        public string Email { get; set; }
+        [DataMember]
+        public Address Address { get; set; }
+        [DataMember]
+        public string Directions { get; set; }
+
+        [DataMember]
+        public string RestaurantNo { get; set; }
+        [DataMember]
+        public DateTime OrderDate { get; set; }
+        [DataMember]
+        public DateTime PickupTime { get; set; }
+        [DataMember]
+        public HospDeliveryType DeliveryType { get; set; }
+
         /// <summary>
         /// Transaction Receipt Number
         /// </summary>
         [DataMember]
         public string ReceiptNo { get; set; }
+        [DataMember]
+        public HospPaymentType PaymentType { get; set; }
 
         [DataMember]
         public decimal TotalNetAmount { get; set; }
@@ -69,6 +102,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         public List<OrderHospLine> OrderLines { get; set; }
         [DataMember]
         public List<OrderPayment> OrderPayments { get; set; }
+        [DataMember]
+        public List<OrderDiscountLine> OrderDiscountLines { get; set; }
 
         public override string ToString()
         {
@@ -85,6 +120,36 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
             return string.Format("Id:{0} StoreId:{1} CardId:{2} OrderLineCreateRequests:{3} OrderDiscountLineCreateRequests:{4}",
                 Id, StoreId, CardId, req, osldreq);
         }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
+    public enum HospDeliveryType
+    {
+        [EnumMember]
+        NoChoice = 0,
+        [EnumMember]
+        Home = 1,
+        [EnumMember]
+        Work = 2,
+        [EnumMember]
+        Other = 3,
+        [EnumMember]
+        Takeout = 4
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
+    public enum HospPaymentType
+    {
+        [EnumMember]
+        None = 0,
+        [EnumMember]
+        Cash = 1,
+        [EnumMember]
+        Card = 2,
+        [EnumMember]
+        Invoice = 3,
+        [EnumMember]
+        Prepaid = 4
     }
 }
 

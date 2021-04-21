@@ -9,7 +9,7 @@ namespace LSOmni.WinService
     {
         private ServiceProcessInstaller process;
         private ServiceInstaller service;
-        public static string InstallServiceName = "LSOmniWinService";
+        public static string InstallServiceName = "LSCommerceWinService";
 
         public CustomServiceInstaller()
         {
@@ -29,8 +29,8 @@ namespace LSOmni.WinService
                 // 
                 // ServiceInstaller
                 // 
-                this.service.Description = "Runs scheduled jobs for LS Omni";
-                this.service.DisplayName = "LS Omni Win Service";
+                this.service.Description = "Runs scheduled jobs for LS Commerce";
+                this.service.DisplayName = "LS Commerce Windows Service";
                 this.service.ServiceName = InstallServiceName;
                 this.service.StartType = ServiceStartMode.Automatic;
 

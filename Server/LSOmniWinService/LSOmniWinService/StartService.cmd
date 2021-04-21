@@ -1,1 +1,1 @@
-net.exe start LSOmniWinService
+net.exe start LSCommerceWinService

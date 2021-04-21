@@ -42,6 +42,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Season Code": rec.SeasonCode = field.Values[i]; break;
                         case "Item Category Code": rec.ItemCategoryCode = field.Values[i]; break;
                         case "Item Family Code": rec.ItemFamilyCode = field.Values[i]; break;
+                        case "Retail Product Code": rec.ProductGroupId = field.Values[i]; break;
+                        case "Product Group Code": rec.ProductGroupId = field.Values[i]; break;
 
                         case "Gross Weight": rec.GrossWeight = GetWebDecimal(field.Values[i]); break;
                         case "Units per Parcel": rec.UnitsPerParcel = GetWebDecimal(field.Values[i]); break;
@@ -367,7 +369,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                 }
 
                 // TODO: get detailed info for discount - update NAV CU?
-                lastKey = string.Format($"{rec.StoreId};{rec.PriorityNo};{rec.ItemId};{rec.VariantId};{rec.CustomerDiscountGroup};{rec.LoyaltySchemeCode};{rec.FromDate};{rec.ToDate};{rec.MinimumQuantity}");
+                lastKey = string.Format("{0};{1};{2};{3};{4};{5};{6};{7};{8}",
+                    rec.StoreId, rec.PriorityNo, rec.ItemId, rec.VariantId, rec.CustomerDiscountGroup, rec.LoyaltySchemeCode,
+                    ToNAVDate(rec.FromDate), ToNAVDate(rec.ToDate), rec.MinimumQuantity);
                 list.Add(rec);
             }
             return list;
@@ -615,6 +619,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     }
                 }
                 rec.ShortDescription = rec.Description;
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        public List<ReplCollection> ReplicateCollection(XMLTableData table)
+        {
+            List<ReplCollection> list = new List<ReplCollection>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ReplCollection rec = new ReplCollection();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Unit Of Measure": rec.UnitOfMeasureId = field.Values[i]; break;
+                        case "Item": rec.ItemId = field.Values[i]; break;
+                        case "Variant": rec.VariantId = field.Values[i]; break;
+                        case "Qty.": rec.Quantity = GetWebDecimal(field.Values[i]); break;
+                    }
+                }
                 list.Add(rec);
             }
             return list;

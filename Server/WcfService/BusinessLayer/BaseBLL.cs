@@ -83,7 +83,7 @@ namespace LSOmni.BLL
                 return "LSOmni.DataAccess.Dal.dll"; //just in case the key is missing in app.settings file
         }
 
-        protected T GetBORepository<T>(string key)
+        protected T GetBORepository<T>(string key, bool json)
         {
             try
             {
@@ -106,6 +106,7 @@ namespace LSOmni.BLL
                         throw new LSOmniServiceException(StatusCode.SecurityTokenInvalid, msg);
                     }
                     config = bll.ConfigGet(key);
+                    config.IsJson = json;
                 }
                 //OK to use type to create instance when only one of that type is in the assembly
                 Type myType = boAssembly.GetTypes().Where(typeof(T).IsAssignableFrom).FirstOrDefault();

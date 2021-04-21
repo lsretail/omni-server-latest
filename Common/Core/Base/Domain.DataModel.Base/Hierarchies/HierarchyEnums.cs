@@ -60,4 +60,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [EnumMember]
         SpecialGroup
     }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2021")]
+    public enum VSTimeScheduleType
+    {
+        [EnumMember]
+        NotSpecified,
+        [EnumMember]
+        DiningHours,
+        [EnumMember]
+        ValidationSchedule
+    }
 }

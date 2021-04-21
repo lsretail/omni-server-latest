@@ -1,5 +1,4 @@
-﻿using LSRetail.Omni.Domain.DataModel.Base.Base;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
 {
@@ -16,5 +15,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         
         [DataMember]
         public HierarchyLeafType Type { get; set; }
+        [DataMember]
+        public string ItemUOM { get; set; }
+        [DataMember]
+        public int SortOrder { get; set; }
     }
 }

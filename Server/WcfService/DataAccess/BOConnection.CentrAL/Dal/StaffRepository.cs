@@ -130,7 +130,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Password = SQLHelper.GetString(reader["Password"]),
                 FirstName = SQLHelper.GetString(reader["First Name"]),
                 LastName = SQLHelper.GetString(reader["Last Name"]),
-                BlockingDate = SQLHelper.GetDateTime(reader["Date to Be Blocked"]),
+                BlockingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date to Be Blocked"]), config.IsJson),
                 ChangePassword = SQLHelper.GetInt32(reader["Change Password"]),
                 Blocked = SQLHelper.GetInt32(reader["Blocked"]),
                 InventoryActive = SQLHelper.GetBool(reader["Inventory Active"]),

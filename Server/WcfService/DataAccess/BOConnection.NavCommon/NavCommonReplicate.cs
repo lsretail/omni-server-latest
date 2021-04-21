@@ -64,7 +64,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
                 rep.ReplicateItemsHtml(table, list);
 
-                index += table.NumberOfValues;
+                index += 10;
                 if (index >= list.Count - 1)
                     break;
             }
@@ -354,6 +354,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return rep.ReplicateUnitOfMeasure(table);
         }
 
+        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            XMLTableData table = DoReplication(10001430, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
+
+            ReplicateRepository rep = new ReplicateRepository();
+            return rep.ReplicateCollection(table);
+        }
+
         public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             // filter
@@ -563,6 +571,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             ReplicateRepository rep = new ReplicateRepository();
             return rep.ReplicateStoreTenderType(table);
+        }
+
+        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            // TODO
+            return new List<ReplValidationSchedule>();
         }
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)

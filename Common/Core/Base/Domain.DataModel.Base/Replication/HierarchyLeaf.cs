@@ -53,6 +53,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             ImageId = string.Empty;
             Description = string.Empty;
             MemberValue = string.Empty;
+            ItemUOM = string.Empty;
         }
 
         public void Dispose()
@@ -81,7 +82,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string Description { get; set; }
         [DataMember]
+        public string ItemUOM { get; set; }
+        [DataMember]
         public HierarchyLeafType Type { get; set; }
+        [DataMember]
+        public int SortOrder { get; set; }
 
         /// <summary>
         /// Default Member Value is Member Scheme, if true, Member Value is Member Club

@@ -84,8 +84,23 @@ namespace LSOmni.BLL.Loyalty
             if (request == null)
                 throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
 
-            string extId = BOLoyConnection.HospOrderCreate(request, tenderMapping, out string orderId);
-            return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.Receipt, tenderMapping);
+            string extId = BOLoyConnection.HospOrderCreate(request, tenderMapping);
+            return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.HospOrder, tenderMapping);
+        }
+
+        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
+        {
+            return BOLoyConnection.HospOrderEstimatedTime(storeId, orderId);
+        }
+
+        public virtual void HospOrderCancel(string storeId, string orderId)
+        {
+            BOLoyConnection.HospOrderCancel(storeId, orderId);
+        }
+
+        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        {
+            return BOLoyConnection.HospOrderKotStatus(storeId, orderId);
         }
     }
 }

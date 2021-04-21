@@ -1,1 +1,1 @@
-net.exe stop LSOmniWinService
+net.exe stop LSCommerceWinService

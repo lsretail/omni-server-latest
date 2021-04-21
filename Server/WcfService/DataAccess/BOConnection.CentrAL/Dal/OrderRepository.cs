@@ -204,7 +204,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 Id = SQLHelper.GetString(reader["Document ID"]),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 IdType = DocumentIdType.Order,
                 Status = SalesEntryStatus.Created,
                 Posted = SQLHelper.GetBool(reader["Posted"]),

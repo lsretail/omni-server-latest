@@ -8,6 +8,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 {
     public class ActivityMapping : BaseMapping
     {
+        public ActivityMapping(bool json)
+        {
+            IsJson = json;
+        }
+
         public List<ActivityProduct> MapRootToActivityProducts(LSActivity15.ActivityUploadProducts root)
         {
             List<ActivityProduct> list = new List<ActivityProduct>();
@@ -91,10 +96,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ActivityNo = rec.ActivityNo,
                     ItemNo = rec.ProductNo,
                     Description = rec.Description,
-                    DateFrom = ConvertTo.SafeJsonDate(rec.DateFrom),
-                    DateTo = ConvertTo.SafeJsonDate(rec.DateTo),
-                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom),
-                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo),
+                    DateFrom = ConvertTo.SafeJsonDate(rec.DateFrom, IsJson),
+                    DateTo = ConvertTo.SafeJsonDate(rec.DateTo, IsJson),
+                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom, IsJson),
+                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo, IsJson),
                     Quantity = rec.Quantity,
                     UnitPrice = rec.UnitPrice,
                     LineDiscountAmount = rec.LineDiscountAmount,
@@ -131,10 +136,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Description = rec.Description,
                     ContactNo = rec.ClientNo,
                     ContactName = rec.ClientName,
-                    DateFrom = ConvertTo.SafeJsonDate(rec.FromDate),
-                    DateTo = ConvertTo.SafeJsonDate(rec.ToDate),
-                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom),
-                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo),
+                    DateFrom = ConvertTo.SafeJsonDate(rec.FromDate, IsJson),
+                    DateTo = ConvertTo.SafeJsonDate(rec.ToDate, IsJson),
+                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom, IsJson),
+                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo, IsJson),
                     Status = rec.Status,
                     PaymentStatus = rec.PaymentStatus,
                     InternalStatus = rec.InternalStatus,
@@ -170,10 +175,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 list.Add(new Promotion()
                 {
                     ItemNo = rec.ProductNo,
-                    DateFrom = ConvertTo.SafeJsonDate(rec.DateFrom),
-                    DateTo = ConvertTo.SafeJsonDate(rec.DateTo),
-                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom),
-                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo),
+                    DateFrom = ConvertTo.SafeJsonDate(rec.DateFrom, IsJson),
+                    DateTo = ConvertTo.SafeJsonDate(rec.DateTo, IsJson),
+                    TimeFrom = ConvertTo.SafeJsonDate(rec.TimeFrom, IsJson),
+                    TimeTo = ConvertTo.SafeJsonDate(rec.TimeTo, IsJson),
                     ClubMembersOnly = rec.ClubMembersOnly,
                     IsPriceOrDiscount = rec.ClubMembersOnly,
                     PriceOrDiscountValue = rec.PriceOrDiscountValue,
@@ -202,11 +207,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     ValidLocation = rec.ValidLocation,
                     Description = rec.Description,
                     QtyIssued = rec.QtyIssued,
-                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued),
+                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued, IsJson),
                     UnitPrice = rec.UnitPrice,
                     ClientNo = rec.ClientNo,
                     ClientName = rec.ClientName,
-                    ExpiryDate = ConvertTo.SafeJsonDate(rec.ExpiryDate),
+                    ExpiryDate = ConvertTo.SafeJsonDate(rec.ExpiryDate, IsJson),
                     QuantityConsumed = rec.QuantityConsumed,
                     IssuedTotalAmount = rec.IssuedTotalAmount
                 });
@@ -226,7 +231,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     Id = rec.EntryNo.ToString(),
                     CustomerNo = rec.CustomerNo,
-                    PostingDate = ConvertTo.SafeJsonDate(rec.PostingDate),
+                    PostingDate = ConvertTo.SafeJsonDate(rec.PostingDate, IsJson),
                     DocumentType = rec.DocumentType,
                     DocumentNo = rec.DocumentNo,
                     Description = rec.Description,
@@ -262,8 +267,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Price = rec.Price,
                     MinAge = rec.MinAge,
                     MaxAge = rec.MaxAge,
-                    FixedEndDate = ConvertTo.SafeJsonDate(rec.FixedEndDate),
-                    FixedIssueDate = ConvertTo.SafeJsonDate(rec.FixedIssueDate),
+                    FixedEndDate = ConvertTo.SafeJsonDate(rec.FixedEndDate, IsJson),
+                    FixedIssueDate = ConvertTo.SafeJsonDate(rec.FixedIssueDate, IsJson),
                     RequiresMemberShip = rec.RequiresMemberShip,
                     SellingOption = rec.SellingOption,
                     EntryType = rec.EntryType,
@@ -298,8 +303,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Price = rec.Price,
                     MinAge = rec.MinAge,
                     MaxAge = rec.MaxAge,
-                    FixedEndDate = ConvertTo.SafeJsonDate(rec.FixedEndDate),
-                    FixedIssueDate = ConvertTo.SafeJsonDate(rec.FixedIssueDate),
+                    FixedEndDate = ConvertTo.SafeJsonDate(rec.FixedEndDate, IsJson),
+                    FixedIssueDate = ConvertTo.SafeJsonDate(rec.FixedIssueDate, IsJson),
                     RequiresMemberShip = rec.RequiresMemberShip,
                     SellingOption = rec.SellingOption,
                     EntryType = rec.EntryType,
@@ -333,7 +338,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Comment = rec.Comment,
                     InvoiceNo = rec.InvoiceNo,
                     MembershipNo = rec.MembershipNo,
-                    PostingDate = ConvertTo.SafeJsonDate(rec.PostingDate),
+                    PostingDate = ConvertTo.SafeJsonDate(rec.PostingDate, IsJson),
                     AdditionalCharges = rec.AdditionalCharges,
                     MembershipType = rec.MembershipType,
                     PeriodFrom = rec.PeriodFrom,
@@ -383,9 +388,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     MemberName = rec.MemberName,
                     MembershipType = rec.MembershipType,
                     MembershipDescription = rec.MembershipDescription,
-                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued),
-                    DateCreated = ConvertTo.SafeJsonDate(rec.DateCreated),
-                    DateExpires = ConvertTo.SafeJsonDate(rec.DateExpires),
+                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued, IsJson),
+                    DateCreated = ConvertTo.SafeJsonDate(rec.DateCreated, IsJson),
+                    DateExpires = ConvertTo.SafeJsonDate(rec.DateExpires, IsJson),
                     LastProcessBatch = rec.LastProcessBatch,
                     Status = rec.Status,
                     UnitPrice = rec.UnitPrice,
@@ -401,13 +406,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     StatusCode = rec.StatusCode,
                     PaymentMethodCode = rec.PaymentMethodCode,
 
-                    CommitmentDate = ConvertTo.SafeJsonDate(rec.CommitmentDate),
-                    DateLastProcessed = ConvertTo.SafeJsonDate(rec.DateLastProcessed),
-                    StatusDate = ConvertTo.SafeJsonDate(rec.StatusDate),
-                    OnHoldUntil = ConvertTo.SafeJsonDate(rec.OnHoldUntil),
-                    AccessFrom = ConvertTo.SafeJsonDate(rec.AccessFrom),
-                    AccessUntil = ConvertTo.SafeJsonDate(rec.AccessUntil),
-                    PriceCommitmentExpires = ConvertTo.SafeJsonDate(rec.PriceCommitmentExpires)
+                    CommitmentDate = ConvertTo.SafeJsonDate(rec.CommitmentDate, IsJson),
+                    DateLastProcessed = ConvertTo.SafeJsonDate(rec.DateLastProcessed, IsJson),
+                    StatusDate = ConvertTo.SafeJsonDate(rec.StatusDate, IsJson),
+                    OnHoldUntil = ConvertTo.SafeJsonDate(rec.OnHoldUntil, IsJson),
+                    AccessFrom = ConvertTo.SafeJsonDate(rec.AccessFrom, IsJson),
+                    AccessUntil = ConvertTo.SafeJsonDate(rec.AccessUntil, IsJson),
+                    PriceCommitmentExpires = ConvertTo.SafeJsonDate(rec.PriceCommitmentExpires, IsJson)
                 });
             }
             return list;
@@ -428,9 +433,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     MemberName = rec.MemberName,
                     MembershipType = rec.MembershipType,
                     MembershipDescription = rec.MembershipDescription,
-                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued),
-                    DateCreated = ConvertTo.SafeJsonDate(rec.DateCreated),
-                    DateExpires = ConvertTo.SafeJsonDate(rec.DateExpires),
+                    DateIssued = ConvertTo.SafeJsonDate(rec.DateIssued, IsJson),
+                    DateCreated = ConvertTo.SafeJsonDate(rec.DateCreated, IsJson),
+                    DateExpires = ConvertTo.SafeJsonDate(rec.DateExpires, IsJson),
                     LastProcessBatch = rec.LastProcessBatch,
                     Status = rec.Status,
                     UnitPrice = rec.UnitPrice,
@@ -446,13 +451,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     StatusCode = rec.StatusCode,
                     PaymentMethodCode = rec.PaymentMethodCode,
 
-                    CommitmentDate = ConvertTo.SafeJsonDate(rec.CommitmentDate),
-                    DateLastProcessed = ConvertTo.SafeJsonDate(rec.DateLastProcessed),
-                    StatusDate = ConvertTo.SafeJsonDate(rec.StatusDate),
-                    OnHoldUntil = ConvertTo.SafeJsonDate(rec.OnHoldUntil),
-                    AccessFrom = ConvertTo.SafeJsonDate(rec.AccessFrom),
-                    AccessUntil = ConvertTo.SafeJsonDate(rec.AccessUntil),
-                    PriceCommitmentExpires = ConvertTo.SafeJsonDate(rec.PriceCommitmentExpires)
+                    CommitmentDate = ConvertTo.SafeJsonDate(rec.CommitmentDate, IsJson),
+                    DateLastProcessed = ConvertTo.SafeJsonDate(rec.DateLastProcessed, IsJson),
+                    StatusDate = ConvertTo.SafeJsonDate(rec.StatusDate, IsJson),
+                    OnHoldUntil = ConvertTo.SafeJsonDate(rec.OnHoldUntil, IsJson),
+                    AccessFrom = ConvertTo.SafeJsonDate(rec.AccessFrom, IsJson),
+                    AccessUntil = ConvertTo.SafeJsonDate(rec.AccessUntil, IsJson),
+                    PriceCommitmentExpires = ConvertTo.SafeJsonDate(rec.PriceCommitmentExpires, IsJson)
                 });
             }
             return list;
@@ -469,7 +474,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 list.Add(new AvailabilityResponse()
                 {
                     ItemNo = rec.ProductNo,
-                    AvailDate = ConvertTo.SafeJsonDate(rec.AvailDate),
+                    AvailDate = ConvertTo.SafeJsonDate(rec.AvailDate, IsJson),
                     AvailTime = ConvertTo.NavJoinDateAndTime(rec.AvailDate, rec.AvailTime),
                     WeekDay = rec.WeekDay,
                     Availability = rec.Availability,

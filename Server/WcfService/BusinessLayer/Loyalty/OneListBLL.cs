@@ -50,13 +50,13 @@ namespace LSOmni.BLL.Loyalty
 
             if (calculate)
             {
-                if (list.IsHospitality)
+                if (list.HospitalityMode == HospMode.None)
                 {
-                    list = CalcuateHospList(list);
+                    list = CalcuateList(list);
                 }
                 else
                 {
-                    list = CalcuateList(list);
+                    list = CalcuateHospList(list);
                 }
             }
 
@@ -385,24 +385,6 @@ namespace LSOmni.BLL.Loyalty
                         item.BarcodeId = olditem.BarcodeId;
                         break;
                     }
-                }
-
-                item.OnelistItemDiscounts = new List<OneListItemDiscount>();
-                foreach (OrderDiscountLine disc in line.DiscountLines)
-                {
-                    item.OnelistItemDiscounts.Add(new OneListItemDiscount()
-                    {
-                        Description = disc.Description,
-                        DiscountAmount = disc.DiscountAmount,
-                        DiscountPercent = disc.DiscountPercent,
-                        DiscountType = disc.DiscountType,
-                        LineNumber = disc.LineNumber,
-                        No = disc.No,
-                        OfferNumber = disc.OfferNumber,
-                        PeriodicDiscGroup = disc.PeriodicDiscGroup,
-                        PeriodicDiscType = disc.PeriodicDiscType,
-                        Quantity = line.Quantity
-                    });
                 }
 
                 item.OnelistSubLines = new List<OneListItemSubLine>();

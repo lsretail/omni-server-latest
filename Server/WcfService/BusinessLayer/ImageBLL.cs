@@ -25,7 +25,7 @@ namespace LSOmni.BLL
             get
             {
                 if (iLoyBOConnection == null)
-                    iLoyBOConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key);
+                    iLoyBOConnection = GetBORepository<ILoyaltyBO>(config.LSKey.Key, config.IsJson);
                 return iLoyBOConnection;
             }
         }

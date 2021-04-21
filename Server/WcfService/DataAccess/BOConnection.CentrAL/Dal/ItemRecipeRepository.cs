@@ -31,7 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 lastKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("BOM Component$5ecfc871-5d82-43f1-9c54-59685e82318d");
+            List<JscKey> keys = GetPrimaryKeys("BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972");
 
             // get records remaining
             string sql = string.Empty;

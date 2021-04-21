@@ -36,6 +36,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "ALLOW AUTO LOGOFF":
                     flagName = FeatureFlagName.AllowAutoLogoff;
                     break;
+                case "ALLOW LS CENTRAL LOGIN":
+                    flagName = FeatureFlagName.AllowCentralLogin;
+                    break;
                 case "ALLOW OFFLINE":
                     flagName = FeatureFlagName.AllowOffline;
                     break;
@@ -141,6 +144,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         PosShowInventory,
         PosInventoryLookup,
         SettingsPassword,
-        HideVoidedTransaction
+        HideVoidedTransaction,
+        AllowCentralLogin
     }
 }

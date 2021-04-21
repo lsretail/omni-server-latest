@@ -114,7 +114,10 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Hospitality Order
 
         OrderHosp HospOrderCalculate(OneList list);
-        string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId);
+        string HospOrderCreate(OrderHosp request, string tenderMapping);
+        int HospOrderEstimatedTime(string storeId, string orderId);
+        void HospOrderCancel(string storeId, string orderId);
+        OrderHospStatus HospOrderKotStatus(string storeId, string orderId);
 
         #endregion
 

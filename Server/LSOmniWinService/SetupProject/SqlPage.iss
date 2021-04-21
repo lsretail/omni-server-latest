@@ -66,19 +66,6 @@ begin
 end;
 
 
-// Execute files specified in [files] section (hardcoded) against the user defined server.database
-procedure SQLDeploySQL();
-//var  
-//  SQLScript: AnsiString;    
-//  ADOConnection: Variant;  
-begin
-   Log('SQLDeploySQL called');
-  // 
-  //ADOConnection := ADOGetConnection(txtServer.Text, txtDBname.Text, txtUsername.Text, txtPassword.Text, chkWindowsAuth.Checked);
-  //ADOExecuteSQLScriptFile('HospLoyObjects2.sql', ADOConnection);
- 
-end;                
-
 function SQLPageADOTestConnection(dbServer: string; userName: string; pwd: string; windowsAuth: Boolean): Variant;
 var  
   ADOConnection: Variant;  
@@ -120,9 +107,7 @@ begin
     Log('SQLPageTestConnectionClick called');
     ADOConnection := SQLPageADOTestConnection(SQLPage_txtServer.Text, 
         SQLPage_txtUsername.Text, SQLPage_txtPassword.Text, SQLPage_chkWindowsAuth.Checked);
-
 end;
- 
 
 procedure SQLCustomForm_Activate(Page: TWizardPage) ;
 begin
@@ -141,7 +126,7 @@ begin
 
   SQLPage := CreateCustomPage(
     PreviousPageId,
-    'SQL Sever database for LS Omni Server',
+    'SQL Sever database for LS Commerce Service',
     'Creates SQL objects in a new or existing database. Version 1.1.0'
   );
  
@@ -212,7 +197,6 @@ begin
     Width := ScaleX(250);
     Height := ScaleY(13);
   end;
-
 
   { lblAuthType }
   SQLPage_lblAuthType := TLabel.Create(SQLPage);
@@ -325,8 +309,6 @@ begin
       Caption := 'Test SQL Connection';
       OnClick := @SQLPageTestConnectionClick;
     end;
-
- 
 
   //does not work except from main form
   with SQLPage do

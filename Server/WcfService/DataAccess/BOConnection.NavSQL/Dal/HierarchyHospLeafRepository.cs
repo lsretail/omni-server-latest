@@ -45,6 +45,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
+            List<JscActions> actions = new List<JscActions>();
             List<JscKey> keys = new List<JscKey>();
             keys.Add(new JscKey()
             {
@@ -58,55 +59,53 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfromDeal + GetWhereStatement(true, keys, where, false);
+                recordsRemaining = GetRecordCount(TABLEDEALID, lastKey, sql, keys, ref maxKey);
             }
-
-            string tmplastkey = lastKey;
-            string mainlastkey = lastKey;
-            string tmpmaxkey = string.Empty;
-            recordsRemaining = 0;
-
-            recordsRemaining = GetRecordCount(TABLEDEALID, lastKey, sql, keys, ref maxKey);
-            List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALID, batchSize, ref lastKey, ref recordsRemaining);
-
-            recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref tmpmaxkey);
-            nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
-            if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
-                mainlastkey = tmplastkey;
-
-            lastKey = mainlastkey;
-
-            List<JscActions> actions = new List<JscActions>();
-            foreach (JscActions act in nodeact)
+            else
             {
-                string[] parvalues = act.ParamValue.Split(';');
-                JscActions newact;
+                string tmplastkey = lastKey;
+                string mainlastkey = lastKey;
+                recordsRemaining = 0;
 
-                if (act.Type == DDStatementType.Delete)
-                {
-                    if (act.TableId != TABLEDEALID)
-                        continue;       // skip delete actions for extra tables
-                    
-                    actions.Add(act);
-                    continue;
-                }
+                recordsRemaining = GetRecordCount(TABLEDEALID, lastKey, sql, keys, ref maxKey);
+                List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALID, batchSize, ref lastKey, ref recordsRemaining);
 
-                newact = new JscActions()
-                {
-                    id = act.id,
-                    TableId = act.TableId,
-                    Type = act.Type,
-                    ParamValue = (act.TableId == TABLEDEALID) ? parvalues[0] : parvalues[3]
-                };
+                recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref maxKey);
+                nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
 
-                JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
-                if (findme == null)
+                lastKey = mainlastkey;
+
+                foreach (JscActions act in nodeact)
                 {
-                    actions.Add(newact);
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact;
+
+                    if (act.Type == DDStatementType.Delete)
+                    {
+                        if (act.TableId != TABLEDEALID)
+                            continue;       // skip delete actions for extra tables
+
+                        actions.Add(act);
+                        continue;
+                    }
+
+                    newact = new JscActions()
+                    {
+                        id = act.id,
+                        TableId = act.TableId,
+                        Type = act.Type,
+                        ParamValue = (act.TableId == TABLEDEALID) ? parvalues[0] : parvalues[3]
+                    };
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
                 }
             }
-
-            if (actions.Count == 0)
-                recordsRemaining = 0;
 
             List<ReplHierarchyHospDeal> list = new List<ReplHierarchyHospDeal>();
 
@@ -193,6 +192,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 lastKey = "0";
 
             SQLHelper.CheckForSQLInjection(storeId);
+            List<JscActions> actions = new List<JscActions>();
             List<JscKey> keys = new List<JscKey>();
             keys.Add(new JscKey()
             {
@@ -206,55 +206,56 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfromDealLine + GetWhereStatement(true, keys, where, false);
+                recordsRemaining = GetRecordCount(TABLEDEALLINEID, lastKey, sql, keys, ref maxKey);
             }
-
-            string tmplastkey = lastKey;
-            string mainlastkey = lastKey;
-            string tmpmaxkey = string.Empty;
-            recordsRemaining = 0;
-
-            recordsRemaining = GetRecordCount(TABLEDEALLINEID, lastKey, sql, keys, ref maxKey);
-            List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALLINEID, batchSize, ref lastKey, ref recordsRemaining);
-
-            recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref tmpmaxkey);
-            nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
-            if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
-                mainlastkey = tmplastkey;
-
-            lastKey = mainlastkey;
-
-            List<JscActions> actions = new List<JscActions>();
-            foreach (JscActions act in nodeact)
+            else
             {
-                string[] parvalues = act.ParamValue.Split(';');
-                JscActions newact;
-
-                if (act.Type == DDStatementType.Delete)
-                {
-                    if (act.TableId != TABLEDEALLINEID)
-                        continue;       // skip delete actions for extra tables
-
-                    actions.Add(act);
-                    continue;
-                }
-
-                newact = new JscActions()
-                {
-                    id = act.id,
-                    TableId = act.TableId,
-                    Type = act.Type,
-                    ParamValue = (act.TableId == TABLEDEALLINEID) ? parvalues[0] : parvalues[3]
-                };
-
-                JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
-                if (findme == null)
-                {
-                    actions.Add(newact);
-                }
-            }
-
-            if (actions.Count == 0)
+                string tmplastkey = lastKey;
+                string mainlastkey = lastKey;
                 recordsRemaining = 0;
+
+                recordsRemaining = GetRecordCount(TABLEDEALLINEID, lastKey, sql, keys, ref maxKey);
+                List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALLINEID, batchSize, ref lastKey, ref recordsRemaining);
+
+                recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref maxKey);
+                nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                lastKey = mainlastkey;
+
+                foreach (JscActions act in nodeact)
+                {
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact;
+
+                    if (act.Type == DDStatementType.Delete)
+                    {
+                        if (act.TableId != TABLEDEALLINEID)
+                            continue;       // skip delete actions for extra tables
+
+                        actions.Add(act);
+                        continue;
+                    }
+
+                    newact = new JscActions()
+                    {
+                        id = act.id,
+                        TableId = act.TableId,
+                        Type = act.Type,
+                        ParamValue = (act.TableId == TABLEDEALLINEID) ? parvalues[0] : parvalues[3]
+                    };
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+
+                if (actions.Count == 0)
+                    recordsRemaining = 0;
+            }
 
             List<ReplHierarchyHospDealLine> list = new List<ReplHierarchyHospDealLine>();
 

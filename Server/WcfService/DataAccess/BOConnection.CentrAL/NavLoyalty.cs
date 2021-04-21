@@ -356,9 +356,24 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.HospOrderCalculate(list);
         }
 
-        public virtual string HospOrderCreate(OrderHosp request, string tenderMapping, out string orderId)
+        public virtual string HospOrderCreate(OrderHosp request, string tenderMapping)
         {
-            return NavWSBase.HospOrderCreate(request, tenderMapping, out orderId);
+            return NavWSBase.HospOrderCreate(request, tenderMapping);
+        }
+
+        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
+        {
+            return NavWSBase.HospOrderEstimatedTime(storeId, orderId);
+        }
+
+        public virtual void HospOrderCancel(string storeId, string orderId)
+        {
+            NavWSBase.HospOrderCancel(storeId, orderId);
+        }
+
+        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        {
+            return NavWSBase.HospOrderKotStatus(storeId, orderId);
         }
 
         #endregion
@@ -401,6 +416,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config, NAVVersion);
                 entry = trepo.SalesEntryGetById(entryId);
+            }
+            else if (type == DocumentIdType.HospOrder)
+            {
+                SalesEntryRepository trepo = new SalesEntryRepository(config, NAVVersion);
+                entry = trepo.POSTransactionGetById(entryId);
             }
             else
             {

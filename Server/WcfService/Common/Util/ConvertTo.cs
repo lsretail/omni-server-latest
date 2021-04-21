@@ -124,30 +124,31 @@ namespace LSOmni.Common.Util
             return new DateTime(date.Year, date.Month, date.Day, time.Hour, time.Minute, time.Second, time.Millisecond);
         }
 
-        public static DateTime NavGetDate(DateTime date)
+        public static DateTime NavGetDate(DateTime date, bool returnMinDate)
         {
             if (date == DateTime.MinValue)
-                return new DateTime(1753, 1, 1);
+                return (returnMinDate) ? DateTime.MinValue : new DateTime(1753, 1, 1);
 
             return new DateTime(date.Year, date.Month, date.Day);
         }
 
-        public static DateTime NavGetTime(DateTime date)
+        public static DateTime NavGetTime(DateTime date, bool returnMinDate)
         {
+            if (date == DateTime.MinValue && returnMinDate) 
+                return DateTime.MinValue;
+
             return new DateTime(1754, 1, 1, date.Hour, date.Minute, date.Second, date.Millisecond);
         }
 
-        public static DateTime SafeJsonDate(DateTime date)
+        public static DateTime SafeJsonDate(DateTime date, bool json)
         {
-            if (date == DateTime.MinValue)
-                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc); //1970 is a safe json year
-            return date;
-        }
+            if (((date.Year == 1754 || date.Year == 1753) && date.Month == 1 && date.Day == 1) || (date == DateTime.MinValue))
+            {
+                if (json)
+                    return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc); // 1970 is a safe json year
 
-        public static DateTime NavDateToDateTime(DateTime date)
-        {
-            if ((date.Year == 1754 || date.Year == 1753) && date.Month == 1 && date.Day == 1)
-                return DateTime.MinValue;
+                return DateTime.MinValue;   // SOAP date
+            }
             return date;
         }
 
@@ -198,6 +199,14 @@ namespace LSOmni.Common.Util
         public static string Base64Decode(string base64EncodedData)
         {
             byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+
+            if (base64EncodedBytes.Length > 1 && base64EncodedBytes[base64EncodedBytes.Length - 1] == 0)
+            {
+                byte[] tmp = new byte[base64EncodedBytes.Length - 1];
+                Buffer.BlockCopy(base64EncodedBytes, 0, tmp, 0, base64EncodedBytes.Length - 1);
+                base64EncodedBytes = tmp;
+            }
+
             return Encoding.UTF8.GetString(base64EncodedBytes);
         }
     }

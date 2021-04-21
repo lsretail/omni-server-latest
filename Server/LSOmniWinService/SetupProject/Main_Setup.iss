@@ -14,24 +14,24 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{08C464D2-8863-4A44-B30C-A4EBDAE8D246}
-AppName=LS Omni Windows Service version {#VersionNo}
+AppName=LS Commerce Windows Service version {#VersionNo}
 AppVersion={#ApplicationVersion}
-AppVerName=LS Omni Windows Service {#ApplicationVersion}
+AppVerName=LS Commerce Windows Service {#ApplicationVersion}
 AppPublisher=LS Retail Inc.
 AppPublisherURL=http://www.lsretail.com/
 AppSupportURL=http://www.lsretail.com/
 AppUpdatesURL=http://www.lsretail.com/
-AppComments=LS Omni Windows Service
+AppComments=LS Commerce Windows Service
 AppCopyright=Copyright (C) 2020  LS Retail
 ;file version
 VersionInfoVersion={#ApplicationVersion}
 ;when changing the DefaultDirName I had to change the AppId !!
-DefaultDirName=C:\LS Retail\LSOmni\LSOmniWinService
+DefaultDirName=C:\LS Retail\LSCommerce\LSCommerceWinService
 DefaultGroupName=notused
 DisableProgramGroupPage=yes
 DisableDirPage=no
 DirExistsWarning=yes
-OutputBaseFilename="LSOmni.WinService.Setup.{#VersionNo}"
+OutputBaseFilename="LSCommerce.WinService.Setup.{#VersionNo}"
 SetupIconFile=LSIcon.ico
 Compression=lzma
 SolidCompression=yes
@@ -54,23 +54,20 @@ UninstallFilesDir={win}\Installer
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-; DestDir: {app}; Source: Files\*; Excludes: "*.m,.svn,private"; Flags: recursesubdirs
-; Source: "..\LSOmniWinService\LSOmniWinService\bin\Release\LSOmniServiceDbInitData.sql"; DestDir: "{app}"; Flags: ignoreversion
- 
 ;all files should be in other include files
 #include "FilesInclude.iss"
 
 [Icons]
-Name: "{group}\{cm:ProgramOnTheWeb,LSOmniService}"; Filename: "http://www.lsretail.com/"
+Name: "{group}\{cm:ProgramOnTheWeb,LSCommerceService}"; Filename: "http://www.lsretail.com/"
 
 [Run]
-Filename: "{app}\LSOmni.WinService.exe"; Parameters: "/I"; WorkingDir: {app}; Flags: runascurrentuser; StatusMsg: "LSOmni.WinService is being installed. Please wait..."       
+Filename: "{app}\LSCommerce.WinService.exe"; Parameters: "/I"; WorkingDir: {app}; Flags: runascurrentuser; StatusMsg: "LSCommerce.WinService is being installed. Please wait..."       
 Filename: "{app}\StartService.cmd"; WorkingDir: {app}; Flags: postinstall skipifdoesntexist runascurrentuser
  
 
 [UninstallRun]
 Filename: "{app}\StopService.cmd"; WorkingDir: {app}; Flags: skipifdoesntexist runascurrentuser
-Filename: "{app}\LSOmni.WinService.exe"; Parameters: "/U"; WorkingDir: {app}; Flags: runascurrentuser; StatusMsg: "LSOmni.WinService is being uninstalled. Please wait..."       
+Filename: "{app}\LSCommerce.WinService.exe"; Parameters: "/U"; WorkingDir: {app}; Flags: runascurrentuser; StatusMsg: "LSCommerce.WinService is being uninstalled. Please wait..."       
 
 [Code]
 //tried to have code in other files
@@ -89,7 +86,8 @@ begin
   SqlCustomPage := SQLCustomForm_CreatePage(wpWelcome); 
 
   //should only set any texts here..
-  SQLPage_txtDBname.Text := 'LSOmni';
+  SQLPage_txtServer.Text := 'localhost';
+  SQLPage_txtDBname.Text := 'LSCommerce';
      
 end;
 
@@ -102,22 +100,22 @@ begin
     //check if we can even parse the xml
     if not ValidationXMLDomExists then
     begin
-	  Log('AppSettingsChangeScript error: Failed to update LSOmni.WinService.exe.config file'  );
-      MsgBox('Failed to update LSOmni.WinService.exe.config file'#13'LSOmni.WinService.exe.config file will not get updated'#13'with values entered', mbError, MB_OK);
+	  Log('AppSettingsChangeScript error: Failed to update LSCommerce.WinService.exe.config file'  );
+      MsgBox('Failed to update LSCommerce.WinService.exe.config file'#13'LSCommerce.WinService.exe.config file will not get updated'#13'with values entered', mbError, MB_OK);
     end;
 
     //standardize on the LSOmniUser
-    sqlUser := 'LSOmniUser';
-    sqlPwd := 'LSOmniUser';
+    sqlUser := 'LSCommerceUser';
+    sqlPwd := 'LSCommerceUser';
     Result := True;
     try
-      // LSOmni database string
+      // LSCommerce database string
       omniStr := 'Data Source=' + Trim(SQLPage_txtServer.Text) ;
       omniStr := omniStr + ';  Initial Catalog=' + Trim(SQLPage_txtDBname.Text) ;
       omniStr := omniStr + ';  User ID=' + sqlUser;
       omniStr := omniStr + ';  Password=' + sqlPwd;
       omniStr := omniStr + ';  Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
-      UpdateConfigFile('LSOmni.WinService.exe.config','SQLConnectionString.LSOmni', omniStr);
+      UpdateConfigFile('LSCommerce.WinService.exe.config','SQLConnectionString.LSOmni', omniStr);
       
     except
 	  Log('AppSettingsChangeScript error: ' + GetExceptionMessage );
@@ -160,8 +158,8 @@ end;
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
     Result := True;
-    if (CurPageID = wpSelectDir) and FileExists(ExpandConstant('{app}\LSOmni.WinService.exe.config')) then begin
-        if (MsgBox('LSOmni.WinService.exe.config exists in this folder.  Do you want to override it?', mbConfirmation, MB_YESNO) = idNo)
+    if (CurPageID = wpSelectDir) and FileExists(ExpandConstant('{app}\LSCommerce.WinService.exe.config')) then begin
+        if (MsgBox('LSCommerce.WinService.exe.config exists in this folder.  Do you want to override it?', mbConfirmation, MB_YESNO) = idNo)
         then   begin
         Result := False;
         end;
@@ -239,7 +237,7 @@ end;
 function InitializeUninstall(): Boolean;
 begin
   Result := True;
-  //MsgBox('Only files will be removed.' #13#13 'Windows service will not be fully uninstalled. Run LSOmniWinService.exe /u', mbInformation, MB_OK) 
+  //MsgBox('Only files will be removed.' #13#13 'Windows service will not be fully uninstalled. Run LSCommerceWinService.exe /u', mbInformation, MB_OK) 
   //Result := False;
   //Result := MsgBox('Only files are removed.' #13#13 'SQL scripts', mbConfirmation, MB_YESNO) = idYes;
   //if Result = False then

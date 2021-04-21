@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private static readonly Object myLock = new Object();
 
-        public static Version NavVersion = new Version("16.0");
+        public static Version NavVersion = new Version("17.0");
 
         public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {
@@ -449,12 +449,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return GetWhereStatement(fullreplication, keys, whereaddon + GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
         }
 
-        public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string itemcolumnname, string storeid, bool includeorder)
+        public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string itemcolumnname, string storeid, bool includeorder, bool usestatus = true)
         {
-            return GetWhereStatement(fullreplication, keys, GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
+            return GetWhereStatement(fullreplication, keys, GetSQLStoreDist(itemcolumnname, storeid, fullreplication, usestatus), includeorder);
         }
 
-        public string GetSQLStoreDist(string itemcolumnname, string storeid, bool fullreplication)
+        public string GetSQLStoreDist(string itemcolumnname, string storeid, bool fullreplication, bool usestatus = true)
         {
             if (string.IsNullOrWhiteSpace(storeid))
                 return string.Empty;
@@ -463,9 +463,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             // for full replication get only active, otherwise get all
             if (fullreplication)
+            {
                 return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg" +
                    " LEFT JOIN [" + navCompanyName + "Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group]" +
-                   " WHERE id.[Status]=0 AND sg.[Store Code]='" + storeid + "')";
+                   " WHERE " + ((usestatus) ? "(id.[Status]=0 OR id.[Status]=2) AND " : string.Empty) + "sg.[Store Code]='" + storeid + "')";
+            }
 
             return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg" +
                    " LEFT JOIN [" + navCompanyName + "Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group]" +
@@ -516,7 +518,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public object GetSQLDataFromKey(string fieldtype, string value)
         {
             if (string.IsNullOrEmpty(value))
-                return DBNull.Value;
+            {
+                if (fieldtype == "datetime")
+                    return GetDateTimeFromNav(value);
+                return string.Empty;
+            }
 
             switch (fieldtype)
             {

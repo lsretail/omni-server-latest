@@ -345,8 +345,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price Including VAT"]),
                 PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
                 MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]),
-                StartingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Starting Date"])),
-                EndingDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Ending Date"])),
+                StartingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson),
+                EndingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Date"]), config.IsJson),
                 VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
                 Priority = SQLHelper.GetInt32(reader["Priority"])
             };
@@ -373,7 +373,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price"]),
                 PriceInclVat = true,
-                ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
+                ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
 

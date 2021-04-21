@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
     public class OrderHospSubLine : IDisposable
     {
         //DealLine is very similar to DealLine

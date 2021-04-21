@@ -238,9 +238,8 @@ namespace LSOmni.BLL.Loyalty
             base.config.SecurityToken = securityToken;
             this.iDeviceRepository.DeviceSave(deviceId, contact.Id, securityToken);
 
-            Device device = new Device();
-            device.SecurityToken = securityToken;
-            contact.LoggedOnToDevice = device;
+            dev.SecurityToken = securityToken;
+            contact.LoggedOnToDevice = dev;
 
             return contact;
         }

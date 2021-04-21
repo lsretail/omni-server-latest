@@ -94,7 +94,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
-                        "WHERE [Receipt No_]=@id";
+                        "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
                     TraceSqlCommand(command);
@@ -104,6 +104,38 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         if (reader.Read())
                         {
                             entry = TransactionToSalesEntry(reader, true);
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+            return entry;
+        }
+
+        public SalesEntry POSTransactionGetById(string entryId)
+        {
+            SalesEntry entry = null;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Member Card No_],mt.[Receipt No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Staff ID],mt.[Customer No_]," +
+                        "do.[Phone No_],do.[Address],do.[Address 2],do.[City],do.[Name]," +
+                        "(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],st.[Name] AS [StName]" +
+                        "FROM [" + navCompanyName + "POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                        "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
+                        "LEFT OUTER JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "WHERE mt.[Receipt No_]=@id";
+
+                    command.Parameters.AddWithValue("@id", entryId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            entry = POSTransToSalesEntry(reader, true);
                         }
                         reader.Close();
                     }
@@ -249,6 +281,38 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        public List<SalesEntryLine> POSTransLinesGet(string receiptId)
+        {
+            List<SalesEntryLine> list = new List<SalesEntryLine>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " +
+                                "ml.[Store No_],ml.[POS Terminal No_],ml.[Number],ml.[Parent Line],ml.[Variant Code],ml.[Unit of Measure]," +
+                                "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Line No_],ml.[Description]," +
+                                "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
+                                " FROM [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
+                                " LEFT OUTER JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
+                                " WHERE ml.[Receipt No_]=@id AND (ml.[Entry Type]=0 OR (ml.[Entry Type]=5 AND ml.[Sales Type]!=''))";
+
+                    command.Parameters.AddWithValue("@id", receiptId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(POSTransToSalesEntryLine(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
         public List<SalesEntryDiscountLine> DiscountLineGet(string receiptNo)
         {
             List<SalesEntryDiscountLine> list = new List<SalesEntryDiscountLine>();
@@ -339,6 +403,35 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        public List<SalesEntryPayment> POSTransPaymentLinesGet(string receiptId)
+        {
+            List<SalesEntryPayment> list = new List<SalesEntryPayment>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " +
+                                "ml.[Line No_],ml.[Currency Code],ml.[Amount],ml.[CurrencyFactor]" +
+                                " FROM [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
+                                " WHERE ml.[Receipt No_]=@id AND ml.[Entry Type]=1";
+
+                    command.Parameters.AddWithValue("@id", receiptId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(POSPaymentToSalesEntryPayment(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
         public void SalesEntryPointsGetTotal(string entryId, string custId, out decimal rewarded, out decimal used)
         {
             rewarded = 0;
@@ -395,7 +488,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
                 TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
                 TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
@@ -453,6 +546,42 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return entry;
         }
 
+        private SalesEntry POSTransToSalesEntry(SqlDataReader reader, bool includeLines)
+        {
+            SalesEntry entry = new SalesEntry()
+            {
+                Id = SQLHelper.GetString(reader["Receipt No_"]),
+                IdType = DocumentIdType.HospOrder,
+                DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                CardId = SQLHelper.GetString(reader["Member Card No_"]),
+                Status = SalesEntryStatus.Pending,
+                Posted = false,
+                TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
+                StoreName = SQLHelper.GetString(reader["StName"]),
+
+                ContactName = SQLHelper.GetString(reader["Name"]),
+                ContactAddress = new Address(),
+                ShipToName = SQLHelper.GetString(reader["Name"]),
+                ShipToAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    City = SQLHelper.GetString(reader["City"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Phone No_"])
+                }
+            };
+
+            entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
+
+            if (includeLines)
+            {
+                entry.Lines = POSTransLinesGet(entry.Id);
+                entry.Payments = POSTransPaymentLinesGet(entry.Id);
+            }
+            return entry;
+        }
+
         private SalesEntry OrderToSalesEntry(SqlDataReader reader)
         {
             SalesEntry entry = new SalesEntry
@@ -460,7 +589,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Id = SQLHelper.GetString(reader["Document ID"]),
                 IdType = DocumentIdType.Order,
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 Status = SalesEntryStatus.Created,
                 StoreName = SQLHelper.GetString(reader["StName"]),
@@ -570,6 +699,71 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             line.Amount = line.NetAmount + line.TaxAmount;
             return line;
+        }
+
+        private SalesEntryLine POSTransToSalesEntryLine(SqlDataReader reader)
+        {
+            SalesEntryLine line = new SalesEntryLine()
+            {
+                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
+                ParentLine = Convert.ToInt32(SQLHelper.GetInt32(reader["Parent Line"])),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                UomId = SQLHelper.GetString(reader["Unit of Measure"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Quantity", false),
+                LineType = LineType.Item,
+                ItemId = SQLHelper.GetString(reader["Number"]),
+                NetPrice = SQLHelper.GetDecimal(reader, "Net Price"),
+                Price = SQLHelper.GetDecimal(reader, "Price"),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
+                NetAmount = SQLHelper.GetDecimal(reader, "Net Amount", false),
+                TaxAmount = SQLHelper.GetDecimal(reader, "VAT Amount", false),
+                ItemDescription = SQLHelper.GetString(reader["Description"]),
+            };
+
+            if (string.IsNullOrEmpty(line.VariantId) == false)
+            {
+                line.VariantDescription = SQLHelper.GetString(reader["Variant Dimension 1"]);
+                string vartxt = SQLHelper.GetString(reader["Variant Dimension 2"]);
+                if (string.IsNullOrEmpty(vartxt) == false)
+                    line.VariantDescription += "/" + vartxt;
+                vartxt = SQLHelper.GetString(reader["Variant Dimension 3"]);
+                if (string.IsNullOrEmpty(vartxt) == false)
+                    line.VariantDescription += "/" + vartxt;
+                vartxt = SQLHelper.GetString(reader["Variant Dimension 4"]);
+                if (string.IsNullOrEmpty(vartxt) == false)
+                    line.VariantDescription += "/" + vartxt;
+                vartxt = SQLHelper.GetString(reader["Variant Dimension 5"]);
+                if (string.IsNullOrEmpty(vartxt) == false)
+                    line.VariantDescription += "/" + vartxt;
+            }
+
+            ImageRepository imgrep = new ImageRepository(config, NavVersion);
+            if (string.IsNullOrEmpty(line.VariantId))
+            {
+                List<ImageView> img = imgrep.ImageGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
+                if (img != null && img.Count > 0)
+                    line.ItemImageId = img[0].Id;
+            }
+            else
+            {
+                List<ImageView> img = imgrep.ImageGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
+                if (img != null && img.Count > 0)
+                    line.ItemImageId = img[0].Id;
+            }
+
+            line.Amount = line.NetAmount + line.TaxAmount;
+            return line;
+        }
+
+        private SalesEntryPayment POSPaymentToSalesEntryPayment(SqlDataReader reader)
+        {
+            return new SalesEntryPayment()
+            {
+                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
+                Amount = SQLHelper.GetDecimal(reader["Amount"], false),
+                CurrencyFactor = SQLHelper.GetDecimal(reader["CurrencyFactor"], false),
+                CurrencyCode = SQLHelper.GetString(reader["Currency Code"])
+            };
         }
 
         private SalesEntryDiscountLine ReaderToDiscountLine(SqlDataReader reader)

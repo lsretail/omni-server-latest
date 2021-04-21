@@ -152,6 +152,23 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplCollectionResponse ReplEcommCollection(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplCollectionResponse rs = new ReplCollectionResponse()
+            {
+                Collection = BOAppConnection.ReplicateCollection(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Collection.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
         public virtual ReplCurrencyResponse ReplEcommCurrency(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;
@@ -523,6 +540,23 @@ namespace LSOmni.BLL.Loyalty
                 MaxKey = maxkey
             };
             logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
+        public virtual ReplValidationScheduleResponse ReplEcommValidationSchedule(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+
+            ReplValidationScheduleResponse rs = new ReplValidationScheduleResponse()
+            {
+                Schedules = BOAppConnection.ReplicateValidationSchedule(string.Empty, string.Empty, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
+            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Schedules.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 

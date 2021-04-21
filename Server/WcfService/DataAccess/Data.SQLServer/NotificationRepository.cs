@@ -251,7 +251,7 @@ namespace LSOmni.DataAccess.Dal
                 DateLastModified = SQLHelper.GetDateTime(reader["DateLastModified"]),
                 QRText = SQLHelper.GetString(reader["QRText"]),
                 NotificationType = (NotificationType)SQLHelper.GetInt32(reader["NotificationType"]),
-                ExpiryDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["ValidTo"])),
+                ExpiryDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["ValidTo"]), config.IsJson),
                 Status = (NotificationStatus)SQLHelper.GetInt32(reader["Status"])
             };
 

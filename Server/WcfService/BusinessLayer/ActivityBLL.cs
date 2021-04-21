@@ -22,7 +22,7 @@ namespace LSOmni.BLL
             get
             {
                 if (iActBOConnection == null)
-                    iActBOConnection = GetBORepository<IActivityBO>(config.LSKey.Key);
+                    iActBOConnection = GetBORepository<IActivityBO>(config.LSKey.Key, config.IsJson);
                 return iActBOConnection;
             }
         }

@@ -32,34 +32,40 @@ namespace LSOmni.Common.Util
 		{
 			string result = string.Empty;
 
-			XmlSerializer serializer = new XmlSerializer(typeof(T), string.Empty);
-			
-			XmlSerializerNamespaces xmlNamespaces = new XmlSerializerNamespaces();
-			xmlNamespaces.Add(string.Empty, string.Empty);
-
-			XmlWriterSettings xmlSettings = new XmlWriterSettings()
+			try
 			{
-				Encoding = Encoding.Unicode,
-				OmitXmlDeclaration = true,
-				ConformanceLevel = prettyPrint ? ConformanceLevel.Document : ConformanceLevel.Fragment,
-				Indent = true
-			};
+				XmlSerializer serializer = new XmlSerializer(typeof(T), string.Empty);
 
-			using (MemoryStream ms = new MemoryStream())
-			{
-				using (XmlWriter xw = XmlWriter.Create(ms, xmlSettings))
-				{
-					xw.WriteWhitespace(string.Empty);
-					serializer.Serialize(xw, value, xmlNamespaces);
-				}
+				XmlSerializerNamespaces xmlNamespaces = new XmlSerializerNamespaces();
+				xmlNamespaces.Add(string.Empty, string.Empty);
 
-				ms.Position = 0;
-				using (StreamReader sr = new StreamReader(ms))
+				XmlWriterSettings xmlSettings = new XmlWriterSettings()
 				{
-					result = sr.ReadToEnd();
+					Encoding = Encoding.Unicode,
+					OmitXmlDeclaration = true,
+					ConformanceLevel = prettyPrint ? ConformanceLevel.Document : ConformanceLevel.Fragment,
+					Indent = true
+				};
+
+				using (MemoryStream ms = new MemoryStream())
+				{
+					using (XmlWriter xw = XmlWriter.Create(ms, xmlSettings))
+					{
+						xw.WriteWhitespace(string.Empty);
+						serializer.Serialize(xw, value, xmlNamespaces);
+					}
+
+					ms.Position = 0;
+					using (StreamReader sr = new StreamReader(ms))
+					{
+						result = sr.ReadToEnd();
+					}
 				}
 			}
-
+			catch (Exception)
+            {
+				return "Error Logging data for object: " + value.ToString();
+            }
 			return result;
 		}
 
@@ -146,7 +152,7 @@ namespace LSOmni.Common.Util
             string json;
             using (MemoryStream ms = new MemoryStream())
             {
-                var ser = new System.Runtime.Serialization.Json.DataContractJsonSerializer(classname);
+                var ser = new DataContractJsonSerializer(classname);
                 ser.WriteObject(ms, classdata);
                 json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
             }

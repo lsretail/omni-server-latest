@@ -9,6 +9,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
     public class SalesEntryLine : Entity, IDisposable
     {
         private ImageView image;
+        private bool isChecked;
 
         public SalesEntryLine(string id) : base(id)
         {
@@ -35,6 +36,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
 
             //Added for SPG
             Image = new ImageView();
+            IsChecked = false;
         }
 
         public SalesEntryLine() : this(string.Empty)
@@ -61,6 +63,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string ExternalId { get; set; }
         [DataMember]
         public int LineNumber { get; set; }
+        [DataMember]
+        public int ParentLine { get; set; }
         [DataMember]
         public string ItemId { get; set; }
         [DataMember]
@@ -110,6 +114,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
                 NotifyPropertyChanged();
             }
             
+        }
+
+        [IgnoreDataMember]
+        public bool IsChecked
+        {
+            get => isChecked;
+            set
+            {
+                isChecked = value;
+                NotifyPropertyChanged();
+            }
+
         }
 
         public override string ToString()

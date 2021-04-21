@@ -208,6 +208,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.ReplicateUnitOfMeasure(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
+            return rep.ReplicateCollection(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config);
@@ -230,6 +236,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         {
             StoreTenderTypeRepository rep = new StoreTenderTypeRepository(config);
             return rep.ReplicateStoreTenderType(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            ValidationScheduleRepository rep = new ValidationScheduleRepository(config);
+            return rep.ReplicateValidationSchedule(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

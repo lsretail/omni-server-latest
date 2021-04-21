@@ -394,12 +394,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
         {
-            DiscountEngine engine;
-            if (NavVersion.Major > 14)
-                engine = new DiscountEngine(new Nav15Repository(navConnectionString));
-            else
-                engine = new DiscountEngine(new NavRepository(navConnectionString));
-
+            DiscountEngine engine = new DiscountEngine(new Nav15Repository(navConnectionString));
             return engine.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 
@@ -418,8 +413,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 DiscountValueType = (DiscountValueType)SQLHelper.GetInt32(reader["Discount Type"]),
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
-                FromDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["From Date"])),
-                ToDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["To Date"])),
+                FromDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["From Date"]), config.IsJson),
+                ToDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["To Date"]), config.IsJson),
                 MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
                 OfferNo = SQLHelper.GetString(reader["Offer No_"]),
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
@@ -458,8 +453,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 PriorityNo = SQLHelper.GetInt32(reader["Priority"]),
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
-                FromDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["From Date"])),
-                ToDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["To Date"])),
+                FromDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["From Date"]), config.IsJson),
+                ToDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["To Date"]), config.IsJson),
                 OfferNo = SQLHelper.GetString(reader["Offer No_"]),
                 ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
                 Type = (ReplDiscountType)(SQLHelper.GetInt32(reader["Type"])),
@@ -487,10 +482,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 Id = SQLHelper.GetString(reader["ID"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                StartDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Starting Date"])),
-                EndDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Ending Date"])),
-                StartTime = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Starting Time"])),
-                EndTime = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Ending Time"])),
+                StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson),
+                EndDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Date"]), config.IsJson),
+                StartTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Time"]), config.IsJson),
+                EndTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Time"]), config.IsJson),
                 MondayStart = SQLHelper.GetDateTime(reader["Monday Starting Time"]),
                 MondayEnd = SQLHelper.GetDateTime(reader["Monday Ending Time"]),
                 TuesdayStart = SQLHelper.GetDateTime(reader["Tuesday Starting Time"]),

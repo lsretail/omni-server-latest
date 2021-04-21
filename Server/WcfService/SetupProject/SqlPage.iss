@@ -48,19 +48,19 @@ end;
 procedure  SQLAuthOnChange (Sender: TObject);
 begin
   Log('SQLAuthOnChange called');
-  if SQLPage_chkSQLAuth.Checked then
-  begin
-    SQLPage_lblUser.Enabled := true;
-    SQLPage_lblPassword.Enabled := true;
-    SQLPage_txtUsername.Enabled := true;
-    SQLPage_txtPassword.Enabled := true;
-  end
-  Else
+  if SQLPage_chkWindowsAuth.Checked then
   begin
     SQLPage_lblUser.Enabled := false;
     SQLPage_lblPassword.Enabled := false;
     SQLPage_txtUsername.Enabled := false;
     SQLPage_txtPassword.Enabled := false;
+  end
+  Else
+  begin
+    SQLPage_lblUser.Enabled := true;
+    SQLPage_lblPassword.Enabled := true;
+    SQLPage_txtUsername.Enabled := true;
+    SQLPage_txtPassword.Enabled := true;
   end
 end;
 
@@ -200,7 +200,7 @@ begin
     Top := ScaleY(82);
     Width := ScaleX(87);
     Height := ScaleY(13);
-    Enabled := False;
+    Enabled := True;
   end;
 
   { chkWindowsAuth }
@@ -213,11 +213,11 @@ begin
     Top := ScaleY(98);
     Width := ScaleX(177);
     Height := ScaleY(17);
-    Checked := True;
+    Checked := False;
     TabOrder := 3;
     TabStop := True;
     OnClick := @SQLAuthOnChange;
-    Enabled := False;
+    Enabled := True;
   end;
 
   { chkSQLAuth }
@@ -230,9 +230,10 @@ begin
     Top := ScaleY(118);
     Width := ScaleX(185);
     Height := ScaleY(17);
+    Checked := True;
     TabOrder := 4;
     OnClick := @SQLAuthOnChange;
-    Enabled := False;
+    Enabled := True;
   end;
 
   { lblUser }
@@ -245,7 +246,7 @@ begin
     Top := ScaleY(141);
     Width := ScaleX(85);
     Height := ScaleY(13);
-    Enabled := False;
+    Enabled := True;
   end;
   { txtUsername }
   SQLPage_txtUsername := TEdit.Create(SQLPage);
@@ -256,7 +257,7 @@ begin
     Top := ScaleY(138);
     Width := ScaleX(225);
     Height := ScaleY(21);
-    Enabled := False;
+    Enabled := True;
     TabOrder := 5;
   end;
 
@@ -270,7 +271,7 @@ begin
     Top := ScaleY(165);
     Width := ScaleX(85);
     Height := ScaleY(13);
-    Enabled := False;
+    Enabled := True;
   end;
   { txtPassword }
   SQLPage_txtPassword := TPasswordEdit.Create(SQLPage);
@@ -281,7 +282,7 @@ begin
     Top := ScaleY(162);
     Width := ScaleX(225);
     Height := ScaleY(21);
-    Enabled := False;
+    Enabled := True;
     TabOrder := 6;
   end;
 

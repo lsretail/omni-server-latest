@@ -525,6 +525,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         GetTenderTypeError = 10500,
         GetTaxSetupError = 10501,
+        GetSalesTypeError = 10502,
 
         GetUserError = 10600,
         LoginUserError = 10601,

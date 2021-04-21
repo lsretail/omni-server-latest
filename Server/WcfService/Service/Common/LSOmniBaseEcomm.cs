@@ -253,6 +253,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual ReplCollectionResponse ReplEcommCollection(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommCollection(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
         public virtual ReplVendorResponse ReplEcommVendor(ReplRequest replRequest)
         {
             try
@@ -350,6 +365,21 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDataTranslationLangCode(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplValidationScheduleResponse ReplEcommValidationSchedule(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommValidationSchedule(replRequest);
             }
             catch (Exception ex)
             {

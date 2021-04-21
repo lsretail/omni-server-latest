@@ -339,18 +339,25 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
 
                 // Get highest PreAction counter for table as we will start normal replication from that point after FullReplication
-                if (string.IsNullOrWhiteSpace(maxkey) || maxkey == "0")
+                using (SqlCommand command = connection.CreateCommand())
                 {
-                    using (SqlCommand command = connection.CreateCommand())
+                	command.CommandText = string.Format("SELECT MAX([Entry No_]) FROM [{0}Preaction] WHERE [Table No_]='{1}'",
+                        navCompanyName, tableid);
+                    TraceSqlCommand(command);
+                    var ret = command.ExecuteScalar();
+                    string mkey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                    if ((string.IsNullOrWhiteSpace(maxkey) == false) && maxkey != "0")
                     {
-                        command.CommandText = string.Format("SELECT MAX([Entry No_]) FROM [{0}Preaction] WHERE [Table No_]='{1}'",
-                            navCompanyName, tableid);
-                        TraceSqlCommand(command);
-                        var ret = command.ExecuteScalar();
-                        maxkey = (ret == DBNull.Value) ? "0" : ret.ToString();
+                        // check previous maxkey if less or grater then this mkey
+                        if (Convert.ToInt32(mkey) > Convert.ToInt32(maxkey))
+                            maxkey = mkey;
                     }
+                    else
+                    {
+                        maxkey = mkey;
+                    }
+                    connection.Close();
                 }
-                connection.Close();
             }
             return cnt;
         }
@@ -469,12 +476,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return GetWhereStatement(fullreplication, keys, whereaddon + GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
         }
 
-        public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string itemcolumnname, string storeid, bool includeorder)
+        public string GetWhereStatementWithStoreDist(bool fullreplication, List<JscKey> keys, string itemcolumnname, string storeid, bool includeorder, bool usestatus = true)
         {
-            return GetWhereStatement(fullreplication, keys, GetSQLStoreDist(itemcolumnname, storeid, fullreplication), includeorder);
+            return GetWhereStatement(fullreplication, keys, GetSQLStoreDist(itemcolumnname, storeid, fullreplication, usestatus), includeorder);
         }
 
-        public string GetSQLStoreDist(string itemcolumnname, string storeid, bool fullreplication)
+        public string GetSQLStoreDist(string itemcolumnname, string storeid, bool fullreplication, bool usestatus = true)
         {
             if (string.IsNullOrWhiteSpace(storeid))
                 return string.Empty;
@@ -483,9 +490,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // for full replication get only active, otherwise get all
             if (fullreplication)
+            {
                 return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
                    " LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group]" +
-                   " WHERE id.[Status]=0 AND sg.[Store Code]='" + storeid + "')";
+                   " WHERE " + ((usestatus) ? "(id.[Status]=0 OR id.[Status]=2) AND " : string.Empty) + "sg.[Store Code]='" + storeid + "')";
+            }
 
             return " AND " + itemcolumnname + " IN (SELECT id.[Item No_] FROM [" + navCompanyName + "Store Group Setup] sg" +
                    " LEFT JOIN [" + navCompanyName + "Item Distribution] id ON id.[Code]=sg.[Store Group]" +
@@ -535,6 +544,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         public object GetSQLDataFromKey(string fieldtype, string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                if (fieldtype == "datetime")
+                    return GetDateTimeFromNav(value);
+                return string.Empty;
+            }
+
             switch (fieldtype)
             {
                 case "datetime":

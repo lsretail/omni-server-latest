@@ -17,7 +17,7 @@ namespace LSOmni.BLL
             this.iConfigRepository = GetDbRepository<IConfigRepository>(config);
 
             if (config != null)
-                BOLoyConnection = GetBORepository<ILoyaltyBO>(config?.LSKey.Key);
+                BOLoyConnection = GetBORepository<ILoyaltyBO>(config?.LSKey.Key, config.IsJson);
         }
 
         public ConfigBLL() : base(null)

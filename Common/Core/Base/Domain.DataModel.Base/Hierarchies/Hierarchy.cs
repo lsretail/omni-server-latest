@@ -23,6 +23,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [DataMember]
         public DateTime StartDate { get; set; }
         [DataMember]
+        public int Priority { get; set; }
+        [DataMember]
+        public string SalesType { get; set; }
+        [DataMember]
+        public string ValidationScheduleId { get; set; }
+        [DataMember]
         public List<HierarchyNode> Nodes { get; set; }
         [DataMember]
         public List<HierarchyAttribute> Attributes { get; set; }

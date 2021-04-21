@@ -16,7 +16,7 @@ namespace LSOmni.BLL
             get
             {
                 if (iBOCustom == null)
-                    iBOCustom = GetBORepository<ICustomBO>(config.LSKey.Key);
+                    iBOCustom = GetBORepository<ICustomBO>(config.LSKey.Key, config.IsJson);
                 return iBOCustom;
             }
         }

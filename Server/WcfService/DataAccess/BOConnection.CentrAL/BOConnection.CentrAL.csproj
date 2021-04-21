@@ -105,6 +105,7 @@
     <Compile Include="Dal\TransactionRepository.cs" />
     <Compile Include="Dal\UnitOfMeasureRepository.cs" />
     <Compile Include="Dal\VendorItemMappingRepository.cs" />
+    <Compile Include="Dal\ValidationScheduleRepository.cs" />
     <Compile Include="Dal\VendorRepository.cs" />
     <Compile Include="NavActivity.cs" />
     <Compile Include="NavApps.cs" />

@@ -27,7 +27,7 @@ namespace LSOmni.Common.Util
 
         public static string GuidWithDash(string theGuid)
         {
-            //theGuid may not have a dash in it, so retur a string with dash
+            //theGuid may not have a dash in it, so return a string with dash
             Guid aG = new Guid(theGuid);
             return aG.ToString();
         }

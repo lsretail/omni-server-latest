@@ -50,19 +50,19 @@ end;
 procedure  NavSQLAuthOnChange (Sender: TObject);
 begin
   Log('NavSQLAuthOnChange called');
-  if NavSQLPage_chkSQLAuth.Checked then
-  begin
-    NavSQLPage_lblUser.Enabled := true;
-    NavSQLPage_lblPassword.Enabled := true;
-    NavSQLPage_txtUsername.Enabled := true;
-    NavSQLPage_txtPassword.Enabled := true;
-  end
-  Else
+  if NavSQLPage_chkWindowsAuth.Checked then
   begin
     NavSQLPage_lblUser.Enabled := false;
     NavSQLPage_lblPassword.Enabled := false;
     NavSQLPage_txtUsername.Enabled := false;
     NavSQLPage_txtPassword.Enabled := false;
+  end
+  Else
+  begin
+    NavSQLPage_lblUser.Enabled := true;
+    NavSQLPage_lblPassword.Enabled := true;
+    NavSQLPage_txtUsername.Enabled := true;
+    NavSQLPage_txtPassword.Enabled := true;
   end
 end;
 
@@ -250,7 +250,7 @@ begin
     Top := ScaleY(92);
     Width := ScaleX(87);
     Height := ScaleY(13);
-    Enabled := False;
+    Enabled := True;
   end;
 
   { chkWindowsAuth }
@@ -263,11 +263,11 @@ begin
     Top := ScaleY(108);
     Width := ScaleX(177);
     Height := ScaleY(17);
-    Checked := True;
+    Checked := False;
     TabOrder := 4;
     TabStop := True;
     OnClick := @NavSQLAuthOnChange;
-    Enabled := False;
+    Enabled := True;
   end;
 
   { chkSQLAuth }
@@ -280,9 +280,10 @@ begin
     Top := ScaleY(128);
     Width := ScaleX(185);
     Height := ScaleY(17);
+    Checked := True;
     TabOrder := 5;
     OnClick := @NavSQLAuthOnChange;
-    Enabled := False;
+    Enabled := True;
   end;
 
   { lblUser }
@@ -295,7 +296,7 @@ begin
     Top := ScaleY(151);
     Width := ScaleX(85);
     Height := ScaleY(13);
-    Enabled := False;
+    Enabled := True;
   end;
   { txtUsername }
   NavSQLPage_txtUsername := TEdit.Create(NavSQLPage);
@@ -306,7 +307,7 @@ begin
     Top := ScaleY(148);
     Width := ScaleX(225);
     Height := ScaleY(21);
-    Enabled := False;
+    Enabled := True;
     TabOrder := 6;
   end;
 
@@ -320,7 +321,7 @@ begin
     Top := ScaleY(175);
     Width := ScaleX(85);
     Height := ScaleY(13);
-    Enabled := False;
+    Enabled := True;
   end;
   { txtPassword }
   NavSQLPage_txtPassword := TPasswordEdit.Create(NavSQLPage);
@@ -331,7 +332,7 @@ begin
     Top := ScaleY(172);
     Width := ScaleX(225);
     Height := ScaleY(21);
-    Enabled := False;
+    Enabled := True;
     TabOrder := 7;
   end;
 

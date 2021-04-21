@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 using LSRetail.Omni.Domain.DataModel.Base.Base;
@@ -114,6 +115,27 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 return address;
             }
         }
+
+        public string FormatStoreHours
+        {
+            get
+            {
+                if (StoreHours == null || !StoreHours.Any())
+                {
+                    return string.Empty;
+                }
+
+                var storeHours = string.Empty;
+
+                foreach (var storeHour in StoreHours)
+                {
+                    storeHours += $"{storeHour.NameOfDay} {storeHour.OpenFrom:t} - {storeHour.OpenTo:t}" + System.Environment.NewLine;
+                }
+                
+                return storeHours.TrimEnd(System.Environment.NewLine.ToCharArray());
+            }
+        }
+        
 
         public ImageView DefaultImage
         {

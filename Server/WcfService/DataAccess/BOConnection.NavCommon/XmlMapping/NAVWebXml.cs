@@ -515,7 +515,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
                         ));
             }
 
-            if (string.IsNullOrEmpty(lastKey) == false || lastKey == "0")
+            if (string.IsNullOrEmpty(lastKey) == false && lastKey != "0")
             {
                 body.Add(new XElement("WS_Table_Record_Buffer",
                             new XElement("Key", lastKey)
@@ -712,6 +712,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 5404, 1);
             AddField(body, 5404, 2);
             AddField(body, 5404, 3);
+
+            // Collection Framework
+            AddTable(body, 10001430, false);
+            AddField(body, 10001430, 1);
+            AddField(body, 10001430, 2);
+            AddField(body, 10001430, 3);
+            AddField(body, 10001430, 4);
 
             // WI Discounts
             AddTable(body, 10012862, true);

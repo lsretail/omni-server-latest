@@ -310,7 +310,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                 Status = SQLHelper.GetInt32(reader["Status"]),
                                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                                BlockedDate = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date Blocked"]))
+                                BlockedDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson)
                             };
                         }
                         reader.Close();
@@ -672,7 +672,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         if (reader.Read())
                         {
                             card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
-                            card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
+                            card.ExpireDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Exp"]), config.IsJson);
                         }
                         else
                         {
@@ -726,7 +726,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 MiddleName = SQLHelper.GetString(reader["Middle Name"]),
                 LastName = SQLHelper.GetString(reader["Surname"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
-                BirthDay = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date of Birth"])),
+                BirthDay = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date of Birth"]), config.IsJson),
                 Gender = (Gender)SQLHelper.GetInt32(reader["Gender"]),
                 MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"])
             };
@@ -766,7 +766,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Status = (CardStatus)SQLHelper.GetInt32(reader["Status"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                DateBlocked = ConvertTo.NavDateToDateTime(SQLHelper.GetDateTime(reader["Date Blocked"])),
+                DateBlocked = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
                 LoginId = SQLHelper.GetString(reader["Login ID"])
             };
         }

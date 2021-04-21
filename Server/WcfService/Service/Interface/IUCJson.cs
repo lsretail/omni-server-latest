@@ -41,7 +41,7 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebGet(UriTemplate = "/Ping", ResponseFormat = WebMessageFormat.Json)]
-        string PingGet(); //REST http://localhost/LSOmniService/Json.svc/ping
+        string PingGet(); //REST http://localhost/LSCommerceService/ucjson.svc/ping
 
         #endregion
 
@@ -172,7 +172,7 @@ namespace LSOmni.Service
         /// Used OneListGetById to get the OneList back.
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -204,14 +204,14 @@ namespace LSOmni.Service
         /// Calculates OneList Basket Object and returns Order Object
         /// </summary>
         /// <remarks>
-        /// LS Nav  WS1 : ECOMM_CALCULATE_BASKET<p/>
+        /// LS Nav WS1 : ECOMM_CALCULATE_BASKET<p/>
         /// LS Central WS2 : EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
         /// Contact Info, Payment and then it can be posted for Creation
         /// </remarks>
         /// <example>
-        /// Sample requests including minimum data needed to be able to process the request in OMNI<p/>
+        /// Sample requests including minimum data needed to be able to process the request in LS Commerce<p/>
         /// Basket with 2 of same Items
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
@@ -276,7 +276,7 @@ namespace LSOmni.Service
         /// Add or remove Item in OneList without sending whole list
         /// </summary>
         /// <example>
-        /// Sample requests including minimum data needed to be able to process the request in OMNI<p/>
+        /// Sample requests including minimum data needed to be able to process the request in LS Commerce<p/>
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -323,7 +323,7 @@ namespace LSOmni.Service
         /// Check the quantity available of items in order for certain store, Use with LS Nav 11.0 and later
         /// </summary>
         /// <remarks>
-        /// LS Nav  WS1 : CO_QTY_AVAILABILITY_EXT<p/>
+        /// LS Nav WS1 : CO_QTY_AVAILABILITY_EXT<p/>
         /// LS Central WS2 : COQtyAvailabilityV2<p/><p/>
         /// </remarks>
         /// <param name="request"></param>
@@ -336,11 +336,11 @@ namespace LSOmni.Service
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
         /// </summary>
         /// <remarks>
-        /// LS Nav  WS1 : CUSTOMER_ORDER_CREATE_EXT<p/>
+        /// LS Nav WS1 : CUSTOMER_ORDER_CREATE_EXT<p/>
         /// LS Central WS2 : CustomerOrderCreateVx<p/><p/>
         /// </remarks>
         /// <example>
-        /// Sample requests including minimum data needed to be able to process the request in OMNI<p/>
+        /// Sample requests including minimum data needed to be able to process the request in LS Commerce<p/>
         /// Order to be shipped to Customer
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
@@ -607,6 +607,35 @@ namespace LSOmni.Service
         SalesEntry OrderHospCreate(OrderHosp request);
 
         /// <summary>
+        /// Get estimated time for an order
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        int HospOrderEstimatedTime(string storeId, string orderId);
+
+        /// <summary>
+        /// Cancel hospitality order
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="orderId"></param>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool HospOrderCancel(string storeId, string orderId);
+
+        /// <summary>
+        /// Get Order status for hospitality order
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        OrderHospStatus HospOrderKotStatus(string storeId, string orderId);
+
+        /// <summary>
         /// Check Status of a Customer Order
         /// </summary>
         /// <remarks>
@@ -713,15 +742,15 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav WS1 : MM_MOBILE_CONTACT_CREATE<p/>
         /// LS Central WS2 : MemberContactCreate<p/><p/>
-        /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Nav/Central<p/>
+        /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Central<p/>
         /// Contact will be assigned to a Member Account.
         /// Member Account has Club and Club has Scheme level.<p/>
         /// If No Account is provided, New Account will be created.
         /// If No Club level for the Account is set, then default Club and Scheme level will be set.<p/>
-        /// Valid UserName, Password and Email address is determined by LS Nav/Central and can be found in CU 99009001.
+        /// Valid UserName, Password and Email address is determined by LS Central and can be found in CU 99009001.
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -806,10 +835,10 @@ namespace LSOmni.Service
         /// LS Central WS2 : MemberContactUpdate<p/><p/>
         /// Contact Id, User name and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
-        /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Nav/Central
+        /// Name field, Address and phone number even if it has not changed so it will not be wiped out from LS Central
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -910,7 +939,7 @@ namespace LSOmni.Service
         /// Add new card to existing Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav  WS1 : MM_CARD_TO_CONTACT<p/>
+        /// LS Nav WS1 : MM_CARD_TO_CONTACT<p/>
         /// LS Central WS2 : MemberCardToContact<p/><p/>
         /// </remarks>
         /// <param name="contactId"></param>
@@ -953,9 +982,9 @@ namespace LSOmni.Service
         /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
         /// LS Central WS2 : MemberPasswordChange<p/><p/>
         /// </remarks>
-        /// <param name="userName">user name (Nav/Central:LoginID)</param>
-        /// <param name="newPassword">new password (Nav/Central:NewPassword)</param>
-        /// <param name="oldPassword">old password (Nav/Central:OldPassword)</param>
+        /// <param name="userName">user name (LS Central:LoginID)</param>
+        /// <param name="newPassword">new password (LS Central:NewPassword)</param>
+        /// <param name="oldPassword">old password (LS Central:OldPassword)</param>
         /// <returns>true/false</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1094,7 +1123,7 @@ namespace LSOmni.Service
         /// Change Login Id for Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav  WS1 : MM_LOGIN_CHANGE<p/><p/>
+        /// LS Nav WS1 : MM_LOGIN_CHANGE<p/><p/>
         /// </remarks>
         /// <param name="oldUserName">Current Login Id</param>
         /// <param name="newUserName">New Login Id</param>
@@ -1187,7 +1216,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Nav WS1 : MM_MOBILE_GET_ITEMS_IN_STOCK<p/>
         /// LS Central WS2 : GetItemInventory<p/><p/>
-        /// If storeId is empty, only store that are marked in LS Nav/Central with check box Loyalty or Mobile checked (Omni Section) will be returned
+        /// If storeId is empty, only store that are marked in LS Central with check box Loyalty or Mobile checked (Omni Section) will be returned
         /// </remarks>
         /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
         /// <param name="itemId">Item to get status for</param>
@@ -1206,7 +1235,7 @@ namespace LSOmni.Service
         /// If storeId is empty, all store that have item available will be returned
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -1373,7 +1402,7 @@ namespace LSOmni.Service
         /// Get store by Store Id
         /// </summary>
         /// <remarks>
-        /// Data for Store Hours needs to be generated in LS Nav/Central by running OMNI_XXXX Scheduler Jobs
+        /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <param name="storeId">store Id</param>
         /// <returns>Store</returns>
@@ -1401,7 +1430,7 @@ namespace LSOmni.Service
         /// Get all stores
         /// </summary>
         /// <remarks>
-        /// Data for Store Hours needs to be generated in LS Nav/Central by running OMNI_XXXX Scheduler Jobs
+        /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <returns>List of stores</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
@@ -1505,14 +1534,14 @@ namespace LSOmni.Service
         /// Replicate Item Barcodes (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99001451 - Barcodes
+        /// LS Central Main Table data: 99001451 - Barcodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1525,13 +1554,13 @@ namespace LSOmni.Service
         /// Replicate Currency setup
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 4 - Currency
+        /// LS Central Main Table data: 4 - Currency
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1544,13 +1573,13 @@ namespace LSOmni.Service
         /// Replicate Currency Rate Setup
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 330 - Currency Exchange Rate
+        /// LS Central Main Table data: 330 - Currency Exchange Rate
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1563,14 +1592,14 @@ namespace LSOmni.Service
         /// Replicate Item Extended Variants Setup (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10001413 - Extended Variant Values
+        /// LS Central Main Table data: 10001413 - Extended Variant Values
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1583,13 +1612,13 @@ namespace LSOmni.Service
         /// Replicate Retail Image links
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99009064 - Retail Image Link
+        /// LS Central Main Table data: 99009064 - Retail Image Link
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1602,13 +1631,13 @@ namespace LSOmni.Service
         /// Replicate Retail Images
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99009063 - Retail Image
+        /// LS Central Main Table data: 99009063 - Retail Image
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1621,14 +1650,14 @@ namespace LSOmni.Service
         /// Replicate Item Categories (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 5722 - Item Category
+        /// LS Central Main Table data: 5722 - Item Category
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1641,14 +1670,14 @@ namespace LSOmni.Service
         /// Replicate Retail Items (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 27 - Item
+        /// LS Central Main Table data: 27 - Item
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// For update, actions for Item, Item HTML and distribution tables are used to find changes,
         /// and it may return empty list of items while Records Remaining is still not 0.  Keep on calling the function till Records Remaining become 0.
@@ -1663,14 +1692,14 @@ namespace LSOmni.Service
         /// Replicate Item Unit of Measures (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 5404 - Item Unit of Measure
+        /// LS Central Main Table data: 5404 - Item Unit of Measure
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1683,14 +1712,14 @@ namespace LSOmni.Service
         /// Replicate Variant Registrations (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10001414 - Item Variant Registration
+        /// LS Central Main Table data: 10001414 - Item Variant Registration
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1700,18 +1729,18 @@ namespace LSOmni.Service
         ReplItemVariantRegistrationResponse ReplEcommItemVariantRegistrations(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Best Prices for Items from WI Price table in LS Nav/Central (supports Item distribution)<p/>
+        /// Replicate Best Prices for Items from WI Price table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99009258 - WI Price
+        /// LS Central Main Table data: 99009258 - WI Price
         /// <p/><p/>
-        /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs.  
+        /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time.<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// For update, actions for Item and Sales Price tables are used to find deleted changes.
         /// </remarks>
@@ -1725,14 +1754,14 @@ namespace LSOmni.Service
         /// Replicate Item Prices from Sales Price table (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 7002 - Sales Price
+        /// LS Central Main Table data: 7002 - Sales Price
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1745,14 +1774,14 @@ namespace LSOmni.Service
         /// Replicate Product groups (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 5723 - Product Group
+        /// LS Central Main Table data: 5723 - Product Group
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1765,7 +1794,7 @@ namespace LSOmni.Service
         /// Replicate Store setups
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10012866 - Store
+        /// LS Central Main Table data: 10012866 - Store
         /// <p/><p/>
         /// Only store with Loyalty or Mobile Checked will be replicated
         /// <p/><p/>
@@ -1773,7 +1802,7 @@ namespace LSOmni.Service
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1786,13 +1815,13 @@ namespace LSOmni.Service
         /// Replicate Unit of Measures
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 204 - Unit of Measure
+        /// LS Central Main Table data: 204 - Unit of Measure
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1802,16 +1831,35 @@ namespace LSOmni.Service
         ReplUnitOfMeasureResponse ReplEcommUnitOfMeasures(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Vendors
+        /// Replicate Collection for Unit of Measures
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 23 - Vendor
+        /// LS Central Main Table data: 10001430 - Collection Framework
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of Collection</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplCollectionResponse ReplEcommCollection(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Vendors
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 23 - Vendor
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1824,14 +1872,14 @@ namespace LSOmni.Service
         /// Replicate Vendor Item Mapping (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 27 - Item (Lookup by [Vendor No_])
+        /// LS Central Main Table data: 27 - Item (Lookup by [Vendor No_])
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1844,15 +1892,32 @@ namespace LSOmni.Service
         /// Replicate Attributes
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000784 - Attribute
+        /// LS Central Main Table data: 10000784 - Attribute
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
+        /// <example>
+        /// Sample request can be used with all other Replication functions
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///     "replRequest": {
+        ///         "BatchSize": 100,
+        ///         "FullReplication": 1,
+        ///         "LastKey": "",
+        ///         "MaxKey": "",
+        ///         "StoreId": "S0013",
+        ///         "TerminalId": ""
+        ///     }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of attributes</returns>
         [OperationContract]
@@ -1863,13 +1928,13 @@ namespace LSOmni.Service
         /// Replicate Attribute Values
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000786 - Attribute Value
+        /// LS Central Main Table data: 10000786 - Attribute Value
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1882,13 +1947,13 @@ namespace LSOmni.Service
         /// Replicate Attribute Option Values
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000785 - Attribute Option Value
+        /// LS Central Main Table data: 10000785 - Attribute Option Value
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1901,13 +1966,13 @@ namespace LSOmni.Service
         /// Replicate Translation text
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000971 - Data Translation
+        /// LS Central Main Table data: 10000971 - Data Translation
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1920,7 +1985,7 @@ namespace LSOmni.Service
         /// Replicate Translation Language Codes
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000972 - Data Translation
+        /// LS Central Main Table data: 10000972 - Data Translation
         /// <p/><p/>
         /// This will always replicate all Code
         /// </remarks>
@@ -1931,16 +1996,33 @@ namespace LSOmni.Service
         ReplDataTranslationLangCodeResponse ReplEcommDataTranslationLangCode(ReplRequest replRequest);
 
         /// <summary>
+        /// Replicate Validation Scheduling data for Hierarchy
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 10000955 - LSC Validation Schedule
+        /// <p/><p/>
+        /// This function only checks if there are any available preactions for any of the tables involved in the Schedule data 
+        /// and if there is, the whole Validation Schedule will be replicated again.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of Validation Schedule objects</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplValidationScheduleResponse ReplEcommValidationSchedule(ReplRequest replRequest);
+
+        /// <summary>
         /// Replicate Hierarchy roots
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000920 - Hierarchy (Where Hierarchy Date is active)
+        /// LS Central Main Table data: 10000920 - Hierarchy (Where Hierarchy Date is active)
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1953,13 +2035,13 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Nodes
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000921 - Hierarchy Nodes
+        /// LS Central Main Table data: 10000921 - Hierarchy Nodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1972,13 +2054,13 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000922 - Hierarchy Node Link
+        /// LS Central Main Table data: 10000922 - Hierarchy Node Link
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -1991,13 +2073,13 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99001651 - Deal Modifier Item
+        /// LS Central Main Table data: 99001651 - Deal Modifier Item
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2010,13 +2092,13 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99001651 - Deal Modifier Item
+        /// LS Central Main Table data: 99001651 - Deal Modifier Item
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2029,13 +2111,13 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99001483 - Information Subcode
+        /// LS Central Main Table data: 99001483 - Information Subcode
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2048,13 +2130,13 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Recipe lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10000768 - BOM Component
+        /// LS Central Main Table data: 10000768 - BOM Component
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2067,18 +2149,18 @@ namespace LSOmni.Service
         /// Replicate Item with full detailed data (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 27 - Item
+        /// LS Central Main Table data: 27 - Item
         /// <p/><p/>
         /// FullItem replication includes all variants, unit of measures, attributes and prices for an item<p/>
         /// NOTE: It is recommended to replicate item data separately using<p/>
         /// ReplEcomm Item / Prices / ItemUnitOfMeasures / ItemVariantRegistrations / ExtendedVariants / Attribute / AttributeValue / AttributeOptionValue<p/>
-        /// Price Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
+        /// Price Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// For update, actions for Item, Item HTML, Sales Price, Item Variant, Item Unit of Measure, Variants and distribution tables are used to find changes,
         /// and it may return empty list of items while Records Remaining is still not 0.  Keep on calling the function till Records Remaining become 0.
@@ -2090,17 +2172,17 @@ namespace LSOmni.Service
         ReplFullItemResponse ReplEcommFullItem(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Periodic Discounts and MultiBuy for Items from WI Discount table in LS Nav/Central (supports Item distribution)<p/>
+        /// Replicate Periodic Discounts and MultiBuy for Items from WI Discount table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10012862 - WI Discounts
+        /// LS Central Main Table data: 10012862 - WI Discounts
         /// <p/><p/>
-        /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
+        /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2110,17 +2192,17 @@ namespace LSOmni.Service
         ReplDiscountResponse ReplEcommDiscounts(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Mix and Match Offers for Items from WI Mix and Match Offer table in LS Nav/Central (supports Item distribution)<p/>
+        /// Replicate Mix and Match Offers for Items from WI Mix and Match Offer table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 10012863 - WI Mix and Match Offer
+        /// LS Central Main Table data: 10012863 - WI Mix and Match Offer
         /// <p/><p/>
-        /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
+        /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2130,16 +2212,16 @@ namespace LSOmni.Service
         ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Periodic Discounts for Items from WI Discount table in LS Nav/Central (supports Item distribution)<p/>
+        /// Replicate Periodic Discounts for Items from WI Discount table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// Data for this function needs to be generated in LS Nav/Central by running either OMNI_XXXX Scheduler Jobs<p/><p/>
+        /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2152,13 +2234,13 @@ namespace LSOmni.Service
         /// Replicate all Shipping agents and services
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 291 - Shipping Agent
+        /// LS Central Main Table data: 291 - Shipping Agent
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2171,13 +2253,13 @@ namespace LSOmni.Service
         /// Replicate Member contacts
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99009002 - Member Contact (with valid Membership Card)
+        /// LS Central Main Table data: 99009002 - Member Contact (with valid Membership Card)
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2190,7 +2272,7 @@ namespace LSOmni.Service
         /// Replicate all Country Codes
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 9 - Country/Region
+        /// LS Central Main Table data: 9 - Country/Region
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// This function always performs full replication
@@ -2206,13 +2288,13 @@ namespace LSOmni.Service
         /// Replicate Tender types for Store
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99001462 - Tender Type
+        /// LS Central Main Table data: 99001462 - Tender Type
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2225,13 +2307,13 @@ namespace LSOmni.Service
         /// Replicate Tax setup
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 325 - VAT Posting Setup
+        /// LS Central Main Table data: 325 - VAT Posting Setup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
         /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to OMNI, both during full or delta replication.
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
@@ -2244,7 +2326,7 @@ namespace LSOmni.Service
         /// Replicate Inventory Status
         /// </summary>
         /// <remarks>
-        /// LS Nav/Central Main Table data: 99001608 - Inventory Lookup Table
+        /// LS Central Main Table data: 99001608 - Inventory Lookup Table
         /// <p/><p/>
         /// Net Inventory field in Inventory Lookup Table must be updated before the replication can be done.  
         /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button. Set store to be Web Store.
@@ -2253,7 +2335,7 @@ namespace LSOmni.Service
         /// Most ReplEcommXX web methods work the same way.
         /// This function always performs full replication
         /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calls to OMNI.
+        /// NOTE: LastKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of store tender types</returns>
@@ -2319,7 +2401,7 @@ namespace LSOmni.Service
         /// [PromoCode] is validated and adjusts pricing accordingly.
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -2365,7 +2447,7 @@ namespace LSOmni.Service
         /// Optional to include required resource (if only specific resource) and contactNo for accurate pricing.
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -2410,7 +2492,7 @@ namespace LSOmni.Service
         /// LS Central WS2 : SetAdditionalChargesV2<p/><p/>
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
@@ -2470,7 +2552,7 @@ namespace LSOmni.Service
         /// LS Central WS2 : InsertReservation<p/><p/>
         /// </remarks>
         /// <example>
-        /// Sample request including minimum data needed to be able to process the request in OMNI
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {

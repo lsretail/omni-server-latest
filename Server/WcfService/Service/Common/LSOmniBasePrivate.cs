@@ -140,6 +140,7 @@ namespace LSOmni.Service
         {
             ConfigBLL bll = new ConfigBLL();
             string token = config.SecurityToken;
+            bool json = config.IsJson;
             if (string.IsNullOrEmpty(serverUri))
             {
                 return null;
@@ -150,6 +151,7 @@ namespace LSOmni.Service
             {
                 //Get default configuration
                 config = bll.ConfigGet("");
+                config.IsJson = json;
                 config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUser.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.UserName");
 
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Password"))
@@ -177,7 +179,7 @@ namespace LSOmni.Service
 
                 //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Timeout"))
-                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value = (ConfigSetting.GetInt("BOConnection.Nav.Timeout") * 1000).ToString();  //millisecs,  60 seconds
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value = (ConfigSetting.GetInt("BOConnection.Nav.Timeout")).ToString();  //millisecs,  60 seconds
 
                 if (ConfigSetting.KeyExists("ECom.Url"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");

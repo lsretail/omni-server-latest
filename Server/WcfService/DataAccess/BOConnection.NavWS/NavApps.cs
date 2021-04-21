@@ -174,6 +174,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return NavWSBase.ReplicateUnitOfMeasure(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return NavWSBase.ReplicateCollection(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             return NavWSBase.ReplicateDiscounts(appId, appType, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -196,6 +201,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             return NavWSBase.ReplicateTaxSetup(appId, appType, string.Empty, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return NavWSBase.ReplicateValidationSchedule(appId, appType, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

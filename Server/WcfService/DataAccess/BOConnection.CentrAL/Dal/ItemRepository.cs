@@ -138,7 +138,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<ReplItem> list = new List<ReplItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -334,7 +334,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<LoyItem> list = new List<LoyItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
