@@ -441,7 +441,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 BillToName = XMLHelper.GetString(order.BillToName),
                 OrderTypeOption = (int)order.DeliveryType,
                 OrderDate = ConvertTo.NavGetDate(order.OrderDate, true),
-                ContactPickupTime = ConvertTo.NavGetTime(order.PickupTime, true),
+                ContactPickupTime = order.PickupTime,
                 RestaurantNo = order.RestaurantNo,
                 TenderType = ((int)order.PaymentType).ToString(),
                 Email = XMLHelper.GetString(order.Email),

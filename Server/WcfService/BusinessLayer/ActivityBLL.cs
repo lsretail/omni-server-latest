@@ -37,14 +37,19 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityCancel(activityNo);
         }
 
-        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons)
         {
-            return BOActConnection.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo);
+            return BOActConnection.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo, noOfPersons);
         }
 
         public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
         {
             return BOActConnection.ActivityAdditionalChargesGet(activityNo);
+        }
+
+        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        {
+            return BOActConnection.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
         }
 
         public virtual bool ActivityAdditionalChargesSet(AdditionalCharge request)

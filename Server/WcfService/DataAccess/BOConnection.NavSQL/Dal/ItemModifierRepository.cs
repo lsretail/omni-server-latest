@@ -193,10 +193,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Type = (ItemModifierType)SQLHelper.GetInt32(reader["Usage Sub-Category"]),
                 PriceType = (ItemModifierPriceType)SQLHelper.GetInt32(reader["Price Type"]),
                 AlwaysCharge = (ItemModifierPriceHandling)SQLHelper.GetInt32(reader["Price Handling"]),
-                AmountPercent = SQLHelper.GetDecimal(reader["Amount _Percent"]),
+                AmountPercent = SQLHelper.GetDecimal(reader, "Amount _Percent"),
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
-                TimeModifierMinutes = SQLHelper.GetDecimal(reader["Time Modifier Minutes"])
+                TimeModifierMinutes = SQLHelper.GetDecimal(reader, "Time Modifier Minutes")
             };
         }
     }

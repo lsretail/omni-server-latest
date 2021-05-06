@@ -26,6 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt.[Post Code],mt.[City],mt.[County],mt.[Country Code],mt.[Latitude],mt.[Longitude]," +
                          "mt.[Phone No_],mt.[Currency Code],mt.[Functionality Profile],mt.[Store VAT Bus_ Post_ Gr_],mt.[Click and Collect]," +
+                         "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID]," +
                          "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup] gs) AS LCYCode";
 
                 sqlfrom = " FROM [" + navCompanyName + "Store] mt";
@@ -585,6 +586,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 store.Currency = new Currency(SQLHelper.GetString(reader["LCYCode"]));
             else
                 store.Currency = new Currency(cur);
+
+            if (NavVersion.Major > 10)
+            {
+                store.IsLoyalty = SQLHelper.GetBool(reader["Loyalty"]);
+                store.IsWebStore = SQLHelper.GetBool(reader["Web Store"]);
+                store.WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]);
+                store.WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]);
+            }
 
             ImageRepository imgrepo = new ImageRepository(config);
             store.Images = imgrepo.ImageGetByKey("Store", store.Id, string.Empty, string.Empty, 0, includeDetails);

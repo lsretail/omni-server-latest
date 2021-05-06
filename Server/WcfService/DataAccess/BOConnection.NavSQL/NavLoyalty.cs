@@ -418,6 +418,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual string OrderCreate(Order request, string tenderMapping, out string orderId)
         {
+            if (request.OrderType == OrderType.ScanPayGoSuspend)
+            {
+                orderId = string.Empty;
+                return NavWSBase.ScanPayGoSuspend(request);
+            }
+
             return NavWSBase.OrderCreate(request, tenderMapping, out orderId);
         }
 
@@ -501,11 +507,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.StoreHoursGetByStoreId(storeId, offset);
         }
 
-        public virtual Store StoreGetById(string id)
+        public virtual Store StoreGetById(string id, bool details)
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
-            Store store = rep.StoreLoyGetById(id, true);
-            store.StoreHours = StoreHoursGetByStoreId(id);
+            Store store = rep.StoreLoyGetById(id, details);
+            if (store != null)
+                store.StoreHours = StoreHoursGetByStoreId(id);
             return store;
         }
 

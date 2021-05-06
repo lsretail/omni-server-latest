@@ -101,6 +101,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int MaxSelection { get; set; }
         [DataMember]
+        public int GroupMinSelection { get; set; }
+        [DataMember]
+        public int GroupMaxSelection { get; set; }
+        [DataMember]
         public ItemModifierPriceType PriceType { get; set; }
         [DataMember]
         public ItemModifierPriceHandling AlwaysCharge { get; set; }

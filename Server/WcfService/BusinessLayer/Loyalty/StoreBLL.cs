@@ -18,9 +18,9 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.StoresGetAll(clickAndCollectOnly);
         }
 
-        public virtual Store StoreGetById(string id)
+        public virtual Store StoreGetById(string id, bool details)
         {
-            return BOLoyConnection.StoreGetById(id);
+            return BOLoyConnection.StoreGetById(id, details);
         }
 
         public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores)

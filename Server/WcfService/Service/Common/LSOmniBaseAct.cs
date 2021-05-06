@@ -40,12 +40,12 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons)
         {
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
-                return bll.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo);
+                return bll.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo, noOfPersons);
             }
             catch (Exception ex)
             {
@@ -64,6 +64,20 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, "Failed to get ActivityAdditionalChargesGet");
+                return null; //never gets here
+            }
+        }
+
+        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityProductChargesGet");
                 return null; //never gets here
             }
         }

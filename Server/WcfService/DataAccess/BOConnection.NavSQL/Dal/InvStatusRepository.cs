@@ -85,7 +85,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                                 StoreId = SQLHelper.GetString(reader["Store No_"]),
-                                Quantity = SQLHelper.GetDecimal(reader["Net Inventory"]),
+                                Quantity = SQLHelper.GetDecimal(reader, "Net Inventory"),
                                 IsDeleted = false
                             });
                             cnt++;
@@ -157,7 +157,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                                 StoreId = SQLHelper.GetString(reader["Store No_"]),
-                                Quantity = SQLHelper.GetDecimal(reader["Net Inventory"]),
+                                Quantity = SQLHelper.GetDecimal(reader, "Net Inventory"),
                                 IsDeleted = false
                             });
                             cnt++;

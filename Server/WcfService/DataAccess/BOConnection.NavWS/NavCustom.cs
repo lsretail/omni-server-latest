@@ -13,7 +13,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual string MyCustomFunction(string data)
         {
             // using Web Service Lookup
-            return NavWSBase.MyCustomFunction(data);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.MyCustomFunction(data);
+
+            return LSCWSBase.MyCustomFunction(data);
         }
     }
 }

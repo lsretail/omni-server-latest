@@ -49807,10 +49807,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
         
         private System.DateTime requestedDeliveryDateField;
         
+        private bool shopPaygoField;
+        
         public CustomerOrderCreateCOHeaderV5() {
             this.sourceTypeField = 0;
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
+            this.shopPaygoField = false;
         }
         
         /// <remarks/>
@@ -50123,6 +50126,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.NavWS {
             }
             set {
                 this.requestedDeliveryDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ShopPaygo {
+            get {
+                return this.shopPaygoField;
+            }
+            set {
+                this.shopPaygoField = value;
             }
         }
     }

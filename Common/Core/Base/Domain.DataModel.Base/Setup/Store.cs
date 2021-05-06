@@ -75,6 +75,14 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public bool IsClickAndCollect { get; set; }
         [DataMember]
+        public bool IsLoyalty { get; set; }
+        [DataMember]
+        public bool IsWebStore { get; set; }
+        [DataMember]
+        public string WebOmniTerminal { get; set; }
+        [DataMember]
+        public string WebOmniStaff { get; set; }
+        [DataMember]
         public Currency Currency { get; set; }
         [DataMember]
         public string CultureName { get; set; }

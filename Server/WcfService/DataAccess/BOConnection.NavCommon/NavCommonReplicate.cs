@@ -20,6 +20,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             ReplicateRepository rep = new ReplicateRepository();
             List<ReplItem> list = rep.ReplicateItems(table);
 
+            if (list.Count == 0)
+                return list;
+
             // fields to get 
             List<string> fields = new List<string>()
             {

@@ -155,7 +155,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         #region Constructors
 
         public MemberContact()
-            : this(null)
+            : this("")
         {
             UserName = string.Empty;
         }

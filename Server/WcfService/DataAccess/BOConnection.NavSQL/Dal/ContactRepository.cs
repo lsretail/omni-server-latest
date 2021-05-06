@@ -676,7 +676,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         if (reader.Read())
                         {
-                            card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
+                            card.Balance = SQLHelper.GetDecimal(reader, "Amt");
                             card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
                         }
                         else

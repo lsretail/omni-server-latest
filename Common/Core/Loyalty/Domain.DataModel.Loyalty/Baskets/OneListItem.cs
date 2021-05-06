@@ -13,6 +13,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     {
         private decimal quantity;
         private decimal amount;
+        private bool qtyIsVisible = false;
 
         public OneListItem(string id) : base(id)
         {
@@ -112,6 +113,17 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             set
             {
                 quantity = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [IgnoreDataMember]
+        public bool QtyIsVisible
+        {
+            get => qtyIsVisible;
+            set
+            {
+                qtyIsVisible = value;
                 NotifyPropertyChanged();
             }
         }

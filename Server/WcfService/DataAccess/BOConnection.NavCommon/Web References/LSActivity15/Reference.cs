@@ -51,13 +51,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         private System.Threading.SendOrPostCallback GetAvailabilityV2OperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetAvailabilityV3OperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetAvailabilityOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetProductChargesV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetProductChargesOperationCompleted;
         
         private System.Threading.SendOrPostCallback InsertMemberDepositOperationCompleted;
         
         private System.Threading.SendOrPostCallback InsertReservationOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SellMembershipV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback SellMembershipOperationCompleted;
         
@@ -169,7 +175,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         public event GetAvailabilityV2CompletedEventHandler GetAvailabilityV2Completed;
         
         /// <remarks/>
+        public event GetAvailabilityV3CompletedEventHandler GetAvailabilityV3Completed;
+        
+        /// <remarks/>
         public event GetAvailabilityCompletedEventHandler GetAvailabilityCompleted;
+        
+        /// <remarks/>
+        public event GetProductChargesV2CompletedEventHandler GetProductChargesV2Completed;
         
         /// <remarks/>
         public event GetProductChargesCompletedEventHandler GetProductChargesCompleted;
@@ -179,6 +191,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         /// <remarks/>
         public event InsertReservationCompletedEventHandler InsertReservationCompleted;
+        
+        /// <remarks/>
+        public event SellMembershipV2CompletedEventHandler SellMembershipV2Completed;
         
         /// <remarks/>
         public event SellMembershipCompletedEventHandler SellMembershipCompleted;
@@ -957,6 +972,56 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetAvailabilityV3", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetAvailabilityV3_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool GetAvailabilityV3(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+            object[] results = this.Invoke("GetAvailabilityV3", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        clientNo,
+                        optionalResource,
+                        promoCode,
+                        activityNo,
+                        noOfPersons,
+                        errorString,
+                        getAvailabilityResponse});
+            errorString = ((string)(results[1]));
+            getAvailabilityResponse = ((ActivityAvailabilityResponse)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAvailabilityV3Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetAvailabilityV3Async(locationNo, productNo, activityDate, clientNo, optionalResource, promoCode, activityNo, noOfPersons, errorString, getAvailabilityResponse, null);
+        }
+        
+        /// <remarks/>
+        public void GetAvailabilityV3Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+            if ((this.GetAvailabilityV3OperationCompleted == null)) {
+                this.GetAvailabilityV3OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAvailabilityV3OperationCompleted);
+            }
+            this.InvokeAsync("GetAvailabilityV3", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        clientNo,
+                        optionalResource,
+                        promoCode,
+                        activityNo,
+                        noOfPersons,
+                        errorString,
+                        getAvailabilityResponse}, this.GetAvailabilityV3OperationCompleted, userState);
+        }
+        
+        private void OnGetAvailabilityV3OperationCompleted(object arg) {
+            if ((this.GetAvailabilityV3Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAvailabilityV3Completed(this, new GetAvailabilityV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetAvailability", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetAvailability_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool GetAvailability(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string activityNo, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
@@ -999,6 +1064,41 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             if ((this.GetAvailabilityCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetAvailabilityCompleted(this, new GetAvailabilityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetProductChargesV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetProductChargesV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetProductChargesV2(string productNo, string locationNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime dateOfBooking, ref ActivityChargeRespond activityChargeRespond) {
+            object[] results = this.Invoke("GetProductChargesV2", new object[] {
+                        productNo,
+                        locationNo,
+                        dateOfBooking,
+                        activityChargeRespond});
+            activityChargeRespond = ((ActivityChargeRespond)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetProductChargesV2Async(string productNo, string locationNo, System.DateTime dateOfBooking, ActivityChargeRespond activityChargeRespond) {
+            this.GetProductChargesV2Async(productNo, locationNo, dateOfBooking, activityChargeRespond, null);
+        }
+        
+        /// <remarks/>
+        public void GetProductChargesV2Async(string productNo, string locationNo, System.DateTime dateOfBooking, ActivityChargeRespond activityChargeRespond, object userState) {
+            if ((this.GetProductChargesV2OperationCompleted == null)) {
+                this.GetProductChargesV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetProductChargesV2OperationCompleted);
+            }
+            this.InvokeAsync("GetProductChargesV2", new object[] {
+                        productNo,
+                        locationNo,
+                        dateOfBooking,
+                        activityChargeRespond}, this.GetProductChargesV2OperationCompleted, userState);
+        }
+        
+        private void OnGetProductChargesV2OperationCompleted(object arg) {
+            if ((this.GetProductChargesV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetProductChargesV2Completed(this, new GetProductChargesV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1194,6 +1294,59 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             if ((this.InsertReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.InsertReservationCompleted(this, new InsertReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembershipV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SellMembershipV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool SellMembershipV2(string clientNo, string membershipType, ref string returnMembershipNo, ref string returnItemNo, ref decimal returnPrice, ref decimal returnQty, ref decimal returnDiscount, ref string returnBookingRef, ref string errorString) {
+            object[] results = this.Invoke("SellMembershipV2", new object[] {
+                        clientNo,
+                        membershipType,
+                        returnMembershipNo,
+                        returnItemNo,
+                        returnPrice,
+                        returnQty,
+                        returnDiscount,
+                        returnBookingRef,
+                        errorString});
+            returnMembershipNo = ((string)(results[1]));
+            returnItemNo = ((string)(results[2]));
+            returnPrice = ((decimal)(results[3]));
+            returnQty = ((decimal)(results[4]));
+            returnDiscount = ((decimal)(results[5]));
+            returnBookingRef = ((string)(results[6]));
+            errorString = ((string)(results[7]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void SellMembershipV2Async(string clientNo, string membershipType, string returnMembershipNo, string returnItemNo, decimal returnPrice, decimal returnQty, decimal returnDiscount, string returnBookingRef, string errorString) {
+            this.SellMembershipV2Async(clientNo, membershipType, returnMembershipNo, returnItemNo, returnPrice, returnQty, returnDiscount, returnBookingRef, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void SellMembershipV2Async(string clientNo, string membershipType, string returnMembershipNo, string returnItemNo, decimal returnPrice, decimal returnQty, decimal returnDiscount, string returnBookingRef, string errorString, object userState) {
+            if ((this.SellMembershipV2OperationCompleted == null)) {
+                this.SellMembershipV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnSellMembershipV2OperationCompleted);
+            }
+            this.InvokeAsync("SellMembershipV2", new object[] {
+                        clientNo,
+                        membershipType,
+                        returnMembershipNo,
+                        returnItemNo,
+                        returnPrice,
+                        returnQty,
+                        returnDiscount,
+                        returnBookingRef,
+                        errorString}, this.SellMembershipV2OperationCompleted, userState);
+        }
+        
+        private void OnSellMembershipV2OperationCompleted(object arg) {
+            if ((this.SellMembershipV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SellMembershipV2Completed(this, new SellMembershipV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -5500,6 +5653,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         private string productTypeField;
         
+        private string descriptionField;
+        
         public ChargeLines() {
             this.lineNoField = 0;
             this.qtyField = ((decimal)(0m));
@@ -5617,6 +5772,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             }
             set {
                 this.productTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
             }
         }
     }
@@ -6240,6 +6405,48 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetAvailabilityV3CompletedEventHandler(object sender, GetAvailabilityV3CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAvailabilityV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAvailabilityV3CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public ActivityAvailabilityResponse getAvailabilityResponse {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityAvailabilityResponse)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetAvailabilityCompletedEventHandler(object sender, GetAvailabilityCompletedEventArgs e);
     
     /// <remarks/>
@@ -6276,6 +6483,32 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((ActivityAvailabilityResponse)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetProductChargesV2CompletedEventHandler(object sender, GetProductChargesV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetProductChargesV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetProductChargesV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityChargeRespond activityChargeRespond {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityChargeRespond)(this.results[0]));
             }
         }
     }
@@ -6394,6 +6627,88 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void SellMembershipV2CompletedEventHandler(object sender, SellMembershipV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SellMembershipV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SellMembershipV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnMembershipNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnItemNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnPrice {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnQty {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnDiscount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnBookingRef {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[6]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[7]));
             }
         }
     }

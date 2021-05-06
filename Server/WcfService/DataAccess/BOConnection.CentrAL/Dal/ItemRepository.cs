@@ -531,7 +531,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             BarcodeRepository brepo = new BarcodeRepository(config);
             Barcode bcode = brepo.BarcodeGetByCode(code);
             if (bcode == null)  // barcode not found
-                throw new LSOmniServiceException(StatusCode.ItemNotFound, "Cannot find Item with Barcode:" + code);
+                return null;
 
             LoyItem item = ItemLoyGetById(bcode.ItemId, storeId, string.Empty, true);
 

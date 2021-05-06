@@ -1,0 +1,382 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{123B9C96-8B4B-489B-83B7-FFCC5B91EF0A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LSOmni.DataAccess.BOConnection.PreCommon</RootNamespace>
+    <AssemblyName>LSOmni.DataAccess.BOConnection.PreCommon</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
+      <Link>Properties\Version.cs</Link>
+    </Compile>
+    <Compile Include="Mapping\ActivityMapping.cs" />
+    <Compile Include="Mapping\BaseMapping.cs" />
+    <Compile Include="Mapping\ContactMapping.cs" />
+    <Compile Include="Mapping\OrderMapping.cs" />
+    <Compile Include="Mapping\StoreMapping.cs" />
+    <Compile Include="Mapping\TransactionMapping.cs" />
+    <Compile Include="MemCache..cs" />
+    <Compile Include="PreCommonActivity.cs" />
+    <Compile Include="PreCommonBase.cs" />
+    <Compile Include="PreCommonCustom.cs" />
+    <Compile Include="PreCommonLoyalty.cs" />
+    <Compile Include="PreCommonReplicate.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LSActivity15\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\NavWebReference\Reference.cs" />
+    <Compile Include="Web References\LSCentral\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="XmlMapping\BaseXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\AdvertisementXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
+    <Compile Include="XmlMapping\Loyalty\StoreServicesXml.cs" />
+    <Compile Include="XmlMapping\NAVWebXml.cs" />
+    <Compile Include="XmlMapping\Replication\BaseRepository.cs" />
+    <Compile Include="XmlMapping\Replication\ContactRepository.cs" />
+    <Compile Include="XmlMapping\Replication\ItemRepository.cs" />
+    <Compile Include="XmlMapping\Replication\ReplicateRepository.cs" />
+    <Compile Include="XmlMapping\Replication\SetupRepository.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\LSActivity15\Activity.wsdl" />
+    <None Include="Web References\LSActivity15\ActivityAdmissionEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityAttributeRespond.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityAvailabilityResponse.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityChargeRespond.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityCustomerEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityMemberDetails.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityMembershipProducts.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivitySubscriptionEntries.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadAllowance.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadLocations.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadMemberships.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadProducts.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadPromotions.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadReservations.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadResHeaders.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\ActivityUploadTypes.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity15\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\LSCentral\Root1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOFilteredListV21.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOGetPutBackItems1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOMobilePickHeaders1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOMobilePickLines1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOMobilePickUpdateLines1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOQtyAvailabilityExtOut1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCustomerOrderFilteredList1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCustomerOrderGet1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCustomerOrderGetV21.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCustomerOrderGetV31.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCustomerOrderStatus3.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetActionsFromRemoteDBXML1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetCrossSelling1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetDataEntryBalance1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetDirectMarketingInfo1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetDocumentLines1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetDocumentList11.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetDocumentList2.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetDocumnet1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetHierarchy1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetHierarchyNodeOut1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetHierarchyV21.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetInventoryMultipleOut1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetItemDocument1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetItemInventory1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetItemSalesInfo1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetMemberCard1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetMemberContact1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetMemberInfoForPos1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetMemberSalesHistory1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetReturnPolicy1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetStoreOpeningHours1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetTransaction1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootHospTransaction1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootKotStatus1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootLeftRightLine1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMemberContactCreate11.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMemberContactCreate2.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMemberLogon1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMobileGetProfiles1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMobilePosPrint1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMobilePosSalesHistory1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMobilePosZReport1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootMobileTransaction1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootSendTransaction1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootSendTransactionHeader1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootStoreInventoryGetLines1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\NavWebReference\Reference.map" />
+    <None Include="Web References\NavWebReference\RetailWebServices.wsdl" />
+    <None Include="Web References\LSCentral\OmniWrapper.wsdl" />
+    <None Include="Web References\LSCentral\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
+      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
+      <Name>DiscountEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
+      <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
+      <Name>Domain.DataModel.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Inventory\Domain.DataModel.Inventory\Domain.DataModel.Inventory.csproj">
+      <Project>{4f47a1e3-4edd-4a96-8e30-af6797217591}</Project>
+      <Name>Domain.DataModel.Inventory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
+      <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>
+      <Name>Domain.DataModel.Loyalty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Pos\Domain.DataModel.Pos\Domain.DataModel.Pos.csproj">
+      <Project>{b2615d03-8131-48d0-b0f2-717980189dc2}</Project>
+      <Name>Domain.DataModel.Pos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>
+      <Name>Common</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{8436968a-e89d-4470-9c90-bd4b448fd4c9}</Project>
+      <Name>Interfaces</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferences Include="Web References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralRelease/WS/Codeunit/OmniWrapper">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LSCentral\</RelPath>
+      <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralRelease/WS/Codeunit/OmniWrapper</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_PreCommon_NavWS_OmniWrapper</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/Activity">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LSActivity15\</RelPath>
+      <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/Activity</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_PreCommon_LSActivity15_Activity</CachedSettingsPropName>
+    </WebReferenceUrl>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if /I "$(ConfigurationName)" == "Release" Eazfuscator.NET.exe "$(TargetPath)" --msbuild-project-path "$(ProjectPath)" --msbuild-project-configuration "$(ConfigurationName)" --msbuild-project-platform "$(PlatformName)" --msbuild-solution-path "$(SolutionPath)" -n --newline-flush -v 3.3</PostBuildEvent>
+  </PropertyGroup>
+</Project>

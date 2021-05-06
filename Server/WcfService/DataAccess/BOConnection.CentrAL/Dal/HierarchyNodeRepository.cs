@@ -324,7 +324,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ImageId = SQLHelper.GetString(reader["Image Id"]),
                 IsMemberClub = SQLHelper.GetBool(reader["Member Type"]),
                 MemberValue = SQLHelper.GetString(reader["Member Value"]),
-                DealPrice = SQLHelper.GetDecimal(reader["Deal Price"]),
+                DealPrice = SQLHelper.GetDecimal(reader, "Deal Price"),
                 ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
                 IsActive = SQLHelper.GetBool(reader["Status"])
             };

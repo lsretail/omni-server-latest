@@ -416,11 +416,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             return new SalesEntryPayment()
             {
-                Amount = SQLHelper.GetDecimal(reader["Pre Approved Amount"]),
+                Amount = SQLHelper.GetDecimal(reader, "Pre Approved Amount"),
                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                CurrencyFactor = SQLHelper.GetDecimal(reader["Currency Factor"]),
+                CurrencyFactor = SQLHelper.GetDecimal(reader, "Currency Factor"),
                 CardNo = SQLHelper.GetString(reader[cardCustNo])
             };
         }

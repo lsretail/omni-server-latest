@@ -17,57 +17,98 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual ActivityResponse ActivityConfirm(ActivityRequest request)
         {
-            return NavWSBase.ActivityConfirm(request);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityConfirm(request);
+
+            return LSCWSBase.ActivityConfirm(request);
         }
 
         public virtual ActivityResponse ActivityCancel(string activityNo)
         {
-            return NavWSBase.ActivityCancel(activityNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityCancel(activityNo);
+
+            return LSCWSBase.ActivityCancel(activityNo);
         }
 
-        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons)
         {
-            return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo, noOfPersons);
+
+            return LSCWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo, noOfPersons);
         }
 
         public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
         {
-            return NavWSBase.ActivityAdditionalChargesGet(activityNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAdditionalChargesGet(activityNo);
+
+            return LSCWSBase.ActivityAdditionalChargesGet(activityNo);
+        }
+
+        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
+
+            return LSCWSBase.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
         }
 
         public virtual bool ActivityAdditionalChargesSet(AdditionalCharge request)
         {
-            return NavWSBase.ActivityAdditionalChargesSet(request);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAdditionalChargesSet(request);
+
+            return LSCWSBase.ActivityAdditionalChargesSet(request);
         }
 
         public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
         {
-            return NavWSBase.ActivityAttributesGet(type, linkNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAttributesGet(type, linkNo);
+
+            return LSCWSBase.ActivityAttributesGet(type, linkNo);
         }
 
         public virtual int ActivityAttributeSet(AttributeType type, string linkNo, string attributeCode, string attributeValue)
         {
-            return NavWSBase.ActivityAttributeSet(type, linkNo, attributeCode, attributeValue);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAttributeSet(type, linkNo, attributeCode, attributeValue);
+
+            return LSCWSBase.ActivityAttributeSet(type, linkNo, attributeCode, attributeValue);
         }
 
         public virtual string ActivityReservationInsert(Reservation request)
         {
-            return NavWSBase.ActivityInsertReservation(request);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityInsertReservation(request);
+
+            return LSCWSBase.ActivityInsertReservation(request);
         }
 
         public virtual string ActivityReservationUpdate(Reservation request)
         {
-            return NavWSBase.ActivityUpdateReservation(request);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityUpdateReservation(request);
+
+            return LSCWSBase.ActivityUpdateReservation(request);
         }
 
         public virtual MembershipResponse ActivityMembershipSell(string contactNo, string membersShipType)
         {
-            return NavWSBase.ActivityMembershipSell(contactNo, membersShipType);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityMembershipSell(contactNo, membersShipType);
+
+            return LSCWSBase.ActivityMembershipSell(contactNo, membersShipType);
         }
 
         public virtual bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment)
         {
-            return NavWSBase.ActivityMembershipCancel(contactNo, memberShipNo, comment);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityMembershipCancel(contactNo, memberShipNo, comment);
+
+            return LSCWSBase.ActivityMembershipCancel(contactNo, memberShipNo, comment);
         }
 
         #endregion
@@ -76,62 +117,98 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ActivityProduct> ActivityProductsGet()
         {
-            return NavWSBase.ActivityProductsGet();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityProductsGet();
+
+            return LSCWSBase.ActivityProductsGet();
         }
 
         public virtual List<ActivityType> ActivityTypesGet()
         {
-            return NavWSBase.ActivityTypesGet();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityTypesGet();
+
+            return LSCWSBase.ActivityTypesGet();
         }
 
         public virtual List<ActivityLocation> ActivityLocationsGet()
         {
-            return NavWSBase.ActivityLocationsGet();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityLocationsGet();
+
+            return LSCWSBase.ActivityLocationsGet();
         }
 
         public virtual List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType)
         {
-            return NavWSBase.ActivityReservationsGet(reservationNo, contactNo, activityType);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityReservationsGet(reservationNo, contactNo, activityType);
+
+            return LSCWSBase.ActivityReservationsGet(reservationNo, contactNo, activityType);
         }
 
         public virtual List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate)
         {
-            return NavWSBase.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
+
+            return LSCWSBase.ActivityReservationsHeaderGet(reservationNo, reservationType, status, locationNo, fromDate);
         }
 
         public virtual List<Promotion> ActivityPromotionsGet()
         {
-            return NavWSBase.ActivityPromotionsGet();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityPromotionsGet();
+
+            return LSCWSBase.ActivityPromotionsGet();
         }
 
         public virtual List<Allowance> ActivityAllowancesGet(string contactNo)
         {
-            return NavWSBase.ActivityAllowancesGet(contactNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAllowancesGet(contactNo);
+
+            return LSCWSBase.ActivityAllowancesGet(contactNo);
         }
 
         public virtual List<CustomerEntry> ActivityCustomerEntriesGet(string contactNo, string customerNo)
         {
-            return NavWSBase.ActivityCustomerEntriesGet(contactNo, customerNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityCustomerEntriesGet(contactNo, customerNo);
+
+            return LSCWSBase.ActivityCustomerEntriesGet(contactNo, customerNo);
         }
 
         public virtual List<MemberProduct> ActivityMembershipProductsGet()
         {
-            return NavWSBase.ActivityMembershipProductsGet();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityMembershipProductsGet();
+
+            return LSCWSBase.ActivityMembershipProductsGet();
         }
 
         public virtual List<SubscriptionEntry> ActivitySubscriptionChargesGet(string contactNo)
         {
-            return NavWSBase.ActivitySubscriptionChargesGet(contactNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivitySubscriptionChargesGet(contactNo);
+
+            return LSCWSBase.ActivitySubscriptionChargesGet(contactNo);
         }
 
         public virtual List<AdmissionEntry> ActivityAdmissionEntriesGet(string contactNo)
         {
-            return NavWSBase.ActivityAdmissionEntriesGet(contactNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityAdmissionEntriesGet(contactNo);
+
+            return LSCWSBase.ActivityAdmissionEntriesGet(contactNo);
         }
 
         public virtual List<Membership> ActivityMembershipsGet(string contactNo)
         {
-            return NavWSBase.ActivityMembershipsGet(contactNo);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ActivityMembershipsGet(contactNo);
+
+            return LSCWSBase.ActivityMembershipsGet(contactNo);
         }
 
         #endregion

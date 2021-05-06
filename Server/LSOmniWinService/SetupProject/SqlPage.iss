@@ -319,5 +319,3 @@ begin
 
   Result := SQLPage;
 end;
-
-

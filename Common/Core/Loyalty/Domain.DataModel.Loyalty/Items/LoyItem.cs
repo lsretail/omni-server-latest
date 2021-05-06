@@ -11,8 +11,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class LoyItem : Entity, IDisposable
     {
-        private string details;
-
         public LoyItem(string id) : base(id)
         {
             ProductGroupId = string.Empty;
@@ -72,19 +70,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public bool IsDeleted { get; set; }
         [DataMember]
         public string Description { get; set; }
-
         [DataMember]
-        public string Details
-        {
-            get { return details; }
-            set
-            {
-                if (value == null)
-                    details = string.Empty;
-                else
-                    details = Regex.Replace(Regex.Replace(value, "<[^>]*(>|$)", string.Empty), @"\r\n\r\n\r\n", Environment.NewLine).Trim();
-            }
-        }
+        public string Details { get; set; }
 
         [DataMember]
         public List<Price> Prices { get; set; }
@@ -220,6 +207,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
             else
                 returnString += qty.ToString("N" + UnitOfMeasures[0].Decimals) + " " + UnitOfMeasures[0].Description;
             return returnString;
+        }
+
+        public string DetailsStripped()
+        {
+            return Regex.Replace(Regex.Replace(Details, "<[^>]*(>|$)", string.Empty), @"\r\n\r\n\r\n", Environment.NewLine).Trim();
         }
 
         public LoyItem ShallowCopy()

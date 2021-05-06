@@ -502,6 +502,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ActivityNo = string.Concat(rec.ActivityNo),
                 LineNo = rec.LineNo,
                 ItemNo = rec.ItemNo,
+                Description = rec.Description,
                 Quantity = rec.Qty,
                 Price = rec.Price,
                 DiscountPercentage = rec.DiscountPercentage,

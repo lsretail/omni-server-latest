@@ -671,7 +671,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         if (reader.Read())
                         {
-                            card.Balance = SQLHelper.GetDecimal(reader["Amt"]);
+                            card.Balance = SQLHelper.GetDecimal(reader, "Amt");
                             card.ExpireDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Exp"]), config.IsJson);
                         }
                         else

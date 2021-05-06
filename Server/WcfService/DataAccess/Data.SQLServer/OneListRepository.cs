@@ -374,7 +374,7 @@ namespace LSOmni.DataAccess.Dal
                             {
                                 Id = SQLHelper.GetString(reader["Id"]),
                                 CreateDate = SQLHelper.GetDateTime(reader["CreateDate"]),
-                                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
                                 LineNumber = SQLHelper.GetInt32(reader["DisplayOrderId"]),
                                 OneListId = SQLHelper.GetString(reader["OneListId"]),
                                 BarcodeId = SQLHelper.GetString(reader["BarcodeId"]),
@@ -385,12 +385,12 @@ namespace LSOmni.DataAccess.Dal
                                 VariantDescription = SQLHelper.GetString(reader["VariantDescription"]),
                                 UnitOfMeasureId = SQLHelper.GetString(reader["UomId"]),
                                 Image = new ImageView(SQLHelper.GetString(reader["ImageId"])),
-                                Price = SQLHelper.GetDecimal(reader["Price"]),
-                                NetPrice = SQLHelper.GetDecimal(reader["NetPrice"]),
-                                NetAmount = SQLHelper.GetDecimal(reader["NetAmount"]),
-                                TaxAmount = SQLHelper.GetDecimal(reader["TaxAmount"]),
-                                DiscountAmount = SQLHelper.GetDecimal(reader["DiscountAmount"]),
-                                DiscountPercent = SQLHelper.GetDecimal(reader["DiscountPercent"]),
+                                Price = SQLHelper.GetDecimal(reader, "Price"),
+                                NetPrice = SQLHelper.GetDecimal(reader, "NetPrice"),
+                                NetAmount = SQLHelper.GetDecimal(reader, "NetAmount"),
+                                TaxAmount = SQLHelper.GetDecimal(reader, "TaxAmount"),
+                                DiscountAmount = SQLHelper.GetDecimal(reader, "DiscountAmount"),
+                                DiscountPercent = SQLHelper.GetDecimal(reader, "DiscountPercent"),
                                 IsADeal = SQLHelper.GetBool(reader["IsADeal"])
                             };
                             line.Amount = line.NetAmount + line.TaxAmount;
@@ -431,7 +431,7 @@ namespace LSOmni.DataAccess.Dal
                                 OneListId = SQLHelper.GetString(reader["OneListId"]),
                                 OneListItemId = SQLHelper.GetString(reader["OneListItemId"]),
                                 LineNumber = SQLHelper.GetInt32(reader["LineNumber"]),
-                                Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                Quantity = SQLHelper.GetDecimal(reader, "Quantity"),
                                 ItemId = SQLHelper.GetString(reader["ItemId"]),
                                 Description = SQLHelper.GetString(reader["ItemDescription"]),
                                 Type = (SubLineType)SQLHelper.GetInt32(reader["Type"]),

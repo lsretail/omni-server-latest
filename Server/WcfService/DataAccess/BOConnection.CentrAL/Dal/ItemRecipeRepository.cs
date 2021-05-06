@@ -133,8 +133,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ItemNo = SQLHelper.GetString(reader["Item No_"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 Exclusion = SQLHelper.GetBool(reader["Exclusion"]),
-                ExclusionPrice = SQLHelper.GetDecimal(reader["Price on Exclusion"]),
-                QuantityPer = SQLHelper.GetDecimal(reader["Quantity per"]),
+                ExclusionPrice = SQLHelper.GetDecimal(reader, "Price on Exclusion"),
+                QuantityPer = SQLHelper.GetDecimal(reader, "Quantity per"),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
             };
         }

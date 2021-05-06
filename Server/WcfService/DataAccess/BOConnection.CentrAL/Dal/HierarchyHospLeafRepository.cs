@@ -354,7 +354,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure"]),
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
-                AddedAmount = SQLHelper.GetDecimal(reader["Modifier Added Amount"]),
+                AddedAmount = SQLHelper.GetDecimal(reader, "Modifier Added Amount"),
                 DealModSizeGroupIndex = SQLHelper.GetInt32(reader["Deal Mod_ Size Gr_ Index"]),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
             };
@@ -378,7 +378,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure"]),
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Item Selection"]),
-                AddedAmount = SQLHelper.GetDecimal(reader["Added Amount"]),
+                AddedAmount = SQLHelper.GetDecimal(reader, "Added Amount"),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
             };
         }

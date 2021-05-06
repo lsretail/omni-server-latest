@@ -2468,10 +2468,11 @@ namespace LSOmni.Service
         /// <param name="optionalResource"></param>
         /// <param name="promoCode"></param>
         /// <param name="activityNo"></param>
+        /// <param name="noOfPersons"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product
@@ -2484,6 +2485,20 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         AdditionalCharge ActivityAdditionalChargesGet(string activityNo);
+
+        /// <summary>
+        /// Returns list of charges for products
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetProductChargesV2<p/><p/>
+        /// </remarks>
+        /// <param name="locationNo"></param>
+        /// <param name="productNo"></param>
+        /// <param name="dateOfBooking"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking);
 
         /// <summary>
         /// Change or insert additional charges to Activity

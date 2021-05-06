@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Store
 
         List<StoreServices> StoreServicesGetByStoreId(string storeId);
-        Store StoreGetById(string id);
+        Store StoreGetById(string id, bool details);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
         List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
         List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1);

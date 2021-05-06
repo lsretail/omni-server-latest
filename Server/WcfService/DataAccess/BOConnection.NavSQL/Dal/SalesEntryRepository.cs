@@ -619,7 +619,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             SalesEntryDiscountLine line = new SalesEntryDiscountLine()
             {
-                DiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Discount Amount"),
                 Description = SQLHelper.GetString(reader["Description"]),
                 OfferNumber = SQLHelper.GetString(reader["Offer No_"]),
                 PeriodicDiscGroup = SQLHelper.GetString(reader["Offer No_"]),
@@ -636,8 +636,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 LineNumber = ConvertTo.SafeInt(SQLHelper.GetString(reader["Line No_"])),
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
-                Amount = SQLHelper.GetDecimal(reader["Amt"], false),
-                CurrencyFactor = SQLHelper.GetDecimal(reader["Rate"], false),
+                Amount = SQLHelper.GetDecimal(reader, "Amt", false),
+                CurrencyFactor = SQLHelper.GetDecimal(reader, "Rate", false),
                 CardNo = SQLHelper.GetString(reader["No"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"])
             };

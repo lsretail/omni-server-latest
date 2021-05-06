@@ -32,6 +32,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         [DataMember]
         public string ItemNo { get; set; }
         [DataMember]
+        public string BookingRef { get; set; }
+        [DataMember]
         public decimal Price { get; set; }
         [DataMember]
         public decimal Discount { get; set; }

@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("LSOmni.DataAccess.BOConnection.NavSQL")]
+[assembly: AssemblyTitle("LSOmni.DataAccess.BOConnection.CentrAL")]
 [assembly: AssemblyDescription("")]
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]

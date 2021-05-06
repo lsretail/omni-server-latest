@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{A13A4882-B710-402C-A197-E752F02AD1EE}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>LSOmni.DataAccess.BOConnection.CentralPre</RootNamespace>
+    <AssemblyName>LSOmni.DataAccess.BOConnection.CentralPre</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\Service\bin\</OutputPath>
+    <DefineConstants>TRACE;WCFSERVER</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SqlClient, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SqlClient.4.5.1\lib\net461\System.Data.SqlClient.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
+      <Link>Properties\Version.cs</Link>
+    </Compile>
+    <Compile Include="Dal\AttributeOptionValueRepository.cs" />
+    <Compile Include="Dal\AttributeRepository.cs" />
+    <Compile Include="Dal\AttributeValueRepository.cs" />
+    <Compile Include="Dal\BarcodeMaskRepository.cs" />
+    <Compile Include="Dal\BarcodeMaskSegmentRepository.cs" />
+    <Compile Include="Dal\BarcodeRepository.cs" />
+    <Compile Include="Dal\BaseRepository.cs" />
+    <Compile Include="Dal\ContactRepository.cs" />
+    <Compile Include="Dal\CurrencyExchRateRepository.cs" />
+    <Compile Include="Dal\CurrencyRepository.cs" />
+    <Compile Include="Dal\CustomerRepository.cs" />
+    <Compile Include="Dal\DataTranslationRepository.cs" />
+    <Compile Include="Dal\DiscountOfferRepository.cs" />
+    <Compile Include="Dal\ExtendedVariantValuesRepository.cs" />
+    <Compile Include="Dal\HierarchyHospLeafRepository.cs" />
+    <Compile Include="Dal\HierarchyNodeRepository.cs" />
+    <Compile Include="Dal\HierarchyRepository.cs" />
+    <Compile Include="Dal\ImageRepository.cs" />
+    <Compile Include="Dal\InvStatusRepository.cs" />
+    <Compile Include="Dal\ItemLocationRepository.cs" />
+    <Compile Include="Dal\ItemCategoryRepository.cs" />
+    <Compile Include="Dal\ItemRecipeRepository.cs" />
+    <Compile Include="Dal\ItemModifierRepository.cs" />
+    <Compile Include="Dal\ItemRepository.cs" />
+    <Compile Include="Dal\ItemUOMRepository.cs" />
+    <Compile Include="Dal\ItemVariantRegistrationRepository.cs" />
+    <Compile Include="Dal\MyCustomRepository.cs" />
+    <Compile Include="Dal\NavWSRepository.cs" />
+    <Compile Include="Dal\SalesEntryRepository.cs" />
+    <Compile Include="Dal\OrderRepository.cs" />
+    <Compile Include="Dal\PluRepository.cs" />
+    <Compile Include="Dal\PriceRepository.cs" />
+    <Compile Include="Dal\ProductGroupRepository.cs" />
+    <Compile Include="Dal\ShippingRepository.cs" />
+    <Compile Include="Dal\StaffRepository.cs" />
+    <Compile Include="Dal\StaffStoreLinkRepository.cs" />
+    <Compile Include="Dal\StoreRepository.cs" />
+    <Compile Include="Dal\StoreTenderTypeCurrencyRepository.cs" />
+    <Compile Include="Dal\StoreTenderTypeRepository.cs" />
+    <Compile Include="Dal\TaxSetupRepository.cs" />
+    <Compile Include="Dal\TenderTypeRepository.cs" />
+    <Compile Include="Dal\TerminalRepository.cs" />
+    <Compile Include="Dal\TransactionRepository.cs" />
+    <Compile Include="Dal\UnitOfMeasureRepository.cs" />
+    <Compile Include="Dal\ValidationScheduleRepository.cs" />
+    <Compile Include="Dal\VendorItemMappingRepository.cs" />
+    <Compile Include="Dal\VendorRepository.cs" />
+    <Compile Include="NavActivity.cs" />
+    <Compile Include="NavApps.cs" />
+    <Compile Include="NavBase.cs" />
+    <Compile Include="NavCustom.cs" />
+    <Compile Include="NavLoyalty.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
+      <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
+      <Name>Domain.DataModel.Activity</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
+      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
+      <Name>DiscountEngine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
+      <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
+      <Name>Domain.DataModel.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Inventory\Domain.DataModel.Inventory\Domain.DataModel.Inventory.csproj">
+      <Project>{4f47a1e3-4edd-4a96-8e30-af6797217591}</Project>
+      <Name>Domain.DataModel.Inventory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
+      <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>
+      <Name>Domain.DataModel.Loyalty</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\Pos\Domain.DataModel.Pos\Domain.DataModel.Pos.csproj">
+      <Project>{b2615d03-8131-48d0-b0f2-717980189dc2}</Project>
+      <Name>Domain.DataModel.Pos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>
+      <Name>Common</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\BOConnection.PreCommon\BOConnection.PreCommon.csproj">
+      <Project>{123b9c96-8b4b-489b-83b7-ffcc5b91ef0a}</Project>
+      <Name>BOConnection.PreCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{8436968a-e89d-4470-9c90-bd4b448fd4c9}</Project>
+      <Name>Interfaces</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>if /I "$(ConfigurationName)" == "Release" Eazfuscator.NET.exe "$(TargetPath)" --msbuild-project-path "$(ProjectPath)" --msbuild-project-configuration "$(ConfigurationName)" --msbuild-project-platform "$(PlatformName)" --msbuild-solution-path "$(SolutionPath)" -n --newline-flush -v 3.3</PostBuildEvent>
+  </PropertyGroup>
+</Project>

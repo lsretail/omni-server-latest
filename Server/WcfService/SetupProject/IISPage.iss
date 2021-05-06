@@ -70,7 +70,7 @@ begin
   with IISPage_lblComment do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'Recommend leaving the web service name as LSOmniService';
+    Caption :=  'Recommend leaving the web service name as LSCommerceService';
     Left := ScaleX(15);
     Top := ScaleY(1);
     Width := ScaleX(350);

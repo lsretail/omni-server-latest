@@ -341,10 +341,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]),
-                UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price Including VAT"]),
+                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "LSC Unit Price Including VAT"),
                 PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
-                MinimumQuantity = SQLHelper.GetDecimal(reader["Minimum Quantity"]),
+                MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
                 StartingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson),
                 EndingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Date"]), config.IsJson),
                 VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
@@ -371,7 +371,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                UnitPriceInclVat = SQLHelper.GetDecimal(reader["Unit Price"]),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price"),
                 PriceInclVat = true,
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
@@ -379,11 +379,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             if (NavVersion < new Version("17.3"))
             {
-                price.UnitPrice = SQLHelper.GetDecimal(reader["Unit Price"]);
+                price.UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price");
             }
             else
             {
-                price.UnitPrice = SQLHelper.GetDecimal(reader["Net Unit Price"]);
+                price.UnitPrice = SQLHelper.GetDecimal(reader, "Net Unit Price");
             }
 
             return price;
@@ -403,11 +403,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             price.Amount = FormatAmount(price.Amt, culture);
             if (NavVersion < new Version("17.3"))
             {
-                price.NetAmt = SQLHelper.GetDecimal(reader["Unit Price"]);
+                price.NetAmt = SQLHelper.GetDecimal(reader, "Unit Price");
             }
             else
             {
-                price.NetAmt = SQLHelper.GetDecimal(reader["Net Unit Price"]);
+                price.NetAmt = SQLHelper.GetDecimal(reader, "Net Unit Price");
             }
 
             return price;

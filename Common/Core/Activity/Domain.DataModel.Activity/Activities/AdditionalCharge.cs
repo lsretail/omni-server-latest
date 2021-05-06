@@ -30,6 +30,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         [DataMember(IsRequired = true)]
         public string ItemNo { set; get; }
         [DataMember]
+        public string Description { set; get; }
+        [DataMember]
         public decimal Quantity { set; get; }
         [DataMember]
         public decimal Price { set; get; }

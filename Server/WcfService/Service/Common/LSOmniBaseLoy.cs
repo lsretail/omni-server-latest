@@ -1363,7 +1363,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "storeId:{0}", storeId);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                Store store = storeBLL.StoreGetById(storeId);
+                Store store = storeBLL.StoreGetById(storeId, true);
                 StoreSetLocation(store);
                 return store;
 

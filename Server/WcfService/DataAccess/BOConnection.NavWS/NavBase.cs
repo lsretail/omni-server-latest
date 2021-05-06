@@ -5,6 +5,7 @@ using System.Net.Security;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSOmni.DataAccess.BOConnection.NavCommon;
+using LSOmni.DataAccess.BOConnection.PreCommon;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -19,6 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public static Version NAVVersion = null; //use this in code to check Nav version
         public static bool NavDirect = true;
         public static NavCommonBase NavWSBase = null;
+        public static PreCommonBase LSCWSBase = null;
 
         public NavBase(BOConfiguration configuration, bool ping = false)
         {
@@ -29,6 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             config = configuration;
 
             NavWSBase = new NavCommonBase(configuration);
+            LSCWSBase = new PreCommonBase(configuration);
             NAVVersion = NavWSBase.NAVVersion;
 
             string domain = "";

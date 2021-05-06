@@ -766,7 +766,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             NavWS.RootCustomerOrderCreateV5 root = new NavWS.RootCustomerOrderCreateV5();
 
             List<NavWS.CustomerOrderCreateCOHeaderV5> header = new List<NavWS.CustomerOrderCreateCOHeaderV5>();
-            header.Add(new NavWS.CustomerOrderCreateCOHeaderV5()
+            NavWS.CustomerOrderCreateCOHeaderV5 hd = new NavWS.CustomerOrderCreateCOHeaderV5()
             {
                 DocumentID = string.Empty,
                 ExternalID = order.Id.ToUpper(),
@@ -798,7 +798,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired && order.ShippingStatus != 0),
                 CreatedAtStore = order.StoreId,
                 TerritoryCode = string.Empty
-            });
+            };
+
+            if (NavVersion > new Version("17.4.0.0"))
+                hd.ShopPaygo = (order.OrderType == OrderType.ScanPayGo);
+
+            header.Add(hd);
 
             bool useHeaderCAC = false;
             string storeId = order.StoreId.ToUpper();

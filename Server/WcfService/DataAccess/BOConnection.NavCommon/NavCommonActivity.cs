@@ -98,7 +98,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return result;
         }
 
-        public List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
+        public List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons)
         {
             string error = string.Empty;
 
@@ -106,7 +106,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 locationNo, productNo, activityDate, contactNo));
 
             LSActivity15.ActivityAvailabilityResponse root = new LSActivity15.ActivityAvailabilityResponse();
-            activity15WS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), XMLHelper.GetString(activityNo), ref error, ref root);
+
+            if (NAVVersion < new Version("17.5"))
+                activity15WS.GetAvailabilityV2(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), XMLHelper.GetString(activityNo), ref error, ref root);
+            else
+                activity15WS.GetAvailabilityV3(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), XMLHelper.GetString(activityNo), noOfPersons, ref error, ref root);
+
             logger.Debug(config.LSKey.Key, "ActivityAvailabilityResponse - " + Serialization.ToXml(root, true));
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
@@ -121,6 +126,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
             activity15WS.GetAdditionalCharges(activityNo, ref root);
+
+            logger.Debug(config.LSKey.Key, "ActivityChargeRespond - " + Serialization.ToXml(root, true));
+            ActivityMapping map = new ActivityMapping(config.IsJson);
+            return map.MapRootToAdditionalCharge(root);
+        }
+
+        public AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        {
+            logger.Debug(config.LSKey.Key, string.Format("ActivityProductChargesGet: productNo:{0}", productNo));
+
+            LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
+            activity15WS.GetProductChargesV2(productNo, locationNo, dateOfBooking, ref root);
 
             logger.Debug(config.LSKey.Key, "ActivityChargeRespond - " + Serialization.ToXml(root, true));
             ActivityMapping map = new ActivityMapping(config.IsJson);
@@ -214,12 +231,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string error = string.Empty;
             string no = string.Empty;
             string itemNo = string.Empty;
+            string bookRef = string.Empty;
             decimal price = 0;
             decimal discount = 0;
             decimal qty = 0;
 
             logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipCancel: contactNo:{0}, type:{1}", contactNo, type));
-            activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
+
+            if (NAVVersion < new Version("17.5"))
+                activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
+            else
+                activity15WS.SellMembershipV2(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref bookRef, ref error);
 
             logger.Debug(config.LSKey.Key, "SellMembership - " + error);
             if (string.IsNullOrEmpty(error) == false)
@@ -231,7 +253,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 ItemNo = itemNo,
                 Price = price,
                 Discount = discount,
-                Quantity = qty
+                Quantity = qty,
+                BookingRef = bookRef
             };
         }
 

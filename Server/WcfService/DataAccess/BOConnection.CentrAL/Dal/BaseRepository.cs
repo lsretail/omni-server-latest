@@ -357,9 +357,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private string GetSQLAction(int tableid, string lastkey, bool orderby)
         {
-            string sql = string.Format(" FROM [{0}{1}] WHERE [Table No_]={2} AND [Entry No_]>{3} {4}",
+            string sql = string.Format(" FROM [{0}{1}] p1 WHERE p1.[Table No_]={2} AND p1.[Entry No_]>{3} {4}",
                 navCompanyName, "Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d", tableid, lastkey,
-                "GROUP BY [Table No_],[Key]");
+                "GROUP BY p1.[Table No_],p1.[Key]");
 
             if (orderby)
                 sql += " ORDER BY [EntryNo]";
@@ -379,7 +379,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = GetSQL(true, batchsize, false) +
-                                        "[Table No_],[Key], MAX([Entry No_]) AS EntryNo, MAX([Action]) AS Action" +
+                                        "p1.[Table No_],p1.[Key],MAX(p1.[Entry No_]) AS [EntryNo],(SELECT TOP 1 p2.[Action] " +
+                                        "FROM [" + navCompanyName + "Preaction$5ecfc871-5d82-43f1-9c54-59685e82318d] p2 " +
+                                        "WHERE p2.[Table No_]=p1.[Table No_] AND p2.[Key]=p1.[Key] " +
+                                        "ORDER BY p2.[Entry No_] DESC) AS [Action]" +
                                         GetSQLAction(tableid, lastkey, true);
 
                     TraceSqlCommand(command);

@@ -98,6 +98,10 @@
       <Project>{e6b08a8c-10f0-4e48-999e-47f7236dde5a}</Project>
       <Name>BOConnection.NavCommon</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BOConnection.PreCommon\BOConnection.PreCommon.csproj">
+      <Project>{123b9c96-8b4b-489b-83b7-ffcc5b91ef0a}</Project>
+      <Name>BOConnection.PreCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{8436968a-e89d-4470-9c90-bd4b448fd4c9}</Project>
       <Name>Interfaces</Name>

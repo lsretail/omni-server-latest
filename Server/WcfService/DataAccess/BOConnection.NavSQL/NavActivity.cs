@@ -26,14 +26,19 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.ActivityCancel(activityNo);
         }
 
-        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo)
+        public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons)
         {
-            return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo);
+            return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, optionalResource, promoCode, activityNo, noOfPersons);
         }
 
         public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
         {
             return NavWSBase.ActivityAdditionalChargesGet(activityNo);
+        }
+
+        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        {
+            return NavWSBase.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
         }
 
         public virtual bool ActivityAdditionalChargesSet(AdditionalCharge request)

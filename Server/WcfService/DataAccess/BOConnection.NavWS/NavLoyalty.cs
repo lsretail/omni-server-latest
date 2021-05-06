@@ -36,7 +36,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual string Ping()
         {
-            string ver = NavWSBase.NavVersionToUse(true, true);
+            string ver;
+            if (NAVVersion < new Version("17.5"))
+                ver = NavWSBase.NavVersionToUse(true, true);
+            else
+                ver = LSCWSBase.NavVersionToUse();
+
             if (ver.Contains("ERROR"))
                 throw new ApplicationException(ver);
 
@@ -47,17 +52,27 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual string ContactCreate(MemberContact contact)
         {
-            return NavWSBase.ContactCreate(contact);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ContactCreate(contact);
+
+            return LSCWSBase.ContactCreate(contact);
         }
 
         public virtual void ContactUpdate(MemberContact contact, string accountId)
         {
-            NavWSBase.ContactUpdate(contact, accountId);
+            if (NAVVersion < new Version("17.5"))
+                NavWSBase.ContactUpdate(contact, accountId);
+
+            LSCWSBase.ContactUpdate(contact, accountId);
         }
 
         public virtual MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails)
         {
-            MemberContact contact = NavWSBase.ContactGet(string.Empty, string.Empty, card, string.Empty, string.Empty, includeDetails);
+            MemberContact contact;
+            if (NAVVersion < new Version("17.5"))
+                contact = NavWSBase.ContactGet(string.Empty, string.Empty, card, string.Empty, string.Empty, includeDetails);
+            else
+                contact = LSCWSBase.ContactGet(string.Empty, string.Empty, card, string.Empty, string.Empty, includeDetails);
 
             if (numberOfTrans > 0 && contact != null)
             {
@@ -71,7 +86,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("16.2"))
                 return NavWSBase.ContactGetByUserName(user, includeDetails);
 
-            return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, user, string.Empty, includeDetails);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, user, string.Empty, includeDetails);
+
+            return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, user, string.Empty, includeDetails);
         }
 
         public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
@@ -79,16 +97,31 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("16.2"))
                 return NavWSBase.ContactGetByEmail(searchValue, false);
 
+            if (NAVVersion < new Version("17.5"))
+            {
+                switch (searchType)
+                {
+                    case ContactSearchType.Email:
+                        return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, string.Empty, searchValue, false);
+                    case ContactSearchType.CardId:
+                        return NavWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, false);
+                    case ContactSearchType.UserName:
+                        return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, false);
+                    case ContactSearchType.ContactNumber:
+                        return NavWSBase.ContactSearch(ContactSearchType.ContactNumber, searchValue, 1).FirstOrDefault();
+                }
+            }
+
             switch (searchType)
             {
                 case ContactSearchType.Email:
-                    return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, string.Empty, searchValue, false);
+                    return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, string.Empty, searchValue, false);
                 case ContactSearchType.CardId:
-                    return NavWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, false);
+                    return LSCWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, false);
                 case ContactSearchType.UserName:
-                    return NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, false);
+                    return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, false);
                 case ContactSearchType.ContactNumber:
-                    return NavWSBase.ContactSearch(ContactSearchType.ContactNumber, searchValue, 1).FirstOrDefault();
+                    return LSCWSBase.ContactSearch(ContactSearchType.ContactNumber, searchValue, 1).FirstOrDefault();
             }
             return null;
         }
@@ -100,28 +133,43 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
-            return NavWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
+
+            return LSCWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
         }
 
         //Change the password in NAV
         public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword)
         {
-            NavWSBase.ChangePassword(userName, token, newPassword, oldPassword);
+            if (NAVVersion < new Version("17.5"))
+                NavWSBase.ChangePassword(userName, token, newPassword, oldPassword);
+
+            LSCWSBase.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
         public virtual string ResetPassword(string userName, string email, string newPassword)
         {
-            return NavWSBase.ResetPassword(userName, email, newPassword);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ResetPassword(userName, email, newPassword);
+
+            return LSCWSBase.ResetPassword(userName, email, newPassword);
         }
 
         public virtual void LoginChange(string oldUserName, string newUserName, string password)
         {
-            NavWSBase.LoginChange(oldUserName, newUserName, password);
+            if (NAVVersion < new Version("17.5"))
+                NavWSBase.LoginChange(oldUserName, newUserName, password);
+
+            LSCWSBase.LoginChange(oldUserName, newUserName, password);
         }
 
         public virtual List<Profile> ProfileGetByCardId(string id)
         {
-            return NavWSBase.ProfileGetAll();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ProfileGetAll();
+
+            return LSCWSBase.ProfileGetAll();
         }
 
         public virtual List<Profile> ProfileGetAll()
@@ -131,7 +179,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<Scheme> SchemeGetAll()
         {
-            return NavWSBase.SchemeGetAll();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.SchemeGetAll();
+
+            return LSCWSBase.SchemeGetAll();
         }
 
         public virtual Scheme SchemeGetById(string schemeId)
@@ -149,7 +200,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual Device DeviceGetById(string id)
         {
-            return NavWSBase.DeviceGetById(id);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.DeviceGetById(id);
+
+            return LSCWSBase.DeviceGetById(id);
         }
 
         public virtual bool IsUserLinkedToDeviceId(string userName, string deviceId)
@@ -168,12 +222,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             switch (searchType)
             {
                 case ContactSearchType.CardId:
-                    cont = NavWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, false);
+                    if (NAVVersion < new Version("17.5"))
+                        cont = NavWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, false);
+                    else
+                        cont = LSCWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, false);
+
                     if (cont != null)
                         list.Add(cont);
                     break;
                 case ContactSearchType.UserName:
-                    cont = NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, false);
+                    if (NAVVersion < new Version("17.5"))
+                        cont = NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, false);
+                    else
+                        cont = LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, false);
+
                     if (cont != null)
                         list.Add(cont);
                     break;
@@ -181,7 +243,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     if (exact == false)
                         search = "*" + search + "*";
 
-                    list = NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                    if (NAVVersion < new Version("17.5"))
+                        list = NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                    else
+                        list = LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
                     break;
             }
             return list;
@@ -189,27 +254,42 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails)
         {
-            return NavWSBase.ItemSearch(search);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ItemSearch(search);
+
+            return LSCWSBase.ItemSearch(search);
         }
 
         public virtual List<ItemCategory> ItemCategorySearch(string search)
         {
-            return NavWSBase.ItemCategorySearch(search);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ItemCategorySearch(search);
+
+            return LSCWSBase.ItemCategorySearch(search);
         }
 
         public virtual List<ProductGroup> ProductGroupSearch(string search)
         {
-            return NavWSBase.ProductGroupSearch(search);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ProductGroupSearch(search);
+
+            return LSCWSBase.ProductGroupSearch(search);
         }
 
         public virtual List<Store> StoreLoySearch(string search)
         {
-            return NavWSBase.StoreSearch(search);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.StoreSearch(search);
+
+            return LSCWSBase.StoreSearch(search);
         }
 
         public virtual List<Profile> ProfileSearch(string cardId, string search)
         {
-            return NavWSBase.ProfileSearch(search);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ProfileSearch(search);
+
+            return LSCWSBase.ProfileSearch(search);
         }
 
         public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions)
@@ -231,17 +311,26 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual long MemberCardGetPoints(string cardId)
         {
-            return NavWSBase.MemberCardGetPoints(cardId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.MemberCardGetPoints(cardId);
+
+            return LSCWSBase.MemberCardGetPoints(cardId);
         }
 
         public virtual decimal GetPointRate()
         {
-            return NavWSBase.GetPointRate();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.GetPointRate();
+
+            return LSCWSBase.GetPointRate();
         }
 
         public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
-            return NavWSBase.GiftCardGetBalance(cardNo, entryType);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.GiftCardGetBalance(cardNo, entryType);
+
+            return LSCWSBase.GiftCardGetBalance(cardNo, entryType);
         }
 
         #endregion
@@ -250,7 +339,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
-            return NavWSBase.NotificationsGetByCardId(cardId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.NotificationsGetByCardId(cardId);
+
+            return LSCWSBase.NotificationsGetByCardId(cardId);
         }
 
         #endregion
@@ -259,19 +351,30 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
         {
-            return NavWSBase.ItemGetByBarcode(code);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ItemGetByBarcode(code);
+
+            return LSCWSBase.ItemGetByBarcode(code);
         }
 
         public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails)
         {
-            return NavWSBase.ItemGetById(id);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ItemGetById(id);
+
+            return LSCWSBase.ItemGetById(id);
         }
 
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)
         {
             List<LoyItem> list = new List<LoyItem>();
+            
+            List<LoyItem> tmplist;
+            if (NAVVersion < new Version("17.5"))
+                tmplist = NavWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
+            else
+                tmplist = LSCWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
 
-            List<LoyItem> tmplist = NavWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
             foreach (LoyItem item in tmplist)
             {
                 list.Add(new LoyItem(item.Id));
@@ -294,7 +397,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
         {
-            return NavWSBase.ItemCustomerPricesGet(storeId, cardId, items);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ItemCustomerPricesGet(storeId, cardId, items);
+
+            return LSCWSBase.ItemCustomerPricesGet(storeId, cardId, items);
         }
 
         #endregion
@@ -303,13 +409,25 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture)
         {
-            return NavWSBase.ItemCategories();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ItemCategories();
+
+            return LSCWSBase.ItemCategories();
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id)
         {
-            ItemCategory icat = NavWSBase.ItemCategoriesGetById(id);
-            icat.ProductGroups = NavWSBase.ProductGroupGetByItemCategory(icat.Id);
+            ItemCategory icat;
+            if (NAVVersion < new Version("17.5"))
+            {
+                icat = NavWSBase.ItemCategoriesGetById(id);
+                icat.ProductGroups = NavWSBase.ProductGroupGetByItemCategory(icat.Id);
+            }
+            else
+            {
+                icat = LSCWSBase.ItemCategoriesGetById(id);
+                icat.ProductGroups = LSCWSBase.ProductGroupGetByItemCategory(icat.Id);
+            }
             return icat;
         }
 
@@ -320,8 +438,17 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail)
         {
-            ProductGroup pgrp = NavWSBase.ProductGroupGetById(id);
-            pgrp.Items = NavWSBase.ItemsGetByProductGroup(pgrp.Id);
+            ProductGroup pgrp;
+            if (NAVVersion < new Version("17.5"))
+            {
+                pgrp = NavWSBase.ProductGroupGetById(id);
+                pgrp.Items = NavWSBase.ItemsGetByProductGroup(pgrp.Id);
+            }
+            else
+            {
+                pgrp = LSCWSBase.ProductGroupGetById(id);
+                pgrp.Items = LSCWSBase.ItemsGetByProductGroup(pgrp.Id);
+            }
             return pgrp;
         }
 
@@ -333,12 +460,18 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return new List<Hierarchy>();
             }
 
-            return NavWSBase.HierarchyGet(storeId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.HierarchyGet(storeId);
+
+            return LSCWSBase.HierarchyGet(storeId);
         }
 
         public virtual MobileMenu MenuGet(string storeId, string salesType, Currency currency)
         {
-            return NavWSBase.MenuGet(storeId, salesType, currency);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.MenuGet(storeId, salesType, currency);
+
+            return LSCWSBase.MenuGet(storeId, salesType, currency);
         }
 
         #endregion
@@ -347,17 +480,32 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
         {
-            List<SalesEntry> list = NavWSBase.SalesHistory(cardId, maxNumberOfEntries);
-            list.AddRange(NavWSBase.OrderHistoryGet(cardId));
+            List<SalesEntry> list;
+            if (NAVVersion < new Version("17.5"))
+            {
+                list = NavWSBase.SalesHistory(cardId, maxNumberOfEntries);
+                list.AddRange(NavWSBase.OrderHistoryGet(cardId));
+            }
+            else
+            {
+                list = LSCWSBase.SalesHistory(cardId, maxNumberOfEntries);
+                list.AddRange(LSCWSBase.OrderHistoryGet(cardId));
+            }
             return list;
         }
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
         {
-            if (type == DocumentIdType.Receipt)
-                return NavWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
+            if (NAVVersion < new Version("17.5"))
+            {
+                if (type == DocumentIdType.Receipt)
+                    return NavWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
+                return NavWSBase.OrderGet(entryId);
+            }
 
-            return NavWSBase.OrderGet(entryId);
+            if (type == DocumentIdType.Receipt)
+                return LSCWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
+            return LSCWSBase.OrderGet(entryId);
         }
 
         public virtual string FormatAmount(decimal amount, string culture)
@@ -371,27 +519,42 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual OrderHosp HospOrderCalculate(OneList list)
         {
-            return NavWSBase.HospOrderCalculate(list);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.HospOrderCalculate(list);
+
+            return LSCWSBase.HospOrderCalculate(list);
         }
 
         public virtual string HospOrderCreate(OrderHosp request, string tenderMapping)
         {
-            return NavWSBase.HospOrderCreate(request, tenderMapping);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.HospOrderCreate(request, tenderMapping);
+
+            return LSCWSBase.HospOrderCreate(request, tenderMapping);
         }
 
         public virtual int HospOrderEstimatedTime(string storeId, string orderId)
         {
-            return NavWSBase.HospOrderEstimatedTime(storeId, orderId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.HospOrderEstimatedTime(storeId, orderId);
+
+            return LSCWSBase.HospOrderEstimatedTime(storeId, orderId);
         }
 
         public virtual void HospOrderCancel(string storeId, string orderId)
         {
-            NavWSBase.HospOrderCancel(storeId, orderId);
+            if (NAVVersion < new Version("17.5"))
+                NavWSBase.HospOrderCancel(storeId, orderId);
+
+            LSCWSBase.HospOrderCancel(storeId, orderId);
         }
 
         public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
         {
-            return NavWSBase.HospOrderKotStatus(storeId, orderId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.HospOrderKotStatus(storeId, orderId);
+
+            return LSCWSBase.HospOrderKotStatus(storeId, orderId);
         }
 
         #endregion
@@ -400,7 +563,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual Order BasketCalcToOrder(OneList list)
         {
-            return NavWSBase.BasketCalcToOrder(list);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.BasketCalcToOrder(list);
+
+            return LSCWSBase.BasketCalcToOrder(list);
         }
 
         #endregion
@@ -412,7 +578,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("13.5"))
                 return new OrderStatusResponse();
 
-            return NavWSBase.OrderStatusCheck(orderId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.OrderStatusCheck(orderId);
+
+            return LSCWSBase.OrderStatusCheck(orderId);
         }
 
         public virtual void OrderCancel(string orderId, string storeId, string userId)
@@ -420,17 +589,35 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("13.5"))
                 return;
 
-            NavWSBase.OrderCancel(orderId, storeId, userId);
+            if (NAVVersion < new Version("17.5"))
+                NavWSBase.OrderCancel(orderId, storeId, userId);
+
+            LSCWSBase.OrderCancel(orderId, storeId, userId);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
         {
-            return NavWSBase.OrderAvailabilityCheck(request);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.OrderAvailabilityCheck(request);
+
+            return LSCWSBase.OrderAvailabilityCheck(request);
         }
 
         public virtual string OrderCreate(Order request, string tenderMapping, out string orderId)
         {
-            return NavWSBase.OrderCreate(request, tenderMapping, out orderId);
+            if (request.OrderType == OrderType.ScanPayGoSuspend)
+            {
+                orderId = string.Empty;
+                if (NAVVersion < new Version("17.5"))
+                    return NavWSBase.ScanPayGoSuspend(request);
+
+                return LSCWSBase.ScanPayGoSuspend(request);
+            }
+
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.OrderCreate(request, tenderMapping, out orderId);
+
+            return LSCWSBase.OrderCreate(request, tenderMapping, out orderId);
         }
 
         #endregion
@@ -439,12 +626,18 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
         {
-            return NavWSBase.PublishedOffersGet(cardId, itemId, storeId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.PublishedOffersGet(cardId, itemId, storeId);
+
+            return LSCWSBase.PublishedOffersGet(cardId, itemId, storeId);
         }
 
         public virtual List<Advertisement> AdvertisementsGetById(string id)
         {
-            return NavWSBase.AdvertisementsGetById(id);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.AdvertisementsGetById(id);
+
+            return LSCWSBase.AdvertisementsGetById(id);
         }
 
         #endregion
@@ -453,24 +646,39 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual ImageView ImageGetById(string imageId, bool includeBlob)
         {
-            return NavWSBase.ImageGetById(imageId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ImageGetById(imageId);
+
+            return LSCWSBase.ImageGetById(imageId);
         }
 
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
         {
-            return NavWSBase.ImagesGetByLink(tableName, key1, key2, key3);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ImagesGetByLink(tableName, key1, key2, key3);
+
+            return LSCWSBase.ImagesGetByLink(tableName, key1, key2, key3);
         }
 
         #endregion
 
         #region Store
 
-        public virtual Store StoreGetById(string id)
+        public virtual Store StoreGetById(string id, bool details)
         {
             int offset = config.SettingsIntGetByKey(ConfigKey.Timezone_HoursOffset);
-
-            Store store = NavWSBase.StoreGetById(id);
-            store.StoreHours = NavWSBase.StoreHoursGetByStoreId(id, offset);
+            
+            Store store;
+            if (NAVVersion < new Version("17.5"))
+            {
+                store = NavWSBase.StoreGetById(id);
+                store.StoreHours = NavWSBase.StoreHoursGetByStoreId(id, offset);
+            }
+            else
+            {
+                store = LSCWSBase.StoreGetById(id);
+                store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(id, offset);
+            }
             return store;
         }
 
@@ -483,22 +691,40 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             int offset = config.SettingsIntGetByKey(ConfigKey.Timezone_HoursOffset);
 
-            List<Store> stores = NavWSBase.StoresGet(clickAndCollectOnly);
-            foreach (Store store in stores)
+            List<Store> stores;
+            if (NAVVersion < new Version("17.5"))
             {
-                store.StoreHours = NavWSBase.StoreHoursGetByStoreId(store.Id, offset);
+                stores = NavWSBase.StoresGet(clickAndCollectOnly);
+                foreach (Store store in stores)
+                {
+                    store.StoreHours = NavWSBase.StoreHoursGetByStoreId(store.Id, offset);
+                }
+            }
+            else
+            {
+                stores = LSCWSBase.StoresGet(clickAndCollectOnly);
+                foreach (Store store in stores)
+                {
+                    store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(store.Id, offset);
+                }
             }
             return stores;
         }
 
         public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId)
         {
-            return NavWSBase.StoreServicesGetByStoreId(storeId);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.StoreServicesGetByStoreId(storeId);
+
+            return LSCWSBase.StoreServicesGetByStoreId(storeId);
         }
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
         {
-            return NavWSBase.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+
+            return LSCWSBase.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
         }
 
 
@@ -508,27 +734,42 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplImageLink> ReplEcommImageLinks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplImage> ReplEcommImages(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttribute> ReplEcommAttribute(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeValue> ReplEcommAttributeValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -538,32 +779,50 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCustomer> ReplEcommMember(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCountryCode> ReplEcommCountryCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            
+            return LSCWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

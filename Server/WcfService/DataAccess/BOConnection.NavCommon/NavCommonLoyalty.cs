@@ -1625,6 +1625,40 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         #endregion
 
+        #region ScanPayGo
+
+        public string ScanPayGoSuspend(Order request)
+        {
+            if (navWS == null)  // not supported in older WS
+                return string.Empty;
+
+            TransactionMapping map = new TransactionMapping(NAVVersion, config.IsJson);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            string receiptNo = string.Empty;
+            NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(request);
+            root.MobileTransaction[0].TerminalId = config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal);
+            root.MobileTransaction[0].StaffId = config.SettingsGetByKey(ConfigKey.ScanPayGo_Staff);
+
+            logger.Debug(config.LSKey.Key, "MobilePosSuspend Request - " + Serialization.ToXml(root, true));
+
+            if (NAVVersion < new Version("14.2"))
+            {
+                navWS.MobilePosSuspend(ref respCode, ref errorText, string.Empty, root, ref receiptNo);
+            }
+            else
+            {
+                navWS.MobilePosSuspendV2(ref respCode, ref errorText, root, ref receiptNo);
+            }
+
+            HandleWS2ResponseCode("MobilePosSuspend", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MobilePosSuspend Response - " + Serialization.ToXml(root, true));
+            return receiptNo;
+        }
+
+        #endregion
+
         public Currency CurrencyGetById(string id, string culture)
         {
             NAVWebXml xml = new NAVWebXml();

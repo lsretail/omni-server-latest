@@ -148,7 +148,7 @@ namespace LSOmni.BLL
             if (ConfigSetting.KeyExists(key))
                 return ConfigSetting.GetString(key);
             else
-                return "LSOmni.DataAccess.BOConnection.NavSQL.dll"; //just in case the key is missing in app.settings file
+                return "LSOmni.DataAccess.BOConnection.CentalPre.dll"; //just in case the key is missing in app.settings file
         }
 
         protected string Base64GetFromByte(byte[] image, ImageSize imageSize, ImageFormat imgFormat)

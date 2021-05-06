@@ -255,7 +255,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 UnitOfMeasureId = SQLHelper.GetString(reader["Unit Of Measure"]),
                 ItemId = SQLHelper.GetString(reader["Item"]),
                 VariantId = SQLHelper.GetString(reader["Variant"]),
-                Quantity = SQLHelper.GetDecimal(reader["Qty_"])
+                Quantity = SQLHelper.GetDecimal(reader, "Qty_")
             };
         }
 

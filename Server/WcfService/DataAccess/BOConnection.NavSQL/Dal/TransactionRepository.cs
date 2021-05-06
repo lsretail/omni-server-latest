@@ -200,9 +200,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Terminal = new Terminal(SQLHelper.GetString(reader["POS Terminal No_"])),
                 ReceiptNumber = SQLHelper.GetString(reader["Receipt No_"]),
                 RefundedReceiptNo = SQLHelper.GetString(reader["Refund Receipt No_"]),
-                GrossAmount = new Money(SQLHelper.GetDecimal(reader["Gross Amount"], true), cur),
-                NetAmount = new Money(SQLHelper.GetDecimal(reader["Net Amount"], true), cur),
-                TotalDiscount = new Money(SQLHelper.GetDecimal(reader["Discount Amount"], true), cur),
+                GrossAmount = new Money(SQLHelper.GetDecimal(reader, "Gross Amount", true), cur),
+                NetAmount = new Money(SQLHelper.GetDecimal(reader, "Net Amount", true), cur),
+                TotalDiscount = new Money(SQLHelper.GetDecimal(reader, "Discount Amount", true), cur),
                 NumberOfItems = SQLHelper.GetInt32(reader["No_ of Items"])
             };
 
@@ -237,7 +237,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
                 ReturnQuantity = SQLHelper.GetDecimal(reader, "Refund Qty_", false),
                 UnitPriceWithTax = new Money(SQLHelper.GetDecimal(reader, "Price"), currency),
-                UnitPrice = new Money(SQLHelper.GetDecimal(reader["Net Price"]), currency),
+                UnitPrice = new Money(SQLHelper.GetDecimal(reader, "Net Price"), currency),
                 NetAmount = new Money(SQLHelper.GetDecimal(reader, "Net Amount", true), currency),
                 TaxAmount = new Money(SQLHelper.GetDecimal(reader, "VAT Amount", true), currency),
             };
@@ -279,7 +279,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             return new DiscountLine()
             {
-                Amount = new Money(SQLHelper.GetDecimal(reader["Discount Amount"]), currency),
+                Amount = new Money(SQLHelper.GetDecimal(reader, "Discount Amount"), currency),
                 Description = SQLHelper.GetString(reader["Description"]),
                 EntryType = DiscountEntryType.Amount,
                 No = string.Empty,

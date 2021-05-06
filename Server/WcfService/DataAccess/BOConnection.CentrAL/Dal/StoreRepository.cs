@@ -24,6 +24,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt.[Post Code],mt.[City],mt.[County],mt.[Country Code],mt.[Latitude],mt.[Longitude]," +
                         "mt.[Phone No_],mt.[Currency Code],mt.[Functionality Profile],mt.[Store VAT Bus_ Post_ Gr_],mt.[Click and Collect]," +
+                        "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID]," +
                         "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
             sqlfrom = " FROM [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
@@ -480,6 +481,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Latitude = SQLHelper.GetDouble(reader["Latitude"]),
                 Longitude = SQLHelper.GetDouble(reader["Longitude"]),
                 IsClickAndCollect = SQLHelper.GetBool(reader["Click and Collect"]),
+                IsLoyalty = SQLHelper.GetBool(reader["Loyalty"]),
+                IsWebStore = SQLHelper.GetBool(reader["Web Store"]),
+                WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]),
+                WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]),
 
                 Address = new Address()
                 {
