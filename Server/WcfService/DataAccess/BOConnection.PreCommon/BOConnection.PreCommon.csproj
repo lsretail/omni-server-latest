@@ -74,7 +74,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Web References\LSActivity15\Reference.cs">
+    <Compile Include="Web References\LSActivity\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -87,7 +87,6 @@
     </Compile>
     <Compile Include="XmlMapping\BaseXml.cs" />
     <Compile Include="XmlMapping\Loyalty\AdvertisementXml.cs" />
-    <Compile Include="XmlMapping\Loyalty\MenuXml.cs" />
     <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
     <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
     <Compile Include="XmlMapping\Loyalty\StoreServicesXml.cs" />
@@ -104,56 +103,56 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Web References\LSActivity15\Activity.wsdl" />
-    <None Include="Web References\LSActivity15\ActivityAdmissionEntries.datasource">
+    <None Include="Web References\LSActivity\Activity.wsdl" />
+    <None Include="Web References\LSActivity\ActivityAdmissionEntries1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityAttributeRespond.datasource">
+    <None Include="Web References\LSActivity\ActivityAttributeRespond1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityAvailabilityResponse.datasource">
+    <None Include="Web References\LSActivity\ActivityAvailabilityResponse1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityChargeRespond.datasource">
+    <None Include="Web References\LSActivity\ActivityChargeRespond1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityCustomerEntries.datasource">
+    <None Include="Web References\LSActivity\ActivityCustomerEntries1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityMemberDetails.datasource">
+    <None Include="Web References\LSActivity\ActivityMemberDetails1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityMembershipProducts.datasource">
+    <None Include="Web References\LSActivity\ActivityMembershipProducts1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivitySubscriptionEntries.datasource">
+    <None Include="Web References\LSActivity\ActivitySubscriptionEntries1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadAllowance.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadAllowance1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadLocations.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadLocations1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadMemberships.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadMemberships1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadProducts.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadProducts1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadPromotions.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadPromotions1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadReservations.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadReservations1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadResHeaders.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadResHeaders1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\ActivityUploadTypes.datasource">
+    <None Include="Web References\LSActivity\ActivityUploadTypes1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
-    <None Include="Web References\LSActivity15\Reference.map">
+    <None Include="Web References\LSActivity\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
@@ -365,7 +364,7 @@
     </WebReferenceUrl>
     <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/Activity">
       <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\LSActivity15\</RelPath>
+      <RelPath>Web References\LSActivity\</RelPath>
       <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/Activity</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>

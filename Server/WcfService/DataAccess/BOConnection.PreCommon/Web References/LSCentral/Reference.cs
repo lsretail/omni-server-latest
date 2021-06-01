@@ -12316,9 +12316,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string eFTTransNoField;
         
-        private string eFTTransNo1Field;
+        private string eFTTransactionIDField;
         
-        private string eFTTransNo2Field;
+        private string eFTAdditionalIDField;
         
         private string eFTBatchNoField;
         
@@ -12384,7 +12384,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string StoreNo {
             get {
                 return this.storeNoField;
@@ -12395,7 +12394,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         public string POSTerminalNo {
             get {
                 return this.pOSTerminalNoField;
@@ -12406,7 +12404,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public int EntryNo {
             get {
                 return this.entryNoField;
@@ -12417,7 +12414,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -12428,7 +12424,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -12439,7 +12434,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string ReceiptNo {
             get {
                 return this.receiptNoField;
@@ -12450,7 +12444,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string EFTPOSTerminalNo {
             get {
                 return this.eFTPOSTerminalNoField;
@@ -12461,7 +12454,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string TenderType {
             get {
                 return this.tenderTypeField;
@@ -12472,7 +12464,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public string TransactionType {
             get {
                 return this.transactionTypeField;
@@ -12483,7 +12474,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public bool MSRinput {
             get {
                 return this.mSRinputField;
@@ -12494,7 +12484,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime Date {
             get {
@@ -12506,7 +12496,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime Time {
             get {
@@ -12518,7 +12508,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public bool AuthorisationOk {
             get {
                 return this.authorisationOkField;
@@ -12529,7 +12518,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public bool Voided {
             get {
                 return this.voidedField;
@@ -12540,7 +12528,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public string CardNumber {
             get {
                 return this.cardNumberField;
@@ -12551,7 +12538,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string CardType {
             get {
                 return this.cardTypeField;
@@ -12562,7 +12548,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public string CardTypeName {
             get {
                 return this.cardTypeNameField;
@@ -12573,7 +12558,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public string ExpiryDate {
             get {
                 return this.expiryDateField;
@@ -12584,7 +12568,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public string Authcode {
             get {
                 return this.authcodeField;
@@ -12595,7 +12578,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string Rescode {
             get {
                 return this.rescodeField;
@@ -12606,7 +12588,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public string Message {
             get {
                 return this.messageField;
@@ -12617,7 +12598,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string CardClass {
             get {
                 return this.cardClassField;
@@ -12628,7 +12608,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public string EFTMerchantNo {
             get {
                 return this.eFTMerchantNoField;
@@ -12639,7 +12618,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string EFTTerminalID {
             get {
                 return this.eFTTerminalIDField;
@@ -12650,7 +12628,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string EFTTransNo {
             get {
                 return this.eFTTransNoField;
@@ -12661,29 +12638,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=25)]
-        public string EFTTransNo1 {
+        public string EFTTransactionID {
             get {
-                return this.eFTTransNo1Field;
+                return this.eFTTransactionIDField;
             }
             set {
-                this.eFTTransNo1Field = value;
+                this.eFTTransactionIDField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=26)]
-        public string EFTTransNo2 {
+        public string EFTAdditionalID {
             get {
-                return this.eFTTransNo2Field;
+                return this.eFTAdditionalIDField;
             }
             set {
-                this.eFTTransNo2Field = value;
+                this.eFTAdditionalIDField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
         public string EFTBatchNo {
             get {
                 return this.eFTBatchNoField;
@@ -12694,7 +12668,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         public string AuthSourceCode {
             get {
                 return this.authSourceCodeField;
@@ -12705,7 +12678,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
         public string EFTTransTime {
             get {
                 return this.eFTTransTimeField;
@@ -12716,7 +12688,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string EFTTransDate {
             get {
                 return this.eFTTransDateField;
@@ -12727,7 +12698,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public decimal Amount {
             get {
                 return this.amountField;
@@ -12738,7 +12708,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public decimal VAT {
             get {
                 return this.vATField;
@@ -12749,7 +12718,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public decimal Cashback {
             get {
                 return this.cashbackField;
@@ -12760,7 +12728,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public string EFTStoreNo {
             get {
                 return this.eFTStoreNoField;
@@ -12771,7 +12738,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public string EFTServerName {
             get {
                 return this.eFTServerNameField;
@@ -12782,7 +12748,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
         public string EFTVerificationMethod {
             get {
                 return this.eFTVerificationMethodField;
@@ -12793,7 +12758,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public string EFTAuthorizationStatus {
             get {
                 return this.eFTAuthorizationStatusField;
@@ -12804,7 +12768,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public string EFTTransactionType {
             get {
                 return this.eFTTransactionTypeField;
@@ -12815,7 +12778,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public string EFTStaffID {
             get {
                 return this.eFTStaffIDField;
@@ -12826,7 +12788,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime EFTDateTime {
             get {
@@ -12838,7 +12799,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public string ExtraData {
             get {
                 return this.extraDataField;
@@ -12849,7 +12809,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public string VoidedSlipNo {
             get {
                 return this.voidedSlipNoField;
@@ -12860,7 +12819,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public int VoidedEntryNo {
             get {
                 return this.voidedEntryNoField;
@@ -12871,7 +12829,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string VoidedEFTTransNo {
             get {
                 return this.voidedEFTTransNoField;
@@ -12882,7 +12839,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public string VoidedEFTTransactionID {
             get {
                 return this.voidedEFTTransactionIDField;
@@ -12893,7 +12849,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool Encrypted {
             get {
                 return this.encryptedField;
@@ -12904,7 +12859,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public bool Replicated {
             get {
                 return this.replicatedField;
@@ -12915,7 +12869,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
         public int ReplicationCounter {
             get {
                 return this.replicationCounterField;
@@ -26490,9 +26443,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string eFTTransNoField;
         
-        private string eFTTransNo1Field;
+        private string eFTTransactionIDField;
         
-        private string eFTTransNo2Field;
+        private string eFTAdditionalIDField;
         
         private string eFTBatchNoField;
         
@@ -26558,7 +26511,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=0)]
         public string StoreNo {
             get {
                 return this.storeNoField;
@@ -26569,7 +26521,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=1)]
         public string POSTerminalNo {
             get {
                 return this.pOSTerminalNoField;
@@ -26580,7 +26531,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=2)]
         public int EntryNo {
             get {
                 return this.entryNoField;
@@ -26591,7 +26541,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=3)]
         public int TransactionNo {
             get {
                 return this.transactionNoField;
@@ -26602,7 +26551,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=4)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -26613,7 +26561,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=5)]
         public string ReceiptNo {
             get {
                 return this.receiptNoField;
@@ -26624,7 +26571,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=6)]
         public string EFTPOSTerminalNo {
             get {
                 return this.eFTPOSTerminalNoField;
@@ -26635,7 +26581,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=7)]
         public string TenderType {
             get {
                 return this.tenderTypeField;
@@ -26646,7 +26591,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=8)]
         public string TransactionType {
             get {
                 return this.transactionTypeField;
@@ -26657,7 +26601,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=9)]
         public bool MSRinput {
             get {
                 return this.mSRinputField;
@@ -26668,7 +26611,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date", Order=10)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
         public System.DateTime Date {
             get {
@@ -26680,7 +26623,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="time", Order=11)]
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime Time {
             get {
@@ -26692,7 +26635,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=12)]
         public bool AuthorisationOk {
             get {
                 return this.authorisationOkField;
@@ -26703,7 +26645,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=13)]
         public bool Voided {
             get {
                 return this.voidedField;
@@ -26714,7 +26655,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=14)]
         public string CardNumber {
             get {
                 return this.cardNumberField;
@@ -26725,7 +26665,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=15)]
         public string CardType {
             get {
                 return this.cardTypeField;
@@ -26736,7 +26675,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=16)]
         public string CardTypeName {
             get {
                 return this.cardTypeNameField;
@@ -26747,7 +26685,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=17)]
         public string ExpiryDate {
             get {
                 return this.expiryDateField;
@@ -26758,7 +26695,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=18)]
         public string Authcode {
             get {
                 return this.authcodeField;
@@ -26769,7 +26705,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=19)]
         public string Rescode {
             get {
                 return this.rescodeField;
@@ -26780,7 +26715,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=20)]
         public string Message {
             get {
                 return this.messageField;
@@ -26791,7 +26725,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=21)]
         public string CardClass {
             get {
                 return this.cardClassField;
@@ -26802,7 +26735,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=22)]
         public string EFTMerchantNo {
             get {
                 return this.eFTMerchantNoField;
@@ -26813,7 +26745,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=23)]
         public string EFTTerminalID {
             get {
                 return this.eFTTerminalIDField;
@@ -26824,7 +26755,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=24)]
         public string EFTTransNo {
             get {
                 return this.eFTTransNoField;
@@ -26835,29 +26765,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=25)]
-        public string EFTTransNo1 {
+        public string EFTTransactionID {
             get {
-                return this.eFTTransNo1Field;
+                return this.eFTTransactionIDField;
             }
             set {
-                this.eFTTransNo1Field = value;
+                this.eFTTransactionIDField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("EFTTransNo", Order=26)]
-        public string EFTTransNo2 {
+        public string EFTAdditionalID {
             get {
-                return this.eFTTransNo2Field;
+                return this.eFTAdditionalIDField;
             }
             set {
-                this.eFTTransNo2Field = value;
+                this.eFTAdditionalIDField = value;
             }
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=27)]
         public string EFTBatchNo {
             get {
                 return this.eFTBatchNoField;
@@ -26868,7 +26795,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=28)]
         public string AuthSourceCode {
             get {
                 return this.authSourceCodeField;
@@ -26879,7 +26805,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=29)]
         public string EFTTransTime {
             get {
                 return this.eFTTransTimeField;
@@ -26890,7 +26815,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=30)]
         public string EFTTransDate {
             get {
                 return this.eFTTransDateField;
@@ -26901,7 +26825,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=31)]
         public decimal Amount {
             get {
                 return this.amountField;
@@ -26912,7 +26835,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
         public decimal VAT {
             get {
                 return this.vATField;
@@ -26923,7 +26845,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
         public decimal Cashback {
             get {
                 return this.cashbackField;
@@ -26934,7 +26855,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=34)]
         public string EFTStoreNo {
             get {
                 return this.eFTStoreNoField;
@@ -26945,7 +26865,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=35)]
         public string EFTServerName {
             get {
                 return this.eFTServerNameField;
@@ -26956,7 +26875,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=36)]
         public string EFTVerificationMethod {
             get {
                 return this.eFTVerificationMethodField;
@@ -26967,7 +26885,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=37)]
         public string EFTAuthorizationStatus {
             get {
                 return this.eFTAuthorizationStatusField;
@@ -26978,7 +26895,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=38)]
         public string EFTTransactionType {
             get {
                 return this.eFTTransactionTypeField;
@@ -26989,7 +26905,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=39)]
         public string EFTStaffID {
             get {
                 return this.eFTStaffIDField;
@@ -27000,7 +26915,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=40)]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime EFTDateTime {
             get {
@@ -27012,7 +26926,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=41)]
         public string ExtraData {
             get {
                 return this.extraDataField;
@@ -27023,7 +26936,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=42)]
         public string VoidedSlipNo {
             get {
                 return this.voidedSlipNoField;
@@ -27034,7 +26946,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=43)]
         public int VoidedEntryNo {
             get {
                 return this.voidedEntryNoField;
@@ -27045,7 +26956,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=44)]
         public string VoidedEFTTransNo {
             get {
                 return this.voidedEFTTransNoField;
@@ -27056,7 +26966,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=45)]
         public string VoidedEFTTransactionID {
             get {
                 return this.voidedEFTTransactionIDField;
@@ -27067,7 +26976,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=46)]
         public bool Encrypted {
             get {
                 return this.encryptedField;
@@ -27078,7 +26986,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=47)]
         public bool Replicated {
             get {
                 return this.replicatedField;
@@ -27089,7 +26996,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Order=48)]
         public int ReplicationCounter {
             get {
                 return this.replicationCounterField;

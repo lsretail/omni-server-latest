@@ -133,7 +133,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public MemberContact MapFromRootToContact(NavWS.RootGetMemberContact root)
+        public MemberContact MapFromRootToContact(NavWS.RootGetMemberContact root, List<Scheme> schemelist)
         {
             NavWS.MemberContact contact = root.MemberContact.FirstOrDefault();
             MemberContact memberContact = new MemberContact()
@@ -146,7 +146,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
+                Account = new Account(contact.AccountNo)
             };
 
             memberContact.Addresses = new List<Address>();
@@ -163,9 +164,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 CellPhoneNumber = contact.MobilePhoneNo
             });
 
-            memberContact.Account = new Account(contact.AccountNo);
-            memberContact.Account.Scheme = new Scheme(contact.SchemeCode);
-            memberContact.Account.Scheme.Club = new Club(contact.ClubCode);
+            Scheme scheme = schemelist.Find(s => s.Club.Id == contact.ClubCode && s.Id == contact.SchemeCode);
+            memberContact.Account.Scheme = scheme;
+            while (scheme != null)
+            {
+                scheme = GetNextScheme(schemelist, memberContact.Account.Scheme.Club.Id, scheme);
+            }
 
             if (root.MembershipCard != null)
             {
@@ -185,6 +189,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 }
             }
             return memberContact;
+        }
+
+        private Scheme GetNextScheme(List<Scheme> schemelist, string club, Scheme cur)
+        {
+            Scheme sc = schemelist.Find(s => s.Club.Id == club && s.UpdateSequence == cur.UpdateSequence + 1);
+            if (sc == null)
+                return null;
+
+            cur.NextScheme = sc;
+            cur.PointsNeeded = sc.PointsNeeded;
+            return sc;
         }
 
         public MemberContact MapFromRootToLogonContact(NavWS.RootMemberLogon root, decimal pointBalance)

@@ -13,7 +13,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
     public partial class PreCommonBase
     {
-        public virtual List<ReplItem> ReplicateItems(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItem> ReplicateItems(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(27, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -99,13 +99,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateBarcodeMasks(table);
         }
 
-        public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10001413, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
             List<ReplExtendedVariantValue> list = rep.ReplicateExtendedVariantValues(table);
-
 
             // fields to get 
             List<string> fields = new List<string>()
@@ -140,6 +139,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 string xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    continue;
 
                 string dim = string.Empty;
                 string code = string.Empty;
@@ -158,7 +159,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
             return list;
-
         }
 
         public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
@@ -169,7 +169,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateItemUnitOfMeasure(table);
         }
 
-        public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10001414, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -177,7 +177,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateItemVariantRegistration(table);
         }
 
-        public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(23, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -185,7 +185,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateVendor(table);
         }
 
-        public virtual List<ReplCurrency> ReplicateCurrency(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCurrency> ReplicateCurrency(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(4, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -193,7 +193,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateCurrency(table);
         }
 
-        public virtual List<ReplCurrencyExchRate> ReplicateCurrencyExchRate(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCurrencyExchRate> ReplicateCurrencyExchRate(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(330, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -201,7 +201,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateCurrencyExchRate(table);
         }
 
-        public virtual List<ReplItemCategory> ReplicateItemCategory(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemCategory> ReplicateItemCategory(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(5722, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -209,7 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateItemCategory(table);
         }
 
-        public virtual List<ReplItemLocation> ReplicateItemLocation(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemLocation> ReplicateItemLocation(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001533, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -217,7 +217,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateItemLocation(table);
         }
 
-        public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplPrice> ReplicatePrice(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             // filter
             List<XMLFieldData> filter = new List<XMLFieldData>();
@@ -263,6 +263,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    continue;
 
                 string item = string.Empty;
                 string code = string.Empty;
@@ -291,8 +293,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateProductGroups(table);
         }
 
-        public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
         {
+            ResetReplication(fullReplication, lastKey);
             XMLTableData table = DoReplication(99001470, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
@@ -318,16 +321,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, string terminalId)
+        public virtual List<ReplStore> ReplicateInvStores(string appId, string appType, string storeId, bool fullReplication, string terminalId)
         {
-            string lastKey = string.Empty, maxKey = string.Empty;
+            string lastKey = string.Empty;
+            string maxKey = string.Empty;
+            ResetReplication(fullReplication, lastKey);
             XMLTableData table = DoReplication(10012806, storeId, appId, appType, 0, ref lastKey, out int recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
             //Get all storeIds linked to this terminal
             List<ReplStore> list = rep.ReplicateInvStores(table, terminalId);
             //Get all stores
-            List<ReplStore> allStores = ReplicateStores(appId, appType, storeId, 0, ref lastKey, ref maxKey, ref recordsRemaining);
+            List<ReplStore> allStores = ReplicateStores(appId, appType, storeId, 0, fullReplication, ref lastKey, ref recordsRemaining);
 
             //Only return the stores connected to this terminal
             List<ReplStore> InvStores = new List<ReplStore>();
@@ -349,7 +354,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return InvStores;
         }
 
-        public virtual List<ReplUnitOfMeasure> ReplicateUnitOfMeasure(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplUnitOfMeasure> ReplicateUnitOfMeasure(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(204, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -357,7 +362,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateUnitOfMeasure(table);
         }
 
-        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10001430, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -365,7 +370,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateCollection(table);
         }
 
-        public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             // filter
             List<XMLFieldData> filter = new List<XMLFieldData>();
@@ -405,6 +410,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    continue;
 
                 bool hasdata = false;
                 decimal amt = 0;
@@ -471,7 +478,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<ReplDiscount> ReplicateMixAndMatch(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDiscount> ReplicateMixAndMatch(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             // filter
             List<XMLFieldData> filter = new List<XMLFieldData>();
@@ -506,6 +513,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    continue;
 
                 decimal amt = 0;
                 string code = string.Empty;
@@ -553,14 +562,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     disc.DiscountValueType = DiscountValueType.Amount;
                     disc.DiscountValue = amt;
                 }
-
             }
             return list;
-
-
         }
 
-        public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001481, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -576,13 +582,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateStoreTenderType(table);
         }
 
-        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             // TODO
             return new List<ReplValidationSchedule>();
         }
 
-        public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Hierar. Date", "Store Code", storeId);
@@ -619,7 +625,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Hierar. Date", "Store Code", storeId);
@@ -645,7 +651,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<ReplHierarchyLeaf> ReplicateHierarchyLeaf(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplHierarchyLeaf> ReplicateHierarchyLeaf(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Hierar. Date", "Store Code", storeId);
@@ -701,11 +707,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Image Id"));
                 leaf.ImageId = field.Values[0];
             }
-
             return list;
         }
 
-        public virtual List<ReplImageLink> ReplEcommImageLinks(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplImageLink> ReplEcommImageLinks(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99009064, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -713,7 +718,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateImageLink(table);
         }
 
-        public virtual List<ReplImage> ReplEcommImages(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplImage> ReplEcommImages(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99009063, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -721,7 +726,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateImage(table);
         }
 
-        public virtual List<ReplAttribute> ReplEcommAttribute(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplAttribute> ReplEcommAttribute(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10000784, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -729,7 +734,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateAttribute(table);
         }
 
-        public virtual List<ReplAttributeValue> ReplEcommAttributeValue(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplAttributeValue> ReplEcommAttributeValue(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10000786, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -737,7 +742,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateAttributeValue(table);
         }
 
-        public virtual List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10000785, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -745,7 +750,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateAttributeOptionValue(table);
         }
 
-        public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10000971, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -753,7 +758,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateDataTranslation(table);
         }
 
-        public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(10000972, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -761,7 +766,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateDataTranslationLangCode(table);
         }
 
-        public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(291, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -775,7 +780,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<ReplCustomer> ReplEcommMember(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCustomer> ReplEcommMember(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99009002, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -783,7 +788,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateMembers(table);
         }
 
-        public virtual List<ReplCustomer> ReplicateCustomer(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCustomer> ReplicateCustomer(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(18, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -791,7 +796,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateCustomer(table);
         }
 
-        public virtual List<ReplStaff> ReplicateStaff(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplStaff> ReplicateStaff(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001461, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -799,7 +804,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateStaff(table);
         }
 
-        public virtual List<ReplStaffStoreLink> ReplicateStaffStoreLink(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplStaffStoreLink> ReplicateStaffStoreLink(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001633, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -807,7 +812,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateStaffStoreLink(table);
         }
 
-        public virtual List<ReplTenderType> ReplicateTenderTypes(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplTenderType> ReplicateTenderTypes(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001466, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -815,7 +820,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateTenderTypes(table);
         }
 
-        public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(325, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -823,7 +828,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateTaxSetup(table);
         }
 
-        public virtual List<ReplStoreTenderTypeCurrency> ReplicateStoreTenderTypeCurrency(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplStoreTenderTypeCurrency> ReplicateStoreTenderTypeCurrency(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001636, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -831,7 +836,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateStoreTenderTypeCurrency(table);
         }
 
-        public virtual List<ReplTerminal> ReplicateTerminals(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplTerminal> ReplicateTerminals(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99001471, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -839,7 +844,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateTerminals(table);
         }
 
-        public virtual List<ReplCountryCode> ReplEcommCountryCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplCountryCode> ReplEcommCountryCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(9, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -847,7 +852,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateCountryCode(table);
         }
 
-        public virtual List<ReplPlu> ReplicatePlu(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplPlu> ReplicatePlu(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             XMLTableData table = DoReplication(99009274, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
@@ -855,7 +860,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicatePlu(table);
         }
 
-        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string appType, string storeId, bool fullReplication, int batchSize, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string appType, string storeId, bool fullReplication, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
             // fields to get 
             List<string> fields = new List<string>()
@@ -891,6 +896,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             recordsRemaining = (table.NumberOfValues == batchSize) ? 1 : 0;
 
+            string maxKey = string.Empty;
             ReplicateRepository rep = new ReplicateRepository();
             List<ReplInvStatus> list = rep.ReplicateInvStatus(table, ref lastKey, ref maxKey);
 

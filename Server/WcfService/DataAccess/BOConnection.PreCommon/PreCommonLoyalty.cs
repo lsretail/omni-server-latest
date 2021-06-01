@@ -9,6 +9,7 @@ using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Loyalty;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
 using LSOmni.DataAccess.BOConnection.PreCommon.Mapping;
 
+using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
@@ -105,6 +106,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             return item;
+        }
+
+        public string ItemFindByBarcode(string barcode, string storeId, string terminalId)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            LSCentral.RootLeftRightLine root = new LSCentral.RootLeftRightLine();
+
+            logger.Debug(config.LSKey.Key, "GetItemCard - StoreId:{0}, TermId:{1}, barcode:{2}", storeId, terminalId, barcode);
+            centralWS.GetItemCard(ref respCode, ref errorText, terminalId, storeId, string.Empty, string.Empty, string.Empty, barcode, string.Empty, ref root);
+            HandleWS2ResponseCode("GetItemCard", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "GetItemCard Response - " + Serialization.ToXml(root, true));
+
+            if (root.LeftRightLine == null)
+                return null;
+
+            foreach (LSCentral.LeftRightLine line in root.LeftRightLine)
+            {
+                if (line.LeftLine == "Item")
+                    return line.RightLine;
+            }
+            return null;
         }
 
         public List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
@@ -357,6 +380,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return map.MapFromRootTransactionToItemCustPrice(root);
         }
 
+        public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest;
+            string xmlResponse;
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            SetupRepository rep = new SetupRepository();
+
+            foreach (string id in itemIds)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Discounts", "Store No.", storeId, "Item No.", id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                list.AddRange(rep.GetDiscount(table));
+
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Mix & Match Offer", "Store No.", storeId, "Item No.", id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                list.AddRange(rep.GetDiscount(table));
+            }
+
+            foreach (ProactiveDiscount disc in list)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Periodic Discount", "No.", disc.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                rep.SetDiscountInfo(table, disc);
+            }
+            return list;
+        }
+
         #endregion
 
         #region Contact
@@ -445,8 +505,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("GetMemberContact", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberContact Response - " + Serialization.ToXml(rootContact, true));
 
-            contact = map.MapFromRootToContact(rootContact);
+            List<Scheme> schemelist = SchemeGetAll();
+            contact = map.MapFromRootToContact(rootContact, schemelist);
             contact.UserName = loginId;
+
+            if (contact.Cards.Count == 0)
+                return contact;
+
             card = contact.Cards.FirstOrDefault().Id;
 
             if (string.IsNullOrEmpty(loginId))
@@ -463,6 +528,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 contact.UserName = field.Values[0];
             }
 
+            decimal remainingPoints = 0;
+            contact.Profiles = ProfileGet(card, ref remainingPoints);
+            contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
+
+            if (includeDetails == false)
+                return contact;
+
             xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Login", "Login ID", contact.UserName.ToLower(), 1);
             xmlResponse = RunOperation(xmlRequest);
             HandleResponseCode(ref xmlResponse);
@@ -473,13 +545,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             field = table.FieldList.Find(f => f.FieldName.Equals("Password"));
             contact.Password = field.Values[0];
-
-            if (includeDetails == false)
-                return contact;
-
-            decimal remainingPoints = 0;
-            contact.Profiles = ProfileGet(card, ref remainingPoints);
-            contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
 
             LSCentral.RootGetDirectMarketingInfo rootMarket = new LSCentral.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", card);
@@ -563,15 +628,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             foreach (LSCentral.MemberAttributeList att in rootCard.MemberAttributeList)
             {
-                if (att.Type != "0")
+                if (att.AttributeType != "4")
                     continue;
 
                 list.Add(new Profile()
                 {
                     Id = att.Code,
                     Description = att.Description,
-                    DefaultValue = att.Value,
-                    ContactValue = true
+                    DefaultValue = string.Empty,
+                    ContactValue = att.Value.ToLower().Trim() == "yes"
                 });
             }
             return list;
@@ -586,7 +651,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository();
-            return rep.SchemeGetAll(table);
+            List<Scheme> list = rep.SchemeGetAll(table);
+
+            foreach (Scheme sc in list)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Club", "Code", sc.Club.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Description"));
+                sc.Club.Name = field.Values[0];
+            }
+            return list;
         }
 
         public MemberContact Logon(string userName, string password, string deviceID, string deviceName, bool includeDetails)
@@ -711,17 +790,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository();
-            List<MemberContact> list = rep.ContactGet(table);
-
-            foreach (MemberContact contact in list)
-            {
-                xmlRequest = xml.GetGeneralWebRequestXML("LSC Membership Card", "Contact No.", contact.Id);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
-                contact.Cards = rep.CardGet(table);
-            }
-            return list;
+            return rep.ContactGet(table);
         }
 
         public List<LoyItem> ItemSearch(string search)
@@ -995,7 +1064,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("CustomerOrderGet", respCode, errorText);
             logger.Debug(config.LSKey.Key, "CustomerOrderGetV2 Response - " + Serialization.ToXml(root, true));
 
-            order = map.MapFromRootV2ToSalesEntry(root);
+            order = map.MapFromRootToSalesEntry(root);
             order.PointsRewarded = pointEarned;
             order.PointsUsedInOrder = pointUsed;
 
@@ -1152,8 +1221,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository();
-            List<Store> st = rep.StoresGet(table);
-            return (st.Count > 0) ? st[0] : null;
+            List<Store> list = rep.StoresGet(table);
+            if (list.Count == 0)
+                return null;
+
+            Store store = list.FirstOrDefault();
+            if (store.Currency == null || string.IsNullOrEmpty(store.Currency.Id))
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                store.Currency = new Currency(field.Values[0]);
+            }
+
+            store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty);
+            return store;
         }
 
         public List<Store> StoresGet(bool clickAndCollectOnly)
@@ -1170,7 +1257,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository();
-            return rep.StoresGet(table);
+            List<Store> list = rep.StoresGet(table);
+            foreach (Store store in list)
+            {
+                if (store.Currency != null && string.IsNullOrEmpty(store.Currency.Id) == false)
+                    continue;
+
+                xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                store.Currency = new Currency(field.Values[0]);
+
+                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty);
+            }
+            return list;
         }
 
         public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)
@@ -1327,13 +1432,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             List<HierarchyNode> nodes = new List<HierarchyNode>();
             string respCode = string.Empty;
             string errorText = string.Empty;
-            LSCentral.RootGetHierarchy rootRoot = new LSCentral.RootGetHierarchy();
+            LSCentral.RootGetHierarchyV2 rootRoot = new LSCentral.RootGetHierarchyV2();
             logger.Debug(config.LSKey.Key, "GetHierarchy - StoreId: {0}", storeId);
-            centralQryWS.GetHierarchy(ref respCode, ref errorText, storeId, ref rootRoot);
+            centralQryWS.GetHierarchyV2(ref respCode, ref errorText, storeId, ref rootRoot);
             HandleWS2ResponseCode("GetHierarchy", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetHierarchy Response - " + Serialization.ToXml(rootRoot, true));
 
-            foreach (LSCentral.Hierarchy top in rootRoot.Hierarchy)
+            foreach (LSCentral.HierarchyV2 top in rootRoot.HierarchyV2)
             {
                 list.Add(new Hierarchy()
                 {
@@ -1343,7 +1448,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 });
             }
 
-            foreach (LSCentral.HierarchyNodes val in rootRoot.HierarchyNodes)
+            foreach (LSCentral.HierarchyNodesV2 val in rootRoot.HierarchyNodesV2)
             {
                 HierarchyNode node = new HierarchyNode()
                 {
@@ -1352,9 +1457,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     PresentationOrder = val.PresentationOrder,
                     Indentation = val.Indentation,
                     Description = val.Description,
-                    HierarchyCode = val.HierarchyCode,
-                    ImageId = string.Join("", val.RetailImageCode)
+                    HierarchyCode = val.HierarchyCode
                 };
+                ImageView iv = ImagesGetByLink("LSC Hierar. Nodes", node.HierarchyCode + "," + node.Id, string.Empty, string.Empty).FirstOrDefault();
+                node.ImageId = (iv == null) ? string.Empty : iv.Id;
                 nodes.Add(node);
 
                 LSCentral.RootGetHierarchyNodeIn rootNodeIn = new LSCentral.RootGetHierarchyNodeIn();
@@ -1442,11 +1548,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public MobileMenu MenuGet(string storeId, string salesType, Currency currency)
         {
-            MenuXml menuxml = new MenuXml(config.LSKey.Key);
-            string xmlRequest = menuxml.MenuGetAllRequestXML(storeId, salesType);
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
-            return menuxml.MenuGetAllResponseXML(xmlResponse, currency);
+            throw new LSOmniServiceException(StatusCode.GenericError, "Not supported in LS Central");
         }
     }
 }

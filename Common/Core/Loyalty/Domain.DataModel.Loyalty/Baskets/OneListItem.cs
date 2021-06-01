@@ -23,6 +23,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             VariantId = string.Empty;
             VariantDescription = string.Empty;
             UnitOfMeasureId = string.Empty;
+            ProductGroup = string.Empty;
+            ItemCategory = string.Empty;
             Location = string.Empty;
             BarcodeId = string.Empty;
             CreateDate = DateTime.Now;
@@ -60,6 +62,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             {
                 Location = string.Empty;
             }
+
+            ProductGroup = item.ProductGroupId;
+            
             if (item.SelectedVariant != null)
             {
                 VariantId = item.SelectedVariant.Id;
@@ -105,6 +110,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string VariantId { get; set; }
         [DataMember]
         public string VariantDescription { get; set; }
+        [DataMember]
+        public string ProductGroup { get; set; }
+        [DataMember]
+        public string ItemCategory { get; set; }
 
         [DataMember(IsRequired = true)]
         public decimal Quantity
@@ -153,7 +162,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
                 NotifyPropertyChanged();
             }
         }
-
         [DataMember]
         public decimal TaxAmount { get; set; }
         [DataMember]

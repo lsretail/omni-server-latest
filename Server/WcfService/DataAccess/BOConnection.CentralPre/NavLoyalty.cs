@@ -265,7 +265,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
         {
             ItemRepository rep = new ItemRepository(config);
-            return rep.ItemLoyGetByBarcode(code, storeId, culture);
+            LoyItem item = rep.ItemLoyGetByBarcode(code, storeId, culture);
+            if (item != null)
+                return item;
+
+            string id = LSCentralWSBase.ItemFindByBarcode(code, storeId, config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal));
+            return rep.ItemLoyGetById(id, storeId, string.Empty, true);
         }
 
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)

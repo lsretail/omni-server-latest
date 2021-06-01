@@ -871,7 +871,6 @@
           <element minOccurs="1" maxOccurs="1" name="CreatedAtStore" type="string" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ShipOrder" type="boolean" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="RequestedDeliveryDate" type="date" />
-          <element minOccurs="0" maxOccurs="1" default="false" name="ShopPaygo" type="boolean" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderCreateCOLineV5">
@@ -8850,7 +8849,7 @@
   </binding>
   <service name="OmniWrapper">
     <port name="OmniWrapper_Port" binding="tns:OmniWrapper_Binding">
-      <address location="http://dhqsrvomni001:9047/CEN-5305/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni006:7447/BC174/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

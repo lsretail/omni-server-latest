@@ -25,8 +25,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public ContactRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
-                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
-                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[County],ma.[Club Code],ma.[Scheme Code],mt.[Country_Region Code]";
+                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page],mt.[County]," +
+                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[Country_Region Code],ma.[Club Code],ma.[Scheme Code]";
 
             sqlfrom = " FROM [" + navCompanyName + "Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                       " LEFT OUTER JOIN [" + navCompanyName + "Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
@@ -165,6 +165,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
                     where = "mc.[Card No_]=@value";
                     order = "mc.[Card No_]";
+                    exact = true;
                     break;
 
                 case ContactSearchType.UserName:
@@ -351,8 +352,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     //CardStatus 3 = blocked
-                    command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status]," +
-                                 "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by], ml.[Login ID] " +
+                    command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status],mt.[Linked to Account]," +
+                                 "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by],ml.[Login ID] " +
                                  "FROM [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] AS mt " +
                                  "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] ml on mt.[Card No_] = ml.[Card No_]" +
                                  "WHERE mt.[Contact No_]=@id AND mt.[Status] != 3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
@@ -455,8 +456,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence]," +
-                                          "up.[Min_ Point for Upgrade], mt.[Next Scheme Benefits], up.[Code] AS NextScheme " +
+                    command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence],mt.[Next Scheme Benefits]," +
+                                          "up.[Min_ Point for Upgrade],up.[Code] AS NextScheme " +
                                           "FROM [" + navCompanyName + "Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1";
@@ -704,6 +705,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ZipCode = SQLHelper.GetString(reader["Post Code"]),
                 Country = SQLHelper.GetString(reader["Country_Region Code"]),
                 County = SQLHelper.GetString(reader["County"]),
+                State = SQLHelper.GetString(reader["Territory Code"]),
                 URL = SQLHelper.GetString(reader["Home Page"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
                 CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
@@ -748,7 +750,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     City = SQLHelper.GetString(reader["City"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Territory Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
                     CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
                 }
@@ -766,6 +768,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Status = (CardStatus)SQLHelper.GetInt32(reader["Status"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
+                LinkedToAccount = SQLHelper.GetBool(reader["Linked to Account"]),
                 DateBlocked = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
                 LoginId = SQLHelper.GetString(reader["Login ID"])
             };
@@ -783,8 +786,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             scheme.NextScheme = SchemeGetById(SQLHelper.GetString(reader["NextScheme"]));
-            if (scheme.NextScheme == null)
-                scheme.NextScheme = new Scheme();
             return scheme;
         }
 

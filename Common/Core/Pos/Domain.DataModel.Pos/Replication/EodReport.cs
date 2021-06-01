@@ -63,7 +63,6 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
             Height = 0;
             BCType = string.Empty;
             BCPos = 0;
-            SetBackPrinting = string.Empty;
         }
 
         public void Dispose()
@@ -108,7 +107,7 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Replication
         [DataMember]
         public int BCPos { get; set; }
         [DataMember]
-        public string SetBackPrinting { get; set; } 
+        public bool SetBackPrinting { get; set; } 
 
         public override string ToString()
         {

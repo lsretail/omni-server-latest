@@ -239,7 +239,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
         public decimal PriceGetByItem(string storeId, string itemId, string variantId)
         {
             string sqlMcolumns = "mt.[Unit Price] ";
-            string sqlMfrom = " FROM [" + navCompanyName + "WI Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+            string sqlMfrom = " FROM [" + navCompanyName + "LSC WI Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
 
             decimal price = 0m;
             using (SqlConnection connection = new SqlConnection(connectionString))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using LSOmni.Common.Util;
+using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
@@ -118,6 +119,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
+        public List<ProactiveDiscount> GetDiscount(XMLTableData table)
+        {
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ProactiveDiscount rec = new ProactiveDiscount();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Offer No.": rec.Id = field.Values[i]; break;
+                        case "Item No.": rec.ItemId = field.Values[i]; break;
+                        case "Loyalty Scheme Code": rec.LoyaltySchemeCode = field.Values[i]; break;
+                        case "Variant Code": rec.VariantId = field.Values[i]; break;
+                        case "Unit of Measure Code": rec.UnitOfMeasureId = field.Values[i]; break;
+                        case "Discount %": rec.Percentage = GetWebDecimal(field.Values[i]); break;
+                        case "Minimum Quantity": rec.MinimumQuantity = GetWebDecimal(field.Values[i]); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        public void SetDiscountInfo(XMLTableData table, ProactiveDiscount rec)
+        {
+            foreach (XMLFieldData field in table.FieldList)
+            {
+                switch (field.FieldName)
+                {
+                    case "Description": rec.Description = field.Values[0]; break;
+                    case "Pop-up Line 1": rec.PopUpLine1 = field.Values[0]; break;
+                    case "Pop-up Line 2": rec.PopUpLine2 = field.Values[0]; break;
+                    case "Priority": rec.Priority = GetWebInt(field.Values[0]); break;
+                    case "Type": rec.Type = (ProactiveDiscountType)(GetWebInt(field.Values[0]) + 1); break;
+                }
+            }
+        }
+
         public decimal GetPointRate(XMLTableData table)
         {
             if (table == null || table.NumberOfValues == 0)
@@ -193,6 +236,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             {
                 Store rec = new Store();
                 rec.Address = new Address();
+                rec.Address.Type = AddressType.Store;
                 foreach (XMLFieldData field in table.FieldList)
                 {
                     switch (field.FieldName)
@@ -209,6 +253,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Longitude": rec.Longitude = (double)GetWebDecimal(field.Values[i]); break;
                         case "Phone No.": rec.Phone = field.Values[i]; break;
                         case "Click and Collect": rec.IsClickAndCollect = GetWebBool(field.Values[i]); break;
+                        case "Currency": rec.Currency = new Currency(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

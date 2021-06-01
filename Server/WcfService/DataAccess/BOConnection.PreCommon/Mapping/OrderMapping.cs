@@ -185,7 +185,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return items;
         }
 
-        public SalesEntry MapFromRootV2ToSalesEntry(LSCentral.RootCustomerOrderGetV3 root)
+        public SalesEntry MapFromRootToSalesEntry(LSCentral.RootCustomerOrderGetV3 root)
         {
             LSCentral.CustomerOrderGetCOHeaderV3 header = root.CustomerOrderGetCOHeaderV3.FirstOrDefault();
 
@@ -193,12 +193,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 Id = header.DocumentID,
                 StoreId = header.CreatedatStore,
+                CustomerOrderNo = header.DocumentID,
                 ExternalId = header.ExternalID,
                 ClickAndCollectOrder = header.ClickandCollectOrder,
                 AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
                 DocumentRegTime = ConvertTo.SafeJsonDate(header.Created, IsJson),
+                Status = SalesEntryStatus.Created,
+                IdType = DocumentIdType.Order,
+                Posted = false,
                 TotalAmount = header.TotalAmount,
                 TotalDiscount = header.TotalDiscount,
+                TotalNetAmount = header.TotalAmount - header.TotalDiscount,
                 LineItemCount = (int)header.TotalQuantity,
 
                 CardId = header.MemberCardNo,
@@ -221,6 +226,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
                 ShipToName = header.ShiptoName,
                 ShipToEmail = header.ShiptoEmail,
+                ShippingStatus = (header.ClickandCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped,
                 ShipToAddress = new Address()
                 {
                     Address1 = header.ShiptoAddress,
@@ -651,10 +657,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             List<LSCentral.MobileTransactionLine> transLines = new List<LSCentral.MobileTransactionLine>();
             foreach (OneListItem line in list.Items)
             {
+                line.LineNumber = lineno++;
                 LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
                 {
                     Id = root.MobileTransaction[0].Id,
-                    LineNo = LineNumberToNav(lineno++),
+                    LineNo = LineNumberToNav(line.LineNumber),
                     EntryStatus = (int)EntryStatus.Normal,
                     LineType = (int)LineType.Item,
                     Number = line.ItemId,

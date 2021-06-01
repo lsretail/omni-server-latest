@@ -32,7 +32,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             PointAmount = 0M;
 
             //Added for SPG
-            IsChecked = false;
+            IsChecked = true;
         }
 
         public OneList(string id, ObservableCollection<OneListItem> items, bool calculate) : this(id)

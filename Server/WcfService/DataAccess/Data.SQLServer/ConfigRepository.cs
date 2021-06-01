@@ -158,9 +158,7 @@ namespace LSOmni.DataAccess.Dal
 
         public List<BOConfiguration> ConfigGetAll()
         {
-            List<BOConfiguration> list = new List<BOConfiguration>();
             List<LSKey> keys = new List<LSKey>();
-
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())

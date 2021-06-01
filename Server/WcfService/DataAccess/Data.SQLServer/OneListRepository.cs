@@ -359,7 +359,7 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT [Id],[OneListId],[DisplayOrderId],[ItemId],[UomId],[VariantId]," +
-                        "[ItemDescription],[VariantDescription],[ImageId],[BarcodeId],[Location],[IsADeal]," +
+                        "[ItemDescription],[VariantDescription],[ItemCategory],[ProductGroup],[ImageId],[BarcodeId],[Location],[IsADeal]," +
                         "[Quantity],[NetPrice],[Price],[NetAmount],[TaxAmount],[DiscountAmount],[DiscountPercent],[CreateDate]" +
                         " FROM [OneListItem] WHERE [OneListId]=@id ORDER BY [DisplayOrderid] ASC";
 
@@ -384,6 +384,8 @@ namespace LSOmni.DataAccess.Dal
                                 VariantId = SQLHelper.GetString(reader["VariantId"]),
                                 VariantDescription = SQLHelper.GetString(reader["VariantDescription"]),
                                 UnitOfMeasureId = SQLHelper.GetString(reader["UomId"]),
+                                ProductGroup = SQLHelper.GetString(reader["ProductGroup"]),
+                                ItemCategory = SQLHelper.GetString(reader["ItemCategory"]),
                                 Image = new ImageView(SQLHelper.GetString(reader["ImageId"])),
                                 Price = SQLHelper.GetDecimal(reader, "Price"),
                                 NetPrice = SQLHelper.GetDecimal(reader, "NetPrice"),
@@ -597,8 +599,8 @@ namespace LSOmni.DataAccess.Dal
                 //now add the line
                 command.CommandText = "INSERT INTO [OneListItem] (" +
                     "[Id],[OneListId],[DisplayOrderId],[ItemId],[ItemDescription],[BarcodeId],[UomId],[VariantId],[VariantDescription],[ImageId]," +
-                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location],[IsADeal]" +
-                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18,@f19)";
+                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location],[IsADeal],[ItemCategory],[ProductGroup]" +
+                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18,@f19,@f20,@f21)";
 
                 command.Parameters.Clear();
                 command.Parameters.Add("@f0", SqlDbType.NVarChar);
@@ -621,6 +623,8 @@ namespace LSOmni.DataAccess.Dal
                 command.Parameters.Add("@f17", SqlDbType.DateTime);
                 command.Parameters.Add("@f18", SqlDbType.NVarChar);
                 command.Parameters.Add("@f19", SqlDbType.TinyInt);
+                command.Parameters.Add("@f20", SqlDbType.NVarChar);
+                command.Parameters.Add("@f21", SqlDbType.NVarChar);
 
                 foreach (OneListItem line in listLines)
                 {
@@ -649,6 +653,8 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters["@f17"].Value = DateTime.Now;
                     command.Parameters["@f18"].Value = NullToString(line.Location, 30);
                     command.Parameters["@f19"].Value = line.IsADeal;
+                    command.Parameters["@f20"].Value = NullToString(line.ItemCategory, 20);
+                    command.Parameters["@f21"].Value = NullToString(line.ProductGroup, 20);
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 

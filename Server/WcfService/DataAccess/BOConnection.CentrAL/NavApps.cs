@@ -196,7 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.ReplicateStores(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, string terminalId)
+        public virtual List<ReplStore> ReplicateInvStores(string appId, string appType, string storeId, bool fullReplication, string terminalId)
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
             return rep.ReplicateInvStores(storeId, terminalId);

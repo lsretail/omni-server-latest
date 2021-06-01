@@ -63,8 +63,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         private System.Threading.SendOrPostCallback InsertReservationOperationCompleted;
         
-        private System.Threading.SendOrPostCallback SellMembershipV2OperationCompleted;
-        
         private System.Threading.SendOrPostCallback SellMembershipOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetAdditionalChargesV2OperationCompleted;
@@ -191,9 +189,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
         
         /// <remarks/>
         public event InsertReservationCompletedEventHandler InsertReservationCompleted;
-        
-        /// <remarks/>
-        public event SellMembershipV2CompletedEventHandler SellMembershipV2Completed;
         
         /// <remarks/>
         public event SellMembershipCompletedEventHandler SellMembershipCompleted;
@@ -1294,59 +1289,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             if ((this.InsertReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.InsertReservationCompleted(this, new InsertReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembershipV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SellMembershipV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
-        public bool SellMembershipV2(string clientNo, string membershipType, ref string returnMembershipNo, ref string returnItemNo, ref decimal returnPrice, ref decimal returnQty, ref decimal returnDiscount, ref string returnBookingRef, ref string errorString) {
-            object[] results = this.Invoke("SellMembershipV2", new object[] {
-                        clientNo,
-                        membershipType,
-                        returnMembershipNo,
-                        returnItemNo,
-                        returnPrice,
-                        returnQty,
-                        returnDiscount,
-                        returnBookingRef,
-                        errorString});
-            returnMembershipNo = ((string)(results[1]));
-            returnItemNo = ((string)(results[2]));
-            returnPrice = ((decimal)(results[3]));
-            returnQty = ((decimal)(results[4]));
-            returnDiscount = ((decimal)(results[5]));
-            returnBookingRef = ((string)(results[6]));
-            errorString = ((string)(results[7]));
-            return ((bool)(results[0]));
-        }
-        
-        /// <remarks/>
-        public void SellMembershipV2Async(string clientNo, string membershipType, string returnMembershipNo, string returnItemNo, decimal returnPrice, decimal returnQty, decimal returnDiscount, string returnBookingRef, string errorString) {
-            this.SellMembershipV2Async(clientNo, membershipType, returnMembershipNo, returnItemNo, returnPrice, returnQty, returnDiscount, returnBookingRef, errorString, null);
-        }
-        
-        /// <remarks/>
-        public void SellMembershipV2Async(string clientNo, string membershipType, string returnMembershipNo, string returnItemNo, decimal returnPrice, decimal returnQty, decimal returnDiscount, string returnBookingRef, string errorString, object userState) {
-            if ((this.SellMembershipV2OperationCompleted == null)) {
-                this.SellMembershipV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnSellMembershipV2OperationCompleted);
-            }
-            this.InvokeAsync("SellMembershipV2", new object[] {
-                        clientNo,
-                        membershipType,
-                        returnMembershipNo,
-                        returnItemNo,
-                        returnPrice,
-                        returnQty,
-                        returnDiscount,
-                        returnBookingRef,
-                        errorString}, this.SellMembershipV2OperationCompleted, userState);
-        }
-        
-        private void OnSellMembershipV2OperationCompleted(object arg) {
-            if ((this.SellMembershipV2Completed != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.SellMembershipV2Completed(this, new SellMembershipV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -6627,88 +6569,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.LSActivity15 {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void SellMembershipV2CompletedEventHandler(object sender, SellMembershipV2CompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class SellMembershipV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal SellMembershipV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public bool Result {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((bool)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string returnMembershipNo {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public string returnItemNo {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[2]));
-            }
-        }
-        
-        /// <remarks/>
-        public decimal returnPrice {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((decimal)(this.results[3]));
-            }
-        }
-        
-        /// <remarks/>
-        public decimal returnQty {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((decimal)(this.results[4]));
-            }
-        }
-        
-        /// <remarks/>
-        public decimal returnDiscount {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((decimal)(this.results[5]));
-            }
-        }
-        
-        /// <remarks/>
-        public string returnBookingRef {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[6]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorString {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[7]));
             }
         }
     }

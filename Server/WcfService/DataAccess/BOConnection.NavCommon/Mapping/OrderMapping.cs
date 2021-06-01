@@ -193,6 +193,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 Id = header.DocumentID,
                 StoreId = header.CreatedatStore,
+                CustomerOrderNo = header.DocumentID,
                 ExternalId = header.ExternalID,
                 ClickAndCollectOrder = header.ClickandCollectOrder,
                 AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
@@ -319,12 +320,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 Id = header.DocumentID,
                 StoreId = header.CreatedatStore,
+                CustomerOrderNo = header.DocumentID,
                 ExternalId = header.ExternalID,
                 ClickAndCollectOrder = header.ClickandCollectOrder,
                 AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
                 DocumentRegTime = ConvertTo.SafeJsonDate(header.Created, IsJson),
+                Status = SalesEntryStatus.Created,
+                IdType = DocumentIdType.Order,
+                Posted = false,
                 TotalAmount = header.TotalAmount,
                 TotalDiscount = header.TotalDiscount,
+                TotalNetAmount = header.TotalAmount - header.TotalDiscount,
                 LineItemCount = (int)header.TotalQuantity,
 
                 CardId = header.MemberCardNo,
@@ -347,6 +353,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
                 ShipToName = header.ShiptoName,
                 ShipToEmail = header.ShiptoEmail,
+                ShippingStatus = (header.ClickandCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped,
                 ShipToAddress = new Address()
                 {
                     Address1 = header.ShiptoAddress,
@@ -799,10 +806,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 CreatedAtStore = order.StoreId,
                 TerritoryCode = string.Empty
             };
-
-            if (NavVersion > new Version("17.4.0.0"))
-                hd.ShopPaygo = (order.OrderType == OrderType.ScanPayGo);
-
             header.Add(hd);
 
             bool useHeaderCAC = false;

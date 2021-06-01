@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
 {
@@ -149,8 +150,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             restorePoint = XMLHelper.GetXMLInt32(body, "Restore_Point_ID");
 
             NAVSyncCycleStatus status = NAVSyncCycleStatus.New;
+            bool found = false;
             foreach (XElement el in body.Elements("Web_Application_Sync_Status"))
             {
+                found = true;
                 int tableNo = XMLHelper.GetXMLInt32(el, "Table_No.");
                 if (tableNo == tableToGet)
                 {
@@ -158,6 +161,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
                     break;
                 }
             }
+            if (found == false)
+                throw new LSOmniServiceException(StatusCode.Error, "Web_Application_Sync_Status Not Found in GET_SYNC_STATUS result xml");
             return status;
         }
 
@@ -220,8 +225,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             restorePoint = XMLHelper.GetXMLInt32(body, "Restore_Point_ID");
 
             List<XMLTableData> tablist = new List<XMLTableData>();
+            bool found = false;
             foreach (XElement el in body.Elements("Web_Application_Sync_Status"))
             {
+                found = true;
                 XMLTableData table = new XMLTableData();
                 table.TableId = XMLHelper.GetXMLInt32(el, "Table_No.");
                 table.TableName = XMLHelper.GetXMLValue(el, "Table_Name");
@@ -231,6 +238,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
                 table.MaxRecPerRequest = XMLHelper.GetXMLInt32(el, "Max_Records_Per_Request");
                 tablist.Add(table);
             }
+            if (found == false)
+                throw new LSOmniServiceException(StatusCode.Error, "Web_Application_Sync_Status Not Found in START_SYNC_CYCLE result xml");
 
             return tablist;
         }

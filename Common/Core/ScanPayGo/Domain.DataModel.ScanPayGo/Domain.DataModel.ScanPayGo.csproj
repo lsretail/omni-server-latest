@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>LSRetail.Omni.Domain.DataModel.ScanPayGo</AssemblyName>
+    <RootNamespace>LSRetail.Omni.Domain.DataModel.ScanPayGo</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Recipe\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />
+    <PackageReference Include="Xamarin.Forms.Maps" Version="5.0.0.2012" />
+  </ItemGroup>
+</Project>

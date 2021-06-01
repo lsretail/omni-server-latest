@@ -46,7 +46,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         [DataMember]
         public Scheme NextScheme { get; set; } //next Membership level
         [DataMember]
-        public Club Club { get; set; } 
+        public Club Club { get; set; }
+
+        public int UpdateSequence { get; set; }
     }
 }
  

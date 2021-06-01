@@ -24,6 +24,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSRetail.Omni.DiscountEngine.DataModels;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon
 {
@@ -409,6 +410,43 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return map.MapFromRootTransactionToItemCustPrice(root);
         }
 
+        public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest;
+            string xmlResponse;
+            List<ProactiveDiscount> list = new List<ProactiveDiscount>();
+            SetupRepository rep = new SetupRepository();
+
+            foreach (string id in itemIds)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Discounts", "Store No.", storeId, "Item No.", id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                list.AddRange(rep.GetDiscount(table));
+
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Mix & Match Offer", "Store No.", storeId, "Item No.", id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                list.AddRange(rep.GetDiscount(table));
+            }
+
+            foreach (ProactiveDiscount disc in list)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Periodic Discount", "No.", disc.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                rep.SetDiscountInfo(table, disc);
+            }
+            return list;
+        }
+
         #endregion
 
         #region Contact
@@ -533,9 +571,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             HandleWS2ResponseCode("GetMemberContact", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberContact Response - " + Serialization.ToXml(rootContact, true));
-            
-            contact = map.MapFromRootToContact(rootContact);
+
+            List<Scheme> schemelist = SchemeGetAll();
+            contact = map.MapFromRootToContact(rootContact, schemelist);
             contact.UserName = loginId;
+
+            if (contact.Cards.Count == 0)
+                return contact;
+
             card = contact.Cards.FirstOrDefault().Id;
 
             if (string.IsNullOrEmpty(loginId))
@@ -552,6 +595,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 contact.UserName = field.Values[0];
             }
 
+            decimal remainingPoints = 0;
+            contact.Profiles = ProfileGet(card, ref remainingPoints);
+            contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
+
+            if (includeDetails == false)
+                return contact;
+
             xmlRequest = xml.GetGeneralWebRequestXML("Member Login", "Login ID", contact.UserName.ToLower(), 1);
             xmlResponse = RunOperation(xmlRequest);
             HandleResponseCode(ref xmlResponse);
@@ -562,13 +612,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             field = table.FieldList.Find(f => f.FieldName.Equals("Password"));
             contact.Password = field.Values[0];
-
-            if (includeDetails == false)
-                return contact;
-
-            decimal remainingPoints = 0;
-            contact.Profiles = ProfileGet(card, ref remainingPoints);
-            contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
 
             NavWS.RootGetDirectMarketingInfo rootMarket = new NavWS.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", card);
@@ -670,15 +713,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             foreach (NavWS.MemberAttributeList att in rootCard.MemberAttributeList)
             {
-                if (att.Type != "0")
+                if (att.AttributeType != "4")
                     continue;
 
                 list.Add(new Profile()
                 {
                     Id = att.Code,
                     Description = att.Description,
-                    DefaultValue = att.Value,
-                    ContactValue = true
+                    DefaultValue = string.Empty,
+                    ContactValue = att.Value.ToLower().Trim() == "yes"
                 });
             }
             return list;
@@ -693,7 +736,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository();
-            return rep.SchemeGetAll(table);
+            List<Scheme> list = rep.SchemeGetAll(table);
+
+            foreach (Scheme sc in list)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Club", "Code", sc.Club.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Description"));
+                sc.Club.Name = field.Values[0];
+            }
+            return list;
         }
 
         public MemberContact Logon(string userName, string password, string deviceID, string deviceName, bool includeDetails)
@@ -897,17 +954,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository();
-            List<MemberContact> list = rep.ContactGet(table);
-
-            foreach (MemberContact contact in list)
-            {
-                xmlRequest = xml.GetGeneralWebRequestXML("Membership Card", "Contact No.", contact.Id);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
-                contact.Cards = rep.CardGet(table);
-            }
-            return list;
+            return rep.ContactGet(table);
         }
 
         public List<LoyItem> ItemSearch(string search)
@@ -1531,8 +1578,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository();
-            List<Store> st = rep.StoresGet(table);
-            return (st.Count > 0) ? st[0] : null;
+            List<Store> list = rep.StoresGet(table);
+            if (list.Count == 0)
+                return null;
+
+            Store store = list.FirstOrDefault();
+            if (store.Currency == null || string.IsNullOrEmpty(store.Currency.Id))
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                store.Currency = new Currency(field.Values[0]);
+            }
+
+            store.Images = ImagesGetByLink("Store", store.Id, string.Empty, string.Empty);
+            return store;
         }
 
         public List<Store> StoresGet(bool clickAndCollectOnly)
@@ -1549,7 +1614,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository();
-            return rep.StoresGet(table);
+            List<Store> list = rep.StoresGet(table);
+            foreach (Store store in list)
+            {
+                if (store.Currency != null && string.IsNullOrEmpty(store.Currency.Id) == false)
+                    continue;
+
+                xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                store.Currency = new Currency(field.Values[0]);
+
+                store.Images = ImagesGetByLink("Store", store.Id, string.Empty, string.Empty);
+            }
+            return list;
         }
 
         public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)

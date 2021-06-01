@@ -168,6 +168,10 @@
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>
       <Name>Domain.DataModel.Loyalty</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Core\ScanPayGo\Domain.DataModel.ScanPayGo\Domain.DataModel.ScanPayGo.csproj">
+      <Project>{7BD60081-D892-4C1E-8693-647770A06863}</Project>
+      <Name>Domain.DataModel.ScanPayGo</Name>
+    </ProjectReference>
     <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
       <Project>{8f8b6425-ca65-4afa-8d97-83b81e059770}</Project>
       <Name>BusinessLayer</Name>

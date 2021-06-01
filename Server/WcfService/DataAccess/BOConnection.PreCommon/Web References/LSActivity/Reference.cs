@@ -13,7 +13,7 @@
 // 
 #pragma warning disable 1591
 
-namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity15 {
+namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     using System;
     using System.Web.Services;
     using System.Diagnostics;

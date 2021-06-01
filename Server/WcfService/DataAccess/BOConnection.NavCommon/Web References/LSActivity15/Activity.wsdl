@@ -839,35 +839,6 @@
           </sequence>
         </complexType>
       </element>
-      <element name="SellMembershipV2">
-        <complexType>
-          <sequence>
-            <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="membershipType" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="returnMembershipNo" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="returnItemNo" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="returnPrice" type="decimal" />
-            <element minOccurs="1" maxOccurs="1" name="returnQty" type="decimal" />
-            <element minOccurs="1" maxOccurs="1" name="returnDiscount" type="decimal" />
-            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
-          </sequence>
-        </complexType>
-      </element>
-      <element name="SellMembershipV2_Result">
-        <complexType>
-          <sequence>
-            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
-            <element minOccurs="1" maxOccurs="1" name="returnMembershipNo" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="returnItemNo" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="returnPrice" type="decimal" />
-            <element minOccurs="1" maxOccurs="1" name="returnQty" type="decimal" />
-            <element minOccurs="1" maxOccurs="1" name="returnDiscount" type="decimal" />
-            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
-            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
-          </sequence>
-        </complexType>
-      </element>
       <element name="SellMembership">
         <complexType>
           <sequence>
@@ -1304,12 +1275,6 @@
   <message name="InsertReservation_Result">
     <part name="parameters" element="tns:InsertReservation_Result" />
   </message>
-  <message name="SellMembershipV2">
-    <part name="parameters" element="tns:SellMembershipV2" />
-  </message>
-  <message name="SellMembershipV2_Result">
-    <part name="parameters" element="tns:SellMembershipV2_Result" />
-  </message>
   <message name="SellMembership">
     <part name="parameters" element="tns:SellMembership" />
   </message>
@@ -1492,10 +1457,6 @@
     <operation name="InsertReservation">
       <input name="InsertReservation" message="tns:InsertReservation" />
       <output name="InsertReservation_Result" message="tns:InsertReservation_Result" />
-    </operation>
-    <operation name="SellMembershipV2">
-      <input name="SellMembershipV2" message="tns:SellMembershipV2" />
-      <output name="SellMembershipV2_Result" message="tns:SellMembershipV2_Result" />
     </operation>
     <operation name="SellMembership">
       <input name="SellMembership" message="tns:SellMembership" />
@@ -1729,15 +1690,6 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
-    <operation name="SellMembershipV2">
-      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembershipV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
-      <input name="SellMembershipV2">
-        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
-      </input>
-      <output name="SellMembershipV2_Result">
-        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
-      </output>
-    </operation>
     <operation name="SellMembership">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembership" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="SellMembership">
@@ -1912,7 +1864,7 @@
   </binding>
   <service name="Activity">
     <port name="Activity_Port" binding="tns:Activity_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni006:7447/BC174/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

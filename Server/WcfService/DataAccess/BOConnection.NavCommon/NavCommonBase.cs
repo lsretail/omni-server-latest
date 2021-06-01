@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Text;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
 using System.Net.Security;
@@ -10,7 +12,6 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping;
 using LSRetail.Omni.Domain.DataModel.Base;
-using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon
 {
@@ -37,6 +38,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         private string ecomAppId = string.Empty;
         private string ecomAppType = string.Empty;
+        private bool ecomAppRestore = false;
+        private string ecomAppRestoreFileName = string.Empty;
 
         private string pgtablename = "Product Group";
 
@@ -53,10 +56,23 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             ecomAppId = config.SettingsGetByKey(ConfigKey.NavAppId);
             ecomAppType = config.SettingsGetByKey(ConfigKey.NavAppType);
 
+            string rpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dat");
+            ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{ecomAppId}.txt");
+            if (Directory.Exists(rpath) == false)
+            {
+                Directory.CreateDirectory(rpath);
+            }
+            if (File.Exists(ecomAppRestoreFileName) == false)
+            {
+                File.WriteAllText(ecomAppRestoreFileName, true.ToString());
+            }
+            string restoredata = File.ReadAllText(ecomAppRestoreFileName);
+            ecomAppRestore = Convert.ToBoolean(restoredata);
+
             string domain = "";
             NetworkCredential credentials = null;
 
-            //check if domain is part of the username
+            //check if domain is part of the user name
             string username = config.SettingsGetByKey(ConfigKey.BOUser);
             string password = config.SettingsGetByKey(ConfigKey.BOPassword);
 
@@ -108,7 +124,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 navWebQryReference.PreAuthenticate = true;
                 navWebQryReference.AllowAutoRedirect = true;
 
-                //dont set the credentials unless we have them. Can use the app pool too.
+                //don't set the credentials unless we have them. Can use the app pool too.
                 if (credentials != null)
                 {
                     navWebReference.Credentials = credentials;
@@ -164,6 +180,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             if (NAVVersion > new Version("14.2"))
                 pgtablename = "Retail Product Group";
+        }
+
+        public void ResetReplication(bool fullreplication, string lastkey)
+        {
+            if (fullreplication && (string.IsNullOrEmpty(lastkey) || lastkey == "0"))
+            {
+                File.WriteAllText(ecomAppRestoreFileName, true.ToString());
+                ecomAppRestore = true;
+            }
         }
 
         public string TenderTypeMapping(string tenderMapping, string tenderType, bool toOmni)
@@ -224,18 +249,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             NAVWebXml xml = new NAVWebXml(storeId, appid, apptype);
             List<XMLTableData> tablist = new List<XMLTableData>();
 
-            if (restorepoint > 0)
-            {
-                // restore everything
-                RestoreWebReplication(xml, restorepoint);
-            }
-
-            if (restorepoint == 0)
+            if (restorepoint == 0 && ecomAppRestore)
             {
                 // restart to beginning
                 restorepoint = 1;
                 RestoreWebReplication(xml, restorepoint);
                 tablist = StartWebReplication(xml, batchSize, ref restorepoint);
+
+                File.WriteAllText(ecomAppRestoreFileName, false.ToString());
             }
             else
             {
@@ -250,13 +271,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         tablist.Add(t);
                         break;
                     case NAVSyncCycleStatus.New:
-                        tablist = StartWebReplication(xml, batchSize, ref restorepoint);
-                        break;
                     case NAVSyncCycleStatus.Finished:
-                        if (restorepoint < resPoint)
-                            tablist = RestoreWebReplication(xml, restorepoint);
-                        else
-                            tablist = StartWebReplication(xml, batchSize, ref restorepoint);
+                        tablist = StartWebReplication(xml, batchSize, ref restorepoint);
                         break;
                 }
             }
@@ -555,19 +571,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string xmlRequest;
             string xmlResponse;
 
-            try
-            {
-                xmlRequest = xml.GetSyncStatusRequestXML();
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                return xml.GetSyncStatusResponseXML(xmlResponse, tableNo, out restorePoint);
-            }
-            catch (Exception ex)
-            {
-                logger.Error(config.LSKey.Key, ex, "Fetching Table data for table" + tableNo);
-                restorePoint = 0;
-                return NAVSyncCycleStatus.New;
-            }
+            xmlRequest = xml.GetSyncStatusRequestXML();
+            xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            return xml.GetSyncStatusResponseXML(xmlResponse, tableNo, out restorePoint);
         }
 
         private void LogXml(string xmlRequest, string xmlResponse, string elapsedTime)

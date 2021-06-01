@@ -3114,8 +3114,8 @@
           <element minOccurs="1" maxOccurs="1" name="EFTMerchantNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTTerminalID" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTTransNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="EFTTransNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="EFTTransNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="EFTTransactionID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="EFTAdditionalID" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTBatchNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="AuthSourceCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="EFTTransTime" type="string" />
@@ -4412,8 +4412,8 @@
           <element minOccurs="1" maxOccurs="1" name="EFTMerchantNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTTerminalID" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTTransNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="EFTTransNo" type="string" />
-          <element minOccurs="1" maxOccurs="1" name="EFTTransNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="EFTTransactionID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="EFTAdditionalID" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTBatchNo" type="string" />
           <element minOccurs="1" maxOccurs="1" name="AuthSourceCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="EFTTransTime" type="string" />

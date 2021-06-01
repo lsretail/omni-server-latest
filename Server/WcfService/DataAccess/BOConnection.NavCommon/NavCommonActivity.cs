@@ -237,12 +237,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             decimal qty = 0;
 
             logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipCancel: contactNo:{0}, type:{1}", contactNo, type));
-
-            if (NAVVersion < new Version("17.5"))
-                activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
-            else
-                activity15WS.SellMembershipV2(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref bookRef, ref error);
-
+            activity15WS.SellMembership(contactNo, type, ref no, ref itemNo, ref price, ref qty, ref discount, ref error);
             logger.Debug(config.LSKey.Key, "SellMembership - " + error);
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);

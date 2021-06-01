@@ -97,7 +97,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, string.Format("ActivityAvailabilityGet: locationNo:{0}, productNo:{1}, activityDate:{2}, contactNo:{3}",
                 locationNo, productNo, activityDate, contactNo));
 
-            LSActivity15.ActivityAvailabilityResponse root = new LSActivity15.ActivityAvailabilityResponse();
+            LSActivity.ActivityAvailabilityResponse root = new LSActivity.ActivityAvailabilityResponse();
             activityWS.GetAvailabilityV3(locationNo, productNo, activityDate, XMLHelper.GetString(contactNo), XMLHelper.GetString(optionalResource), XMLHelper.GetString(promoCode), XMLHelper.GetString(activityNo), noOfPersons, ref error, ref root);
             logger.Debug(config.LSKey.Key, "ActivityAvailabilityResponse - " + Serialization.ToXml(root, true));
             if (string.IsNullOrEmpty(error) == false)
@@ -111,7 +111,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAdditionalChargesGet: activityNo:{0}", activityNo));
 
-            LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
+            LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
             activityWS.GetAdditionalCharges(activityNo, ref root);
 
             logger.Debug(config.LSKey.Key, "ActivityChargeRespond - " + Serialization.ToXml(root, true));
@@ -123,7 +123,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityProductChargesGet: productNo:{0}", productNo));
 
-            LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
+            LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
             activityWS.GetProductChargesV2(productNo, locationNo, dateOfBooking, ref root);
 
             logger.Debug(config.LSKey.Key, "ActivityChargeRespond - " + Serialization.ToXml(root, true));
@@ -137,7 +137,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "ActivityAdditionalChargesSet - " + Serialization.ToXml(req, true));
 
-            LSActivity15.ActivityChargeRespond root = new LSActivity15.ActivityChargeRespond();
+            LSActivity.ActivityChargeRespond root = new LSActivity.ActivityChargeRespond();
             activityWS.SetAdditionalChargesV2(req.ActivityNo, req.LineNo, (int)req.ProductType, req.ItemNo, req.Quantity, req.Price, req.DiscountPercentage, XMLHelper.GetString(req.UnitOfMeasure), ref error);
             logger.Debug(config.LSKey.Key, "SetAdditionalChargesV2 - " + error);
             if (string.IsNullOrEmpty(error) == false)
@@ -150,7 +150,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAttributesGet: type:{0}, linkNo:{1}", type, linkNo));
 
-            LSActivity15.ActivityAttributeRespond root = new LSActivity15.ActivityAttributeRespond();
+            LSActivity.ActivityAttributeRespond root = new LSActivity.ActivityAttributeRespond();
             activityWS.GetAttributes((int)type, linkNo, ref root);
 
             logger.Debug(config.LSKey.Key, "ActivityAttributeRespond - " + Serialization.ToXml(root, true));
@@ -260,7 +260,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<ActivityProduct> ActivityProductsGet()
         {
-            LSActivity15.ActivityUploadProducts root = new LSActivity15.ActivityUploadProducts();
+            LSActivity.ActivityUploadProducts root = new LSActivity.ActivityUploadProducts();
             activityWS.UploadActivityProducts(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityProducts Response - " + Serialization.ToXml(root, true));
@@ -270,7 +270,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<ActivityType> ActivityTypesGet()
         {
-            LSActivity15.ActivityUploadTypes root = new LSActivity15.ActivityUploadTypes();
+            LSActivity.ActivityUploadTypes root = new LSActivity.ActivityUploadTypes();
             activityWS.UploadActivityTypes(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityTypes Response - " + Serialization.ToXml(root, true));
@@ -280,7 +280,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<ActivityLocation> ActivityLocationsGet()
         {
-            LSActivity15.ActivityUploadLocations root = new LSActivity15.ActivityUploadLocations();
+            LSActivity.ActivityUploadLocations root = new LSActivity.ActivityUploadLocations();
             activityWS.UploadActivityLocations(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityLocations Response - " + Serialization.ToXml(root, true));
@@ -292,7 +292,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, "GetActReservations Request - ResNo:{0} LocNo:{1} FromDate:{2}", reservationNo, locationNo, fromDate);
 
-            LSActivity15.ActivityUploadResHeaders root = new LSActivity15.ActivityUploadResHeaders();
+            LSActivity.ActivityUploadResHeaders root = new LSActivity.ActivityUploadResHeaders();
             activityWS.GetActReservations(reservationNo, locationNo, reservationType, status, fromDate, ref root);
 
             logger.Debug(config.LSKey.Key, "GetActReservations Response - " + Serialization.ToXml(root, true));
@@ -304,7 +304,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityReservationsGet: contactNo:{0}, ResNo:{1}, actType:{2}", contactNo, reservationNo, activityType));
 
-            LSActivity15.ActivityUploadReservations root = new LSActivity15.ActivityUploadReservations();
+            LSActivity.ActivityUploadReservations root = new LSActivity.ActivityUploadReservations();
             if (string.IsNullOrWhiteSpace(reservationNo))
             {
                 activityWS.UploadClientBookingsV2(contactNo, activityType, ref root);
@@ -322,7 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<Promotion> ActivityPromotionsGet()
         {
-            LSActivity15.ActivityUploadPromotions root = new LSActivity15.ActivityUploadPromotions();
+            LSActivity.ActivityUploadPromotions root = new LSActivity.ActivityUploadPromotions();
             activityWS.UploadPromotions(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadPromotions Response - " + Serialization.ToXml(root, true));
@@ -334,7 +334,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAllowancesGet: contactNo:{0}", contactNo));
 
-            LSActivity15.ActivityUploadAllowance root = new LSActivity15.ActivityUploadAllowance();
+            LSActivity.ActivityUploadAllowance root = new LSActivity.ActivityUploadAllowance();
             activityWS.UploadPurchasedAllowances(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadPurchasedAllowances Response - " + Serialization.ToXml(root, true));
@@ -346,7 +346,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityCustomerEntriesGet: contactNo:{0}, customerNo:{1}", contactNo, customerNo));
 
-            LSActivity15.ActivityCustomerEntries root = new LSActivity15.ActivityCustomerEntries();
+            LSActivity.ActivityCustomerEntries root = new LSActivity.ActivityCustomerEntries();
             activityWS.UploadCustomerEntries(contactNo, customerNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadCustomerEntries Response - " + Serialization.ToXml(root, true));
@@ -356,7 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<MemberProduct> ActivityMembershipProductsGet()
         {
-            LSActivity15.ActivityMembershipProducts root = new LSActivity15.ActivityMembershipProducts();
+            LSActivity.ActivityMembershipProducts root = new LSActivity.ActivityMembershipProducts();
             activityWS.UploadMembershipProducts(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadMembershipProducts Response - " + Serialization.ToXml(root, true));
@@ -368,7 +368,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivitySubscriptionChargesGet: contactNo:{0}", contactNo));
 
-            LSActivity15.ActivitySubscriptionEntries root = new LSActivity15.ActivitySubscriptionEntries();
+            LSActivity.ActivitySubscriptionEntries root = new LSActivity.ActivitySubscriptionEntries();
             activityWS.UploadMembershipSubscriptionCharges(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadMembershipSubscriptionCharges Response - " + Serialization.ToXml(root, true));
@@ -380,7 +380,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAdmissionEntriesGet: contactNo:{0}", contactNo));
 
-            LSActivity15.ActivityAdmissionEntries root = new LSActivity15.ActivityAdmissionEntries();
+            LSActivity.ActivityAdmissionEntries root = new LSActivity.ActivityAdmissionEntries();
             activityWS.UploadAdmissionEntries(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadAdmissionEntries Response - " + Serialization.ToXml(root, true));
@@ -393,7 +393,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, string.Format("ActivityMembershipsGet: contactNo:{0}", contactNo));
 
             ActivityMapping map = new ActivityMapping(config.IsJson);
-            LSActivity15.ActivityUploadMemberships root = new LSActivity15.ActivityUploadMemberships();
+            LSActivity.ActivityUploadMemberships root = new LSActivity.ActivityUploadMemberships();
             activityWS.UploadMembershipEntries(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadMembershipEntries Response - " + Serialization.ToXml(root, true));

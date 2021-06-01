@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
-
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
@@ -23,6 +22,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 
 namespace LSOmni.Service
 {
@@ -2786,6 +2786,19 @@ namespace LSOmni.Service
 
         #endregion
 
+        #region Payment
+
+        /// <summary>
+        /// Creates a client token for payment provider
+        /// </summary>
+        /// <param name="customerId">Customer id, used to show saved cards</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ClientToken PaymentClientTokenGet(string customerId);
+
+        #endregion
+		
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string MyCustomFunction(string data);

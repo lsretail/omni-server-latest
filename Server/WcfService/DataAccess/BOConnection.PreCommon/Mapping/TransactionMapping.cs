@@ -568,7 +568,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             List<LSCentral.MobileTransDiscountLine> discLines = new List<LSCentral.MobileTransDiscountLine>();
 
             // find highest lineNo count in sub line, if user has set some
-            int LineCounter = 1;
+            int LineCounter = 0;
             int nr = 0;
             foreach (OneListItem l in request.Items)
             {
@@ -856,6 +856,36 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return root;
         }
 
+
+        public List<EodReportRepsonse> EODReportResponse(LSCentral.RootMobilePosZReport root)
+        {
+            if (root.PosPrintBuffer == null)
+                return new List<EodReportRepsonse>();
+
+            List<EodReportRepsonse> list = new List<EodReportRepsonse>();
+            foreach (LSCentral.PosPrintBuffer line in root.PosPrintBuffer)
+            {
+                list.Add(new EodReportRepsonse()
+                {
+                    TransactionNo = line.TransactionNo,
+                    BufferIndex = line.BufferIndex,
+                    StationNo = line.StationNo,
+                    PageNo = line.PageNo,
+                    PrintedLineNo = line.PrintedLineNo,
+                    LineType = Convert.ToInt32(line.LineType),
+                    HostId = line.HostID,
+                    ProfileId = line.ProfileID,
+                    TransactionType = line.TransactionType,
+                    Text = line.Text,
+                    Width = line.Width,
+                    Height = line.Height,
+                    BCType = line.BCType,
+                    BCPos = line.BCPos,
+                    SetBackPrinting = line.SetBackPrinting
+                });
+            }
+            return list;
+        }
 
         #region Private
 

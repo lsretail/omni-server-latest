@@ -244,9 +244,25 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                         search = "*" + search + "*";
 
                     if (NAVVersion < new Version("17.5"))
-                        list = NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                    {
+                        List<MemberContact> tmplist = NavWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                        foreach (MemberContact c in tmplist)
+                        {
+                            cont = NavWSBase.ContactGet(c.Id, c.Account.Id, string.Empty, string.Empty, string.Empty, false);
+                            if (cont != null)
+                                list.Add(cont);
+                        }
+                    }
                     else
-                        list = LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                    {
+                        List<MemberContact> tmplist = LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned);
+                        foreach (MemberContact c in tmplist)
+                        {
+                            cont = LSCWSBase.ContactGet(c.Id, c.Account.Id, string.Empty, string.Empty, string.Empty, false);
+                            if (cont != null)
+                                list.Add(cont);
+                        }
+                    }
                     break;
             }
             return list;
@@ -503,9 +519,22 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return NavWSBase.OrderGet(entryId);
             }
 
+            SalesEntry entry;
             if (type == DocumentIdType.Receipt)
-                return LSCWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
-            return LSCWSBase.OrderGet(entryId);
+                entry = LSCWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
+            else
+                entry = LSCWSBase.OrderGet(entryId);
+
+            if (entry.Payments != null)
+            {
+                foreach (SalesEntryPayment line in entry.Payments)
+                {
+                    line.TenderType = LSCWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tender type between LSOmni and NAV
+                    if (line.TenderType == null)
+                        throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                }
+            }
+            return entry;
         }
 
         public virtual string FormatAmount(decimal amount, string culture)
@@ -735,41 +764,41 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplImageLink> ReplEcommImageLinks(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommImageLinks(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplImage> ReplEcommImages(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommImages(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttribute> ReplEcommAttribute(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommAttribute(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeValue> ReplEcommAttributeValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommAttributeValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommAttributeOptionValue(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -780,49 +809,49 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommDataTranslation(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateEcommDataTranslationLangCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommShippingAgent(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCustomer> ReplEcommMember(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommMember(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCountryCode> ReplEcommCountryCode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommCountryCode(string.Empty, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+                return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
             
-            return LSCWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref maxKey, ref recordsRemaining);
+            return LSCWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

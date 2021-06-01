@@ -20,6 +20,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 
 namespace LSOmni.Service
 {
@@ -1939,5 +1940,23 @@ namespace LSOmni.Service
         }
 
         #endregion LS Recommends
+
+        #region Payment
+
+        public virtual ClientToken PaymentClientTokenGet(string customerId)
+        {
+            try
+            {
+                // Handle payment here
+                return new ClientToken();
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Empty);
+                return null; //never gets here
+            }
+        }
+
+        #endregion
     }
 }  	 

@@ -25,9 +25,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Club Code": rec.Club = new Club(field.Values[i]); break;
-                        case "Min_ Point for Upgrade": rec.PointsNeeded = (long)GetWebDecimal(field.Values[i]); break;
+                        case "Min. Point for Upgrade": rec.PointsNeeded = (long)GetWebDecimal(field.Values[i]); break;
                         case "Next Scheme Benefits": rec.Perks = field.Values[i]; break;
                         case "NextScheme": rec.NextScheme = new Scheme(field.Values[i]); break;
+                        case "Update Sequence": rec.UpdateSequence = Convert.ToInt32(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

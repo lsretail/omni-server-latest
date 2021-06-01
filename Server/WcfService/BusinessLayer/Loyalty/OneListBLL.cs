@@ -77,6 +77,24 @@ namespace LSOmni.BLL.Loyalty
             CheckItemSetup(list);
 
             Order order = BOLoyConnection.BasketCalcToOrder(list);
+            foreach (OneListItem olditem in list.Items)
+            {
+                OrderLine oline = order.OrderLines.Find(l => l.ItemId == olditem.ItemId && l.LineNumber == olditem.LineNumber);
+                if (oline != null)
+                {
+                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    {
+                        oline.VariantId = olditem.VariantId;
+                        oline.VariantDescription = olditem.VariantDescription;
+                    }
+
+                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    {
+                        oline.UomId = olditem.UnitOfMeasureId;
+                    }
+                }
+            }
+
             foreach (OrderLine line in order.OrderLines)
             {
                 if (string.IsNullOrEmpty(line.ItemImageId) == false)
@@ -107,6 +125,24 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.NoLinesToPost, "No Lines to calculate");
 
             OrderHosp order = BOLoyConnection.HospOrderCalculate(list);
+            foreach (OneListItem olditem in list.Items)
+            {
+                OrderHospLine oline = order.OrderLines.Find(l => l.ItemId == olditem.ItemId && l.LineNumber == olditem.LineNumber);
+                if (oline != null)
+                {
+                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    {
+                        oline.VariantId = olditem.VariantId;
+                        oline.VariantDescription = olditem.VariantDescription;
+                    }
+
+                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    {
+                        oline.UomId = olditem.UnitOfMeasureId;
+                    }
+                }
+            }
+
             foreach (OrderHospLine line in order.OrderLines)
             {
                 if (string.IsNullOrEmpty(line.ItemImageId) == false)
@@ -163,7 +199,7 @@ namespace LSOmni.BLL.Loyalty
 
                 for (int i = 0; i < list.Items.Count; i++)
                 {
-                    if (list.Items[i].ItemId == item.ItemId && list.Items[i].VariantId == item.VariantId && list.Items[i].UnitOfMeasureId == item.UnitOfMeasureId)
+                    if (list.Items[i].ItemId == item.ItemId && list.Items[i].VariantId == (item.VariantId ?? string.Empty) && list.Items[i].UnitOfMeasureId == (item.UnitOfMeasureId ?? string.Empty))
                     {
                         list.Items[i].Quantity += item.Quantity;
                         notfound = false;
@@ -278,7 +314,7 @@ namespace LSOmni.BLL.Loyalty
 
                 foreach (OneListItem olditem in list.Items)
                 {
-                    if (olditem.ItemId == line.ItemId && olditem.VariantId == line.VariantId)
+                    if (olditem.ItemId == line.ItemId && olditem.LineNumber == line.LineNumber)
                     {
                         if (string.IsNullOrEmpty(line.ItemImageId))
                             item.Image = olditem.Image;
@@ -289,9 +325,17 @@ namespace LSOmni.BLL.Loyalty
                             item.VariantDescription = olditem.VariantDescription;
                         }
 
+                        if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                        {
+                            item.UnitOfMeasureId = olditem.UnitOfMeasureId;
+                            item.UnitOfMeasureDescription = olditem.UnitOfMeasureDescription;
+                        }
+
                         item.BarcodeId = olditem.BarcodeId;
+                        item.ProductGroup = olditem.ProductGroup;
+                        item.ItemCategory = olditem.ItemCategory;
+                        break;
                     }
-                    break;
                 }
                 newitems.Add(item);
             }
@@ -319,7 +363,6 @@ namespace LSOmni.BLL.Loyalty
                             Quantity = line.Quantity
                         };
                         line.OnelistItemDiscounts.Add(discount);
-                        break;
                     }
                 }
             }
@@ -368,10 +411,9 @@ namespace LSOmni.BLL.Loyalty
                     DiscountPercent = line.DiscountPercent
                 };
 
-
                 foreach (OneListItem olditem in list.Items)
                 {
-                    if (olditem.ItemId == line.ItemId && olditem.VariantId == line.VariantId)
+                    if (olditem.ItemId == line.ItemId && olditem.LineNumber == line.LineNumber)
                     {
                         if (string.IsNullOrEmpty(line.ItemImageId))
                             item.Image = olditem.Image;
@@ -382,8 +424,15 @@ namespace LSOmni.BLL.Loyalty
                             item.VariantDescription = olditem.VariantDescription;
                         }
 
+                        if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                        {
+                            item.UnitOfMeasureId = olditem.UnitOfMeasureId;
+                            item.UnitOfMeasureDescription = olditem.UnitOfMeasureDescription;
+                        }
+
                         item.BarcodeId = olditem.BarcodeId;
-                        break;
+                        item.ProductGroup = olditem.ProductGroup;
+                        item.ItemCategory = olditem.ItemCategory;
                     }
                 }
 
@@ -411,7 +460,6 @@ namespace LSOmni.BLL.Loyalty
 
             list.Items.Clear();
             list.Items = newitems;
-
             return list;
         }
     }

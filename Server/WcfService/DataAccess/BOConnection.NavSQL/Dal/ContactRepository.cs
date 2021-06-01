@@ -170,6 +170,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
                     where = "mc.[Card No_]=@value";
                     order = "mc.[Card No_]";
+                    exact = true;
                     break;
 
                 case ContactSearchType.UserName:
@@ -356,8 +357,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     //CardStatus 3 = blocked
-                    command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status]," +
-                                 "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by], ml.[Login ID] " +
+                    command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status],mt.[Linked to Account]," +
+                                 "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by],ml.[Login ID] " +
                                  "FROM [" + navCompanyName + "Membership Card] AS mt " +
                                  "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] ml on mt.[Card No_] = ml.[Card No_]" +
                                  "WHERE mt.[Contact No_]=@id AND mt.[Status] != 3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
@@ -460,8 +461,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence]," +
-                                          "up.[Min_ Point for Upgrade], mt.[Next Scheme Benefits], up.[Code] AS NextScheme " +
+                    command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence],mt.[Next Scheme Benefits]," +
+                                          "up.[Min_ Point for Upgrade],up.[Code] AS NextScheme " +
                                           "FROM [" + navCompanyName + "Member Scheme] mt " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "Member Scheme] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1";
@@ -769,6 +770,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Status = (CardStatus)SQLHelper.GetInt32(reader["Status"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
+                LinkedToAccount = SQLHelper.GetBool(reader["Linked to Account"]),
                 DateBlocked = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
                 LoginId = SQLHelper.GetString(reader["Login ID"])
             };
@@ -786,8 +788,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
 
             scheme.NextScheme = SchemeGetById(SQLHelper.GetString(reader["NextScheme"]));
-            if (scheme.NextScheme == null)
-                scheme.NextScheme = new Scheme();
             return scheme;
         }
 
