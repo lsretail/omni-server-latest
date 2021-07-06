@@ -5,6 +5,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -54,7 +55,12 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId)
         {
-            return base.BOAppConnection.ItemsInStockGet(items, storeId, string.Empty);
+            return base.BOAppConnection.ItemsInStoreGet(items, storeId, string.Empty);
+        }
+
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            return BOLoyConnection.CheckAvailability(request, storeId);
         }
 
         public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)

@@ -58,12 +58,12 @@ begin
   // JIJ dont try to understand this, but best to create object 1x and keep open.
   // got access exception when I tried to have this local in functions !
   // SO keep it open and never close a connection to sql server!
-  Log('Init ADOGlobalConnection called');
+  Log('ADOInit called');
   ADOGlobalConnection := CreateOleObject('ADODB.Connection') ;
   ADOGlobalConnection.ConnectionString := ADOGetConnectionString(dbServer,dbName,userName,pwd,windowsAuth); 
   ADOGlobalConnection.Open;
 
-  Log('Init ADOGlobalCommand called');
+  Log('ADOInit - ConStr:' + ADOGlobalConnection.ConnectionString);
   ADOGlobalCommand := CreateOleObject('ADODB.Command') ;
   ADOGlobalCommand.ActiveConnection := ADOGlobalConnection; 
 end;
@@ -125,7 +125,7 @@ begin
     ADOGlobalCommand.CommandTimeout := 30; //10 sec
     ADOGlobalCommand.CommandType := adCmdText;
     
-	// this will execute the command and return dataset
+    // this will execute the command and return dataset
     Log('ADOCheckIsMixedAuthentication Execute ' + sqlStr);
     ADOGlobalCommand.Execute(NULL, NULL, adCmdText or adExecuteNoRecords);
   except
@@ -199,7 +199,7 @@ begin
 
   ADOGlobalCommand.CommandText := 'IF NOT EXISTS (SELECT [LSKey],[Key] FROM [TenantConfig] WHERE [LSKey]='''' AND [Key]=''' + keyname + ''') ' +
                                   'INSERT INTO [TenantConfig] ([LSKey],[Key],[Value],[DataType]) VALUES ('''',''' + keyname + ''',''' + newValue + ''','''') ' + 
-								  'ELSE UPDATE [TenantConfig] SET [Value]=''' + newValue + ''' WHERE [LSKey]='''' AND [Key]=''' + keyname + '''';
+                                  'ELSE UPDATE [TenantConfig] SET [Value]=''' + newValue + ''' WHERE [LSKey]='''' AND [Key]=''' + keyname + '''';
 
   ADOGlobalCommand.CommandTimeout := 30;
   ADOGlobalCommand.CommandType := adCmdText;
@@ -216,7 +216,7 @@ begin
   Log('ADOCreateDb called> Srv:' + dbServer + ' Usr:' + userName + ' Pwd:' + pwd);
   Result := True;
   //dont pass in the dbname since it is not to be used
-  ADOInit(dbServer,'', userName, pwd, windowsAuth);
+  ADOInit(dbServer, '', userName, pwd, windowsAuth);
 
   //create the database if needed
   dbName := Trim(dbName);
@@ -224,8 +224,8 @@ begin
   sql := 'USE [master]; IF NOT EXISTS (SELECT name FROM master.sys.databases WHERE name = ''' + dbName + ''')' + 
          ' CREATE DATABASE ['+ dbName + '] COLLATE Latin1_General_CI_AS; ' +
          ' ALTER DATABASE [' + dbName + '] MODIFY FILE  ( NAME = N''' + dbName + ''', FILEGROWTH = 10% ); ' +
-	     ' ALTER DATABASE [' + dbName + '] MODIFY FILE ( NAME = N''' + dbLog + ''' , FILEGROWTH = 10%); ' +
-	     ' USE [master]; '
+         ' ALTER DATABASE [' + dbName + '] MODIFY FILE ( NAME = N''' + dbLog + ''' , FILEGROWTH = 10%); ' +
+         ' USE [master]; '
 
   //Log('ADOCreateDb ' + sql);
   ADOExecuteSQL(sql);
@@ -253,7 +253,7 @@ begin
     ScriptFile.LoadFromFile(ExpandConstant('{tmp}\' + FileName));
     Log('ADOLoadScriptFromFile  ScriptFile.Count: '+ IntToStr(ScriptFile.Count) );
     
-	for I := 0 to ScriptFile.Count - 1 do
+  for I := 0 to ScriptFile.Count - 1 do
     begin
       if Pos('go', LowerCase(Trim(ScriptFile[I]))) = 1 then
       begin

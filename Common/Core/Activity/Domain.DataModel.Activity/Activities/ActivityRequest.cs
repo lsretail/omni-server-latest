@@ -43,6 +43,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         [DataMember(IsRequired = true)]
         public string ContactNo { get; set; }
         [DataMember]
+        public string ContactAccount { get; set; }
+        [DataMember]
         public string ContactName { get; set; }
         [DataMember]
         public string OptionalResource { get; set; }

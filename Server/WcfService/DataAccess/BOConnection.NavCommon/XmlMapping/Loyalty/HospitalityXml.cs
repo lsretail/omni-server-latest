@@ -22,7 +22,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
         }
 
-        public string OrderToPOSRequestXML(OneList Rq, string command, string terminal, string staff, string salesType)
+        public string OrderToPOSRequestXML(OneList Rq, string command, string terminal, string staff)
         {
             // Create the XML Declaration, and append it to XML document
             XElement root =
@@ -42,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             doc.Add(root);
             XElement body = doc.Element("Request").Element("Request_Body");
 
-            XElement mtransRoot = MobileTrans(Rq, terminal, staff, salesType);
+            XElement mtransRoot = MobileTrans(Rq, terminal, staff);
             body.Add(mtransRoot);
 
             // find highest lineNo count in sub line, if user has set some
@@ -84,7 +84,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             return doc.ToString();
         }
 
-        public string OrderToPOSRequestXML(OrderHosp Rq, string command, string terminal, string staff, string salesType)
+        public string OrderToPOSRequestXML(OrderHosp Rq, string command, string terminal, string staff)
         {
             // Create the XML Declaration, and append it to XML document
             XElement root =
@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             doc.Add(root);
             XElement body = doc.Element("Request").Element("Request_Body");
 
-            XElement mtransRoot = MobileTrans(Rq, terminal, staff, salesType);
+            XElement mtransRoot = MobileTrans(Rq, terminal, staff);
             body.Add(mtransRoot);
 
             // find highest lineNo count in sub line, if user has set some
@@ -703,7 +703,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             return modLineList;
         }
 
-        private XElement MobileTrans(OneList rq, string terminal, string staff, string salesType)
+        private XElement MobileTrans(OneList rq, string terminal, string staff)
         {
             return new XElement("MobileTransaction",
                         new XElement("Id", rq.Id),
@@ -711,7 +711,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         new XElement("TerminalId", terminal),
                         new XElement("StaffId", staff),
                         new XElement("TransactionType", 2),
-                        new XElement("SalesType", salesType),
+                        new XElement("SalesType", rq.SalesType),
                         new XElement("EntryStatus", (int)EntryStatus.Normal),
                         new XElement("ReceiptNo", string.Empty),
                         new XElement("RefundedReceiptNo", string.Empty),
@@ -734,7 +734,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     );
         }
 
-        private XElement MobileTrans(OrderHosp rq, string terminal, string staff, string salesType)
+        private XElement MobileTrans(OrderHosp rq, string terminal, string staff)
         {
             return new XElement("MobileTransaction",
                         new XElement("Id", rq.Id),
@@ -742,7 +742,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         new XElement("TerminalId", terminal),
                         new XElement("StaffId", staff),
                         new XElement("TransactionType", 2),
-                        new XElement("SalesType", salesType),
+                        new XElement("SalesType", rq.SalesType),
                         new XElement("EntryStatus", (int)EntryStatus.Normal),
                         new XElement("ReceiptNo", string.Empty),
                         new XElement("RefundedReceiptNo", string.Empty),

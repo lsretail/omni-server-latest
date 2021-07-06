@@ -204,7 +204,6 @@ namespace LSOmni.Service
         /// Calculates OneList Basket Object and returns Order Object
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : ECOMM_CALCULATE_BASKET<p/>
         /// LS Central WS2 : EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
@@ -323,7 +322,6 @@ namespace LSOmni.Service
         /// Check the quantity available of items in order for certain store, Use with LS Nav 11.0 and later
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : CO_QTY_AVAILABILITY_EXT<p/>
         /// LS Central WS2 : COQtyAvailabilityV2<p/><p/>
         /// </remarks>
         /// <param name="request"></param>
@@ -336,7 +334,6 @@ namespace LSOmni.Service
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : CUSTOMER_ORDER_CREATE_EXT<p/>
         /// LS Central WS2 : CustomerOrderCreateVx<p/><p/>
         /// </remarks>
         /// <example>
@@ -607,16 +604,6 @@ namespace LSOmni.Service
         SalesEntry OrderHospCreate(OrderHosp request);
 
         /// <summary>
-        /// Get estimated time for an order
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <param name="orderId"></param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        int HospOrderEstimatedTime(string storeId, string orderId);
-
-        /// <summary>
         /// Cancel hospitality order
         /// </summary>
         /// <param name="storeId"></param>
@@ -633,7 +620,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderHospStatus HospOrderKotStatus(string storeId, string orderId);
+        OrderHospStatus HospOrderStatus(string storeId, string orderId);
 
         /// <summary>
         /// Check Status of a Customer Order
@@ -740,7 +727,6 @@ namespace LSOmni.Service
         /// Create a new contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_CONTACT_CREATE<p/>
         /// LS Central WS2 : MemberContactCreate<p/><p/>
         /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Central<p/>
         /// Contact will be assigned to a Member Account.
@@ -831,7 +817,6 @@ namespace LSOmni.Service
         /// Update a contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_CONTACT_UPDATE<p/>
         /// LS Central WS2 : MemberContactUpdate<p/><p/>
         /// Contact Id, User name and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
@@ -939,7 +924,6 @@ namespace LSOmni.Service
         /// Add new card to existing Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_CARD_TO_CONTACT<p/>
         /// LS Central WS2 : MemberCardToContact<p/><p/>
         /// </remarks>
         /// <param name="contactId"></param>
@@ -954,7 +938,6 @@ namespace LSOmni.Service
         /// Get Point balance for Member Card
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : GET_MEMBER_CARD<p/>
         /// LS Central WS2 : GetMemberCard<p/><p/>
         /// </remarks>
         /// <param name="cardId"></param>
@@ -979,7 +962,6 @@ namespace LSOmni.Service
         /// Change password
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
         /// LS Central WS2 : MemberPasswordChange<p/><p/>
         /// </remarks>
         /// <param name="userName">user name (LS Central:LoginID)</param>
@@ -1047,7 +1029,6 @@ namespace LSOmni.Service
         /// Send in Reset Password request for Member contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_RESET<p/>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
         /// If anything fails, simply ask the user to go through the ForgotPassword again..<p/>
         /// Error PasswordInvalid = ask user for better password<p/>
@@ -1089,7 +1070,6 @@ namespace LSOmni.Service
         /// Send either login or email depending on which function is required.
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_RESET<p/>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
         /// </remarks>
         /// <param name="userName">Provide Login Id (UserName) to reset existing password</param>
@@ -1104,7 +1084,6 @@ namespace LSOmni.Service
         /// Call PasswordReset first if oldPassword is unknown or no login/password exist for Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
         /// LS Central WS2 : MemberPasswordChange<p/><p/>
         /// To change password for existing contact: Send userName, newPassword, oldPassword<p/>
         /// To reset password for existing contact: Send userName, token, newPassword<p/>
@@ -1137,7 +1116,6 @@ namespace LSOmni.Service
         /// Login user
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_LOGON<p/>
         /// LS Central WS2 : MemberLogon<p/><p/>
         /// </remarks>
         /// <param name="userName">user name</param>
@@ -1174,7 +1152,6 @@ namespace LSOmni.Service
         /// Login user from web page.  This function is light version of Login and returns less data.
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_LOGON<p/>
         /// LS Central WS2 : MemberLogon<p/><p/>
         /// </remarks>
         /// <param name="userName">user name</param>
@@ -1214,7 +1191,6 @@ namespace LSOmni.Service
         /// Get stock status of an item from one or all stores
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_GET_ITEMS_IN_STOCK<p/>
         /// LS Central WS2 : GetItemInventory<p/><p/>
         /// If storeId is empty, only store that are marked in LS Central with check box Loyalty or Mobile checked (Omni Section) will be returned
         /// </remarks>
@@ -1254,6 +1230,16 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId);
+
+        /// <summary>
+        /// Gets Hospitality Kitchen Current Availabilty
+        /// </summary>
+        /// <param name="request">List of items to get, if empty, get all items</param>
+        /// <param name="storeId">Store to get, if empty get all stores</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId);
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -1297,7 +1283,6 @@ namespace LSOmni.Service
         /// Gets Hierarchy setup for a Store with all Leafs and Nodes
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : GET_HIERARCHY<p/>
         /// LS Central WS2 : GetHierarchy, GetHierarchyNode<p/><p/>
         /// It is recommended for large hierarchies to use the hierarchy replication functions.
         /// It will give option on getting only changes, instead of always have to get the whole hierarchy like this function does.
@@ -1332,7 +1317,6 @@ namespace LSOmni.Service
         /// Gets all Member Attributes that are available to assign to a Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_GET_PROFILES<p/>
         /// LS Central WS2 : MobileGetProfiles<p/><p/>
         /// Only Member Attributes of type Boolean and Lookup Type None and are valid in Default Club will be selected
         /// </remarks>
@@ -1459,7 +1443,6 @@ namespace LSOmni.Service
         /// <param name="latitude">current latitude</param>
         /// <param name="longitude">current longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers, 0 = no limit</param>
-        /// <param name="maxNumberOfStores">max number of stores returned</param>
         /// <returns>List of stores marked as ClickAndCollect within max distance of coordinates</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1479,7 +1462,7 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores);
+        List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance);
 
         /// <summary>
         /// Gets all Click and Collect stores, within maxDistance from current location (latitude,longitude), that have the item available
@@ -1489,7 +1472,6 @@ namespace LSOmni.Service
         /// <param name="latitude">current latitude</param>
         /// <param name="longitude">current longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers, 0 = no limit</param>
-        /// <param name="maxNumberOfStores">max number of stores returned</param>
         /// <returns>List of stores marked as ClickAndCollect that have the item in stock</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1509,7 +1491,7 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores);
+        List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance);
 
         /// <summary>
         /// Gets Return Policy
@@ -1534,7 +1516,7 @@ namespace LSOmni.Service
         /// Replicate Item Barcodes (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001451 - Barcodes
+        /// LS Central Main Table data: 99001451 - LSC Barcodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -1592,7 +1574,7 @@ namespace LSOmni.Service
         /// Replicate Item Extended Variants Setup (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10001413 - Extended Variant Values
+        /// LS Central Main Table data: 10001413 - LSC Extd. Variant Values
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -1612,7 +1594,7 @@ namespace LSOmni.Service
         /// Replicate Retail Image links
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009064 - Retail Image Link
+        /// LS Central Main Table data: 99009064 - LSC Retail Image Link
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1631,7 +1613,7 @@ namespace LSOmni.Service
         /// Replicate Retail Images
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009063 - Retail Image
+        /// LS Central Main Table data: 99009063 - LSC Retail Image
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1712,7 +1694,7 @@ namespace LSOmni.Service
         /// Replicate Variant Registrations (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10001414 - Item Variant Registration
+        /// LS Central Main Table data: 10001414 - LSC Item Variant Registration
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -1732,7 +1714,7 @@ namespace LSOmni.Service
         /// Replicate Best Prices for Items from WI Price table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009258 - WI Price
+        /// LS Central Main Table data: 10012861 - LSC WI Price
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time.<p/><p/>
@@ -1774,7 +1756,7 @@ namespace LSOmni.Service
         /// Replicate Product groups (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 5723 - Product Group
+        /// LS Central Main Table data: 10000705 - LSC Retail Product Group
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -1794,7 +1776,7 @@ namespace LSOmni.Service
         /// Replicate Store setups
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10012866 - Store
+        /// LS Central Main Table data: 99001470 - LSC Store
         /// <p/><p/>
         /// Only store with Loyalty or Mobile Checked will be replicated
         /// <p/><p/>
@@ -1834,7 +1816,7 @@ namespace LSOmni.Service
         /// Replicate Collection for Unit of Measures
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10001430 - Collection Framework
+        /// LS Central Main Table data: 10001430 - LSC Collection Framework
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1892,7 +1874,7 @@ namespace LSOmni.Service
         /// Replicate Attributes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000784 - Attribute
+        /// LS Central Main Table data: 10000784 - LSC Attribute
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1928,7 +1910,7 @@ namespace LSOmni.Service
         /// Replicate Attribute Values
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000786 - Attribute Value
+        /// LS Central Main Table data: 10000786 - LSC Attribute Value
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1947,7 +1929,7 @@ namespace LSOmni.Service
         /// Replicate Attribute Option Values
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000785 - Attribute Option Value
+        /// LS Central Main Table data: 10000785 - LSC Attribute Option Value
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1966,7 +1948,7 @@ namespace LSOmni.Service
         /// Replicate Translation text
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000971 - Data Translation
+        /// LS Central Main Table data: 10000971 - LSC Data Translation
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1985,7 +1967,7 @@ namespace LSOmni.Service
         /// Replicate Translation Language Codes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000972 - Data Translation
+        /// LS Central Main Table data: 10000972 - LSC Data Translation Language
         /// <p/><p/>
         /// This will always replicate all Code
         /// </remarks>
@@ -2016,7 +1998,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy roots
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000920 - Hierarchy (Where Hierarchy Date is active)
+        /// LS Central Main Table data: 10000920 - LSC Hierarchy
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2035,7 +2017,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Nodes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000921 - Hierarchy Nodes
+        /// LS Central Main Table data: 10000921 - LSC Hierar. Nodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2054,7 +2036,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000922 - Hierarchy Node Link
+        /// LS Central Main Table data: 10000922 - LSC Hierar. Node Link
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2073,7 +2055,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001651 - Deal Modifier Item
+        /// LS Central Main Table data: 99001503 - LSC Offer Line
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2092,7 +2074,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001651 - Deal Modifier Item
+        /// LS Central Main Table data: 99001651 - LSC Deal Modifier Item
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2108,29 +2090,10 @@ namespace LSOmni.Service
         ReplHierarchyHospDealLineResponse ReplEcommHierarchyHospDealLine(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
-        /// </summary>
-        /// <remarks>
-        /// LS Central Main Table data: 99001483 - Information Subcode
-        /// <p/><p/>
-        /// Most ReplEcommXX web methods work the same way.
-        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
-        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
-        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
-        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
-        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
-        /// </remarks>
-        /// <param name="replRequest">Replication request object</param>
-        /// <returns>Replication result object with List of hierarchy modifier lines</returns>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest);
-
-        /// <summary>
         /// Replicate Hierarchy Hospitality Recipe lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000768 - BOM Component
+        /// LS Central Main Table data: 90 - BOM Component
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2141,6 +2104,25 @@ namespace LSOmni.Service
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of hierarchy recipe items</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 99001483 - LSC Information Subcode
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of hierarchy modifier lines</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ReplItemRecipeResponse ReplEcommItemRecipe(ReplRequest replRequest);
@@ -2175,7 +2157,7 @@ namespace LSOmni.Service
         /// Replicate Periodic Discounts and MultiBuy for Items from WI Discount table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10012862 - WI Discounts
+        /// LS Central Main Table data: 10012862 - LSC WI Discounts
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2195,7 +2177,7 @@ namespace LSOmni.Service
         /// Replicate Mix and Match Offers for Items from WI Mix and Match Offer table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10012863 - WI Mix and Match Offer
+        /// LS Central Main Table data: 10012863 - LSC WI Mix and Match Offer
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2209,12 +2191,14 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of discounts for items</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest);
+        ReplMixMatchResponse ReplEcommMixAndMatch(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Periodic Discounts for Items from WI Discount table in LS Central (supports Item distribution)<p/>
+        /// Replicate Validation Periods for Discounts<p/>
         /// </summary>
         /// <remarks>
+        /// LS Central Main Table data: 99001481 - LSC Validation Period
+        /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2253,7 +2237,7 @@ namespace LSOmni.Service
         /// Replicate Member contacts
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009002 - Member Contact (with valid Membership Card)
+        /// LS Central Main Table data: 99009002 - LSC Member Contact (with valid Membership Card)
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2288,7 +2272,7 @@ namespace LSOmni.Service
         /// Replicate Tender types for Store
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001462 - Tender Type
+        /// LS Central Main Table data: 99001466 - LSC Tender Type Setup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2326,7 +2310,7 @@ namespace LSOmni.Service
         /// Replicate Inventory Status
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001608 - Inventory Lookup Table
+        /// LS Central Main Table data: 99001608 - LSC Inventory Lookup Table
         /// <p/><p/>
         /// Net Inventory field in Inventory Lookup Table must be updated before the replication can be done.  
         /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button. Set store to be Web Store.
@@ -2465,6 +2449,7 @@ namespace LSOmni.Service
         /// <param name="productNo"></param>
         /// <param name="activityDate"></param>
         /// <param name="contactNo"></param>
+        /// <param name="contactAccount"></param>
         /// <param name="optionalResource"></param>
         /// <param name="promoCode"></param>
         /// <param name="activityNo"></param>
@@ -2472,7 +2457,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string contactAccount, string optionalResource, string promoCode, string activityNo, int noOfPersons);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product

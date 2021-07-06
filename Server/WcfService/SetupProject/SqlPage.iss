@@ -9,6 +9,7 @@ var
   SQLPage_lblDatabase: TLabel;
   SQLPage_chkSQLAuth: TRadioButton;
   SQLPage_chkWindowsAuth: TRadioButton;
+  SQLPage_xCreateUser: TCheckBox; 
   SQLPage_ConnectButton : TButton;
 
   SQLPage_txtServer: TEdit;
@@ -20,7 +21,7 @@ var
 
 
 // enable/disable child text boxes & functions when text has been entered into Server textbox. Makes no sense to populate child items unless a value exists for server.
-procedure SQLServerOnChange (Sender: TObject);
+procedure SQLServerOnChange(Sender: TObject);
 begin   
   Log('SQLServerOnChange called');
   WizardForm.NextButton.Enabled := False;
@@ -45,7 +46,7 @@ begin
 end;
 
 // enable/disable user/pass text boxes depending on selected auth type. A user/pass is only required for SQL Auth
-procedure  SQLAuthOnChange (Sender: TObject);
+procedure SQLAuthOnChange(Sender: TObject);
 begin
   Log('SQLAuthOnChange called');
   if SQLPage_chkWindowsAuth.Checked then
@@ -54,13 +55,15 @@ begin
     SQLPage_lblPassword.Enabled := false;
     SQLPage_txtUsername.Enabled := false;
     SQLPage_txtPassword.Enabled := false;
+	SQLPage_xCreateUser.Checked := false;
   end
-  Else
+  else
   begin
     SQLPage_lblUser.Enabled := true;
     SQLPage_lblPassword.Enabled := true;
     SQLPage_txtUsername.Enabled := true;
     SQLPage_txtPassword.Enabled := true;
+	SQLPage_xCreateUser.Checked := true;
   end
 end;
 
@@ -78,13 +81,14 @@ begin
     // create the ADO connection object
     ADOConnection := CreateOleObject('ADODB.Connection');
     // build a connection string; 
-    ADOConnection.ConnectionString := 'Provider=SQLOLEDB;Data Source=' + dbServer + ';' + 'Application Name= My Execute SQL;';
+    ADOConnection.ConnectionString := 'Provider=SQLOLEDB;Data Source=' + dbServer + ';Application Name= My Execute SQL;';
 
     if windowsAuth then
       ADOConnection.ConnectionString := ADOConnection.ConnectionString + 'Integrated Security=SSPI;'         // Windows Auth
     else
-      ADOConnection.ConnectionString := ADOConnection.ConnectionString + 'User Id=' + userName + ';' + 'Password=' + pwd + ';';
+      ADOConnection.ConnectionString := ADOConnection.ConnectionString + 'User Id=' + userName + ';Password=' + pwd + ';';
 
+    Log('SQLPageADOTestConnection - Test:' + ADOConnection.ConnectionString);
     ADOConnection.Open;
     ADOConnection.Close;
     MsgBox('Success '#13#13 'Connected !', mbInformation, MB_OK);
@@ -103,7 +107,7 @@ begin
   Log('SQLPageTestConnectionClick called');
   ADOConnection := SQLPageADOTestConnection(SQLPage_txtServer.Text, SQLPage_txtUsername.Text, SQLPage_txtPassword.Text, SQLPage_chkWindowsAuth.Checked);
 end;
- 
+
 procedure SQLCustomForm_Activate(Page: TWizardPage);
 begin
   Log('SQLCustomForm_Activate called');
@@ -121,7 +125,7 @@ begin
   SQLPage := CreateCustomPage(
     PreviousPageId,
     'SQL Sever database for LS Commerce Service',
-    'Creates SQL objects in a new or existing database'
+    'Creates LS Commerce objects in a new or existing SQL database'
   );
  
   { lblServer }
@@ -131,7 +135,7 @@ begin
     Parent := SQLPage.Surface;
     Caption :=  'SQL Server name:';
     Left := ScaleX(24);
-    Top := ScaleY(11);
+    Top := ScaleY(9);
     Width := ScaleX(115);
     Height := ScaleY(13);
     Enabled := True;
@@ -142,14 +146,14 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(8);
+    Top := ScaleY(6);
     Width := ScaleX(225);
     Height := ScaleY(21);
     TabOrder := 1;
     Enabled := True;
     OnChange := @SQLServerOnChange;
     ShowHint := True;
-    Hint     := 'mySqlServer or mySqlServer\Instance';
+    Hint := 'mySqlServer or mySqlServer\Instance';
   end;
 
   { lblDatabase }
@@ -185,9 +189,22 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'A new database is created if one does not exist';
     Left := ScaleX(24);
-    Top := ScaleY(56);
+    Top := ScaleY(54);
     Width := ScaleX(250);
     Height := ScaleY(13);
+  end;
+
+  SQLPage_xCreateUser := TCheckBox.Create(SQLPage);
+  with SQLPage_xCreateUser do
+  begin
+    Parent := SQLPage.Surface;
+    Left := ScaleX(24);
+    Top := ScaleY(70);
+    Width := ScaleX(380);
+    Height := ScaleY(21);
+    Caption := 'Create and use LSCommerceUser to connect to LSCommerce Database';
+    Checked := True;
+    TabOrder := 7;
   end;
 
   { lblAuthType }
@@ -195,9 +212,9 @@ begin
   with SQLPage_lblAuthType do
   begin
     Parent := SQLPage.Surface;
-    Caption :=  'Log on credentials';
+    Caption :=  'SQL credentials';
     Left := ScaleX(24);
-    Top := ScaleY(82);
+    Top := ScaleY(96);
     Width := ScaleX(87);
     Height := ScaleY(13);
     Enabled := True;
@@ -210,10 +227,10 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'Use Windows Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(98);
+    Top := ScaleY(113);
     Width := ScaleX(177);
     Height := ScaleY(17);
-    Checked := False;
+    Checked := True;
     TabOrder := 3;
     TabStop := True;
     OnClick := @SQLAuthOnChange;
@@ -227,10 +244,10 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'Use SQL Server Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(118);
+    Top := ScaleY(133);
     Width := ScaleX(185);
     Height := ScaleY(17);
-    Checked := True;
+    Checked := False;
     TabOrder := 4;
     OnClick := @SQLAuthOnChange;
     Enabled := True;
@@ -243,10 +260,10 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'User (sysadmin):' ;
     Left := ScaleX(60);
-    Top := ScaleY(141);
+    Top := ScaleY(156);
     Width := ScaleX(85);
     Height := ScaleY(13);
-    Enabled := True;
+    Enabled := False;
   end;
   { txtUsername }
   SQLPage_txtUsername := TEdit.Create(SQLPage);
@@ -254,10 +271,10 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(138);
+    Top := ScaleY(153);
     Width := ScaleX(225);
     Height := ScaleY(21);
-    Enabled := True;
+    Enabled := False;
     TabOrder := 5;
   end;
 
@@ -268,10 +285,10 @@ begin
     Parent := SQLPage.Surface;
     Caption := 'Password:' ;
     Left := ScaleX(60);
-    Top := ScaleY(165);
+    Top := ScaleY(174);
     Width := ScaleX(85);
     Height := ScaleY(13);
-    Enabled := True;
+    Enabled := False;
   end;
   { txtPassword }
   SQLPage_txtPassword := TPasswordEdit.Create(SQLPage);
@@ -279,33 +296,34 @@ begin
   begin
     Parent := SQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(162);
+    Top := ScaleY(177);
     Width := ScaleX(225);
     Height := ScaleY(21);
-    Enabled := True;
+    Enabled := False;
     TabOrder := 6;
   end;
 
   { SQLPage_ConnectButton }
   SQLPage_ConnectButton := TButton.Create(SQLPage);
-    with SQLPage_ConnectButton do
-    begin
-      Parent := SQLPage.Surface;
-      Left := ScaleX(145);
-      Top := ScaleY(192);
-      Width := ScaleX(141);
-      Height := ScaleY(21);
-      Enabled := False;
-      TabOrder := 7;
-      Caption := 'Test SQL Connection';
-      OnClick := @SQLPageTestConnectionClick;
-    end;
+  with SQLPage_ConnectButton do
+  begin
+    Parent := SQLPage.Surface;
+    Left := ScaleX(152);
+    Top := ScaleY(201);
+    Width := ScaleX(121);
+    Height := ScaleY(21);
+    Enabled := False;
+    TabOrder := 8;
+    Caption := 'Test SQL Connection';
+    ShowHint := True;
+    Hint := 'Test SQL Connection with provided log on credentials';
+    OnClick := @SQLPageTestConnectionClick;
+  end;
 
   //does not work except from main form
   with SQLPage do
   begin
     OnActivate := @SQLCustomForm_Activate;
-    //OnNextButtonClick := @SQLCustomForm_NextButtonClick;
   end;
 
   Result := SQLPage;

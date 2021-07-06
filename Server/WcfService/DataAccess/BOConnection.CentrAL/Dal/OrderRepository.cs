@@ -6,6 +6,7 @@ using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
@@ -62,6 +63,59 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 connection.Close();
             }
             return order;
+        }
+
+        public OrderStatusResponse OrderStatusGet(string id)
+        {
+            OrderStatusResponse status = new OrderStatusResponse();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Line No_],mt.[Status Code],os.[Shipping Status],os.[Payment Status],ln.[Number],ln.[Variant Code],ln.[Unit of Measure Code],ln.[Quantity],s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed] " +
+                                          "FROM [" + navCompanyName + "CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "LEFT OUTER JOIN [" + navCompanyName + "Customer Order Status$5ecfc871-5d82-43f1-9c54-59685e82318d] os ON os.[Document ID]=mt.[Document ID] " +
+                                          "LEFT OUTER JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
+                                          "LEFT OUTER JOIN [" + navCompanyName + "CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
+                                          "LEFT OUTER JOIN [" + navCompanyName + "CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
+                                          "WHERE mt.[Document ID]=@id ORDER BY mt.[Line No_]";
+                    command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            int lineno = SQLHelper.GetInt32(reader["Line No_"]);
+                            if (lineno == 0)
+                            {
+                                status.DocumentNo = id;
+                                status.OrderStatus = SQLHelper.GetString(reader["Status Code"]);
+                                status.PaymentStatus = SQLHelper.GetInt32(reader["Payment Status"]);
+                                status.ShippingStatus = SQLHelper.GetInt32(reader["Shipping Status"]);
+                                status.Description = SQLHelper.GetString(reader["Desc0"]);
+                            }
+                            else
+                            {
+                                status.Lines.Add(new OrderLineStatus()
+                                {
+                                    LineStatus = SQLHelper.GetString(reader["Status Code"]),
+                                    Description = SQLHelper.GetString(reader["Desc1"]),
+                                    LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                                    ItemId = SQLHelper.GetString(reader["Number"]),
+                                    VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                                    UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure Code"]),
+                                    Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                    AllowCancel = SQLHelper.GetBool(reader["Cancel Allowed"]),
+                                    AllowModify = SQLHelper.GetBool(reader["Modify Allowed"])
+                                });
+                            }
+                        }
+                    }
+                }
+                connection.Close();
+            }
+            return status;
         }
 
         private List<SalesEntryLine> OrderLinesGet(string id)

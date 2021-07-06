@@ -27,11 +27,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlfromNode = " FROM [" + navCompanyName + "LSC Hierar_ Nodes$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                           " LEFT OUTER JOIN [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] im" +
                           " ON im.[KeyValue]=(mt.[Hierarchy Code] + ',' + mt.[Node ID]) AND im.[TableName]='LSC Hierar. Nodes' AND im.[Display Order]= 0" +
-                          " INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
+                          " INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]";
 
-            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
+            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],mt.[Item Unit of Measure],mt.[Sort Order]," +
+                             "il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
+
             sqlfromLink = " FROM [" + navCompanyName + "LSC Hierar_ Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                          " INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]" +
                           " LEFT OUTER JOIN [" + navCompanyName + "LSC Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=mt.[No_]" +
                           " LEFT OUTER JOIN [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0" +
                           " AND il.[TableName]=CASE WHEN mt.[Type]=0 THEN 'Item' ELSE 'LSC Offer' END";
@@ -154,9 +156,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config);
+
                         while (reader.Read())
                         {
-                            list.Add(ReaderToHierarchyNode(reader, storeId));
+                            HierarchyNode rec = ReaderToHierarchyNode(reader, storeId);
+                            rec.Leafs = HierarchyNodeLinkGet(rec.HierarchyCode, rec.Id, storeId);
+                            rec.Nodes = HierarchyDealNodeGet(rec.HierarchyCode, rec.Id, storeId);
+                            foreach (HierarchyNode node in rec.Nodes)
+                            {
+                                node.Nodes = rep.HierarchyDealGet(node.HierarchyCode, node.ParentNode, node.Id);
+                                node.Leafs = rep.HierarchyDealLeafGet(node.HierarchyCode, node.ParentNode, node.Id);
+                            }
+                            list.Add(rec);
                         }
                     }
                     connection.Close();
@@ -272,7 +284,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumnsLink + sqlfromLink +
-                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND hd.[Store Code]=@sid";
+                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND mt.[Type]=0 AND hd.[Store Code]=@sid";
 
                     command.Parameters.AddWithValue("@Hid", hCode);
                     command.Parameters.AddWithValue("@Nid", nCode);
@@ -284,6 +296,34 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         while (reader.Read())
                         {
                             list.Add(ReaderToHierarchyNodeLink(reader));
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<HierarchyNode> HierarchyDealNodeGet(string hCode, string nCode, string storeId)
+        {
+            List<HierarchyNode> list = new List<HierarchyNode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " + sqlcolumnsLink + sqlfromLink +
+                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND mt.[Type]=1 AND hd.[Store Code]=@sid";
+
+                    command.Parameters.AddWithValue("@Hid", hCode);
+                    command.Parameters.AddWithValue("@Nid", nCode);
+                    command.Parameters.AddWithValue("@sid", storeId);
+                    connection.Open();
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyDealNode(reader));
                         }
                     }
                     connection.Close();
@@ -325,13 +365,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 MemberValue = SQLHelper.GetString(reader["Member Value"]),
                 DealPrice = SQLHelper.GetDecimal(reader, "Deal Price"),
                 ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
-                IsActive = SQLHelper.GetBool(reader["Status"])
+                IsActive = SQLHelper.GetBool(reader["Status"]),
+                ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]),
+                SortOrder = SQLHelper.GetInt32(reader["Sort Order"])
             };
         }
 
         private HierarchyNode ReaderToHierarchyNode(SqlDataReader reader, string storeId)
         {
-            HierarchyNode val = new HierarchyNode()
+            return new HierarchyNode()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 ParentNode = SQLHelper.GetString(reader["Parent Node ID"]),
@@ -342,9 +384,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ChildrenOrder = SQLHelper.GetInt32(reader["Children Order"]),
                 PresentationOrder = SQLHelper.GetInt32(reader["Presentation Order"])
             };
-
-            val.Leafs = HierarchyNodeLinkGet(val.HierarchyCode, val.Id, storeId);
-            return val;
         }
 
         private HierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader)
@@ -356,7 +395,24 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["Image Id"]),
+                ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]),
+                SortOrder = SQLHelper.GetInt32(reader["Sort Order"])
+            };
+        }
+
+        private HierarchyNode ReaderToHierarchyDealNode(SqlDataReader reader)
+        {
+            return new HierarchyNode()
+            {
+                HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
+                ParentNode = SQLHelper.GetString(reader["Node ID"]),
+                Id = SQLHelper.GetString(reader["No_"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                Type = HierarchyDealType.Item,
+                ImageId = SQLHelper.GetString(reader["Image Id"]),
+                UnitOfMeasure = SQLHelper.GetString(reader["Item Unit of Measure"]),
+                PresentationOrder = SQLHelper.GetInt32(reader["Sort Order"])
             };
         }
     }

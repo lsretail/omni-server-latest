@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Xml.Xsl;
 using System.Drawing;
+using System.Web.Script.Serialization;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
@@ -12,7 +13,6 @@ using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
-using System.Web.Script.Serialization;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -63,6 +63,30 @@ namespace LSOmni.BLL.Loyalty
         {
             // Status: Unchanged = 0, Changed = 1, Canceled = 2
             string json = SendToEcom("orderpayment", new { document_id = orderId, status = status, token = token, amount = amount, currencyCode = currencyCode, authcode = authcode, reference = reference });
+
+            OrderMessageResult result;
+            if (json.Length > 0 && (json[0] == '{' || json[0] == '['))
+            {
+                if (json[0] == '[') // remove [ ] 
+                    json = json.Substring(1, json.Length - 2);
+
+                result = Serialization.Deserialize<OrderMessageResult>(json);
+                message = result.message;
+                return result.success;
+            }
+
+            char[] charsToTrim = { '"' };
+            json = json.Trim(charsToTrim);
+
+            message = json;
+            return json.Equals("OK", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public virtual bool OrderMessagePayment(OrderMessagePayment orderPayment, ref string message)
+        {
+            // Status: Unchanged = 0, Changed = 1, Canceled = 2
+            string payloadJson = new JavaScriptSerializer().Serialize(orderPayment);
+            string json = SendToEcom("orderpayment", payloadJson);
 
             OrderMessageResult result;
             if (json.Length > 0 && (json[0] == '{' || json[0] == '['))

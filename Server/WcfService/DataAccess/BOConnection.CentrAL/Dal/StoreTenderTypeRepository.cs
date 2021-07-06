@@ -49,7 +49,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
             List<ReplStoreTenderType> list = new List<ReplStoreTenderType>();
-
+            string tenderMap = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);
+    
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatement(fullReplication, keys, where, true);
 
@@ -70,7 +71,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             int cnt = 0;
                             while (reader.Read())
                             {
-                                list.Add(ReaderToStoreTenderType(reader, out lastKey));
+                                list.Add(ReaderToStoreTenderType(reader, tenderMap, out lastKey));
                                 cnt++;
                             }
                             reader.Close();
@@ -107,7 +108,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             {
                                 while (reader.Read())
                                 {
-                                    list.Add(ReaderToStoreTenderType(reader, out string ts));
+                                    list.Add(ReaderToStoreTenderType(reader, tenderMap, out string ts));
                                 }
                                 reader.Close();
                             }
@@ -127,14 +128,18 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
-        private ReplStoreTenderType ReaderToStoreTenderType(SqlDataReader reader, out string timestamp)
+        private ReplStoreTenderType ReaderToStoreTenderType(SqlDataReader reader, string tenderMap, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+
+            string navId = SQLHelper.GetString(reader["Code"]);
+            string omniId = ConfigSetting.TenderTypeMapping(tenderMap, navId, true);
 
             return new ReplStoreTenderType()
             {
                 StoreID = SQLHelper.GetString(reader["Store No_"]),
-                TenderTypeId = SQLHelper.GetString(reader["Code"]),
+                TenderTypeId = navId,
+                OmniTenderTypeId = omniId,
                 Name = SQLHelper.GetString(reader["Description"]),
                 TenderFunction = SQLHelper.GetInt32(reader["Function"]),
                 ChangeTenderId = SQLHelper.GetString(reader["Change Tend_ Code"]),

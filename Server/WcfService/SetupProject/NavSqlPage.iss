@@ -10,7 +10,7 @@ var
   NavSQLPage_chkSQLAuth: TRadioButton;
   NavSQLPage_chkWindowsAuth: TRadioButton;
   NavSQLPage_ConnectButton : TButton;
-  NavSQLPage_V15CheckBox: TCheckBox; 
+  NavSQLPage_VerCombBox: TNewComboBox; 
   
   NavSQLPage_txtServer: TEdit;
   NavSQLPage_txtUsername: TEdit;
@@ -19,7 +19,6 @@ var
   NavSQLPage_txtNavCompany: TEdit;
 
   NavSQLPage: TWizardPage;
-
 
 // enable/disable child text boxes & functions when text has been entered into Server textbox. Makes no sense to populate child items unless a value exists for server.
 Procedure NavSQLServerOnChange (Sender: TObject);
@@ -92,16 +91,17 @@ begin
     Log('NavSQLPageADOTestConnection string: ' + ADOConnection.ConnectionString);
     ADOConnection.Open;
 
-	ADOCommand := CreateOleObject('ADODB.Command');
-	ADOCommand.ActiveConnection := ADOConnection;
-	if NavSQLPage_V15CheckBox.Checked then
-      ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]'
-	else
-      ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup]';
+    ADOCommand := CreateOleObject('ADODB.Command');
+    ADOCommand.ActiveConnection := ADOConnection;
+    case NavSQLPage_VerCombBox.ItemIndex of
+      0: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup]';
+      1: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]';
+      2: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$LSC Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]';
+    end;      
 
-	ADOCommand.CommandType := adCmdText;
+    ADOCommand.CommandType := adCmdText;
     Log('NavSQLPageADOTestConnection query: ' + ADOCommand.CommandText);
-	ADORecordset := ADOCommand.Execute;
+    ADORecordset := ADOCommand.Execute;
     ADOConnection.Close;
     MsgBox('Success '#13#13 'Connected !', mbInformation, MB_OK);
   except
@@ -227,19 +227,21 @@ begin
     TabOrder := 3;
   end;
 
-  { NavSQLPage_V15CheckBox }
-  NavSQLPage_V15CheckBox := TCheckBox.Create(NavSQLPage);
-  with NavSQLPage_V15CheckBox do
+  { NavSQLPage_VerCombBox }
+  NavSQLPage_VerCombBox := TNewComboBox.Create(NavSQLPage);
+  with NavSQLPage_VerCombBox do
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(175);
     Top := ScaleY(74);
-    Width := NavSQLPage.SurfaceWidth;
+    Width := ScaleX(225);
     Height := ScaleY(18);
-    Caption := 'LS Central 15 or later';
-    Checked := False;
+    Style := csDropDownList;
+    Items.Add('LS Nav 14 & earlier');
+    Items.Add('LS Central 15-17.4');
+    Items.Add('LS Central 17.5 and later');
   end;
-
+  
   { lblAuthType }
   NavSQLPage_lblAuthType := TLabel.Create(NavSQLPage);
   with NavSQLPage_lblAuthType do

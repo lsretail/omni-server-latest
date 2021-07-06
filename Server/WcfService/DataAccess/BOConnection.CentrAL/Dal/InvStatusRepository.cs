@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
@@ -98,6 +99,86 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = 0;
 
             return list;
+        }
+
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            List<HospAvailabilityResponse> list = new List<HospAvailabilityResponse>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    string sql = "SELECT mt.[Store No_],mt.[Type],mt.[No_],mt.[Available Qty_],mt.[Unit of Measure] " +
+                                 "FROM [" + navCompanyName + "Current Availability$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+
+                    connection.Open();
+                    if (request == null || request.Count == 0)
+                    {
+                        command.CommandText = sql;
+                        if (string.IsNullOrEmpty(storeId) == false)
+                        {
+                            command.CommandText += " WHERE mt.[Store No_]=@sid";
+                            command.Parameters.AddWithValue("@sid", storeId);
+                        }
+
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToHospResponse(reader));
+                            }
+                            reader.Close();
+                        }
+                    }
+                    else
+                    {
+                        foreach (HospAvailabilityRequest req in request)
+                        {
+                            command.Parameters.Clear();
+
+                            command.CommandText = sql + " WHERE mt.[No_]=@no";
+                            command.Parameters.AddWithValue("@no", req.ItemId);
+
+                            if (string.IsNullOrEmpty(req.UnitOfMeasure) == false)
+                            {
+                                command.CommandText += " AND mt.[Unit of Measure]=@uom";
+                                command.Parameters.AddWithValue("@uom", req.UnitOfMeasure);
+                            }
+
+                            if (string.IsNullOrEmpty(storeId) == false)
+                            {
+                                command.CommandText += " AND mt.[Store No_]=@sid";
+                                command.Parameters.AddWithValue("@sid", storeId);
+                            }
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToHospResponse(reader));
+                                }
+                                reader.Close();
+                            }
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        private HospAvailabilityResponse ReaderToHospResponse(SqlDataReader reader)
+        {
+            return new HospAvailabilityResponse()
+            {
+                Number = SQLHelper.GetString(reader["No_"]),
+                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure"]),
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                IsDeal = SQLHelper.GetBool(reader["Type"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Available Qty_")
+            };
         }
     }
 }

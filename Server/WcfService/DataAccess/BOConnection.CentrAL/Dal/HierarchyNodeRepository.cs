@@ -21,16 +21,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private string sqlcolumnsLink = string.Empty;
         private string sqlfromLink = string.Empty;
 
-        public HierarchyNodeRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
+        public HierarchyNodeRepository(BOConfiguration config) : base(config)
         {
             sqlcolumnsNode = "mt.[Hierarchy Code],mt.[Node ID],mt.[Parent Node ID],mt.[Description],mt.[Children Order],mt.[Indentation],mt.[Presentation Order],mt.[Retail Image Code]";
             sqlfromNode = " FROM [" + navCompanyName + "Hierarchy Nodes$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
 
             sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
-            if (NavVersion > new Version("17.4"))
-                sqlcolumnsLink += ",mt.[Item Unit of Measure],mt.[Sort Order]";
-
             sqlfromLink = " FROM [" + navCompanyName + "Hierarchy Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                           " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
                           " LEFT OUTER JOIN [" + navCompanyName + "Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=mt.[No_]" +
@@ -155,9 +152,18 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NavVersion);
+
                         while (reader.Read())
                         {
-                            list.Add(ReaderToHierarchyNode(reader, storeId));
+                            HierarchyNode rec = ReaderToHierarchyNode(reader, storeId);
+                            rec.Leafs = HierarchyNodeLinkGet(rec.HierarchyCode, rec.Id, storeId);
+                            rec.Nodes = HierarchyDealNodeGet(rec.HierarchyCode, rec.Id, storeId);
+                            foreach (HierarchyNode node in rec.Nodes)
+                            {
+                                node.Nodes = rep.HierarchyDealGet(node.HierarchyCode, node.ParentNode, node.Id);
+                            }
+                            list.Add(rec);
                         }
                     }
                     connection.Close();
@@ -273,7 +279,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumnsLink + sqlfromLink +
-                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND hd.[Store Code]=@sid";
+                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND mt.[Type]=0 AND hd.[Store Code]=@sid";
 
                     command.Parameters.AddWithValue("@Hid", hCode);
                     command.Parameters.AddWithValue("@Nid", nCode);
@@ -285,6 +291,34 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         while (reader.Read())
                         {
                             list.Add(ReaderToHierarchyNodeLink(reader));
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<HierarchyNode> HierarchyDealNodeGet(string hCode, string nCode, string storeId)
+        {
+            List<HierarchyNode> list = new List<HierarchyNode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " + sqlcolumnsLink + sqlfromLink +
+                                          " WHERE mt.[Hierarchy Code]=@Hid AND mt.[Node ID]=@Nid AND mt.[Type]=1 AND hd.[Store Code]=@sid";
+
+                    command.Parameters.AddWithValue("@Hid", hCode);
+                    command.Parameters.AddWithValue("@Nid", nCode);
+                    command.Parameters.AddWithValue("@sid", storeId);
+                    connection.Open();
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyDealNode(reader));
                         }
                     }
                     connection.Close();
@@ -314,7 +348,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            ReplHierarchyLeaf rec = new ReplHierarchyLeaf()
+            return new ReplHierarchyLeaf()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 NodeId = SQLHelper.GetString(reader["Node ID"]),
@@ -328,18 +362,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
                 IsActive = SQLHelper.GetBool(reader["Status"])
             };
-
-            if (NavVersion > new Version("17.4"))
-            {
-                rec.ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]);
-                rec.SortOrder = SQLHelper.GetInt32(reader["Sort Order"]);
-            }
-            return rec;
         }
 
         private HierarchyNode ReaderToHierarchyNode(SqlDataReader reader, string storeId)
         {
-            HierarchyNode val = new HierarchyNode()
+            return new HierarchyNode()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 ParentNode = SQLHelper.GetString(reader["Parent Node ID"]),
@@ -350,14 +377,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ChildrenOrder = SQLHelper.GetInt32(reader["Children Order"]),
                 PresentationOrder = SQLHelper.GetInt32(reader["Presentation Order"])
             };
-
-            val.Leafs = HierarchyNodeLinkGet(val.HierarchyCode, val.Id, storeId);
-            return val;
         }
 
         private HierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader)
         {
-            HierarchyLeaf rec = new HierarchyLeaf()
+            return new HierarchyLeaf()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 ParentNode = SQLHelper.GetString(reader["Node ID"]),
@@ -366,13 +390,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
                 ImageId = SQLHelper.GetString(reader["Image Id"])
             };
+        }
 
-            if (NavVersion > new Version("17.4"))
+        private HierarchyNode ReaderToHierarchyDealNode(SqlDataReader reader)
+        {
+            return new HierarchyNode()
             {
-                rec.ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]);
-                rec.SortOrder = SQLHelper.GetInt32(reader["Sort Order"]);
-            }
-            return rec;
+                HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
+                ParentNode = SQLHelper.GetString(reader["Node ID"]),
+                Id = SQLHelper.GetString(reader["No_"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                Type = HierarchyDealType.Item,
+                ImageId = SQLHelper.GetString(reader["Image Id"])
+            };
         }
     }
 }

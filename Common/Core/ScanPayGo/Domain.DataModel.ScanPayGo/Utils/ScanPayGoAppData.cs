@@ -15,6 +15,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Utils
                     DefaultWebStore = "S0013",
                     AllowedPaymentTypes = ScanPayGoPaymentType.Pos | ScanPayGoPaymentType.Loyalty,
                     CardPaymentType = ScanPayCardPaymentType.Braintree,
+                    CheckStatusTimer = 3000,
                 };
             }
         }

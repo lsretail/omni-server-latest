@@ -16,6 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
     {
         protected static string connectionString = null;
         protected static string navConnectionString = "";
+        protected static string navOrgCompanyName = null;
         protected static string navCompanyName = null;
         protected static string databaseName = "";
         protected static string dbCollation = null;
@@ -70,8 +71,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     navCompanyName = "";
                     if (builder.ContainsKey("NAVCompanyName"))
                     {
-                        navCompanyName = builder["NAVCompanyName"] as string; //get the 
-                        navCompanyName = navCompanyName.Trim();
+                        navOrgCompanyName = builder["NAVCompanyName"] as string; //get the 
+                        navOrgCompanyName = navOrgCompanyName.Trim();
+
+                        navCompanyName = SQLHelper.GetSQLNAVName(navOrgCompanyName);
+
                         //NAV company name must end with a $
                         if (navCompanyName.EndsWith("$") == false)
                             navCompanyName += "$";

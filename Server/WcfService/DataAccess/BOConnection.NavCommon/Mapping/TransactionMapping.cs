@@ -129,17 +129,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return transaction;
         }
 
-        public OrderHosp MapFromRootToOrderHosp(NavWS.RootMobileTransaction root, string[] salesTypes)
+        public OrderHosp MapFromRootToOrderHosp(NavWS.RootMobileTransaction root)
         {
             NavWS.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
             UnknownCurrency transactionCurrency = new UnknownCurrency(header.CurrencyCode);
-
-            HospDeliveryType dtype = HospDeliveryType.NoChoice;
-            int index = salesTypes.ToList().IndexOf(header.SalesType);
-            if (index == 1)
-                dtype = HospDeliveryType.Takeout;
-            if (index == 2)
-                dtype = HospDeliveryType.Home;
 
             OrderHosp order = new OrderHosp()
             {
@@ -151,7 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TotalDiscount = header.LineDiscount,
                 CardId = header.MemberCardNo,
                 StoreId = header.StoreId,
-                DeliveryType = dtype
+                SalesType = header.SalesType
             };
 
             //now loop through the lines
@@ -392,7 +385,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootHospTransaction MapFromOrderToRoot(OrderHosp order, string saleType)
+        public NavWS.RootHospTransaction MapFromOrderToRoot(OrderHosp order)
         {
             NavWS.RootHospTransaction root = new NavWS.RootHospTransaction();
 
@@ -410,7 +403,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 CurrencyFactor = 1,
                 TerminalId = string.Empty,
                 StaffId = string.Empty,
-                SalesType = saleType,
+                SalesType = order.SalesType,
 
                 ReceiptNo = string.Empty,
                 CurrencyCode = string.Empty,
@@ -446,7 +439,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 TenderType = ((int)order.PaymentType).ToString(),
                 Email = XMLHelper.GetString(order.Email),
                 Directions = XMLHelper.GetString(order.Directions),
-                SalesType = saleType,
+                SalesType = order.SalesType,
                 AddressType = "0",
 
                 CompanyNo = string.Empty,
@@ -524,7 +517,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootMobileTransaction MapFromOrderToRoot(OneList request, string saleType)
+        public NavWS.RootMobileTransaction MapFromOrderToRoot(OneList request)
         {
             NavWS.RootMobileTransaction root = new NavWS.RootMobileTransaction();
 
@@ -540,7 +533,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 SaleIsReturnSale = false,
                 MemberCardNo = XMLHelper.GetString(request.CardId),
                 CurrencyFactor = 1,
-                SalesType = saleType,
+                SalesType = request.SalesType,
 
                 TerminalId = string.Empty,
                 StaffId = string.Empty,

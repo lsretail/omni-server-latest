@@ -8,12 +8,9 @@ namespace LSOmni.BLL.Loyalty
 {
     public class TransactionBLL : BaseLoyBLL
     {
-        private string tenderMapping;
-
         public TransactionBLL(BOConfiguration config, int timeoutInSeconds)
             : base(config, timeoutInSeconds)
         {
-            tenderMapping = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);   //will throw exception if not found
         }
 
         public List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
@@ -26,7 +23,7 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrEmpty(entryId))
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "Id can not be empty");
 
-            return BOLoyConnection.SalesEntryGet(entryId, type, tenderMapping);
+            return BOLoyConnection.SalesEntryGet(entryId, type);
         }
     }
 }

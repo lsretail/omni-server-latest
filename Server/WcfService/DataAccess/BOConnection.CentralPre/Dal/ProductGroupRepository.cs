@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
     public class ProductGroupRepository : BaseRepository
     {
         // Key: Item Category Code, Code
-        const int TABLEID = 5723;
+        const int TABLEID = 10000705;
 
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;

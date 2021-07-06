@@ -80,8 +80,8 @@ namespace LSOmni.DataAccess.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText =
-                        "SELECT [" + key + "] FROM [TenantConfig] WHERE [LSKey]='" + lsKey + "'";
+                    command.CommandText = "SELECT [" + key + "] FROM [TenantConfig] WHERE [LSKey]=@id";
+                    command.Parameters.AddWithValue("@id", lsKey);
                     TraceSqlCommand(command);
                     connection.Open();
                     ret = command.ExecuteScalar() != null;
@@ -103,7 +103,7 @@ namespace LSOmni.DataAccess.Dal
                 {
                     command.CommandText = "SELECT t1.[Key],t1.[DataType],t1.[Comment], t1.[Advanced],t1.[Value] AS DefaultValue," +
                                           "(SELECT t2.[Value] FROM [TenantConfig] t2 WHERE t2.[Key]=t1.[Key] AND t2.[LSKey]=@id) AS CustomValue " +
-                                          "FROM [TenantConfig] t1 where t1.[LSKey]='' ";
+                                          "FROM [TenantConfig] t1 where t1.[LSKey]=''";
 
                     command.Parameters.AddWithValue("@id", lsKey);
                     TraceSqlCommand(command);

@@ -28,10 +28,37 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         [DataMember]
         public string KotNo { get; set; }
         [DataMember]
-        public string Status { get; set; }
+        public int EstimatedTime { get; set; }
+        [DataMember]
+        public KOTStatus Status { get; set; }
         [DataMember]
         public bool Confirmed { get; set; }
         [DataMember]
         public decimal ProductionTime { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
+    public enum KOTStatus
+    {
+        [EnumMember]
+        NotSent,
+        [EnumMember]
+        NASError,
+        [EnumMember]
+        KDSError,
+        [EnumMember]
+        Sent,
+        [EnumMember]
+        Started,
+        [EnumMember]
+        Finished,
+        [EnumMember]
+        Served,
+        [EnumMember]
+        None,
+        [EnumMember]
+        Posted,
+        [EnumMember]
+        Voided
     }
 }

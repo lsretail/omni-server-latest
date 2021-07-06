@@ -42,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                           "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                                           "WHERE mt.[Code]=@id AND tms.[Company Name]=@cmp";
                     command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                    command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
                     connection.Open();
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -102,8 +102,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 string sql = "SELECT " + sqlcnt + "tm.[ID],mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                              sqlimgfrom + " JOIN [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
-                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navCompanyName.Substring(0, navCompanyName.Length - 1) + "'" +
-                             " LEFT OUTER JOIN[Tenant Media] tm ON tm.[ID] = tms.[Media ID]" +
+                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
+                             " LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
                              " ORDER BY il.[Display Order]";
 
@@ -227,7 +227,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
-                        command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                        command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
                         TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -262,7 +262,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 continue;
 
                             if (first)
-                                command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                                command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
 
                             TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())
@@ -285,26 +285,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 recordsRemaining = 0;
 
             return list;
-        }
-
-        private ReplImage ReaderToImage(SqlDataReader reader, out string timestamp)
-        {
-            ReplImage img = new ReplImage()
-            {
-                Id = SQLHelper.GetString(reader["Code"]),
-                Location = SQLHelper.GetString(reader["Image Location"]),
-                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
-                Description = SQLHelper.GetString(reader["Description"])
-            };
-
-            byte[] imgbyte = SQLHelper.GetByteArray(reader["Image Blob"]);
-            if (imgbyte == null)
-                img.Image64 = string.Empty;
-            else
-                img.Image64 = Convert.ToBase64String(imgbyte);
-
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
-            return img;
         }
 
         private ReplImage ReaderToMediaImage(SqlDataReader reader, out string timestamp)

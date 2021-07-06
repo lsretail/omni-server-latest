@@ -17,12 +17,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public HierarchyRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
+        public HierarchyRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date]";
-            if (navVersion > new Version("17.4"))
-                sqlcolumns += ",hd.[Priority],hd.[Sales Type Filter],hd.[Validation Schedule ID]";
-
             sqlfrom = " FROM [" + navCompanyName + "Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                       "INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
                       "ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
@@ -145,7 +142,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             foreach (Hierarchy root in list)
             {
-                HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NavVersion);
+                HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
                 List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId);
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));
                 for (int i = 0; i < root.Nodes.Count; i++)
@@ -187,21 +184,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            ReplHierarchy hierarchy = new ReplHierarchy()
+            return new ReplHierarchy()
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
                 StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Start Date"]), config.IsJson),
             };
-
-            if (NavVersion > new Version("17.4"))
-            {
-                hierarchy.Priority = SQLHelper.GetInt32(reader["Priority"]);
-                hierarchy.SalesType = SQLHelper.GetString(reader["Sales Type Filter"]);
-                hierarchy.ValidationScheduleId = SQLHelper.GetString(reader["Validation Schedule ID"]);
-            }
-            return hierarchy;
         }
 
         private Hierarchy ReaderToHierarchy(SqlDataReader reader)
@@ -215,13 +204,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             val.Attributes = HierarchyAttributeGet(val.Id);
-
-            if (NavVersion > new Version("17.4"))
-            {
-                val.Priority = SQLHelper.GetInt32(reader["Priority"]);
-                val.SalesType = SQLHelper.GetString(reader["Sales Type Filter"]);
-                val.ValidationScheduleId = SQLHelper.GetString(reader["Validation Schedule ID"]);
-            }
             return val;
         }
 

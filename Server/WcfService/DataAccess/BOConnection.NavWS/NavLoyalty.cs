@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using LSOmni.DataAccess.Interface.BOConnection;
@@ -18,7 +19,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
-using System.Linq;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -510,7 +511,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return list;
         }
 
-        public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
+        public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)
         {
             if (NAVVersion < new Version("17.5"))
             {
@@ -529,9 +530,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             {
                 foreach (SalesEntryPayment line in entry.Payments)
                 {
-                    line.TenderType = LSCWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tender type between LSOmni and NAV
-                    if (line.TenderType == null)
-                        throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                    line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, true); //map tender type between LSOmni and NAV
                 }
             }
             return entry;
@@ -554,20 +553,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.HospOrderCalculate(list);
         }
 
-        public virtual string HospOrderCreate(OrderHosp request, string tenderMapping)
+        public virtual string HospOrderCreate(OrderHosp request)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.HospOrderCreate(request, tenderMapping);
+                return NavWSBase.HospOrderCreate(request);
 
-            return LSCWSBase.HospOrderCreate(request, tenderMapping);
-        }
-
-        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
-        {
-            if (NAVVersion < new Version("17.5"))
-                return NavWSBase.HospOrderEstimatedTime(storeId, orderId);
-
-            return LSCWSBase.HospOrderEstimatedTime(storeId, orderId);
+            return LSCWSBase.HospOrderCreate(request);
         }
 
         public virtual void HospOrderCancel(string storeId, string orderId)
@@ -578,10 +569,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             LSCWSBase.HospOrderCancel(storeId, orderId);
         }
 
-        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.HospOrderKotStatus(storeId, orderId);
+                return NavWSBase.HospOrderStatus(storeId, orderId);
 
             return LSCWSBase.HospOrderKotStatus(storeId, orderId);
         }
@@ -632,7 +623,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.OrderAvailabilityCheck(request);
         }
 
-        public virtual string OrderCreate(Order request, string tenderMapping, out string orderId)
+        public virtual string OrderCreate(Order request, out string orderId)
         {
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
@@ -644,9 +635,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
 
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.OrderCreate(request, tenderMapping, out orderId);
+                return NavWSBase.OrderCreate(request, out orderId);
 
-            return LSCWSBase.OrderCreate(request, tenderMapping, out orderId);
+            return LSCWSBase.OrderCreate(request, out orderId);
         }
 
         #endregion
@@ -711,7 +702,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return store;
         }
 
-        public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units)
+        public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
         {
             throw new NotImplementedException("IS THIS NEEDED?");
         }
@@ -852,6 +843,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return NavWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
             
             return LSCWSBase.ReplEcommInventoryStatus(string.Empty, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
+        }
+
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.CheckAvailability(request, storeId);
+
+            return LSCWSBase.CheckAvailability(request, storeId);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

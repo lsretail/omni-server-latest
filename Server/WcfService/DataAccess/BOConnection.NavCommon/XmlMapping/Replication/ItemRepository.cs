@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
 {
@@ -197,6 +198,31 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Item Category Code": rec.ItemCategoryId = field.Values[i]; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
+        public List<HospAvailabilityResponse> CurrentAvail(XMLTableData table)
+        {
+            List<HospAvailabilityResponse> list = new List<HospAvailabilityResponse>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                HospAvailabilityResponse rec = new HospAvailabilityResponse();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "No.": rec.Number = field.Values[i]; break;
+                        case "Unit of Measure": rec.UnitOfMeasure = field.Values[i]; break;
+                        case "Store No.": rec.StoreId = field.Values[i]; break;
+                        case "Available Qty.": rec.Quantity = GetWebDecimal(field.Values[i]); break;
+                        case "Type": rec.IsDeal = GetWebBool(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

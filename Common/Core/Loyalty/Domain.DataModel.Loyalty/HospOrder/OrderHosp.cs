@@ -80,6 +80,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         public DateTime PickupTime { get; set; }
         [DataMember]
         public HospDeliveryType DeliveryType { get; set; }
+        [DataMember]
+        public string SalesType { get; set; }
 
         /// <summary>
         /// Transaction Receipt Number

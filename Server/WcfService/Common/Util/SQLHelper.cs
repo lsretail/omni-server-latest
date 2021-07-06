@@ -272,6 +272,19 @@ namespace LSOmni.Common.Util
             }
         }
 
+        static public string GetSQLNAVName(string name)
+        {
+            name = name.Replace('.', '_');
+            name = name.Replace("'", "_");
+            name = name.Replace('/', '_');
+            name = name.Replace('"', '_');
+            name = name.Replace("\\", "_");
+            name = name.Replace('%', '_');
+            name = name.Replace('[', '_');
+            name = name.Replace(']', '_');
+            return name;
+        }
+
         //just for internal checks where using old sqlconnection
         static public string CheckForSQLInjection(string input, bool strict = false)
         {

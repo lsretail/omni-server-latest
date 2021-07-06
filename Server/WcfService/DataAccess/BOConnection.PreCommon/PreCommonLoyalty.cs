@@ -164,7 +164,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
         {
             List<InventoryResponse> list = new List<InventoryResponse>();
             string respCode = string.Empty;
@@ -179,7 +179,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     lines.Add(new LSCentral.InventoryBufferIn()
                     {
                         Number = item.ItemId,
-                        Variant = item.VariantId ?? string.Empty,
+                        Variant = item.VariantId ?? string.Empty
                     });
                 }
             }
@@ -208,6 +208,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     StoreId = buffer.Store
                 });
             }
+            return list;
+        }
+
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            // filter
+            List<XMLFieldData> filter = new List<XMLFieldData>();
+            if (string.IsNullOrEmpty(storeId) == false)
+            {
+                filter.Add(new XMLFieldData()
+                {
+                    FieldName = "Store No.",
+                    Values = new List<string>() { storeId }
+                });
+            }
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetBatchWebRequestXML("LSC Current Availability", null, filter, string.Empty, 0);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ItemRepository rep = new ItemRepository();
+            List<HospAvailabilityResponse> list = rep.CurrentAvail(table);
             return list;
         }
 
@@ -367,7 +391,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (items == null && items.Count == 0)
                 return new List<ItemCustomerPrice>();
 
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            OrderMapping map = new OrderMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMobileTransaction root = map.MapFromCustItemToRoot(storeId, cardId, items);
@@ -872,29 +896,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
-            string[] salesTypes = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(',');
-            if (salesTypes.Length == 0)
-                throw new LSOmniServiceException(StatusCode.GetSalesTypeError, "Hosp_SalesType data missing in TenderConfig table");
-
-            string salesType = salesTypes[0];
-            if (list.HospitalityMode == HospMode.Takeaway && salesTypes.Length == 3)
-                salesType = salesTypes[1];
-            if (list.HospitalityMode == HospMode.Delivery && salesTypes.Length == 3)
-                salesType = salesTypes[2];
-
             string respCode = string.Empty;
             string errorText = string.Empty;
-            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
-            LSCentral.RootMobileTransaction root = map.MapFromOrderToRoot(list, salesType);
+            TransactionMapping map = new TransactionMapping(config.IsJson);
+            LSCentral.RootMobileTransaction root = map.MapFromOrderToRoot(list);
 
-            logger.Debug(config.LSKey.Key, "MobilePosPost Request - " + Serialization.ToXml(root, true));
+            logger.Debug(config.LSKey.Key, "MobilePosCalculate Request - " + Serialization.ToXml(root, true));
             centralQryWS.MobilePosCalculate(ref respCode, ref errorText, string.Empty, ref root);
-            HandleWS2ResponseCode("MobilePosPost", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "MobilePosPost Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToOrderHosp(root, salesTypes);
+            HandleWS2ResponseCode("MobilePosCalculate", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MobilePosCalculate Response - " + Serialization.ToXml(root, true));
+            return map.MapFromRootToOrderHosp(root);
         }
 
-        public string HospOrderCreate(OrderHosp request, string tenderMapping)
+        public string HospOrderCreate(OrderHosp request)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
@@ -909,27 +923,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             int lineno = 1;
             foreach (OrderPayment line in request.OrderPayments)
             {
-                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tender type between LSOmni and Nav
-                if (line.TenderType == null)
-                    throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
                 line.LineNumber = lineno++;
             }
-
-            string[] salesTypes = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(',');
-            if (salesTypes.Length == 0)
-                throw new LSOmniServiceException(StatusCode.GetSalesTypeError, "Hosp_SalesType data missing in TenderConfig table");
-
-            string salesType = salesTypes[0];
-            if (request.DeliveryType == HospDeliveryType.Takeout && salesTypes.Length == 3)
-                salesType = salesTypes[1];
-            if ((request.DeliveryType == HospDeliveryType.Home || request.DeliveryType == HospDeliveryType.Work) && salesTypes.Length == 3)
-                salesType = salesTypes[2];
 
             string receiptNo = string.Empty;
             string respCode = string.Empty;
             string errorText = string.Empty;
-            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
-            LSCentral.RootHospTransaction root = map.MapFromOrderToRoot(request, salesType);
+            TransactionMapping map = new TransactionMapping(config.IsJson);
+            LSCentral.RootHospTransaction root = map.MapFromOrderToRoot(request);
 
             logger.Debug(config.LSKey.Key, "CreateHospOrder Request - " + Serialization.ToXml(root, true));
 
@@ -937,17 +939,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("CreateHospOrder", respCode, errorText);
             logger.Debug(config.LSKey.Key, "CreateHospOrder Response - " + Serialization.ToXml(root, true));
             return receiptNo;
-        }
-
-        public int HospOrderEstimatedTime(string storeId, string orderId)
-        {
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            int estTime = 0;
-
-            centralQryWS.GetHospOrderEstimatedTime(ref respCode, ref errorText, storeId, orderId, ref estTime);
-            HandleWS2ResponseCode("GetHospOrderEstimatedTime", respCode, errorText);
-            return estTime;
         }
 
         public void HospOrderCancel(string storeId, string orderId)
@@ -963,11 +954,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             string respCode = string.Empty;
             string errorText = string.Empty;
+            int estTime = 0;
+
+            centralQryWS.GetHospOrderEstimatedTime(ref respCode, ref errorText, storeId, orderId, ref estTime);
+            HandleWS2ResponseCode("GetHospOrderEstimatedTime", respCode, errorText);
 
             LSCentral.RootKotStatus root = new LSCentral.RootKotStatus();
             centralQryWS.GetKotStatus(ref respCode, ref errorText, storeId, orderId, ref root);
             HandleWS2ResponseCode("GetKotStatus", respCode, errorText);
-
             if (root.KotStatus == null || root.KotStatus.Length == 0)
                 return new OrderHospStatus();
 
@@ -975,9 +969,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 ReceiptNo = root.KotStatus[0].ReceiptNo,
                 KotNo = root.KotStatus[0].KotNo,
-                Status = root.KotStatus[0].Status,
+                Status = (KOTStatus)Convert.ToInt32(root.KotStatus[0].Status),
                 Confirmed = root.KotStatus[0].ConfirmedbyExp,
-                ProductionTime = root.KotStatus[0].KotProdTime
+                ProductionTime = root.KotStatus[0].KotProdTime,
+                EstimatedTime = estTime
             };
         }
 
@@ -990,7 +985,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            OrderMapping map = new OrderMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMobileTransaction root = map.MapFromRetailTransactionToRoot(list);
@@ -1018,10 +1013,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return new OrderStatusResponse()
             {
                 DocumentNo = root.CustomerOrderStatus[0].DocumentID,
-                DocumentType = root.CustomerOrderStatus[0].DocumentType,
-                CustomerOrderPaymentStatus = root.CustomerOrderStatus[0].PaymentStatus,
-                CustomerOrderShippingStatus = root.CustomerOrderStatus[0].ShippingStatus,
-                CustomerOrderStatus = root.CustomerOrderStatus[0].OrderStatus
+                PaymentStatus = root.CustomerOrderStatus[0].PaymentStatus,
+                ShippingStatus = root.CustomerOrderStatus[0].ShippingStatus,
+                OrderStatus = root.CustomerOrderStatus[0].OrderStatus.ToString()
             };
         }
 
@@ -1052,7 +1046,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public SalesEntry OrderGet(string id)
         {
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            OrderMapping map = new OrderMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             SalesEntry order;
@@ -1075,7 +1069,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<SalesEntry> OrderHistoryGet(string cardId)
         {
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            OrderMapping map = new OrderMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -1099,7 +1093,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
 
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            OrderMapping map = new OrderMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -1119,7 +1113,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return data;
         }
 
-        public string OrderCreate(Order request, string tenderMapping, out string orderId)
+        public string OrderCreate(Order request, out string orderId)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
@@ -1135,9 +1129,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             int lineno = 1;
             foreach (OrderPayment line in request.OrderPayments)
             {
-                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tender type between LSOmni and Nav
-                if (line.TenderType == null)
-                    throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
                 line.LineNumber = lineno++;
             }
 
@@ -1165,7 +1157,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
 
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            OrderMapping map = new OrderMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -1191,13 +1183,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("GetMemberSalesHistory", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetMemberSalesHistory Response - " + Serialization.ToXml(rootHistory, true));
 
-            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
+            TransactionMapping map = new TransactionMapping(config.IsJson);
             return map.MapFromRootToSalesEntries(rootHistory);
         }
 
         public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId)
         {
-            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
+            TransactionMapping map = new TransactionMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetTransaction root = new LSCentral.RootGetTransaction();
@@ -1355,7 +1347,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public string ScanPayGoSuspend(Order request)
         {
-            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
+            TransactionMapping map = new TransactionMapping(config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             string receiptNo = string.Empty;
@@ -1432,23 +1424,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             List<HierarchyNode> nodes = new List<HierarchyNode>();
             string respCode = string.Empty;
             string errorText = string.Empty;
-            LSCentral.RootGetHierarchyV2 rootRoot = new LSCentral.RootGetHierarchyV2();
+            LSCentral.RootGetHierarchyValSched rootRoot = new LSCentral.RootGetHierarchyValSched();
             logger.Debug(config.LSKey.Key, "GetHierarchy - StoreId: {0}", storeId);
-            centralQryWS.GetHierarchyV2(ref respCode, ref errorText, storeId, ref rootRoot);
+            centralQryWS.GetHierarchyV2ValidationSchedule(ref respCode, ref errorText, storeId, ref rootRoot);
             HandleWS2ResponseCode("GetHierarchy", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetHierarchy Response - " + Serialization.ToXml(rootRoot, true));
 
-            foreach (LSCentral.HierarchyV2 top in rootRoot.HierarchyV2)
+            foreach (LSCentral.HierarchyValSched top in rootRoot.HierarchyValSched)
             {
+                LSCentral.HierarchyDateValSched sch = rootRoot.HierarchyDateValSched.ToList().Find(s => s.HierarchyCode == top.HierarchyCode);
                 list.Add(new Hierarchy()
                 {
                     Id = top.HierarchyCode,
                     Description = top.Description,
-                    Type = (HierarchyType)Convert.ToInt32(top.Type)
+                    Type = (HierarchyType)Convert.ToInt32(top.Type),
+                    ValidationScheduleId = (sch != null) ? sch.ValidationScheduleID : string.Empty,
+                    Priority = (sch != null) ? sch.Priority : 0,
+                    SalesType = (sch != null) ? sch.SalesTypeFilter : string.Empty
                 });
             }
 
-            foreach (LSCentral.HierarchyNodesV2 val in rootRoot.HierarchyNodesV2)
+            foreach (LSCentral.HierarchyNodesValSched val in rootRoot.HierarchyNodesValSched)
             {
                 HierarchyNode node = new HierarchyNode()
                 {
@@ -1459,8 +1455,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     Description = val.Description,
                     HierarchyCode = val.HierarchyCode
                 };
-                ImageView iv = ImagesGetByLink("LSC Hierar. Nodes", node.HierarchyCode + "," + node.Id, string.Empty, string.Empty).FirstOrDefault();
-                node.ImageId = (iv == null) ? string.Empty : iv.Id;
+                LSCentral.HierarchyNodeImageValSched img = rootRoot.HierarchyNodeImageValSched.ToList().Find(i => i.KeyValue == node.HierarchyCode + "," + node.Id);
+                node.ImageId = (img != null) ? img.ImageId : string.Empty;
                 nodes.Add(node);
 
                 LSCentral.RootGetHierarchyNodeIn rootNodeIn = new LSCentral.RootGetHierarchyNodeIn();
@@ -1483,7 +1479,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         ParentNode = lnk.NodeID,
                         Description = lnk.Description,
                         HierarchyCode = lnk.HierarchyCode,
-                        Type = (HierarchyLeafType)Convert.ToInt32(lnk.Type)
+                        Type = (HierarchyLeafType)Convert.ToInt32(lnk.Type),
+                        SortOrder = lnk.SortOrder,
+                        ItemUOM = lnk.ItemUnitofMeasure
                     });
                 }
             }

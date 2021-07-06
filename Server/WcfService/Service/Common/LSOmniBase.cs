@@ -80,7 +80,7 @@ namespace LSOmni.Service
 
                     serverUri = OperationContext.Current.IncomingMessageProperties.Via.AbsoluteUri;
                     port = OperationContext.Current.IncomingMessageProperties.Via.Port.ToString();
-                    config.IsJson = serverUri.ToLower().Contains("ucjson.svc");
+                    config.IsJson = serverUri.ToLower().Contains("json.svc");
                 }
 
                 //WebOperationContext.Current.IncomingRequest.Headers["Authorization"]

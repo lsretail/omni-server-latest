@@ -151,7 +151,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
 
             NAVSyncCycleStatus status = NAVSyncCycleStatus.New;
             bool found = false;
-            foreach (XElement el in body.Elements("Web_Application_Sync_Status"))
+            foreach (XElement el in body.Elements("Web_Applic._Sync_Status"))
             {
                 found = true;
                 int tableNo = XMLHelper.GetXMLInt32(el, "Table_No.");
@@ -162,7 +162,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
                 }
             }
             if (found == false)
-                throw new LSOmniServiceException(StatusCode.Error, "Web_Application_Sync_Status Not Found in GET_SYNC_STATUS result xml");
+                throw new LSOmniServiceException(StatusCode.Error, "Web_Applic._Sync_Status Not Found in GET_SYNC_STATUS result xml");
             return status;
         }
 
@@ -226,7 +226,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
 
             List<XMLTableData> tablist = new List<XMLTableData>();
             bool found = false;
-            foreach (XElement el in body.Elements("Web_Application_Sync_Status"))
+            foreach (XElement el in body.Elements("Web_Applic._Sync_Status"))
             {
                 found = true;
                 XMLTableData table = new XMLTableData();
@@ -239,7 +239,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
                 tablist.Add(table);
             }
             if (found == false)
-                throw new LSOmniServiceException(StatusCode.Error, "Web_Application_Sync_Status Not Found in START_SYNC_CYCLE result xml");
+                throw new LSOmniServiceException(StatusCode.Error, "Web_Applic._Sync_Status Not Found in START_SYNC_CYCLE result xml");
 
             return tablist;
         }

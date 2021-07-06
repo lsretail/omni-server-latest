@@ -121,7 +121,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember(IsRequired = true)]
         public ListType ListType { get; set; }
         [DataMember]
-        public HospMode HospitalityMode { get; set; }
+        public bool IsHospitality { get; set; }
+        [DataMember]
+        public string SalesType { get; set; }
         [DataMember]
         public ObservableCollection<OneListItem> Items { get; set; }
         [DataMember]
@@ -303,20 +305,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         Blocked = 2,
         [EnumMember]
         Remove = 3
-    }
-
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2021")]
-    [Flags]
-    public enum HospMode
-    {
-        [EnumMember]
-        None = 0,
-        [EnumMember]
-        DineIn = 1,
-        [EnumMember]
-        Takeaway = 2,
-        [EnumMember]
-        Delivery = 3
     }
 
     public enum BasketState

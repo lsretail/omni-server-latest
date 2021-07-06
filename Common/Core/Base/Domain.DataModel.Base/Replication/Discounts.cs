@@ -2,14 +2,48 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
-
 namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplDiscountResponse : IDisposable
     {
         public ReplDiscountResponse()
+        {
+            LastKey = string.Empty;
+            MaxKey = string.Empty;
+            RecordsRemaining = 0;
+            Discounts = new List<ReplDiscount>();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Discounts != null)
+                    Discounts.Clear();
+            }
+        }
+
+        [DataMember]
+        public string LastKey { get; set; }
+        [DataMember]
+        public string MaxKey { get; set; }
+        [DataMember]
+        public int RecordsRemaining { get; set; }
+        [DataMember]
+        public List<ReplDiscount> Discounts { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public class ReplMixMatchResponse : IDisposable
+    {
+        public ReplMixMatchResponse()
         {
             LastKey = string.Empty;
             MaxKey = string.Empty;

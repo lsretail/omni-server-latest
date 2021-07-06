@@ -46,7 +46,6 @@ namespace LSOmni.Service
         /// Get Published Offers for Member Card Id
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : LOAD_MEMBER_DIR_MARK_INFO<p/>
         /// LS Central WS2 : GetDirectMarketingInfo<p/><p/>
         /// </remarks>
         /// <param name="cardId">Member Card Id to look for</param>
@@ -99,7 +98,6 @@ namespace LSOmni.Service
         /// Get all Order Notification for a Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : LOAD_MEMBER_DIR_MARK_INFO<p/>
         /// LS Central WS2 : GetDirectMarketingInfo<p/><p/>
         /// </remarks>
         /// <param name="cardId">Card Id</param>
@@ -187,92 +185,6 @@ namespace LSOmni.Service
         /// </soapenv:Envelope>
         /// ]]>
         /// </code>
-        /// Response Data from LS Commerce Service after Request has been sent
-        /// <code language="soap" title="SOAP Response">
-        /// <![CDATA[
-        /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///   <s:Body>
-        ///      <OneListSaveResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///         < OneListSaveResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > 4979E04C-D037-4791-B3AA-1885106160E3</Id>
-        ///            <a:CardId>10021</a:CardId>
-        ///            <a:CardLinks>
-        ///               <a:OneListLink>
-        ///                  <a:CardId>10021</a:CardId>
-        ///                  <a:Name>Tom Thomson</a:Name>
-        ///                  <a:Owner>true</a:Owner>
-        ///                  <a:Status>Active</a:Status>
-        ///               </a:OneListLink>
-        ///            </a:CardLinks>
-        ///            <a:CreateDate>2019-09-12T09:42:24.693</a:CreateDate>
-        ///            <a:Description>Basket: 10021</a:Description>
-        ///            <a:ExternalType>0</a:ExternalType>
-        ///            <a:Items>
-        ///               <a:OneListItem>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > A3C1C59D - F4E5 - 428E-8A3E-F80F91A507F6</Id>
-        ///                  <a:Amount>160.00000000</a:Amount>
-        ///                  <a:BarcodeId/>
-        ///                  <a:CreateDate>2019-09-12T09:42:24.71</a:CreateDate>
-        ///                  <a:Detail/>
-        ///                  <a:DiscountAmount>0.00000000</a:DiscountAmount>
-        ///                  <a:DiscountPercent>0.00000000</a:DiscountPercent>
-        ///                  <a:DisplayOrderId>1</a:DisplayOrderId>
-        ///                  <a:Image xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                     < b:Id>40020-Y</b:Id>
-        ///                     <b:AvgColor/>
-        ///                     <b:DisplayOrder>0</b:DisplayOrder>
-        ///                     <b:Format/>
-        ///                     <b:Image/>
-        ///                     <b:ImgSize>
-        ///                        <b:Height>0</b:Height>
-        ///                        <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
-        ///                        <b:Width>0</b:Width>
-        ///                     </b:ImgSize>
-        ///                     <b:LoadFromFile>false</b:LoadFromFile>
-        ///                     <b:Location>http://dhqsrvomni001.lsretail.local/lsomniservice/ucservice.svc/ImageStreamGetById?id=40020-Y&amp;width={0}&amp;height={1}</b:Location>
-        ///                     <b:LocationType>Image</b:LocationType>
-        ///                  </a:Image>
-        ///                  <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
-        ///                  <a:ItemId>40020</a:ItemId>
-        ///                  <a:NetAmount>128.00000000</a:NetAmount>
-        ///                  <a:NetPrice>64.00000000</a:NetPrice>
-        ///                  <a:OnelistItemDiscounts/>
-        ///                  <a:Price>80.00000000</a:Price>
-        ///                  <a:Quantity>2.00000000</a:Quantity>
-        ///                  <a:TaxAmount>32.00000000</a:TaxAmount>
-        ///                  <a:UnitOfMeasureDescription i:nil= "true" />
-        ///                  <a:UnitOfMeasureId/>
-        ///                  <a:VariantDescription>YELLOW/38</a:VariantDescription>
-        ///                  <a:VariantId>002</a:VariantId>
-        ///                  <a:VariantRegistration xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                     <b:Id>1BAC4050-C3CA-4ADB-A979-D80BC43EC10A</b:Id>
-        ///                     <b:Dimension1/>
-        ///                     <b:Dimension2/>
-        ///                     <b:Dimension3/>
-        ///                     <b:Dimension4/>
-        ///                     <b:Dimension5/>
-        ///                     <b:Dimension6/>
-        ///                     <b:FrameworkCode/>
-        ///                     <b:Images/>
-        ///                     <b:ItemId/>
-        ///                  </a:VariantRegistration>
-        ///               </a:OneListItem>
-        ///            </a:Items>
-        ///            <a:ListType>Basket</a:ListType>
-        ///            <a:PointAmount>0</a:PointAmount>
-        ///            <a:PublishedOffers/>
-        ///            <a:ShippingAmount>0.00000000</a:ShippingAmount>
-        ///            <a:StoreId>S0001</a:StoreId>
-        ///            <a:TotalAmount>160.00000000</a:TotalAmount>
-        ///            <a:TotalDiscAmount>0.00000000</a:TotalDiscAmount>
-        ///            <a:TotalNetAmount>128.00000000</a:TotalNetAmount>
-        ///            <a:TotalTaxAmount>32.00000000</a:TotalTaxAmount>
-        ///         </OneListSaveResult>
-        ///      </OneListSaveResponse>
-        ///   </s:Body>
-        /// </s:Envelope>
-        /// ]]>
-        /// </code>
         /// </example>
         /// <param name="oneList">List Id</param>
         /// <param name="calculate">Perform Calculation on a Basket and save result with Basket</param>
@@ -284,7 +196,6 @@ namespace LSOmni.Service
         /// Calculates OneList Basket Object and returns Order Object
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : ECOMM_CALCULATE_BASKET<p/>
         /// LS Central WS2 : EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
@@ -317,101 +228,6 @@ namespace LSOmni.Service
         ///     </ser:OneListCalculate>
         ///    </soapenv:Body>
         /// </soapenv:Envelope>
-        /// ]]>
-        /// </code>
-        /// Response Data from LS Commerce Service after Request has been sent
-        /// <code language="xml" title="SOAP Response">
-        /// <![CDATA[
-        /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///    <s:Body>
-        ///       <OneListCalculateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///          <OneListCalculateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" >{16B13DED-C5BE-4462-9223-5A45A9569F84}</Id>
-        ///             <a:CardId>10021</a:CardId>
-        ///             <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
-        ///             <a:CollectLocation i:nil="true"/>
-        ///             <a:ContactAddress xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
-        ///                <b:Address1/>
-        ///                <b:Address2/>
-        ///                <b:CellPhoneNumber i:nil="true"/>
-        ///                <b:City/>
-        ///                <b:Country/>
-        ///                <b:HouseNo i:nil="true"/>
-        ///                <b:Id/>
-        ///                <b:PhoneNumber i:nil="true"/>
-        ///                <b:PostCode/>
-        ///                <b:StateProvinceRegion/>
-        ///                <b:Type>Residential</b:Type>
-        ///             </a:ContactAddress>
-        ///             <a:ContactId i:nil="true"/>
-        ///             <a:ContactName i:nil="true"/>
-        ///             <a:DayPhoneNumber i:nil="true"/>
-        ///             <a:DocumentId i:nil="true"/>
-        ///             <a:Email i:nil="true"/>
-        ///             <a:LineItemCount>0</a:LineItemCount>
-        ///             <a:MobileNumber i:nil="true"/>
-        ///             <a:OrderDiscountLines/>
-        ///             <a:OrderLines>
-        ///                <a:OrderLine>
-        ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   <a:Amount>160.00</a:Amount>
-        ///                   <a:DiscountAmount>0.00</a:DiscountAmount>
-        ///                   <a:DiscountPercent>0.00</a:DiscountPercent>
-        ///                   <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
-        ///                   <a:ItemId>40020</a:ItemId>
-        ///                   <a:ItemImageId>40020-Y</a:ItemImageId>
-        ///                   <a:LineNumber>1</a:LineNumber>
-        ///                   <a:LineType>Item</a:LineType>
-        ///                   <a:NetAmount>128.00</a:NetAmount>
-        ///                   <a:NetPrice>64.00</a:NetPrice>
-        ///                   <a:OrderId/>
-        ///                   <a:Price>80.00</a:Price>
-        ///                   <a:Quantity>2.00</a:Quantity>
-        ///                   <a:QuantityOutstanding>0</a:QuantityOutstanding>
-        ///                   <a:QuantityToInvoice>2.00</a:QuantityToInvoice>
-        ///                   <a:QuantityToShip>0</a:QuantityToShip>
-        ///                   <a:TaxAmount>32.00</a:TaxAmount>
-        ///                   <a:UomId/>
-        ///                   <a:VariantDescription>YELLOW/38</a:VariantDescription>
-        ///                   <a:VariantId>002</a:VariantId>
-        ///                </a:OrderLine>
-        ///             </a:OrderLines>
-        ///             <a:OrderPayments/>
-        ///             <a:OrderStatus>Pending</a:OrderStatus>
-        ///             <a:PaymentStatus>PreApproved</a:PaymentStatus>
-        ///             <a:PointAmount>1600.00</a:PointAmount>
-        ///             <a:PointBalance>53632.00</a:PointBalance>
-        ///             <a:PointCashAmountNeeded>0.00</a:PointCashAmountNeeded>
-        ///             <a:PointsRewarded>160.00</a:PointsRewarded>
-        ///             <a:PointsUsedInOrder>0.00</a:PointsUsedInOrder>
-        ///             <a:Posted>false</a:Posted>
-        ///             <a:ReceiptNo/>
-        ///             <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                <b:Address1/>
-        ///                <b:Address2/>
-        ///                <b:CellPhoneNumber i:nil= "true" />
-        ///                <b:City/>
-        ///                <b:Country/>
-        ///                <b:HouseNo i:nil= "true" />
-        ///                <b:Id/>
-        ///                <b:PhoneNumber i:nil= "true" />
-        ///                <b:PostCode/>
-        ///                <b:StateProvinceRegion/>
-        ///                <b:Type>Residential</b:Type>
-        ///             </a:ShipToAddress>
-        ///             <a:ShipToEmail i:nil= "true" />
-        ///             <a:ShipToName i:nil= "true" />
-        ///             <a:ShippingAgentCode i:nil= "true" />
-        ///             <a:ShippingAgentServiceCode i:nil= "true" />
-        ///             <a:ShippingStatus>ShippigNotRequired</a:ShippingStatus>
-        ///             <a:StoreId>S0013</a:StoreId>
-        ///             <a:TotalAmount>160.00</a:TotalAmount>
-        ///             <a:TotalDiscount>0.00</a:TotalDiscount>
-        ///             <a:TotalNetAmount>128.00</a:TotalNetAmount>
-        ///          </OneListCalculateResult>
-        ///       </OneListCalculateResponse>
-        ///    </s:Body>
-        /// </s:Envelope>
         /// ]]>
         /// </code>
         /// </example>
@@ -466,6 +282,7 @@ namespace LSOmni.Service
         ///              </ns1:OneListItem>
         ///           </ns1:Items>
         ///           <ns1:ListType>Basket</ns1:ListType>
+        ///           <ns1:SalesType>DELIVERY</ns1:SalesType>
         ///           <ns1:StoreId>S0005</ns1:StoreId>
         ///        </ser:oneList>
         ///     </ser:OneListHospCalculate>
@@ -528,6 +345,7 @@ namespace LSOmni.Service
         ///              </ns1:OneListItem>
         ///           </ns1:Items>
         ///           <ns1:ListType>Basket</ns1:ListType>
+        ///           <ns1:SalesType>DELIVERY</ns1:SalesType>
         ///           <ns1:StoreId>S0005</ns1:StoreId>
         ///        </ser:oneList>
         ///     </ser:OneListHospCalculate>
@@ -571,7 +389,6 @@ namespace LSOmni.Service
         /// Check the quantity available of items in order for certain store, Use with LS Nav 11.0 and later
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : CO_QTY_AVAILABILITY_EXT<p/>
         /// LS Central WS2 : COQtyAvailabilityV2<p/><p/>
         /// </remarks>
         /// <param name="request"></param>
@@ -583,7 +400,6 @@ namespace LSOmni.Service
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : CUSTOMER_ORDER_CREATE_EXT<p/>
         /// LS Central WS2 : CustomerOrderCreateVx<p/><p/>
         /// </remarks>
         /// <example>
@@ -670,88 +486,6 @@ namespace LSOmni.Service
         ///     </ser:OrderCreate>
         ///  </soapenv:Body>
         /// </soapenv:Envelope>
-        /// ]]>
-        /// </code>
-        /// Response Data from LS Commerce Service after Request has been sent
-        /// <code language="xml" title="SOAP Response">
-        /// <![CDATA[
-        /// <s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///    <s:Body>
-        ///       <OrderCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///          < OrderCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///             <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CO000007 </ Id >
-        ///             <a:AnonymousOrder>false</a:AnonymousOrder>
-        ///             <a:CardId>10021</a:CardId>
-        ///             <a:ClickAndCollectOrder>false</a:ClickAndCollectOrder>
-        ///             <a:DiscountLines/>
-        ///             <a:DocumentRegTime>2019-10-22T09:47:20.857</a:DocumentRegTime>
-        ///             <a:ExternalId>16B01BE6-BA8A-462E-97D7-18F63D7AFE81</a:ExternalId>
-        ///             <a:IdType>Order</a:IdType>
-        ///             <a:LineItemCount>2</a:LineItemCount>
-        ///             <a:Lines>
-        ///                <a:SalesEntryLine>
-        ///                   <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///                   <a:Amount>160.00000000000000000000</a:Amount>
-        ///                   <a:DiscountAmount>0.00000000000000000000</a:DiscountAmount>
-        ///                   <a:DiscountPercent>0.00000000000000000000</a:DiscountPercent>
-        ///                   <a:ItemDescription>Skirt Linda Professional Wear</a:ItemDescription>
-        ///                   <a:ItemId>40020</a:ItemId>
-        ///                   <a:ItemImageId>40020-Y</a:ItemImageId>
-        ///                   <a:LineNumber>10000</a:LineNumber>
-        ///                   <a:LineType>Item</a:LineType>
-        ///                   <a:NetAmount>128.00000000000000000000</a:NetAmount>
-        ///                   <a:NetPrice>64.00000000000000000000</a:NetPrice>
-        ///                   <a:Price>80.00000000000000000000</a:Price>
-        ///                   <a:Quantity>2.00000000000000000000</a:Quantity>
-        ///                   <a:TaxAmount>32.00000000000000000000</a:TaxAmount>
-        ///                   <a:UomId/>
-        ///                   <a:VariantDescription>YELLOW/38</a:VariantDescription>
-        ///                   <a:VariantId>002</a:VariantId>
-        ///                </a:SalesEntryLine>
-        ///             </a:Lines>
-        ///             <a:PaymentStatus>PreApproved</a:PaymentStatus>
-        ///             <a:Payments>
-        ///                <a:SalesEntryPayment>
-        ///                   <a:Amount>160.00000000000000000000</a:Amount>
-        ///                   <a:CardNo>45XX..5555</a:CardNo>
-        ///                   <a:CurrencyCode/>
-        ///                   <a:CurrencyFactor>1.00000000000000000000</a:CurrencyFactor>
-        ///                   <a:LineNumber>10000</a:LineNumber>
-        ///                   <a:TenderType>1</a:TenderType>
-        ///                </a:SalesEntryPayment>
-        ///             </a:Payments>
-        ///             <a:PointsRewarded>0</a:PointsRewarded>
-        ///             <a:PointsUsedInOrder>0</a:PointsUsedInOrder>
-        ///             <a:Posted>false</a:Posted>
-        ///             <a:ShipToAddress xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                <b:Address1>Some Address</b:Address1>
-        ///                <b:Address2/>
-        ///                <b:CellPhoneNumber i:nil= "true" />
-        ///                <b:City>Some City</b:City>
-        ///                <b:Country/>
-        ///                <b:HouseNo/>
-        ///                <b:Id/>
-        ///                <b:PhoneNumber i:nil= "true" />
-        ///                <b:PostCode>999</b:PostCode>
-        ///                <b:StateProvinceRegion/>
-        ///                <b:Type>Residential</b:Type>
-        ///             </a:ShipToAddress>
-        ///             <a:ShipToEmail/>
-        ///             <a:ShipToName/>
-        ///             <a:ShippingAgentCode/>
-        ///             <a:ShippingAgentServiceCode/>
-        ///             <a:ShippingStatus>NotYetShipped</a:ShippingStatus>
-        ///             <a:Status>Created</a:Status>
-        ///             <a:StoreId>S0013</a:StoreId>
-        ///             <a:StoreName i:nil= "true" />
-        ///             <a:TerminalId i:nil= "true" />
-        ///             <a:TotalAmount>160.00000000000000000000</a:TotalAmount>
-        ///             <a:TotalDiscount>0.00000000000000000000</a:TotalDiscount>
-        ///             <a:TotalNetAmount>128.00000000000000000000</a:TotalNetAmount>
-        ///          </OrderCreateResult>
-        ///       </OrderCreateResponse>
-        ///    </s:Body>
-        /// </s:Envelope>
         /// ]]>
         /// </code>
         /// </example>
@@ -1064,15 +798,6 @@ namespace LSOmni.Service
         SalesEntry OrderHospCreate(OrderHosp request);
 
         /// <summary>
-        /// Get estimated time for an order
-        /// </summary>
-        /// <param name="storeId"></param>
-        /// <param name="orderId"></param>
-        /// <returns></returns>
-        [OperationContract]
-        int HospOrderEstimatedTime(string storeId, string orderId);
-
-        /// <summary>
         /// Cancel hospitality order
         /// </summary>
         /// <param name="storeId"></param>
@@ -1087,7 +812,7 @@ namespace LSOmni.Service
         /// <param name="orderId"></param>
         /// <returns></returns>
         [OperationContract]
-        OrderHospStatus HospOrderKotStatus(string storeId, string orderId);
+        OrderHospStatus HospOrderStatus(string storeId, string orderId);
 
         /// <summary>
         /// Check Status of a Customer Order
@@ -1189,7 +914,6 @@ namespace LSOmni.Service
         /// Create a new contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_CONTACT_CREATE<p/>
         /// LS Central WS2 : MemberContactCreate<p/><p/>
         /// Contact will get new Card that should be used when dealing with Orders.  Card Id is the unique identifier for Contacts in LS Central<p/>
         /// Contact will be assigned to a Member Account.
@@ -1243,226 +967,6 @@ namespace LSOmni.Service
         ///</soapenv:Envelope>
         /// ]]>
         /// </code>
-        /// Response Data from LS Commerce Service after Request has been sent
-        /// <code language="xml" title="SOAP Response">
-        /// <![CDATA[
-        ///<s:Envelope xmlns:s="http://schemas.xmlsoap.org/soap/envelope/">
-        ///   <s:Body>
-        ///      <ContactCreateResponse xmlns = "http://lsretail.com/LSOmniService/EComm/2017/Service" >
-        ///         < ContactCreateResult xmlns:a="http://lsretail.com/LSOmniService/Loy/2017" xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
-        ///            <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MO000090 </Id >
-        ///            <a:Account>
-        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MA000088 </Id >
-        ///               <a:PointBalance>0</a:PointBalance>
-        ///               <a:Scheme>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR1 - BRONZE </Id >
-        ///                  <a:Club>
-        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </Id >
-        ///                     <a:Name>Cronus Loyalty Club</a:Name>
-        ///                  </a:Club>
-        ///                  <a:Description>Cronus Bronze</a:Description>
-        ///                  <a:NextScheme>
-        ///                     <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CR2 - SILVER </Id >
-        ///                     <a:Club>
-        ///                        <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > CRONUS </Id >
-        ///                        <a:Name>Cronus Loyalty Club</a:Name>
-        ///                     </a:Club>
-        ///                     <a:Description>Cronus Silver</a:Description>
-        ///                     <a:NextScheme>
-        ///                     </a:NextScheme>
-        ///                     <a:Perks>Discount 10% when you upgrade to Cronus Gold</a:Perks>
-        ///                     <a:PointsNeeded>100000</a:PointsNeeded>
-        ///                  </a:NextScheme>
-        ///                  <a:Perks>Free MP3 Player - 64 GB Silver when you upgrade to Cronus Silver Scheme</a:Perks>
-        ///                  <a:PointsNeeded>50000</a:PointsNeeded>
-        ///               </a:Scheme>
-        ///            </a:Account>
-        ///            <a:Addresses xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               <b:Address>
-        ///                  <b:Address1>Santa Monica</b:Address1>
-        ///                  <b:Address2/>
-        ///                  <b:CellPhoneNumber>555-5551</b:CellPhoneNumber>
-        ///                  <b:City>Hollywood</b:City>
-        ///                  <b:Country>US</b:Country>
-        ///                  <b:HouseNo i:nil= "true" />
-        ///                  <b:Id/>
-        ///                  <b:PhoneNumber>666-6661</b:PhoneNumber>
-        ///                  <b:PostCode>1001</b:PostCode>
-        ///                  <b:StateProvinceRegion/>
-        ///                  <b:Type>Residential</b:Type>
-        ///               </b:Address>
-        ///            </a:Addresses>
-        ///            <a:AlternateId i:nil= "true" />
-        ///            <a:BirthDay>1753-01-01T00:00:00</a:BirthDay>
-        ///            <a:Cards xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               <b:Card>
-        ///                  <b:Id>10102</b:Id>
-        ///                  <b:BlockedBy/>
-        ///                  <b:BlockedReason/>
-        ///                  <b:ClubId>CRONUS</b:ClubId>
-        ///                  <b:ContactId>MO000090</b:ContactId>
-        ///                  <b:DateBlocked>1753-01-01T00:00:00</b:DateBlocked>
-        ///                  <b:LinkedToAccount>false</b:LinkedToAccount>
-        ///                  <b:LoginId>sarah1</b:LoginId>
-        ///                  <b:Status>Active</b:Status>
-        ///               </b:Card>
-        ///            </a:Cards>
-        ///            <a:Email>Sarah1 @Hollywood.com</a:Email>
-        ///            <a:Environment xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///               <b:Currency>
-        ///                  <b:Id>GBP</b:Id>
-        ///                  <b:AmountRoundingMethod>RoundNearest</b:AmountRoundingMethod>
-        ///                  <b:Culture/>
-        ///                  <b:DecimalPlaces>2</b:DecimalPlaces>
-        ///                  <b:DecimalSeparator>.</b:DecimalSeparator>
-        ///                  <b:Description>British Pound</b:Description>
-        ///                  <b:Postfix/>
-        ///                  <b:Prefix>£</b:Prefix>
-        ///                  <b:RoundOffAmount>0.01000000000000000000</b:RoundOffAmount>
-        ///                  <b:RoundOffSales>0.01000000000000000000</b:RoundOffSales>
-        ///                  <b:SaleRoundingMethod>RoundNearest</b:SaleRoundingMethod>
-        ///                  <b:Symbol>£</b:Symbol>
-        ///                  <b:ThousandSeparator>,</b:ThousandSeparator>
-        ///               </b:Currency>
-        ///               <b:PasswordPolicy>5-character minimum; case sensitive</b:PasswordPolicy>
-        ///               <b:Version>4.1.1</b:Version>
-        ///            </a:Environment>
-        ///            <a:FirstName>Sarah</a:FirstName>
-        ///            <a:Gender>Female</a:Gender>
-        ///            <a:Initials/>
-        ///            <a:LastName>Parker</a:LastName>
-        ///            <a:LoggedOnToDevice>
-        ///               <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" />
-        ///               <a:BlockedBy i:nil="true"/>
-        ///               <a:BlockedDate>1900-01-01T00:00:00</a:BlockedDate>
-        ///               <a:BlockedReason i:nil="true"/>
-        ///               <a:CardId i:nil="true"/>
-        ///               <a:DeviceFriendlyName/>
-        ///               <a:Manufacturer/>
-        ///               <a:Model/>
-        ///               <a:OsVersion/>
-        ///               <a:Platform/>
-        ///               <a:SecurityToken>5F2AEC894F4C40DABC552A9F053F3450|19-08-08 14:37:41</a:SecurityToken>
-        ///               <a:Status>0</a:Status>
-        ///            </a:LoggedOnToDevice>
-        ///            <a:MaritalStatus>Unknown</a:MaritalStatus>
-        ///            <a:MiddleName/>
-        ///            <a:Name>Sarah Parker</a:Name>
-        ///            <a:Notifications>
-        ///               <a:Notification>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MN000001 </ Id >
-        ///                  <a:ContactId/>
-        ///                  <a:Created>2019-08-08T14:37:21.1</a:Created>
-        ///                  <a:Description>Remember our regular offers</a:Description>
-        ///                  <a:Details>Cronus Club Members receive extra discounts</a:Details>
-        ///                  <a:ExpiryDate>1753-01-01T23:59:59</a:ExpiryDate>
-        ///                  <a:Images xmlns:b= "http://lsretail.com/LSOmniService/Base/2017" >
-        ///                     < b:ImageView>
-        ///                        <b:Id>OFFERS</b:Id>
-        ///                        <b:AvgColor/>
-        ///                        <b:DisplayOrder>0</b:DisplayOrder>
-        ///                        <b:Format/>
-        ///                        <b:Image/>
-        ///                        <b:ImgSize>
-        ///                           <b:Height>0</b:Height>
-        ///                           <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
-        ///                           <b:Width>0</b:Width>
-        ///                        </b:ImgSize>
-        ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://localhost/lsomniservice/ucservice.svc/ImageStreamGetById?id=OFFERS&amp;width={0}&amp;height={1}</b:Location>
-        ///                        <b:LocationType>Image</b:LocationType>
-        ///                     </b:ImageView>
-        ///                  </a:Images>
-        ///                  <a:NotificationTextType>Plain</a:NotificationTextType>
-        ///                  <a:QRText/>
-        ///                  <a:Status>New</a:Status>
-        ///               </a:Notification>
-        ///               <a:Notification>
-        ///                  <Id xmlns = "http://lsretail.com/LSOmniService/Base/2017" > MN000002 </ Id >
-        ///                  <a:ContactId/>
-        ///                  <a:Created>2019-08-08T14:37:21.4</a:Created>
-        ///                  <a:Description>Call our Help Desk for assistance</a:Description>
-        ///                  <a:Details>Our help desk phone number is (212) 555-9999</a:Details>
-        ///                  <a:ExpiryDate>1753-01-01T23:59:59</a:ExpiryDate>
-        ///                  <a:Images xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
-        ///                     <b:ImageView>
-        ///                        <b:Id>HELPDESK</b:Id>
-        ///                        <b:AvgColor/>
-        ///                        <b:DisplayOrder>0</b:DisplayOrder>
-        ///                        <b:Format/>
-        ///                        <b:Image/>
-        ///                        <b:ImgSize>
-        ///                           <b:Height>0</b:Height>
-        ///                           <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
-        ///                           <b:Width>0</b:Width>
-        ///                        </b:ImgSize>
-        ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://localhost/lsomniservice/ucservice.svc/ImageStreamGetById?id=HELPDESK&amp;width={0}&amp;height={1}</b:Location>
-        ///                        <b:LocationType>Image</b:LocationType>
-        ///                     </b:ImageView>
-        ///                  </a:Images>
-        ///                  <a:NotificationTextType>Plain</a:NotificationTextType>
-        ///                  <a:QRText/>
-        ///                  <a:Status>New</a:Status>
-        ///               </a:Notification>
-        ///            </a:Notifications>
-        ///            <a:OneLists/>
-        ///            <a:Password>TI9nX0kjWX3f3LA1EPpwXmMC3cfBC0bKzpcmPlzAWLIJghSYLwbLxFvsakQiPf93kxw6xpY+4KUB41yBsAM/3w==</a:Password>
-        ///            <a:Profiles/>
-        ///            <a:PublishedOffers xmlns:b="http://lsretail.com/LSOmniService/Base/2017">
-        ///               <b:PublishedOffer>
-        ///                  <b:Id>PUB0047</b:Id>
-        ///                  <b:Code>Coupon</b:Code>
-        ///                  <b:Description>Leather Backpack -  20% off</b:Description>
-        ///                  <b:Details>Receive 20% discount when you shop this fabulous bag. This bag is genuine leather, designed by our team.</b:Details>
-        ///                  <b:ExpirationDate>2019-12-31T00:00:00</b:ExpirationDate>
-        ///                  <b:Images>
-        ///                     <b:ImageView>
-        ///                        <b:Id>PUBOFF-UR-CBAG-OM</b:Id>
-        ///                        <b:AvgColor/>
-        ///                        <b:DisplayOrder>0</b:DisplayOrder>
-        ///                        <b:Format/>
-        ///                        <b:Image/>
-        ///                        <b:ImgSize>
-        ///                           <b:Height>0</b:Height>
-        ///                           <b:UseMinHorVerSize>false</b:UseMinHorVerSize>
-        ///                           <b:Width>0</b:Width>
-        ///                        </b:ImgSize>
-        ///                        <b:LoadFromFile>false</b:LoadFromFile>
-        ///                        <b:Location>http://localhost/lsomniservice/ucservice.svc/ImageStreamGetById?id=PUBOFF-UR-CBAG-OM&amp;width={0}&amp;height={1}</b:Location>
-        ///                        <b:LocationType>Image</b:LocationType>
-        ///                     </b:ImageView>
-        ///                  </b:Images>
-        ///                  <b:OfferDetails/>
-        ///                  <b:OfferId>COUP0119</b:OfferId>
-        ///                  <b:OfferLines>
-        ///                     <b:PublishedOfferLine>
-        ///                        <b:Id>40180</b:Id>
-        ///                        <b:Description>Leather Backpack</b:Description>
-        ///                        <b:DiscountId>COUP0119</b:DiscountId>
-        ///                        <b:DiscountType>Coupon</b:DiscountType>
-        ///                        <b:Exclude>false</b:Exclude>
-        ///                        <b:LineNo>10000</b:LineNo>
-        ///                        <b:LineType>Item</b:LineType>
-        ///                        <b:OfferId>PUB0047</b:OfferId>
-        ///                        <b:UnitOfMeasure/>
-        ///                        <b:Variant/>
-        ///                        <b:VariantType>None</b:VariantType>
-        ///                     </b:PublishedOfferLine>
-        ///                  </b:OfferLines>
-        ///                  <b:Selected>false</b:Selected>
-        ///                  <b:Type>PointOffer</b:Type>
-        ///                  <b:ValidationText/>
-        ///               </b:PublishedOffer>
-        ///            </a:PublishedOffers>
-        ///            <a:SalesEntries/>
-        ///            <a:UserName>sarah1</a:UserName>
-        ///         </ContactCreateResult>
-        ///      </ContactCreateResponse>
-        ///   </s:Body>
-        ///</s:Envelope>
-        /// ]]>
-        /// </code>
         /// </example>
         /// <param name="contact">contact</param>
         /// <returns>Contact</returns>
@@ -1504,7 +1008,6 @@ namespace LSOmni.Service
         /// Update a contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_CONTACT_UPDATE<p/>
         /// LS Central WS2 : MemberContactUpdate<p/><p/>
         /// Contact Id, User name and EMail are required values for the update command to work.<p/>
         /// Any field left out or sent in empty will wipe out that information. Always fill out all 
@@ -1618,7 +1121,6 @@ namespace LSOmni.Service
         /// Add new card to existing Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_CARD_TO_CONTACT<p/>
         /// LS Central WS2 : MemberCardToContact<p/><p/>
         /// </remarks>
         /// <param name="contactId"></param>
@@ -1632,7 +1134,6 @@ namespace LSOmni.Service
         /// Get Point balance for Member Card
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : GET_MEMBER_CARD<p/>
         /// LS Central WS2 : GetMemberCard<p/><p/>
         /// </remarks>
         /// <param name="cardId"></param>
@@ -1654,7 +1155,6 @@ namespace LSOmni.Service
         /// Change password
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
         /// LS Central WS2 : MemberPasswordChange<p/><p/>
         /// </remarks>
         /// <param name="userName">user name (LS Central:LoginID)</param>
@@ -1720,7 +1220,6 @@ namespace LSOmni.Service
         /// Send in Reset Password request for Member contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_RESET<p/>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
         /// If anything fails, simply ask the user to go through the ForgotPassword again..<p/>
         /// Error PasswordInvalid = ask user for better password<p/>
@@ -1761,7 +1260,6 @@ namespace LSOmni.Service
         /// Send either login or email depending on which function is required.
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_RESET<p/>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
         /// </remarks>
         /// <param name="userName">Provide Login Id (UserName) to reset existing password</param>
@@ -1775,7 +1273,6 @@ namespace LSOmni.Service
         /// Call PasswordReset first if oldPassword is unknown or no login/password exist for Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_PWD_CHANGE<p/>
         /// LS Central WS2 : MemberPasswordChange<p/><p/>
         /// To change password for existing contact: Send userName, newPassword, oldPassword<p/>
         /// To reset password for existing contact: Send userName, token, newPassword<p/>
@@ -1806,7 +1303,6 @@ namespace LSOmni.Service
         /// Login user
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_LOGON<p/>
         /// LS Central WS2 : MemberLogon<p/><p/>
         /// </remarks>
         /// <param name="userName">user name</param>
@@ -1842,7 +1338,6 @@ namespace LSOmni.Service
         /// Login user from web page.  This function is light version of Login and returns less data.
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_LOGON<p/>
         /// LS Central WS2 : MemberLogon<p/><p/>
         /// </remarks>
         /// <param name="userName">user name</param>
@@ -1881,7 +1376,6 @@ namespace LSOmni.Service
         /// Get stock status of an item from one or all stores
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_GET_ITEMS_IN_STOCK<p/>
         /// LS Central WS2 : GetItemInventory<p/><p/>
         /// If storeId is empty, only store that are marked in LS Central with check box Loyalty or Mobile checked (Omni Section) will be returned
         /// </remarks>
@@ -1905,6 +1399,16 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId);
+
+        /// <summary>
+        /// Gets Hospitality Kitchen Current Availabilty
+        /// </summary>
+        /// <param name="request">List of items to get, if empty, get all items</param>
+        /// <param name="storeId">Store to get, if empty get all stores</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId);
 
         [OperationContract]
         List<LoyItem> ItemsSearch(string search, int maxNumberOfItems, bool includeDetails);
@@ -1940,7 +1444,6 @@ namespace LSOmni.Service
         /// Gets Hierarchy setup for a Store with all Leafs and Nodes
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : GET_HIERARCHY<p/>
         /// LS Central WS2 : GetHierarchy, GetHierarchyNode<p/><p/>
         /// It is recommended for large hierarchies to use the hierarchy replication functions.
         /// It will give option on getting only changes, instead of always have to get the whole hierarchy like this function does.
@@ -1973,7 +1476,6 @@ namespace LSOmni.Service
         /// Gets all Member Attributes that are available to assign to a Member Contact
         /// </summary>
         /// <remarks>
-        /// LS Nav WS1 : MM_MOBILE_GET_PROFILES<p/>
         /// LS Central WS2 : MobileGetProfiles<p/><p/>
         /// Only Member Attributes of type Boolean and Lookup Type None and are valid in Default Club will be selected
         /// </remarks>
@@ -2094,7 +1596,6 @@ namespace LSOmni.Service
         /// <param name="latitude">current latitude</param>
         /// <param name="longitude">current longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers, 0 = no limit</param>
-        /// <param name="maxNumberOfStores">max number of stores returned</param>
         /// <returns>List of stores marked as ClickAndCollect within max distance of coordinates</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -2113,7 +1614,7 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
-        List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores);
+        List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance);
 
         /// <summary>
         /// Gets all Click and Collect stores, within maxDistance from current location (latitude,longitude), that have the item available
@@ -2123,7 +1624,6 @@ namespace LSOmni.Service
         /// <param name="latitude">current latitude</param>
         /// <param name="longitude">current longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers, 0 = no limit</param>
-        /// <param name="maxNumberOfStores">max number of stores returned</param>
         /// <returns>List of stores marked as ClickAndCollect that have the item in stock</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -2142,7 +1642,7 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
-        List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores);
+        List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance);
 
         /// <summary>
         /// Gets Return Policy
@@ -2166,7 +1666,7 @@ namespace LSOmni.Service
         /// Replicate Item Barcodes (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001451 - Barcodes
+        /// LS Central Main Table data: 99001451 - LSC Barcodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2221,7 +1721,7 @@ namespace LSOmni.Service
         /// Replicate Item Extended Variants Setup (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10001413 - Extended Variant Values
+        /// LS Central Main Table data: 10001413 - LSC Extd. Variant Values
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2240,7 +1740,7 @@ namespace LSOmni.Service
         /// Replicate Retail Image links
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009064 - Retail Image Link
+        /// LS Central Main Table data: 99009064 - LSC Retail Image Link
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2258,7 +1758,7 @@ namespace LSOmni.Service
         /// Replicate Retail Images
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009063 - Retail Image
+        /// LS Central Main Table data: 99009063 - LSC Retail Image
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2335,7 +1835,7 @@ namespace LSOmni.Service
         /// Replicate Variant Registrations (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10001414 - Item Variant Registration
+        /// LS Central Main Table data: 10001414 - LSC Item Variant Registration
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2354,7 +1854,7 @@ namespace LSOmni.Service
         /// Replicate Best Prices for Items from WI Price table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009258 - WI Price
+        /// LS Central Main Table data: 10012861 - LSC WI Price
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time.<p/><p/>
@@ -2394,7 +1894,7 @@ namespace LSOmni.Service
         /// Replicate Product groups (supports Item distribution)
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 5723 - Product Group
+        /// LS Central Main Table data: 10000705 - LSC Retail Product Group
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2413,7 +1913,7 @@ namespace LSOmni.Service
         /// Replicate Store setups
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10012866 - Store
+        /// LS Central Main Table data: 99001470 - LSC Store
         /// <p/><p/>
         /// Only store with Loyalty or Mobile Checked will be replicated
         /// <p/><p/>
@@ -2451,7 +1951,7 @@ namespace LSOmni.Service
         /// Replicate Collection for Unit of Measures
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10001430 - Collection Framework
+        /// LS Central Main Table data: 10001430 - LSC Collection Framework
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2506,7 +2006,7 @@ namespace LSOmni.Service
         /// Replicate Attributes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000784 - Attribute
+        /// LS Central Main Table data: 10000784 - LSC Attribute
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2524,7 +2024,7 @@ namespace LSOmni.Service
         /// Replicate Attribute Values
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000786 - Attribute Value
+        /// LS Central Main Table data: 10000786 - LSC Attribute Value
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2542,7 +2042,7 @@ namespace LSOmni.Service
         /// Replicate Attribute Option Values
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000785 - Attribute Option Value
+        /// LS Central Main Table data: 10000785 - LSC Attribute Option Value
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2560,7 +2060,7 @@ namespace LSOmni.Service
         /// Replicate Translation text
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000971 - Data Translation
+        /// LS Central Main Table data: 10000971 - LSC Data Translation
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2578,7 +2078,7 @@ namespace LSOmni.Service
         /// Replicate Translation Language Codes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000972 - Data Translation
+        /// LS Central Main Table data: 10000972 - LSC Data Translation Language
         /// <p/><p/>
         /// This will always replicate all Code
         /// </remarks>
@@ -2607,7 +2107,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy roots
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000920 - Hierarchy (Where Hierarchy Date is active)
+        /// LS Central Main Table data: 10000920 - LSC Hierarchy
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2625,7 +2125,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Nodes
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000921 - Hierarchy Nodes
+        /// LS Central Main Table data: 10000921 - LSC Hierar. Nodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2643,7 +2143,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000922 - Hierarchy Node Link
+        /// LS Central Main Table data: 10000922 - LSC Hierar. Node Link
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2661,7 +2161,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001651 - Deal Modifier Item
+        /// LS Central Main Table data: 99001503 - LSC Offer Line
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2679,7 +2179,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001651 - Deal Modifier Item
+        /// LS Central Main Table data: 99001651 - LSC Deal Modifier Item
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2697,7 +2197,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Recipe lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10000768 - BOM Component
+        /// LS Central Main Table data: 90 - BOM Component
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2715,7 +2215,7 @@ namespace LSOmni.Service
         /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001483 - Information Subcode
+        /// LS Central Main Table data: 99001483 - LSC Information Subcode
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2758,7 +2258,7 @@ namespace LSOmni.Service
         /// Replicate Periodic Discounts and MultiBuy for Items from WI Discount table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10012862 - WI Discounts
+        /// LS Central Main Table data: 10012862 - LSC WI Discounts
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2777,7 +2277,7 @@ namespace LSOmni.Service
         /// Replicate Mix and Match Offers for Items from WI Mix and Match Offer table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 10012863 - WI Mix and Match Offer
+        /// LS Central Main Table data: 10012863 - LSC WI Mix and Match Offer
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2790,12 +2290,14 @@ namespace LSOmni.Service
         /// <param name="replRequest">Replication request object</param>
         /// <returns>Replication result object with List of discounts for items</returns>
         [OperationContract]
-        ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest);
+        ReplMixMatchResponse ReplEcommMixAndMatch(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Periodic Discounts for Items from WI Discount table in LS Central (supports Item distribution)<p/>
+        /// Replicate Validation Periods for Discounts<p/>
         /// </summary>
         /// <remarks>
+        /// LS Central Main Table data: 99001481 - LSC Validation Period
+        /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2832,7 +2334,7 @@ namespace LSOmni.Service
         /// Replicate Member contacts
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99009002 - Member Contact (with valid Membership Card)
+        /// LS Central Main Table data: 99009002 - LSC Member Contact (with valid Membership Card)
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2865,7 +2367,7 @@ namespace LSOmni.Service
         /// Replicate Tender types for Store
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001462 - Tender Type
+        /// LS Central Main Table data: 99001466 - LSC Tender Type Setup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2901,7 +2403,7 @@ namespace LSOmni.Service
         /// Replicate Inventory Status
         /// </summary>
         /// <remarks>
-        /// LS Central Main Table data: 99001608 - Inventory Lookup Table
+        /// LS Central Main Table data: 99001608 - LSC Inventory Lookup Table
         /// <p/><p/>
         /// Net Inventory field in Inventory Lookup Table must be updated before the replication can be done.  
         /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button. Set store to be Web Store.
@@ -3024,13 +2526,14 @@ namespace LSOmni.Service
         /// <param name="productNo"></param>
         /// <param name="activityDate"></param>
         /// <param name="contactNo"></param>
+        /// <param name="contactAccount"></param>
         /// <param name="optionalResource"></param>
         /// <param name="promoCode"></param>
         /// <param name="activityNo"></param>
         /// <param name="noOfPersons"></param>
         /// <returns></returns>
         [OperationContract]
-        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string optionalResource, string promoCode, string activityNo, int noOfPersons);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string contactAccount, string optionalResource, string promoCode, string activityNo, int noOfPersons);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product

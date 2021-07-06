@@ -25,11 +25,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class TransactionMapping : BaseMapping
     {
-        private Version NavVersion;
-
-        public TransactionMapping(Version navVersion, bool json)
+        public TransactionMapping(bool json)
         {
-            NavVersion = navVersion;
             IsJson = json;
         }
 
@@ -130,17 +127,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return transaction;
         }
 
-        public OrderHosp MapFromRootToOrderHosp(LSCentral.RootMobileTransaction root, string[] salesTypes)
+        public OrderHosp MapFromRootToOrderHosp(LSCentral.RootMobileTransaction root)
         {
             LSCentral.MobileTransaction header = root.MobileTransaction.FirstOrDefault();
             UnknownCurrency transactionCurrency = new UnknownCurrency(header.CurrencyCode);
-
-            HospDeliveryType dtype = HospDeliveryType.NoChoice;
-            int index = salesTypes.ToList().IndexOf(header.SalesType);
-            if (index == 1)
-                dtype = HospDeliveryType.Takeout;
-            if (index == 2)
-                dtype = HospDeliveryType.Home;
 
             OrderHosp order = new OrderHosp()
             {
@@ -152,7 +142,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TotalDiscount = header.LineDiscount,
                 CardId = header.MemberCardNo,
                 StoreId = header.StoreId,
-                DeliveryType = dtype
+                SalesType = header.SalesType
             };
 
             //now loop through the lines
@@ -393,7 +383,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return root;
         }
 
-        public LSCentral.RootHospTransaction MapFromOrderToRoot(OrderHosp order, string saleType)
+        public LSCentral.RootHospTransaction MapFromOrderToRoot(OrderHosp order)
         {
             LSCentral.RootHospTransaction root = new LSCentral.RootHospTransaction();
 
@@ -409,10 +399,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 SaleIsReturnSale = false,
                 MemberCardNo = XMLHelper.GetString(order.CardId),
                 CurrencyFactor = 1,
+                SalesType = order.SalesType,
+
                 TerminalId = string.Empty,
                 StaffId = string.Empty,
-                SalesType = saleType,
-
                 ReceiptNo = string.Empty,
                 CurrencyCode = string.Empty,
                 BusinessTAXCode = string.Empty,
@@ -447,7 +437,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TenderType = ((int)order.PaymentType).ToString(),
                 Email = XMLHelper.GetString(order.Email),
                 Directions = XMLHelper.GetString(order.Directions),
-                SalesType = saleType,
+                SalesType = order.SalesType,
                 AddressType = "0",
 
                 CompanyNo = string.Empty,
@@ -525,7 +515,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return root;
         }
 
-        public LSCentral.RootMobileTransaction MapFromOrderToRoot(OneList request, string saleType)
+        public LSCentral.RootMobileTransaction MapFromOrderToRoot(OneList request)
         {
             LSCentral.RootMobileTransaction root = new LSCentral.RootMobileTransaction();
 
@@ -541,7 +531,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 SaleIsReturnSale = false,
                 MemberCardNo = XMLHelper.GetString(request.CardId),
                 CurrencyFactor = 1,
-                SalesType = saleType,
+                SalesType = XMLHelper.GetString(request.SalesType),
 
                 TerminalId = string.Empty,
                 StaffId = string.Empty,
@@ -856,7 +846,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return root;
         }
 
-
         public List<EodReportRepsonse> EODReportResponse(LSCentral.RootMobilePosZReport root)
         {
             if (root.PosPrintBuffer == null)
@@ -885,6 +874,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 });
             }
             return list;
+        }
+
+        public List<SuspendedTransaction> RootToTransSuspendList(LSCentral.RootGetPosTransSuspList root)
+        {
+            List<SuspendedTransaction> tranactionList = new List<SuspendedTransaction>();
+            if (root.POSTransaction == null)
+                return tranactionList;
+
+            foreach (LSCentral.POSTransaction trs in root.POSTransaction)
+            {
+                //Only want transaction of type  SALE (=2).  skip all others
+                if (trs.TransactionType != "2")
+                    continue;
+
+                //Only want transaction with entry status of  Suspended (=1).  skip all others
+                if (trs.EntryStatus != "1")
+                    continue;
+
+                tranactionList.Add(new SuspendedTransaction()
+                {
+                    StoreId = trs.StoreNo,
+                    Terminal = trs.POSTerminalNo,
+                    Staff = trs.StaffID,
+                    ReceiptNumber = trs.ReceiptNo,
+                    Id = trs.ReceiptNo,
+                    Date = ConvertTo.SafeJsonDate(ConvertTo.NavJoinDateAndTime(trs.TransDate, trs.TransTime), IsJson),
+                    CurrencyCode = trs.TransCurrencyCode,
+                    SearchKey = trs.SearchKey,
+                    CustomerId = trs.CustomerNo
+                });
+            }
+            return tranactionList;
         }
 
         #region Private
@@ -933,24 +954,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 CurrencyCode = transaction.Terminal.Store.Currency.Id,
                 CurrencyFactor = 1,
                 BusinessTAXCode = transaction.Terminal.Store.TaxGroupId ?? string.Empty,
-                PriceGroupCode = string.Empty,
                 CustomerId = (transaction.Customer == null) ? string.Empty : transaction.Customer.Id,
                 CustDiscGroup = (transaction.Customer == null) ? string.Empty : transaction.Customer.TaxGroup,
                 MemberCardNo = cardId,
-                MemberPriceGroupCode = string.Empty,
                 ManualTotalDiscAmount = manualTotalDisAmount,
                 ManualTotalDiscPercent = manualTotalDiscPercent,
                 NetAmount = transaction.NetAmount.Value,
                 GrossAmount = transaction.GrossAmount.Value,
                 LineDiscount = transaction.TotalDiscount.Value,
                 Payment = transaction.PaymentAmount.Value,
-                DiningTblDescription = string.Empty,
-                SalesType = string.Empty,
                 RefundedFromStoreNo = transaction.RefundedFromStoreNo ?? string.Empty,
                 RefundedFromPOSTermNo = transaction.RefundedFromTerminalNo ?? string.Empty,
                 RefundedFromTransNo = ConvertTo.SafeInt(transaction.RefundedFromTransNo),
                 RefundedReceiptNo = transaction.RefundedReceiptNo ?? string.Empty,
-                SaleIsReturnSale = transaction.IsRefundByReceiptTransaction
+                SaleIsReturnSale = transaction.IsRefundByReceiptTransaction,
+
+                PriceGroupCode = string.Empty,
+                MemberPriceGroupCode = string.Empty,
+                DiningTblDescription = string.Empty,
+                SalesType = string.Empty
             };
         }
 
@@ -1039,7 +1061,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 externalId = 0;
             }
 
-            LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+            return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(line.LineNumber),
@@ -1087,16 +1109,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 RestMenuTypeCode = string.Empty,
                 TenderDescription = string.Empty,
                 UomDescription = string.Empty,
-                VariantDescription = string.Empty
+                VariantDescription = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.MobileTransactionLine MobileTransLine(string id, OrderLine line, string storeId)
         {
-            LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+            return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(line.LineNumber),
@@ -1138,16 +1158,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.MobileTransactionLine MobileTransLine(string id, OneListItem line, string storeId)
         {
-            LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+            return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(line.LineNumber),
@@ -1196,15 +1214,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 GenProdPostingGroup = string.Empty,
                 VatBusPostingGroup = string.Empty,
                 VatProdPostingGroup = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.HospTransactionLine MobileTransLine(string id, OrderHospLine line, string storeId)
         {
-            LSCentral.HospTransactionLine tline = new LSCentral.HospTransactionLine()
+            return new LSCentral.HospTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(line.LineNumber),
@@ -1213,8 +1229,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Number = (line.LineType == LineType.Item ? line.ItemId : string.Empty),
                 Barcode = (line.LineType == LineType.Coupon ? line.ItemId : string.Empty),
                 StoreId = storeId,
-                StaffId = string.Empty,
-                CurrencyCode = string.Empty,
                 CurrencyFactor = 1,
                 VariantCode = XMLHelper.GetString(line.VariantId),
                 UomId = XMLHelper.GetString(line.UomId),
@@ -1229,6 +1243,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 RecommendedItem = false,
                 DealItem = (line.IsADeal ? 1 : 0),  //0=Item line, 1=Deal line
 
+                StaffId = string.Empty,
+                CurrencyCode = string.Empty,
                 TAXProductCode = string.Empty,
                 TAXBusinessCode = string.Empty,
                 CardOrCustNo = string.Empty,
@@ -1252,16 +1268,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 VatBusPostingGroup = string.Empty,
                 VatProdPostingGroup = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.MobileTransactionLine MobileTransLine(string id, PublishedOffer offer, int lineNumber, string storeId)
         {
-            LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+            return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = lineNumber,
@@ -1294,16 +1308,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 UomDescription = string.Empty,
                 VariantDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.MobileTransactionLine MobileTransLine(string id, OneListPublishedOffer offer, int lineNumber, string storeId)
         {
-            LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+            return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(lineNumber),
@@ -1340,11 +1352,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 GenBusPostingGroup = string.Empty,
                 GenProdPostingGroup = string.Empty,
                 VatBusPostingGroup = string.Empty,
-                VatProdPostingGroup = string.Empty
+                VatProdPostingGroup = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.MobileTransactionSubLine CreateTransactionSubLine(string id, OneListItemSubLine rq, int parLineNo, string parentItemNo)
@@ -1364,13 +1374,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Description = XMLHelper.GetString(rq.Description),
                 VariantDescription = XMLHelper.GetString(rq.VariantDescription),
                 UomDescription = XMLHelper.GetString(rq.Uom),
-                StaffId = string.Empty,
                 ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
                 ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
                 DealLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealLineId),
                 DealModLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealModLineId),
                 DealId = string.IsNullOrEmpty(parentItemNo) ? "0" : parentItemNo,
 
+                StaffId = string.Empty,
                 Barcode = string.Empty,
                 TAXBusinessCode = string.Empty,
                 TAXProductCode = string.Empty,
@@ -1430,7 +1440,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Description = XMLHelper.GetString(rq.Description),
                 VariantDescription = XMLHelper.GetString(rq.VariantDescription),
                 UomDescription = XMLHelper.GetString(rq.Uom),
-                StaffId = string.Empty,
                 ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
                 ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
                 DealLine = rq.DealLineId,
@@ -1438,6 +1447,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 DealId = XMLHelper.GetString(rq.DealCode),
                 PriceReductionOnExclusion = (rq.PriceReductionOnExclusion ? 1 : 0),
 
+                StaffId = string.Empty,
                 Barcode = string.Empty,
                 TAXBusinessCode = string.Empty,
                 TAXProductCode = string.Empty,
@@ -1538,14 +1548,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 entryStatus = 1; //voided
             }
 
-            LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+            return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(lineNumber),
                 EntryStatus = entryStatus,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.Payment.TenderType.Id,
-                CurrencyCode = currencyCode,
+                CurrencyCode = XMLHelper.GetString(currencyCode),
                 CurrencyFactor = currencyFactor,
                 NetAmount = paymentLine.Payment.Amount.Value,
                 StoreId = paymentLine.Payment.StoreId,
@@ -1576,36 +1586,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 SalesType = string.Empty,
                 TenderDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private LSCentral.HospTransactionLine TransPaymentLine(string id, OrderPayment paymentLine, string storeId, int lineNumber)
         {
-            int entryStatus = paymentLine.PaymentType == PaymentType.Refund ? (int)EntryStatus.Voided : (int)EntryStatus.Normal; //0=normal, 1=voided
-
-            LSCentral.HospTransactionLine tline = new LSCentral.HospTransactionLine()
+            return new LSCentral.HospTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(lineNumber),
-                EntryStatus = entryStatus,
+                EntryStatus = (paymentLine.PaymentType == PaymentType.Refund) ? (int)EntryStatus.Voided : (int)EntryStatus.Normal, //0=normal, 1=voided,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.TenderType,
-                CurrencyCode = paymentLine.CurrencyCode,
+                CurrencyCode = XMLHelper.GetString(paymentLine.CurrencyCode),
                 CurrencyFactor = paymentLine.CurrencyFactor,
                 NetAmount = paymentLine.Amount,
                 StoreId = storeId,
-                TerminalId = string.Empty,
-                StaffId = string.Empty,
                 EFTCardNumber = XMLHelper.GetString(paymentLine.CardNumber),
                 EFTAuthCode = XMLHelper.GetString(paymentLine.AuthorizationCode),
                 EFTTransactionNo = XMLHelper.GetString(paymentLine.ExternalReference),
+
                 EFTMessage = string.Empty,
                 EFTCardName = string.Empty,
-
+                TerminalId = string.Empty,
+                StaffId = string.Empty,
                 VariantCode = string.Empty,
                 VariantDescription = string.Empty,
                 Barcode = string.Empty,
@@ -1622,11 +1628,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 SalesType = string.Empty,
                 TenderDescription = string.Empty,
                 OrigTransPos = string.Empty,
-                OrigTransStore = string.Empty
+                OrigTransStore = string.Empty,
+                RetailImageID = string.Empty
             };
-            if (NavVersion > new Version("14.2"))
-                tline.RetailImageID = string.Empty;
-            return tline;
         }
 
         private void MobileTransLine(LSCentral.MobileTransactionLine mobileTransLine, ref RetailTransaction transaction, List<DiscountLine> discounts, LSCentral.MobileReceiptInfo[] receiptInfos)
@@ -1674,8 +1678,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 UnknownRetailItem item = new UnknownRetailItem(mobileTransLine.Number);
                 item.SelectedVariant = new UnknownVariantRegistration(mobileTransLine.VariantCode);
                 item.UnitOfMeasure = new UnknownUnitOfMeasure(mobileTransLine.UomId, mobileTransLine.Number);
-                if (NavVersion > new Version("14.2"))
-                    item.Images.Add(new ItemImage(mobileTransLine.RetailImageID));
+                item.Images.Add(new ItemImage(mobileTransLine.RetailImageID));
 
                 saleLine.Item = item;
 
@@ -1762,17 +1765,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             if (receiptInfo.ValueAsText.Length > 100)
             {
-                if (NavVersion > new Version("14.2"))
-                {
-                    List<string> enc = new List<string>();
-                    enc.Add(ConvertTo.Base64Encode(receiptInfo.ValueAsText));
-                    info.LargeValue = enc.ToArray();
-                    info.Value = string.Empty;
-                }
-                else
-                {
-                    info.Value = receiptInfo.ValueAsText.Substring(0, 99);
-                }
+                List<string> enc = new List<string>();
+                enc.Add(ConvertTo.Base64Encode(receiptInfo.ValueAsText));
+                info.LargeValue = enc.ToArray();
+                info.Value = string.Empty;
             }
             else
             {

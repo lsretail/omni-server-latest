@@ -69,9 +69,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
-        public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
         {
-            return NavWSBase.ItemsInStockGet(items, storeId, locationId);
+            return NavWSBase.ItemsInStoreGet(items, storeId, locationId);
         }
 
         public virtual string ItemDetailsGetById(string itemId)
@@ -246,19 +246,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            HierarchyRepository rep = new HierarchyRepository(config, NAVVersion);
+            HierarchyRepository rep = new HierarchyRepository(config);
             return rep.ReplicateHierarchy(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NAVVersion);
+            HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
             return rep.ReplicateHierarchyNode(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplHierarchyLeaf> ReplicateHierarchyLeaf(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NAVVersion);
+            HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
             return rep.ReplicateHierarchyLeaf(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

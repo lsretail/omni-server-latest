@@ -22,7 +22,7 @@ namespace LSOmni.DataAccess.Dal
         public OneListRepository(BOConfiguration config)
             : base(config)
         {
-            sqlcol = "mt.[Id],mt.[ExternalType],mt.[Description],mt.[StoreId],mt.[ListType],mt.[HospitalityMode]," +
+            sqlcol = "mt.[Id],mt.[ExternalType],mt.[Description],mt.[StoreId],mt.[ListType],mt.[SalesType],mt.[IsHospitality]," +
                      "mt.[TotalAmount],mt.[TotalNetAmount],mt.[TotalTaxAmount],mt.[TotalDiscAmount]," +
                      "mt.[ShippingAmount],mt.[CreateDate] ";
 
@@ -149,20 +149,21 @@ namespace LSOmni.DataAccess.Dal
                                 // Create a new onelist and use as default
                                 command.CommandText = "IF EXISTS(SELECT * FROM [OneList] WHERE [Id]=@id) " +
                                                       "UPDATE [OneList] SET " +
-                                                      "[ExternalType]=@f1,[Description]=@f2,[HospitalityMode]=@f5,[TotalAmount]=@f6," +
+                                                      "[ExternalType]=@f1,[Description]=@f2,[SalesType]=@f3,[IsHospitality]=@f5,[TotalAmount]=@f6," +
                                                       "[TotalNetAmount]=@f7,[TotalTaxAmount]=@f8,[TotalDiscAmount]=@f9,[ShippingAmount]=@f10,[PointAmount]=@f11,[LastAccessed]=@f13,[StoreId]=@f14 " +
                                                       "WHERE [Id]=@id" +
                                                       " ELSE " +
                                                       "INSERT INTO [OneList] (" +
-                                                      "[Id],[ExternalType],[Description],[ListType],[HospitalityMode],[TotalAmount]," +
+                                                      "[Id],[ExternalType],[Description],[ListType],[SalesType],[IsHospitality],[TotalAmount]," +
                                                       "[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[PointAmount],[CreateDate],[LastAccessed],[StoreId]" +
-                                                      ") VALUES (@id,@f1,@f2,@type,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
+                                                      ") VALUES (@id,@f1,@f2,@type,@f3,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
 
                                 command.Parameters.AddWithValue("@id", list.Id);
                                 command.Parameters.AddWithValue("@f1", list.ExternalType);
                                 command.Parameters.AddWithValue("@f2", NullToString(description, 100));
                                 command.Parameters.AddWithValue("@type", (int)list.ListType);
-                                command.Parameters.AddWithValue("@f5", list.HospitalityMode);
+                                command.Parameters.AddWithValue("@f3", NullToString(list.SalesType, 20));
+                                command.Parameters.AddWithValue("@f5", list.IsHospitality);
                                 command.Parameters.AddWithValue("@f6", (calculate) ? list.TotalAmount : 0);
                                 command.Parameters.AddWithValue("@f7", (calculate) ? list.TotalNetAmount : 0);
                                 command.Parameters.AddWithValue("@f8", (calculate) ? list.TotalTaxAmount : 0);
@@ -836,7 +837,8 @@ namespace LSOmni.DataAccess.Dal
                 ExternalType = SQLHelper.GetInt32(reader["ExternalType"]),
                 StoreId = SQLHelper.GetString(reader["StoreId"]),
                 ListType = (ListType)SQLHelper.GetInt32(reader["ListType"]),
-                HospitalityMode = (HospMode)SQLHelper.GetInt32(reader["HospitalityMode"]),
+                SalesType = SQLHelper.GetString(reader["SalesType"]),
+                IsHospitality = SQLHelper.GetBool(reader["IsHospitality"]),
                 TotalAmount = SQLHelper.GetDecimal(reader, "TotalAmount"),
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "TotalNetAmount"),
                 TotalTaxAmount = SQLHelper.GetDecimal(reader, "TotalTaxAmount"),

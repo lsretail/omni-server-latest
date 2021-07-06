@@ -154,7 +154,7 @@ begin
   XMLDoc.Save(ConfigFilename); 
 end;
 
-function GetCommandlineParamString (inParam: String; inDefault : String): String;
+function GetCommandlineParamString(inParam: String; inDefault : String): String;
 var
   LoopVar : Integer;
   BreakLoop : Boolean;
@@ -185,16 +185,34 @@ begin
     Result := inDefault;
 end;
 
-function GetCommandlineParamBoolean (inParam: String; inDefault : Boolean): Boolean;
+function GetCommandlineParamBoolean(inParam: String; inDefault : Boolean): Boolean;
 var
   res : String;
 begin
   Result := false;
   res := GetCommandlineParamString(inParam, '');
+  
   if (res = '') then
-	Result := inDefault
+    Result := inDefault
   else if (res = 'true') then
-	Result := true;
+    Result := true;
+end;
+
+function GetCommandlineParamInteger(inParam: String; inDefault : Integer): Integer;
+var
+  res : String;
+begin
+  Result := 0;
+  res := GetCommandlineParamString(inParam, '');
+  
+  if (res = '') then
+  begin
+    Result := inDefault
+  end
+  else
+  begin
+    Result := StrToIntDef(res, inDefault);
+  end;
 end;
 
 // Indicates whether the specified version and service pack of the .NET Framework is installed.
@@ -219,68 +237,66 @@ end;
 //    1, 2, etc.      Service pack 1, 2, etc. required
 function IsDotNetDetected(version: string; service: cardinal): boolean;
 var
-    key, versionKey: string;
-    install, release, serviceCount, versionRelease: cardinal;
-    success: boolean;
+  key, versionKey: string;
+  install, release, serviceCount, versionRelease: cardinal;
+  success: boolean;
 begin
-    versionKey := version;
-    versionRelease := 0;
+  versionKey := version;
+  versionRelease := 0;
 
-    // .NET 1.1 and 2.0 embed release number in version key
-    if version = 'v1.1' then begin
-        versionKey := 'v1.1.4322';
-    end else if version = 'v2.0' then begin
-        versionKey := 'v2.0.50727';
-    end
-
-    // .NET 4.5 and newer install as update to .NET 4.0 Full
-    else if Pos('v4.', version) = 1 then begin
-        versionKey := 'v4\Full';
-        case version of
-          'v4.5':   versionRelease := 378389;
-          'v4.5.1': versionRelease := 378675; // 378758 on Windows 8 and older
-          'v4.5.2': versionRelease := 379893;
-          'v4.6':   versionRelease := 393295; // 393297 on Windows 8.1 and older
-          'v4.6.1': versionRelease := 394254; // 394271 on Windows 8.1 and older
-          'v4.6.2': versionRelease := 394802; // 394806 on Windows 8.1 and older
-          'v4.7':   versionRelease := 460798; // 460805 before Win10 Creators Update
-        end;
+  // .NET 1.1 and 2.0 embed release number in version key
+  if version = 'v1.1' then 
+  begin
+    versionKey := 'v1.1.4322';
+  end 
+  else if version = 'v2.0' then 
+  begin
+    versionKey := 'v2.0.50727';
+  end
+  else if Pos('v4.', version) = 1 then 
+  begin
+  // .NET 4.5 and newer install as update to .NET 4.0 Full
+    versionKey := 'v4\Full';
+    case version of
+      'v4.5':   versionRelease := 378389;
+      'v4.5.1': versionRelease := 378675; // 378758 on Windows 8 and older
+      'v4.5.2': versionRelease := 379893;
+      'v4.6':   versionRelease := 393295; // 393297 on Windows 8.1 and older
+      'v4.6.1': versionRelease := 394254; // 394271 on Windows 8.1 and older
+      'v4.6.2': versionRelease := 394802; // 394806 on Windows 8.1 and older
+      'v4.7':   versionRelease := 460798; // 460805 before Win10 Creators Update
     end;
+  end;
 
-    // installation key group for all .NET versions
-    key := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\' + versionKey;
+  // installation key group for all .NET versions
+  key := 'SOFTWARE\Microsoft\NET Framework Setup\NDP\' + versionKey;
 
-    // .NET 3.0 uses value InstallSuccess in subkey Setup
-    if Pos('v3.0', version) = 1 then begin
-        success := RegQueryDWordValue(HKLM, key + '\Setup', 'InstallSuccess', install);
-    end else begin
-        success := RegQueryDWordValue(HKLM, key, 'Install', install);
-    end;
+  // .NET 3.0 uses value InstallSuccess in subkey Setup
+  if Pos('v3.0', version) = 1 then 
+  begin
+    success := RegQueryDWordValue(HKLM, key + '\Setup', 'InstallSuccess', install);
+  end 
+  else 
+  begin
+    success := RegQueryDWordValue(HKLM, key, 'Install', install);
+  end;
 
-    // .NET 4.0 and newer use value Servicing instead of SP
-    if Pos('v4', version) = 1 then begin
-        success := success and RegQueryDWordValue(HKLM, key, 'Servicing', serviceCount);
-    end else begin
-        success := success and RegQueryDWordValue(HKLM, key, 'SP', serviceCount);
-    end;
+  // .NET 4.0 and newer use value Servicing instead of SP
+  if Pos('v4', version) = 1 then 
+  begin
+    success := success and RegQueryDWordValue(HKLM, key, 'Servicing', serviceCount);
+  end 
+  else 
+  begin
+    success := success and RegQueryDWordValue(HKLM, key, 'SP', serviceCount);
+  end;
 
-    // .NET 4.5 and newer use additional value Release
-    if versionRelease > 0 then begin
-        success := success and RegQueryDWordValue(HKLM, key, 'Release', release);
-        success := success and (release >= versionRelease);
-    end;
+  // .NET 4.5 and newer use additional value Release
+  if versionRelease > 0 then 
+  begin
+    success := success and RegQueryDWordValue(HKLM, key, 'Release', release);
+    success := success and (release >= versionRelease);
+  end;
 
-    result := success and (install = 1) and (serviceCount >= service);
+  result := success and (install = 1) and (serviceCount >= service);
 end; {procedure IsDotNetDetected }
- 
-//function InitializeSetup(): Boolean;
-//begin
-//    if not IsDotNetDetected('v4\Client', 0) then begin
-//        MsgBox('MyApp requires Microsoft .NET Framework 4.0 Client Profile.'#13#13
-//            'Please use Windows Update to install this version,'#13
-//            'and then re-run the MyApp setup program.', mbInformation, MB_OK);
-//        result := false;
-//    end else
-//        result := true;
-//end;
- 

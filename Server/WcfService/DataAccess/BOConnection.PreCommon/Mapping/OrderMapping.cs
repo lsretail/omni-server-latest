@@ -13,11 +13,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class OrderMapping : BaseMapping
     {
-        private Version NavVersion;
-
-        public OrderMapping(Version navVersion, bool json)
+        public OrderMapping(bool json)
         {
-            NavVersion = navVersion;
             IsJson = json;
         }
 
@@ -78,10 +75,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                             VariantId = mobileTransLine.VariantCode,
                             VariantDescription = mobileTransLine.VariantDescription,
                             UomId = mobileTransLine.UomId,
-                            LineType = lineType
+                            LineType = lineType,
+                            ItemImageId = mobileTransLine.RetailImageID
                         };
-                        if (NavVersion > new Version("14.2"))
-                            line.ItemImageId = mobileTransLine.RetailImageID;
 
                         line.LineNumbers.Add(line.LineNumber);
                         order.OrderLines.Add(line);
@@ -272,7 +268,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
                         continue;
 
-                    SalesEntryLine line = new SalesEntryLine()
+                    order.Lines.Add(new SalesEntryLine()
                     {
                         LineNumber = LineNumberFromNav(oline.LineNo),
                         ExternalId = oline.ExternalID,
@@ -291,12 +287,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         UomId = oline.UnitofMeasureCode,
                         LineType = lineType,
                         StoreId = oline.StoreNo,
-                        ClickAndCollectLine = oline.ClickAndCollectLine
-                    };
-                    if (NavVersion > new Version("14.2"))
-                        line.ItemImageId = oline.RetailImageID;
-
-                    order.Lines.Add(line);
+                        ClickAndCollectLine = oline.ClickAndCollectLine,
+                        ItemImageId = oline.RetailImageID
+                    });
                 }
             }
 
@@ -341,136 +334,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 }
             }
             return list;
-        }
-
-        public LSCentral.RootCustomerOrderCreateV2 MapFromOrderV2ToRoot(Order order)
-        {
-            LSCentral.RootCustomerOrderCreateV2 root = new LSCentral.RootCustomerOrderCreateV2();
-
-            List<LSCentral.CustomerOrderHeaderV21> header = new List<LSCentral.CustomerOrderHeaderV21>();
-            header.Add(new LSCentral.CustomerOrderHeaderV21()
-            {
-                DocumentID = string.Empty,
-                ExternalID = order.Id.ToUpper(),
-                StoreNo = (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
-                MemberCardNo = XMLHelper.GetString(order.CardId),
-                CustomerNo = XMLHelper.GetString(order.CustomerId),
-                FullName = XMLHelper.GetString(order.ContactName),
-                SourceType = 1, //NAV POS = 0, Omni = 1
-                Address = XMLHelper.GetString(order.ContactAddress.Address1),
-                Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
-                HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
-                City = XMLHelper.GetString(order.ContactAddress.City),
-                County = XMLHelper.GetString(order.ContactAddress.StateProvinceRegion),
-                PostCode = XMLHelper.GetString(order.ContactAddress.PostCode),
-                CountryRegionCode = XMLHelper.GetString(order.ContactAddress.Country),
-                PhoneNo = XMLHelper.GetString(order.ContactAddress.PhoneNumber),
-                MobilePhoneNo = XMLHelper.GetString(order.ContactAddress.CellPhoneNumber),
-                DaytimePhoneNo = XMLHelper.GetString(order.DayPhoneNumber),
-                Email = XMLHelper.GetString(order.Email),
-                ShipToFullName = XMLHelper.GetString(order.ShipToName),
-                ShipToAddress = XMLHelper.GetString(order.ShipToAddress.Address1),
-                ShipToAddress2 = XMLHelper.GetString(order.ShipToAddress.Address2),
-                ShipToHouseApartmentNo = XMLHelper.GetString(order.ShipToAddress.HouseNo),
-                ShipToCity = XMLHelper.GetString(order.ShipToAddress.City),
-                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.StateProvinceRegion),
-                ShipToPostCode = XMLHelper.GetString(order.ShipToAddress.PostCode),
-                ShipToCountryRegionCode = XMLHelper.GetString(order.ShipToAddress.Country),
-                ShipToPhoneNo = XMLHelper.GetString(order.ShipToAddress.PhoneNumber),
-                ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
-                ClickAndCollectOrder = (order.OrderType == OrderType.ClickAndCollect),
-                ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired),
-                ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode),
-                ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode),
-                CreatedAtStore = string.Empty,
-                TerritoryCode = string.Empty,
-                SourcingLocation = string.Empty,
-                ReceiptNo = string.Empty,
-                VendorSourcing = string.Empty,
-                InventoryTransfer = string.Empty,
-                TransactionNo = string.Empty
-            });
-
-            if (NavVersion > new Version("13.4"))
-                header[0].CustomerNo = string.Empty;
-
-            root.CustomerOrderHeaderV2 = header.ToArray();
-
-            List<LSCentral.CustomerOrderLineV2> orderLines = new List<LSCentral.CustomerOrderLineV2>();
-            foreach (OrderLine line in order.OrderLines)
-            {
-                orderLines.Add(new LSCentral.CustomerOrderLineV2()
-                {
-                    DocumentID = string.Empty,
-                    LineNo = LineNumberToNav(line.LineNumber),
-                    LineType = Convert.ToInt32(line.LineType).ToString(),
-                    Number = line.ItemId,
-                    VariantCode = XMLHelper.GetString(line.VariantId),
-                    UnitofMeasureCode = XMLHelper.GetString(line.UomId),
-                    OrderReference = XMLHelper.GetString(line.OrderId),
-                    Quantity = line.Quantity,
-                    DiscountAmount = line.DiscountAmount,
-                    DiscountPercent = line.DiscountPercent,
-                    Amount = line.Amount,
-                    NetAmount = line.NetAmount,
-                    VatAmount = line.TaxAmount,
-                    Price = line.Price,
-                    NetPrice = line.NetPrice,
-                    Status = string.Empty,
-                    LeadTimeCalculation = string.Empty,
-                    PurchaseOrderNo = string.Empty,
-                    SourcingLocation = string.Empty
-                });
-            }
-            root.CustomerOrderLineV2 = orderLines.ToArray();
-
-            List<LSCentral.CustomerOrderDiscountLineV2> discLines = new List<LSCentral.CustomerOrderDiscountLineV2>();
-            if (order.OrderDiscountLines != null)
-            {
-                foreach (OrderDiscountLine line in order.OrderDiscountLines)
-                {
-                    discLines.Add(new LSCentral.CustomerOrderDiscountLineV2()
-                    {
-                        DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
-                        EntryNo = Convert.ToInt32(line.No),
-                        DiscountType = (int)line.DiscountType,
-                        OfferNo = XMLHelper.GetString(line.OfferNumber),
-                        PeriodicDiscType = (int)line.PeriodicDiscType,
-                        PeriodicDiscGroup = XMLHelper.GetString(string.IsNullOrEmpty(line.PeriodicDiscGroup) ? line.OfferNumber : line.PeriodicDiscGroup),
-                        Description = XMLHelper.GetString(line.Description),
-                        DiscountPercent = line.DiscountPercent,
-                        DiscountAmount = line.DiscountAmount
-                    });
-                }
-            }
-            root.CustomerOrderDiscountLineV2 = discLines.ToArray();
-
-            List<LSCentral.CustomerOrderPaymentV2> payLines = new List<LSCentral.CustomerOrderPaymentV2>();
-            if (order.OrderPayments != null)
-            {
-                foreach (OrderPayment line in order.OrderPayments)
-                {
-                    payLines.Add(new LSCentral.CustomerOrderPaymentV2()
-                    {
-                        DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
-                        PreApprovedAmount = line.Amount,
-                        FinalisedAmount = 0,
-                        TenderType = line.TenderType,
-                        CardType = XMLHelper.GetString(line.CardType),
-                        CurrencyCode = XMLHelper.GetString(line.CurrencyCode),
-                        CurrencyFactor = line.CurrencyFactor,
-                        AuthorisationCode = XMLHelper.GetString(line.AuthorizationCode),
-                        PreApprovedValidDate = line.PreApprovedValidDate,
-                        CardorCustomernumber = XMLHelper.GetString(line.CardNumber),
-                        IncomeExpenseAccountNo = string.Empty,
-                        StoreNo = string.Empty
-                    });
-                }
-            }
-            root.CustomerOrderPaymentV2 = payLines.ToArray();
-            return root;
         }
 
         public LSCentral.RootCustomerOrderCreateV5 MapFromOrderV5ToRoot(Order order)
@@ -658,7 +521,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             foreach (OneListItem line in list.Items)
             {
                 line.LineNumber = lineno++;
-                LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+                transLines.Add(new LSCentral.MobileTransactionLine()
                 {
                     Id = root.MobileTransaction[0].Id,
                     LineNo = LineNumberToNav(line.LineNumber),
@@ -700,11 +563,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     TerminalId = string.Empty,
                     UomDescription = string.Empty,
                     VariantDescription = string.Empty,
+                    RetailImageID = string.Empty,
                     TransDate = DateTime.Now
-                };
-                if (NavVersion > new Version("14.2"))
-                    tline.RetailImageID = string.Empty;
-                transLines.Add(tline);
+                });
             }
 
             //Coupons
@@ -712,7 +573,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 foreach (OneListPublishedOffer line in list.PublishedOffers?.Where(x => x.Type == OfferDiscountType.Coupon))
                 {
-                    LSCentral.MobileTransactionLine tline = new LSCentral.MobileTransactionLine()
+                    transLines.Add(new LSCentral.MobileTransactionLine()
                     {
                         Id = root.MobileTransaction[0].Id,
                         LineNo = LineNumberToNav(lineno++),
@@ -754,11 +615,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         TerminalId = string.Empty,
                         UomDescription = string.Empty,
                         VariantDescription = string.Empty,
+                        RetailImageID = string.Empty,
                         TransDate = DateTime.Now
-                    };
-                    if (NavVersion > new Version("14.2"))
-                        tline.RetailImageID = string.Empty;
-                    transLines.Add(tline);
+                    });
                 }
             }
 

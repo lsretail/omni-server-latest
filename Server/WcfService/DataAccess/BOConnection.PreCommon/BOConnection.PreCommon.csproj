@@ -321,10 +321,6 @@
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\Core\Inventory\Domain.DataModel.Inventory\Domain.DataModel.Inventory.csproj">
-      <Project>{4f47a1e3-4edd-4a96-8e30-af6797217591}</Project>
-      <Name>Domain.DataModel.Inventory</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>
       <Name>Domain.DataModel.Loyalty</Name>

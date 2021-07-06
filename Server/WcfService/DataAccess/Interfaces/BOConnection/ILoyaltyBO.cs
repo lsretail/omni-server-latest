@@ -81,7 +81,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Transaction
 
         List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries);
-        SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping);
+        SalesEntry SalesEntryGet(string entryId, DocumentIdType type);
         string FormatAmount(decimal amount, string culture);
         List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions);
 
@@ -106,7 +106,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<StoreServices> StoreServicesGetByStoreId(string storeId);
         Store StoreGetById(string id, bool details);
         List<Store> StoresGetAll(bool clickAndCollectOnly);
-        List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units);
+        List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units);
         List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1);
 
         #endregion
@@ -114,10 +114,10 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Hospitality Order
 
         OrderHosp HospOrderCalculate(OneList list);
-        string HospOrderCreate(OrderHosp request, string tenderMapping);
-        int HospOrderEstimatedTime(string storeId, string orderId);
+        string HospOrderCreate(OrderHosp request);
         void HospOrderCancel(string storeId, string orderId);
-        OrderHospStatus HospOrderKotStatus(string storeId, string orderId);
+        OrderHospStatus HospOrderStatus(string storeId, string orderId);
+        List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId);
 
         #endregion
 
@@ -126,7 +126,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         OrderStatusResponse OrderStatusCheck(string orderId);
         OrderAvailabilityResponse OrderAvailabilityCheck(OneList request);
         void OrderCancel(string orderId, string storeId, string userId);
-        string OrderCreate(Order request, string tenderMapping, out string orderId);
+        string OrderCreate(Order request, out string orderId);
         Order BasketCalcToOrder(OneList list);
 
         #endregion

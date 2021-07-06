@@ -67,7 +67,6 @@ Name: "{group}\{cm:ProgramOnTheWeb,LSCommerceService}"; Filename: "http://www.ls
 //tried to have code in other files
 #include "Library.iss"
 #include "ado.iss"
-#include "adonav.iss"
 #include "IISFunctions.iss"
 #include "SqlPage.iss"
 #include "NavSqlPage.iss"
@@ -81,16 +80,12 @@ var
   IISCustomPage : TWizardPage;
   CheckCustomPage : TWizardPage;
 
-  SQLFileList: TStringList;
-  
   UpdateAppSettings : Boolean;
   CopyAppSettingsFile : Boolean;
   CmdMode : Boolean;
 
 procedure InitializeWizard;
 begin
-  SQLFileList := TStringList.Create;
-
   { Create the pages }
   //from CheckPage.iss
   CheckCustomPage := CheckCustomForm_CreatePage(wpWelcome);  
@@ -106,12 +101,12 @@ begin
 
   CheckPage_NavSQLCheckBox.Checked := GetCommandLineParamBoolean('-NavX', true);
   NavSQLPage_txtServer.Text := GetCommandLineParamString('-NavSrv', 'localhost');
-  NavSQLPage_txtDBname.Text := GetCommandLineParamString('-NavDb', '');
+  NavSQLPage_txtDBname.Text := GetCommandLineParamString('-NavDb', 'LSCentral');
   NavSQLPage_txtNavCompany.Text := GetCommandLineParamString('-NavComp', 'CRONUS - LS Central');
   NavSQLPage_txtUsername.Text := GetCommandLineParamString('-NavUsr', 'LSCommerceUser');
   NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', 'LSCommerceUser');
   NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', false);
-  NavSQLPage_V15CheckBox.Checked := GetCommandLineParamBoolean('-Nav15', true);
+  NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 2);
 
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
   CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', false);
@@ -120,20 +115,15 @@ begin
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
   SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', 'LSCommerceUser');
   SQLPage_txtPassword.Text := GetCommandLineParamString('-SqlPwd', 'LSCommerceUser');
-  SQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-SqlWau', false);
+  SQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-SqlWau', true);
+  SQLPage_xCreateUser.Checked := GetCommandLineParamBoolean('-SqlCrUsr', true);
 
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSCommerceService');
-  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC170/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
+  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC180/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
-
-  //should only set the file here..
-  //will be executed in this order
-  SQLFileList.Add('LSCommerceServiceDbObjects.sql');
-  SQLFileList.Add('LSCommerceServiceDbPermissions.sql');
-  SQLFileList.Add('LSCommerceServiceDbInitData.sql');
 end;
 
 function WcfDir(Param: String): String;
@@ -144,7 +134,7 @@ end;
 function UpdAppSettings: Boolean;
 begin
   if not CheckPage_MultiCheckBox.Checked then
-	Result := CopyAppSettingsFile
+    Result := CopyAppSettingsFile
   else
     Result := False;
 end;
@@ -152,7 +142,7 @@ end;
 function UpdAppMultiSettings: Boolean;
 begin
   if CopyAppSettingsFile then
-	Result := CheckPage_MultiCheckBox.Checked
+    Result := CheckPage_MultiCheckBox.Checked
   else
     Result := False;
 end;
@@ -174,10 +164,10 @@ begin
   Log('SqlCreateDb called');
   Result := True;
   try
-    ADOCreateDb(SQLPage_txtServer.Text, SQLPage_txtDBname.Text, '', '', true);
+    ADOCreateDb(SQLPage_txtServer.Text, SQLPage_txtDBname.Text, SQLPage_txtUsername.Text, SQLPage_txtPassword.Text, SQLPage_chkWindowsAuth.Checked);
 
     //check full text search after db and connection has been checked
-    ADOInit(SQLPage_txtServer.Text, SQLPage_txtDBname.Text, '', '', true);
+    ADOInit(SQLPage_txtServer.Text, SQLPage_txtDBname.Text, SQLPage_txtUsername.Text, SQLPage_txtPassword.Text, SQLPage_chkWindowsAuth.Checked);
 
     // Check if sql server mixed authentication is enabled
     if (not ADOCheckIsMixedAuthentication()) then
@@ -202,37 +192,26 @@ begin
       msg := msg + 'See LS Commerce Service Installation doc'#13
       if (not CmdMode) then
         MsgBox(msg, mbConfirmation, MB_OK);
+      
       Result := False;
-    end;                                              
- 
+    end;
+
+    Log('SqlCreateDb - Create Tables');
+    ADORunScript('LSCommerceServiceDbObjects.sql');
+    Log('SqlCreateDb - Default Data');
+    ADORunScript('LSCommerceServiceDbInitData.sql');
+
+    if SQLPage_xCreateUser.Checked then
+    begin
+      Log('SqlCreateDb - Create User');
+      ADORunScript('LSCommerceServiceDbPermissions.sql');
+    end;
   except
     ErrorMsg('SqlCreateDb', CmdMode);
     Result := False;
   end;      
 end; { SqlCreateDb }
 
-function SqlRunScripts(): Boolean;
-var  
-  I : Integer;
-begin
-  Log('SqlRunScripts called');
-  Result := True;
-  try
-    ADOInit(SQLPage_txtServer.Text, SQLPage_txtDBname.Text, '', '', true);
-
-    for I := 0 to SQLFileList.Count - 1 do
-    begin
-      // execute each command
-      Log('SQLFileList: I= ' + IntToStr(I) + ' - '+ SQLFileList[I] );
-      //ADORunScript('HospLoyObjects2.sql');   
-      ADORunScript(SQLFileList[I]);
-    end;     
-  except
-    ErrorMsg('SqlRunScripts', CmdMode);
-    Result := False;
-  end;   
-end; { SqlRunScripts }
-                             
 function AppSettingsChangeScript(): Boolean;     
 var  
   omniStr: string; 
@@ -247,7 +226,7 @@ begin
   if not ValidationXMLDomExists then
   begin
     ErrorWarningMsg('Failed to update AppSettings.config file'#13'AppSettings.Config file will not get updated'#13'with values entered', CmdMode);
-  end;                   
+  end;
 
   //standardize on the LSCommerceUser
   navCompany := Trim(NavSQLPage_txtNavCompany.Text); //no dont add + '$'; 
@@ -258,19 +237,19 @@ begin
     if CheckPage_IISCheckBox.Checked then
     begin
       if CheckPage_MultiCheckBox.Checked then
-	  begin
+      begin
         Log('Update DB IIS Settings');
-	    ADOUpdateAppSettings('BOUrl', Trim(IISPage_txtNavUrl.Text));
+        ADOUpdateAppSettings('BOUrl', Trim(IISPage_txtNavUrl.Text));
         ADOUpdateAppSettings('BOUser', Trim(IISPage_txtNavUser.Text));
         ADOUpdateAppSettings('BOPassword', Trim(IISPage_txtNavPwd.Text));
-	  end
-	  else
-	  begin
+      end
+      else
+      begin
         Log('Update File IIS Settings');
         UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
         UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
         UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
-	  end;
+      end;
     end;
 
     // NAV connection string
@@ -288,59 +267,73 @@ begin
       else
       begin
         if (Length(NavSQLPage_txtUsername.Text) > 0) then
-  	    user := NavSQLPage_txtUsername.Text
-  	  else
+          user := NavSQLPage_txtUsername.Text
+        else
           user := 'LSCommerceUser';
   
         if (Length(NavSQLPage_txtPassword.Text) > 0) then
-  	    pwd := NavSQLPage_txtPassword.Text
-  	  else
-  	    pwd := 'LSCommerceUser';
+          pwd := NavSQLPage_txtPassword.Text
+        else
+          pwd := 'LSCommerceUser';
+
+        navStr := navStr + ';User ID=' + Trim(user);
+        navStr := navStr + ';Password=' + Trim(pwd);
       end;
 
       navStr := navStr + ';NAVCompanyName=' + navCompany;
       navStr := navStr + ';Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
 
       if CheckPage_MultiCheckBox.Checked then
-	    ADOUpdateAppSettings('BOSql', navStr)
+        ADOUpdateAppSettings('BOSql', navStr)
       else
         UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
     end;
 
-	if CheckPage_WSCheckBox.Checked then
-	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavWS.dll', ExpandConstant('{app}\{code:WcfDir}'))
-	else if NavSQLPage_V15CheckBox.Checked then
-	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentrAL.dll', ExpandConstant('{app}\{code:WcfDir}'))
-	else
-	  UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavSQL.dll', ExpandConstant('{app}\{code:WcfDir}'));
+    if CheckPage_WSCheckBox.Checked then
+    begin
+      UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavWS.dll', ExpandConstant('{app}\{code:WcfDir}'));
+    end
+    else
+    begin
+      case NavSQLPage_VerCombBox.ItemIndex of
+        0: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavSQL.dll', ExpandConstant('{app}\{code:WcfDir}'));
+        1: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentrAL.dll', ExpandConstant('{app}\{code:WcfDir}'));
+        2: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentralPre.dll', ExpandConstant('{app}\{code:WcfDir}'));
+      end;
+    end;
 
     Log('Update LS Commerce Service SQL Settings');
     omniStr := 'Data Source=' + Trim(SQLPage_txtServer.Text);
     omniStr := omniStr + ';Initial Catalog=' + Trim(SQLPage_txtDBname.Text);
 
-    if SQLPage_chkWindowsAuth.Checked then
+    if SQLPage_xCreateUser.Checked then
     begin
-      omniStr := omniStr + ';Integrated Security=true';
+      omniStr := omniStr + ';User ID=LSCommerceUser';
+      omniStr := omniStr + ';Password=LSCommerceUser';
     end
     else
     begin
-	  if (Length(SQLPage_txtUsername.Text) > 0) then
-	    user := SQLPage_txtUsername.Text
-	  else
-	    user := 'LSCommerceUser';
-
-	  if (Length(SQLPage_txtPassword.Text) > 0) then
-	    pwd := SQLPage_txtPassword.Text
-	  else
-	    pwd := 'LSCommerceUser';
-
-      // LS Commerce Service Database string
-      if CheckPage_SQLCheckBox.Checked then
+      if SQLPage_chkWindowsAuth.Checked then
       begin
+        omniStr := omniStr + ';Integrated Security=true';
+      end
+      else
+      begin
+        if (Length(SQLPage_txtUsername.Text) > 0) then
+          user := SQLPage_txtUsername.Text
+        else
+          user := 'LSCommerceUser';
+
+        if (Length(SQLPage_txtPassword.Text) > 0) then
+          pwd := SQLPage_txtPassword.Text
+        else
+          pwd := 'LSCommerceUser';
+
         omniStr := omniStr + ';User ID=' + Trim(user);
         omniStr := omniStr + ';Password=' + Trim(pwd);
       end;
     end;
+    
     omniStr := omniStr + ';Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
     UpdateAppSettingsConfig('SQLConnectionString.LSOmni', omniStr, ExpandConstant('{app}\{code:WcfDir}'));
   except
@@ -362,7 +355,7 @@ begin
     WizardForm.PreparingLabel.Visible := True;
     WizardForm.PreparingLabel.Show();
     WizardForm.PreparingLabel.Caption := 'Please wait while running SQL scripts...';
-    if (SqlCreateDb() and SqlRunScripts()) then
+    if (SqlCreateDb()) then
     begin
       doContinue := True;
       Result := '';
@@ -392,9 +385,10 @@ begin
       Result := '';
     end;
   end;
+
   if (Length(Result) > 0) then
   begin
-      Result := Result + ''#13  + 'Logfile: ' + expandconstant('{log}')
+    Result := Result + ''#13  + 'Logfile: ' + expandconstant('{log}')
   end;
 end; { PrepareToInstall }
  
@@ -468,14 +462,14 @@ begin
     begin
       with IISPage do
       begin
-	    IISPage_lblComment1.Visible := SingleMode;
-		IISPage_lblNavUrl.Visible := SingleMode;
-		IISPage_txtNavUrl.Visible := SingleMode;
-	    IISPage_lblNavAuthentication.Visible := SingleMode;
-		IISPage_lblNavUser.Visible := SingleMode;
-		IISPage_txtNavUser.Visible := SingleMode;
-		IISPage_lblNavPwd.Visible := SingleMode;
-		IISPage_txtNavPwd.Visible := SingleMode;
+        IISPage_lblComment1.Visible := SingleMode;
+        IISPage_lblNavUrl.Visible := SingleMode;
+        IISPage_txtNavUrl.Visible := SingleMode;
+        IISPage_lblNavAuthentication.Visible := SingleMode;
+        IISPage_lblNavUser.Visible := SingleMode;
+        IISPage_txtNavUser.Visible := SingleMode;
+        IISPage_lblNavPwd.Visible := SingleMode;
+        IISPage_txtNavPwd.Visible := SingleMode;
         OnActivate := @IISCustomForm_Activate;
       end;
     end;
@@ -536,8 +530,6 @@ begin
     Result := True
   else if not CheckPage_IISCheckBox.Checked and not CheckPage_NavSQLCheckBox.Checked and not CheckPage_SQLCheckBox.Checked  then
     Result := False
-//  else if not CheckPage_IISCheckBox.Checked and (PageID = wpSelectDir)  then
-//    Result := True
   else
     Result := False;
 end;
@@ -546,13 +538,10 @@ function InitializeUninstall(): Boolean;
 begin
   Result := True;
   if (not CmdMode) then
-	MsgBox('Only files will be removed.' #13#13 'No SQL object or data removed' #13#13 'IIS Web application must be removed with the IIS Manager', mbInformation, MB_OK) 
+    MsgBox('Only files will be removed.' #13#13 'No SQL object or data removed' #13#13 'IIS Web application must be removed with the IIS Manager', mbInformation, MB_OK) 
 end;
 
 // CurPageID values for predefined wizard pages
 //----------------------------------------------
 // wpWelcome, wpLicense, wpPassword, wpInfoBefore, wpUserInfo, wpSelectDir, wpSelectComponents,
 // wpSelectProgramGroup, wpSelectTasks, wpReady, wpPreparing, wpInstalling, wpInfoAfter, wpFinished
- 
-
- 

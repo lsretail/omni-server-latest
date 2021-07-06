@@ -23,12 +23,12 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.StoreGetById(id, details);
         }
 
-        public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores)
+        public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance)
         {
-            return BOLoyConnection.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores, Store.DistanceType.Kilometers);
+            return BOLoyConnection.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, Store.DistanceType.Kilometers);
         }
 
-        public virtual List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores)
+        public virtual List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance)
         {
             List<Store> storeListOut = new List<Store>();
             //CALL NAV web service 
@@ -37,7 +37,7 @@ namespace LSOmni.BLL.Loyalty
             if (latitude == 0 || longitude == 0)
                 maxDistance = 9000000000000.0; //so all stores are returned
 
-            List<Store> storeListByCoords = BOLoyConnection.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores, Store.DistanceType.Kilometers);
+            List<Store> storeListByCoords = BOLoyConnection.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, Store.DistanceType.Kilometers);
             foreach (Store store in storeListByCoords)
             {
                 locationIds.Add(store.Id);

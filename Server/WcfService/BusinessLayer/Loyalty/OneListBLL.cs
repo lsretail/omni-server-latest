@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -50,13 +51,13 @@ namespace LSOmni.BLL.Loyalty
 
             if (calculate)
             {
-                if (list.HospitalityMode == HospMode.None)
+                if (list.IsHospitality)
                 {
-                    list = CalcuateList(list);
+                    list = CalcuateHospList(list);
                 }
                 else
                 {
-                    list = CalcuateHospList(list);
+                    list = CalcuateList(list);
                 }
             }
 

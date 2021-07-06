@@ -164,7 +164,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return list;
         }
 
-        public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
         {
             List<InventoryResponse> list = new List<InventoryResponse>();
 
@@ -238,6 +238,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     StoreId = buffer.Store
                 });
             }
+            return list;
+        }
+
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            // filter
+            List<XMLFieldData> filter = new List<XMLFieldData>();
+            if (string.IsNullOrEmpty(storeId) == false)
+            {
+                filter.Add(new XMLFieldData()
+                {
+                    FieldName = "Store No.",
+                    Values = new List<string>() { storeId }
+                });
+            }
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetBatchWebRequestXML("Current Availability", null, filter, string.Empty, 0);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ItemRepository rep = new ItemRepository();
+            List<HospAvailabilityResponse> list = rep.CurrentAvail(table);
             return list;
         }
 
@@ -1036,23 +1060,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
-            string[] salesTypes = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(',');
-            if (salesTypes.Length == 0)
-                throw new LSOmniServiceException(StatusCode.GetSalesTypeError, "Hosp_SalesType data missing in TenderConfig table");
-
-            string salesType = salesTypes[0];
-            if (list.HospitalityMode == HospMode.Takeaway && salesTypes.Length == 3)
-                salesType = salesTypes[1];
-            if (list.HospitalityMode == HospMode.Delivery && salesTypes.Length == 3)
-                salesType = salesTypes[2];
-
             if (navWS == null)
             {
                 HospitalityXml xml = new HospitalityXml();
                 string xmlRequest = xml.OrderToPOSRequestXML(list, "CALCULATE",
                     config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
-                    config.SettingsGetByKey(ConfigKey.Hosp_Staff),
-                    salesType);
+                    config.SettingsGetByKey(ConfigKey.Hosp_Staff));
                 string xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 return xml.TransactionResponseXML(xmlResponse);
@@ -1061,16 +1074,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
             TransactionMapping map = new TransactionMapping(NAVVersion, config.IsJson);
-            NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(list, salesType);
+            NavWS.RootMobileTransaction root = map.MapFromOrderToRoot(list);
 
             logger.Debug(config.LSKey.Key, "MobilePosPost Request - " + Serialization.ToXml(root, true));
             navQryWS.MobilePosCalculate(ref respCode, ref errorText, string.Empty, ref root);
             HandleWS2ResponseCode("MobilePosPost", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MobilePosPost Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToOrderHosp(root, salesTypes);
+            return map.MapFromRootToOrderHosp(root);
         }
 
-        public string HospOrderCreate(OrderHosp request, string tenderMapping)
+        public string HospOrderCreate(OrderHosp request)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
@@ -1085,29 +1098,16 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             int lineno = 1;
             foreach (OrderPayment line in request.OrderPayments)
             {
-                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tender type between LSOmni and Nav
-                if (line.TenderType == null)
-                    throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
                 line.LineNumber = lineno++;
             }
-
-            string[] salesTypes = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(',');
-            if (salesTypes.Length == 0)
-                throw new LSOmniServiceException(StatusCode.GetSalesTypeError, "Hosp_SalesType data missing in TenderConfig table");
-
-            string salesType = salesTypes[0];
-            if (request.DeliveryType == HospDeliveryType.Takeout && salesTypes.Length == 3)
-                salesType = salesTypes[1];
-            if ((request.DeliveryType == HospDeliveryType.Home || request.DeliveryType == HospDeliveryType.Work) && salesTypes.Length == 3)
-                salesType = salesTypes[2];
 
             if (navWS == null)
             {
                 HospitalityXml xml = new HospitalityXml();
                 string xmlRequest = xml.OrderToPOSRequestXML(request, "POST",
                     config.SettingsGetByKey(ConfigKey.Hosp_Terminal),
-                    config.SettingsGetByKey(ConfigKey.Hosp_Staff),
-                    salesType);
+                    config.SettingsGetByKey(ConfigKey.Hosp_Staff));
                 string xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 return xml.TransactionReceiptNoResponseXML(xmlResponse);
@@ -1117,7 +1117,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
             TransactionMapping map = new TransactionMapping(NAVVersion, config.IsJson);
-            NavWS.RootHospTransaction root = map.MapFromOrderToRoot(request, salesType);
+            NavWS.RootHospTransaction root = map.MapFromOrderToRoot(request);
 
             logger.Debug(config.LSKey.Key, "CreateHospOrder Request - " + Serialization.ToXml(root, true));
 
@@ -1125,17 +1125,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("CreateHospOrder", respCode, errorText);
             logger.Debug(config.LSKey.Key, "CreateHospOrder Response - " + Serialization.ToXml(root, true));
             return receiptNo;
-        }
-
-        public int HospOrderEstimatedTime(string storeId, string orderId)
-        {
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            int estTime = 0;
-
-            navQryWS.GetHospOrderEstimatedTime(ref respCode, ref errorText, storeId, orderId, ref estTime);
-            HandleWS2ResponseCode("GetHospOrderEstimatedTime", respCode, errorText);
-            return estTime;
         }
 
         public void HospOrderCancel(string storeId, string orderId)
@@ -1147,15 +1136,17 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("CancelHospOrder", respCode, errorText);
         }
 
-        public OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        public OrderHospStatus HospOrderStatus(string storeId, string orderId)
         {
             string respCode = string.Empty;
             string errorText = string.Empty;
+            int estTime = 0;
+            navQryWS.GetHospOrderEstimatedTime(ref respCode, ref errorText, storeId, orderId, ref estTime);
+            HandleWS2ResponseCode("GetHospOrderEstimatedTime", respCode, errorText);
 
             NavWS.RootKotStatus root = new NavWS.RootKotStatus();
             navQryWS.GetKotStatus(ref respCode, ref errorText, storeId, orderId, ref root);
             HandleWS2ResponseCode("GetKotStatus", respCode, errorText);
-
             if (root.KotStatus == null || root.KotStatus.Length == 0)
                 return new OrderHospStatus();
 
@@ -1163,9 +1154,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             {
                 ReceiptNo = root.KotStatus[0].ReceiptNo,
                 KotNo = root.KotStatus[0].KotNo,
-                Status = root.KotStatus[0].Status,
+                Status = (KOTStatus)Convert.ToInt32(root.KotStatus[0].Status),
                 Confirmed = root.KotStatus[0].ConfirmedbyExp,
-                ProductionTime = root.KotStatus[0].KotProdTime
+                ProductionTime = root.KotStatus[0].KotProdTime,
+                EstimatedTime = estTime
             };
         }
 
@@ -1218,10 +1210,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return new OrderStatusResponse()
             {
                 DocumentNo = root.CustomerOrderStatus[0].DocumentID,
-                DocumentType = root.CustomerOrderStatus[0].DocumentType,
-                CustomerOrderPaymentStatus = root.CustomerOrderStatus[0].PaymentStatus,
-                CustomerOrderShippingStatus = root.CustomerOrderStatus[0].ShippingStatus,
-                CustomerOrderStatus = root.CustomerOrderStatus[0].OrderStatus
+                PaymentStatus = root.CustomerOrderStatus[0].PaymentStatus,
+                ShippingStatus = root.CustomerOrderStatus[0].ShippingStatus,
+                OrderStatus = root.CustomerOrderStatus[0].OrderStatus.ToString()
             };
         }
 
@@ -1405,7 +1396,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return data;
         }
 
-        public string OrderCreate(Order request, string tenderMapping, out string orderId)
+        public string OrderCreate(Order request, out string orderId)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
@@ -1429,9 +1420,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             int lineno = 1;
             foreach (OrderPayment line in request.OrderPayments)
             {
-                line.TenderType = TenderTypeMapping(tenderMapping, line.TenderType, false); //map tender type between LSOmni and Nav
-                if (line.TenderType == null)
-                    throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
                 line.LineNumber = lineno++;
             }
 

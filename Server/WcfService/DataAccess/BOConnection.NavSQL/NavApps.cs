@@ -69,9 +69,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
-        public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
         {
-            return NavWSBase.ItemsInStockGet(items, storeId, locationId);
+            return NavWSBase.ItemsInStoreGet(items, storeId, locationId);
         }
 
         public virtual string ItemDetailsGetById(string itemId)

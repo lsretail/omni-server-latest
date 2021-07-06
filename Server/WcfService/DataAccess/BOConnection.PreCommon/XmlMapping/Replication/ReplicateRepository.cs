@@ -806,7 +806,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
-        public List<ReplStoreTenderType> ReplicateStoreTenderType(XMLTableData table)
+        public List<ReplStoreTenderType> ReplicateStoreTenderType(XMLTableData table, string tenderMap)
         {
             List<ReplStoreTenderType> list = new List<ReplStoreTenderType>();
             if (table == null)
@@ -838,6 +838,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Foreign Currency": rec.ForeignCurrency = GetWebBoolInt(field.Values[i]); break;
                     }
                 }
+                rec.OmniTenderTypeId = ConfigSetting.TenderTypeMapping(tenderMap, rec.TenderTypeId, true);
                 list.Add(rec);
             }
             return list;
@@ -913,29 +914,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Tender Type Code": rec.TenderTypeId = field.Values[i]; break;
                         case "Currency Code": rec.CurrencyCode = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                    }
-                }
-                list.Add(rec);
-            }
-            return list;
-        }
-
-        public List<ReplTenderType> ReplicateTenderTypes(XMLTableData table)
-        {
-            List<ReplTenderType> list = new List<ReplTenderType>();
-            if (table == null)
-                return list;
-
-            for (int i = 0; i < table.NumberOfValues; i++)
-            {
-                ReplTenderType rec = new ReplTenderType();
-                foreach (XMLFieldData field in table.FieldList)
-                {
-                    switch (field.FieldName)
-                    {
-                        case "Code": rec.Id = field.Values[i]; break;
-                        case "Description": rec.Nam = field.Values[i]; break;
-                        case "Default Function": rec.DefaultFunction = Convert.ToInt32(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

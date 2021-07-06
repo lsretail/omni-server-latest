@@ -39,6 +39,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback ConfirmActivityV3OperationCompleted;
         
+        private System.Threading.SendOrPostCallback ConfirmActivityV4OperationCompleted;
+        
         private System.Threading.SendOrPostCallback ConfirmActivityOperationCompleted;
         
         private System.Threading.SendOrPostCallback ConfirmReservationOperationCompleted;
@@ -52,6 +54,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback GetAvailabilityV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetAvailabilityV3OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetAvailabilityV4OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetAvailabilityOperationCompleted;
         
@@ -157,6 +161,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event ConfirmActivityV3CompletedEventHandler ConfirmActivityV3Completed;
         
         /// <remarks/>
+        public event ConfirmActivityV4CompletedEventHandler ConfirmActivityV4Completed;
+        
+        /// <remarks/>
         public event ConfirmActivityCompletedEventHandler ConfirmActivityCompleted;
         
         /// <remarks/>
@@ -176,6 +183,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event GetAvailabilityV3CompletedEventHandler GetAvailabilityV3Completed;
+        
+        /// <remarks/>
+        public event GetAvailabilityV4CompletedEventHandler GetAvailabilityV4Completed;
         
         /// <remarks/>
         public event GetAvailabilityCompletedEventHandler GetAvailabilityCompleted;
@@ -667,6 +677,159 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivityV4", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ConfirmActivityV4_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool ConfirmActivityV4(
+                    string locationNo, 
+                    string productNo, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="time")] System.DateTime activityTime, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    ref string returnActivityNo, 
+                    ref string errorString, 
+                    ref decimal returnUnitPrice, 
+                    ref decimal returnLineDiscount, 
+                    ref decimal returnTotalAmount, 
+                    ref string returnCurrency, 
+                    ref string returnBookingRef, 
+                    ref string reservationNo, 
+                    ref string returnRetailItem, 
+                    string customerAccountNo) {
+            object[] results = this.Invoke("ConfirmActivityV4", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTime,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        promoCode,
+                        clientName,
+                        email,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo});
+            returnActivityNo = ((string)(results[1]));
+            errorString = ((string)(results[2]));
+            returnUnitPrice = ((decimal)(results[3]));
+            returnLineDiscount = ((decimal)(results[4]));
+            returnTotalAmount = ((decimal)(results[5]));
+            returnCurrency = ((string)(results[6]));
+            returnBookingRef = ((string)(results[7]));
+            reservationNo = ((string)(results[8]));
+            returnRetailItem = ((string)(results[9]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void ConfirmActivityV4Async(
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    System.DateTime activityTime, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo) {
+            this.ConfirmActivityV4Async(locationNo, productNo, activityDate, activityTime, clientNo, optionalResource, optionalComment, setQuantity, setNoOfPeople, paid, promoCode, clientName, email, returnActivityNo, errorString, returnUnitPrice, returnLineDiscount, returnTotalAmount, returnCurrency, returnBookingRef, reservationNo, returnRetailItem, customerAccountNo, null);
+        }
+        
+        /// <remarks/>
+        public void ConfirmActivityV4Async(
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    System.DateTime activityTime, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    object userState) {
+            if ((this.ConfirmActivityV4OperationCompleted == null)) {
+                this.ConfirmActivityV4OperationCompleted = new System.Threading.SendOrPostCallback(this.OnConfirmActivityV4OperationCompleted);
+            }
+            this.InvokeAsync("ConfirmActivityV4", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTime,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        promoCode,
+                        clientName,
+                        email,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo}, this.ConfirmActivityV4OperationCompleted, userState);
+        }
+        
+        private void OnConfirmActivityV4OperationCompleted(object arg) {
+            if ((this.ConfirmActivityV4Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ConfirmActivityV4Completed(this, new ConfirmActivityV4CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivity", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ConfirmActivity_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool ConfirmActivity(
@@ -1018,6 +1181,58 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.GetAvailabilityV3Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetAvailabilityV3Completed(this, new GetAvailabilityV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetAvailabilityV4", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetAvailabilityV4_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool GetAvailabilityV4(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string customerAccountNo, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+            object[] results = this.Invoke("GetAvailabilityV4", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        clientNo,
+                        optionalResource,
+                        promoCode,
+                        activityNo,
+                        noOfPersons,
+                        customerAccountNo,
+                        errorString,
+                        getAvailabilityResponse});
+            errorString = ((string)(results[1]));
+            getAvailabilityResponse = ((ActivityAvailabilityResponse)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAvailabilityV4Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string customerAccountNo, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetAvailabilityV4Async(locationNo, productNo, activityDate, clientNo, optionalResource, promoCode, activityNo, noOfPersons, customerAccountNo, errorString, getAvailabilityResponse, null);
+        }
+        
+        /// <remarks/>
+        public void GetAvailabilityV4Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string customerAccountNo, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+            if ((this.GetAvailabilityV4OperationCompleted == null)) {
+                this.GetAvailabilityV4OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAvailabilityV4OperationCompleted);
+            }
+            this.InvokeAsync("GetAvailabilityV4", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        clientNo,
+                        optionalResource,
+                        promoCode,
+                        activityNo,
+                        noOfPersons,
+                        customerAccountNo,
+                        errorString,
+                        getAvailabilityResponse}, this.GetAvailabilityV4OperationCompleted, userState);
+        }
+        
+        private void OnGetAvailabilityV4OperationCompleted(object arg) {
+            if ((this.GetAvailabilityV4Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAvailabilityV4Completed(this, new GetAvailabilityV4CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -6169,6 +6384,104 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void ConfirmActivityV4CompletedEventHandler(object sender, ConfirmActivityV4CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ConfirmActivityV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal ConfirmActivityV4CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnActivityNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnUnitPrice {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnLineDiscount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnTotalAmount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnCurrency {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[6]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnBookingRef {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[7]));
+            }
+        }
+        
+        /// <remarks/>
+        public string reservationNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[8]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnRetailItem {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[9]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void ConfirmActivityCompletedEventHandler(object sender, ConfirmActivityCompletedEventArgs e);
     
     /// <remarks/>
@@ -6416,6 +6729,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal GetAvailabilityV3CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public ActivityAvailabilityResponse getAvailabilityResponse {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityAvailabilityResponse)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetAvailabilityV4CompletedEventHandler(object sender, GetAvailabilityV4CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAvailabilityV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAvailabilityV4CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

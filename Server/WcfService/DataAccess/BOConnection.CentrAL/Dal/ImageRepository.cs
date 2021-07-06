@@ -74,7 +74,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                           "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                                           "WHERE mt.[Code]=@id AND tms.[Company Name]=@cmp";
                     command.Parameters.AddWithValue("@id", id);
-                    command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                    command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
                     connection.Open();
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -186,7 +186,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width],tm.[ID]" : string.Empty) +
                              sqlimgfrom + " JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
-                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navCompanyName.Substring(0, navCompanyName.Length - 1) + "'" +
+                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
                              " LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
                              " ORDER BY il.[Display Order]";
@@ -399,7 +399,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         JscActions act = new JscActions(lastKey);
                         SetWhereValues(command, act, keys, true, true);
-                        command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                        command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
                         TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -434,7 +434,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                 continue;
 
                             if (first)
-                                command.Parameters.AddWithValue("@cmp", navCompanyName.Substring(0, navCompanyName.Length - 1));    // remove $ at the end
+                                command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
 
                             TraceSqlCommand(command);
                             using (SqlDataReader reader = command.ExecuteReader())

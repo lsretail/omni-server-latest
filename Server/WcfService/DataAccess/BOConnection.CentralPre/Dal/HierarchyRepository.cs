@@ -19,10 +19,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public HierarchyRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type]";
+            sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date],hd.[Priority],hd.[Sales Type Filter],hd.[Validation Schedule ID]";
 
-            sqlfrom = " FROM [" + navCompanyName + "LSC Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
-                      "ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
+            sqlfrom = " FROM [" + navCompanyName + "LSC Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                      " INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]";
         }
 
         public List<ReplHierarchy> ReplicateHierarchy(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -144,6 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
                 List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId);
+
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));
                 for (int i = 0; i < root.Nodes.Count; i++)
                 {
@@ -183,12 +184,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private ReplHierarchy ReaderToHierarchy(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
-
             return new ReplHierarchy()
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"])
+                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
+                StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Start Date"]), config.IsJson),
+                Priority = SQLHelper.GetInt32(reader["Priority"]),
+                SalesType = SQLHelper.GetString(reader["Sales Type Filter"]),
+                ValidationScheduleId = SQLHelper.GetString(reader["Validation Schedule ID"])
             };
         }
 
@@ -198,7 +202,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"])
+                Type = (HierarchyType)SQLHelper.GetInt32(reader["Type"]),
+                StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Start Date"]), config.IsJson),
+                Priority = SQLHelper.GetInt32(reader["Priority"]),
+                SalesType = SQLHelper.GetString(reader["Sales Type Filter"]),
+                ValidationScheduleId = SQLHelper.GetString(reader["Validation Schedule ID"])
             };
 
             val.Attributes = HierarchyAttributeGet(val.Id);

@@ -45,5 +45,29 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         public List<HierarchyNode> Nodes { get; set; }
         [DataMember]
         public List<HierarchyLeaf> Leafs { get; set; }
+
+        [DataMember]
+        public HierarchyDealType Type { get; set; }
+        [DataMember]
+        public string No { get; set; }
+        [DataMember]
+        public string VariantCode { get; set; }
+        [DataMember]
+        public string UnitOfMeasure { get; set; }
+
+        [DataMember]
+        public int MinSelection { get; set; }
+        [DataMember]
+        public int MaxSelection { get; set; }
+        /// <summary>
+        /// Amount to add to a deal price
+        /// </summary>
+        [DataMember]
+        public decimal AddedAmount { get; set; }
+        /// <summary>
+        /// Used to group deals together, f.ex. if Medium Fries goes with Medium Soda.
+        /// </summary>
+        [DataMember]
+        public int DealModSizeGroupIndex { get; set; }
     }
 }

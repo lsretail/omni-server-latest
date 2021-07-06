@@ -100,7 +100,6 @@
     <Compile Include="Dal\StoreTenderTypeCurrencyRepository.cs" />
     <Compile Include="Dal\StoreTenderTypeRepository.cs" />
     <Compile Include="Dal\TaxSetupRepository.cs" />
-    <Compile Include="Dal\TenderTypeRepository.cs" />
     <Compile Include="Dal\TerminalRepository.cs" />
     <Compile Include="Dal\TransactionRepository.cs" />
     <Compile Include="Dal\UnitOfMeasureRepository.cs" />
@@ -130,10 +129,6 @@
     <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\Core\Inventory\Domain.DataModel.Inventory\Domain.DataModel.Inventory.csproj">
-      <Project>{4f47a1e3-4edd-4a96-8e30-af6797217591}</Project>
-      <Name>Domain.DataModel.Inventory</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>

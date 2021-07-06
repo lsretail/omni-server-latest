@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -205,7 +206,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
 
-                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt WHERE mt.[No_]=@id";
+                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter]" + sqlfrom +
+                                          " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                                          " WHERE mt.[No_]=@id";
                     command.Parameters.AddWithValue("@id", storeId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -213,7 +216,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            store = ReaderToLoyStore(reader, includeDetails, -1, -1);
+                            store = ReaderToLoyStore(reader, includeDetails, config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
                         }
                         reader.Close();
                     }
@@ -230,15 +233,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    string where = (clickAndCollectOnly) ? "WHERE mt.[Click and Collect]=1" : string.Empty;
-                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " + where + " ORDER BY mt.[Name]";
+                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter]" + sqlfrom +
+                                          " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                                          ((clickAndCollectOnly) ? " WHERE mt.[Click and Collect]=1" : string.Empty) + 
+                                          " ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        string[] salestype = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         while (reader.Read())
                         {
-                            stores.Add(ReaderToLoyStore(reader, true, -1, -1));
+                            stores.Add(ReaderToLoyStore(reader, true, salestype));
                         }
                         reader.Close();
                     }
@@ -279,15 +285,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + sqlwhere +
-                        ((searchitems.Length == 1) ? ") OR" : ") AND") + sqlwhere2 + ") ORDER BY mt.[Name]";
+                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter] " + sqlfrom +
+                                          " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                                          sqlwhere + ((searchitems.Length == 1) ? ") OR" : ") AND") + sqlwhere2 + ") ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+                        string[] salestype = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyStore(reader, false, -1, -1));
+                            list.Add(ReaderToLoyStore(reader, false, salestype));
                         }
                         reader.Close();
                     }
@@ -297,7 +305,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units)
+        public List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
         {
             List<Store> storecheck = StoreLoyGetAll(true);
 
@@ -340,6 +348,39 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             }
             return view;
+        }
+
+        private List<SalesType> GetSalesTypes(string saleTypeFilter)
+        {
+            List<SalesType> list = new List<SalesType>();
+            string[] st = saleTypeFilter.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = "SELECT [Description] FROM [" + navCompanyName + "LSC Sales Type$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Code]=@id";
+                    command.Parameters.Add("@id", SqlDbType.NVarChar);
+                    TraceSqlCommand(command);
+
+                    foreach (string s in st)
+                    {
+                        command.Parameters["@id"].Value = s;
+                        string desc = command.ExecuteScalar() as string;
+                        if (desc != null)
+                        {
+                            list.Add(new SalesType()
+                            {
+                                Code = s,
+                                Description = desc
+                            });
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
         }
 
         public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
@@ -464,7 +505,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return store;
         }
 
-        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails, double latitude, double longitude)
+        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails, string[] salesTypes)
         {
             Store store = new Store()
             {
@@ -478,6 +519,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 IsWebStore = SQLHelper.GetBool(reader["Web Store"]),
                 WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]),
                 WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]),
+                HospSalesTypes = GetSalesTypes(SQLHelper.GetString(reader["Sales Type Filter"])),
 
                 Address = new Address()
                 {
@@ -490,19 +532,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Type = AddressType.Store
                 }
             };
-
-            if (latitude > 0 && longitude > 0)
-            {
-                Store.Position startpos = new Store.Position();
-                startpos.Latitude = latitude;
-                startpos.Longitude = longitude;
-
-                Store.Position endpos = new Store.Position();
-                endpos.Latitude = store.Latitude;
-                endpos.Longitude = store.Longitude;
-
-                store.Distance = store.CalculateDistance(startpos, endpos, Store.DistanceType.Kilometers);
-            }
 
             string cur = SQLHelper.GetString(reader["Currency Code"]);
             if (string.IsNullOrWhiteSpace(cur))

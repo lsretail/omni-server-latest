@@ -69,9 +69,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
-        public virtual List<InventoryResponse> ItemsInStockGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
         {
-            return LSCentralWSBase.ItemsInStockGet(items, storeId, locationId);
+            return LSCentralWSBase.ItemsInStoreGet(items, storeId, locationId);
         }
 
         public virtual string ItemDetailsGetById(string itemId)

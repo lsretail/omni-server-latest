@@ -19,6 +19,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre
 {
@@ -361,14 +362,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.HospOrderCalculate(list);
         }
 
-        public virtual string HospOrderCreate(OrderHosp request, string tenderMapping)
+        public virtual string HospOrderCreate(OrderHosp request)
         {
-            return LSCentralWSBase.HospOrderCreate(request, tenderMapping);
-        }
-
-        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
-        {
-            return LSCentralWSBase.HospOrderEstimatedTime(storeId, orderId);
+            return LSCentralWSBase.HospOrderCreate(request);
         }
 
         public virtual void HospOrderCancel(string storeId, string orderId)
@@ -376,9 +372,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             LSCentralWSBase.HospOrderCancel(storeId, orderId);
         }
 
-        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
         {
             return LSCentralWSBase.HospOrderKotStatus(storeId, orderId);
+        }
+
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            InvStatusRepository rep = new InvStatusRepository(config);
+            return rep.CheckAvailability(request, storeId);
         }
 
         #endregion
@@ -396,7 +398,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
-            return LSCentralWSBase.OrderStatusCheck(orderId);
+            OrderRepository repo = new OrderRepository(config);
+            return repo.OrderStatusGet(orderId);
         }
 
         public virtual void OrderCancel(string orderId, string storeId, string userId)
@@ -409,7 +412,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.OrderAvailabilityCheck(request);
         }
 
-        public virtual string OrderCreate(Order request, string tenderMapping, out string orderId)
+        public virtual string OrderCreate(Order request, out string orderId)
         {
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
@@ -417,10 +420,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
                 return LSCentralWSBase.ScanPayGoSuspend(request);
             }
 
-            return LSCentralWSBase.OrderCreate(request, tenderMapping, out orderId);
+            return LSCentralWSBase.OrderCreate(request, out orderId);
         }
 
-        public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, string tenderMapping)
+        public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)
         {
             SalesEntry entry;
             if (type == DocumentIdType.Receipt)
@@ -445,9 +448,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             {
                 foreach (SalesEntryPayment line in entry.Payments)
                 {
-                    line.TenderType = LSCentralWSBase.TenderTypeMapping(tenderMapping, line.TenderType, true); //map tender type between LSOmni and NAV
-                    if (line.TenderType == null)
-                        throw new LSOmniServiceException(StatusCode.TenderTypeNotFound, "TenderType_Mapping failed for type: " + line.TenderType);
+                    line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, true); //map tender type between LSOmni and NAV
                 }
             }
             return entry;
@@ -508,10 +509,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return store;
         }
 
-        public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units)
+        public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
         {
             StoreRepository rep = new StoreRepository(config);
-            List<Store> stores = rep.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores, units);
+            List<Store> stores = rep.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, units);
             foreach (Store store in stores)
             {
                 store.StoreHours = StoreHoursGetByStoreId(store.Id);

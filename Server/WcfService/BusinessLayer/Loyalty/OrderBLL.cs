@@ -11,12 +11,9 @@ namespace LSOmni.BLL.Loyalty
 {
     public class OrderBLL : BaseLoyBLL
     {
-        private string tenderMapping;
-
         public OrderBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
             : base(config, deviceId, timeoutInSeconds)
         {
-            tenderMapping = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);   //will throw exception if not found
         }
 
         public OrderBLL(BOConfiguration config, int timeoutInSeconds)
@@ -66,7 +63,7 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
 
-            string extId = BOLoyConnection.OrderCreate(request, tenderMapping, out string orderId);
+            string extId = BOLoyConnection.OrderCreate(request, out string orderId);
 
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
@@ -74,9 +71,9 @@ namespace LSOmni.BLL.Loyalty
             }
 
             if (string.IsNullOrEmpty(orderId))
-                return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External, tenderMapping);
+                return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External);
 
-            return BOLoyConnection.SalesEntryGet(orderId, DocumentIdType.Order, tenderMapping);
+            return BOLoyConnection.SalesEntryGet(orderId, DocumentIdType.Order);
         }
 
         public virtual SalesEntry OrderHospCreate(OrderHosp request)
@@ -84,13 +81,8 @@ namespace LSOmni.BLL.Loyalty
             if (request == null)
                 throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
 
-            string extId = BOLoyConnection.HospOrderCreate(request, tenderMapping);
-            return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.HospOrder, tenderMapping);
-        }
-
-        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
-        {
-            return BOLoyConnection.HospOrderEstimatedTime(storeId, orderId);
+            string extId = BOLoyConnection.HospOrderCreate(request);
+            return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.HospOrder);
         }
 
         public virtual void HospOrderCancel(string storeId, string orderId)
@@ -98,9 +90,9 @@ namespace LSOmni.BLL.Loyalty
             BOLoyConnection.HospOrderCancel(storeId, orderId);
         }
 
-        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
         {
-            return BOLoyConnection.HospOrderKotStatus(storeId, orderId);
+            return BOLoyConnection.HospOrderStatus(storeId, orderId);
         }
     }
 }

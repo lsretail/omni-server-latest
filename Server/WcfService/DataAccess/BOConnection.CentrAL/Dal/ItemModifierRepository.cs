@@ -20,8 +20,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             sqlcol = "tsi.[Value],mt.[Code],mt.[Subcode],mt.[Description],mt.[Variant Code],mt.[Unit of Measure]," +
                      "mt.[Trigger Function],mt.[Trigger Code],mt.[Price Type],mt.[Price Handling],mt.[Amount _Percent]," +
-                     "ic.[Max_ Selection],ic.[Min_ Selection],mt.[Time Modifier Minutes]," +
-                     "tsi.[Usage Category],tsi.[Usage Sub-Category],ic.[Explanatory Header Text],ic.[Prompt]";
+                     "ic.[Max_ Selection] AS [GrMaxSel],ic.[Min_ Selection] AS [GrMinSel],mt.[Time Modifier Minutes]," +
+                     "tsi.[Usage Category],tsi.[Usage Sub-Category],ic.[Explanatory Header Text],ic.[Prompt]," +
+                     "(SELECT icc.[Min_ Selection] FROM [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] icc " +
+                     "WHERE icc.[Code]=mt.[Trigger Code]) AS [MinSel]," +
+                     "(SELECT icc.[Max_ Selection] FROM [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] icc " +
+                     "WHERE icc.[Code]=mt.[Trigger Code]) AS [MaxSel]";
 
             sqlfrom = " FROM [" + navCompanyName + "Table Specific Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] tsi " +
                       "INNER JOIN [" + navCompanyName + "Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Code]=tsi.[Infocode Code]";
@@ -151,7 +155,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     connection.Open();
                     command.CommandText = "SELECT mt.[timestamp],'' AS [Value],mt.[Code],mt.[Subcode],mt.[Description],mt.[Variant Code]," +
                                  "mt.[Unit of Measure],mt.[Trigger Function],mt.[Trigger Code],mt.[Price Type],mt.[Price Handling],mt.[Amount _Percent]," +
-                                 "mt.[Max_ Selection],mt.[Min_ Selection],mt.[Time Modifier Minutes],mt.[Usage Category],'' AS [Usage Sub-Category],'' AS [Explanatory Header Text],'' AS [Prompt] " +
+                                 "mt.[Max_ Selection] AS [MaxSel],mt.[Min_ Selection] AS [MinSel],mt.[Time Modifier Minutes],mt.[Usage Category]," +
+                                 "'' AS [Usage Sub-Category],'' AS [Explanatory Header Text],'' AS [Prompt],0 AS [GrMinSel],0 AS [GrMaxSel] " +
                                  "FROM [" + navCompanyName + "Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                                  "WHERE mt.[Code]=@id";
 
@@ -194,8 +199,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 PriceType = (ItemModifierPriceType)SQLHelper.GetInt32(reader["Price Type"]),
                 AlwaysCharge = (ItemModifierPriceHandling)SQLHelper.GetInt32(reader["Price Handling"]),
                 AmountPercent = SQLHelper.GetDecimal(reader, "Amount _Percent"),
-                MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
-                MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
+                GroupMinSelection = SQLHelper.GetInt32(reader["GrMinSel"]),
+                GroupMaxSelection = SQLHelper.GetInt32(reader["GrMaxSel"]),
+                MinSelection = SQLHelper.GetInt32(reader["MinSel"]),
+                MaxSelection = SQLHelper.GetInt32(reader["MaxSel"]),
                 TimeModifierMinutes = SQLHelper.GetDecimal(reader, "Time Modifier Minutes")
             };
         }

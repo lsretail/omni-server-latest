@@ -43,7 +43,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback COQtyAvailabilityV2OperationCompleted;
         
-        private System.Threading.SendOrPostCallback COQtyAvailabilityOperationCompleted;
+        private System.Threading.SendOrPostCallback COSetMobilePickLabelOperationCompleted;
         
         private System.Threading.SendOrPostCallback CancelHospOrderOperationCompleted;
         
@@ -51,23 +51,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback CustomerOrderCancelOperationCompleted;
         
-        private System.Threading.SendOrPostCallback CustomerOrderCreateV2OperationCompleted;
-        
-        private System.Threading.SendOrPostCallback CustomerOrderCreateV3OperationCompleted;
-        
-        private System.Threading.SendOrPostCallback CustomerOrderCreateV4OperationCompleted;
-        
         private System.Threading.SendOrPostCallback CustomerOrderCreateV5OperationCompleted;
         
-        private System.Threading.SendOrPostCallback CustomerOrderCreateOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback CustomerOrderFilteredListOperationCompleted;
-        
-        private System.Threading.SendOrPostCallback CustomerOrderGetV2OperationCompleted;
-        
         private System.Threading.SendOrPostCallback CustomerOrderGetV3OperationCompleted;
-        
-        private System.Threading.SendOrPostCallback CustomerOrderGetOperationCompleted;
         
         private System.Threading.SendOrPostCallback CustomerOrderStatusOperationCompleted;
         
@@ -99,9 +85,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback GetHierarchyNodeOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetHierarchyV2OperationCompleted;
+        private System.Threading.SendOrPostCallback GetHierarchyV2ValidationScheduleOperationCompleted;
         
-        private System.Threading.SendOrPostCallback GetHierarchyOperationCompleted;
+        private System.Threading.SendOrPostCallback GetHierarchyV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetHospOrderEstimatedTimeOperationCompleted;
         
@@ -124,6 +110,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback GetMemberInfoForPosOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetMemberSalesHistoryOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetPosTransSuspListOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetReplCountersFromRemoteDBOperationCompleted;
         
@@ -275,7 +263,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event COQtyAvailabilityV2CompletedEventHandler COQtyAvailabilityV2Completed;
         
         /// <remarks/>
-        public event COQtyAvailabilityCompletedEventHandler COQtyAvailabilityCompleted;
+        public event COSetMobilePickLabelCompletedEventHandler COSetMobilePickLabelCompleted;
         
         /// <remarks/>
         public event CancelHospOrderCompletedEventHandler CancelHospOrderCompleted;
@@ -287,31 +275,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event CustomerOrderCancelCompletedEventHandler CustomerOrderCancelCompleted;
         
         /// <remarks/>
-        public event CustomerOrderCreateV2CompletedEventHandler CustomerOrderCreateV2Completed;
-        
-        /// <remarks/>
-        public event CustomerOrderCreateV3CompletedEventHandler CustomerOrderCreateV3Completed;
-        
-        /// <remarks/>
-        public event CustomerOrderCreateV4CompletedEventHandler CustomerOrderCreateV4Completed;
-        
-        /// <remarks/>
         public event CustomerOrderCreateV5CompletedEventHandler CustomerOrderCreateV5Completed;
         
         /// <remarks/>
-        public event CustomerOrderCreateCompletedEventHandler CustomerOrderCreateCompleted;
-        
-        /// <remarks/>
-        public event CustomerOrderFilteredListCompletedEventHandler CustomerOrderFilteredListCompleted;
-        
-        /// <remarks/>
-        public event CustomerOrderGetV2CompletedEventHandler CustomerOrderGetV2Completed;
-        
-        /// <remarks/>
         public event CustomerOrderGetV3CompletedEventHandler CustomerOrderGetV3Completed;
-        
-        /// <remarks/>
-        public event CustomerOrderGetCompletedEventHandler CustomerOrderGetCompleted;
         
         /// <remarks/>
         public event CustomerOrderStatusCompletedEventHandler CustomerOrderStatusCompleted;
@@ -359,10 +326,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event GetHierarchyNodeCompletedEventHandler GetHierarchyNodeCompleted;
         
         /// <remarks/>
-        public event GetHierarchyV2CompletedEventHandler GetHierarchyV2Completed;
+        public event GetHierarchyV2ValidationScheduleCompletedEventHandler GetHierarchyV2ValidationScheduleCompleted;
         
         /// <remarks/>
-        public event GetHierarchyCompletedEventHandler GetHierarchyCompleted;
+        public event GetHierarchyV2CompletedEventHandler GetHierarchyV2Completed;
         
         /// <remarks/>
         public event GetHospOrderEstimatedTimeCompletedEventHandler GetHospOrderEstimatedTimeCompleted;
@@ -396,6 +363,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event GetMemberSalesHistoryCompletedEventHandler GetMemberSalesHistoryCompleted;
+        
+        /// <remarks/>
+        public event GetPosTransSuspListCompletedEventHandler GetPosTransSuspListCompleted;
         
         /// <remarks/>
         public event GetReplCountersFromRemoteDBCompletedEventHandler GetReplCountersFromRemoteDBCompleted;
@@ -786,42 +756,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:COQtyAvailability", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="COQtyAvailability_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void COQtyAvailability(RootCOQtyAvailabilityExtIn cOQtyAvailabilityInXML, ref string responseCode, ref string errorText, ref string preferredSourcingLocation, ref RootCOQtyAvailabilityExtOut cOQtyAvailabilityOutXML) {
-            object[] results = this.Invoke("COQtyAvailability", new object[] {
-                        cOQtyAvailabilityInXML,
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:COSetMobilePickLabel", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="COSetMobilePickLabel_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void COSetMobilePickLabel(ref string responseCode, ref string errorText, ref RootCOMobilePickLabel cOSetMobilePickLabelXML) {
+            object[] results = this.Invoke("COSetMobilePickLabel", new object[] {
                         responseCode,
                         errorText,
-                        preferredSourcingLocation,
-                        cOQtyAvailabilityOutXML});
+                        cOSetMobilePickLabelXML});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            preferredSourcingLocation = ((string)(results[2]));
-            cOQtyAvailabilityOutXML = ((RootCOQtyAvailabilityExtOut)(results[3]));
+            cOSetMobilePickLabelXML = ((RootCOMobilePickLabel)(results[2]));
         }
         
         /// <remarks/>
-        public void COQtyAvailabilityAsync(RootCOQtyAvailabilityExtIn cOQtyAvailabilityInXML, string responseCode, string errorText, string preferredSourcingLocation, RootCOQtyAvailabilityExtOut cOQtyAvailabilityOutXML) {
-            this.COQtyAvailabilityAsync(cOQtyAvailabilityInXML, responseCode, errorText, preferredSourcingLocation, cOQtyAvailabilityOutXML, null);
+        public void COSetMobilePickLabelAsync(string responseCode, string errorText, RootCOMobilePickLabel cOSetMobilePickLabelXML) {
+            this.COSetMobilePickLabelAsync(responseCode, errorText, cOSetMobilePickLabelXML, null);
         }
         
         /// <remarks/>
-        public void COQtyAvailabilityAsync(RootCOQtyAvailabilityExtIn cOQtyAvailabilityInXML, string responseCode, string errorText, string preferredSourcingLocation, RootCOQtyAvailabilityExtOut cOQtyAvailabilityOutXML, object userState) {
-            if ((this.COQtyAvailabilityOperationCompleted == null)) {
-                this.COQtyAvailabilityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCOQtyAvailabilityOperationCompleted);
+        public void COSetMobilePickLabelAsync(string responseCode, string errorText, RootCOMobilePickLabel cOSetMobilePickLabelXML, object userState) {
+            if ((this.COSetMobilePickLabelOperationCompleted == null)) {
+                this.COSetMobilePickLabelOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCOSetMobilePickLabelOperationCompleted);
             }
-            this.InvokeAsync("COQtyAvailability", new object[] {
-                        cOQtyAvailabilityInXML,
+            this.InvokeAsync("COSetMobilePickLabel", new object[] {
                         responseCode,
                         errorText,
-                        preferredSourcingLocation,
-                        cOQtyAvailabilityOutXML}, this.COQtyAvailabilityOperationCompleted, userState);
+                        cOSetMobilePickLabelXML}, this.COSetMobilePickLabelOperationCompleted, userState);
         }
         
-        private void OnCOQtyAvailabilityOperationCompleted(object arg) {
-            if ((this.COQtyAvailabilityCompleted != null)) {
+        private void OnCOSetMobilePickLabelOperationCompleted(object arg) {
+            if ((this.COSetMobilePickLabelCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.COQtyAvailabilityCompleted(this, new COQtyAvailabilityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.COSetMobilePickLabelCompleted(this, new COSetMobilePickLabelCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -940,117 +905,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreateV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreateV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderCreateV2(ref string responseCode, ref string errorText, RootCustomerOrderCreateV2 customerOrderCreateXML, ref string customerOrderID) {
-            object[] results = this.Invoke("CustomerOrderCreateV2", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateXML,
-                        customerOrderID});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            customerOrderID = ((string)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateV2Async(string responseCode, string errorText, RootCustomerOrderCreateV2 customerOrderCreateXML, string customerOrderID) {
-            this.CustomerOrderCreateV2Async(responseCode, errorText, customerOrderCreateXML, customerOrderID, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateV2Async(string responseCode, string errorText, RootCustomerOrderCreateV2 customerOrderCreateXML, string customerOrderID, object userState) {
-            if ((this.CustomerOrderCreateV2OperationCompleted == null)) {
-                this.CustomerOrderCreateV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCreateV2OperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderCreateV2", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateXML,
-                        customerOrderID}, this.CustomerOrderCreateV2OperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderCreateV2OperationCompleted(object arg) {
-            if ((this.CustomerOrderCreateV2Completed != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderCreateV2Completed(this, new CustomerOrderCreateV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreateV3", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreateV3_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderCreateV3(ref string responseCode, ref string errorText, RootCustomerOrderCreateV3 customerOrderCreateV3XML, ref string customerOrderID) {
-            object[] results = this.Invoke("CustomerOrderCreateV3", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateV3XML,
-                        customerOrderID});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            customerOrderID = ((string)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateV3Async(string responseCode, string errorText, RootCustomerOrderCreateV3 customerOrderCreateV3XML, string customerOrderID) {
-            this.CustomerOrderCreateV3Async(responseCode, errorText, customerOrderCreateV3XML, customerOrderID, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateV3Async(string responseCode, string errorText, RootCustomerOrderCreateV3 customerOrderCreateV3XML, string customerOrderID, object userState) {
-            if ((this.CustomerOrderCreateV3OperationCompleted == null)) {
-                this.CustomerOrderCreateV3OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCreateV3OperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderCreateV3", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateV3XML,
-                        customerOrderID}, this.CustomerOrderCreateV3OperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderCreateV3OperationCompleted(object arg) {
-            if ((this.CustomerOrderCreateV3Completed != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderCreateV3Completed(this, new CustomerOrderCreateV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreateV4", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreateV4_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderCreateV4(ref string responseCode, ref string errorText, RootCustomerOrderCreateV4 customerOrderCreateV4XML, ref string customerOrderID) {
-            object[] results = this.Invoke("CustomerOrderCreateV4", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateV4XML,
-                        customerOrderID});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            customerOrderID = ((string)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateV4Async(string responseCode, string errorText, RootCustomerOrderCreateV4 customerOrderCreateV4XML, string customerOrderID) {
-            this.CustomerOrderCreateV4Async(responseCode, errorText, customerOrderCreateV4XML, customerOrderID, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateV4Async(string responseCode, string errorText, RootCustomerOrderCreateV4 customerOrderCreateV4XML, string customerOrderID, object userState) {
-            if ((this.CustomerOrderCreateV4OperationCompleted == null)) {
-                this.CustomerOrderCreateV4OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCreateV4OperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderCreateV4", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateV4XML,
-                        customerOrderID}, this.CustomerOrderCreateV4OperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderCreateV4OperationCompleted(object arg) {
-            if ((this.CustomerOrderCreateV4Completed != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderCreateV4Completed(this, new CustomerOrderCreateV4CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreateV5", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreateV5_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void CustomerOrderCreateV5(ref string responseCode, ref string errorText, RootCustomerOrderCreateV5 customerOrderCreateV5XML, ref string customerOrderID) {
             object[] results = this.Invoke("CustomerOrderCreateV5", new object[] {
@@ -1084,118 +938,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.CustomerOrderCreateV5Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CustomerOrderCreateV5Completed(this, new CustomerOrderCreateV5CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderCreate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderCreate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderCreate(ref string responseCode, ref string errorText, RootCustomerOrder customerOrderCreateXML) {
-            object[] results = this.Invoke("CustomerOrderCreate", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateXML});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateAsync(string responseCode, string errorText, RootCustomerOrder customerOrderCreateXML) {
-            this.CustomerOrderCreateAsync(responseCode, errorText, customerOrderCreateXML, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderCreateAsync(string responseCode, string errorText, RootCustomerOrder customerOrderCreateXML, object userState) {
-            if ((this.CustomerOrderCreateOperationCompleted == null)) {
-                this.CustomerOrderCreateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderCreateOperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderCreate", new object[] {
-                        responseCode,
-                        errorText,
-                        customerOrderCreateXML}, this.CustomerOrderCreateOperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderCreateOperationCompleted(object arg) {
-            if ((this.CustomerOrderCreateCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderCreateCompleted(this, new CustomerOrderCreateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderFilteredList", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderFilteredList_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderFilteredList(ref string responseCode, ref string errorText, bool includePostedCustomerOrders, ref RootCustomerOrderFilteredList customerOrderFilteredListXML) {
-            object[] results = this.Invoke("CustomerOrderFilteredList", new object[] {
-                        responseCode,
-                        errorText,
-                        includePostedCustomerOrders,
-                        customerOrderFilteredListXML});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            customerOrderFilteredListXML = ((RootCustomerOrderFilteredList)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderFilteredListAsync(string responseCode, string errorText, bool includePostedCustomerOrders, RootCustomerOrderFilteredList customerOrderFilteredListXML) {
-            this.CustomerOrderFilteredListAsync(responseCode, errorText, includePostedCustomerOrders, customerOrderFilteredListXML, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderFilteredListAsync(string responseCode, string errorText, bool includePostedCustomerOrders, RootCustomerOrderFilteredList customerOrderFilteredListXML, object userState) {
-            if ((this.CustomerOrderFilteredListOperationCompleted == null)) {
-                this.CustomerOrderFilteredListOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderFilteredListOperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderFilteredList", new object[] {
-                        responseCode,
-                        errorText,
-                        includePostedCustomerOrders,
-                        customerOrderFilteredListXML}, this.CustomerOrderFilteredListOperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderFilteredListOperationCompleted(object arg) {
-            if ((this.CustomerOrderFilteredListCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderFilteredListCompleted(this, new CustomerOrderFilteredListCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderGetV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderGetV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderGetV2(ref string responseCode, ref string errorText, string documentStatus, string documentID, string posTerminalNo, ref RootCustomerOrderGetV2 customerOrderGetV2XML) {
-            object[] results = this.Invoke("CustomerOrderGetV2", new object[] {
-                        responseCode,
-                        errorText,
-                        documentStatus,
-                        documentID,
-                        posTerminalNo,
-                        customerOrderGetV2XML});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            customerOrderGetV2XML = ((RootCustomerOrderGetV2)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderGetV2Async(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGetV2 customerOrderGetV2XML) {
-            this.CustomerOrderGetV2Async(responseCode, errorText, documentStatus, documentID, posTerminalNo, customerOrderGetV2XML, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderGetV2Async(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGetV2 customerOrderGetV2XML, object userState) {
-            if ((this.CustomerOrderGetV2OperationCompleted == null)) {
-                this.CustomerOrderGetV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderGetV2OperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderGetV2", new object[] {
-                        responseCode,
-                        errorText,
-                        documentStatus,
-                        documentID,
-                        posTerminalNo,
-                        customerOrderGetV2XML}, this.CustomerOrderGetV2OperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderGetV2OperationCompleted(object arg) {
-            if ((this.CustomerOrderGetV2Completed != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderGetV2Completed(this, new CustomerOrderGetV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1243,47 +985,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.CustomerOrderGetV3Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CustomerOrderGetV3Completed(this, new CustomerOrderGetV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void CustomerOrderGet(ref string responseCode, ref string errorText, string documentStatus, string documentID, string posTerminalNo, ref RootCustomerOrderGet customerOrderGetXML) {
-            object[] results = this.Invoke("CustomerOrderGet", new object[] {
-                        responseCode,
-                        errorText,
-                        documentStatus,
-                        documentID,
-                        posTerminalNo,
-                        customerOrderGetXML});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            customerOrderGetXML = ((RootCustomerOrderGet)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderGetAsync(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGet customerOrderGetXML) {
-            this.CustomerOrderGetAsync(responseCode, errorText, documentStatus, documentID, posTerminalNo, customerOrderGetXML, null);
-        }
-        
-        /// <remarks/>
-        public void CustomerOrderGetAsync(string responseCode, string errorText, string documentStatus, string documentID, string posTerminalNo, RootCustomerOrderGet customerOrderGetXML, object userState) {
-            if ((this.CustomerOrderGetOperationCompleted == null)) {
-                this.CustomerOrderGetOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderGetOperationCompleted);
-            }
-            this.InvokeAsync("CustomerOrderGet", new object[] {
-                        responseCode,
-                        errorText,
-                        documentStatus,
-                        documentID,
-                        posTerminalNo,
-                        customerOrderGetXML}, this.CustomerOrderGetOperationCompleted, userState);
-        }
-        
-        private void OnCustomerOrderGetOperationCompleted(object arg) {
-            if ((this.CustomerOrderGetCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.CustomerOrderGetCompleted(this, new CustomerOrderGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1897,6 +1598,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetHierarchyV2ValidationSched" +
+            "ule", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetHierarchyV2ValidationSchedule_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetHierarchyV2ValidationSchedule(ref string responseCode, ref string errorText, string storeNo, ref RootGetHierarchyValSched getHierarchyV2ValidationScheduleXML) {
+            object[] results = this.Invoke("GetHierarchyV2ValidationSchedule", new object[] {
+                        responseCode,
+                        errorText,
+                        storeNo,
+                        getHierarchyV2ValidationScheduleXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            getHierarchyV2ValidationScheduleXML = ((RootGetHierarchyValSched)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetHierarchyV2ValidationScheduleAsync(string responseCode, string errorText, string storeNo, RootGetHierarchyValSched getHierarchyV2ValidationScheduleXML) {
+            this.GetHierarchyV2ValidationScheduleAsync(responseCode, errorText, storeNo, getHierarchyV2ValidationScheduleXML, null);
+        }
+        
+        /// <remarks/>
+        public void GetHierarchyV2ValidationScheduleAsync(string responseCode, string errorText, string storeNo, RootGetHierarchyValSched getHierarchyV2ValidationScheduleXML, object userState) {
+            if ((this.GetHierarchyV2ValidationScheduleOperationCompleted == null)) {
+                this.GetHierarchyV2ValidationScheduleOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyV2ValidationScheduleOperationCompleted);
+            }
+            this.InvokeAsync("GetHierarchyV2ValidationSchedule", new object[] {
+                        responseCode,
+                        errorText,
+                        storeNo,
+                        getHierarchyV2ValidationScheduleXML}, this.GetHierarchyV2ValidationScheduleOperationCompleted, userState);
+        }
+        
+        private void OnGetHierarchyV2ValidationScheduleOperationCompleted(object arg) {
+            if ((this.GetHierarchyV2ValidationScheduleCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetHierarchyV2ValidationScheduleCompleted(this, new GetHierarchyV2ValidationScheduleCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetHierarchyV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetHierarchyV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void GetHierarchyV2(ref string responseCode, ref string errorText, string storeNo, ref RootGetHierarchyV2 getHierarchyV2XML) {
             object[] results = this.Invoke("GetHierarchyV2", new object[] {
@@ -1930,43 +1669,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.GetHierarchyV2Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetHierarchyV2Completed(this, new GetHierarchyV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
-        
-        /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetHierarchy", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetHierarchy_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void GetHierarchy(ref string responseCode, ref string errorText, string storeNo, ref RootGetHierarchy getHierarchyXML) {
-            object[] results = this.Invoke("GetHierarchy", new object[] {
-                        responseCode,
-                        errorText,
-                        storeNo,
-                        getHierarchyXML});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            getHierarchyXML = ((RootGetHierarchy)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void GetHierarchyAsync(string responseCode, string errorText, string storeNo, RootGetHierarchy getHierarchyXML) {
-            this.GetHierarchyAsync(responseCode, errorText, storeNo, getHierarchyXML, null);
-        }
-        
-        /// <remarks/>
-        public void GetHierarchyAsync(string responseCode, string errorText, string storeNo, RootGetHierarchy getHierarchyXML, object userState) {
-            if ((this.GetHierarchyOperationCompleted == null)) {
-                this.GetHierarchyOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetHierarchyOperationCompleted);
-            }
-            this.InvokeAsync("GetHierarchy", new object[] {
-                        responseCode,
-                        errorText,
-                        storeNo,
-                        getHierarchyXML}, this.GetHierarchyOperationCompleted, userState);
-        }
-        
-        private void OnGetHierarchyOperationCompleted(object arg) {
-            if ((this.GetHierarchyCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetHierarchyCompleted(this, new GetHierarchyCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2449,6 +2151,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.GetMemberSalesHistoryCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetMemberSalesHistoryCompleted(this, new GetMemberSalesHistoryCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetPosTransSuspList", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetPosTransSuspList_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetPosTransSuspList(ref string responseCode, ref string errorText, string storeNo, ref RootGetPosTransSuspList getPosTransSuspListXML) {
+            object[] results = this.Invoke("GetPosTransSuspList", new object[] {
+                        responseCode,
+                        errorText,
+                        storeNo,
+                        getPosTransSuspListXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            getPosTransSuspListXML = ((RootGetPosTransSuspList)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetPosTransSuspListAsync(string responseCode, string errorText, string storeNo, RootGetPosTransSuspList getPosTransSuspListXML) {
+            this.GetPosTransSuspListAsync(responseCode, errorText, storeNo, getPosTransSuspListXML, null);
+        }
+        
+        /// <remarks/>
+        public void GetPosTransSuspListAsync(string responseCode, string errorText, string storeNo, RootGetPosTransSuspList getPosTransSuspListXML, object userState) {
+            if ((this.GetPosTransSuspListOperationCompleted == null)) {
+                this.GetPosTransSuspListOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetPosTransSuspListOperationCompleted);
+            }
+            this.InvokeAsync("GetPosTransSuspList", new object[] {
+                        responseCode,
+                        errorText,
+                        storeNo,
+                        getPosTransSuspListXML}, this.GetPosTransSuspListOperationCompleted, userState);
+        }
+        
+        private void OnGetPosTransSuspListOperationCompleted(object arg) {
+            if ((this.GetPosTransSuspListCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetPosTransSuspListCompleted(this, new GetPosTransSuspListCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -5270,6 +5009,500 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="TransSalesTaxEntry", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033014")]
+    public partial class TransSalesTaxEntry1 {
+        
+        private string storeNoField;
+        
+        private string pOSTerminalNoField;
+        
+        private int transactionNoField;
+        
+        private int entryNoField;
+        
+        private string taxAreaCodeField;
+        
+        private string taxJurisdictionCodeField;
+        
+        private string taxGroupCodeField;
+        
+        private bool expenseCapitalizeField;
+        
+        private string taxTypeField;
+        
+        private bool useTaxField;
+        
+        private bool positiveField;
+        
+        private bool taxLiableField;
+        
+        private decimal quantityField;
+        
+        private decimal taxPercentageField;
+        
+        private decimal taxBaseAmountField;
+        
+        private decimal taxAmountField;
+        
+        private decimal taxDifferenceField;
+        
+        private string avaTaxJurisdictionField;
+        
+        private string avaTaxNameField;
+        
+        private string avaTaxCustomerUsageTypeField;
+        
+        private int replicationCounterField;
+        
+        public TransSalesTaxEntry1() {
+            this.transactionNoField = 0;
+            this.entryNoField = 0;
+            this.expenseCapitalizeField = false;
+            this.useTaxField = false;
+            this.positiveField = false;
+            this.taxLiableField = false;
+            this.quantityField = ((decimal)(0m));
+            this.taxPercentageField = ((decimal)(0m));
+            this.taxBaseAmountField = ((decimal)(0m));
+            this.taxAmountField = ((decimal)(0m));
+            this.taxDifferenceField = ((decimal)(0m));
+            this.replicationCounterField = 0;
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string POSTerminalNo {
+            get {
+                return this.pOSTerminalNoField;
+            }
+            set {
+                this.pOSTerminalNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TransactionNo {
+            get {
+                return this.transactionNoField;
+            }
+            set {
+                this.transactionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int EntryNo {
+            get {
+                return this.entryNoField;
+            }
+            set {
+                this.entryNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxJurisdictionCode {
+            get {
+                return this.taxJurisdictionCodeField;
+            }
+            set {
+                this.taxJurisdictionCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool ExpenseCapitalize {
+            get {
+                return this.expenseCapitalizeField;
+            }
+            set {
+                this.expenseCapitalizeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxType {
+            get {
+                return this.taxTypeField;
+            }
+            set {
+                this.taxTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool UseTax {
+            get {
+                return this.useTaxField;
+            }
+            set {
+                this.useTaxField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Positive {
+            get {
+                return this.positiveField;
+            }
+            set {
+                this.positiveField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxPercentage {
+            get {
+                return this.taxPercentageField;
+            }
+            set {
+                this.taxPercentageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxBaseAmount {
+            get {
+                return this.taxBaseAmountField;
+            }
+            set {
+                this.taxBaseAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxAmount {
+            get {
+                return this.taxAmountField;
+            }
+            set {
+                this.taxAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxDifference {
+            get {
+                return this.taxDifferenceField;
+            }
+            set {
+                this.taxDifferenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AvaTaxJurisdiction {
+            get {
+                return this.avaTaxJurisdictionField;
+            }
+            set {
+                this.avaTaxJurisdictionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AvaTaxName {
+            get {
+                return this.avaTaxNameField;
+            }
+            set {
+                this.avaTaxNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AvaTaxCustomerUsageType {
+            get {
+                return this.avaTaxCustomerUsageTypeField;
+            }
+            set {
+                this.avaTaxCustomerUsageTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int ReplicationCounter {
+            get {
+                return this.replicationCounterField;
+            }
+            set {
+                this.replicationCounterField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033014")]
+    public partial class TransactionSignature {
+        
+        private string storeNoField;
+        
+        private string pOSTerminalNoField;
+        
+        private int transactionNoField;
+        
+        private string transactionTypeField;
+        
+        private string receiptNoField;
+        
+        private System.DateTime transDateField;
+        
+        private System.DateTime transTimeField;
+        
+        private bool creditSaleField;
+        
+        private int creditNoField;
+        
+        private bool trainingField;
+        
+        private int trainingNoField;
+        
+        private decimal netAmountField;
+        
+        private decimal amountField;
+        
+        private string privateKeyVersionField;
+        
+        private string signatureField;
+        
+        private int replicationCounterField;
+        
+        public TransactionSignature() {
+            this.transactionNoField = 0;
+            this.transDateField = new System.DateTime(0);
+            this.transTimeField = new System.DateTime(0);
+            this.creditSaleField = false;
+            this.creditNoField = 0;
+            this.trainingField = false;
+            this.trainingNoField = 0;
+            this.netAmountField = ((decimal)(0m));
+            this.amountField = ((decimal)(0m));
+            this.replicationCounterField = 0;
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string POSTerminalNo {
+            get {
+                return this.pOSTerminalNoField;
+            }
+            set {
+                this.pOSTerminalNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TransactionNo {
+            get {
+                return this.transactionNoField;
+            }
+            set {
+                this.transactionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransactionType {
+            get {
+                return this.transactionTypeField;
+            }
+            set {
+                this.transactionTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReceiptNo {
+            get {
+                return this.receiptNoField;
+            }
+            set {
+                this.receiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime TransDate {
+            get {
+                return this.transDateField;
+            }
+            set {
+                this.transDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime TransTime {
+            get {
+                return this.transTimeField;
+            }
+            set {
+                this.transTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool CreditSale {
+            get {
+                return this.creditSaleField;
+            }
+            set {
+                this.creditSaleField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int CreditNo {
+            get {
+                return this.creditNoField;
+            }
+            set {
+                this.creditNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Training {
+            get {
+                return this.trainingField;
+            }
+            set {
+                this.trainingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TrainingNo {
+            get {
+                return this.trainingNoField;
+            }
+            set {
+                this.trainingNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NetAmount {
+            get {
+                return this.netAmountField;
+            }
+            set {
+                this.netAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PrivateKeyVersion {
+            get {
+                return this.privateKeyVersionField;
+            }
+            set {
+                this.privateKeyVersionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Signature {
+            get {
+                return this.signatureField;
+            }
+            set {
+                this.signatureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int ReplicationCounter {
+            get {
+                return this.replicationCounterField;
+            }
+            set {
+                this.replicationCounterField = value;
             }
         }
     }
@@ -16166,6 +16399,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool pLBItemField;
         
+        private string taxGroupCodeField;
+        
+        private string taxCalculationTypeField;
+        
+        private decimal salesTaxRoundingField;
+        
         public TransSalesEntry1() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -16232,6 +16471,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.refundedLineNoField = 0;
             this.refundedTransNoField = 0;
             this.pLBItemField = false;
+            this.salesTaxRoundingField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -17336,6 +17576,36 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.pLBItemField = value;
             }
         }
+        
+        /// <remarks/>
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxCalculationType {
+            get {
+                return this.taxCalculationTypeField;
+            }
+            set {
+                this.taxCalculationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal SalesTaxRounding {
+            get {
+                return this.salesTaxRoundingField;
+            }
+            set {
+                this.salesTaxRoundingField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -17423,6 +17693,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private decimal noofPaymentLinesField;
         
         private bool saleIsReturnSaleField;
+        
+        private bool transIsMixedSaleRefundField;
+        
+        private decimal revertedGrossAmountField;
         
         private int counterField;
         
@@ -17518,6 +17792,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.toAccountField = false;
             this.noofPaymentLinesField = ((decimal)(0m));
             this.saleIsReturnSaleField = false;
+            this.transIsMixedSaleRefundField = false;
+            this.revertedGrossAmountField = ((decimal)(0m));
             this.counterField = 0;
             this.timewhenTotalPressedField = new System.DateTime(0);
             this.timewhenTransClosedField = new System.DateTime(0);
@@ -17938,6 +18214,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        public bool TransIsMixedSaleRefund {
+            get {
+                return this.transIsMixedSaleRefundField;
+            }
+            set {
+                this.transIsMixedSaleRefundField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal RevertedGrossAmount {
+            get {
+                return this.revertedGrossAmountField;
+            }
+            set {
+                this.revertedGrossAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
         public int Counter {
             get {
                 return this.counterField;
@@ -18353,6 +18649,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private TransHospitalityEntry1[] transHospitalityEntryField;
         
+        private TransactionSignature[] transactionSignatureField;
+        
+        private TransSalesTaxEntry1[] transSalesTaxEntryField;
+        
         private string[] textField;
         
         /// <remarks/>
@@ -18631,6 +18931,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("TransactionSignature")]
+        public TransactionSignature[] TransactionSignature {
+            get {
+                return this.transactionSignatureField;
+            }
+            set {
+                this.transactionSignatureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("TransSalesTaxEntry")]
+        public TransSalesTaxEntry1[] TransSalesTaxEntry {
+            get {
+                return this.transSalesTaxEntryField;
+            }
+            set {
+                this.transSalesTaxEntryField = value;
+            }
+        }
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
         public string[] Text {
             get {
@@ -18728,6 +19050,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool saleIsReturnSaleField;
         
+        private bool transIsMixedSaleRefundField;
+        
+        private decimal revertedGrossAmountField;
+        
         private int counterField;
         
         private System.DateTime timewhenTotalPressedField;
@@ -18814,6 +19140,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.toAccountField = false;
             this.noofPaymentLinesField = ((decimal)(0m));
             this.saleIsReturnSaleField = false;
+            this.transIsMixedSaleRefundField = false;
+            this.revertedGrossAmountField = ((decimal)(0m));
             this.counterField = 0;
             this.timewhenTotalPressedField = new System.DateTime(0);
             this.timewhenTransClosedField = new System.DateTime(0);
@@ -19228,6 +19556,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.saleIsReturnSaleField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool TransIsMixedSaleRefund {
+            get {
+                return this.transIsMixedSaleRefundField;
+            }
+            set {
+                this.transIsMixedSaleRefundField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal RevertedGrossAmount {
+            get {
+                return this.revertedGrossAmountField;
+            }
+            set {
+                this.revertedGrossAmountField = value;
             }
         }
         
@@ -25688,6 +26036,282 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032999")]
+    public partial class TransSalesTaxEntry {
+        
+        private string storeNoField;
+        
+        private string pOSTerminalNoField;
+        
+        private int transactionNoField;
+        
+        private int entryNoField;
+        
+        private string taxAreaCodeField;
+        
+        private string taxJurisdictionCodeField;
+        
+        private string taxGroupCodeField;
+        
+        private bool expenseCapitalizeField;
+        
+        private string taxTypeField;
+        
+        private bool useTaxField;
+        
+        private bool positiveField;
+        
+        private bool taxLiableField;
+        
+        private decimal quantityField;
+        
+        private decimal taxPercentageField;
+        
+        private decimal taxBaseAmountField;
+        
+        private decimal taxAmountField;
+        
+        private decimal taxDifferenceField;
+        
+        private string avaTaxJurisdictionField;
+        
+        private string avaTaxNameField;
+        
+        private string avaTaxCustomerUsageTypeField;
+        
+        private int replicationCounterField;
+        
+        public TransSalesTaxEntry() {
+            this.transactionNoField = 0;
+            this.entryNoField = 0;
+            this.expenseCapitalizeField = false;
+            this.useTaxField = false;
+            this.positiveField = false;
+            this.taxLiableField = false;
+            this.quantityField = ((decimal)(0m));
+            this.taxPercentageField = ((decimal)(0m));
+            this.taxBaseAmountField = ((decimal)(0m));
+            this.taxAmountField = ((decimal)(0m));
+            this.taxDifferenceField = ((decimal)(0m));
+            this.replicationCounterField = 0;
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string POSTerminalNo {
+            get {
+                return this.pOSTerminalNoField;
+            }
+            set {
+                this.pOSTerminalNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int TransactionNo {
+            get {
+                return this.transactionNoField;
+            }
+            set {
+                this.transactionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int EntryNo {
+            get {
+                return this.entryNoField;
+            }
+            set {
+                this.entryNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxJurisdictionCode {
+            get {
+                return this.taxJurisdictionCodeField;
+            }
+            set {
+                this.taxJurisdictionCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool ExpenseCapitalize {
+            get {
+                return this.expenseCapitalizeField;
+            }
+            set {
+                this.expenseCapitalizeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxType {
+            get {
+                return this.taxTypeField;
+            }
+            set {
+                this.taxTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool UseTax {
+            get {
+                return this.useTaxField;
+            }
+            set {
+                this.useTaxField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Positive {
+            get {
+                return this.positiveField;
+            }
+            set {
+                this.positiveField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxPercentage {
+            get {
+                return this.taxPercentageField;
+            }
+            set {
+                this.taxPercentageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxBaseAmount {
+            get {
+                return this.taxBaseAmountField;
+            }
+            set {
+                this.taxBaseAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxAmount {
+            get {
+                return this.taxAmountField;
+            }
+            set {
+                this.taxAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TaxDifference {
+            get {
+                return this.taxDifferenceField;
+            }
+            set {
+                this.taxDifferenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AvaTaxJurisdiction {
+            get {
+                return this.avaTaxJurisdictionField;
+            }
+            set {
+                this.avaTaxJurisdictionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AvaTaxName {
+            get {
+                return this.avaTaxNameField;
+            }
+            set {
+                this.avaTaxNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AvaTaxCustomerUsageType {
+            get {
+                return this.avaTaxCustomerUsageTypeField;
+            }
+            set {
+                this.avaTaxCustomerUsageTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int ReplicationCounter {
+            get {
+                return this.replicationCounterField;
+            }
+            set {
+                this.replicationCounterField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032999")]
     public partial class TransHospitalityEntry {
         
         private int transactionNoField;
@@ -29219,6 +29843,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool pLBItemField;
         
+        private string taxGroupCodeField;
+        
+        private string taxCalculationTypeField;
+        
+        private decimal salesTaxRoundingField;
+        
         public TransSalesEntry() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -29286,6 +29916,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.refundedTransNoField = 0;
             this.bITimestampField = new System.DateTime(0);
             this.pLBItemField = false;
+            this.salesTaxRoundingField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -30516,6 +31147,39 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.pLBItemField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=111)]
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=112)]
+        public string TaxCalculationType {
+            get {
+                return this.taxCalculationTypeField;
+            }
+            set {
+                this.taxCalculationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=113)]
+        public decimal SalesTaxRounding {
+            get {
+                return this.salesTaxRoundingField;
+            }
+            set {
+                this.salesTaxRoundingField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -30603,6 +31267,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private decimal noofPaymentLinesField;
         
         private bool saleIsReturnSaleField;
+        
+        private bool transIsMixedSaleRefundField;
+        
+        private decimal revertedGrossAmountField;
         
         private int counterField;
         
@@ -30702,6 +31370,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.toAccountField = false;
             this.noofPaymentLinesField = ((decimal)(0m));
             this.saleIsReturnSaleField = false;
+            this.transIsMixedSaleRefundField = false;
+            this.revertedGrossAmountField = ((decimal)(0m));
             this.counterField = 0;
             this.timewhenTotalPressedField = new System.DateTime(0);
             this.timewhenTransClosedField = new System.DateTime(0);
@@ -31124,6 +31794,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        public bool TransIsMixedSaleRefund {
+            get {
+                return this.transIsMixedSaleRefundField;
+            }
+            set {
+                this.transIsMixedSaleRefundField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal RevertedGrossAmount {
+            get {
+                return this.revertedGrossAmountField;
+            }
+            set {
+                this.revertedGrossAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
         public int Counter {
             get {
                 return this.counterField;
@@ -31534,6 +32224,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private TransHospitalityEntry[] transHospitalityEntryField;
         
+        private TransSalesTaxEntry[] transSalesTaxEntryField;
+        
         private string[] textField;
         
         /// <remarks/>
@@ -31665,6 +32357,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.transHospitalityEntryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("TransSalesTaxEntry")]
+        public TransSalesTaxEntry[] TransSalesTaxEntry {
+            get {
+                return this.transSalesTaxEntryField;
+            }
+            set {
+                this.transSalesTaxEntryField = value;
             }
         }
         
@@ -32093,6 +32796,984 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.returnPolicyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033065")]
+    public partial class POSTransaction {
+        
+        private bool newTransactionField;
+        
+        private string transactionTypeField;
+        
+        private string receiptNoField;
+        
+        private string salesStaffField;
+        
+        private string vATBusPostingGroupField;
+        
+        private string priceGroupCodeField;
+        
+        private string storeNoField;
+        
+        private string pOSTerminalNoField;
+        
+        private string createdonPOSTerminalField;
+        
+        private string staffIDField;
+        
+        private bool supervisorRightsField;
+        
+        private System.DateTime transDateField;
+        
+        private System.DateTime originalDateField;
+        
+        private System.DateTime transTimeField;
+        
+        private string shiftNoField;
+        
+        private System.DateTime shiftDateField;
+        
+        private string infocodeDiscGroupField;
+        
+        private string customerNoField;
+        
+        private string customerDiscGroupField;
+        
+        private decimal transSalePmtDiffField;
+        
+        private decimal noofItemsField;
+        
+        private decimal roundedField;
+        
+        private string entryStatusField;
+        
+        private decimal vATofDiscountField;
+        
+        private decimal noofItemLinesField;
+        
+        private decimal noofIncomeExpLinesField;
+        
+        private decimal noofPaymentLinesField;
+        
+        private bool noSaleOpenDrawerField;
+        
+        private bool saleIsReturnSaleField;
+        
+        private bool receiptPrintedforReturnField;
+        
+        private bool vATbyInfoCodeField;
+        
+        private decimal counterField;
+        
+        private System.DateTime timewhenTotalPressedField;
+        
+        private System.DateTime timewhenTransClosedField;
+        
+        private string custIDNumberField;
+        
+        private string transCurrencyCodeField;
+        
+        private decimal currencyFactorField;
+        
+        private bool postasShipmentField;
+        
+        private string managerKeyField;
+        
+        private string managerIDField;
+        
+        private string retrievedfromReceiptNoField;
+        
+        private string retrievedfromStoreNoField;
+        
+        private string retrievedfromPOSTermNoField;
+        
+        private int retrievedfromTransNoField;
+        
+        private int tableNoField;
+        
+        private int noofCoversField;
+        
+        private decimal serviceChargeField;
+        
+        private string createdbyStaffIDField;
+        
+        private int activeTableNoField;
+        
+        private string tableGroupField;
+        
+        private string documentNoField;
+        
+        private string selltoContactNoField;
+        
+        private string giftRegistrationNoField;
+        
+        private string memberCardNoField;
+        
+        private string salesTypeField;
+        
+        private string commentField;
+        
+        private int hospTypeSequenceField;
+        
+        private string originalSalesTypeField;
+        
+        private decimal startingPointBalanceField;
+        
+        private int splitNumberField;
+        
+        private decimal orderLimitField;
+        
+        private int tenderDeclWarningCounterField;
+        
+        private bool startFloatEntryField;
+        
+        private string suspendSalesTypeField;
+        
+        private bool containsForecourtItemsField;
+        
+        private string indexFieldField;
+        
+        private string applytoDocNoField;
+        
+        private string searchKeyField;
+        
+        private bool overridePLBItemField;
+        
+        private string overrideStaffIDField;
+        
+        private System.DateTime overrideDateTimeField;
+        
+        private bool restrictedFlagField;
+        
+        public POSTransaction() {
+            this.newTransactionField = false;
+            this.supervisorRightsField = false;
+            this.transDateField = new System.DateTime(0);
+            this.originalDateField = new System.DateTime(0);
+            this.transTimeField = new System.DateTime(0);
+            this.shiftDateField = new System.DateTime(0);
+            this.transSalePmtDiffField = ((decimal)(0m));
+            this.noofItemsField = ((decimal)(0m));
+            this.roundedField = ((decimal)(0m));
+            this.vATofDiscountField = ((decimal)(0m));
+            this.noofItemLinesField = ((decimal)(0m));
+            this.noofIncomeExpLinesField = ((decimal)(0m));
+            this.noofPaymentLinesField = ((decimal)(0m));
+            this.noSaleOpenDrawerField = false;
+            this.saleIsReturnSaleField = false;
+            this.receiptPrintedforReturnField = false;
+            this.vATbyInfoCodeField = false;
+            this.counterField = ((decimal)(0m));
+            this.timewhenTotalPressedField = new System.DateTime(0);
+            this.timewhenTransClosedField = new System.DateTime(0);
+            this.currencyFactorField = ((decimal)(0m));
+            this.postasShipmentField = false;
+            this.retrievedfromTransNoField = 0;
+            this.tableNoField = 0;
+            this.noofCoversField = 0;
+            this.serviceChargeField = ((decimal)(0m));
+            this.activeTableNoField = 0;
+            this.hospTypeSequenceField = 0;
+            this.startingPointBalanceField = ((decimal)(0m));
+            this.splitNumberField = 0;
+            this.orderLimitField = ((decimal)(0m));
+            this.tenderDeclWarningCounterField = 0;
+            this.startFloatEntryField = false;
+            this.containsForecourtItemsField = false;
+            this.overridePLBItemField = false;
+            this.overrideDateTimeField = new System.DateTime(0);
+            this.restrictedFlagField = false;
+        }
+        
+        /// <remarks/>
+        public bool NewTransaction {
+            get {
+                return this.newTransactionField;
+            }
+            set {
+                this.newTransactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransactionType {
+            get {
+                return this.transactionTypeField;
+            }
+            set {
+                this.transactionTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReceiptNo {
+            get {
+                return this.receiptNoField;
+            }
+            set {
+                this.receiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalesStaff {
+            get {
+                return this.salesStaffField;
+            }
+            set {
+                this.salesStaffField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VATBusPostingGroup {
+            get {
+                return this.vATBusPostingGroupField;
+            }
+            set {
+                this.vATBusPostingGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PriceGroupCode {
+            get {
+                return this.priceGroupCodeField;
+            }
+            set {
+                this.priceGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string POSTerminalNo {
+            get {
+                return this.pOSTerminalNoField;
+            }
+            set {
+                this.pOSTerminalNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedonPOSTerminal {
+            get {
+                return this.createdonPOSTerminalField;
+            }
+            set {
+                this.createdonPOSTerminalField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StaffID {
+            get {
+                return this.staffIDField;
+            }
+            set {
+                this.staffIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool SupervisorRights {
+            get {
+                return this.supervisorRightsField;
+            }
+            set {
+                this.supervisorRightsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime TransDate {
+            get {
+                return this.transDateField;
+            }
+            set {
+                this.transDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime OriginalDate {
+            get {
+                return this.originalDateField;
+            }
+            set {
+                this.originalDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime TransTime {
+            get {
+                return this.transTimeField;
+            }
+            set {
+                this.transTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShiftNo {
+            get {
+                return this.shiftNoField;
+            }
+            set {
+                this.shiftNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ShiftDate {
+            get {
+                return this.shiftDateField;
+            }
+            set {
+                this.shiftDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string InfocodeDiscGroup {
+            get {
+                return this.infocodeDiscGroupField;
+            }
+            set {
+                this.infocodeDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerNo {
+            get {
+                return this.customerNoField;
+            }
+            set {
+                this.customerNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerDiscGroup {
+            get {
+                return this.customerDiscGroupField;
+            }
+            set {
+                this.customerDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal TransSalePmtDiff {
+            get {
+                return this.transSalePmtDiffField;
+            }
+            set {
+                this.transSalePmtDiffField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NoofItems {
+            get {
+                return this.noofItemsField;
+            }
+            set {
+                this.noofItemsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Rounded {
+            get {
+                return this.roundedField;
+            }
+            set {
+                this.roundedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string EntryStatus {
+            get {
+                return this.entryStatusField;
+            }
+            set {
+                this.entryStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal VATofDiscount {
+            get {
+                return this.vATofDiscountField;
+            }
+            set {
+                this.vATofDiscountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NoofItemLines {
+            get {
+                return this.noofItemLinesField;
+            }
+            set {
+                this.noofItemLinesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NoofIncomeExpLines {
+            get {
+                return this.noofIncomeExpLinesField;
+            }
+            set {
+                this.noofIncomeExpLinesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal NoofPaymentLines {
+            get {
+                return this.noofPaymentLinesField;
+            }
+            set {
+                this.noofPaymentLinesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool NoSaleOpenDrawer {
+            get {
+                return this.noSaleOpenDrawerField;
+            }
+            set {
+                this.noSaleOpenDrawerField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool SaleIsReturnSale {
+            get {
+                return this.saleIsReturnSaleField;
+            }
+            set {
+                this.saleIsReturnSaleField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool ReceiptPrintedforReturn {
+            get {
+                return this.receiptPrintedforReturnField;
+            }
+            set {
+                this.receiptPrintedforReturnField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool VATbyInfoCode {
+            get {
+                return this.vATbyInfoCodeField;
+            }
+            set {
+                this.vATbyInfoCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Counter {
+            get {
+                return this.counterField;
+            }
+            set {
+                this.counterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime TimewhenTotalPressed {
+            get {
+                return this.timewhenTotalPressedField;
+            }
+            set {
+                this.timewhenTotalPressedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime TimewhenTransClosed {
+            get {
+                return this.timewhenTransClosedField;
+            }
+            set {
+                this.timewhenTransClosedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustIDNumber {
+            get {
+                return this.custIDNumberField;
+            }
+            set {
+                this.custIDNumberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransCurrencyCode {
+            get {
+                return this.transCurrencyCodeField;
+            }
+            set {
+                this.transCurrencyCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal CurrencyFactor {
+            get {
+                return this.currencyFactorField;
+            }
+            set {
+                this.currencyFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool PostasShipment {
+            get {
+                return this.postasShipmentField;
+            }
+            set {
+                this.postasShipmentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ManagerKey {
+            get {
+                return this.managerKeyField;
+            }
+            set {
+                this.managerKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ManagerID {
+            get {
+                return this.managerIDField;
+            }
+            set {
+                this.managerIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string RetrievedfromReceiptNo {
+            get {
+                return this.retrievedfromReceiptNoField;
+            }
+            set {
+                this.retrievedfromReceiptNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string RetrievedfromStoreNo {
+            get {
+                return this.retrievedfromStoreNoField;
+            }
+            set {
+                this.retrievedfromStoreNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string RetrievedfromPOSTermNo {
+            get {
+                return this.retrievedfromPOSTermNoField;
+            }
+            set {
+                this.retrievedfromPOSTermNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int RetrievedfromTransNo {
+            get {
+                return this.retrievedfromTransNoField;
+            }
+            set {
+                this.retrievedfromTransNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int TableNo {
+            get {
+                return this.tableNoField;
+            }
+            set {
+                this.tableNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int NoofCovers {
+            get {
+                return this.noofCoversField;
+            }
+            set {
+                this.noofCoversField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal ServiceCharge {
+            get {
+                return this.serviceChargeField;
+            }
+            set {
+                this.serviceChargeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedbyStaffID {
+            get {
+                return this.createdbyStaffIDField;
+            }
+            set {
+                this.createdbyStaffIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int ActiveTableNo {
+            get {
+                return this.activeTableNoField;
+            }
+            set {
+                this.activeTableNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TableGroup {
+            get {
+                return this.tableGroupField;
+            }
+            set {
+                this.tableGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DocumentNo {
+            get {
+                return this.documentNoField;
+            }
+            set {
+                this.documentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SelltoContactNo {
+            get {
+                return this.selltoContactNoField;
+            }
+            set {
+                this.selltoContactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string GiftRegistrationNo {
+            get {
+                return this.giftRegistrationNoField;
+            }
+            set {
+                this.giftRegistrationNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberCardNo {
+            get {
+                return this.memberCardNoField;
+            }
+            set {
+                this.memberCardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalesType {
+            get {
+                return this.salesTypeField;
+            }
+            set {
+                this.salesTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Comment {
+            get {
+                return this.commentField;
+            }
+            set {
+                this.commentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int HospTypeSequence {
+            get {
+                return this.hospTypeSequenceField;
+            }
+            set {
+                this.hospTypeSequenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OriginalSalesType {
+            get {
+                return this.originalSalesTypeField;
+            }
+            set {
+                this.originalSalesTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal StartingPointBalance {
+            get {
+                return this.startingPointBalanceField;
+            }
+            set {
+                this.startingPointBalanceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int SplitNumber {
+            get {
+                return this.splitNumberField;
+            }
+            set {
+                this.splitNumberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal OrderLimit {
+            get {
+                return this.orderLimitField;
+            }
+            set {
+                this.orderLimitField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int TenderDeclWarningCounter {
+            get {
+                return this.tenderDeclWarningCounterField;
+            }
+            set {
+                this.tenderDeclWarningCounterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool StartFloatEntry {
+            get {
+                return this.startFloatEntryField;
+            }
+            set {
+                this.startFloatEntryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SuspendSalesType {
+            get {
+                return this.suspendSalesTypeField;
+            }
+            set {
+                this.suspendSalesTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ContainsForecourtItems {
+            get {
+                return this.containsForecourtItemsField;
+            }
+            set {
+                this.containsForecourtItemsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string IndexField {
+            get {
+                return this.indexFieldField;
+            }
+            set {
+                this.indexFieldField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ApplytoDocNo {
+            get {
+                return this.applytoDocNoField;
+            }
+            set {
+                this.applytoDocNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SearchKey {
+            get {
+                return this.searchKeyField;
+            }
+            set {
+                this.searchKeyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool OverridePLBItem {
+            get {
+                return this.overridePLBItemField;
+            }
+            set {
+                this.overridePLBItemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OverrideStaffID {
+            get {
+                return this.overrideStaffIDField;
+            }
+            set {
+                this.overrideStaffIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime OverrideDateTime {
+            get {
+                return this.overrideDateTimeField;
+            }
+            set {
+                this.overrideDateTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool RestrictedFlag {
+            get {
+                return this.restrictedFlagField;
+            }
+            set {
+                this.restrictedFlagField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033065")]
+    public partial class RootGetPosTransSuspList {
+        
+        private POSTransaction[] pOSTransactionField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("POSTransaction")]
+        public POSTransaction[] POSTransaction {
+            get {
+                return this.pOSTransactionField;
+            }
+            set {
+                this.pOSTransactionField = value;
             }
         }
         
@@ -37222,331 +38903,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
-    public partial class HierarchyNodes {
-        
-        private string hierarchyCodeField;
-        
-        private string nodeIDField;
-        
-        private string parentNodeIDField;
-        
-        private string descriptionField;
-        
-        private int indentationField;
-        
-        private int presentationOrderField;
-        
-        private bool hasChildrenField;
-        
-        private string[] retailImageCodeField;
-        
-        public HierarchyNodes() {
-            this.indentationField = 0;
-            this.presentationOrderField = 0;
-            this.hasChildrenField = false;
-        }
-        
-        /// <remarks/>
-        public string HierarchyCode {
-            get {
-                return this.hierarchyCodeField;
-            }
-            set {
-                this.hierarchyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string NodeID {
-            get {
-                return this.nodeIDField;
-            }
-            set {
-                this.nodeIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ParentNodeID {
-            get {
-                return this.parentNodeIDField;
-            }
-            set {
-                this.parentNodeIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int Indentation {
-            get {
-                return this.indentationField;
-            }
-            set {
-                this.indentationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PresentationOrder {
-            get {
-                return this.presentationOrderField;
-            }
-            set {
-                this.presentationOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool HasChildren {
-            get {
-                return this.hasChildrenField;
-            }
-            set {
-                this.hasChildrenField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("RetailImageCode")]
-        public string[] RetailImageCode {
-            get {
-                return this.retailImageCodeField;
-            }
-            set {
-                this.retailImageCodeField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
-    public partial class AttributeOptionValue {
-        
-        private string attributeCodeField;
-        
-        private int sequenceField;
-        
-        private string optionValueField;
-        
-        public AttributeOptionValue() {
-            this.sequenceField = 0;
-        }
-        
-        /// <remarks/>
-        public string AttributeCode {
-            get {
-                return this.attributeCodeField;
-            }
-            set {
-                this.attributeCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int Sequence {
-            get {
-                return this.sequenceField;
-            }
-            set {
-                this.sequenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OptionValue {
-            get {
-                return this.optionValueField;
-            }
-            set {
-                this.optionValueField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
-    public partial class HierarchyAttribute {
-        
-        private string hierarchyCodeField;
-        
-        private string attributeCodeField;
-        
-        private string descriptionField;
-        
-        /// <remarks/>
-        public string HierarchyCode {
-            get {
-                return this.hierarchyCodeField;
-            }
-            set {
-                this.hierarchyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AttributeCode {
-            get {
-                return this.attributeCodeField;
-            }
-            set {
-                this.attributeCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
-    public partial class Hierarchy {
-        
-        private string hierarchyCodeField;
-        
-        private string descriptionField;
-        
-        private string typeField;
-        
-        /// <remarks/>
-        public string HierarchyCode {
-            get {
-                return this.hierarchyCodeField;
-            }
-            set {
-                this.hierarchyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032985")]
-    public partial class RootGetHierarchy {
-        
-        private Hierarchy[] hierarchyField;
-        
-        private HierarchyAttribute[] hierarchyAttributeField;
-        
-        private AttributeOptionValue[] attributeOptionValueField;
-        
-        private HierarchyNodes[] hierarchyNodesField;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("Hierarchy")]
-        public Hierarchy[] Hierarchy {
-            get {
-                return this.hierarchyField;
-            }
-            set {
-                this.hierarchyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("HierarchyAttribute")]
-        public HierarchyAttribute[] HierarchyAttribute {
-            get {
-                return this.hierarchyAttributeField;
-            }
-            set {
-                this.hierarchyAttributeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("AttributeOptionValue")]
-        public AttributeOptionValue[] AttributeOptionValue {
-            get {
-                return this.attributeOptionValueField;
-            }
-            set {
-                this.attributeOptionValueField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("HierarchyNodes")]
-        public HierarchyNodes[] HierarchyNodes {
-            get {
-                return this.hierarchyNodesField;
-            }
-            set {
-                this.hierarchyNodesField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033220")]
     public partial class HierarchyNodeImageV2 {
         
@@ -37921,6 +39277,454 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="HierarchyDateVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class HierarchyDateValSched {
+        
+        private string hierarchyCodeField;
+        
+        private string validationScheduleIDField;
+        
+        private string salesTypeFilterField;
+        
+        private int priorityField;
+        
+        public HierarchyDateValSched() {
+            this.priorityField = 0;
+        }
+        
+        /// <remarks/>
+        public string HierarchyCode {
+            get {
+                return this.hierarchyCodeField;
+            }
+            set {
+                this.hierarchyCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ValidationScheduleID {
+            get {
+                return this.validationScheduleIDField;
+            }
+            set {
+                this.validationScheduleIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalesTypeFilter {
+            get {
+                return this.salesTypeFilterField;
+            }
+            set {
+                this.salesTypeFilterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int Priority {
+            get {
+                return this.priorityField;
+            }
+            set {
+                this.priorityField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="HierarchyNodeImageVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class HierarchyNodeImageValSched {
+        
+        private string keyValueField;
+        
+        private int displayOrderField;
+        
+        private string imageIdField;
+        
+        public HierarchyNodeImageValSched() {
+            this.displayOrderField = 0;
+        }
+        
+        /// <remarks/>
+        public string KeyValue {
+            get {
+                return this.keyValueField;
+            }
+            set {
+                this.keyValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int DisplayOrder {
+            get {
+                return this.displayOrderField;
+            }
+            set {
+                this.displayOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ImageId {
+            get {
+                return this.imageIdField;
+            }
+            set {
+                this.imageIdField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="HierarchyNodesVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class HierarchyNodesValSched {
+        
+        private string hierarchyCodeField;
+        
+        private string nodeIDField;
+        
+        private string parentNodeIDField;
+        
+        private string descriptionField;
+        
+        private int indentationField;
+        
+        private int presentationOrderField;
+        
+        private bool hasChildrenField;
+        
+        public HierarchyNodesValSched() {
+            this.indentationField = 0;
+            this.presentationOrderField = 0;
+            this.hasChildrenField = false;
+        }
+        
+        /// <remarks/>
+        public string HierarchyCode {
+            get {
+                return this.hierarchyCodeField;
+            }
+            set {
+                this.hierarchyCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string NodeID {
+            get {
+                return this.nodeIDField;
+            }
+            set {
+                this.nodeIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ParentNodeID {
+            get {
+                return this.parentNodeIDField;
+            }
+            set {
+                this.parentNodeIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int Indentation {
+            get {
+                return this.indentationField;
+            }
+            set {
+                this.indentationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int PresentationOrder {
+            get {
+                return this.presentationOrderField;
+            }
+            set {
+                this.presentationOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool HasChildren {
+            get {
+                return this.hasChildrenField;
+            }
+            set {
+                this.hasChildrenField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="AttributeOptionValueVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class AttributeOptionValueValSched {
+        
+        private string attributeCodeField;
+        
+        private int sequenceField;
+        
+        private string optionValueField;
+        
+        public AttributeOptionValueValSched() {
+            this.sequenceField = 0;
+        }
+        
+        /// <remarks/>
+        public string AttributeCode {
+            get {
+                return this.attributeCodeField;
+            }
+            set {
+                this.attributeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int Sequence {
+            get {
+                return this.sequenceField;
+            }
+            set {
+                this.sequenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OptionValue {
+            get {
+                return this.optionValueField;
+            }
+            set {
+                this.optionValueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="HierarchyAttributeVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class HierarchyAttributeValSched {
+        
+        private string hierarchyCodeField;
+        
+        private string attributeCodeField;
+        
+        private string descriptionField;
+        
+        /// <remarks/>
+        public string HierarchyCode {
+            get {
+                return this.hierarchyCodeField;
+            }
+            set {
+                this.hierarchyCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeCode {
+            get {
+                return this.attributeCodeField;
+            }
+            set {
+                this.attributeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="HierarchyVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class HierarchyValSched {
+        
+        private string hierarchyCodeField;
+        
+        private string descriptionField;
+        
+        private string typeField;
+        
+        /// <remarks/>
+        public string HierarchyCode {
+            get {
+                return this.hierarchyCodeField;
+            }
+            set {
+                this.hierarchyCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="RootGetHierarchyVal.Sched", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033222")]
+    public partial class RootGetHierarchyValSched {
+        
+        private HierarchyValSched[] hierarchyValSchedField;
+        
+        private HierarchyAttributeValSched[] hierarchyAttributeValSchedField;
+        
+        private AttributeOptionValueValSched[] attributeOptionValueValSchedField;
+        
+        private HierarchyNodesValSched[] hierarchyNodesValSchedField;
+        
+        private HierarchyNodeImageValSched[] hierarchyNodeImageValSchedField;
+        
+        private HierarchyDateValSched[] hierarchyDateValSchedField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("HierarchyVal.Sched")]
+        public HierarchyValSched[] HierarchyValSched {
+            get {
+                return this.hierarchyValSchedField;
+            }
+            set {
+                this.hierarchyValSchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("HierarchyAttributeVal.Sched")]
+        public HierarchyAttributeValSched[] HierarchyAttributeValSched {
+            get {
+                return this.hierarchyAttributeValSchedField;
+            }
+            set {
+                this.hierarchyAttributeValSchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("AttributeOptionValueVal.Sched")]
+        public AttributeOptionValueValSched[] AttributeOptionValueValSched {
+            get {
+                return this.attributeOptionValueValSchedField;
+            }
+            set {
+                this.attributeOptionValueValSchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("HierarchyNodesVal.Sched")]
+        public HierarchyNodesValSched[] HierarchyNodesValSched {
+            get {
+                return this.hierarchyNodesValSchedField;
+            }
+            set {
+                this.hierarchyNodesValSchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("HierarchyNodeImageVal.Sched")]
+        public HierarchyNodeImageValSched[] HierarchyNodeImageValSched {
+            get {
+                return this.hierarchyNodeImageValSchedField;
+            }
+            set {
+                this.hierarchyNodeImageValSchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("HierarchyDateVal.Sched")]
+        public HierarchyDateValSched[] HierarchyDateValSched {
+            get {
+                return this.hierarchyDateValSchedField;
+            }
+            set {
+                this.hierarchyDateValSchedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032987")]
     public partial class HierarchyNodeLink {
         
@@ -37933,6 +39737,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private string noField;
         
         private string descriptionField;
+        
+        private string itemUnitofMeasureField;
+        
+        private int sortOrderField;
+        
+        public HierarchyNodeLink() {
+            this.sortOrderField = 0;
+        }
         
         /// <remarks/>
         public string HierarchyCode {
@@ -37981,6 +39793,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemUnitofMeasure {
+            get {
+                return this.itemUnitofMeasureField;
+            }
+            set {
+                this.itemUnitofMeasureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int SortOrder {
+            get {
+                return this.sortOrderField;
+            }
+            set {
+                this.sortOrderField = value;
             }
         }
     }
@@ -42651,1599 +44483,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderPayment", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033010")]
-    public partial class CustomerOrderPayment1 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private int lineNoField;
-        
-        private decimal preApprovedAmountField;
-        
-        private decimal finalisedAmountField;
-        
-        private string tenderTypeField;
-        
-        private string cardTypeField;
-        
-        private string currencyCodeField;
-        
-        private decimal currencyFactorField;
-        
-        private string authorisationCodeField;
-        
-        private System.DateTime preApprovedValidDateField;
-        
-        private string cardorCustomernumberField;
-        
-        private string incomeExpenseAccountNoField;
-        
-        private decimal preApprovedAmountLCYField;
-        
-        private decimal finalisedAmountLCYField;
-        
-        private bool loyaltyPointpaymentField;
-        
-        private bool depositPaymentField;
-        
-        private string posTransReceiptNoField;
-        
-        private string typeField;
-        
-        private System.DateTime createdField;
-        
-        private bool authorizationExpiredField;
-        
-        private string tokenNoField;
-        
-        private string externalReferenceField;
-        
-        public CustomerOrderPayment1() {
-            this.lineNoField = 0;
-            this.preApprovedAmountField = ((decimal)(0m));
-            this.finalisedAmountField = ((decimal)(0m));
-            this.currencyFactorField = ((decimal)(0m));
-            this.preApprovedValidDateField = new System.DateTime(0);
-            this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalisedAmountLCYField = ((decimal)(0m));
-            this.loyaltyPointpaymentField = false;
-            this.depositPaymentField = false;
-            this.createdField = new System.DateTime(0);
-            this.authorizationExpiredField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmount {
-            get {
-                return this.preApprovedAmountField;
-            }
-            set {
-                this.preApprovedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal FinalisedAmount {
-            get {
-                return this.finalisedAmountField;
-            }
-            set {
-                this.finalisedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TenderType {
-            get {
-                return this.tenderTypeField;
-            }
-            set {
-                this.tenderTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardType {
-            get {
-                return this.cardTypeField;
-            }
-            set {
-                this.cardTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AuthorisationCode {
-            get {
-                return this.authorisationCodeField;
-            }
-            set {
-                this.authorisationCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime PreApprovedValidDate {
-            get {
-                return this.preApprovedValidDateField;
-            }
-            set {
-                this.preApprovedValidDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardorCustomernumber {
-            get {
-                return this.cardorCustomernumberField;
-            }
-            set {
-                this.cardorCustomernumberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string IncomeExpenseAccountNo {
-            get {
-                return this.incomeExpenseAccountNoField;
-            }
-            set {
-                this.incomeExpenseAccountNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmountLCY {
-            get {
-                return this.preApprovedAmountLCYField;
-            }
-            set {
-                this.preApprovedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalisedAmountLCY {
-            get {
-                return this.finalisedAmountLCYField;
-            }
-            set {
-                this.finalisedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool LoyaltyPointpayment {
-            get {
-                return this.loyaltyPointpaymentField;
-            }
-            set {
-                this.loyaltyPointpaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool DepositPayment {
-            get {
-                return this.depositPaymentField;
-            }
-            set {
-                this.depositPaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PosTransReceiptNo {
-            get {
-                return this.posTransReceiptNoField;
-            }
-            set {
-                this.posTransReceiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
-        public System.DateTime Created {
-            get {
-                return this.createdField;
-            }
-            set {
-                this.createdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool AuthorizationExpired {
-            get {
-                return this.authorizationExpiredField;
-            }
-            set {
-                this.authorizationExpiredField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TokenNo {
-            get {
-                return this.tokenNoField;
-            }
-            set {
-                this.tokenNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalReference {
-            get {
-                return this.externalReferenceField;
-            }
-            set {
-                this.externalReferenceField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderDiscountLine", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033010")]
-    public partial class CustomerOrderDiscountLine1 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private int entryNoField;
-        
-        private int discountTypeField;
-        
-        private string offerNoField;
-        
-        private int periodicDiscTypeField;
-        
-        private string periodicDiscGroupField;
-        
-        private string descriptionField;
-        
-        private decimal discountPercentField;
-        
-        private decimal discountAmountField;
-        
-        public CustomerOrderDiscountLine1() {
-            this.lineNoField = 0;
-            this.entryNoField = 0;
-            this.discountTypeField = 0;
-            this.periodicDiscTypeField = 0;
-            this.discountPercentField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int EntryNo {
-            get {
-                return this.entryNoField;
-            }
-            set {
-                this.entryNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int DiscountType {
-            get {
-                return this.discountTypeField;
-            }
-            set {
-                this.discountTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OfferNo {
-            get {
-                return this.offerNoField;
-            }
-            set {
-                this.offerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PeriodicDiscType {
-            get {
-                return this.periodicDiscTypeField;
-            }
-            set {
-                this.periodicDiscTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PeriodicDiscGroup {
-            get {
-                return this.periodicDiscGroupField;
-            }
-            set {
-                this.periodicDiscGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderLine", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033010")]
-    public partial class CustomerOrderLine3 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private string statusField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal netPriceField;
-        
-        private decimal priceField;
-        
-        private decimal quantityField;
-        
-        private decimal discountAmountField;
-        
-        private decimal discountPercentField;
-        
-        private decimal netAmountField;
-        
-        private decimal vatAmountField;
-        
-        private decimal amountField;
-        
-        private string vatProdPostingGroupField;
-        
-        private string itemDescriptionField;
-        
-        private string variantDescriptionField;
-        
-        private string uoMDescriptionField;
-        
-        private int originalLineNoField;
-        
-        private string sourcingLocationField;
-        
-        private string orderReferenceField;
-        
-        private bool inventoryTransferField;
-        
-        private bool vendorSourcingField;
-        
-        private string leadTimeField;
-        
-        private decimal prepaymentAmountField;
-        
-        private string purchaseOrderNoField;
-        
-        private decimal quantityReceivedField;
-        
-        private string retailImageIDField;
-        
-        public CustomerOrderLine3() {
-            this.lineNoField = 0;
-            this.netPriceField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.quantityField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-            this.discountPercentField = ((decimal)(0m));
-            this.netAmountField = ((decimal)(0m));
-            this.vatAmountField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-            this.originalLineNoField = 0;
-            this.inventoryTransferField = false;
-            this.vendorSourcingField = false;
-            this.prepaymentAmountField = ((decimal)(0m));
-            this.quantityReceivedField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetPrice {
-            get {
-                return this.netPriceField;
-            }
-            set {
-                this.netPriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetAmount {
-            get {
-                return this.netAmountField;
-            }
-            set {
-                this.netAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal VatAmount {
-            get {
-                return this.vatAmountField;
-            }
-            set {
-                this.vatAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VatProdPostingGroup {
-            get {
-                return this.vatProdPostingGroupField;
-            }
-            set {
-                this.vatProdPostingGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ItemDescription {
-            get {
-                return this.itemDescriptionField;
-            }
-            set {
-                this.itemDescriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantDescription {
-            get {
-                return this.variantDescriptionField;
-            }
-            set {
-                this.variantDescriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UoMDescription {
-            get {
-                return this.uoMDescriptionField;
-            }
-            set {
-                this.uoMDescriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int OriginalLineNo {
-            get {
-                return this.originalLineNoField;
-            }
-            set {
-                this.originalLineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OrderReference {
-            get {
-                return this.orderReferenceField;
-            }
-            set {
-                this.orderReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LeadTime {
-            get {
-                return this.leadTimeField;
-            }
-            set {
-                this.leadTimeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PrepaymentAmount {
-            get {
-                return this.prepaymentAmountField;
-            }
-            set {
-                this.prepaymentAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PurchaseOrderNo {
-            get {
-                return this.purchaseOrderNoField;
-            }
-            set {
-                this.purchaseOrderNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal QuantityReceived {
-            get {
-                return this.quantityReceivedField;
-            }
-            set {
-                this.quantityReceivedField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string RetailImageID {
-            get {
-                return this.retailImageIDField;
-            }
-            set {
-                this.retailImageIDField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033010")]
-    public partial class CustomerOrderHeader4 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private string collectLocationField;
-        
-        private string createdatStoreField;
-        
-        private string documentTypeField;
-        
-        private string documentNoField;
-        
-        private System.DateTime documentDateTimeField;
-        
-        private string statusField;
-        
-        private string terminalNoField;
-        
-        private string currencyCodeField;
-        
-        private string currencyFactorField;
-        
-        private string vatBusPostingGroupField;
-        
-        private string customerNoField;
-        
-        private string memberCardNoField;
-        
-        private string collectTimeLimitField;
-        
-        private int sourceTypeField;
-        
-        private string receiptNoField;
-        
-        private string transStoreNoField;
-        
-        private string transTerminalNoField;
-        
-        private string transactionNoField;
-        
-        private string inventoryTransferField;
-        
-        private string fullNameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string territoryCodeField;
-        
-        private string shipOrderPOSFlagField;
-        
-        private bool shipOrderField;
-        
-        private string shiptoFullNameField;
-        
-        private string shiptoAddressField;
-        
-        private string shiptoAddress2Field;
-        
-        private string shiptoCityField;
-        
-        private string shiptoCountyField;
-        
-        private string shiptoPostCodeField;
-        
-        private string shiptoCountryRegionCodeField;
-        
-        private string shiptoPhoneNoField;
-        
-        private string shiptoEmailField;
-        
-        private string shiptoHouseApartmentNoField;
-        
-        private bool clickandCollectOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string salesOrderNoField;
-        
-        private string sourcingLocationField;
-        
-        private string sourcingOrderField;
-        
-        private string statusInfoField;
-        
-        private bool showaspostedField;
-        
-        private string vendorSourcingField;
-        
-        private string externalIDField;
-        
-        private bool cancelledOrderField;
-        
-        public CustomerOrderHeader4() {
-            this.documentDateTimeField = new System.DateTime(0);
-            this.sourceTypeField = 0;
-            this.shipOrderField = false;
-            this.clickandCollectOrderField = false;
-            this.showaspostedField = false;
-            this.cancelledOrderField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CollectLocation {
-            get {
-                return this.collectLocationField;
-            }
-            set {
-                this.collectLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CreatedatStore {
-            get {
-                return this.createdatStoreField;
-            }
-            set {
-                this.createdatStoreField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DocumentType {
-            get {
-                return this.documentTypeField;
-            }
-            set {
-                this.documentTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DocumentNo {
-            get {
-                return this.documentNoField;
-            }
-            set {
-                this.documentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public System.DateTime DocumentDateTime {
-            get {
-                return this.documentDateTimeField;
-            }
-            set {
-                this.documentDateTimeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerminalNo {
-            get {
-                return this.terminalNoField;
-            }
-            set {
-                this.terminalNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VatBusPostingGroup {
-            get {
-                return this.vatBusPostingGroupField;
-            }
-            set {
-                this.vatBusPostingGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CollectTimeLimit {
-            get {
-                return this.collectTimeLimitField;
-            }
-            set {
-                this.collectTimeLimitField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int SourceType {
-            get {
-                return this.sourceTypeField;
-            }
-            set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ReceiptNo {
-            get {
-                return this.receiptNoField;
-            }
-            set {
-                this.receiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TransStoreNo {
-            get {
-                return this.transStoreNoField;
-            }
-            set {
-                this.transStoreNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TransTerminalNo {
-            get {
-                return this.transTerminalNoField;
-            }
-            set {
-                this.transTerminalNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TransactionNo {
-            get {
-                return this.transactionNoField;
-            }
-            set {
-                this.transactionNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FullName {
-            get {
-                return this.fullNameField;
-            }
-            set {
-                this.fullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerritoryCode {
-            get {
-                return this.territoryCodeField;
-            }
-            set {
-                this.territoryCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipOrderPOSFlag {
-            get {
-                return this.shipOrderPOSFlagField;
-            }
-            set {
-                this.shipOrderPOSFlagField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ShipOrder {
-            get {
-                return this.shipOrderField;
-            }
-            set {
-                this.shipOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoFullName {
-            get {
-                return this.shiptoFullNameField;
-            }
-            set {
-                this.shiptoFullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoAddress {
-            get {
-                return this.shiptoAddressField;
-            }
-            set {
-                this.shiptoAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoAddress2 {
-            get {
-                return this.shiptoAddress2Field;
-            }
-            set {
-                this.shiptoAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoCity {
-            get {
-                return this.shiptoCityField;
-            }
-            set {
-                this.shiptoCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoCounty {
-            get {
-                return this.shiptoCountyField;
-            }
-            set {
-                this.shiptoCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoPostCode {
-            get {
-                return this.shiptoPostCodeField;
-            }
-            set {
-                this.shiptoPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoCountryRegionCode {
-            get {
-                return this.shiptoCountryRegionCodeField;
-            }
-            set {
-                this.shiptoCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoPhoneNo {
-            get {
-                return this.shiptoPhoneNoField;
-            }
-            set {
-                this.shiptoPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoEmail {
-            get {
-                return this.shiptoEmailField;
-            }
-            set {
-                this.shiptoEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoHouseApartmentNo {
-            get {
-                return this.shiptoHouseApartmentNoField;
-            }
-            set {
-                this.shiptoHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickandCollectOrder {
-            get {
-                return this.clickandCollectOrderField;
-            }
-            set {
-                this.clickandCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SalesOrderNo {
-            get {
-                return this.salesOrderNoField;
-            }
-            set {
-                this.salesOrderNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingOrder {
-            get {
-                return this.sourcingOrderField;
-            }
-            set {
-                this.sourcingOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StatusInfo {
-            get {
-                return this.statusInfoField;
-            }
-            set {
-                this.statusInfoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool Showasposted {
-            get {
-                return this.showaspostedField;
-            }
-            set {
-                this.showaspostedField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool CancelledOrder {
-            get {
-                return this.cancelledOrderField;
-            }
-            set {
-                this.cancelledOrderField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033010")]
-    public partial class RootCustomerOrderGet {
-        
-        private CustomerOrderHeader4[] customerOrderHeaderField;
-        
-        private CustomerOrderLine3[] customerOrderLineField;
-        
-        private CustomerOrderDiscountLine1[] customerOrderDiscountLineField;
-        
-        private CustomerOrderPayment1[] customerOrderPaymentField;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
-        public CustomerOrderHeader4[] CustomerOrderHeader {
-            get {
-                return this.customerOrderHeaderField;
-            }
-            set {
-                this.customerOrderHeaderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderLine")]
-        public CustomerOrderLine3[] CustomerOrderLine {
-            get {
-                return this.customerOrderLineField;
-            }
-            set {
-                this.customerOrderLineField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderDiscountLine")]
-        public CustomerOrderDiscountLine1[] CustomerOrderDiscountLine {
-            get {
-                return this.customerOrderDiscountLineField;
-            }
-            set {
-                this.customerOrderDiscountLineField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderPayment")]
-        public CustomerOrderPayment1[] CustomerOrderPayment {
-            get {
-                return this.customerOrderPaymentField;
-            }
-            set {
-                this.customerOrderPaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033060")]
     public partial class CustomerOrderGetCOPaymentV3 {
         
@@ -45825,2872 +46064,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033047")]
-    public partial class CustomerOrderGetCOPaymentV2 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private int lineNoField;
-        
-        private decimal preApprovedAmountField;
-        
-        private decimal finalizedAmountField;
-        
-        private string tenderTypeField;
-        
-        private string cardTypeField;
-        
-        private string currencyCodeField;
-        
-        private decimal currencyFactorField;
-        
-        private string authorizationCodeField;
-        
-        private System.DateTime preApprovedValidDateField;
-        
-        private string cardorCustomernumberField;
-        
-        private string incomeExpenseAccountNoField;
-        
-        private decimal preApprovedAmountLCYField;
-        
-        private decimal finalizedAmountLCYField;
-        
-        private bool loyaltyPointpaymentField;
-        
-        private string posTransReceiptNoField;
-        
-        private string typeField;
-        
-        private System.DateTime createdField;
-        
-        private bool authorizationExpiredField;
-        
-        private string tokenNoField;
-        
-        private string externalReferenceField;
-        
-        public CustomerOrderGetCOPaymentV2() {
-            this.lineNoField = 0;
-            this.preApprovedAmountField = ((decimal)(0m));
-            this.finalizedAmountField = ((decimal)(0m));
-            this.currencyFactorField = ((decimal)(0m));
-            this.preApprovedValidDateField = new System.DateTime(0);
-            this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalizedAmountLCYField = ((decimal)(0m));
-            this.loyaltyPointpaymentField = false;
-            this.createdField = new System.DateTime(0);
-            this.authorizationExpiredField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmount {
-            get {
-                return this.preApprovedAmountField;
-            }
-            set {
-                this.preApprovedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal FinalizedAmount {
-            get {
-                return this.finalizedAmountField;
-            }
-            set {
-                this.finalizedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TenderType {
-            get {
-                return this.tenderTypeField;
-            }
-            set {
-                this.tenderTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardType {
-            get {
-                return this.cardTypeField;
-            }
-            set {
-                this.cardTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AuthorizationCode {
-            get {
-                return this.authorizationCodeField;
-            }
-            set {
-                this.authorizationCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime PreApprovedValidDate {
-            get {
-                return this.preApprovedValidDateField;
-            }
-            set {
-                this.preApprovedValidDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardorCustomernumber {
-            get {
-                return this.cardorCustomernumberField;
-            }
-            set {
-                this.cardorCustomernumberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string IncomeExpenseAccountNo {
-            get {
-                return this.incomeExpenseAccountNoField;
-            }
-            set {
-                this.incomeExpenseAccountNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmountLCY {
-            get {
-                return this.preApprovedAmountLCYField;
-            }
-            set {
-                this.preApprovedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalizedAmountLCY {
-            get {
-                return this.finalizedAmountLCYField;
-            }
-            set {
-                this.finalizedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool LoyaltyPointpayment {
-            get {
-                return this.loyaltyPointpaymentField;
-            }
-            set {
-                this.loyaltyPointpaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PosTransReceiptNo {
-            get {
-                return this.posTransReceiptNoField;
-            }
-            set {
-                this.posTransReceiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
-        public System.DateTime Created {
-            get {
-                return this.createdField;
-            }
-            set {
-                this.createdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool AuthorizationExpired {
-            get {
-                return this.authorizationExpiredField;
-            }
-            set {
-                this.authorizationExpiredField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TokenNo {
-            get {
-                return this.tokenNoField;
-            }
-            set {
-                this.tokenNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalReference {
-            get {
-                return this.externalReferenceField;
-            }
-            set {
-                this.externalReferenceField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033047")]
-    public partial class CustomerOrderGetCODiscountLineV2 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private int entryNoField;
-        
-        private int discountTypeField;
-        
-        private string offerNoField;
-        
-        private int periodicDiscTypeField;
-        
-        private string periodicDiscGroupField;
-        
-        private string descriptionField;
-        
-        private decimal discountPercentField;
-        
-        private decimal discountAmountField;
-        
-        public CustomerOrderGetCODiscountLineV2() {
-            this.lineNoField = 0;
-            this.entryNoField = 0;
-            this.discountTypeField = 0;
-            this.periodicDiscTypeField = 0;
-            this.discountPercentField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int EntryNo {
-            get {
-                return this.entryNoField;
-            }
-            set {
-                this.entryNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int DiscountType {
-            get {
-                return this.discountTypeField;
-            }
-            set {
-                this.discountTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OfferNo {
-            get {
-                return this.offerNoField;
-            }
-            set {
-                this.offerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PeriodicDiscType {
-            get {
-                return this.periodicDiscTypeField;
-            }
-            set {
-                this.periodicDiscTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PeriodicDiscGroup {
-            get {
-                return this.periodicDiscGroupField;
-            }
-            set {
-                this.periodicDiscGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033047")]
-    public partial class CustomerOrderGetCOLineV2 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private string statusField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal netPriceField;
-        
-        private decimal priceField;
-        
-        private decimal quantityField;
-        
-        private decimal discountAmountField;
-        
-        private decimal discountPercentField;
-        
-        private decimal netAmountField;
-        
-        private decimal vatAmountField;
-        
-        private decimal amountField;
-        
-        private string vatProdPostingGroupField;
-        
-        private string itemDescriptionField;
-        
-        private string variantDescriptionField;
-        
-        private string uoMDescriptionField;
-        
-        private int originalLineNoField;
-        
-        private string sourcingLocationField;
-        
-        private string orderReferenceField;
-        
-        private bool inventoryTransferField;
-        
-        private bool vendorSourcingField;
-        
-        private string leadTimeField;
-        
-        private decimal prepaymentAmountField;
-        
-        private string purchaseOrderNoField;
-        
-        private decimal quantityReceivedField;
-        
-        private string externalIDField;
-        
-        private string retailImageIDField;
-        
-        private System.DateTime requestedDeliveryDateField;
-        
-        public CustomerOrderGetCOLineV2() {
-            this.lineNoField = 0;
-            this.netPriceField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.quantityField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-            this.discountPercentField = ((decimal)(0m));
-            this.netAmountField = ((decimal)(0m));
-            this.vatAmountField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-            this.originalLineNoField = 0;
-            this.inventoryTransferField = false;
-            this.vendorSourcingField = false;
-            this.prepaymentAmountField = ((decimal)(0m));
-            this.quantityReceivedField = ((decimal)(0m));
-            this.requestedDeliveryDateField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetPrice {
-            get {
-                return this.netPriceField;
-            }
-            set {
-                this.netPriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetAmount {
-            get {
-                return this.netAmountField;
-            }
-            set {
-                this.netAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal VatAmount {
-            get {
-                return this.vatAmountField;
-            }
-            set {
-                this.vatAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VatProdPostingGroup {
-            get {
-                return this.vatProdPostingGroupField;
-            }
-            set {
-                this.vatProdPostingGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ItemDescription {
-            get {
-                return this.itemDescriptionField;
-            }
-            set {
-                this.itemDescriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantDescription {
-            get {
-                return this.variantDescriptionField;
-            }
-            set {
-                this.variantDescriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UoMDescription {
-            get {
-                return this.uoMDescriptionField;
-            }
-            set {
-                this.uoMDescriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int OriginalLineNo {
-            get {
-                return this.originalLineNoField;
-            }
-            set {
-                this.originalLineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OrderReference {
-            get {
-                return this.orderReferenceField;
-            }
-            set {
-                this.orderReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LeadTime {
-            get {
-                return this.leadTimeField;
-            }
-            set {
-                this.leadTimeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PrepaymentAmount {
-            get {
-                return this.prepaymentAmountField;
-            }
-            set {
-                this.prepaymentAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PurchaseOrderNo {
-            get {
-                return this.purchaseOrderNoField;
-            }
-            set {
-                this.purchaseOrderNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal QuantityReceived {
-            get {
-                return this.quantityReceivedField;
-            }
-            set {
-                this.quantityReceivedField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string RetailImageID {
-            get {
-                return this.retailImageIDField;
-            }
-            set {
-                this.retailImageIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime RequestedDeliveryDate {
-            get {
-                return this.requestedDeliveryDateField;
-            }
-            set {
-                this.requestedDeliveryDateField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033047")]
-    public partial class CustomerOrderGetCOHeaderV2 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private string collectShelfField;
-        
-        private string createdatStoreField;
-        
-        private System.DateTime createdField;
-        
-        private string statusField;
-        
-        private string terminalNoField;
-        
-        private string customerNoField;
-        
-        private string memberCardNoField;
-        
-        private string collectTimeLimitField;
-        
-        private int sourceTypeField;
-        
-        private string inventoryTransferField;
-        
-        private string nameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string territoryCodeField;
-        
-        private string shipOrderPOSFlagField;
-        
-        private bool shipOrderField;
-        
-        private string shiptoNameField;
-        
-        private string shiptoAddressField;
-        
-        private string shiptoAddress2Field;
-        
-        private string shiptoCityField;
-        
-        private string shiptoCountyField;
-        
-        private string shiptoPostCodeField;
-        
-        private string shiptoCountryRegionCodeField;
-        
-        private string shiptoPhoneNoField;
-        
-        private string shiptoEmailField;
-        
-        private string shiptoHouseApartmentNoField;
-        
-        private bool clickandCollectOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string sourcingLocationField;
-        
-        private string sourcingOrderField;
-        
-        private string statusInfoField;
-        
-        private bool showaspostedIntField;
-        
-        private string vendorSourcingField;
-        
-        private string externalIDField;
-        
-        private bool onHoldField;
-        
-        private decimal totalAmountField;
-        
-        private decimal orderNetAmountField;
-        
-        private decimal totalDiscountField;
-        
-        private decimal totalQuantityField;
-        
-        private decimal totalAmountIntField;
-        
-        private decimal totalDiscountIntField;
-        
-        private decimal totalPaymentIntField;
-        
-        private decimal totalPreAuthorizationIntField;
-        
-        private System.DateTime requestedDeliveryDateField;
-        
-        public CustomerOrderGetCOHeaderV2() {
-            this.createdField = new System.DateTime(0);
-            this.sourceTypeField = 0;
-            this.shipOrderField = false;
-            this.clickandCollectOrderField = false;
-            this.showaspostedIntField = false;
-            this.onHoldField = false;
-            this.totalAmountField = ((decimal)(0m));
-            this.orderNetAmountField = ((decimal)(0m));
-            this.totalDiscountField = ((decimal)(0m));
-            this.totalQuantityField = ((decimal)(0m));
-            this.totalAmountIntField = ((decimal)(0m));
-            this.totalDiscountIntField = ((decimal)(0m));
-            this.totalPaymentIntField = ((decimal)(0m));
-            this.totalPreAuthorizationIntField = ((decimal)(0m));
-            this.requestedDeliveryDateField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CollectShelf {
-            get {
-                return this.collectShelfField;
-            }
-            set {
-                this.collectShelfField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CreatedatStore {
-            get {
-                return this.createdatStoreField;
-            }
-            set {
-                this.createdatStoreField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public System.DateTime Created {
-            get {
-                return this.createdField;
-            }
-            set {
-                this.createdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerminalNo {
-            get {
-                return this.terminalNoField;
-            }
-            set {
-                this.terminalNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CollectTimeLimit {
-            get {
-                return this.collectTimeLimitField;
-            }
-            set {
-                this.collectTimeLimitField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int SourceType {
-            get {
-                return this.sourceTypeField;
-            }
-            set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerritoryCode {
-            get {
-                return this.territoryCodeField;
-            }
-            set {
-                this.territoryCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipOrderPOSFlag {
-            get {
-                return this.shipOrderPOSFlagField;
-            }
-            set {
-                this.shipOrderPOSFlagField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ShipOrder {
-            get {
-                return this.shipOrderField;
-            }
-            set {
-                this.shipOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoName {
-            get {
-                return this.shiptoNameField;
-            }
-            set {
-                this.shiptoNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoAddress {
-            get {
-                return this.shiptoAddressField;
-            }
-            set {
-                this.shiptoAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoAddress2 {
-            get {
-                return this.shiptoAddress2Field;
-            }
-            set {
-                this.shiptoAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoCity {
-            get {
-                return this.shiptoCityField;
-            }
-            set {
-                this.shiptoCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoCounty {
-            get {
-                return this.shiptoCountyField;
-            }
-            set {
-                this.shiptoCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoPostCode {
-            get {
-                return this.shiptoPostCodeField;
-            }
-            set {
-                this.shiptoPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoCountryRegionCode {
-            get {
-                return this.shiptoCountryRegionCodeField;
-            }
-            set {
-                this.shiptoCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoPhoneNo {
-            get {
-                return this.shiptoPhoneNoField;
-            }
-            set {
-                this.shiptoPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoEmail {
-            get {
-                return this.shiptoEmailField;
-            }
-            set {
-                this.shiptoEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShiptoHouseApartmentNo {
-            get {
-                return this.shiptoHouseApartmentNoField;
-            }
-            set {
-                this.shiptoHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickandCollectOrder {
-            get {
-                return this.clickandCollectOrderField;
-            }
-            set {
-                this.clickandCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingOrder {
-            get {
-                return this.sourcingOrderField;
-            }
-            set {
-                this.sourcingOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StatusInfo {
-            get {
-                return this.statusInfoField;
-            }
-            set {
-                this.statusInfoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ShowaspostedInt {
-            get {
-                return this.showaspostedIntField;
-            }
-            set {
-                this.showaspostedIntField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool OnHold {
-            get {
-                return this.onHoldField;
-            }
-            set {
-                this.onHoldField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalAmount {
-            get {
-                return this.totalAmountField;
-            }
-            set {
-                this.totalAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal OrderNetAmount {
-            get {
-                return this.orderNetAmountField;
-            }
-            set {
-                this.orderNetAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalDiscount {
-            get {
-                return this.totalDiscountField;
-            }
-            set {
-                this.totalDiscountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalQuantity {
-            get {
-                return this.totalQuantityField;
-            }
-            set {
-                this.totalQuantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalAmountInt {
-            get {
-                return this.totalAmountIntField;
-            }
-            set {
-                this.totalAmountIntField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalDiscountInt {
-            get {
-                return this.totalDiscountIntField;
-            }
-            set {
-                this.totalDiscountIntField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalPaymentInt {
-            get {
-                return this.totalPaymentIntField;
-            }
-            set {
-                this.totalPaymentIntField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalPreAuthorizationInt {
-            get {
-                return this.totalPreAuthorizationIntField;
-            }
-            set {
-                this.totalPreAuthorizationIntField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime RequestedDeliveryDate {
-            get {
-                return this.requestedDeliveryDateField;
-            }
-            set {
-                this.requestedDeliveryDateField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033047")]
-    public partial class RootCustomerOrderGetV2 {
-        
-        private CustomerOrderGetCOHeaderV2[] customerOrderGetCOHeaderV2Field;
-        
-        private CustomerOrderGetCOLineV2[] customerOrderGetCOLineV2Field;
-        
-        private CustomerOrderGetCODiscountLineV2[] customerOrderGetCODiscountLineV2Field;
-        
-        private CustomerOrderGetCOPaymentV2[] customerOrderGetCOPaymentV2Field;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetCOHeaderV2")]
-        public CustomerOrderGetCOHeaderV2[] CustomerOrderGetCOHeaderV2 {
-            get {
-                return this.customerOrderGetCOHeaderV2Field;
-            }
-            set {
-                this.customerOrderGetCOHeaderV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetCOLineV2")]
-        public CustomerOrderGetCOLineV2[] CustomerOrderGetCOLineV2 {
-            get {
-                return this.customerOrderGetCOLineV2Field;
-            }
-            set {
-                this.customerOrderGetCOLineV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetCODiscountLineV2")]
-        public CustomerOrderGetCODiscountLineV2[] CustomerOrderGetCODiscountLineV2 {
-            get {
-                return this.customerOrderGetCODiscountLineV2Field;
-            }
-            set {
-                this.customerOrderGetCODiscountLineV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetCOPaymentV2")]
-        public CustomerOrderGetCOPaymentV2[] CustomerOrderGetCOPaymentV2 {
-            get {
-                return this.customerOrderGetCOPaymentV2Field;
-            }
-            set {
-                this.customerOrderGetCOPaymentV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033042")]
-    public partial class CustomerOrderHeader3 {
-        
-        private string documentIDField;
-        
-        private string[] storeNoField;
-        
-        private string createdatStoreField;
-        
-        private System.DateTime createdField;
-        
-        private string[] inventoryTransferField;
-        
-        private string memberCardNoField;
-        
-        private string fullNameField;
-        
-        private string addressField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string[] statusInfoField;
-        
-        private string[] shipOrderPOSFlagField;
-        
-        private string[] memberContactNoField;
-        
-        private decimal totalAmountField;
-        
-        private decimal totalQuantityField;
-        
-        private string processingStatusField;
-        
-        private System.DateTime requestedDeliveryDateField;
-        
-        public CustomerOrderHeader3() {
-            this.createdField = new System.DateTime(0);
-            this.totalAmountField = ((decimal)(0m));
-            this.totalQuantityField = ((decimal)(0m));
-            this.requestedDeliveryDateField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("StoreNo")]
-        public string[] StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CreatedatStore {
-            get {
-                return this.createdatStoreField;
-            }
-            set {
-                this.createdatStoreField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
-        public System.DateTime Created {
-            get {
-                return this.createdField;
-            }
-            set {
-                this.createdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("InventoryTransfer")]
-        public string[] InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FullName {
-            get {
-                return this.fullNameField;
-            }
-            set {
-                this.fullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("StatusInfo")]
-        public string[] StatusInfo {
-            get {
-                return this.statusInfoField;
-            }
-            set {
-                this.statusInfoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ShipOrderPOSFlag")]
-        public string[] ShipOrderPOSFlag {
-            get {
-                return this.shipOrderPOSFlagField;
-            }
-            set {
-                this.shipOrderPOSFlagField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("MemberContactNo")]
-        public string[] MemberContactNo {
-            get {
-                return this.memberContactNoField;
-            }
-            set {
-                this.memberContactNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalAmount {
-            get {
-                return this.totalAmountField;
-            }
-            set {
-                this.totalAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
-        public decimal TotalQuantity {
-            get {
-                return this.totalQuantityField;
-            }
-            set {
-                this.totalQuantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ProcessingStatus {
-            get {
-                return this.processingStatusField;
-            }
-            set {
-                this.processingStatusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime RequestedDeliveryDate {
-            get {
-                return this.requestedDeliveryDateField;
-            }
-            set {
-                this.requestedDeliveryDateField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033042")]
-    public partial class RootCustomerOrderFilteredList {
-        
-        private CustomerOrderHeader3[] customerOrderHeaderField;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
-        public CustomerOrderHeader3[] CustomerOrderHeader {
-            get {
-                return this.customerOrderHeaderField;
-            }
-            set {
-                this.customerOrderHeaderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class CustomerOrderPayment {
-        
-        private string documentIdField;
-        
-        private int lineNoField;
-        
-        private decimal preApprovedAmountField;
-        
-        private string tenderTypeField;
-        
-        private string cardTypeField;
-        
-        private string currencyCodeField;
-        
-        private decimal currencyFactorField;
-        
-        private string authorisationCodeField;
-        
-        private System.DateTime preApprovedValidDateField;
-        
-        private string cardorCustomernumberField;
-        
-        public CustomerOrderPayment() {
-            this.lineNoField = 0;
-            this.preApprovedAmountField = ((decimal)(0m));
-            this.currencyFactorField = ((decimal)(0m));
-            this.preApprovedValidDateField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string DocumentId {
-            get {
-                return this.documentIdField;
-            }
-            set {
-                this.documentIdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmount {
-            get {
-                return this.preApprovedAmountField;
-            }
-            set {
-                this.preApprovedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TenderType {
-            get {
-                return this.tenderTypeField;
-            }
-            set {
-                this.tenderTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardType {
-            get {
-                return this.cardTypeField;
-            }
-            set {
-                this.cardTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AuthorisationCode {
-            get {
-                return this.authorisationCodeField;
-            }
-            set {
-                this.authorisationCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime PreApprovedValidDate {
-            get {
-                return this.preApprovedValidDateField;
-            }
-            set {
-                this.preApprovedValidDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardorCustomernumber {
-            get {
-                return this.cardorCustomernumberField;
-            }
-            set {
-                this.cardorCustomernumberField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class CustomerOrderDiscountLine {
-        
-        private string documentIdField;
-        
-        private int lineNoField;
-        
-        private int entryNoField;
-        
-        private int discountTypeField;
-        
-        private string offerNoField;
-        
-        private int periodicDiscTypeField;
-        
-        private string periodicDiscGroupField;
-        
-        private string descriptionField;
-        
-        private decimal discountPercentField;
-        
-        private decimal discountAmountField;
-        
-        public CustomerOrderDiscountLine() {
-            this.lineNoField = 0;
-            this.entryNoField = 0;
-            this.discountTypeField = 0;
-            this.periodicDiscTypeField = 0;
-            this.discountPercentField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentId {
-            get {
-                return this.documentIdField;
-            }
-            set {
-                this.documentIdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int EntryNo {
-            get {
-                return this.entryNoField;
-            }
-            set {
-                this.entryNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int DiscountType {
-            get {
-                return this.discountTypeField;
-            }
-            set {
-                this.discountTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OfferNo {
-            get {
-                return this.offerNoField;
-            }
-            set {
-                this.offerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PeriodicDiscType {
-            get {
-                return this.periodicDiscTypeField;
-            }
-            set {
-                this.periodicDiscTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PeriodicDiscGroup {
-            get {
-                return this.periodicDiscGroupField;
-            }
-            set {
-                this.periodicDiscGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderLine", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class CustomerOrderLine2 {
-        
-        private string documentIdField;
-        
-        private int lineNoField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal netPriceField;
-        
-        private decimal priceField;
-        
-        private decimal quantityField;
-        
-        private decimal discountAmountField;
-        
-        private decimal discountPercentField;
-        
-        private decimal netAmountField;
-        
-        private decimal vatAmountField;
-        
-        private decimal amountField;
-        
-        private string sourcingLocationField;
-        
-        private string orderReferenceField;
-        
-        private bool inventoryTransferField;
-        
-        public CustomerOrderLine2() {
-            this.lineNoField = 0;
-            this.netPriceField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.quantityField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-            this.discountPercentField = ((decimal)(0m));
-            this.netAmountField = ((decimal)(0m));
-            this.vatAmountField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-            this.inventoryTransferField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentId {
-            get {
-                return this.documentIdField;
-            }
-            set {
-                this.documentIdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetPrice {
-            get {
-                return this.netPriceField;
-            }
-            set {
-                this.netPriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetAmount {
-            get {
-                return this.netAmountField;
-            }
-            set {
-                this.netAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal VatAmount {
-            get {
-                return this.vatAmountField;
-            }
-            set {
-                this.vatAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OrderReference {
-            get {
-                return this.orderReferenceField;
-            }
-            set {
-                this.orderReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class CustomerOrderHeader2 {
-        
-        private string documentIdField;
-        
-        private string storeNoField;
-        
-        private string receiptNoField;
-        
-        private string memberCardNoField;
-        
-        private int sourceTypeField;
-        
-        private string customerNoField;
-        
-        private string fullNameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string shipToFullNameField;
-        
-        private string shipToAddressField;
-        
-        private string shipToAddress2Field;
-        
-        private string shipToCityField;
-        
-        private string shipToCountyField;
-        
-        private string shipToPostCodeField;
-        
-        private string shipToCountryRegionCodeField;
-        
-        private string shipToPhoneNoField;
-        
-        private string shipToEmailField;
-        
-        private string shipToHouseApartmentNoField;
-        
-        private bool clickAndCollectOrderField;
-        
-        private bool anonymousOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string sourcingLocationField;
-        
-        public CustomerOrderHeader2() {
-            this.sourceTypeField = 0;
-            this.clickAndCollectOrderField = false;
-            this.anonymousOrderField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentId {
-            get {
-                return this.documentIdField;
-            }
-            set {
-                this.documentIdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ReceiptNo {
-            get {
-                return this.receiptNoField;
-            }
-            set {
-                this.receiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int SourceType {
-            get {
-                return this.sourceTypeField;
-            }
-            set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FullName {
-            get {
-                return this.fullNameField;
-            }
-            set {
-                this.fullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToFullName {
-            get {
-                return this.shipToFullNameField;
-            }
-            set {
-                this.shipToFullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress {
-            get {
-                return this.shipToAddressField;
-            }
-            set {
-                this.shipToAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress2 {
-            get {
-                return this.shipToAddress2Field;
-            }
-            set {
-                this.shipToAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCity {
-            get {
-                return this.shipToCityField;
-            }
-            set {
-                this.shipToCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCounty {
-            get {
-                return this.shipToCountyField;
-            }
-            set {
-                this.shipToCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPostCode {
-            get {
-                return this.shipToPostCodeField;
-            }
-            set {
-                this.shipToPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCountryRegionCode {
-            get {
-                return this.shipToCountryRegionCodeField;
-            }
-            set {
-                this.shipToCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPhoneNo {
-            get {
-                return this.shipToPhoneNoField;
-            }
-            set {
-                this.shipToPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToEmail {
-            get {
-                return this.shipToEmailField;
-            }
-            set {
-                this.shipToEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToHouseApartmentNo {
-            get {
-                return this.shipToHouseApartmentNoField;
-            }
-            set {
-                this.shipToHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickAndCollectOrder {
-            get {
-                return this.clickAndCollectOrderField;
-            }
-            set {
-                this.clickAndCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool AnonymousOrder {
-            get {
-                return this.anonymousOrderField;
-            }
-            set {
-                this.anonymousOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
-    public partial class RootCustomerOrder {
-        
-        private CustomerOrderHeader2[] customerOrderHeaderField;
-        
-        private CustomerOrderLine2[] customerOrderLineField;
-        
-        private CustomerOrderDiscountLine[] customerOrderDiscountLineField;
-        
-        private CustomerOrderPayment[] customerOrderPaymentField;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
-        public CustomerOrderHeader2[] CustomerOrderHeader {
-            get {
-                return this.customerOrderHeaderField;
-            }
-            set {
-                this.customerOrderHeaderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderLine")]
-        public CustomerOrderLine2[] CustomerOrderLine {
-            get {
-                return this.customerOrderLineField;
-            }
-            set {
-                this.customerOrderLineField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderDiscountLine")]
-        public CustomerOrderDiscountLine[] CustomerOrderDiscountLine {
-            get {
-                return this.customerOrderDiscountLineField;
-            }
-            set {
-                this.customerOrderDiscountLineField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderPayment")]
-        public CustomerOrderPayment[] CustomerOrderPayment {
-            get {
-                return this.customerOrderPaymentField;
-            }
-            set {
-                this.customerOrderPaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033069")]
     public partial class CustomerOrderCreateCOStatusLogV5 {
         
@@ -50119,3832 +47492,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.customerOrderCreateCOStatusLogV5Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
-    public partial class CustomerOrderCreateCOStatusLogV4 {
-        
-        private string storeNoField;
-        
-        private string userIDField;
-        
-        private string staffIDField;
-        
-        private string terminalNoField;
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UserID {
-            get {
-                return this.userIDField;
-            }
-            set {
-                this.userIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StaffID {
-            get {
-                return this.staffIDField;
-            }
-            set {
-                this.staffIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerminalNo {
-            get {
-                return this.terminalNoField;
-            }
-            set {
-                this.terminalNoField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
-    public partial class CustomerOrderCreateCOPaymentV4 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private int lineNoField;
-        
-        private decimal preApprovedAmountField;
-        
-        private decimal finalizedAmountField;
-        
-        private string tenderTypeField;
-        
-        private string cardTypeField;
-        
-        private string currencyCodeField;
-        
-        private decimal currencyFactorField;
-        
-        private string authorizationCodeField;
-        
-        private System.DateTime preApprovedValidDateField;
-        
-        private string cardorCustomernumberField;
-        
-        private string incomeExpenseAccountNoField;
-        
-        private decimal preApprovedAmountLCYField;
-        
-        private decimal finalizedAmountLCYField;
-        
-        private bool loyaltyPointpaymentField;
-        
-        private bool depositPaymentField;
-        
-        private string posTransReceiptNoField;
-        
-        private string typeField;
-        
-        private System.DateTime createdField;
-        
-        private bool authorizationExpiredField;
-        
-        private string tokenNoField;
-        
-        private string externalReferenceField;
-        
-        public CustomerOrderCreateCOPaymentV4() {
-            this.lineNoField = 0;
-            this.preApprovedAmountField = ((decimal)(0m));
-            this.finalizedAmountField = ((decimal)(0m));
-            this.currencyFactorField = ((decimal)(0m));
-            this.preApprovedValidDateField = new System.DateTime(0);
-            this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalizedAmountLCYField = ((decimal)(0m));
-            this.loyaltyPointpaymentField = false;
-            this.depositPaymentField = false;
-            this.createdField = new System.DateTime(0);
-            this.authorizationExpiredField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmount {
-            get {
-                return this.preApprovedAmountField;
-            }
-            set {
-                this.preApprovedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalizedAmount {
-            get {
-                return this.finalizedAmountField;
-            }
-            set {
-                this.finalizedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TenderType {
-            get {
-                return this.tenderTypeField;
-            }
-            set {
-                this.tenderTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardType {
-            get {
-                return this.cardTypeField;
-            }
-            set {
-                this.cardTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AuthorizationCode {
-            get {
-                return this.authorizationCodeField;
-            }
-            set {
-                this.authorizationCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime PreApprovedValidDate {
-            get {
-                return this.preApprovedValidDateField;
-            }
-            set {
-                this.preApprovedValidDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardorCustomernumber {
-            get {
-                return this.cardorCustomernumberField;
-            }
-            set {
-                this.cardorCustomernumberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string IncomeExpenseAccountNo {
-            get {
-                return this.incomeExpenseAccountNoField;
-            }
-            set {
-                this.incomeExpenseAccountNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmountLCY {
-            get {
-                return this.preApprovedAmountLCYField;
-            }
-            set {
-                this.preApprovedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalizedAmountLCY {
-            get {
-                return this.finalizedAmountLCYField;
-            }
-            set {
-                this.finalizedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool LoyaltyPointpayment {
-            get {
-                return this.loyaltyPointpaymentField;
-            }
-            set {
-                this.loyaltyPointpaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool DepositPayment {
-            get {
-                return this.depositPaymentField;
-            }
-            set {
-                this.depositPaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PosTransReceiptNo {
-            get {
-                return this.posTransReceiptNoField;
-            }
-            set {
-                this.posTransReceiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
-        public System.DateTime Created {
-            get {
-                return this.createdField;
-            }
-            set {
-                this.createdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool AuthorizationExpired {
-            get {
-                return this.authorizationExpiredField;
-            }
-            set {
-                this.authorizationExpiredField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TokenNo {
-            get {
-                return this.tokenNoField;
-            }
-            set {
-                this.tokenNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalReference {
-            get {
-                return this.externalReferenceField;
-            }
-            set {
-                this.externalReferenceField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
-    public partial class CustomerOrderCreateCODiscountLineV4 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private int entryNoField;
-        
-        private int discountTypeField;
-        
-        private string offerNoField;
-        
-        private int periodicDiscTypeField;
-        
-        private string periodicDiscGroupField;
-        
-        private string descriptionField;
-        
-        private decimal discountPercentField;
-        
-        private decimal discountAmountField;
-        
-        public CustomerOrderCreateCODiscountLineV4() {
-            this.lineNoField = 0;
-            this.entryNoField = 0;
-            this.discountTypeField = 0;
-            this.periodicDiscTypeField = 0;
-            this.discountPercentField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int EntryNo {
-            get {
-                return this.entryNoField;
-            }
-            set {
-                this.entryNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int DiscountType {
-            get {
-                return this.discountTypeField;
-            }
-            set {
-                this.discountTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OfferNo {
-            get {
-                return this.offerNoField;
-            }
-            set {
-                this.offerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PeriodicDiscType {
-            get {
-                return this.periodicDiscTypeField;
-            }
-            set {
-                this.periodicDiscTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PeriodicDiscGroup {
-            get {
-                return this.periodicDiscGroupField;
-            }
-            set {
-                this.periodicDiscGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
-    public partial class CustomerOrderCreateCOLineV4 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private string statusField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal netPriceField;
-        
-        private decimal priceField;
-        
-        private decimal quantityField;
-        
-        private decimal discountAmountField;
-        
-        private decimal discountPercentField;
-        
-        private decimal netAmountField;
-        
-        private decimal vatAmountField;
-        
-        private decimal amountField;
-        
-        private string sourcingLocationField;
-        
-        private string orderReferenceField;
-        
-        private bool inventoryTransferField;
-        
-        private bool vendorSourcingField;
-        
-        private string leadTimeCalculationField;
-        
-        private decimal prepaymentAmountField;
-        
-        private string purchaseOrderNoField;
-        
-        private System.DateTime requestedDeliveryDateField;
-        
-        public CustomerOrderCreateCOLineV4() {
-            this.lineNoField = 0;
-            this.netPriceField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.quantityField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-            this.discountPercentField = ((decimal)(0m));
-            this.netAmountField = ((decimal)(0m));
-            this.vatAmountField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-            this.inventoryTransferField = false;
-            this.vendorSourcingField = false;
-            this.prepaymentAmountField = ((decimal)(0m));
-            this.requestedDeliveryDateField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetPrice {
-            get {
-                return this.netPriceField;
-            }
-            set {
-                this.netPriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetAmount {
-            get {
-                return this.netAmountField;
-            }
-            set {
-                this.netAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal VatAmount {
-            get {
-                return this.vatAmountField;
-            }
-            set {
-                this.vatAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OrderReference {
-            get {
-                return this.orderReferenceField;
-            }
-            set {
-                this.orderReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LeadTimeCalculation {
-            get {
-                return this.leadTimeCalculationField;
-            }
-            set {
-                this.leadTimeCalculationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PrepaymentAmount {
-            get {
-                return this.prepaymentAmountField;
-            }
-            set {
-                this.prepaymentAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PurchaseOrderNo {
-            get {
-                return this.purchaseOrderNoField;
-            }
-            set {
-                this.purchaseOrderNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime RequestedDeliveryDate {
-            get {
-                return this.requestedDeliveryDateField;
-            }
-            set {
-                this.requestedDeliveryDateField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
-    public partial class CustomerOrderCreateCOHeaderV4 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private string memberCardNoField;
-        
-        private int sourceTypeField;
-        
-        private string customerNoField;
-        
-        private string nameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string territoryCodeField;
-        
-        private string shipToNameField;
-        
-        private string shipToAddressField;
-        
-        private string shipToAddress2Field;
-        
-        private string shipToCityField;
-        
-        private string shipToCountyField;
-        
-        private string shipToPostCodeField;
-        
-        private string shipToCountryRegionCodeField;
-        
-        private string shipToPhoneNoField;
-        
-        private string shipToEmailField;
-        
-        private string shipToHouseApartmentNoField;
-        
-        private bool clickAndCollectOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string sourcingLocationField;
-        
-        private string externalIDField;
-        
-        private string vendorSourcingField;
-        
-        private string inventoryTransferField;
-        
-        private string createdAtStoreField;
-        
-        private bool shipOrderField;
-        
-        private System.DateTime requestedDeliveryDateField;
-        
-        public CustomerOrderCreateCOHeaderV4() {
-            this.sourceTypeField = 0;
-            this.clickAndCollectOrderField = false;
-            this.shipOrderField = false;
-            this.requestedDeliveryDateField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int SourceType {
-            get {
-                return this.sourceTypeField;
-            }
-            set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerritoryCode {
-            get {
-                return this.territoryCodeField;
-            }
-            set {
-                this.territoryCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToName {
-            get {
-                return this.shipToNameField;
-            }
-            set {
-                this.shipToNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress {
-            get {
-                return this.shipToAddressField;
-            }
-            set {
-                this.shipToAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress2 {
-            get {
-                return this.shipToAddress2Field;
-            }
-            set {
-                this.shipToAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCity {
-            get {
-                return this.shipToCityField;
-            }
-            set {
-                this.shipToCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCounty {
-            get {
-                return this.shipToCountyField;
-            }
-            set {
-                this.shipToCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPostCode {
-            get {
-                return this.shipToPostCodeField;
-            }
-            set {
-                this.shipToPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCountryRegionCode {
-            get {
-                return this.shipToCountryRegionCodeField;
-            }
-            set {
-                this.shipToCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPhoneNo {
-            get {
-                return this.shipToPhoneNoField;
-            }
-            set {
-                this.shipToPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToEmail {
-            get {
-                return this.shipToEmailField;
-            }
-            set {
-                this.shipToEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToHouseApartmentNo {
-            get {
-                return this.shipToHouseApartmentNoField;
-            }
-            set {
-                this.shipToHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickAndCollectOrder {
-            get {
-                return this.clickAndCollectOrderField;
-            }
-            set {
-                this.clickAndCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CreatedAtStore {
-            get {
-                return this.createdAtStoreField;
-            }
-            set {
-                this.createdAtStoreField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool ShipOrder {
-            get {
-                return this.shipOrderField;
-            }
-            set {
-                this.shipOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime RequestedDeliveryDate {
-            get {
-                return this.requestedDeliveryDateField;
-            }
-            set {
-                this.requestedDeliveryDateField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033056")]
-    public partial class RootCustomerOrderCreateV4 {
-        
-        private CustomerOrderCreateCOHeaderV4[] customerOrderCreateCOHeaderV4Field;
-        
-        private CustomerOrderCreateCOLineV4[] customerOrderCreateCOLineV4Field;
-        
-        private CustomerOrderCreateCODiscountLineV4[] customerOrderCreateCODiscountLineV4Field;
-        
-        private CustomerOrderCreateCOPaymentV4[] customerOrderCreateCOPaymentV4Field;
-        
-        private CustomerOrderCreateCOStatusLogV4[] customerOrderCreateCOStatusLogV4Field;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOHeaderV4")]
-        public CustomerOrderCreateCOHeaderV4[] CustomerOrderCreateCOHeaderV4 {
-            get {
-                return this.customerOrderCreateCOHeaderV4Field;
-            }
-            set {
-                this.customerOrderCreateCOHeaderV4Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOLineV4")]
-        public CustomerOrderCreateCOLineV4[] CustomerOrderCreateCOLineV4 {
-            get {
-                return this.customerOrderCreateCOLineV4Field;
-            }
-            set {
-                this.customerOrderCreateCOLineV4Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCODiscountLineV4")]
-        public CustomerOrderCreateCODiscountLineV4[] CustomerOrderCreateCODiscountLineV4 {
-            get {
-                return this.customerOrderCreateCODiscountLineV4Field;
-            }
-            set {
-                this.customerOrderCreateCODiscountLineV4Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOPaymentV4")]
-        public CustomerOrderCreateCOPaymentV4[] CustomerOrderCreateCOPaymentV4 {
-            get {
-                return this.customerOrderCreateCOPaymentV4Field;
-            }
-            set {
-                this.customerOrderCreateCOPaymentV4Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOStatusLogV4")]
-        public CustomerOrderCreateCOStatusLogV4[] CustomerOrderCreateCOStatusLogV4 {
-            get {
-                return this.customerOrderCreateCOStatusLogV4Field;
-            }
-            set {
-                this.customerOrderCreateCOStatusLogV4Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033048")]
-    public partial class CustomerOrderCreateCOPaymentV3 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private int lineNoField;
-        
-        private decimal preApprovedAmountField;
-        
-        private decimal finalizedAmountField;
-        
-        private string tenderTypeField;
-        
-        private string cardTypeField;
-        
-        private string currencyCodeField;
-        
-        private decimal currencyFactorField;
-        
-        private string authorizationCodeField;
-        
-        private System.DateTime preApprovedValidDateField;
-        
-        private string cardorCustomernumberField;
-        
-        private string incomeExpenseAccountNoField;
-        
-        private decimal preApprovedAmountLCYField;
-        
-        private decimal finalizedAmountLCYField;
-        
-        private bool loyaltyPointpaymentField;
-        
-        private bool depositPaymentField;
-        
-        private string posTransReceiptNoField;
-        
-        private string typeField;
-        
-        private System.DateTime createdField;
-        
-        private bool authorizationExpiredField;
-        
-        private string tokenNoField;
-        
-        private string externalReferenceField;
-        
-        public CustomerOrderCreateCOPaymentV3() {
-            this.lineNoField = 0;
-            this.preApprovedAmountField = ((decimal)(0m));
-            this.finalizedAmountField = ((decimal)(0m));
-            this.currencyFactorField = ((decimal)(0m));
-            this.preApprovedValidDateField = new System.DateTime(0);
-            this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalizedAmountLCYField = ((decimal)(0m));
-            this.loyaltyPointpaymentField = false;
-            this.depositPaymentField = false;
-            this.createdField = new System.DateTime(0);
-            this.authorizationExpiredField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmount {
-            get {
-                return this.preApprovedAmountField;
-            }
-            set {
-                this.preApprovedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalizedAmount {
-            get {
-                return this.finalizedAmountField;
-            }
-            set {
-                this.finalizedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TenderType {
-            get {
-                return this.tenderTypeField;
-            }
-            set {
-                this.tenderTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardType {
-            get {
-                return this.cardTypeField;
-            }
-            set {
-                this.cardTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AuthorizationCode {
-            get {
-                return this.authorizationCodeField;
-            }
-            set {
-                this.authorizationCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime PreApprovedValidDate {
-            get {
-                return this.preApprovedValidDateField;
-            }
-            set {
-                this.preApprovedValidDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardorCustomernumber {
-            get {
-                return this.cardorCustomernumberField;
-            }
-            set {
-                this.cardorCustomernumberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string IncomeExpenseAccountNo {
-            get {
-                return this.incomeExpenseAccountNoField;
-            }
-            set {
-                this.incomeExpenseAccountNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmountLCY {
-            get {
-                return this.preApprovedAmountLCYField;
-            }
-            set {
-                this.preApprovedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalizedAmountLCY {
-            get {
-                return this.finalizedAmountLCYField;
-            }
-            set {
-                this.finalizedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool LoyaltyPointpayment {
-            get {
-                return this.loyaltyPointpaymentField;
-            }
-            set {
-                this.loyaltyPointpaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool DepositPayment {
-            get {
-                return this.depositPaymentField;
-            }
-            set {
-                this.depositPaymentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PosTransReceiptNo {
-            get {
-                return this.posTransReceiptNoField;
-            }
-            set {
-                this.posTransReceiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Type {
-            get {
-                return this.typeField;
-            }
-            set {
-                this.typeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
-        public System.DateTime Created {
-            get {
-                return this.createdField;
-            }
-            set {
-                this.createdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool AuthorizationExpired {
-            get {
-                return this.authorizationExpiredField;
-            }
-            set {
-                this.authorizationExpiredField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TokenNo {
-            get {
-                return this.tokenNoField;
-            }
-            set {
-                this.tokenNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalReference {
-            get {
-                return this.externalReferenceField;
-            }
-            set {
-                this.externalReferenceField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033048")]
-    public partial class CustomerOrderCreateCODiscountLineV3 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private int entryNoField;
-        
-        private int discountTypeField;
-        
-        private string offerNoField;
-        
-        private int periodicDiscTypeField;
-        
-        private string periodicDiscGroupField;
-        
-        private string descriptionField;
-        
-        private decimal discountPercentField;
-        
-        private decimal discountAmountField;
-        
-        public CustomerOrderCreateCODiscountLineV3() {
-            this.lineNoField = 0;
-            this.entryNoField = 0;
-            this.discountTypeField = 0;
-            this.periodicDiscTypeField = 0;
-            this.discountPercentField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int EntryNo {
-            get {
-                return this.entryNoField;
-            }
-            set {
-                this.entryNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int DiscountType {
-            get {
-                return this.discountTypeField;
-            }
-            set {
-                this.discountTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OfferNo {
-            get {
-                return this.offerNoField;
-            }
-            set {
-                this.offerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PeriodicDiscType {
-            get {
-                return this.periodicDiscTypeField;
-            }
-            set {
-                this.periodicDiscTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PeriodicDiscGroup {
-            get {
-                return this.periodicDiscGroupField;
-            }
-            set {
-                this.periodicDiscGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033048")]
-    public partial class CustomerOrderCreateCOLineV3 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private string statusField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal netPriceField;
-        
-        private decimal priceField;
-        
-        private decimal quantityField;
-        
-        private decimal discountAmountField;
-        
-        private decimal discountPercentField;
-        
-        private decimal netAmountField;
-        
-        private decimal vatAmountField;
-        
-        private decimal amountField;
-        
-        private string sourcingLocationField;
-        
-        private string orderReferenceField;
-        
-        private bool inventoryTransferField;
-        
-        private bool vendorSourcingField;
-        
-        private string leadTimeCalculationField;
-        
-        private decimal prepaymentAmountField;
-        
-        private string purchaseOrderNoField;
-        
-        public CustomerOrderCreateCOLineV3() {
-            this.lineNoField = 0;
-            this.netPriceField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.quantityField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-            this.discountPercentField = ((decimal)(0m));
-            this.netAmountField = ((decimal)(0m));
-            this.vatAmountField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-            this.inventoryTransferField = false;
-            this.vendorSourcingField = false;
-            this.prepaymentAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetPrice {
-            get {
-                return this.netPriceField;
-            }
-            set {
-                this.netPriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetAmount {
-            get {
-                return this.netAmountField;
-            }
-            set {
-                this.netAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal VatAmount {
-            get {
-                return this.vatAmountField;
-            }
-            set {
-                this.vatAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OrderReference {
-            get {
-                return this.orderReferenceField;
-            }
-            set {
-                this.orderReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LeadTimeCalculation {
-            get {
-                return this.leadTimeCalculationField;
-            }
-            set {
-                this.leadTimeCalculationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PrepaymentAmount {
-            get {
-                return this.prepaymentAmountField;
-            }
-            set {
-                this.prepaymentAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PurchaseOrderNo {
-            get {
-                return this.purchaseOrderNoField;
-            }
-            set {
-                this.purchaseOrderNoField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033048")]
-    public partial class CustomerOrderCreateCOHeaderV3 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private string memberCardNoField;
-        
-        private int sourceTypeField;
-        
-        private string customerNoField;
-        
-        private string nameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string territoryCodeField;
-        
-        private string shipToNameField;
-        
-        private string shipToAddressField;
-        
-        private string shipToAddress2Field;
-        
-        private string shipToCityField;
-        
-        private string shipToCountyField;
-        
-        private string shipToPostCodeField;
-        
-        private string shipToCountryRegionCodeField;
-        
-        private string shipToPhoneNoField;
-        
-        private string shipToEmailField;
-        
-        private string shipToHouseApartmentNoField;
-        
-        private bool clickAndCollectOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string sourcingLocationField;
-        
-        private string externalIDField;
-        
-        private string vendorSourcingField;
-        
-        private string inventoryTransferField;
-        
-        private string createdAtStoreField;
-        
-        private bool shipOrderField;
-        
-        public CustomerOrderCreateCOHeaderV3() {
-            this.sourceTypeField = 0;
-            this.clickAndCollectOrderField = false;
-            this.shipOrderField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int SourceType {
-            get {
-                return this.sourceTypeField;
-            }
-            set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Name {
-            get {
-                return this.nameField;
-            }
-            set {
-                this.nameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerritoryCode {
-            get {
-                return this.territoryCodeField;
-            }
-            set {
-                this.territoryCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToName {
-            get {
-                return this.shipToNameField;
-            }
-            set {
-                this.shipToNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress {
-            get {
-                return this.shipToAddressField;
-            }
-            set {
-                this.shipToAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress2 {
-            get {
-                return this.shipToAddress2Field;
-            }
-            set {
-                this.shipToAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCity {
-            get {
-                return this.shipToCityField;
-            }
-            set {
-                this.shipToCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCounty {
-            get {
-                return this.shipToCountyField;
-            }
-            set {
-                this.shipToCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPostCode {
-            get {
-                return this.shipToPostCodeField;
-            }
-            set {
-                this.shipToPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCountryRegionCode {
-            get {
-                return this.shipToCountryRegionCodeField;
-            }
-            set {
-                this.shipToCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPhoneNo {
-            get {
-                return this.shipToPhoneNoField;
-            }
-            set {
-                this.shipToPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToEmail {
-            get {
-                return this.shipToEmailField;
-            }
-            set {
-                this.shipToEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToHouseApartmentNo {
-            get {
-                return this.shipToHouseApartmentNoField;
-            }
-            set {
-                this.shipToHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickAndCollectOrder {
-            get {
-                return this.clickAndCollectOrderField;
-            }
-            set {
-                this.clickAndCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CreatedAtStore {
-            get {
-                return this.createdAtStoreField;
-            }
-            set {
-                this.createdAtStoreField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool ShipOrder {
-            get {
-                return this.shipOrderField;
-            }
-            set {
-                this.shipOrderField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033048")]
-    public partial class RootCustomerOrderCreateV3 {
-        
-        private CustomerOrderCreateCOHeaderV3[] customerOrderCreateCOHeaderV3Field;
-        
-        private CustomerOrderCreateCOLineV3[] customerOrderCreateCOLineV3Field;
-        
-        private CustomerOrderCreateCODiscountLineV3[] customerOrderCreateCODiscountLineV3Field;
-        
-        private CustomerOrderCreateCOPaymentV3[] customerOrderCreateCOPaymentV3Field;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOHeaderV3")]
-        public CustomerOrderCreateCOHeaderV3[] CustomerOrderCreateCOHeaderV3 {
-            get {
-                return this.customerOrderCreateCOHeaderV3Field;
-            }
-            set {
-                this.customerOrderCreateCOHeaderV3Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOLineV3")]
-        public CustomerOrderCreateCOLineV3[] CustomerOrderCreateCOLineV3 {
-            get {
-                return this.customerOrderCreateCOLineV3Field;
-            }
-            set {
-                this.customerOrderCreateCOLineV3Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCODiscountLineV3")]
-        public CustomerOrderCreateCODiscountLineV3[] CustomerOrderCreateCODiscountLineV3 {
-            get {
-                return this.customerOrderCreateCODiscountLineV3Field;
-            }
-            set {
-                this.customerOrderCreateCODiscountLineV3Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCreateCOPaymentV3")]
-        public CustomerOrderCreateCOPaymentV3[] CustomerOrderCreateCOPaymentV3 {
-            get {
-                return this.customerOrderCreateCOPaymentV3Field;
-            }
-            set {
-                this.customerOrderCreateCOPaymentV3Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlTextAttribute()]
-        public string[] Text {
-            get {
-                return this.textField;
-            }
-            set {
-                this.textField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033046")]
-    public partial class CustomerOrderPaymentV2 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private int lineNoField;
-        
-        private decimal preApprovedAmountField;
-        
-        private decimal finalisedAmountField;
-        
-        private string tenderTypeField;
-        
-        private string cardTypeField;
-        
-        private string currencyCodeField;
-        
-        private decimal currencyFactorField;
-        
-        private string authorisationCodeField;
-        
-        private System.DateTime preApprovedValidDateField;
-        
-        private string cardorCustomernumberField;
-        
-        private string incomeExpenseAccountNoField;
-        
-        private decimal preApprovedAmountLCYField;
-        
-        private decimal finalisedAmountLCYField;
-        
-        private bool loyaltyPointpaymentField;
-        
-        public CustomerOrderPaymentV2() {
-            this.lineNoField = 0;
-            this.preApprovedAmountField = ((decimal)(0m));
-            this.finalisedAmountField = ((decimal)(0m));
-            this.currencyFactorField = ((decimal)(0m));
-            this.preApprovedValidDateField = new System.DateTime(0);
-            this.preApprovedAmountLCYField = ((decimal)(0m));
-            this.finalisedAmountLCYField = ((decimal)(0m));
-            this.loyaltyPointpaymentField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmount {
-            get {
-                return this.preApprovedAmountField;
-            }
-            set {
-                this.preApprovedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalisedAmount {
-            get {
-                return this.finalisedAmountField;
-            }
-            set {
-                this.finalisedAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TenderType {
-            get {
-                return this.tenderTypeField;
-            }
-            set {
-                this.tenderTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardType {
-            get {
-                return this.cardTypeField;
-            }
-            set {
-                this.cardTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CurrencyCode {
-            get {
-                return this.currencyCodeField;
-            }
-            set {
-                this.currencyCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal CurrencyFactor {
-            get {
-                return this.currencyFactorField;
-            }
-            set {
-                this.currencyFactorField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AuthorisationCode {
-            get {
-                return this.authorisationCodeField;
-            }
-            set {
-                this.authorisationCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime PreApprovedValidDate {
-            get {
-                return this.preApprovedValidDateField;
-            }
-            set {
-                this.preApprovedValidDateField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CardorCustomernumber {
-            get {
-                return this.cardorCustomernumberField;
-            }
-            set {
-                this.cardorCustomernumberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string IncomeExpenseAccountNo {
-            get {
-                return this.incomeExpenseAccountNoField;
-            }
-            set {
-                this.incomeExpenseAccountNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PreApprovedAmountLCY {
-            get {
-                return this.preApprovedAmountLCYField;
-            }
-            set {
-                this.preApprovedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal FinalisedAmountLCY {
-            get {
-                return this.finalisedAmountLCYField;
-            }
-            set {
-                this.finalisedAmountLCYField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool LoyaltyPointpayment {
-            get {
-                return this.loyaltyPointpaymentField;
-            }
-            set {
-                this.loyaltyPointpaymentField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033046")]
-    public partial class CustomerOrderDiscountLineV2 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private int entryNoField;
-        
-        private int discountTypeField;
-        
-        private string offerNoField;
-        
-        private int periodicDiscTypeField;
-        
-        private string periodicDiscGroupField;
-        
-        private string descriptionField;
-        
-        private decimal discountPercentField;
-        
-        private decimal discountAmountField;
-        
-        public CustomerOrderDiscountLineV2() {
-            this.lineNoField = 0;
-            this.entryNoField = 0;
-            this.discountTypeField = 0;
-            this.periodicDiscTypeField = 0;
-            this.discountPercentField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int EntryNo {
-            get {
-                return this.entryNoField;
-            }
-            set {
-                this.entryNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int DiscountType {
-            get {
-                return this.discountTypeField;
-            }
-            set {
-                this.discountTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OfferNo {
-            get {
-                return this.offerNoField;
-            }
-            set {
-                this.offerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int PeriodicDiscType {
-            get {
-                return this.periodicDiscTypeField;
-            }
-            set {
-                this.periodicDiscTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PeriodicDiscGroup {
-            get {
-                return this.periodicDiscGroupField;
-            }
-            set {
-                this.periodicDiscGroupField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Description {
-            get {
-                return this.descriptionField;
-            }
-            set {
-                this.descriptionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033046")]
-    public partial class CustomerOrderLineV2 {
-        
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private string statusField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal netPriceField;
-        
-        private decimal priceField;
-        
-        private decimal quantityField;
-        
-        private decimal discountAmountField;
-        
-        private decimal discountPercentField;
-        
-        private decimal netAmountField;
-        
-        private decimal vatAmountField;
-        
-        private decimal amountField;
-        
-        private string sourcingLocationField;
-        
-        private string orderReferenceField;
-        
-        private bool inventoryTransferField;
-        
-        private bool vendorSourcingField;
-        
-        private string leadTimeCalculationField;
-        
-        private decimal prepaymentAmountField;
-        
-        private string purchaseOrderNoField;
-        
-        public CustomerOrderLineV2() {
-            this.lineNoField = 0;
-            this.netPriceField = ((decimal)(0m));
-            this.priceField = ((decimal)(0m));
-            this.quantityField = ((decimal)(0m));
-            this.discountAmountField = ((decimal)(0m));
-            this.discountPercentField = ((decimal)(0m));
-            this.netAmountField = ((decimal)(0m));
-            this.vatAmountField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-            this.inventoryTransferField = false;
-            this.vendorSourcingField = false;
-            this.prepaymentAmountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Status {
-            get {
-                return this.statusField;
-            }
-            set {
-                this.statusField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetPrice {
-            get {
-                return this.netPriceField;
-            }
-            set {
-                this.netPriceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Price {
-            get {
-                return this.priceField;
-            }
-            set {
-                this.priceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountAmount {
-            get {
-                return this.discountAmountField;
-            }
-            set {
-                this.discountAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal DiscountPercent {
-            get {
-                return this.discountPercentField;
-            }
-            set {
-                this.discountPercentField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal NetAmount {
-            get {
-                return this.netAmountField;
-            }
-            set {
-                this.netAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal VatAmount {
-            get {
-                return this.vatAmountField;
-            }
-            set {
-                this.vatAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string OrderReference {
-            get {
-                return this.orderReferenceField;
-            }
-            set {
-                this.orderReferenceField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LeadTimeCalculation {
-            get {
-                return this.leadTimeCalculationField;
-            }
-            set {
-                this.leadTimeCalculationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal PrepaymentAmount {
-            get {
-                return this.prepaymentAmountField;
-            }
-            set {
-                this.prepaymentAmountField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PurchaseOrderNo {
-            get {
-                return this.purchaseOrderNoField;
-            }
-            set {
-                this.purchaseOrderNoField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeaderV2", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033046")]
-    public partial class CustomerOrderHeaderV21 {
-        
-        private string documentIDField;
-        
-        private string storeNoField;
-        
-        private string receiptNoField;
-        
-        private string memberCardNoField;
-        
-        private int sourceTypeField;
-        
-        private string customerNoField;
-        
-        private string fullNameField;
-        
-        private string addressField;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string countyField;
-        
-        private string postCodeField;
-        
-        private string countryRegionCodeField;
-        
-        private string phoneNoField;
-        
-        private string emailField;
-        
-        private string houseApartmentNoField;
-        
-        private string mobilePhoneNoField;
-        
-        private string daytimePhoneNoField;
-        
-        private string territoryCodeField;
-        
-        private string shipToFullNameField;
-        
-        private string shipToAddressField;
-        
-        private string shipToAddress2Field;
-        
-        private string shipToCityField;
-        
-        private string shipToCountyField;
-        
-        private string shipToPostCodeField;
-        
-        private string shipToCountryRegionCodeField;
-        
-        private string shipToPhoneNoField;
-        
-        private string shipToEmailField;
-        
-        private string shipToHouseApartmentNoField;
-        
-        private bool clickAndCollectOrderField;
-        
-        private string shippingAgentCodeField;
-        
-        private string shippingAgentServiceCodeField;
-        
-        private string sourcingLocationField;
-        
-        private string externalIDField;
-        
-        private string vendorSourcingField;
-        
-        private string inventoryTransferField;
-        
-        private string createdAtStoreField;
-        
-        private bool shipOrderField;
-        
-        private string transactionNoField;
-        
-        public CustomerOrderHeaderV21() {
-            this.sourceTypeField = 0;
-            this.clickAndCollectOrderField = false;
-            this.shipOrderField = false;
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StoreNo {
-            get {
-                return this.storeNoField;
-            }
-            set {
-                this.storeNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ReceiptNo {
-            get {
-                return this.receiptNoField;
-            }
-            set {
-                this.receiptNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MemberCardNo {
-            get {
-                return this.memberCardNoField;
-            }
-            set {
-                this.memberCardNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int SourceType {
-            get {
-                return this.sourceTypeField;
-            }
-            set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CustomerNo {
-            get {
-                return this.customerNoField;
-            }
-            set {
-                this.customerNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FullName {
-            get {
-                return this.fullNameField;
-            }
-            set {
-                this.fullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address {
-            get {
-                return this.addressField;
-            }
-            set {
-                this.addressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string County {
-            get {
-                return this.countyField;
-            }
-            set {
-                this.countyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CountryRegionCode {
-            get {
-                return this.countryRegionCodeField;
-            }
-            set {
-                this.countryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PhoneNo {
-            get {
-                return this.phoneNoField;
-            }
-            set {
-                this.phoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DaytimePhoneNo {
-            get {
-                return this.daytimePhoneNoField;
-            }
-            set {
-                this.daytimePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerritoryCode {
-            get {
-                return this.territoryCodeField;
-            }
-            set {
-                this.territoryCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToFullName {
-            get {
-                return this.shipToFullNameField;
-            }
-            set {
-                this.shipToFullNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress {
-            get {
-                return this.shipToAddressField;
-            }
-            set {
-                this.shipToAddressField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToAddress2 {
-            get {
-                return this.shipToAddress2Field;
-            }
-            set {
-                this.shipToAddress2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCity {
-            get {
-                return this.shipToCityField;
-            }
-            set {
-                this.shipToCityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCounty {
-            get {
-                return this.shipToCountyField;
-            }
-            set {
-                this.shipToCountyField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPostCode {
-            get {
-                return this.shipToPostCodeField;
-            }
-            set {
-                this.shipToPostCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToCountryRegionCode {
-            get {
-                return this.shipToCountryRegionCodeField;
-            }
-            set {
-                this.shipToCountryRegionCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToPhoneNo {
-            get {
-                return this.shipToPhoneNoField;
-            }
-            set {
-                this.shipToPhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToEmail {
-            get {
-                return this.shipToEmailField;
-            }
-            set {
-                this.shipToEmailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShipToHouseApartmentNo {
-            get {
-                return this.shipToHouseApartmentNoField;
-            }
-            set {
-                this.shipToHouseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public bool ClickAndCollectOrder {
-            get {
-                return this.clickAndCollectOrderField;
-            }
-            set {
-                this.clickAndCollectOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentCode {
-            get {
-                return this.shippingAgentCodeField;
-            }
-            set {
-                this.shippingAgentCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ShippingAgentServiceCode {
-            get {
-                return this.shippingAgentServiceCodeField;
-            }
-            set {
-                this.shippingAgentServiceCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingLocation {
-            get {
-                return this.sourcingLocationField;
-            }
-            set {
-                this.sourcingLocationField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VendorSourcing {
-            get {
-                return this.vendorSourcingField;
-            }
-            set {
-                this.vendorSourcingField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string InventoryTransfer {
-            get {
-                return this.inventoryTransferField;
-            }
-            set {
-                this.inventoryTransferField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string CreatedAtStore {
-            get {
-                return this.createdAtStoreField;
-            }
-            set {
-                this.createdAtStoreField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool ShipOrder {
-            get {
-                return this.shipOrderField;
-            }
-            set {
-                this.shipOrderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TransactionNo {
-            get {
-                return this.transactionNoField;
-            }
-            set {
-                this.transactionNoField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033046")]
-    public partial class RootCustomerOrderCreateV2 {
-        
-        private CustomerOrderHeaderV21[] customerOrderHeaderV2Field;
-        
-        private CustomerOrderLineV2[] customerOrderLineV2Field;
-        
-        private CustomerOrderDiscountLineV2[] customerOrderDiscountLineV2Field;
-        
-        private CustomerOrderPaymentV2[] customerOrderPaymentV2Field;
-        
-        private string[] textField;
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeaderV2")]
-        public CustomerOrderHeaderV21[] CustomerOrderHeaderV2 {
-            get {
-                return this.customerOrderHeaderV2Field;
-            }
-            set {
-                this.customerOrderHeaderV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderLineV2")]
-        public CustomerOrderLineV2[] CustomerOrderLineV2 {
-            get {
-                return this.customerOrderLineV2Field;
-            }
-            set {
-                this.customerOrderLineV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderDiscountLineV2")]
-        public CustomerOrderDiscountLineV2[] CustomerOrderDiscountLineV2 {
-            get {
-                return this.customerOrderDiscountLineV2Field;
-            }
-            set {
-                this.customerOrderDiscountLineV2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderPaymentV2")]
-        public CustomerOrderPaymentV2[] CustomerOrderPaymentV2 {
-            get {
-                return this.customerOrderPaymentV2Field;
-            }
-            set {
-                this.customerOrderPaymentV2Field = value;
             }
         }
         
@@ -56693,132 +50240,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderLine", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033031")]
-    public partial class CustomerOrderLine1 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033221")]
+    public partial class COMobilePickLabel {
         
-        private string documentIDField;
-        
-        private int lineNoField;
-        
-        private string lineTypeField;
-        
-        private string numberField;
-        
-        private string variantCodeField;
-        
-        private string unitofMeasureCodeField;
-        
-        private decimal quantityField;
-        
-        private decimal amountField;
-        
-        public CustomerOrderLine1() {
-            this.lineNoField = 0;
-            this.quantityField = ((decimal)(0m));
-            this.amountField = ((decimal)(0m));
-        }
-        
-        /// <remarks/>
-        public string DocumentID {
-            get {
-                return this.documentIDField;
-            }
-            set {
-                this.documentIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public int LineNo {
-            get {
-                return this.lineNoField;
-            }
-            set {
-                this.lineNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LineType {
-            get {
-                return this.lineTypeField;
-            }
-            set {
-                this.lineTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Number {
-            get {
-                return this.numberField;
-            }
-            set {
-                this.numberField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string VariantCode {
-            get {
-                return this.variantCodeField;
-            }
-            set {
-                this.variantCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string UnitofMeasureCode {
-            get {
-                return this.unitofMeasureCodeField;
-            }
-            set {
-                this.unitofMeasureCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Quantity {
-            get {
-                return this.quantityField;
-            }
-            set {
-                this.quantityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public decimal Amount {
-            get {
-                return this.amountField;
-            }
-            set {
-                this.amountField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033031")]
-    public partial class CustomerOrderHeader1 {
+        private int entryNoField;
         
         private string documentIDField;
         
         private string storeNoField;
         
-        private string memberCardNoField;
+        private int numberOfLabelsToPrintField;
         
-        private int sourceTypeField;
+        private string boxNoField;
         
-        private string sourcingOrderField;
+        public COMobilePickLabel() {
+            this.entryNoField = 0;
+            this.numberOfLabelsToPrintField = 0;
+        }
         
-        public CustomerOrderHeader1() {
-            this.sourceTypeField = 0;
+        /// <remarks/>
+        public int EntryNo {
+            get {
+                return this.entryNoField;
+            }
+            set {
+                this.entryNoField = value;
+            }
         }
         
         /// <remarks/>
@@ -56842,32 +50289,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public string MemberCardNo {
+        public int NumberOfLabelsToPrint {
             get {
-                return this.memberCardNoField;
+                return this.numberOfLabelsToPrintField;
             }
             set {
-                this.memberCardNoField = value;
+                this.numberOfLabelsToPrintField = value;
             }
         }
         
         /// <remarks/>
-        public int SourceType {
+        public string BoxNo {
             get {
-                return this.sourceTypeField;
+                return this.boxNoField;
             }
             set {
-                this.sourceTypeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SourcingOrder {
-            get {
-                return this.sourcingOrderField;
-            }
-            set {
-                this.sourcingOrderField = value;
+                this.boxNoField = value;
             }
         }
     }
@@ -56877,34 +50314,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033031")]
-    public partial class RootCOQtyAvailabilityExtIn {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033221")]
+    public partial class RootCOMobilePickLabel {
         
-        private CustomerOrderHeader1[] customerOrderHeaderField;
-        
-        private CustomerOrderLine1[] customerOrderLineField;
+        private COMobilePickLabel[] cOMobilePickLabelField;
         
         private string[] textField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderHeader")]
-        public CustomerOrderHeader1[] CustomerOrderHeader {
+        [System.Xml.Serialization.XmlElementAttribute("COMobilePickLabel")]
+        public COMobilePickLabel[] COMobilePickLabel {
             get {
-                return this.customerOrderHeaderField;
+                return this.cOMobilePickLabelField;
             }
             set {
-                this.customerOrderHeaderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderLine")]
-        public CustomerOrderLine1[] CustomerOrderLine {
-            get {
-                return this.customerOrderLineField;
-            }
-            set {
-                this.customerOrderLineField = value;
+                this.cOMobilePickLabelField = value;
             }
         }
         
@@ -58651,17 +52075,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void COQtyAvailabilityCompletedEventHandler(object sender, COQtyAvailabilityCompletedEventArgs e);
+    public delegate void COSetMobilePickLabelCompletedEventHandler(object sender, COSetMobilePickLabelCompletedEventArgs e);
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class COQtyAvailabilityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+    public partial class COSetMobilePickLabelCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
         
         private object[] results;
         
-        internal COQtyAvailabilityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+        internal COSetMobilePickLabelCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -58683,18 +52107,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public string preferredSourcingLocation {
+        public RootCOMobilePickLabel cOSetMobilePickLabelXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[2]));
-            }
-        }
-        
-        /// <remarks/>
-        public RootCOQtyAvailabilityExtOut cOQtyAvailabilityOutXML {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((RootCOQtyAvailabilityExtOut)(this.results[3]));
+                return ((RootCOMobilePickLabel)(this.results[2]));
             }
         }
     }
@@ -58819,132 +52235,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderCreateV2CompletedEventHandler(object sender, CustomerOrderCreateV2CompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderCreateV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderCreateV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public string customerOrderID {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderCreateV3CompletedEventHandler(object sender, CustomerOrderCreateV3CompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderCreateV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderCreateV3CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public string customerOrderID {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderCreateV4CompletedEventHandler(object sender, CustomerOrderCreateV4CompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderCreateV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderCreateV4CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public string customerOrderID {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void CustomerOrderCreateV5CompletedEventHandler(object sender, CustomerOrderCreateV5CompletedEventArgs e);
     
     /// <remarks/>
@@ -58981,124 +52271,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderCreateCompletedEventHandler(object sender, CustomerOrderCreateCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderCreateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderCreateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderFilteredListCompletedEventHandler(object sender, CustomerOrderFilteredListCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderFilteredListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderFilteredListCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public RootCustomerOrderFilteredList customerOrderFilteredListXML {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((RootCustomerOrderFilteredList)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderGetV2CompletedEventHandler(object sender, CustomerOrderGetV2CompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderGetV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderGetV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public RootCustomerOrderGetV2 customerOrderGetV2XML {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((RootCustomerOrderGetV2)(this.results[2]));
             }
         }
     }
@@ -59157,48 +52329,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((decimal)(this.results[4]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void CustomerOrderGetCompletedEventHandler(object sender, CustomerOrderGetCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class CustomerOrderGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal CustomerOrderGetCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public RootCustomerOrderGet customerOrderGetXML {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((RootCustomerOrderGet)(this.results[2]));
             }
         }
     }
@@ -59835,6 +52965,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetHierarchyV2ValidationScheduleCompletedEventHandler(object sender, GetHierarchyV2ValidationScheduleCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetHierarchyV2ValidationScheduleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetHierarchyV2ValidationScheduleCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootGetHierarchyValSched getHierarchyV2ValidationScheduleXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetHierarchyValSched)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetHierarchyV2CompletedEventHandler(object sender, GetHierarchyV2CompletedEventArgs e);
     
     /// <remarks/>
@@ -59871,48 +53043,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootGetHierarchyV2)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    public delegate void GetHierarchyCompletedEventHandler(object sender, GetHierarchyCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetHierarchyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal GetHierarchyCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public RootGetHierarchy getHierarchyXML {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((RootGetHierarchy)(this.results[2]));
             }
         }
     }
@@ -60383,6 +53513,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootGetMemberSalesHistory)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetPosTransSuspListCompletedEventHandler(object sender, GetPosTransSuspListCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetPosTransSuspListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetPosTransSuspListCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootGetPosTransSuspList getPosTransSuspListXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetPosTransSuspList)(this.results[2]));
             }
         }
     }

@@ -68,7 +68,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = 0;
 
                 recordsRemaining = GetRecordCount(TABLEDEALID, lastKey, sql, keys, ref maxKey);
-                List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALID, batchSize, ref lastKey, ref recordsRemaining);
+                List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALID, batchSize, ref mainlastkey, ref recordsRemaining);
 
                 recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref maxKey);
                 nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
@@ -172,7 +172,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             }
                             first = false;
                         }
-                        if (string.IsNullOrEmpty(maxKey))
+                        if (string.IsNullOrEmpty(maxKey) || recordsRemaining <= 0)
                             maxKey = lastKey;
                     }
                     connection.Close();
@@ -215,7 +215,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = 0;
 
                 recordsRemaining = GetRecordCount(TABLEDEALLINEID, lastKey, sql, keys, ref maxKey);
-                List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALLINEID, batchSize, ref lastKey, ref recordsRemaining);
+                List<JscActions> nodeact = LoadActions(fullReplication, TABLEDEALLINEID, batchSize, ref mainlastkey, ref recordsRemaining);
 
                 recordsRemaining += GetRecordCount(10000922, tmplastkey, string.Empty, keys, ref maxKey);
                 nodeact.AddRange(LoadActions(fullReplication, 10000922, batchSize, ref tmplastkey, ref recordsRemaining));
@@ -335,6 +335,107 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 recordsRemaining = 0;
 
             return list;
+        }
+
+        public List<HierarchyNode> HierarchyDealGet(string hCode, string nCode, string offerId)
+        {
+            List<HierarchyNode> list = new List<HierarchyNode>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type],mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index] " +
+                                          "FROM [" + navCompanyName + "Offer Line$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "WHERE mt.[Offer No_]=@id";
+                    command.Parameters.AddWithValue("@id", offerId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyNode(reader, hCode, nCode));
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<HierarchyLeaf> HierarchyDealLineGet(string hCode, string nCode, string orderNo, string dealNo)
+        {
+            List<HierarchyLeaf> list = new List<HierarchyLeaf>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " +
+                            "mt.[Offer No_],mt.[Deal Modifier Code],mt.[Offer Line No_]," +
+                            "mt.[Deal Modifier Line No_],mt.[Item No_],mt.[Description],mt.[Variant Code],mt.[Unit of Measure]," +
+                            "mt.[Min_ Selection],mt.[Max_ Item Selection],mt.[Added Amount],il.[Image Id]" +
+                            "FROM [" + navCompanyName + "Deal Modifier Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                            "LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item' " +
+                            "WHERE mt.[Offer No_]=@ono AND mt.[Deal Modifier Code]=@dno";
+
+                    command.Parameters.AddWithValue("@ono", orderNo);
+                    command.Parameters.AddWithValue("@dno", dealNo);
+                    connection.Open();
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyNodeLink(reader, hCode, nCode));
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        private HierarchyNode ReaderToHierarchyNode(SqlDataReader reader, string hCode, string nCode)
+        {
+            HierarchyNode node = new HierarchyNode()
+            {
+                HierarchyCode = hCode,
+                ParentNode = nCode,
+                Id = SQLHelper.GetString(reader["Offer No_"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                No = SQLHelper.GetString(reader["No_"]),
+                Type = (HierarchyDealType)SQLHelper.GetInt32(reader["Type"]),
+                VariantCode = SQLHelper.GetString(reader["Variant Code"]),
+                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure"]),
+                MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
+                MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
+                AddedAmount = SQLHelper.GetDecimal(reader, "Modifier Added Amount"),
+                DealModSizeGroupIndex = SQLHelper.GetInt32(reader["Deal Mod_ Size Gr_ Index"])
+            };
+            node.Leafs = HierarchyDealLineGet(hCode, nCode, node.Id, node.No);
+            return node;
+        }
+
+
+        private HierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader, string hCode, string nCode)
+        {
+            return new HierarchyLeaf()
+            {
+                HierarchyCode = hCode,
+                ParentNode = nCode,
+                Id = SQLHelper.GetString(reader["Offer No_"]),
+                DealLineCode = SQLHelper.GetString(reader["Deal Modifier Code"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                DealLineNo = SQLHelper.GetInt32(reader["Offer Line No_"]),
+                LineNo = SQLHelper.GetInt32(reader["Deal Modifier Line No_"]),
+                ItemNo = SQLHelper.GetString(reader["Item No_"]),
+                VariantCode = SQLHelper.GetString(reader["Variant Code"]),
+                ItemUOM = SQLHelper.GetString(reader["Unit of Measure"]),
+                MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
+                MaxSelection = SQLHelper.GetInt32(reader["Max_ Item Selection"]),
+                AddedAmount = SQLHelper.GetDecimal(reader, "Added Amount"),
+                ImageId = SQLHelper.GetString(reader["Image Id"])
+            };
         }
 
         private ReplHierarchyHospDeal ReaderToHierarchyDeal(SqlDataReader reader, out string timestamp)

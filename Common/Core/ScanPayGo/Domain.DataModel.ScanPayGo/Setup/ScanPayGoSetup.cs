@@ -35,5 +35,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public string DefaultWebStore { get; set; }
         public ScanPayGoPaymentType AllowedPaymentTypes { get; set; }
         public ScanPayCardPaymentType CardPaymentType { get; set; }
+
+        public int CheckStatusTimer { get; set; }
     }
 }

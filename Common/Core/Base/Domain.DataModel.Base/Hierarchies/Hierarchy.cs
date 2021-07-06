@@ -35,6 +35,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
 
         public void RecursiveBuilder(ref HierarchyNode node, IEnumerable<HierarchyNode> nodes)
         {
+            if (node.Nodes.Count > 0)
+                return;
+
             HierarchyNode mynode = node;
             node.Nodes = (from n in nodes where n.ParentNode == mynode.Id select n).ToList();
             node.Nodes.ForEach(f => RecursiveBuilder(ref f, nodes));

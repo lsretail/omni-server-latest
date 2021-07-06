@@ -424,13 +424,13 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
-        public virtual ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest)
+        public virtual ReplMixMatchResponse ReplEcommMixAndMatch(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
 
-            ReplDiscountResponse rs = new ReplDiscountResponse()
+            ReplMixMatchResponse rs = new ReplMixMatchResponse()
             {
                 Discounts = BOAppConnection.ReplicateMixAndMatch(string.Empty, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
                 RecordsRemaining = recordsRemaining,

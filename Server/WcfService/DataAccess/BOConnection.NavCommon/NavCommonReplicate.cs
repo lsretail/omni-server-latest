@@ -4,6 +4,7 @@ using System.Linq;
 
 using LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping;
 using LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
@@ -59,13 +60,20 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 });
 
                 // get HTML detail
-                NAVWebXml xml = new NAVWebXml();
-                string xmlRequest = xml.GetBatchWebRequestXML("Item HTML", fields, filter, string.Empty);
-                string xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                try
+                {
+                    NAVWebXml xml = new NAVWebXml();
+                    string xmlRequest = xml.GetBatchWebRequestXML("Item HTML", fields, filter, string.Empty);
+                    string xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-                rep.ReplicateItemsHtml(table, list);
+                    rep.ReplicateItemsHtml(table, list);
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Failed to get HTML details");
+                }
 
                 index += 10;
                 if (index >= list.Count - 1)
@@ -134,28 +142,37 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     Values = new List<string>() { "=''" }
                 });
 
-                // get Qty for UOM
-                string xmlRequest = xml.GetBatchWebRequestXML("Extended Variant Dimensions", fields, filter, string.Empty);
-                string xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                try
+                {
+                    // get Qty for UOM
+                    string xmlRequest = xml.GetBatchWebRequestXML("Extended Variant Dimensions", fields, filter, string.Empty);
+                    string xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
+                    if (table == null || table.NumberOfValues == 0)
+                        continue;
                 if (table == null || table.NumberOfValues == 0)
                     continue;
 
-                string dim = string.Empty;
-                string code = string.Empty;
-                foreach (XMLFieldData field in table.FieldList)
-                {
-                    switch (field.FieldName)
+                    string dim = string.Empty;
+                    string code = string.Empty;
+                    foreach (XMLFieldData field in table.FieldList)
                     {
-                        case "Framework Code": code = field.Values[0]; break;
-                        case "Dimension No.": dim = field.Values[0]; break;
-                        case "Logical Order":
-                            ReplExtendedVariantValue it = list.Find(f => f.FrameworkCode == code && f.Dimensions == dim);
-                            if (it != null)
-                                it.DimensionLogicalOrder = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToInt32(field.Values[0]));
-                            break;
+                        switch (field.FieldName)
+                        {
+                            case "Framework Code": code = field.Values[0]; break;
+                            case "Dimension No.": dim = field.Values[0]; break;
+                            case "Logical Order":
+                                ReplExtendedVariantValue it = list.Find(f => f.FrameworkCode == code && f.Dimensions == dim);
+                                if (it != null)
+                                    it.DimensionLogicalOrder = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToInt32(field.Values[0]));
+                                break;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Failed to get Logical order value");
                 }
             }
             return list;
@@ -258,28 +275,37 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     Values = new List<string>() { price.UnitOfMeasure }
                 });
 
-                // get Qty for UOM
-                xmlRequest = xml.GetBatchWebRequestXML("Item Unit of Measure", fields, filter, string.Empty);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                try
+                {
+                    // get Qty for UOM
+                    xmlRequest = xml.GetBatchWebRequestXML("Item Unit of Measure", fields, filter, string.Empty);
+                    xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
+                    if (table == null || table.NumberOfValues == 0)
+                        continue;
                 if (table == null || table.NumberOfValues == 0)
                     continue;
 
-                string item = string.Empty;
-                string code = string.Empty;
-                foreach (XMLFieldData field in table.FieldList)
-                {
-                    switch (field.FieldName)
+                    string item = string.Empty;
+                    string code = string.Empty;
+                    foreach (XMLFieldData field in table.FieldList)
                     {
-                        case "Code": code = field.Values[0]; break;
-                        case "Item No.": item = field.Values[0]; break;
-                        case "Qty. per Unit of Measure":
-                            ReplPrice it = list.Find(f => f.ItemId == item && f.UnitOfMeasure == code);
-                            if (it != null)
-                                it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToDecimal(field.Values[0]));
-                            break;
+                        switch (field.FieldName)
+                        {
+                            case "Code": code = field.Values[0]; break;
+                            case "Item No.": item = field.Values[0]; break;
+                            case "Qty. per Unit of Measure":
+                                ReplPrice it = list.Find(f => f.ItemId == item && f.UnitOfMeasure == code);
+                                if (it != null)
+                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToDecimal(field.Values[0]));
+                                break;
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Failed to get detailed values");
                 }
             }
             return list;
@@ -307,16 +333,23 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 if (string.IsNullOrWhiteSpace(store.Currency) == false)
                     continue;
 
-                string xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
-                string xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                try
+                {
+                    string xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+                    string xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-                if (table == null || table.NumberOfValues == 0)
-                    break;
+                    if (table == null || table.NumberOfValues == 0)
+                        break;
 
-                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
-                store.Currency = field.Values[0];
+                    XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                    store.Currency = field.Values[0];
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Failed to get Logical local currency");
+                }
             }
             return list;
         }
@@ -579,7 +612,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             XMLTableData table = DoReplication(99001462, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicateStoreTenderType(table);
+            return rep.ReplicateStoreTenderType(table, config.SettingsGetByKey(ConfigKey.TenderType_Mapping));
         }
 
         public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, ref string lastKey, ref int recordsRemaining)
@@ -696,16 +729,23 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     Values = new List<string>() { (leaf.Type == HierarchyLeafType.Item) ? "Item" : "Offer" }
                 });
 
-                xmlRequest = xml.GetBatchWebRequestXML("Retail Image Link", null, filter, string.Empty);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                try
+                {
+                    xmlRequest = xml.GetBatchWebRequestXML("Retail Image Link", null, filter, string.Empty);
+                    xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-                if (table == null || table.NumberOfValues == 0)
-                    return null;
+                    if (table == null || table.NumberOfValues == 0)
+                        return null;
 
-                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Image Id"));
-                leaf.ImageId = field.Values[0];
+                    XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Image Id"));
+                    leaf.ImageId = field.Values[0];
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Failed to get Image Id");
+                }
             }
             return list;
         }
@@ -810,14 +850,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             ReplicateRepository rep = new ReplicateRepository();
             return rep.ReplicateStaffStoreLink(table);
-        }
-
-        public virtual List<ReplTenderType> ReplicateTenderTypes(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
-        {
-            XMLTableData table = DoReplication(99001466, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
-
-            ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicateTenderTypes(table);
         }
 
         public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)

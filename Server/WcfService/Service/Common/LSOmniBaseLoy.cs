@@ -991,6 +991,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, request.Count);
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
+                return bll.CheckAvailability(request, storeId);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} itemCnt:{1}", storeId, request.Count);
+                return null; //never gets here
+            }
+        }
+
         /// <summary>
         /// Returns one page of items at a time
         /// </summary>
@@ -1382,7 +1397,6 @@ namespace LSOmni.Service
         /// <param name="latitude">latitude</param>
         /// <param name="longitude">longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers</param>
-        /// <param name="maxNumberOfStores">max number of stores returned</param>
         /// <returns>List of stores within max distance of coordinates</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1400,16 +1414,15 @@ namespace LSOmni.Service
         /// </item>	 
         /// </list>        
         /// </exception>
-        public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores)
+        public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "latitude:{0} longitude:{1} maxDistance:{2} maxNumberOfStores:{3}",
-                    latitude, longitude, maxDistance, maxNumberOfStores);
+                logger.Debug(config.LSKey.Key, "latitude:{0} longitude:{1} maxDistance:{2}",
+                    latitude, longitude, maxDistance);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                maxNumberOfStores = (maxNumberOfStores > maxNumberReturned ? maxNumberReturned : maxNumberOfStores); //max 1000 should be the limit!
-                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance, maxNumberOfStores);
+                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);
@@ -1418,7 +1431,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "latitude:{0} longitude:{1} maxDistance:{2} maxNumberOfStores:{3}", latitude, longitude, maxDistance, maxNumberOfStores);
+                HandleExceptions(ex, "latitude:{0} longitude:{1} maxDistance:{2}", latitude, longitude, maxDistance);
                 return null; //never gets here
             }
         }
@@ -1431,7 +1444,6 @@ namespace LSOmni.Service
         /// <param name="latitude">latitude</param>
         /// <param name="longitude">longitude</param>
         /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers</param>
-        /// <param name="maxNumberOfStores">max number of stores returned</param>
         /// <returns>List of stores that have items in stock</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1449,15 +1461,15 @@ namespace LSOmni.Service
         /// </item>	 
         /// </list>        
         /// </exception>
-        public virtual List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance, int maxNumberOfStores)
+        public virtual List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4} maxNumberOfStores:{5} ",
-                    itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores);
+                logger.Debug(config.LSKey.Key, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4}",
+                    itemId, variantId, latitude, longitude, maxDistance);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                List<Store> storeList = storeBLL.StoresGetbyItemInStock(itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores);
+                List<Store> storeList = storeBLL.StoresGetbyItemInStock(itemId, variantId, latitude, longitude, maxDistance);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);
@@ -1466,8 +1478,8 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4} maxNumberOfStores:{5}",
-                            itemId, variantId, latitude, longitude, maxDistance, maxNumberOfStores);
+                HandleExceptions(ex, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4}",
+                            itemId, variantId, latitude, longitude, maxDistance);
                 return null; //never gets here
             }
         }
@@ -1675,21 +1687,6 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual int HospOrderEstimatedTime(string storeId, string orderId)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
-                OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                return hostBLL.HospOrderEstimatedTime(storeId, orderId);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "storeId:{0} orderId:{1}", storeId, orderId);
-                return 0; //never gets here
-            }
-        }
-
         public virtual bool HospOrderCancel(string storeId, string orderId)
         {
             try
@@ -1706,13 +1703,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                return hostBLL.HospOrderKotStatus(storeId, orderId);
+                return hostBLL.HospOrderStatus(storeId, orderId);
             }
             catch (Exception ex)
             {

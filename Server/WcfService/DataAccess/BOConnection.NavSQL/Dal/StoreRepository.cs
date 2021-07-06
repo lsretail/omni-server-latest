@@ -224,7 +224,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         if (reader.Read())
                         {
-                            store = ReaderToLoyStore(reader, includeDetails, -1, -1);
+                            store = ReaderToLoyStore(reader, includeDetails);
                         }
                         reader.Close();
                     }
@@ -257,7 +257,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            stores.Add(ReaderToLoyStore(reader, true, -1, -1));
+                            stores.Add(ReaderToLoyStore(reader, true));
                         }
                         reader.Close();
                     }
@@ -322,7 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyStore(reader, false, -1, -1));
+                            list.Add(ReaderToLoyStore(reader, false));
                         }
                         reader.Close();
                     }
@@ -332,7 +332,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, int maxNumberOfStores, Store.DistanceType units)
+        public List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
         {
             List<Store> storecheck = StoreLoyGetAll(true);
 
@@ -545,7 +545,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return store;
         }
 
-        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails, double latitude, double longitude)
+        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails)
         {
             Store store = new Store()
             {
@@ -567,19 +567,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     Type = AddressType.Store
                 }
             };
-
-            if (latitude > 0 && longitude > 0)
-            {
-                Store.Position startpos = new Store.Position();
-                startpos.Latitude = latitude;
-                startpos.Longitude = longitude;
-
-                Store.Position endpos = new Store.Position();
-                endpos.Latitude = store.Latitude;
-                endpos.Longitude = store.Longitude;
-
-                store.Distance = store.CalculateDistance(startpos, endpos, Store.DistanceType.Kilometers);
-            }
 
             string cur = SQLHelper.GetString(reader["Currency Code"]);
             if (string.IsNullOrWhiteSpace(cur))

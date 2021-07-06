@@ -18,7 +18,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         protected static BOConfiguration config = null;
 
         public static Version NAVVersion = null; //use this in code to check Nav version
-        public static bool NavDirect = true;
         public static NavCommonBase NavWSBase = null;
         public static PreCommonBase LSCWSBase = null;
 
@@ -32,7 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
             NavWSBase = new NavCommonBase(configuration);
             LSCWSBase = new PreCommonBase(configuration);
-            NAVVersion = NavWSBase.NAVVersion;
+            NAVVersion = LSCWSBase.LSCVersion;
 
             string domain = "";
             NetworkCredential credentials = null;

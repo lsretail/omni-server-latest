@@ -98,7 +98,6 @@
     <Compile Include="Dal\StoreTenderTypeCurrencyRepository.cs" />
     <Compile Include="Dal\StoreTenderTypeRepository.cs" />
     <Compile Include="Dal\TaxSetupRepository.cs" />
-    <Compile Include="Dal\TenderTypeRepository.cs" />
     <Compile Include="Dal\TerminalRepository.cs" />
     <Compile Include="Dal\TransactionRepository.cs" />
     <Compile Include="Dal\UnitOfMeasureRepository.cs" />

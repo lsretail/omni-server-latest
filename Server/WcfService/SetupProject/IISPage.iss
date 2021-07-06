@@ -29,8 +29,8 @@ begin
   else
   begin
     if (Length(IISPage_txtWcfSiteName.Text) > 0) 
-    and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
-    and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
+        and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
+        and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
     begin
       WizardForm.NextButton.Enabled := True;
     end;
@@ -48,8 +48,8 @@ begin
   else
   begin
     if (Length(IISPage_txtWcfSiteName.Text) > 0) 
-    and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
-    and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
+        and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
+        and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
     begin
       WizardForm.NextButton.Enabled := True;
     end;

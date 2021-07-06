@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 {

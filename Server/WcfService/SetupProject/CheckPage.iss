@@ -24,17 +24,17 @@ procedure OnClickSQL(Sender: TObject);
 begin
   if CheckPage_SQLCheckBox.Checked then
   begin
-	CheckPage_WSCheckBox.Checked := False;
-	CheckPage_WSCheckBox.Enabled := True;
-	CheckPage_MultiCheckBox.Checked := False;
-	CheckPage_MultiCheckBox.Enabled := True;
+    CheckPage_WSCheckBox.Checked := False;
+    CheckPage_WSCheckBox.Enabled := True;
+    CheckPage_MultiCheckBox.Checked := False;
+    CheckPage_MultiCheckBox.Enabled := True;
   end
   else
   begin
-	CheckPage_WSCheckBox.Checked := False;
-	CheckPage_WSCheckBox.Enabled := False;
-	CheckPage_MultiCheckBox.Checked := False;
-	CheckPage_MultiCheckBox.Enabled := False;
+    CheckPage_WSCheckBox.Checked := False;
+    CheckPage_WSCheckBox.Enabled := False;
+    CheckPage_MultiCheckBox.Checked := False;
+    CheckPage_MultiCheckBox.Enabled := False;
   end;
 end;
 
@@ -42,13 +42,13 @@ procedure OnClickWS(Sender: TObject);
 begin
   if CheckPage_WSCheckBox.Checked OR CheckPage_MultiCheckBox.Checked then
   begin
-	CheckPage_NavSQLCheckBox.Checked := False;
-	CheckPage_NavSQLCheckBox.Enabled := False;
+    CheckPage_NavSQLCheckBox.Checked := False;
+    CheckPage_NavSQLCheckBox.Enabled := False;
   end
   else
   begin
-	CheckPage_NavSQLCheckBox.Checked := True;
-	CheckPage_NavSQLCheckBox.Enabled := True;
+    CheckPage_NavSQLCheckBox.Checked := True;
+    CheckPage_NavSQLCheckBox.Enabled := True;
   end;
 end;
 

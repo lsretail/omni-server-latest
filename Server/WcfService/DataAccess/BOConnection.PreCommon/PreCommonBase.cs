@@ -178,51 +178,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
         }
 
-        public string TenderTypeMapping(string tenderMapping, string tenderType, bool toOmni)
-        {
-            try
-            {
-                int tenderTypeId = -1;
-                if (string.IsNullOrWhiteSpace(tenderMapping))
-                {
-                    return null;
-                }
-
-                // first one is LS Commerce Service TenderType, 2nd one is the NAV id
-                //tenderMapping: "1=1,2=2,3=3,4=4,6=6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
-                //or can be : "1  =  1  ,2=2,3= 3, 4=4,6 =6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
-
-                string[] commaMapping = tenderMapping.Split(',');  //1=1 or 2=2  etc
-                foreach (string s in commaMapping)
-                {
-                    string[] eqMapping = s.Split('='); //1 1
-                    if (toOmni)
-                    {
-                        if (tenderType == eqMapping[1].Trim())
-                        {
-                            tenderTypeId = Convert.ToInt32(eqMapping[0].Trim());
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        if (tenderType == eqMapping[0].Trim())
-                        {
-                            tenderTypeId = Convert.ToInt32(eqMapping[1].Trim());
-                            break;
-                        }
-                    }
-                }
-                return tenderTypeId.ToString();
-            }
-            catch (Exception ex)
-            {
-                string msg = string.Format("Error in TenderTypeMapping(tenderMapping:{0} tenderType:{1})", tenderMapping, tenderType.ToString());
-                logger.Error(config.LSKey.Key, ex, msg + ex.Message);
-                throw;
-            }
-        }
-
         public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
         {
             if (string.IsNullOrEmpty(appid) && string.IsNullOrEmpty(apptype))
@@ -278,7 +233,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse()
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("17.0");
+                LSCVersion = new Version("18.0");
 
             if (centralWS == null)
                 return "ERROR: not connected";

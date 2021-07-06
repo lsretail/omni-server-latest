@@ -8,11 +8,11 @@ namespace LSOmni.BLL.Loyalty
 {
     public class OfferBLL : BaseLoyBLL
     {
-
         public OfferBLL(BOConfiguration config, int timeoutInSeconds)
             : base(config, timeoutInSeconds)
         {
         }
+
         public OfferBLL(BOConfiguration config) : base(config, 0)
         {
         }
@@ -31,5 +31,4 @@ namespace LSOmni.BLL.Loyalty
         }
     }
 }
-
  

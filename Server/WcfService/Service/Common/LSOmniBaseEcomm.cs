@@ -538,7 +538,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual ReplDiscountResponse ReplEcommMixAndMatch(ReplRequest replRequest)
+        public virtual ReplMixMatchResponse ReplEcommMixAndMatch(ReplRequest replRequest)
         {
             try
             {
