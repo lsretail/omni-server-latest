@@ -323,7 +323,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             }
 
             int copay = SQLHelper.GetInt32(reader["CoPay"]);
-            entry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
             entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
 
             OrderLinesGetTotals(entry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);

@@ -9,7 +9,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         public ReplRequest()
         {
             StoreId = string.Empty;
-            TerminalId = string.Empty;
+            AppId = string.Empty;
             LastKey = string.Empty;
             MaxKey = string.Empty;
             BatchSize = 1000;
@@ -35,9 +35,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         [DataMember(IsRequired = true)]
         public string StoreId { get; set; }
         /// <summary>
-        /// ID of a Terminal that request replication data (Required)
+        /// App ID used in LS Central Cloud setup
         /// </summary>
-        [DataMember(IsRequired = true)]
+        [DataMember]
+        public string AppId { get; set; }
+        [DataMember]
         public string TerminalId { get; set; }
         /// <summary>
         /// Last Key returned from previous replication call (Required)
@@ -77,8 +79,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
 
         public override string ToString()
         {
-            return string.Format("StoreId:{0} TerminalId:{1} LastKey:{2} MaxKey:{3} BatchSize:{4} FullReplication:{5}",
-                StoreId, TerminalId, LastKey, MaxKey, BatchSize.ToString(), FullReplication.ToString());
+            return string.Format("StoreId:{0} AppId:{1} LastKey:{2} MaxKey:{3} BatchSize:{4} FullReplication:{5}",
+                StoreId, AppId, LastKey, MaxKey, BatchSize.ToString(), FullReplication.ToString());
         }
     }
 }

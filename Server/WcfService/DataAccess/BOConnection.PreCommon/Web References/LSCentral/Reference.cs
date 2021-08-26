@@ -55,6 +55,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback CustomerOrderGetV3OperationCompleted;
         
+        private System.Threading.SendOrPostCallback CustomerOrderStatusV2OperationCompleted;
+        
         private System.Threading.SendOrPostCallback CustomerOrderStatusOperationCompleted;
         
         private System.Threading.SendOrPostCallback EcomCalculateBasketOperationCompleted;
@@ -98,6 +100,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback GetItemDocumentOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetItemInventoryOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetItemWithBarcodeOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetKotStatusOperationCompleted;
         
@@ -281,6 +285,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event CustomerOrderGetV3CompletedEventHandler CustomerOrderGetV3Completed;
         
         /// <remarks/>
+        public event CustomerOrderStatusV2CompletedEventHandler CustomerOrderStatusV2Completed;
+        
+        /// <remarks/>
         public event CustomerOrderStatusCompletedEventHandler CustomerOrderStatusCompleted;
         
         /// <remarks/>
@@ -345,6 +352,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event GetItemInventoryCompletedEventHandler GetItemInventoryCompleted;
+        
+        /// <remarks/>
+        public event GetItemWithBarcodeCompletedEventHandler GetItemWithBarcodeCompleted;
         
         /// <remarks/>
         public event GetKotStatusCompletedEventHandler GetKotStatusCompleted;
@@ -985,6 +995,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.CustomerOrderGetV3Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CustomerOrderGetV3Completed(this, new CustomerOrderGetV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:CustomerOrderStatusV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="CustomerOrderStatusV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void CustomerOrderStatusV2(ref string responseCode, ref string errorText, string customerOrderDocumentID, ref RootNodeName customerOrderStatusV2XML) {
+            object[] results = this.Invoke("CustomerOrderStatusV2", new object[] {
+                        responseCode,
+                        errorText,
+                        customerOrderDocumentID,
+                        customerOrderStatusV2XML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            customerOrderStatusV2XML = ((RootNodeName)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void CustomerOrderStatusV2Async(string responseCode, string errorText, string customerOrderDocumentID, RootNodeName customerOrderStatusV2XML) {
+            this.CustomerOrderStatusV2Async(responseCode, errorText, customerOrderDocumentID, customerOrderStatusV2XML, null);
+        }
+        
+        /// <remarks/>
+        public void CustomerOrderStatusV2Async(string responseCode, string errorText, string customerOrderDocumentID, RootNodeName customerOrderStatusV2XML, object userState) {
+            if ((this.CustomerOrderStatusV2OperationCompleted == null)) {
+                this.CustomerOrderStatusV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnCustomerOrderStatusV2OperationCompleted);
+            }
+            this.InvokeAsync("CustomerOrderStatusV2", new object[] {
+                        responseCode,
+                        errorText,
+                        customerOrderDocumentID,
+                        customerOrderStatusV2XML}, this.CustomerOrderStatusV2OperationCompleted, userState);
+        }
+        
+        private void OnCustomerOrderStatusV2OperationCompleted(object arg) {
+            if ((this.CustomerOrderStatusV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CustomerOrderStatusV2Completed(this, new CustomerOrderStatusV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1904,6 +1951,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.GetItemInventoryCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetItemInventoryCompleted(this, new GetItemInventoryCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetItemWithBarcode", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetItemWithBarcode_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetItemWithBarcode(string barcodeNo, ref RootLeftRightLine leftRightLineXML, ref string responseCode, ref string errorText, ref string itemHtml) {
+            object[] results = this.Invoke("GetItemWithBarcode", new object[] {
+                        barcodeNo,
+                        leftRightLineXML,
+                        responseCode,
+                        errorText,
+                        itemHtml});
+            leftRightLineXML = ((RootLeftRightLine)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+            itemHtml = ((string)(results[3]));
+        }
+        
+        /// <remarks/>
+        public void GetItemWithBarcodeAsync(string barcodeNo, RootLeftRightLine leftRightLineXML, string responseCode, string errorText, string itemHtml) {
+            this.GetItemWithBarcodeAsync(barcodeNo, leftRightLineXML, responseCode, errorText, itemHtml, null);
+        }
+        
+        /// <remarks/>
+        public void GetItemWithBarcodeAsync(string barcodeNo, RootLeftRightLine leftRightLineXML, string responseCode, string errorText, string itemHtml, object userState) {
+            if ((this.GetItemWithBarcodeOperationCompleted == null)) {
+                this.GetItemWithBarcodeOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetItemWithBarcodeOperationCompleted);
+            }
+            this.InvokeAsync("GetItemWithBarcode", new object[] {
+                        barcodeNo,
+                        leftRightLineXML,
+                        responseCode,
+                        errorText,
+                        itemHtml}, this.GetItemWithBarcodeOperationCompleted, userState);
+        }
+        
+        private void OnGetItemWithBarcodeOperationCompleted(object arg) {
+            if ((this.GetItemWithBarcodeCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetItemWithBarcodeCompleted(this, new GetItemWithBarcodeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -44483,6 +44570,273 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009332")]
+    public partial class CustomerOrderStatusLineLog {
+        
+        private bool allowCancelField;
+        
+        private bool allowModifyField;
+        
+        private string descriptionField;
+        
+        private string itenNoField;
+        
+        private int itemLineNoField;
+        
+        private string statusCodeField;
+        
+        private decimal quantityField;
+        
+        private string unitOfMeasureField;
+        
+        private string variantCodeField;
+        
+        private System.DateTime statusChangedField;
+        
+        private string extCodeField;
+        
+        private decimal amountField;
+        
+        public CustomerOrderStatusLineLog() {
+            this.allowCancelField = false;
+            this.allowModifyField = false;
+            this.itemLineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.statusChangedField = new System.DateTime(0);
+            this.amountField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public bool AllowCancel {
+            get {
+                return this.allowCancelField;
+            }
+            set {
+                this.allowCancelField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool AllowModify {
+            get {
+                return this.allowModifyField;
+            }
+            set {
+                this.allowModifyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItenNo {
+            get {
+                return this.itenNoField;
+            }
+            set {
+                this.itenNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int ItemLineNo {
+            get {
+                return this.itemLineNoField;
+            }
+            set {
+                this.itemLineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StatusCode {
+            get {
+                return this.statusCodeField;
+            }
+            set {
+                this.statusCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitOfMeasure {
+            get {
+                return this.unitOfMeasureField;
+            }
+            set {
+                this.unitOfMeasureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public System.DateTime StatusChanged {
+            get {
+                return this.statusChangedField;
+            }
+            set {
+                this.statusChangedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtCode {
+            get {
+                return this.extCodeField;
+            }
+            set {
+                this.extCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="CustomerOrderStatusLog", Namespace="urn:microsoft-dynamics-nav/xmlports/x99009332")]
+    public partial class CustomerOrderStatusLog1 {
+        
+        private string documentIDField;
+        
+        private string statusCodeField;
+        
+        private string descriptionField;
+        
+        private string extCodeField;
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StatusCode {
+            get {
+                return this.statusCodeField;
+            }
+            set {
+                this.statusCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExtCode {
+            get {
+                return this.extCodeField;
+            }
+            set {
+                this.extCodeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009332")]
+    public partial class RootNodeName {
+        
+        private CustomerOrderStatusLog1[] customerOrderStatusLogField;
+        
+        private CustomerOrderStatusLineLog[] customerOrderStatusLineLogField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderStatusLog")]
+        public CustomerOrderStatusLog1[] CustomerOrderStatusLog {
+            get {
+                return this.customerOrderStatusLogField;
+            }
+            set {
+                this.customerOrderStatusLogField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderStatusLineLog")]
+        public CustomerOrderStatusLineLog[] CustomerOrderStatusLineLog {
+            get {
+                return this.customerOrderStatusLineLogField;
+            }
+            set {
+                this.customerOrderStatusLineLogField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033060")]
     public partial class CustomerOrderGetCOPaymentV3 {
         
@@ -46642,6 +46996,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string taxGroupCodeField;
         
+        private bool validateTaxParameterField;
+        
         public CustomerOrderCreateCOLineV5() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -46660,6 +47016,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.vendorSourcing1Field = false;
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
+            this.validateTaxParameterField = false;
         }
         
         /// <remarks/>
@@ -47012,6 +47369,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=32)]
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ValidateTaxParameter {
+            get {
+                return this.validateTaxParameterField;
+            }
+            set {
+                this.validateTaxParameterField = value;
             }
         }
     }
@@ -52335,6 +52704,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void CustomerOrderStatusV2CompletedEventHandler(object sender, CustomerOrderStatusV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CustomerOrderStatusV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal CustomerOrderStatusV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootNodeName customerOrderStatusV2XML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootNodeName)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void CustomerOrderStatusCompletedEventHandler(object sender, CustomerOrderStatusCompletedEventArgs e);
     
     /// <remarks/>
@@ -53253,6 +53664,56 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootGetItemInventory)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetItemWithBarcodeCompletedEventHandler(object sender, GetItemWithBarcodeCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetItemWithBarcodeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetItemWithBarcodeCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public RootLeftRightLine leftRightLineXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootLeftRightLine)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string itemHtml {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
             }
         }
     }

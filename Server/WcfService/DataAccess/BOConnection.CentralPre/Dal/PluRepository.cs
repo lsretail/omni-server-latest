@@ -78,8 +78,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 continue;
                             }
 
-                            // TODO: do NAV 10 version of the Image lookup
-
                             using (SqlCommand itemcmd = connection.CreateCommand())
                             {
                                 itemcmd.CommandText = itemsql;

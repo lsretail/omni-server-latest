@@ -7,6 +7,7 @@ using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 
@@ -117,7 +118,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             // fields to get 
             List<string> fields = new List<string>()
             {
-                "Framework Code", "Dimension No.", "Extension", "Item", "Logical Order"
+                "Logical Order"
             };
 
             List<XMLFieldData> filter = new List<XMLFieldData>();
@@ -149,25 +150,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     string xmlResponse = RunOperation(xmlRequest, true);
                     HandleResponseCode(ref xmlResponse);
                     table = xml.GetGeneralWebResponseXML(xmlResponse);
-                    if (table == null || table.NumberOfValues == 0)
-                        continue;
-                if (table == null || table.NumberOfValues == 0)
-                    continue;
-
-                    string dim = string.Empty;
-                    string code = string.Empty;
-                    foreach (XMLFieldData field in table.FieldList)
+                    if (table != null && table.NumberOfValues > 0)
                     {
-                        switch (field.FieldName)
-                        {
-                            case "Framework Code": code = field.Values[0]; break;
-                            case "Dimension No.": dim = field.Values[0]; break;
-                            case "Logical Order":
-                                ReplExtendedVariantValue it = list.Find(f => f.FrameworkCode == code && f.Dimensions == dim);
-                                if (it != null)
-                                    it.DimensionLogicalOrder = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToInt32(field.Values[0]));
-                                break;
-                        }
+                        extvar.DimensionLogicalOrder = (string.IsNullOrEmpty(table.FieldList[0].Values[0]) ? 0 : Convert.ToInt32(table.FieldList[0].Values[0]));
                     }
                 }
                 catch (Exception ex)
@@ -183,7 +168,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = DoReplication(5404, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicateItemUnitOfMeasure(table);
+            List<ReplItemUnitOfMeasure> list = rep.ReplicateItemUnitOfMeasure(table);
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest;
+            string xmlResponse;
+
+            foreach (ReplItemUnitOfMeasure item in list)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("Unit of Measure", "Code", item.Code);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table != null && table.NumberOfValues > 0)
+                {
+                    item.Description = table.FieldList[1].Values[0];
+                }
+            }
+
+            return list;
         }
 
         public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
@@ -284,8 +287,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     table = xml.GetGeneralWebResponseXML(xmlResponse);
                     if (table == null || table.NumberOfValues == 0)
                         continue;
-                if (table == null || table.NumberOfValues == 0)
-                    continue;
 
                     string item = string.Empty;
                     string code = string.Empty;
@@ -339,12 +340,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     string xmlResponse = RunOperation(xmlRequest, true);
                     HandleResponseCode(ref xmlResponse);
                     table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-                    if (table == null || table.NumberOfValues == 0)
-                        break;
-
-                    XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
-                    store.Currency = field.Values[0];
+                    if (table != null && table.NumberOfValues > 0)
+                    {
+                        XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                        store.Currency = field.Values[0];
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -628,7 +628,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
             if (table == null || table.NumberOfValues == 0)
                 return null;
 
@@ -665,7 +664,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
             if (table == null || table.NumberOfValues == 0)
                 return null;
 
@@ -691,7 +689,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
             if (table == null || table.NumberOfValues == 0)
                 return null;
 
@@ -735,12 +732,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     xmlResponse = RunOperation(xmlRequest, true);
                     HandleResponseCode(ref xmlResponse);
                     table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-                    if (table == null || table.NumberOfValues == 0)
-                        return null;
-
-                    XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Image Id"));
-                    leaf.ImageId = field.Values[0];
+                    if (table != null && table.NumberOfValues > 0)
+                    {
+                        XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Image Id"));
+                        leaf.ImageId = field.Values[0];
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -889,7 +885,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = DoReplication(99009274, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicatePlu(table);
+            List<ReplPlu> list = rep.ReplicatePlu(table);
+
+            foreach (ReplPlu plu in list)
+            {
+                List<ImageView> imgs = ImagesGetByLink("Item", plu.ItemId, string.Empty, string.Empty);
+                if (imgs.Count > 0)
+                {
+                    plu.ImageId = imgs[0].Id;
+                    plu.ItemImage = imgs[0].ImgBytes;
+                    plu.ItemImageId = imgs[0].Id;
+                }
+            }
+            return list;
         }
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string appType, string storeId, bool fullReplication, int batchSize, ref string lastKey, ref int recordsRemaining)

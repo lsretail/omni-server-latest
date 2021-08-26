@@ -16,7 +16,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             IdType = DocumentIdType.Order;
             Status = SalesEntryStatus.Pending;
             ShippingStatus = ShippingStatus.ShippigNotRequired;
-            PaymentStatus = PaymentStatus.PreApproved;
 
             Lines = new List<SalesEntryLine>();
             DiscountLines = new List<SalesEntryDiscountLine>();
@@ -91,8 +90,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public DocumentIdType IdType { get; set; }
         [DataMember]
         public SalesEntryStatus Status { get; set; }
-        [DataMember]
-        public PaymentStatus PaymentStatus { get; set; }
         [DataMember]
         public ShippingStatus ShippingStatus { get; set; }
 

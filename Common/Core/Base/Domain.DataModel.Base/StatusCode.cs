@@ -182,6 +182,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         LSKeyInvalid = 103,
         [EnumMember]
         LSRecommendSetupMissing = 104,
+        [EnumMember]
+        LSRecommendError = 105,
 
         /// <summary>
         /// Primary key duplication
@@ -312,12 +314,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         MemberAccountNotFound = 1674,
         [EnumMember]
         MemberCardNotFound = 1675,
-        [EnumMember]
-        NoEntriesFound2 = 1676,
-        [EnumMember]
-        NoEntriesFound3 = 1677,
-        [EnumMember]
-        NoEntriesFound4 = 1678,
 
         #endregion
 

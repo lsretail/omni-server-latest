@@ -537,7 +537,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 AnonymousOrder = false,
                 Posted = true,
                 Status = SalesEntryStatus.Complete,
-                PaymentStatus = PaymentStatus.Posted,
                 IdType = DocumentIdType.Receipt
             };
 

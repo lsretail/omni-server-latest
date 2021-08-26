@@ -360,10 +360,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             if (transaction.LoyaltyContact != null)
             {
-                foreach (PublishedOffer offer in transaction.LoyaltyContact.PublishedOffers?.Where(x => x.Selected))
+                if (transaction.LoyaltyContact.PublishedOffers != null)
                 {
-                    maxTransLine++;
-                    transLines.Add(MobileTransLine(transaction.Id, offer, maxTransLine, transaction.Terminal.Store.Id.ToUpper()));
+                    foreach (PublishedOffer offer in transaction.LoyaltyContact.PublishedOffers.Where(x => x.Selected))
+                    {
+                        maxTransLine++;
+                        transLines.Add(MobileTransLine(transaction.Id, offer, maxTransLine, transaction.Terminal.Store.Id.ToUpper()));
+                    }
                 }
             }
 
@@ -929,12 +932,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             decimal manualTotalDiscPercent = 0m;
             decimal manualTotalDisAmount = 0m;
 
-            if (transaction.ManualDiscount?.Amount.Value != 0)
+            if (transaction.ManualDiscount != null && transaction.ManualDiscount.Amount.Value != 0)
             {
                 manualTotalDisAmount = transaction.ManualDiscount.Amount.Value;
                 manualTotalDiscPercent = 0.0M;
             }
-            else if (transaction.ManualDiscount?.Percentage > 0)
+            else if (transaction.ManualDiscount != null && transaction.ManualDiscount.Percentage > 0)
             {
                 manualTotalDisAmount = 0.0M;
                 manualTotalDiscPercent = transaction.ManualDiscount.Percentage;

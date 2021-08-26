@@ -1,10 +1,12 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Collections.Generic;
-using System.Globalization;
-
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using Newtonsoft.Json;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -13,106 +15,124 @@ namespace LSOmni.BLL.Loyalty
     public class LSRecommendsBLL : BaseLoyBLL
     {
         private static LSLogger logger = new LSLogger();
-        private LSRecommend.LSRecommend lsr = null;
 
         public LSRecommendsBLL(BOConfiguration config, bool settings) : base(config, 0)
         {
             if (settings)   // sending settings, don't load them
                 return;
 
-            string value = config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl);
+            string value = config.SettingsGetByKey(ConfigKey.LSRecommend_ModelUrl);
             if (string.IsNullOrEmpty(value))
                 throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "LS Recommend Setup has not yet been sent to LS Commerce Service from LS Central");
-
-            lsr = new LSRecommend.LSRecommend(
-                config.SettingsGetByKey(ConfigKey.LSRecommend_EndPointUrl),
-                string.Empty,   // apiAdminKey
-                config.SettingsGetByKey(ConfigKey.LSRecommend_AzureAccountKey),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_AccountConnection),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_AzureName),
-                config.SettingsIntGetByKey(ConfigKey.LSRecommend_NumberOfRecommendedItems),
-                config.SettingsBoolGetByKey(ConfigKey.LSRecommend_CalculateStock),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_WsURI),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_WsUserName),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_WsPassword),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_WsDomain),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_StoreNo),
-                config.SettingsGetByKey(ConfigKey.LSRecommend_Location),
-                config.SettingsIntGetByKey(ConfigKey.LSRecommend_MinStock)
-            );
         }
 
-        public virtual void LSRecommendSetting(string lskey, string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
+        public virtual void LSRecommendSetting(string lskey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
             ConfigBLL bll = new ConfigBLL();
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_EndPointUrl, endPointUrl, "string", true, "Endpoint URI");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AccountConnection, accountConnection, "string", true, "Storage Account Connection");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AzureAccountKey, azureAccountKey, "string", true, "LS Recommend Account Key");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AzureName, azureName, "string", true, "Azure name");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_NumberOfRecommendedItems, numberOfRecommendedItems.ToString(), "int", true, "Number Of Recommended Items");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_CalculateStock, calculateStock.ToString(), "bool", true, "Filter With Regard To Stock");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsURI, wsURI, "string", true, "Web Service URI");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsUserName, wsUserName, "string", true, "Web Service User");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsPassword, wsPassword, "string", true, "Web Service Password");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_WsDomain, wsDomain, "string", true, "Web Service Domain");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_StoreNo, storeNo, "string", true, "Store No");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_Location, location, "string", true, "Location");
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_MinStock, minStock.ToString(), "int", true, "Minimum Item Stock");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_Company, companyName, "string", true, "LS Central Company");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_BatchNo, batchNo, "string", true, "Batch Number");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_ModelUrl, modelReaderURL, "string", true, "Model Reader URL");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AuthUrl, authenticationURL, "string", true, "Authentication URL");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_ClientId, clientId, "string", true, "Client Id");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_ClientSecret, clientSecret, "string", true, "Client Secret");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_UserName, userName, "string", true, "Web Service User");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_Password, password, "string", true, "Web Service Password");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_NoOfDownloadedItems, numberOfDownloadedItems.ToString(), "int", true, "Number of Downloaded Items");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_NoOfDisplayedItems, numberOfDisplayedItems.ToString(), "int", true, "Number of Displayed Items");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_FilterByInv, filterByInventory.ToString(), "bool", true, "Filter by Inventory");
+            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_MinStock, minInvStock.ToString(), "int", true, "Minimum Item Inventory Stock");
         }
 
-        public virtual List<RecommendedItem> RecommendedItemsGetByUserId(string userId, List<LoyItem> items, int maxNumberOfItems, double minRating = 0.0)
+        public virtual List<RecommendedItem> RecommendedItemsGet(List<string> items)
         {
-            string lsrItemsIn = string.Empty;
-            foreach (LoyItem itemIn in items)
-            {
-                lsrItemsIn += itemIn.Id + ",";
-            }
+            string token = CheckToken();
+            if (string.IsNullOrEmpty(token))
+                throw new LSOmniServiceException(StatusCode.LSRecommendError, "Cannot Get Token to access LS Recommend Service");
 
-            string[] lsrItems = lsr.GetRecommendation(userId, lsrItemsIn).Split();
-            List<RecommendedItem> list = new List<RecommendedItem>();
-            foreach (string itemIn in lsrItems)
-            {
-                RecommendedItem i = new RecommendedItem();
-                string[] values = itemIn.Split(new char[] { ':' });
-                i.Id = values[0];
-                i.Rating = Convert.ToDecimal(values[1]);
-                i.Reasoning = values[2];
-                list.Add(i);
-            }
-            return list;
+            string url = config.SettingsGetByKey(ConfigKey.LSRecommend_ModelUrl);
+            if (string.IsNullOrEmpty(url))
+                throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "Missing LSRecommend_ModelUrl in Appsettings");
+
+            string requrl = $"{url}/{config.SettingsGetByKey(ConfigKey.LSRecommend_Company)}/{config.SettingsGetByKey(ConfigKey.LSRecommend_BatchNo)}/BasketRecommendation?numberOfRecommendations={config.SettingsGetByKey(ConfigKey.LSRecommend_NoOfDownloadedItems)}";
+
+            string json = string.Format("{{\"items\": {0}}}", JsonConvert.SerializeObject(items));
+            string result = SendCommand(requrl, json, token);
+            return JsonConvert.DeserializeObject<List<RecommendedItem>>(result);
         }
 
-        /// <summary>
-        /// Get Recommended items from NAV
-        /// </summary>
-        /// <param name="userId">user id</param>
-        /// <param name="storeId">store id</param>
-        /// <param name="items">one or more items to get recommend for (item1,item2,item3)</param>
-        /// <returns>List of recommended items</returns>
-        public virtual List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items)
+        private string CheckToken()
         {
-            string lsrRet = lsr.GetRecommendation(userId, items);
-            string[] lsrItems = lsrRet.Split(new char[] { ',' });
-
-            NumberFormatInfo pr = new NumberFormatInfo();
-            pr.NumberDecimalSeparator = ".";
-
-            List<RecommendedItem> list = new List<RecommendedItem>();
-            foreach (string itemIn in lsrItems)
+            if (config.LSRecommToken != null)
             {
-                if (string.IsNullOrWhiteSpace(itemIn))
-                    continue;
-
-                RecommendedItem i = new RecommendedItem();
-                string[] values = itemIn.Split(new char[] { ':' });
-                i.Id = values[0];
-                i.Rating = Convert.ToDecimal(values[1], pr);
-                i.Reasoning = values[2];
-                list.Add(i);
+                if (DateTime.Now < config.LSRecommToken.lastCheck.AddSeconds(config.LSRecommToken.expires_in - 100))
+                {
+                    return config.LSRecommToken.token_type + " " + config.LSRecommToken.access_token;
+                }
             }
 
-            logger.Debug(config.LSKey.Key, "Found {0} Recommended Items: {1}", list.Count, lsrRet);
-            return list;
+            string url = config.SettingsGetByKey(ConfigKey.LSRecommend_AuthUrl);
+            if (string.IsNullOrEmpty(url))
+                throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "Missing LSRecommend_AuthUrl in Appsettings");
+
+            string body = $"grant_type=password&client_id={config.SettingsGetByKey(ConfigKey.LSRecommend_ClientId)}&client_secret={config.SettingsGetByKey(ConfigKey.LSRecommend_ClientSecret)}&username={config.SettingsGetByKey(ConfigKey.LSRecommend_UserName)}&password={config.SettingsGetByKey(ConfigKey.LSRecommend_Password)}";
+
+            string result = SendCommand(url, body, string.Empty);
+            config.LSRecommToken = JsonConvert.DeserializeObject<LSRecommendToken>(result);
+            config.LSRecommToken.lastCheck = DateTime.Now;
+            return config.LSRecommToken.token_type + " " + config.LSRecommToken.access_token;
+        }
+
+        protected string SendCommand(string url, string data, string authcode)
+        {
+            try
+            {
+                Uri posturl = new Uri(url);
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(posturl);
+                httpWebRequest.Method = "POST";
+
+                logger.Debug(config.LSKey.Key, "Send LS Recommend Cmd to:{0} Message:{1}", posturl.AbsoluteUri, data);
+                if (string.IsNullOrEmpty(authcode))
+                {
+                    byte[] byteArray = Encoding.UTF8.GetBytes(data); //json
+
+                    httpWebRequest.Accept = "application/json";
+                    httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                    httpWebRequest.ContentLength = byteArray.Length;
+
+                    Stream streamWriter = httpWebRequest.GetRequestStream();
+                    streamWriter.Write(byteArray, 0, byteArray.Length);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+                else
+                {
+                    httpWebRequest.Headers["Authorization"] = authcode;
+                    httpWebRequest.ContentType = "application/json";
+                    httpWebRequest.ContentLength = data.Length;
+
+                    using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                    {
+                        streamWriter.Write(data);
+                        streamWriter.Flush();
+                        streamWriter.Close();
+                    }
+                }
+
+                string ret = string.Empty;
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    ret = streamReader.ReadToEnd();
+                }
+
+                logger.Debug(config.LSKey.Key, "ECOM Result:[{0}]", ret);
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(config.LSKey.Key, ex);
+                throw new LSOmniServiceException(StatusCode.LSRecommendError, "Error sending request to LS Recommend Engine", ex);
+            }
         }
     }
 }

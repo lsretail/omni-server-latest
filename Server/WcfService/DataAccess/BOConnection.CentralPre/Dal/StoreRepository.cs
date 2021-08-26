@@ -216,7 +216,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            store = ReaderToLoyStore(reader, includeDetails, config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries));
+                            store = ReaderToLoyStore(reader, includeDetails);
                         }
                         reader.Close();
                     }
@@ -241,10 +241,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        string[] salestype = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         while (reader.Read())
                         {
-                            stores.Add(ReaderToLoyStore(reader, true, salestype));
+                            stores.Add(ReaderToLoyStore(reader, true));
                         }
                         reader.Close();
                     }
@@ -292,10 +291,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
-                        string[] salestype = config.SettingsGetByKey(ConfigKey.Hosp_SalesType).Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyStore(reader, false, salestype));
+                            list.Add(ReaderToLoyStore(reader, false));
                         }
                         reader.Close();
                     }
@@ -505,7 +503,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return store;
         }
 
-        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails, string[] salesTypes)
+        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails)
         {
             Store store = new Store()
             {

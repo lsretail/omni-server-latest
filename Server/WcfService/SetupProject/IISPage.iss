@@ -22,37 +22,22 @@ var
 Procedure IISOnChange (Sender: TObject);
 begin                            
   WizardForm.NextButton.Enabled := False;
-  if (CheckPage_MultiCheckBox.Checked) then
+  if (Length(IISPage_txtWcfSiteName.Text) > 0) 
+      and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
+      and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
   begin
     WizardForm.NextButton.Enabled := True;
-  end
-  else
-  begin
-    if (Length(IISPage_txtWcfSiteName.Text) > 0) 
-        and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
-        and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
-    begin
-      WizardForm.NextButton.Enabled := True;
-    end;
   end;
 end;
               
 procedure IISCustomForm_Activate(Page: TWizardPage) ;
 begin
-  Log(Format('IISCustomForm_Activate called (v:%d)', [CheckPage_MultiCheckBox.Checked]));
   WizardForm.NextButton.Enabled := False;
-  if (CheckPage_MultiCheckBox.Checked) then
+  if (Length(IISPage_txtWcfSiteName.Text) > 0) 
+      and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
+      and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
   begin
     WizardForm.NextButton.Enabled := True;
-  end
-  else
-  begin
-    if (Length(IISPage_txtWcfSiteName.Text) > 0) 
-        and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
-        and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then
-    begin
-      WizardForm.NextButton.Enabled := True;
-    end;
   end;
 end;
 
@@ -62,7 +47,7 @@ begin
   IISPage := CreateCustomPage(
     PreviousPageId,
     'IIS Web Application Setup',
-    'Please enter Web Service Configuration values for IIS'
+    'Please enter Web Service Configuration values for IIS and LS Central'
   );
  
   { IISPage_lblComment }
@@ -102,7 +87,7 @@ begin
     TabOrder := 1;
     Enabled := True;
     ShowHint := True;
-    Hint := 'Use -Default Web Site- A new Web Site does not get created';
+    Hint := 'IIS Web Site where LS Commerce Service will be added under. Use -Default Web Site-. A new Web Site does not get created';
   end;
 
   { IISPage_lblWcfServiceName }
@@ -128,6 +113,8 @@ begin
     Height := ScaleY(21);
     TabOrder := 2;
     Enabled := True;
+    ShowHint := True;
+    Hint := 'Name used to Create IIS entry. If running more than 1 instance of LS Commerce Service, give each instance a different Name.';
   end;
 
   { IISPage_lblComment1 }
@@ -167,6 +154,8 @@ begin
     TabOrder := 4;
     Enabled := True;
     OnChange := @IISOnChange;
+    ShowHint := True;
+    Hint := 'LS Central URI to RetailWebServices Web Service. Can be found under Web Services in LS Central.';
   end; 
 
   { IISPage_lblNavAuthentication }
@@ -193,23 +182,21 @@ begin
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
-    ShowHint := True;
-    Hint := 'Active Directory, local workgroup, or the local computer users. Can be DOMAIN\UserName';
   end;
   { IISPage_txtNavUser }
   IISPage_txtNavUser := TEdit.Create(IISPage);
   with IISPage_txtNavUser do
   begin
     Parent := IISPage.Surface;
-    Left := ScaleX(120);
+    Left := ScaleX(135);
     Top := IISPage_lblNavAuthentication.Top + IISPage_lblNavAuthentication.Height + 4;
     Width := ScaleX(220);
     Height := ScaleY(21);
     TabOrder := 5;
     Enabled := True;
-    ShowHint := True;
     OnChange := @IISOnChange;
-    Hint := 'Active Directory, local workgroup, or the local computer user. Can be DOMAIN\UserName';
+    ShowHint := True;
+    Hint := 'User with access to LS Central Web Service. Active Directory, workgroup or local computer user. Can be DOMAIN\UserName';
   end;  
 
   { IISPage_lblNavPwd }
@@ -217,7 +204,7 @@ begin
   with IISPage_lblNavPwd do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'Password:';
+    Caption :=  'Password/WebKey:';
     Left := ScaleX(30);
     Top := IISPage_txtNavUser.Top + IISPage_txtNavUser.Height + 5;
     Width := ScaleX(108);
@@ -229,20 +216,22 @@ begin
   with IISPage_txtNavPwd do
   begin
     Parent := IISPage.Surface;
-    Left := ScaleX(120);
+    Left := ScaleX(135);
     Top := IISPage_txtNavUser.Top + IISPage_txtNavUser.Height + 2;
     Width := ScaleX(220);
     Height := ScaleY(21);
     TabOrder := 6;
     Enabled := True;
     OnChange := @IISOnChange;
+    ShowHint := True;
+    Hint := 'Password for the User to access LS Central Web Service. For LS Central in SaaS use Webkey here.';
   end;  
 
   IISPage_lblComment2 := TLabel.Create(IISPage);
   with IISPage_lblComment2 do
   begin
     Parent := IISPage.Surface;
-    Caption := 'All config values are stored in AppSettings.Config file';
+    Caption := 'All the configuration values will be stored in AppSettings.Config file';
     Left := ScaleX(15);
     Top := IISPage_txtNavPwd.Top + IISPage_txtNavPwd.Height + 8;
     Width := ScaleX(330);

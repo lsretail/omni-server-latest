@@ -43,6 +43,10 @@ namespace LSOmni.Service
         [WebGet(UriTemplate = "/Ping", ResponseFormat = WebMessageFormat.Json)]
         string PingGet(); //REST http://localhost/LSCommerceService/ucjson.svc/ping
 
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        OmniEnvironment Environment();
+
         #endregion
 
         #region Discount, Offers and GiftCards
@@ -377,7 +381,6 @@ namespace LSOmni.Service
         /// 			"TenderType": "1",
         /// 			"TokenNumber": "123456"
         ///         }],
-        /// 		"OrderStatus": "1",
         /// 		"OrderType": "0",
         /// 		"PaymentStatus": "10",
         /// 		"ShipToAddress": {
@@ -445,7 +448,6 @@ namespace LSOmni.Service
         /// 			"TenderType": "1",
         /// 			"TokenNumber": "123456"
         ///         }],
-        /// 		"OrderStatus": "1",
         /// 		"OrderType": "0",
         /// 		"PaymentStatus": "10",
         /// 		"ShipToAddress": {
@@ -523,7 +525,6 @@ namespace LSOmni.Service
         ///        		"LineNumber": 3,
         ///       		"TenderType": "4"
         ///         }],
-        /// 		"OrderStatus": "1",
         /// 		"OrderType": "0",
         /// 		"PaymentStatus": "10",
         /// 		"ShipToAddress": {
@@ -573,7 +574,6 @@ namespace LSOmni.Service
         /// 			"VariantId": "002"
         ///         }],
         /// 		"OrderPayments": [],
-        /// 		"OrderStatus": "1",
         /// 		"OrderType": "1",
         /// 		"PaymentStatus": "0",
         /// 		"ShipToAddress": {},
@@ -1261,7 +1261,7 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails);
+        List<LoyItem> ItemsPage(string storeId, int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails);
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -2348,26 +2348,13 @@ namespace LSOmni.Service
         bool RecommendedActive();
 
         /// <summary>
-        /// Not used anymore, support for older system
+        /// Get Recommended Items based of list of items
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="items"></param>
-        /// <param name="maxNumberOfItems"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<RecommendedItem> RecommendedItemsGetByUserId(string userId, List<LoyItem> items, int maxNumberOfItems);
-
-        /// <summary>
-        /// Gets Recommended Items for Items
-        /// </summary>
-        /// <param name="userId">Member contact Id to get recommended Item for. Empty string for anonymous requests</param>
-        /// <param name="storeId">Store Id</param>
-        /// <param name="items">List of Items to get recommend items for.  Format of string: ITEMID,ITEMID,...)</param>
-        /// <returns></returns>
-        [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items);
+        List<RecommendedItem> RecommendedItemsGet(List<string> items);
 
         #endregion
 

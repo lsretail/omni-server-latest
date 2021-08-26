@@ -28,6 +28,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public int LineNumber { get; set; }
         [DataMember]
         public decimal Amount { get; set; }
+        [DataMember]
+        public PaymentType Type { get; set; }
         /// <summary>
         /// Omni TenderType.<p/>
         /// Default mapping to NAV: 0=Cash, 1=Card, 2=Coupon, 3=Loyalty Points, 4=Gift Card<p/>

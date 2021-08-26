@@ -11,6 +11,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         {
             DocumentNo = string.Empty;
             OrderStatus = string.Empty;
+            ExtCode = string.Empty;
             Lines = new List<OrderLineStatus>();
         }
 
@@ -40,35 +41,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string Description { get; set; }
         [DataMember]
         public string ExtCode { get; set; }
-        /// <summary>
-        ///  Customer Order Shipping Status
-        /// </summary>
-        /// <remarks>
-        ///   10 : ShippigNotRequired
-        ///   20 : NotYetShipped
-        ///   25 : PartiallyShipped
-        ///   30 : Shipped
-        ///   40 : Delivered
-        /// </remarks>
-        [DataMember]
-        public int ShippingStatus { get; set; }
-        /// <summary>
-        /// Customer Order Payment Status
-        /// </summary>
-        /// <remarks>
-        ///   10 : PreApproved
-        ///   20 : Approved
-        ///   25 : Posted
-        /// </remarks>
-        [DataMember]
-        public int PaymentStatus { get; set; }
         [DataMember]
         public List<OrderLineStatus> Lines { get; set; }
 
         public override string ToString()
         {
-            return string.Format("COStatus:{0} COShippingStatus:{1} COPaymentStatus:{2} DocumentNo:{3}",
-                OrderStatus, ShippingStatus, PaymentStatus, DocumentNo);
+            return string.Format("COStatus:{0} DocumentNo:{1}", OrderStatus, DocumentNo);
         }
     }
 

@@ -75,7 +75,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember(IsRequired = true)]
         public string CardId { get; set; }
         [DataMember]
-        public List<OneListLink> CardLinks { get; set; }
+        public virtual List<OneListLink> CardLinks { get; set; }
 
         [IgnoreDataMember]
         public string GetNamesFromCardLinks
@@ -125,9 +125,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember]
         public string SalesType { get; set; }
         [DataMember]
-        public ObservableCollection<OneListItem> Items { get; set; }
+        public virtual ObservableCollection<OneListItem> Items { get; set; }
         [DataMember]
-        public List<OneListPublishedOffer> PublishedOffers { get; set; }
+        public virtual List<OneListPublishedOffer> PublishedOffers { get; set; }
 
         [DataMember]
         public decimal TotalAmount
@@ -223,7 +223,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             TotalAmount = 0m;
             foreach (OneListItem item in Items)
             {
-                item.Amount = (item.Price - item.DiscountAmount) * item.Quantity;
+                item.Amount = (item.Price * item.Quantity) - item.DiscountAmount;
                 TotalAmount += item.Amount;
                 TotalDiscAmount += item.DiscountAmount;
             }
@@ -270,7 +270,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public class OneListLink
+    public class OneListLink : Entity, IDisposable
     {
         [DataMember]
         public string CardId { get; set; }
@@ -281,6 +281,19 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         [DataMember]
         public string Name { get; set; }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

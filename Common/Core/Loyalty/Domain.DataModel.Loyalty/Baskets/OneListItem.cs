@@ -14,7 +14,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         private decimal quantity;
         private decimal amount;
         private bool qtyIsVisible = false;
-
         public OneListItem(string id) : base(id)
         {
             OneListId = string.Empty;
@@ -39,11 +38,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             VariantRegistration = new VariantRegistration();
         }
 
-        public OneListItem() : this(string.Empty)
+        public OneListItem() : this(null)
         {
         }
 
-        public OneListItem(LoyItem item, decimal qty) : this("")
+        public OneListItem(LoyItem item, decimal qty, bool isManualItem) : this(null)
         {
             ItemId = item.Id;
             ItemDescription = item.Description;
@@ -54,6 +53,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             Price = item.AmtFromVariantsAndUOM(item.SelectedVariant?.Id, item.SelectedUnitOfMeasure?.Id);
             Detail = item.Details;
             VariantRegistration = item.SelectedVariant;
+            IsManualItem = isManualItem;
             if (item.Locations.Count != 0)
             {
                 Location = item.Locations[0].ShelfCode;
@@ -169,12 +169,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember]
         public decimal DiscountPercent { get; set; }
         [DataMember]
-        public List<OneListItemDiscount> OnelistItemDiscounts { get; set; }
+        public virtual List<OneListItemDiscount> OnelistItemDiscounts { get; set; }
         [DataMember]
         public ImageView Image { get; set; }
         [DataMember]
         public VariantRegistration VariantRegistration { get; set; }
 
+        [DataMember]
+        public bool IsManualItem { get; set; }
         /// <summary>
         /// Hospitality Deal (Hierarchy Leaf Type=Deal)
         /// </summary>
@@ -185,6 +187,22 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         /// </summary>
         [DataMember]
         public List<OneListItemSubLine> OnelistSubLines { get; set; }
+
+        [IgnoreDataMember]
+        public bool ItemHasDiscount
+        {
+            get
+            {
+                if (DiscountAmount > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
 
         public string OneListId { get; set; }
 

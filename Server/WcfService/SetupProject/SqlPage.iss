@@ -153,7 +153,7 @@ begin
     Enabled := True;
     OnChange := @SQLServerOnChange;
     ShowHint := True;
-    Hint := 'mySqlServer or mySqlServer\Instance';
+    Hint := 'SQL Server name and instance where LS Commerce Database will be created on.';
   end;
 
   { lblDatabase }
@@ -180,6 +180,8 @@ begin
     Enabled := True;
     OnChange := @SQLServerOnChange;
     TabOrder := 2;
+    ShowHint := True;
+    Hint := 'Database name for LS Commerce Database.';
   end;
 
   { lblSQLComment }
@@ -205,6 +207,8 @@ begin
     Caption := 'Create and use LSCommerceUser to connect to LSCommerce Database';
     Checked := True;
     TabOrder := 7;
+    ShowHint := True;
+    Hint := 'Create LSCommerceUser on SQL Server and use it when connecting to the Database. If not checked, the SQL Credentials will be used to connect.';
   end;
 
   { lblAuthType }
@@ -316,7 +320,7 @@ begin
     TabOrder := 8;
     Caption := 'Test SQL Connection';
     ShowHint := True;
-    Hint := 'Test SQL Connection with provided log on credentials';
+    Hint := 'Test SQL Connection to LS Commerce Database with provided log on credentials.';
     OnClick := @SQLPageTestConnectionClick;
   end;
 

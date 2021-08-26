@@ -38,10 +38,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT mt.[Code],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location],mt.[Last Date Modified]" +
                                           ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                                           " FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                                          "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
                                           "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
-                                          "WHERE mt.[Code]=@id AND tms.[Company Name]=@cmp";
-                    command.Parameters.AddWithValue("@id", id);
+                                          "WHERE mt.[Code]=@id";
+                    command.Parameters.AddWithValue("@id", id.ToUpper());
                     command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
                     connection.Open();
                     TraceSqlCommand(command);
@@ -183,9 +183,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (includeblob)
             {
                 view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[]);
-                view.ImgSize = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
-                if (view.ImgBytes.Length > 0)
+                if (view.ImgBytes != null && view.ImgBytes.Length > 0)
+                {
+                    view.ImgSize = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
                     view.LocationType = LocationType.Image;
+                }
+                else if (string.IsNullOrEmpty(view.Location) == false)
+                {
+                    view.LocationType = LocationType.Url;
+                }
             }
             return view;
         }
@@ -212,9 +218,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sql = GetSQL(fullReplication, batchSize) +
                     "mt.[Code],tm.[ID],mt.[Type],mt.[Image Location],mt.[Description],tm.[Content],tm.[Height],tm.[Width]" +
                     "FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                    "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                    "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
                     "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
-                    GetWhereStatement(fullReplication, keys, " AND tms.[Company Name]=@cmp", true);
+                    GetWhereStatement(fullReplication, keys, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -303,6 +309,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 img.Image64 = string.Empty;
                 img.Size = new ImageSize();
+                if (string.IsNullOrEmpty(img.Location) == false)
+                    img.LocationType = LocationType.Url;
             }
             else
             {

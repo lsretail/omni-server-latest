@@ -432,9 +432,6 @@ namespace LSOmni.Service
         ///                 <ns1:NetPrice>64.00</ns1:NetPrice>
         ///                 <ns1:Price>80.00</ns1:Price>
         ///                 <ns1:Quantity>2.00</ns1:Quantity>
-        ///                 <ns1:QuantityOutstanding>0</ns1:QuantityOutstanding>
-        ///                 <ns1:QuantityToInvoice>2.00</ns1:QuantityToInvoice>
-        ///                 <ns1:QuantityToShip>0</ns1:QuantityToShip>
         ///                 <ns1:TaxAmount>32.00</ns1:TaxAmount>
         ///                 <ns1:UomId/>
         ///                 <ns1:VariantId>002</ns1:VariantId>
@@ -458,10 +455,8 @@ namespace LSOmni.Service
         ///                 <ns1:TokenNumber>123456</ns1:TokenNumber>
         ///              </ns1:OrderPayment>
         ///           </ns1:OrderPayments>
-        ///           <ns1:OrderStatus>Pending</ns1:OrderStatus>
         ///           <ns1:OrderType>Sale</ns1:OrderType>
         ///           <ns1:PaymentStatus>PreApproved</ns1:PaymentStatus>
-        ///           <ns1:Posted>false</ns1:Posted>
         ///            <!--Optional: ShipToAddress can not be null if ClickAndCollectOrder == false-->
         ///           <ns1:ShipToAddress>
         ///              <ns:Address1>Some Address</ns:Address1>
@@ -470,7 +465,6 @@ namespace LSOmni.Service
         ///              <ns:City>Some City</ns:City>
         ///              <ns:Country></ns:Country>
         ///              <ns:HouseNo></ns:HouseNo>
-        ///              <ns:Id></ns:Id>
         ///              <ns:PhoneNumber></ns:PhoneNumber>
         ///              <ns:PostCode>999</ns:PostCode>
         ///              <ns:StateProvinceRegion></ns:StateProvinceRegion>
@@ -539,7 +533,6 @@ namespace LSOmni.Service
         ///                	<ns1:LineType>Item</ns1:LineType>
         ///                	<ns1:NetAmount>5.92</ns1:NetAmount>
         ///                	<ns1:NetPrice>5.92</ns1:NetPrice>
-        ///                	<ns1:OrderId/>
         ///                	<ns1:Price>7.10</ns1:Price>
         ///                	<ns1:PriceModified>false</ns1:PriceModified>
         ///                	<ns1:Quantity>1.00</ns1:Quantity>
@@ -712,7 +705,6 @@ namespace LSOmni.Service
         ///                   <ns1:LineType>Item</ns1:LineType>
         ///                   <ns1:NetAmount>8.80</ns1:NetAmount>
         ///                   <ns1:NetPrice>8.80</ns1:NetPrice>
-        ///                   <ns1:OrderId/>
         ///                   <ns1:Price>11.00</ns1:Price>
         ///                   <ns1:PriceModified>false</ns1:PriceModified>
         ///                   <ns1:Quantity>1.00</ns1:Quantity>
@@ -1426,7 +1418,7 @@ namespace LSOmni.Service
         LoyItem ItemGetByBarcode(string barcode, string storeId);
 
         [OperationContract]
-        List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails);
+        List<LoyItem> ItemsPage(string storeId, int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails);
 
         [OperationContract]
         List<ItemCategory> ItemCategoriesGetAll();
@@ -2438,24 +2430,12 @@ namespace LSOmni.Service
         bool RecommendedActive();
 
         /// <summary>
-        /// Not used anymore, support for older system
+        /// Get Recommended Items based of list of items
         /// </summary>
-        /// <param name="userId"></param>
         /// <param name="items"></param>
-        /// <param name="maxNumberOfItems"></param>
         /// <returns></returns>
         [OperationContract]
-        List<RecommendedItem> RecommendedItemsGetByUserId(string userId, List<LoyItem> items, int maxNumberOfItems);
-
-        /// <summary>
-        /// Gets Recommended Items for Items
-        /// </summary>
-        /// <param name="userId">Member contact Id to get recommended Item for. Empty string for anonymous requests</param>
-        /// <param name="storeId">Store Id</param>
-        /// <param name="items">List of Items to get recommend items for.  Format of string: ITEMID,ITEMID,...)</param>
-        /// <returns></returns>
-        [OperationContract]
-        List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items);
+        List<RecommendedItem> RecommendedItemsGet(List<string> items);
 
         #endregion
 

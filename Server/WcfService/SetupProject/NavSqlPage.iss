@@ -7,6 +7,7 @@ var
   NavSQLPage_lblUser: TLabel;
   NavSQLPage_lblPassword: TLabel;
   NavSQLPage_lblDatabase: TLabel;
+  NavSQLPage_lblNavVersion: TLabel;
   NavSQLPage_chkSQLAuth: TRadioButton;
   NavSQLPage_chkWindowsAuth: TRadioButton;
   NavSQLPage_ConnectButton : TButton;
@@ -142,8 +143,8 @@ function NavSQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   NavSQLPage := CreateCustomPage(
     PreviousPageId,
-    'LS Nav/LS Central SQL Server Database used by the LS Commerce Service',
-    'Configures SQL parameters and permissions in the LS Nav/LS Central Database'
+    'LS Nav/LS Central SQL Server Database',
+    'Configure SQL connection parameters and permissions to access LS Nav/LS Central Database'
   );
  
   { lblServer }
@@ -153,27 +154,25 @@ begin
     Parent := NavSQLPage.Surface;
     Caption :=  'SQL Server instance:';
     Left := ScaleX(24);
-    Top := ScaleY(11);
+    Top := ScaleY(6);
     Width := ScaleX(130);
     Height := ScaleY(13);
     Enabled := True;
-    ShowHint := True;
-    Hint     := 'SQLServer or SQLServer\NAVDEMO';
   end;
   { txtServer }
   NavSQLPage_txtServer := TEdit.Create(NavSQLPage);
   with NavSQLPage_txtServer do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(175);
-    Top := ScaleY(8);
+    Left := ScaleX(152);
+    Top := ScaleY(3);
     Width := ScaleX(225);
     Height := ScaleY(21);
     TabOrder := 1;
     Enabled := True;
     OnChange := @NavSQLServerOnChange;
     ShowHint := True;
-    Hint     := 'SQLServer or SQLServer\NAVDEMO';
+    Hint := 'SQL Server name and instance where LS Central Database is located.';
   end;
 
   { lblDatabase }
@@ -183,7 +182,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'SQL Database name:';
     Left := ScaleX(24);
-    Top := ScaleY(33);
+    Top := ScaleY(28);
     Width := ScaleX(130);
     Height := ScaleY(13);
     Enabled := True;
@@ -193,13 +192,15 @@ begin
   with NavSQLPage_txtDBname do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(175);
-    Top := ScaleY(30);
+    Left := ScaleX(152);
+    Top := ScaleY(25);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
     OnChange := @NavSQLServerOnChange;
     TabOrder := 2;
+    ShowHint := True;
+    Hint := 'LS Central Database name.';
   end;
 
   { lblNavCompany }
@@ -209,7 +210,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Company name:';
     Left := ScaleX(24);
-    Top := ScaleY(55);
+    Top := ScaleY(50);
     Width := ScaleX(140);
     Height := ScaleY(13);
   end;
@@ -218,24 +219,39 @@ begin
   with NavSQLPage_txtNavCompany do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(175);
-    Top := ScaleY(52);
+    Left := ScaleX(152);
+    Top := ScaleY(47);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
     OnChange := @NavSQLServerOnChange;
     TabOrder := 3;
+    ShowHint := True;
+    Hint := 'LS Central Company Name to connect to.';
   end;
 
+  { lblNavVersion }
+  NavSQLPage_lblNavVersion := TLabel.Create(NavSQLPage);
+  with NavSQLPage_lblNavVersion do
+  begin
+    Parent := NavSQLPage.Surface;
+    Caption := 'Version range:';
+    Left := ScaleX(24);
+    Top := ScaleY(72);
+    Width := ScaleX(140);
+    Height := ScaleY(13);
+  end;
   { NavSQLPage_VerCombBox }
   NavSQLPage_VerCombBox := TNewComboBox.Create(NavSQLPage);
   with NavSQLPage_VerCombBox do
   begin
     Parent := NavSQLPage.Surface;
-    Left := ScaleX(175);
-    Top := ScaleY(74);
+    Left := ScaleX(152);
+    Top := ScaleY(69);
     Width := ScaleX(225);
     Height := ScaleY(18);
+    ShowHint := True;
+    Hint := 'Select the LS Central version range that is currently being used.';
     Style := csDropDownList;
     Items.Add('LS Nav 14 & earlier');
     Items.Add('LS Central 15-17.4');
@@ -249,7 +265,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption :=  'Log on credentials';
     Left := ScaleX(24);
-    Top := ScaleY(92);
+    Top := ScaleY(97);
     Width := ScaleX(87);
     Height := ScaleY(13);
     Enabled := True;
@@ -262,7 +278,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Use Windows Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(108);
+    Top := ScaleY(113);
     Width := ScaleX(177);
     Height := ScaleY(17);
     Checked := False;
@@ -279,7 +295,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Use SQL Server Authentication';
     Left := ScaleX(32);
-    Top := ScaleY(128);
+    Top := ScaleY(133);
     Width := ScaleX(185);
     Height := ScaleY(17);
     Checked := True;
@@ -295,7 +311,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'User (dbowner):' ;
     Left := ScaleX(60);
-    Top := ScaleY(151);
+    Top := ScaleY(156);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := True;
@@ -306,7 +322,7 @@ begin
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(148);
+    Top := ScaleY(153);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
@@ -320,7 +336,7 @@ begin
     Parent := NavSQLPage.Surface;
     Caption := 'Password:' ;
     Left := ScaleX(60);
-    Top := ScaleY(175);
+    Top := ScaleY(180);
     Width := ScaleX(85);
     Height := ScaleY(13);
     Enabled := True;
@@ -331,7 +347,7 @@ begin
   begin
     Parent := NavSQLPage.Surface;
     Left := ScaleX(152);
-    Top := ScaleY(172);
+    Top := ScaleY(177);
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
@@ -344,13 +360,15 @@ begin
     begin
       Parent := NavSQLPage.Surface;
       Left := ScaleX(145);
-      Top := ScaleY(202);
+      Top := ScaleY(207);
       Width := ScaleX(141);
       Height := ScaleY(21);
       Enabled := False;
       TabOrder := 8;
       Caption := 'Test SQL Connection';
       OnClick := @NavSQLPageTestConnectionClick;
+      ShowHint := True;
+      Hint := 'Test Connection to LS Central database.';
     end;
 
   //does not work except from main form

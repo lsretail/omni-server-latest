@@ -109,7 +109,6 @@ begin
   NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 2);
 
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
-  CheckPage_MultiCheckBox.Checked := GetCommandLineParamBoolean('-MultiX', false);
   CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', false);
   SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'LSCommerce');
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
@@ -133,23 +132,7 @@ end;
 
 function UpdAppSettings: Boolean;
 begin
-  if not CheckPage_MultiCheckBox.Checked then
-    Result := CopyAppSettingsFile
-  else
-    Result := False;
-end;
-
-function UpdAppMultiSettings: Boolean;
-begin
-  if CopyAppSettingsFile then
-    Result := CheckPage_MultiCheckBox.Checked
-  else
-    Result := False;
-end;
-
-function SingleMode: Boolean;
-begin
-  Result := CheckPage_MultiCheckBox.Checked = False;
+  Result := CopyAppSettingsFile
 end;
 
 function WebMode: Boolean;
@@ -236,20 +219,10 @@ begin
     // NAV Web Service
     if CheckPage_IISCheckBox.Checked then
     begin
-      if CheckPage_MultiCheckBox.Checked then
-      begin
-        Log('Update DB IIS Settings');
-        ADOUpdateAppSettings('BOUrl', Trim(IISPage_txtNavUrl.Text));
-        ADOUpdateAppSettings('BOUser', Trim(IISPage_txtNavUser.Text));
-        ADOUpdateAppSettings('BOPassword', Trim(IISPage_txtNavPwd.Text));
-      end
-      else
-      begin
-        Log('Update File IIS Settings');
-        UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
-        UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
-        UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
-      end;
+  	  Log('Update File IIS Settings');
+      UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
+      UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
+      UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
     end;
 
     // NAV connection string
@@ -283,14 +256,12 @@ begin
       navStr := navStr + ';NAVCompanyName=' + navCompany;
       navStr := navStr + ';Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
 
-      if CheckPage_MultiCheckBox.Checked then
-        ADOUpdateAppSettings('BOSql', navStr)
-      else
-        UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
+      UpdateAppSettingsConfig('SqlConnectionString.Nav', navStr, ExpandConstant('{app}\{code:WcfDir}'));
     end;
 
     if CheckPage_WSCheckBox.Checked then
     begin
+      UpdateAppSettingsConfig('BOConnection.Nav.Protocol','Tls12', ExpandConstant('{app}\{code:WcfDir}'));
       UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavWS.dll', ExpandConstant('{app}\{code:WcfDir}'));
     end
     else
@@ -462,14 +433,6 @@ begin
     begin
       with IISPage do
       begin
-        IISPage_lblComment1.Visible := SingleMode;
-        IISPage_lblNavUrl.Visible := SingleMode;
-        IISPage_txtNavUrl.Visible := SingleMode;
-        IISPage_lblNavAuthentication.Visible := SingleMode;
-        IISPage_lblNavUser.Visible := SingleMode;
-        IISPage_txtNavUser.Visible := SingleMode;
-        IISPage_lblNavPwd.Visible := SingleMode;
-        IISPage_txtNavPwd.Visible := SingleMode;
         OnActivate := @IISCustomForm_Activate;
       end;
     end;

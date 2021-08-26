@@ -195,7 +195,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
         {
             Scheme sc = schemelist.Find(s => s.Club.Id == club && s.UpdateSequence == cur.UpdateSequence + 1);
             if (sc == null)
+            {
+                cur.PointsNeeded = 0;
                 return null;
+            }
 
             cur.NextScheme = sc;
             cur.PointsNeeded = sc.PointsNeeded;

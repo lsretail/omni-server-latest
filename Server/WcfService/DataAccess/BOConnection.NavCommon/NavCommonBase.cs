@@ -192,9 +192,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
         {
-            if (string.IsNullOrEmpty(appid) && string.IsNullOrEmpty(apptype))
+            if (string.IsNullOrEmpty(appid))
             {
                 appid = ecomAppId;
+            }
+            if (string.IsNullOrEmpty(apptype))
+            {
                 apptype = ecomAppType;
             }
 
@@ -285,8 +288,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         }
 
                         navWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
-                        logger.Info(config.LSKey.Key, "Nav WS2 Main Response > Ver:{0} ErrCode:{1} ErrText:{2}", 
-                            retailVersion, respCode, errorText);
+                		logger.Info(config.LSKey.Key, "Nav WS2 Main Response > appVersion:{0} appBuild:{1} retailVersion:{2} retailCopyright:{3} ErrCode:{4} ErrText:{5}",
+		                    appVersion, appBuild, retailVersion, retailCopyright, respCode, errorText);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
                     }
@@ -389,7 +392,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         }
 
         //run the nav web service operation
-        protected string RunOperation(string xmlRequest, bool useQuery = false)
+        protected string RunOperation(string xmlRequest, bool useQuery = false, bool logResponse = true)
         {
             bool doBase64 = false;
             string originalxmlRequest = "";
@@ -446,7 +449,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 }
             }
 
-            LogXml(xmlRequest, xmlResponse, elapsedTime);
+            LogXml(xmlRequest, xmlResponse, elapsedTime, logResponse);
             return xmlResponse;
         }
 
@@ -458,13 +461,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             // get tables to replicate and current status
             xmlRequest = xml.StartSyncRequestXML(batchSize);
             xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "0099" }, false);
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" }, false);
             if (string.IsNullOrEmpty(ret) == false)
             {
                 // App is not registered, so lets register it
                 xmlRequest = xml.RegisterApplicationRequestXML(NAVVersion);
                 xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
+                HandleResponseCode(ref xmlResponse, new string[] { "1920" }, false); // seems like its already registered
 
                 // Now try again to start Sync Cycle
                 xmlRequest = xml.StartSyncRequestXML(batchSize);
@@ -481,7 +484,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             xmlRequest = xml.RestoreSyncRequestXML(restorePoint);
             xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923", "0099" }, false);
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921", "1923" }, false);
             if (string.IsNullOrEmpty(ret) == false)
                 return new List<XMLTableData>();
 
@@ -529,7 +532,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return xml.GetSyncStatusResponseXML(xmlResponse, tableNo, out restorePoint);
         }
 
-        private void LogXml(string xmlRequest, string xmlResponse, string elapsedTime)
+        private void LogXml(string xmlRequest, string xmlResponse, string elapsedTime, bool logResponse)
         {
             string reqId = GetRequestID(ref xmlRequest);
             //too much data even for debug mode. Only write some requestId if trace is enabled
@@ -547,7 +550,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 xmlResponse = doc.ToString();//get better XML parsing
                 XDocument docRq = XDocument.Parse(xmlRequest);
                 xmlRequest = docRq.ToString();//get better XML parsing
-                logger.Debug(config.LSKey.Key, "\r\nNLOG DEBUG MODE ONLY:  {0}\r\n{1}\r\n  \r\n{2}\r\n", elapsedTime, xmlRequest, xmlResponse);
+                logger.Debug(config.LSKey.Key, "\r\nNLOG DEBUG MODE ONLY:  {0}\r\n{1}\r\n  \r\n{2}\r\n", elapsedTime, xmlRequest, (logResponse) ? xmlResponse : string.Empty);
             }
         }
 
@@ -935,13 +938,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     statusCode = StatusCode.MemberCardNotFound;
                     break;
                 case "1676":
-                    statusCode = StatusCode.NoEntriesFound2;
+                    statusCode = StatusCode.NoEntriesFound;
                     break;
                 case "1677":
-                    statusCode = StatusCode.NoEntriesFound3;
+                    statusCode = StatusCode.NoEntriesFound;
                     break;
                 case "1678":
-                    statusCode = StatusCode.NoEntriesFound4;
+                    statusCode = StatusCode.NoEntriesFound;
                     break;
                 case "1698":
                     statusCode = StatusCode.InvalidPrinterId;

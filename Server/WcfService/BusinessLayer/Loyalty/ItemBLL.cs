@@ -63,9 +63,9 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.CheckAvailability(request, storeId);
         }
 
-        public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)
+        public virtual List<LoyItem> ItemsPage(string storeId, int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)
         {
-            return BOLoyConnection.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, "", includeDetails);
+            return BOLoyConnection.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, storeId, includeDetails);
         }
 
         public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)

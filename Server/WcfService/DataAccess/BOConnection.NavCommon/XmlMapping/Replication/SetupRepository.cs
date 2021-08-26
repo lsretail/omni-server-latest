@@ -157,6 +157,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     case "Pop-up Line 2": rec.PopUpLine2 = field.Values[0]; break;
                     case "Priority": rec.Priority = GetWebInt(field.Values[0]); break;
                     case "Type": rec.Type = (ProactiveDiscountType)(GetWebInt(field.Values[0]) + 1); break;
+                    case "Discount % Value": rec.Percentage = (rec.Percentage == 0) ? GetWebDecimal(field.Values[0]) : rec.Percentage; break;
                 }
             }
         }

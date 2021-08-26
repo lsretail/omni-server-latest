@@ -110,10 +110,6 @@ namespace LSOmni.BLL
                 //get the original image from UNC file location
                 iv.ImgBytes = Common.Util.ImageConverter.GetImageFromFile(id);
             }
-            else if (iv.LocationType == LocationType.Url)
-            {
-                // get the original image from URL file location
-            }
 
             if (imgSize.Height != 0 || imgSize.Width != 0)
                 iv.ImgSize = imgSize;

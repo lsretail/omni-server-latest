@@ -183,6 +183,9 @@ namespace LSOmni.Service
 
                 if (ConfigSetting.KeyExists("ECom.Url"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");
+
+                if (ConfigSetting.KeyExists("Security.Validatetoken"))
+                    config.SecurityCheck = ConfigSetting.GetBoolean("Security.Validatetoken");
             }
 
             //check in db

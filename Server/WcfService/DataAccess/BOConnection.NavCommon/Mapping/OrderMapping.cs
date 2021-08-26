@@ -330,7 +330,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Posted = false,
                 TotalAmount = header.TotalAmount,
                 TotalDiscount = header.TotalDiscount,
-                TotalNetAmount = header.TotalAmount - header.TotalDiscount,
+                TotalNetAmount = header.OrderNetAmount,
                 LineItemCount = (int)header.TotalQuantity,
 
                 CardId = header.MemberCardNo,
@@ -398,6 +398,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     LineType lineType = (LineType)Convert.ToInt32(oline.LineType);
                     if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
                         continue;
+
+                    if (oline.ClickAndCollectLine && order.ClickAndCollectOrder == false)
+                        order.ClickAndCollectOrder = true;
 
                     SalesEntryLine line = new SalesEntryLine()
                     {
@@ -818,9 +821,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             root.CustomerOrderCreateCOHeaderV5 = header.ToArray();
 
+            int lineNo = order.OrderLines.Max(l => l.LineNumber);
             List<NavWS.CustomerOrderCreateCOLineV5> orderLines = new List<NavWS.CustomerOrderCreateCOLineV5>();
             foreach (OrderLine line in order.OrderLines)
             {
+                if (line.LineNumber == 0)
+                    line.LineNumber = ++lineNo;
+
                 orderLines.Add(new NavWS.CustomerOrderCreateCOLineV5()
                 {
                     DocumentID = string.Empty,

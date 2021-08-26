@@ -362,10 +362,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
             if (transaction.LoyaltyContact != null)
             {
-                foreach (PublishedOffer offer in transaction.LoyaltyContact.PublishedOffers?.Where(x => x.Selected))
+                if (transaction.LoyaltyContact.PublishedOffers != null)
                 {
-                    maxTransLine++;
-                    transLines.Add(MobileTransLine(transaction.Id, offer, maxTransLine, transaction.Terminal.Store.Id.ToUpper()));
+                    foreach (PublishedOffer offer in transaction.LoyaltyContact.PublishedOffers.Where(x => x.Selected))
+                    {
+                        maxTransLine++;
+                        transLines.Add(MobileTransLine(transaction.Id, offer, maxTransLine, transaction.Terminal.Store.Id.ToUpper()));
+                    }
                 }
             }
 

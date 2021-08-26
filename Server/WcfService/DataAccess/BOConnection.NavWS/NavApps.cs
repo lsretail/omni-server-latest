@@ -60,15 +60,15 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             if (locationIds.Count == 0)
             {
-                //JIJ add the distance calc for them, radius of X km ?
-                //int recordsRemaining = 0;
-                //string lastKey = "", maxKey = "";
-                //StoreRepository rep = new StoreRepository(config, NavVersion);
-                //List<ReplStore> totalList = rep.ReplicateStores(100, true, ref lastKey, ref recordsRemaining);
+                List<Store> stores;
+                if (NAVVersion < new Version("17.5"))
+                    stores = NavWSBase.StoresGet(false, false);
 
-                ////get the storeIds close to this store
-                //foreach (ReplStore store in totalList)
-                //    locationIds.Add(store.Id);
+                stores = LSCWSBase.StoresGet(false, false);
+
+                //get the storeIds close to this store
+                foreach (Store store in stores)
+                    locationIds.Add(store.Id);
             }
 
             if (NAVVersion < new Version("17.5"))

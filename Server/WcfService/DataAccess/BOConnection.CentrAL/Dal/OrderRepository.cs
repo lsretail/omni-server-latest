@@ -12,8 +12,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
     public class OrderRepository : BaseRepository
     {
+        private string storeId;
+
         public OrderRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
+            storeId = (NavVersion > new Version("16.2")) ? "Created at Store" : "Store No_";
         }
 
         public SalesEntry OrderGetById(string id, bool includeLines, bool external)
@@ -24,29 +27,28 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 connection.Open();
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    string stId = (NavVersion > new Version("16.2")) ? "mt.[Store No_],mt.[Created at Store]" : "mt.[Store No_]";
-
                     command.Parameters.Clear();
                     command.CommandText = "SELECT * FROM (" +
-                        "SELECT mt.[Document ID]," + stId + ",mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
+                        "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
                         "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
-                        "mt.[Shipping Agent Service Code], 0 AS Posted," +
-                        "(SELECT COUNT(*) FROM [" + navCompanyName + "Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
+                        "mt.[Shipping Agent Service Code], 0 AS Posted,0 AS Cancelled " +
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                        "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[" + storeId + "] " +
                         "UNION " +
-                        "SELECT mt.[Document ID]," + stId + ",mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
+                        "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
                         "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
-                        "mt.[Shipping Agent Service Code],1 AS Posted," +
-                        "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] cop WHERE cop.[Document ID]=mt.[Document ID]) AS CoPay " +
-                        "FROM [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt) AS Orders " +
+                        "mt.[Shipping Agent Service Code],1 AS Posted,mt.[CancelledOrder] AS Cancelled " +
+                        "FROM [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                        "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[" + storeId + "]" +
+                        ") AS Orders " +
                         "WHERE [" + ((external) ? "External ID" : "Document ID") + "]=@id";
 
                     command.Parameters.AddWithValue("@id", id.ToUpper());
@@ -72,10 +74,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Line No_],mt.[Status Code],os.[Shipping Status],os.[Payment Status],ln.[Number],ln.[Variant Code],ln.[Unit of Measure Code],ln.[Quantity],s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed] " +
+                    command.CommandText = "SELECT mt.[Line No_],mt.[Status Code]," +
+                                          "ln.[Number] AS COItem,ln.[Variant Code] AS COVar,ln.[Unit of Measure Code] AS COUom,ln.[Quantity] AS COQty," +
+                                          "pln.[Number] AS PCOItem,pln.[Variant Code] AS PCOVar,pln.[Unit of Measure Code] AS PCOUom,pln.[Quantity] AS PCOQty," +
+                                          "s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed] " +
                                           "FROM [" + navCompanyName + "CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "Customer Order Status$5ecfc871-5d82-43f1-9c54-59685e82318d] os ON os.[Document ID]=mt.[Document ID] " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
+                                          "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
                                           "WHERE mt.[Document ID]=@id ORDER BY mt.[Line No_]";
@@ -91,21 +96,20 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             {
                                 status.DocumentNo = id;
                                 status.OrderStatus = SQLHelper.GetString(reader["Status Code"]);
-                                status.PaymentStatus = SQLHelper.GetInt32(reader["Payment Status"]);
-                                status.ShippingStatus = SQLHelper.GetInt32(reader["Shipping Status"]);
                                 status.Description = SQLHelper.GetString(reader["Desc0"]);
                             }
                             else
                             {
+                                bool posted = reader["COItem"] == DBNull.Value;
                                 status.Lines.Add(new OrderLineStatus()
                                 {
                                     LineStatus = SQLHelper.GetString(reader["Status Code"]),
                                     Description = SQLHelper.GetString(reader["Desc1"]),
                                     LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
-                                    ItemId = SQLHelper.GetString(reader["Number"]),
-                                    VariantId = SQLHelper.GetString(reader["Variant Code"]),
-                                    UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure Code"]),
-                                    Quantity = SQLHelper.GetDecimal(reader["Quantity"]),
+                                    ItemId = SQLHelper.GetString(posted ? reader["PCOItem"] : reader["COItem"]),
+                                    VariantId = SQLHelper.GetString(posted ? reader["PCOVar"] : reader["COVar"]),
+                                    UnitOfMeasureId = SQLHelper.GetString(posted ? reader["PCOUom"] : reader["COUom"]),
+                                    Quantity = SQLHelper.GetDecimal(posted ? reader["PCOQty"] : reader["COQty"]),
                                     AllowCancel = SQLHelper.GetBool(reader["Cancel Allowed"]),
                                     AllowModify = SQLHelper.GetBool(reader["Modify Allowed"])
                                 });
@@ -194,7 +198,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Tender Type]," +
+                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
                                 "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Pre Approved Valid Date]," +
                                 "ml.[Card or Customer No_],ml.[Document ID]";
 
@@ -212,7 +216,23 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToOrderPay(reader));
+                            SalesEntryPayment pay = new SalesEntryPayment()
+                            {
+                                Amount = SQLHelper.GetDecimal(reader, "Pre Approved Amount"),
+                                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                                Type = (PaymentType)SQLHelper.GetInt32(reader["Type"]),
+                                TenderType = SQLHelper.GetString(reader["Tender Type"]),
+                                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
+                                CurrencyFactor = SQLHelper.GetDecimal(reader, "Currency Factor"),
+                                CardNo = SQLHelper.GetString(reader["Card or Customer No_"])
+                            };
+
+                            decimal amt = SQLHelper.GetDecimal(reader, "Finalized Amount");
+                            if (amt > 0)
+                            {
+                                pay.Amount = amt;
+                            }
+                            list.Add(pay);
                         }
                     }
                 }
@@ -257,7 +277,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             SalesEntry entry = new SalesEntry
             {
                 Id = SQLHelper.GetString(reader["Document ID"]),
-                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                StoreId = SQLHelper.GetString(reader[storeId]),
+                StoreName = SQLHelper.GetString(reader["StName"]),
                 DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 IdType = DocumentIdType.Order,
                 Status = SalesEntryStatus.Created,
@@ -302,12 +323,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 }
             };
 
-            if (NavVersion > new Version("16.2"))
-                entry.StoreId = SQLHelper.GetString(reader["Created at Store"]);
-
-            int copay = SQLHelper.GetInt32(reader["CoPay"]);
-            entry.PaymentStatus = (copay > 0) ? PaymentStatus.PreApproved : PaymentStatus.Approved;
-            entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
+			entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
             entry.CustomerOrderNo = entry.Id;
 
@@ -319,7 +335,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             if (entry.Posted)
             {
-                entry.Status = SalesEntryStatus.Complete;
+                entry.Status = (SQLHelper.GetBool(reader["Cancelled"])) ? SalesEntryStatus.Canceled : SalesEntryStatus.Complete;
                 SalesEntryRepository srepo = new SalesEntryRepository(config, NavVersion);
                 srepo.SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                 entry.PointsRewarded = rewarded;
@@ -414,19 +430,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 line.ClickAndCollectLine = SQLHelper.GetBool(reader["Click and Collect Line"]);
             }
             return line;
-        }
-
-        private SalesEntryPayment ReaderToOrderPay(SqlDataReader reader)
-        {
-            return new SalesEntryPayment()
-            {
-                Amount = SQLHelper.GetDecimal(reader, "Pre Approved Amount"),
-                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
-                TenderType = SQLHelper.GetString(reader["Tender Type"]),
-                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                CurrencyFactor = SQLHelper.GetDecimal(reader, "Currency Factor"),
-                CardNo = SQLHelper.GetString(reader["Card or Customer No_"])
-            };
         }
 
         private SalesEntryDiscountLine ReaderToOrderDisc(SqlDataReader reader)

@@ -80,7 +80,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         Hosp_Terminal = 1171,
         Hosp_Staff = 1172,
-        Hosp_SalesType = 1173,
 
         ScanPayGo_Terminal = 1181,
         ScanPayGo_Staff = 1182,
@@ -91,19 +90,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         TenderType_Mapping = 1280,
 
-        LSRecommend_AzureAccountKey = 1301,
-        LSRecommend_AzureName = 1302,
-        LSRecommend_EndPointUrl = 1303,
-        LSRecommend_NumberOfRecommendedItems = 1304,
-        LSRecommend_AccountConnection = 1305,
-        LSRecommend_CalculateStock = 1306,
-        LSRecommend_WsURI = 1307,
-        LSRecommend_WsUserName = 1308,
-        LSRecommend_WsPassword = 1309,
-        LSRecommend_WsDomain = 1310,
-        LSRecommend_StoreNo = 1311,
-        LSRecommend_Location = 1312,
-        LSRecommend_MinStock = 1313,
+        LSRecommend_Company = 1321,
+        LSRecommend_BatchNo = 1322,
+        LSRecommend_ModelUrl = 1323,
+        LSRecommend_AuthUrl = 1324,
+        LSRecommend_ClientId = 1325,
+        LSRecommend_ClientSecret = 1326,
+        LSRecommend_UserName = 1327,
+        LSRecommend_Password = 1328,
+        LSRecommend_NoOfDownloadedItems = 1329,
+        LSRecommend_NoOfDisplayedItems = 1330,
+        LSRecommend_FilterByInv = 1331,
+        LSRecommend_MinStock = 1332,
 #endif
     }
 } 

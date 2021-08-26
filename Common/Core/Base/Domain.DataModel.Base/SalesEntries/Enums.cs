@@ -70,17 +70,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public enum PaymentStatus
-    {
-        [EnumMember]
-        PreApproved = 10,
-        [EnumMember]
-        Approved = 20,
-        [EnumMember]
-        Posted = 25
-    }
-
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum PaymentType
     {
         [EnumMember]
@@ -90,6 +79,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [EnumMember]
         PreAuthorization,
         [EnumMember]
-        Refund
+        Refund,
+        [EnumMember]
+        Shipped,
+        [EnumMember]
+        Collected
     }
 }

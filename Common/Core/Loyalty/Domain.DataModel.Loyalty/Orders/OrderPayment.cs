@@ -59,6 +59,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string CardNumber { get; set; }
         [DataMember]
         public PaymentType PaymentType { get; set; }
+        [DataMember]
+        public bool DepositPayment { get; set; }
 
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PreApprovedValidDate { get; set; }

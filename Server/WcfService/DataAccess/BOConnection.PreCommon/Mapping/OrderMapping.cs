@@ -199,7 +199,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Posted = false,
                 TotalAmount = header.TotalAmount,
                 TotalDiscount = header.TotalDiscount,
-                TotalNetAmount = header.TotalAmount - header.TotalDiscount,
+                TotalNetAmount = header.OrderNetAmount,
                 LineItemCount = (int)header.TotalQuantity,
 
                 CardId = header.MemberCardNo,
@@ -267,6 +267,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     LineType lineType = (LineType)Convert.ToInt32(oline.LineType);
                     if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
                         continue;
+
+                    if (oline.ClickAndCollectLine && order.ClickAndCollectOrder == false)
+                        order.ClickAndCollectOrder = true;
 
                     order.Lines.Add(new SalesEntryLine()
                     {
@@ -383,12 +386,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 storeId =  order.CollectLocation.ToUpper();
                 useHeaderCAC = true;
             }
-
             root.CustomerOrderCreateCOHeaderV5 = header.ToArray();
 
+            int lineNo = order.OrderLines.Max(l => l.LineNumber);
             List<LSCentral.CustomerOrderCreateCOLineV5> orderLines = new List<LSCentral.CustomerOrderCreateCOLineV5>();
             foreach (OrderLine line in order.OrderLines)
             {
+                if (line.LineNumber == 0)
+                    line.LineNumber = ++lineNo;
+
                 orderLines.Add(new LSCentral.CustomerOrderCreateCOLineV5()
                 {
                     DocumentID = string.Empty,
@@ -407,6 +413,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     VatAmount = line.TaxAmount,
                     Price = line.Price,
                     NetPrice = line.NetPrice,
+                    ValidateTaxParameter = line.ValidateTax,
+                    TaxGroupCode = string.Empty,
                     Status = string.Empty,
                     LeadTimeCalculation = string.Empty,
                     PurchaseOrderNo = string.Empty,
@@ -471,9 +479,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         PreApprovedValidDate = line.PreApprovedValidDate,
                         CardorCustomernumber = XMLHelper.GetString(line.CardNumber),
                         LoyaltyPointpayment = loypayment,
+                        DepositPayment = line.DepositPayment,
                         IncomeExpenseAccountNo = string.Empty,
                         StoreNo = (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false) ? order.CollectLocation.ToUpper() : order.StoreId.ToUpper(),
-                        PosTransReceiptNo = string.Empty
+                        PosTransReceiptNo = string.Empty,
+                        TaxGroupCode = string.Empty
                     });
                 }
             }
@@ -539,6 +549,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     Price = line.Price,
                     NetPrice = line.NetPrice,
                     StoreId = list.StoreId.ToUpper(),
+                    TransDate = DateTime.Now,
 
                     Barcode = string.Empty,
                     CardOrCustNo = string.Empty,
@@ -563,8 +574,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     TerminalId = string.Empty,
                     UomDescription = string.Empty,
                     VariantDescription = string.Empty,
-                    RetailImageID = string.Empty,
-                    TransDate = DateTime.Now
+                    RetailImageID = string.Empty
                 });
             }
 
@@ -581,18 +591,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         LineType = (int)LineType.Coupon,
                         Number = line.Id,
                         CurrencyFactor = 1,
-                        VariantCode = string.Empty,
-                        UomId = string.Empty,
-                        Quantity = 0,
-                        DiscountAmount = 0,
-                        DiscountPercent = 0,
-                        NetAmount = 0,
-                        TAXAmount = 0,
-                        Price = 0,
-                        NetPrice = 0,
                         StoreId = list.StoreId.ToUpper(),
+                        TransDate = DateTime.Now,
 
                         Barcode = line.Id,
+                        VariantCode = string.Empty,
+                        UomId = string.Empty,
                         CardOrCustNo = string.Empty,
                         CouponCode = string.Empty,
                         CurrencyCode = string.Empty,
@@ -615,8 +619,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         TerminalId = string.Empty,
                         UomDescription = string.Empty,
                         VariantDescription = string.Empty,
-                        RetailImageID = string.Empty,
-                        TransDate = DateTime.Now
+                        RetailImageID = string.Empty
                     });
                 }
             }

@@ -7,7 +7,6 @@ var
   CheckPage_NavSQLCheckBox: TCheckBox;
   CheckPage_IISCheckBox: TCheckBox;
   CheckPage_WSCheckBox: TCheckBox; 
-  CheckPage_MultiCheckBox: TCheckBox; 
 
   CheckPage_lblComment: TLabel;
   CheckPage_lblComment1: TLabel;
@@ -26,21 +25,17 @@ begin
   begin
     CheckPage_WSCheckBox.Checked := False;
     CheckPage_WSCheckBox.Enabled := True;
-    CheckPage_MultiCheckBox.Checked := False;
-    CheckPage_MultiCheckBox.Enabled := True;
   end
   else
   begin
     CheckPage_WSCheckBox.Checked := False;
     CheckPage_WSCheckBox.Enabled := False;
-    CheckPage_MultiCheckBox.Checked := False;
-    CheckPage_MultiCheckBox.Enabled := False;
   end;
 end;
 
 procedure OnClickWS(Sender: TObject);
 begin
-  if CheckPage_WSCheckBox.Checked OR CheckPage_MultiCheckBox.Checked then
+  if CheckPage_WSCheckBox.Checked then
   begin
     CheckPage_NavSQLCheckBox.Checked := False;
     CheckPage_NavSQLCheckBox.Enabled := False;
@@ -87,57 +82,71 @@ begin
     Enabled := True;
   end;
 
+  { CheckPage_SQLCheckBox }
   CheckPage_SQLCheckBox := TCheckBox.Create(CheckPage);
-  CheckPage_SQLCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_SQLCheckBox.Height := ScaleY(22);
-  CheckPage_SQLCheckBox.Caption := 'Create LS Commerce Service Database';
-  CheckPage_SQLCheckBox.Checked := True;
-  CheckPage_SQLCheckBox.Parent := CheckPage.Surface;
-  CheckPage_SQLCheckBox.Top := CheckPage_lblComment.Top + CheckPage_lblComment.Height + 25;
-  CheckPage_SQLCheckBox.OnClick := @OnClickSQL;
+  with CheckPage_SQLCheckBox do
+  begin
+    Width := CheckPage.SurfaceWidth;
+    Height := ScaleY(22);
+    Caption := 'Create LS Commerce Service Database';
+    Hint := 'Create LS Commerce Database and set the Connection setting to access the Database. Needs SysAdmin right to be able to create the Database.';
+    ShowHint := True;
+    Checked := True;
+    Parent := CheckPage.Surface;
+    Top := CheckPage_lblComment.Top + CheckPage_lblComment.Height + 25;
+    OnClick := @OnClickSQL;
+  end;
 
-  CheckPage_MultiCheckBox := TCheckBox.Create(CheckPage);
-  CheckPage_MultiCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_MultiCheckBox.Height := ScaleY(18);
-  CheckPage_MultiCheckBox.Caption := 'Use Multi-Tenant Mode';
-  CheckPage_MultiCheckBox.Checked := False;
-  CheckPage_MultiCheckBox.Parent := CheckPage.Surface;
-  CheckPage_MultiCheckBox.Left := CheckPage_SQLCheckBox.Left + 15
-  CheckPage_MultiCheckBox.Top := CheckPage_SQLCheckBox.Top + CheckPage_SQLCheckBox.Height;
-  CheckPage_MultiCheckBox.OnClick := @OnClickWS;
-
+  { CheckPage_WSCheckBox }
   CheckPage_WSCheckBox := TCheckBox.Create(CheckPage);
-  CheckPage_WSCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_WSCheckBox.Height := ScaleY(18);
-  CheckPage_WSCheckBox.Caption := 'Use WS Mode';
-  CheckPage_WSCheckBox.Checked := False;
-  CheckPage_WSCheckBox.Parent := CheckPage.Surface;
-  CheckPage_WSCheckBox.Left := CheckPage_SQLCheckBox.Left + 15
-  CheckPage_WSCheckBox.Top := CheckPage_MultiCheckBox.Top + CheckPage_MultiCheckBox.Height;
-  CheckPage_WSCheckBox.OnClick := @OnClickWS;
+  with CheckPage_WSCheckBox do
+  begin
+    Width := CheckPage.SurfaceWidth;
+    Height := ScaleY(18);
+    Caption := 'Use WS Mode for LS Central in SaaS';
+    Hint := 'Used with SaaS environment. LS Commerce service will use Web Services to communicate with LS Central in SaaS. No Direct database access to LS Central.';
+    ShowHint := True;
+    Checked := False;
+    Parent := CheckPage.Surface;
+    Left := CheckPage_SQLCheckBox.Left + 15
+    Top := CheckPage_SQLCheckBox.Top + CheckPage_SQLCheckBox.Height;
+    OnClick := @OnClickWS;
+  end;
 
+  { CheckPage_NavSQLCheckBox }
   CheckPage_NavSQLCheckBox := TCheckBox.Create(CheckPage);
-  CheckPage_NavSQLCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_NavSQLCheckBox.Height := ScaleY(30);
-  CheckPage_NavSQLCheckBox.Caption := 'Configure LS Nav/LS Central SQL parameters';
-  CheckPage_NavSQLCheckBox.Checked := True;
-  CheckPage_NavSQLCheckBox.Parent := CheckPage.Surface;
-  CheckPage_NavSQLCheckBox.Top := CheckPage_WSCheckBox.Top + CheckPage_WSCheckBox.Height;
+  with CheckPage_NavSQLCheckBox do
+  begin
+    Width := CheckPage.SurfaceWidth;
+    Height := ScaleY(30);
+    Caption := 'Configure LS Nav/LS Central SQL parameters';
+    Hint := 'Used with OnPremeses environment. Set the Connection setting to access the LS Central Database.';
+    ShowHint := True;
+    Checked := True;
+    Parent := CheckPage.Surface;
+    Top := CheckPage_WSCheckBox.Top + CheckPage_WSCheckBox.Height;
+  end;
 
+  { CheckPage_IISCheckBox }
   CheckPage_IISCheckBox := TCheckBox.Create(CheckPage);
-  CheckPage_IISCheckBox.Width := CheckPage.SurfaceWidth;
-  CheckPage_IISCheckBox.Height := ScaleY(30);
-  CheckPage_IISCheckBox.Caption := 'Create LSCommerceService under IIS 7+';
-  CheckPage_IISCheckBox.Checked := True;
-  CheckPage_IISCheckBox.Parent := CheckPage.Surface;
-  CheckPage_IISCheckBox.Top := CheckPage_NavSQLCheckBox.Top + CheckPage_NavSQLCheckBox.Height;
+  with CheckPage_IISCheckBox do
+  begin
+    Width := CheckPage.SurfaceWidth;
+    Height := ScaleY(30);
+    Caption := 'Create LSCommerceService under IIS';
+    Hint := 'Add LS Commerce Service to IIS and set the Connection setting to access the LS Central Web Services.';
+    ShowHint := True;
+    Checked := True;
+    Parent := CheckPage.Surface;
+    Top := CheckPage_NavSQLCheckBox.Top + CheckPage_NavSQLCheckBox.Height;
+  end;
 
   { CheckPage_lblComment }
   CheckPage_lblComment2 := TLabel.Create(CheckPage);
   with CheckPage_lblComment2 do
   begin
     Parent := CheckPage.Surface;
-    Caption :=  'The LSCommerceService is created as a Web Application.'#13'You must have administration rights (sysadmin for sql server).'#13
+    Caption :=  'The LSCommerceService is created as a Web Application.'#13'You must have administration rights (sysadmin for SQL server).'#13
          '-->IIS version: ' + GetIISVersionString + ' detected'#13 
          '-->log: ' + expandconstant('{log}') ;
     Left := ScaleX(10);

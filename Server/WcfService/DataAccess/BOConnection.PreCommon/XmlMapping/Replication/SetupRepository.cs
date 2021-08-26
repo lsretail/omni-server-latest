@@ -90,7 +90,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     case "Code": rec.Id = field.Values[0]; break;
                     case "Image Location": rec.Location = field.Values[0]; break;
                     case "Type": rec.LocationType = (LocationType)GetWebInt(field.Values[0]); break;
-                    case "Image Blob": rec.Image = field.Values[0]; break;
+                    case "Image Mediaset": rec.MediaId = new Guid(field.Values[0]); break;
                 }
                 rec.ImgBytes = Convert.FromBase64String(rec.Image);
             }
@@ -157,6 +157,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     case "Pop-up Line 2": rec.PopUpLine2 = field.Values[0]; break;
                     case "Priority": rec.Priority = GetWebInt(field.Values[0]); break;
                     case "Type": rec.Type = (ProactiveDiscountType)(GetWebInt(field.Values[0]) + 1); break;
+                    case "Discount % Value": rec.Percentage = (rec.Percentage == 0) ? GetWebDecimal(field.Values[0]) : rec.Percentage; break;
                 }
             }
         }
@@ -254,6 +255,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Phone No.": rec.Phone = field.Values[i]; break;
                         case "Click and Collect": rec.IsClickAndCollect = GetWebBool(field.Values[i]); break;
                         case "Currency": rec.Currency = new Currency(field.Values[i]); break;
+                        case "Web Store": rec.IsWebStore = GetWebBool(field.Values[i]); break;
+                        case "Loyalty": rec.IsLoyalty = GetWebBool(field.Values[i]); break;
+                        case "Web Store POS Terminal": rec.WebOmniTerminal = field.Values[i]; break;
+                        case "Web Store Staff ID": rec.WebOmniStaff = field.Values[i]; break;
                     }
                 }
                 list.Add(rec);

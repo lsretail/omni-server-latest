@@ -334,7 +334,6 @@ namespace LSOmni.Service
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
-                config.SecurityCheck = false;
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here in login, so no security checks
                 MemberContact contact = contactBLL.Login(userName, password, true, deviceId);
                 contact.Environment.Version = this.Version();
@@ -1009,6 +1008,7 @@ namespace LSOmni.Service
         /// <summary>
         /// Returns one page of items at a time
         /// </summary>
+        /// <param name="storeId">Store Id</param>
         /// <param name="pageSize">Number of items you want returned</param>
         /// <param name="pageNumber">Start on page number 1, then increment</param>
         /// <param name="itemCategoryId">ID of item category</param>
@@ -1016,7 +1016,7 @@ namespace LSOmni.Service
         /// <param name="search">item description</param>
         /// <param name="includeDetails">include Details </param>
         /// <returns></returns>
-        public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)
+        public virtual List<LoyItem> ItemsPage(string storeId, int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)
         {
             try
             {
@@ -1024,7 +1024,7 @@ namespace LSOmni.Service
                     pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                List<LoyItem> itemList = itemBLL.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
+                List<LoyItem> itemList = itemBLL.ItemsPage(storeId, pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
                 foreach (LoyItem it in itemList)
                 {
                     ItemSetLocation(it);
@@ -1886,49 +1886,28 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual List<RecommendedItem> RecommendedItemsGetByUserId(string userId, List<LoyItem> items, int maxNumberOfItems)
+        public virtual List<RecommendedItem> RecommendedItemsGet(List<string> items)
         {
             try
             {
-                string itms = "";
-                foreach (LoyItem i in items)
-                {
-                    itms += " " + i.Id;
-                }
-                logger.Debug(config.LSKey.Key, "userId:{0} items:{1} maxNumberOfItems:{2}", userId, itms, maxNumberOfItems);
-
+                logger.Debug(config.LSKey.Key, "item cnt:{0}", items.Count);
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
-                return bll.RecommendedItemsGetByUserId(userId, items, maxNumberOfItems);
+                return bll.RecommendedItemsGet(items);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "userId:{0}", userId);
+                HandleExceptions(ex, "item cnt:{0}", items.Count);
                 return null; //never gets here
             }
         }
 
-        public virtual List<RecommendedItem> RecommendedItemsGet(string userId, string storeId, string items)
+        public void LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "userId:{0} storeId:{1} items:{2}", userId, storeId, items);
-                LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
-                return bll.RecommendedItemsGet(userId, storeId, items);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "userId:{0} storeId:{1}", userId, storeId);
-                return null; //never gets here
-            }
-        }
-
-        public void LSRecommendSetting(string lsKey, string endPointUrl, string accountConnection, string azureAccountKey, string azureName, int numberOfRecommendedItems, bool calculateStock, string wsURI, string wsUserName, string wsPassword, string wsDomain, string storeNo, string location, int minStock)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, "accKey:{0} azName:{1) numItem:{2}", azureAccountKey, azureName, numberOfRecommendedItems);
+                logger.Debug(config.LSKey.Key, "companyName:{0} batchNo:{1) modelReaderURL:{2}", companyName, batchNo, modelReaderURL);
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, true);
-                bll.LSRecommendSetting(XMLHelper.GetString(lsKey), endPointUrl, accountConnection, azureAccountKey, azureName, numberOfRecommendedItems, calculateStock, wsURI, wsUserName, wsPassword, wsDomain, storeNo, location, minStock);
+                bll.LSRecommendSetting(XMLHelper.GetString(lsKey), companyName, batchNo, modelReaderURL, authenticationURL, clientId, clientSecret, userName, password, numberOfDownloadedItems, numberOfDisplayedItems, filterByInventory, minInvStock);
             }
             catch (Exception ex)
             {

@@ -20,9 +20,6 @@ Source: "..\Service\Xsl\notification.xsl"; DestDir: "{app}\{code:WcfDir}\Xsl\"; 
 ; XML files
 Source: "..\Service\Xml\navdata.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
 
-; LS Recommend
-Source: "..\..\3rdPartyComponents\LSRecommends\*.dll"; DestDir: "{app}\{code:WcfDir}\bin\"; Flags: ignoreversion
-
 ; Configs Files
 Source: "..\Service\WebBindings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBehaviors.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
@@ -33,8 +30,6 @@ Source: "..\Service\WebServices_Basic.config"; DestDir: "{app}\{code:WcfDir}"; F
 Source: "..\Service\NLog.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "Default\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
 Source: "Default\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
-Source: "Multi\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppMultiSettings
-Source: "Multi\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppMultiSettings
 
 [Dirs]
 Name: "{app}\{code:WcfDir}\logs"; Permissions: everyone-modify

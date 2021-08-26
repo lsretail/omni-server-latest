@@ -19,9 +19,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public class ImageSize : IDisposable
+    public class ImageSize : Entity, IDisposable
     {
-        public ImageSize(int width, int height)
+        public ImageSize(int width, int height) : base("")
         {
             Width = width;
             Height = height;
@@ -35,7 +35,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             UseMinHorVerSize = useMinHorVerSize;
         }
 
-        public ImageSize()
+        public ImageSize() : base("")
         {
             Width = 0;
             Height = 0;

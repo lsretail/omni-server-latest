@@ -414,22 +414,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    if (string.IsNullOrEmpty(custOrderNo))
-                    {
-                        command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS Amt,ml.[Exchange Rate] AS Rate,ml.[Card or Account] AS No " +
-                                    "FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
-                                    "WHERE ml.[Receipt No_]=@id ORDER BY ml.[Line No_]";
-                        command.Parameters.AddWithValue("@id", receiptNo);
-                    }
-                    else
-                    {
-                        command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Finalized Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
-                                    "FROM [" + navCompanyName + "Posted Customer Order Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
-                                    "WHERE ml.[Document ID]=@id AND [Type]=4 ORDER BY ml.[Line No_]";
-                        command.Parameters.AddWithValue("@id", custOrderNo);
-                    }
+                    command.CommandText = "SELECT " +
+                                "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS Amt,ml.[Exchange Rate] AS Rate,ml.[Card or Account] AS No " +
+                                "FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                "WHERE ml.[Receipt No_]=@id ORDER BY ml.[Line No_]";
+                    command.Parameters.AddWithValue("@id", receiptNo);
 
                     TraceSqlCommand(command);
                     connection.Open();
@@ -475,8 +464,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Line No_],ml.[Currency Code],ml.[Amount],ml.[CurrencyFactor]" +
+                                "ml.[Line No_],ml.[Number],ml.[Currency Code],ml.[Amount],ml.[CurrencyFactor],mc.[Card Number]" +
                                 " FROM [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
+                                " LEFT OUTER JOIN [" + navCompanyName + "POS Card Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Receipt No_]=ml.[Receipt No_] AND mc.[Tender Type]=ml.[Number]" +
                                 " WHERE ml.[Receipt No_]=@id AND ml.[Entry Type]=1";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -557,7 +547,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
                 Status = SalesEntryStatus.Complete,
-                PaymentStatus = PaymentStatus.Posted,
                 Posted = true,
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 StoreName = SQLHelper.GetString(reader["StName"]),
@@ -709,7 +698,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     disc = SQLHelper.GetDecimal(reader, "Discount Amount", false);
                     entry.IdType = DocumentIdType.Receipt;
                     entry.Status = SalesEntryStatus.Complete;
-                    entry.PaymentStatus = PaymentStatus.Posted;
                     entry.Posted = true;
 
                     SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
@@ -865,7 +853,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
                 Amount = SQLHelper.GetDecimal(reader, "Amount", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "CurrencyFactor", false),
-                CurrencyCode = SQLHelper.GetString(reader["Currency Code"])
+                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
+                TenderType = SQLHelper.GetString(reader["Number"]),
+                CardNo = SQLHelper.GetString(reader["Card Number"])
             };
         }
 
@@ -890,6 +880,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 LineNumber = ConvertTo.SafeInt(SQLHelper.GetString(reader["Line No_"])),
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
+                Type = PaymentType.Payment,
                 Amount = SQLHelper.GetDecimal(reader, "Amt", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "Rate", false),
                 CardNo = SQLHelper.GetString(reader["No"]),
