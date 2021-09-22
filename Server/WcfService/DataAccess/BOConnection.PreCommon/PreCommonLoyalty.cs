@@ -25,6 +25,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -42,7 +43,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             LoyItem item = rep.ItemGet(table);
 
             xmlRequest = xml.GetGeneralWebRequestXML("Item Unit of Measure", "Item No.", item.Id);
@@ -252,7 +253,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<HospAvailabilityResponse> list = rep.CurrentAvail(table);
             return list;
         }
@@ -289,7 +290,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemsGet(table);
         }
 
@@ -309,7 +310,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             List<LoyItem> items = new List<LoyItem>();
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             foreach (string no in itemno)
             {
                 items.Add(ItemGetById(no));
@@ -329,7 +330,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<VariantRegistration> list = rep.GetVariantRegistrations(table);
             return (list.Count == 0) ? null : list[0];
         }
@@ -342,7 +343,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<ProductGroup> list = rep.ProductGroupGet(table);
             return (list.Count == 0) ? null : list[0];
         }
@@ -355,7 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ProductGroupGet(table);
         }
 
@@ -367,7 +368,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<ItemCategory> list = rep.ItemCategoryGet(table);
             return (list.Count == 0) ? null : list[0];
         }
@@ -380,7 +381,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemCategoryGet(table);
         }
 
@@ -391,13 +392,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string xmlResponse = RunOperation(xmlRequest, true, false);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             ImageView img = rep.GetImage(table);
 
-            xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media Set", "ID", img.MediaId.ToString(), "Company Name", "The shop");
+            xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media Set", "ID", img.MediaId.ToString(), "Company Name", centralCompany);
             xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table.NumberOfValues == 0)
+                return img;
+
             XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Media ID");
             img.MediaId = new Guid(fld.Values[0]);
 
@@ -405,8 +409,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             xmlResponse = RunOperation(xmlRequest, true, false);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table.NumberOfValues == 0)
+                return img;
+
             fld = table.FieldList.Find(f => f.FieldName == "Content");
             img.ImgBytes = Convert.FromBase64String(fld.Values[0]);
+
+            fld = table.FieldList.Find(f => f.FieldName == "Height");
+            int h = Convert.ToInt32(fld.Values[0]);
+            fld = table.FieldList.Find(f => f.FieldName == "Width");
+            int w = Convert.ToInt32(fld.Values[0]);
+            img.ImgSize = new ImageSize(w, h);
 
             return img;
         }
@@ -426,7 +439,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             List<ImageView> list = rep.GetImageLinks(table);
 
             foreach (ImageView link in list)
@@ -453,7 +466,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (items == null && items.Count == 0)
                 return new List<ItemCustomerPrice>();
 
-            OrderMapping map = new OrderMapping(config.IsJson);
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMobileTransaction root = map.MapFromCustItemToRoot(storeId, cardId, items);
@@ -472,7 +485,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string xmlRequest;
             string xmlResponse;
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
 
             foreach (string id in itemIds)
             {
@@ -846,7 +859,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             List<Scheme> list = rep.SchemeGetAll(table);
 
             foreach (Scheme sc in list)
@@ -985,7 +998,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.ContactGet(table);
         }
 
@@ -999,7 +1012,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemsGet(table);
         }
 
@@ -1013,7 +1026,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemCategoryGet(table);
         }
 
@@ -1027,7 +1040,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ProductGroupGet(table);
         }
 
@@ -1041,7 +1054,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.ProfileGet(table);
         }
 
@@ -1055,7 +1068,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.StoresGet(table);
         }
 
@@ -1070,7 +1083,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             string respCode = string.Empty;
             string errorText = string.Empty;
-            TransactionMapping map = new TransactionMapping(config.IsJson);
+            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             LSCentral.RootMobileTransaction root = map.MapFromOrderToRoot(list);
 
             logger.Debug(config.LSKey.Key, "MobilePosCalculate Request - " + Serialization.ToXml(root, true));
@@ -1102,7 +1115,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string receiptNo = string.Empty;
             string respCode = string.Empty;
             string errorText = string.Empty;
-            TransactionMapping map = new TransactionMapping(config.IsJson);
+            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             LSCentral.RootHospTransaction root = map.MapFromOrderToRoot(request);
 
             logger.Debug(config.LSKey.Key, "CreateHospOrder Request - " + Serialization.ToXml(root, true));
@@ -1157,7 +1170,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
-            OrderMapping map = new OrderMapping(config.IsJson);
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMobileTransaction root = map.MapFromRetailTransactionToRoot(list);
@@ -1253,7 +1266,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public SalesEntry OrderGet(string id)
         {
-            OrderMapping map = new OrderMapping(config.IsJson);
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             SalesEntry order;
@@ -1269,6 +1282,47 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             order.PointsRewarded = pointEarned;
             order.PointsUsedInOrder = pointUsed;
 
+            Store store = StoreGetById(order.StoreId);
+            order.StoreName = store.Description;
+
+            List<SalesEntryLine> list = new List<SalesEntryLine>();
+            foreach (SalesEntryLine line in order.Lines)
+            {
+                SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
+                if (exline == null)
+                {
+                    if (string.IsNullOrEmpty(line.VariantId))
+                    {
+                        List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty);
+                        if (img != null && img.Count > 0)
+                            line.ItemImageId = img[0].Id;
+                    }
+                    else
+                    {
+                        List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty);
+                        if (img != null && img.Count > 0)
+                            line.ItemImageId = img[0].Id;
+                    }
+
+                    list.Add(line);
+                    continue;
+                }
+
+                SalesEntryDiscountLine dline = order.DiscountLines.Find(l => l.LineNumber >= line.LineNumber && l.LineNumber < line.LineNumber + 10000);
+                if (dline != null)
+                {
+                    // update discount line number to match existing record, as we will sum up the orderlines
+                    dline.LineNumber = exline.LineNumber + dline.LineNumber / 100;
+                }
+
+                exline.Amount += line.Amount;
+                exline.NetAmount += line.NetAmount;
+                exline.DiscountAmount += line.DiscountAmount;
+                exline.TaxAmount += line.TaxAmount;
+                exline.Quantity += line.Quantity;
+            }
+            order.Lines = list;
+
             if (string.IsNullOrEmpty(order.CardId))
                 order.AnonymousOrder = true;
             return order;
@@ -1276,7 +1330,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public List<SalesEntry> OrderHistoryGet(string cardId)
         {
-            OrderMapping map = new OrderMapping(config.IsJson);
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -1289,26 +1343,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             });
             root.CustomerOrderHeaderV2 = hd.ToArray();
 
-            centralWS.COFilteredListV2(ref respCode, ref errorText, true, ref root);
+            centralWS.COFilteredListV2(ref respCode, ref errorText, false, ref root);
             HandleWS2ResponseCode("CustomerOrderFilteredList", respCode, errorText);
             logger.Debug(config.LSKey.Key, "CustomerOrderFilteredList Response - " + Serialization.ToXml(root, true));
             return map.MapFromRootToSalesEntryHistory(root);
         }
 
-        public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
+        public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
         {
             // Click N Collect
             if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
 
-            OrderMapping map = new OrderMapping(config.IsJson);
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
 
             string pefSourceLoc = string.Empty;
             LSCentral.RootCOQtyAvailabilityExtOut rootout = new LSCentral.RootCOQtyAvailabilityExtOut();
 
-            LSCentral.RootCOQtyAvailabilityInV2 rootin = map.MapOneListToInvReq2(request);
+            LSCentral.RootCOQtyAvailabilityInV2 rootin = map.MapOneListToInvReq2(request, shippingOrder);
             logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
 
             centralWS.COQtyAvailabilityV2(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
@@ -1365,7 +1419,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
 
-            OrderMapping map = new OrderMapping(config.IsJson);
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -1380,24 +1434,35 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region SalesEntry
 
-        public List<SalesEntry> SalesHistory(string cardId, int numberOfTrans)
+        public List<SalesEntry> SalesHistory(string cardId)
         {
-            string respCode = string.Empty;
-            string errorText = string.Empty;
+            // fields to get 
+            List<string> fields = new List<string>()
+            {
+                "Receipt No.", "Store No.", "POS Terminal No.", "Transaction No.", "Date", "Time"
+            };
 
-            LSCentral.RootGetMemberSalesHistory rootHistory = new LSCentral.RootGetMemberSalesHistory();
-            logger.Debug(config.LSKey.Key, "GetMemberSalesHistory - CardId: {0}, MaxNoOfHeaders: {1}", cardId, numberOfTrans);
-            centralWS.GetMemberSalesHistory(ref respCode, ref errorText, string.Empty, string.Empty, cardId, numberOfTrans, ref rootHistory);
-            HandleWS2ResponseCode("GetMemberSalesHistory", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetMemberSalesHistory Response - " + Serialization.ToXml(rootHistory, true));
+            List<XMLFieldData> filter = new List<XMLFieldData>();
+            filter.Add(new XMLFieldData()
+            {
+                FieldName = "Member Card No.",
+                Values = new List<string>() { cardId }
+            });
 
-            TransactionMapping map = new TransactionMapping(config.IsJson);
-            return map.MapFromRootToSalesEntries(rootHistory);
+            // get Qty for UOM
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetBatchWebRequestXML("LSC Transaction Header", fields, filter, string.Empty);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            SetupRepository rep = new SetupRepository(config);
+            return rep.SalesEntryList(table);
         }
 
         public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId)
         {
-            TransactionMapping map = new TransactionMapping(config.IsJson);
+            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetTransaction root = new LSCentral.RootGetTransaction();
@@ -1405,7 +1470,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("GetTransaction", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetTransaction Response - " + Serialization.ToXml(root, true));
 
-            return map.MapFromRootToRetailTransaction(root);
+            SalesEntry entry = map.MapFromRootToRetailTransaction(root);
+
+            Store store = StoreGetById(entry.StoreId);
+            entry.StoreName = store.Description;
+
+            if (string.IsNullOrEmpty(entry.CustomerOrderNo) == false)
+            {
+                SalesEntry order = OrderGet(entry.CustomerOrderNo);
+                entry.ShipToEmail = order.ShipToEmail;
+                entry.ShipToName = order.ShipToName;
+                entry.ShipToAddress = order.ShipToAddress;
+                entry.ContactAddress = order.ContactAddress;
+                entry.PointsRewarded = order.PointsRewarded;
+                entry.PointsUsedInOrder = order.PointsUsedInOrder;
+                entry.ContactDayTimePhoneNo = order.ContactDayTimePhoneNo;
+                entry.ContactEmail = order.ContactEmail;
+                entry.ContactName = order.ContactName;
+                entry.ExternalId = order.ExternalId;
+            }
+            return entry;
         }
 
         #endregion
@@ -1420,7 +1504,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
             if (list.Count == 0)
                 return null;
@@ -1482,7 +1566,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
             if (details == false)
                 return list;
@@ -1578,7 +1662,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.DeviceGetById(table);
         }
 
@@ -1595,7 +1679,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             Terminal ter = rep.GetTerminalData(table);
 
             if (ter.InventoryMainMenuId == null)
@@ -1610,7 +1694,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public string ScanPayGoSuspend(Order request)
         {
-            TransactionMapping map = new TransactionMapping(config.IsJson);
+            TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             string receiptNo = string.Empty;
@@ -1625,6 +1709,52 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return receiptNo;
         }
 
+        public ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            LSCentral.RootSPGProfileGet rootProfile = new LSCentral.RootSPGProfileGet();
+            LSCentral.RootSPGProfileTender rootTender = new LSCentral.RootSPGProfileTender();
+            LSCentral.RootSPGProfileFlags rootFlag = new LSCentral.RootSPGProfileFlags();
+
+            logger.Debug(config.LSKey.Key, $"SPGProfileGet Request - Profile:{profileId} store:{storeNo}");
+            centralWS.SPGProfileGet(profileId, storeNo, ref rootProfile, ref rootTender, ref rootFlag, ref respCode, ref errorText);
+            HandleWS2ResponseCode("SPGProfileGet", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "SPGProfileGet Response - Profile:" + Serialization.ToXml(rootProfile, true) +
+                                                                "> Tender:" + Serialization.ToXml(rootTender, true) +
+                                                                "> Flags:" + Serialization.ToXml(rootFlag, true));
+
+            ScanPayGoProfile profile = new ScanPayGoProfile();
+            profile.Id = profileId;
+            profile.Flags = new FeatureFlags();
+            if (rootProfile.SPGProfileGet != null && rootProfile.SPGProfileGet.Length == 1)
+            {
+                profile.SecurityTrigger = (SPGSecurityTrigger)Convert.ToInt32(rootProfile.SPGProfileGet[0].SecurityCheckTrigger);
+            }
+
+            if (rootFlag.SPGProfileFeatureFlags != null)
+            {
+                foreach (LSCentral.SPGProfileFeatureFlags flag in rootFlag.SPGProfileFeatureFlags)
+                {
+                    profile.Flags.AddFlag(flag.FeatureId, flag.FatureValue);
+                }
+            }
+
+            if (rootTender.SPGProfileTender != null)
+            {
+                profile.TenderTypes = new List<ScanPayGoTender>();
+                foreach (LSCentral.SPGProfileTender ten in rootTender.SPGProfileTender)
+                {
+                    profile.TenderTypes.Add(new ScanPayGoTender()
+                    {
+                        Id = ten.TenderType,
+                        Description = ten.Description
+                    });
+                }
+            }
+            return profile;
+        }
+
         #endregion
 
         public Currency CurrencyGetById(string id, string culture)
@@ -1635,7 +1765,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.GetCurrency(table, culture);
         }
 
@@ -1647,7 +1777,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.GetShippingAgentServices(table);
         }
 
@@ -1659,8 +1789,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.GetPointRate(table);
+        }
+
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ContactRepository rep = new ContactRepository(config);
+            return rep.PointEntryGet(table);
         }
 
         public List<Notification> NotificationsGetByCardId(string cardId)

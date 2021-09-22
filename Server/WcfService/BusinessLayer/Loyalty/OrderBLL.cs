@@ -21,13 +21,13 @@ namespace LSOmni.BLL.Loyalty
         {
         }
 
-        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
+        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
         {
             //validation
             if (request == null)
                 throw new LSOmniException(StatusCode.ObjectMissing, "OrderAvailabilityCheck() request is empty");
 
-            return BOLoyConnection.OrderAvailabilityCheck(request);
+            return BOLoyConnection.OrderAvailabilityCheck(request, shippingOrder);
         }
 
         public virtual OrderStatusResponse OrderStatusCheck(string orderId)

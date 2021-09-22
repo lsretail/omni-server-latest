@@ -650,6 +650,35 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        public List<PointEntry> PointEntiesGet(string cardId, DateTime dateFrom)
+        {
+            List<PointEntry> list = new List<PointEntry>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Entry No_],mt.[Source Type],mt.[Document No_],mt.[Date],mt.[Entry Type],mt.[Point Type],mt.[Points],mt.[Remaining Points],mt.[Expiration Date],mt.[Store No_],st.[Name] " +
+                                          "FROM [" + navCompanyName + "Member Point Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
+                                          "WHERE mt.[Card No_]=@id AND mt.[Date]>=@date ORDER BY mt.[Date] DESC";
+                    command.Parameters.AddWithValue("@id", cardId);
+                    command.Parameters.AddWithValue("@date", ConvertTo.NavGetDate(dateFrom, false));
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToPointEntry(reader));
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
         public GiftCard GetGiftCartBalance(string cardId, string type)
         {
             GiftCard card = new GiftCard(cardId);
@@ -808,6 +837,23 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 pro.ContactValue = false;
             }
             return pro;
+        }
+
+        private PointEntry ReaderToPointEntry(SqlDataReader reader)
+        {
+            return new PointEntry(SQLHelper.GetString(reader["Entry No_"]))
+            {
+                DocumentNo = SQLHelper.GetString(reader["Document No_"]),
+                SourceType = (MemberPointSourceType)SQLHelper.GetInt32(reader["Source Type"]),
+                EntryType = (MemberPointEntryType)SQLHelper.GetInt32(reader["Entry Type"]),
+                PointType = (MemberPointType)SQLHelper.GetInt32(reader["Point Type"]),
+                Date = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
+                ExpirationDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Expiration Date"]), config.IsJson),
+                Points = SQLHelper.GetDecimal(reader["Points"]),
+                RemainingPoints = SQLHelper.GetDecimal(reader["Remaining Points"]),
+                StoreNo = SQLHelper.GetString(reader["Store No_"]),
+                StoreName = SQLHelper.GetString(reader["Name"])
+            };
         }
     }
 }

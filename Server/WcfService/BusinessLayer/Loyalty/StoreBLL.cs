@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -64,5 +65,9 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
         }
 
+        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        {
+            return BOLoyConnection.ScanPayGoProfileGet(profileId, storeNo);
+        }
     }
 }

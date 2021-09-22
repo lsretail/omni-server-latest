@@ -867,6 +867,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 99001462, 305);
             AddField(body, 99001462, 390);
 
+            // VAT Posting Setup
+            AddTable(body, 325, false);
+            AddField(body, 325, 1);
+            AddField(body, 325, 2);
+            AddField(body, 325, 4);
+
             // Retail Image
             AddTable(body, 99009063, false);
             AddField(body, 99009063, 1);

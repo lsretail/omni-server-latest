@@ -156,6 +156,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ReplicateStaff(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplStaffPermission> ReplicateStaffPermission(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return new List<ReplStaffPermission>();
+        }
+
         public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
@@ -289,12 +294,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ReplicateStoreTenderType(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ReplicateTaxSetup(appId, appType, string.Empty, batchSize, ref lastKey, ref recordsRemaining);
+                return NavWSBase.ReplicateTaxSetup(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateTaxSetup(appId, appType, string.Empty, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateTaxSetup(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

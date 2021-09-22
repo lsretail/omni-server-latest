@@ -92,6 +92,7 @@
     <Compile Include="Dal\PriceRepository.cs" />
     <Compile Include="Dal\ProductGroupRepository.cs" />
     <Compile Include="Dal\ShippingRepository.cs" />
+    <Compile Include="Dal\StaffPermissionRepository.cs" />
     <Compile Include="Dal\StaffRepository.cs" />
     <Compile Include="Dal\StaffStoreLinkRepository.cs" />
     <Compile Include="Dal\StoreRepository.cs" />
@@ -134,6 +135,10 @@
     <ProjectReference Include="..\..\..\..\Common\Core\Pos\Domain.DataModel.Pos\Domain.DataModel.Pos.csproj">
       <Project>{b2615d03-8131-48d0-b0f2-717980189dc2}</Project>
       <Name>Domain.DataModel.Pos</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\Common\Core\ScanPayGo\Domain.DataModel.ScanPayGo\Domain.DataModel.ScanPayGo.csproj">
+      <Project>{6A6D7EFF-5FB2-4A4A-91E2-4BE6D4F08AC3}</Project>
+      <Name>Domain.DataModel.ScanPayGo</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Common.csproj">
       <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>

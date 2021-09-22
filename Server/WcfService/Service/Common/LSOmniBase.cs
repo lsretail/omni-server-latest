@@ -285,6 +285,9 @@ namespace LSOmni.Service
         /// <returns>List of ImageViews</returns>
         public virtual ImageView ImageGetById(string id, ImageSize imageSize)
         {
+            if (imageSize == null)
+                imageSize = new ImageSize();
+
             try
             {
                 logger.Debug(config.LSKey.Key, "Id: {0}  imageSize: {1}", id, imageSize.ToString());

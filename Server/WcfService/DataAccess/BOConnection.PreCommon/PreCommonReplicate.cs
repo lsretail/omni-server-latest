@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
 using LSRetail.Omni.Domain.DataModel.Base;
@@ -19,7 +19,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(27, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplItem> list = rep.ReplicateItems(table);
 
             if (list.Count == 0)
@@ -88,7 +88,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001451, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateBarcodes(table);
         }
 
@@ -96,7 +96,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001480, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateBarcodeMaskSegments(table);
         }
 
@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001459, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateBarcodeMasks(table);
         }
 
@@ -112,7 +112,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10001413, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplExtendedVariantValue> list = rep.ReplicateExtendedVariantValues(table);
 
             // fields to get 
@@ -167,7 +167,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(5404, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplItemUnitOfMeasure> list = rep.ReplicateItemUnitOfMeasure(table);
 
             NAVWebXml xml = new NAVWebXml();
@@ -193,7 +193,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10001414, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateItemVariantRegistration(table);
         }
 
@@ -201,7 +201,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(23, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateVendor(table);
         }
 
@@ -209,7 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(4, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateCurrency(table);
         }
 
@@ -217,7 +217,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(330, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateCurrencyExchRate(table);
         }
 
@@ -225,7 +225,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(5722, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateItemCategory(table);
         }
 
@@ -233,7 +233,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001533, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateItemLocation(table);
         }
 
@@ -255,7 +255,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             recordsRemaining = (table.NumberOfValues == batchSize) ? 1 : 0;
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplPrice> list = rep.ReplicatePrice(table, ref lastKey);
 
             // fields to get 
@@ -299,7 +299,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             case "Qty. per Unit of Measure":
                                 ReplPrice it = list.Find(f => f.ItemId == item && f.UnitOfMeasure == code);
                                 if (it != null)
-                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToDecimal(field.Values[0]));
+                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : XMLHelper.GetWebDecimal(field.Values[0]));
                                 break;
                         }
                     }
@@ -316,7 +316,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10000705, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateProductGroups(table);
         }
 
@@ -325,7 +325,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             ResetReplication(fullReplication, lastKey);
             XMLTableData table = DoReplication(99001470, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplStore> list = rep.ReplicateStores(table);
 
             NAVWebXml xml = new NAVWebXml();
@@ -361,7 +361,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             ResetReplication(fullReplication, lastKey);
             XMLTableData table = DoReplication(10012806, storeId, appId, appType, 0, ref lastKey, out int recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             //Get all storeIds linked to this terminal
             List<ReplStore> list = rep.ReplicateInvStores(table, terminalId);
             //Get all stores
@@ -391,7 +391,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(204, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateUnitOfMeasure(table);
         }
 
@@ -399,7 +399,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10001430, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateCollection(table);
         }
 
@@ -421,7 +421,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             recordsRemaining = (table.NumberOfValues == batchSize) ? 1 : 0;
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplDiscount> list = rep.ReplicateDiscounts(table, ref lastKey);
             List<ReplDiscount> extlist = new List<ReplDiscount>();
 
@@ -458,10 +458,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             it.OfferNo = field.Values[0];
                             break;
                         case "Type":
-                            it.Type = (ReplDiscountType)Convert.ToInt32(field.Values[0]);
+                            it.Type = (ReplDiscountType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Type":
-                            it.DiscountValueType = (DiscountValueType)Convert.ToInt32(field.Values[0]);
+                            it.DiscountValueType = (DiscountValueType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Description":
                             it.Description = field.Values[0];
@@ -473,10 +473,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 it.Details += (string.IsNullOrEmpty(it.Details) ? string.Empty : "\r\n") + field.Values[0];
                             break;
                         case "Validation Period ID":
-                            it.ValidationPeriodId = Convert.ToInt32(field.Values[0]);
+                            it.ValidationPeriodId = XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Amount Value":
-                            amt = Convert.ToDecimal(field.Values[0]);
+                            amt = XMLHelper.GetWebDecimal(field.Values[0]);
                             break;
                     }
 
@@ -529,7 +529,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             recordsRemaining = (table.NumberOfValues == batchSize) ? 1 : 0;
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplDiscount> list = rep.ReplicateDiscounts(table, ref lastKey);
 
             foreach (ReplDiscount disc in list)
@@ -563,11 +563,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             break;
                         case "Type":
                             if (it != null)
-                                it.Type = (ReplDiscountType)Convert.ToInt32(field.Values[0]);
+                                it.Type = (ReplDiscountType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Type":
                             if (it != null)
-                                it.DiscountValueType = (DiscountValueType)Convert.ToInt32(field.Values[0]);
+                                it.DiscountValueType = (DiscountValueType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Description":
                             if (it != null)
@@ -581,11 +581,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             break;
                         case "Validation Period ID":
                             if (it != null)
-                                it.ValidationPeriodId = Convert.ToInt32(field.Values[0]);
+                                it.ValidationPeriodId = XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Amount Value":
                             if (it != null)
-                                amt = Convert.ToDecimal(field.Values[0]);
+                                amt = XMLHelper.GetWebDecimal(field.Values[0]);
                             break;
                     }
                 }
@@ -603,7 +603,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001481, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateDiscountValidations(table);
         }
 
@@ -611,8 +611,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001462, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicateStoreTenderType(table, config.SettingsGetByKey(ConfigKey.TenderType_Mapping));
+            ReplicateRepository rep = new ReplicateRepository(config);
+            List<ReplStoreTenderType> list = rep.ReplicateStoreTenderType(table, config.SettingsGetByKey(ConfigKey.TenderType_Mapping));
+            if (string.IsNullOrEmpty(storeId))
+                return list;
+
+            return list.FindAll(t => t.StoreID == storeId).ToList();
         }
 
         public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, ref string lastKey, ref int recordsRemaining)
@@ -631,7 +635,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (table == null || table.NumberOfValues == 0)
                 return null;
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplHierarchy> list = new List<ReplHierarchy>();
 
             for (int i = 0; i < table.NumberOfValues; i++)
@@ -644,15 +648,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     switch (field.FieldName)
                     {
                         case "Hierarchy Code": hircode = field.Values[i]; break;
-                        case "Start Date": startdate = DateTime.Parse(field.Values[i]); break;
+                        case "Start Date": startdate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                     }
                 }
 
                 xmlRequest = xml.GetGeneralWebRequestXML("LSC Hierarchy", "Hierarchy Code", hircode);
                 xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
-                list.AddRange(rep.ReplicateHierarchy(table, startdate));
+                XMLTableData table2 = xml.GetGeneralWebResponseXML(xmlResponse);
+                list.AddRange(rep.ReplicateHierarchy(table2, startdate));
             }
             return list;
         }
@@ -670,7 +674,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Hierarchy Code"));
 
             List<ReplHierarchyNode> list = new List<ReplHierarchyNode>();
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
 
             table = DoReplication(10000921, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
             List<ReplHierarchyNode> data = rep.ReplicateHierarchyNode(table);
@@ -695,7 +699,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLFieldData hirfield = table.FieldList.Find(f => f.FieldName.Equals("Hierarchy Code"));
 
             List<ReplHierarchyLeaf> list = new List<ReplHierarchyLeaf>();
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
 
             table = DoReplication(10000922, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
             List<ReplHierarchyLeaf> data = rep.ReplicateHierarchyLeaf(table);
@@ -750,7 +754,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99009064, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateImageLink(table);
         }
 
@@ -758,7 +762,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99009063, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateImage(table);
         }
 
@@ -766,7 +770,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10000784, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateAttribute(table);
         }
 
@@ -774,7 +778,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10000786, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateAttributeValue(table);
         }
 
@@ -782,7 +786,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10000785, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateAttributeOptionValue(table);
         }
 
@@ -790,7 +794,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10000971, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateDataTranslation(table);
         }
 
@@ -798,7 +802,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(10000972, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateDataTranslationLangCode(table);
         }
 
@@ -806,7 +810,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(291, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplShippingAgent> list = rep.ReplicateShippingAgent(table);
 
             foreach (ReplShippingAgent sa in list)
@@ -820,7 +824,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99009002, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateMembers(table);
         }
 
@@ -828,7 +832,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(18, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateCustomer(table);
         }
 
@@ -836,7 +840,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001461, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateStaff(table);
         }
 
@@ -844,7 +848,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001633, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateStaffStoreLink(table);
         }
 
@@ -852,7 +856,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(325, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateTaxSetup(table);
         }
 
@@ -860,7 +864,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001636, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateStoreTenderTypeCurrency(table);
         }
 
@@ -868,7 +872,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99001471, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateTerminals(table);
         }
 
@@ -876,7 +880,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(9, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateCountryCode(table);
         }
 
@@ -884,7 +888,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             XMLTableData table = DoReplication(99009274, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplPlu> list = rep.ReplicatePlu(table);
 
             foreach (ReplPlu plu in list)
@@ -937,7 +941,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             recordsRemaining = (table.NumberOfValues == batchSize) ? 1 : 0;
 
             string maxKey = string.Empty;
-            ReplicateRepository rep = new ReplicateRepository();
+            ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplInvStatus> list = rep.ReplicateInvStatus(table, ref lastKey, ref maxKey);
 
             if (table.NumberOfValues < batchSize || fullReplication == false)

@@ -85,6 +85,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public Address ShipToAddress { get; set; }
         [DataMember]
         public string ShipToEmail { get; set; }
+        [DataMember]
+        public DateTime RequestedDeliveryDate { get; set; }
 
         [DataMember]
         public DocumentIdType IdType { get; set; }

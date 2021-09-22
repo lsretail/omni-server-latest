@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using LSRetail.Omni.Domain.DataModel.Base;
 using NLog;
 
 namespace LSOmni.Common.Util
@@ -65,6 +66,12 @@ namespace LSOmni.Common.Util
 		{
 			StackTrace stackTrace = new StackTrace();
 			logger.Debug(stackTrace.GetFrame(1).GetMethod().Name + " | Key:" + lskey + " | " + message, args);
+		}
+
+		public void Debug(BOConfiguration lskey, string message, params object[] args)
+		{
+			StackTrace stackTrace = new StackTrace();
+			logger.Debug(stackTrace.GetFrame(1).GetMethod().Name + " | Key:" + lskey.LSKey.Key + " | AppId:" + lskey.AppId + " | " + message, args);
 		}
 
 		public void Trace(string lskey, string message, params object[] args)

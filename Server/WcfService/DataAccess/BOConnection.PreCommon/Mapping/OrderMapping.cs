@@ -13,8 +13,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class OrderMapping : BaseMapping
     {
-        public OrderMapping(bool json)
+        private Version LSCVersion;
+
+        public OrderMapping(Version lscVersion, bool json)
         {
+            LSCVersion = lscVersion;
             IsJson = json;
         }
 
@@ -222,6 +225,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
                 ShipToName = header.ShiptoName,
                 ShipToEmail = header.ShiptoEmail,
+                RequestedDeliveryDate = header.RequestedDeliveryDate,
                 ShippingStatus = (header.ClickandCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped,
                 ShipToAddress = new Address()
                 {
@@ -327,12 +331,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         Id = header.DocumentID,
                         StoreId = header.CreatedatStore,
                         CardId = header.MemberCardNo,
+                        ContactEmail = header.Email,
+                        ContactDayTimePhoneNo = header.PhoneNo,
                         StoreName = header.CreatedatStore,
                         AnonymousOrder = string.IsNullOrEmpty(header.MemberCardNo),
                         DocumentRegTime = ConvertTo.SafeJsonDate(header.Created, IsJson),
                         ShipToName = header.FullName,
                         TotalAmount = header.TotalAmount,
-                        LineItemCount = (int)header.TotalQuantity
+                        LineItemCount = (int)header.TotalQuantity,
+                        RequestedDeliveryDate = header.RequestedDeliveryDate
                     });
                 }
             }
@@ -375,6 +382,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 ShipToEmail = XMLHelper.GetString(order.ShipToEmail),
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired && order.ShippingStatus != 0),
                 CreatedAtStore = order.StoreId,
+                RequestedDeliveryDate = order.RequestedDeliveryDate,
                 ShopPaygo = (order.OrderType == OrderType.ScanPayGo),
                 TerritoryCode = string.Empty
             });
@@ -395,7 +403,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 if (line.LineNumber == 0)
                     line.LineNumber = ++lineNo;
 
-                orderLines.Add(new LSCentral.CustomerOrderCreateCOLineV5()
+                LSCentral.CustomerOrderCreateCOLineV5 ln = new LSCentral.CustomerOrderCreateCOLineV5()
                 {
                     DocumentID = string.Empty,
                     ExternalID = (string.IsNullOrEmpty(line.Id)) ? string.Empty : line.Id.ToUpper(),
@@ -413,7 +421,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     VatAmount = line.TaxAmount,
                     Price = line.Price,
                     NetPrice = line.NetPrice,
-                    ValidateTaxParameter = line.ValidateTax,
                     TaxGroupCode = string.Empty,
                     Status = string.Empty,
                     LeadTimeCalculation = string.Empty,
@@ -428,7 +435,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
                     ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
                     TerminalNo = string.Empty
-                });
+                };
+
+                if (LSCVersion > new Version("18.2"))
+                    ln.ValidateTaxParameter = line.ValidateTax;
+
+                orderLines.Add(ln);
             }
             root.CustomerOrderCreateCOLineV5 = orderLines.ToArray();
 
@@ -762,14 +774,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return resp;
         }
 
-        public LSCentral.RootCOQtyAvailabilityInV2 MapOneListToInvReq2(OneList list)
+        public LSCentral.RootCOQtyAvailabilityInV2 MapOneListToInvReq2(OneList list, bool shipOrder)
         {
             List<LSCentral.CustomerOrderHeader> header = new List<LSCentral.CustomerOrderHeader>();
             header.Add(new LSCentral.CustomerOrderHeader()
             {
                 DocumentID = string.Empty,
                 CreatedAtStore = list.StoreId,
-                MemberCardNo = list.CardId ?? string.Empty
+                MemberCardNo = list.CardId ?? string.Empty,
+                ShipOrder = shipOrder
             });
 
             List<LSCentral.CustomerOrderLine> lines = new List<LSCentral.CustomerOrderLine>();

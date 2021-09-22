@@ -23,6 +23,8 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.Service
 {
@@ -37,6 +39,9 @@ namespace LSOmni.Service
 
         [OperationContract]
         string Ping();
+
+        [OperationContract]
+        OmniEnvironment Environment();
 
         #endregion
 
@@ -392,9 +397,10 @@ namespace LSOmni.Service
         /// LS Central WS2 : COQtyAvailabilityV2<p/><p/>
         /// </remarks>
         /// <param name="request"></param>
+        /// <param name="shippingOrder">true if order is to be shipped, false if click and collect</param>
         /// <returns></returns>
         [OperationContract]
-        OrderAvailabilityResponse OrderCheckAvailability(OneList request);
+        OrderAvailabilityResponse OrderCheckAvailability(OneList request, bool shippingOrder);
 
         /// <summary>
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
@@ -1132,6 +1138,15 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         long CardGetPointBalance(string cardId);
+
+        /// <summary>
+        /// Get Point entries for Member Card
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <param name="dateFrom"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<PointEntry> CardGetPointEnties(string cardId, DateTime dateFrom);
 
         /// <summary>
         /// Gets Rate value for points (f.ex. 1 point = 0.01 Kr)
@@ -2818,7 +2833,19 @@ namespace LSOmni.Service
 
         #endregion
 
+        #region ScanPayGo
+
+        /// <summary>
+        /// Creates a client token for payment provider
+        /// </summary>
+        /// <param name="customerId">Customer id, used to show saved cards</param>
+        /// <returns></returns>
         [OperationContract]
-        string MyCustomFunction(string data);
+        ClientToken PaymentClientTokenGet(string customerId);
+
+        [OperationContract]
+        ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
+
+        #endregion
     }
 }

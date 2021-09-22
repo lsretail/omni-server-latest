@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping;
 using LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication;
 using LSRetail.Omni.Domain.DataModel.Base;
@@ -299,7 +299,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                             case "Qty. per Unit of Measure":
                                 ReplPrice it = list.Find(f => f.ItemId == item && f.UnitOfMeasure == code);
                                 if (it != null)
-                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : Convert.ToDecimal(field.Values[0]));
+                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : XMLHelper.GetWebDecimal(field.Values[0]));
                                 break;
                         }
                     }
@@ -458,10 +458,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                             it.OfferNo = field.Values[0];
                             break;
                         case "Type":
-                            it.Type = (ReplDiscountType)Convert.ToInt32(field.Values[0]);
+                            it.Type = (ReplDiscountType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Type":
-                            it.DiscountValueType = (DiscountValueType)Convert.ToInt32(field.Values[0]);
+                            it.DiscountValueType = (DiscountValueType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Description":
                             it.Description = field.Values[0];
@@ -473,10 +473,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                                 it.Details += (string.IsNullOrEmpty(it.Details) ? string.Empty : "\r\n") + field.Values[0];
                             break;
                         case "Validation Period ID":
-                            it.ValidationPeriodId = Convert.ToInt32(field.Values[0]);
+                            it.ValidationPeriodId = XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Amount Value":
-                            amt = Convert.ToDecimal(field.Values[0]);
+                            amt = XMLHelper.GetWebDecimal(field.Values[0]);
                             break;
                     }
 
@@ -563,11 +563,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                             break;
                         case "Type":
                             if (it != null)
-                                it.Type = (ReplDiscountType)Convert.ToInt32(field.Values[0]);
+                                it.Type = (ReplDiscountType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Type":
                             if (it != null)
-                                it.DiscountValueType = (DiscountValueType)Convert.ToInt32(field.Values[0]);
+                                it.DiscountValueType = (DiscountValueType)XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Description":
                             if (it != null)
@@ -581,11 +581,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                             break;
                         case "Validation Period ID":
                             if (it != null)
-                                it.ValidationPeriodId = Convert.ToInt32(field.Values[0]);
+                                it.ValidationPeriodId = XMLHelper.GetWebInt(field.Values[0]);
                             break;
                         case "Discount Amount Value":
                             if (it != null)
-                                amt = Convert.ToDecimal(field.Values[0]);
+                                amt = XMLHelper.GetWebDecimal(field.Values[0]);
                             break;
                     }
                 }
@@ -612,7 +612,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             XMLTableData table = DoReplication(99001462, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository();
-            return rep.ReplicateStoreTenderType(table, config.SettingsGetByKey(ConfigKey.TenderType_Mapping));
+            List<ReplStoreTenderType> list = rep.ReplicateStoreTenderType(table, config.SettingsGetByKey(ConfigKey.TenderType_Mapping));
+            if (string.IsNullOrEmpty(storeId))
+                return list;
+
+            return list.FindAll(t => t.StoreID == storeId).ToList();
         }
 
         public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, ref string lastKey, ref int recordsRemaining)
@@ -644,7 +648,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     switch (field.FieldName)
                     {
                         case "Hierarchy Code": hircode = field.Values[i]; break;
-                        case "Start Date": startdate = DateTime.Parse(field.Values[i]); break;
+                        case "Start Date": startdate = XMLHelper.GetWebDateTime(field.Values[i]); break;
                     }
                 }
 

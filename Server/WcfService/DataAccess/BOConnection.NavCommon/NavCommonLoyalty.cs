@@ -181,7 +181,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         VariantId = ir.VariantId
                     });
                 }
-                OrderAvailabilityResponse rep = OrderAvailabilityCheck(olist);
+                OrderAvailabilityResponse rep = OrderAvailabilityCheck(olist, true);
                 foreach (OrderLineAvailabilityResponse ol in rep.Lines)
                 {
                     list.Add(new InventoryResponse()
@@ -1446,7 +1446,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             }
         }
 
-        public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
+        public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
         {
             // Click N Collect
             if (string.IsNullOrWhiteSpace(request.Id))
@@ -1511,7 +1511,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             }
             else
             {
-                NavWS.RootCOQtyAvailabilityInV2 rootin = map.MapOneListToInvReq2(request);
+                NavWS.RootCOQtyAvailabilityInV2 rootin = map.MapOneListToInvReq2(request, shippingOrder);
                 logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
 
                 navWS.COQtyAvailabilityV2(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
@@ -1655,19 +1655,30 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         #region SalesEntry
 
-        public List<SalesEntry> SalesHistory(string cardId, int numberOfTrans)
+        public List<SalesEntry> SalesHistory(string cardId)
         {
-            string respCode = string.Empty;
-            string errorText = string.Empty;
+            // fields to get 
+            List<string> fields = new List<string>()
+            {
+                "Receipt No.", "Store No.", "POS Terminal No.", "Transaction No.", "Date", "Time"
+            };
 
-            NavWS.RootGetMemberSalesHistory rootHistory = new NavWS.RootGetMemberSalesHistory();
-            logger.Debug(config.LSKey.Key, "GetMemberSalesHistory - CardId: {0}, MaxNoOfHeaders: {1}", cardId, numberOfTrans);
-            navWS.GetMemberSalesHistory(ref respCode, ref errorText, string.Empty, string.Empty, cardId, numberOfTrans, ref rootHistory);
-            HandleWS2ResponseCode("GetMemberSalesHistory", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetMemberSalesHistory Response - " + Serialization.ToXml(rootHistory, true));
+            List<XMLFieldData> filter = new List<XMLFieldData>();
+            filter.Add(new XMLFieldData()
+            {
+                FieldName = "Member Card No.",
+                Values = new List<string>() { cardId }
+            });
 
-            TransactionMapping map = new TransactionMapping(NAVVersion, config.IsJson);
-            return map.MapFromRootToSalesEntries(rootHistory);
+            // get Qty for UOM
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetBatchWebRequestXML("Transaction Header", fields, filter, string.Empty);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            SetupRepository rep = new SetupRepository();
+            return rep.SalesEntryList(table);
         }
 
         public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId)
@@ -1680,7 +1691,26 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("GetTransaction", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetTransaction Response - " + Serialization.ToXml(root, true));
 
-            return map.MapFromRootToRetailTransaction(root);
+            SalesEntry entry = map.MapFromRootToRetailTransaction(root);
+
+            Store store = StoreGetById(entry.StoreId);
+            entry.StoreName = store.Description;
+
+            if (string.IsNullOrEmpty(entry.CustomerOrderNo) == false)
+            {
+                SalesEntry order = OrderGet(entry.CustomerOrderNo);
+                entry.ShipToEmail = order.ShipToEmail;
+                entry.ShipToName = order.ShipToName;
+                entry.ShipToAddress = order.ShipToAddress;
+                entry.ContactAddress = order.ContactAddress;
+                entry.PointsRewarded = order.PointsRewarded;
+                entry.PointsUsedInOrder = order.PointsUsedInOrder;
+                entry.ContactDayTimePhoneNo = order.ContactDayTimePhoneNo;
+                entry.ContactEmail = order.ContactEmail;
+                entry.ContactName = order.ContactName;
+                entry.ExternalId = order.ExternalId;
+            }
+            return entry;
         }
 
         #endregion
@@ -1949,6 +1979,18 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             SetupRepository rep = new SetupRepository();
             return rep.GetPointRate(table);
+        }
+
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ContactRepository rep = new ContactRepository();
+            return rep.PointEntryGet(table);
         }
 
         public List<Notification> NotificationsGetByCardId(string cardId)

@@ -38,6 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         private string ecomAppType = string.Empty;
         private bool ecomAppRestore = false;
         private string ecomAppRestoreFileName = string.Empty;
+        private string centralCompany = string.Empty;
 
         public PreCommonBase(BOConfiguration configuration, bool ping = false)
         {
@@ -53,7 +54,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             ecomAppType = config.SettingsGetByKey(ConfigKey.NavAppType);
 
             string rpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dat");
-            ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{ecomAppId}.txt");
+            ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{(string.IsNullOrEmpty(configuration.AppId) ? ecomAppId : configuration.AppId)}.txt");
             if (Directory.Exists(rpath) == false)
             {
                 Directory.CreateDirectory(rpath);
@@ -111,6 +112,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 navWebReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
                 navWebReference.PreAuthenticate = true;
                 navWebReference.AllowAutoRedirect = true;
+
+                int start = navWebReference.Url.ToLower().IndexOf("/ws/") + 4;
+                int end = navWebReference.Url.ToLower().IndexOf("/codeunit/retailwebservices");
+                centralCompany = navWebReference.Url.Substring(start, end - start);
 
                 string qryurl = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value;
 

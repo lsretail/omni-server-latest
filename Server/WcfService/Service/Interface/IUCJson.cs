@@ -23,6 +23,7 @@ using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.Service
 {
@@ -329,10 +330,11 @@ namespace LSOmni.Service
         /// LS Central WS2 : COQtyAvailabilityV2<p/><p/>
         /// </remarks>
         /// <param name="request"></param>
+        /// <param name="shippingOrder">true if order is to be shipped, false if click and collect</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OrderAvailabilityResponse OrderCheckAvailability(OneList request);
+        OrderAvailabilityResponse OrderCheckAvailability(OneList request, bool shippingOrder);
 
         /// <summary>
         /// Create Customer Order for ClickAndCollect or BasketPostSales 
@@ -945,6 +947,16 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         long CardGetPointBalance(string cardId);
+
+        /// <summary>
+        /// Get Point entries for Member Card
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <param name="dateFrom"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<PointEntry> CardGetPointEnties(string cardId, DateTime dateFrom);
 
         /// <summary>
         /// Gets Rate value for points (f.ex. 1 point = 0.01 Kr)
@@ -2758,7 +2770,7 @@ namespace LSOmni.Service
 
         #endregion
 
-        #region Payment
+        #region ScanPayGo
 
         /// <summary>
         /// Creates a client token for payment provider
@@ -2769,10 +2781,10 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ClientToken PaymentClientTokenGet(string customerId);
 
-        #endregion
-		
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string MyCustomFunction(string data);
+        ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
+
+        #endregion
     }
 }

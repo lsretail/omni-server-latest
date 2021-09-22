@@ -21,6 +21,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplBarcodeResponse rs = new ReplBarcodeResponse()
             {
@@ -38,6 +39,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplItemResponse rs = new ReplItemResponse()
             {
@@ -55,6 +57,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplExtendedVariantValuesResponse rs = new ReplExtendedVariantValuesResponse()
             {
@@ -72,6 +75,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplItemCategoryResponse rs = new ReplItemCategoryResponse()
             {
@@ -89,6 +93,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplProductGroupResponse rs = new ReplProductGroupResponse()
             {
@@ -106,6 +111,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplStoreResponse rs = new ReplStoreResponse()
             {
@@ -123,6 +129,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplItemUnitOfMeasureResponse rs = new ReplItemUnitOfMeasureResponse()
             {
@@ -140,6 +147,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplUnitOfMeasureResponse rs = new ReplUnitOfMeasureResponse()
             {
@@ -157,6 +165,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplCollectionResponse rs = new ReplCollectionResponse()
             {
@@ -174,6 +183,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplCurrencyResponse rs = new ReplCurrencyResponse()
             {
@@ -191,6 +201,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplCurrencyExchRateResponse rs = new ReplCurrencyExchRateResponse()
             {
@@ -208,6 +219,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplItemVariantRegistrationResponse rs = new ReplItemVariantRegistrationResponse()
             {
@@ -225,6 +237,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplPriceResponse rs = new ReplPriceResponse()
             {
@@ -242,6 +255,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplPriceResponse rs = new ReplPriceResponse()
             {
@@ -259,6 +273,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplImageResponse rs = new ReplImageResponse()
             {
@@ -276,6 +291,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplImageLinkResponse rs = new ReplImageLinkResponse()
             {
@@ -293,6 +309,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplAttributeResponse rs = new ReplAttributeResponse()
             {
@@ -310,6 +327,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplAttributeValueResponse rs = new ReplAttributeValueResponse()
             {
@@ -327,6 +345,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplAttributeOptionValueResponse rs = new ReplAttributeOptionValueResponse()
             {
@@ -344,6 +363,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplVendorResponse rs = new ReplVendorResponse()
             {
@@ -361,6 +381,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplLoyVendorItemMappingResponse rs = new ReplLoyVendorItemMappingResponse()
             {
@@ -378,6 +399,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplDataTranslationResponse rs = new ReplDataTranslationResponse()
             {
@@ -395,6 +417,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplDataTranslationLangCodeResponse rs = new ReplDataTranslationLangCodeResponse()
             {
@@ -412,6 +435,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplDiscountResponse rs = new ReplDiscountResponse()
             {
@@ -429,6 +453,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplMixMatchResponse rs = new ReplMixMatchResponse()
             {
@@ -446,6 +471,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplDiscountValidationResponse rs = new ReplDiscountValidationResponse()
             {
@@ -463,6 +489,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplStoreTenderTypeResponse rs = new ReplStoreTenderTypeResponse()
             {
@@ -480,10 +507,11 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplTaxSetupResponse rs = new ReplTaxSetupResponse()
             {
-                TaxSetups = BOAppConnection.ReplicateTaxSetup(replRequest.AppId, string.Empty, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                TaxSetups = BOAppConnection.ReplicateTaxSetup(replRequest.AppId, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
                 RecordsRemaining = recordsRemaining,
                 LastKey = lastkey,
                 MaxKey = maxkey
@@ -497,6 +525,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplShippingAgentResponse rs = new ReplShippingAgentResponse()
             {
@@ -514,6 +543,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplCustomerResponse rs = new ReplCustomerResponse()
             {
@@ -531,6 +561,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplCountryCodeResponse rs = new ReplCountryCodeResponse()
             {
@@ -548,6 +579,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplValidationScheduleResponse rs = new ReplValidationScheduleResponse()
             {
@@ -565,6 +597,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplHierarchyResponse rs = new ReplHierarchyResponse()
             {
@@ -582,6 +615,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplHierarchyNodeResponse rs = new ReplHierarchyNodeResponse()
             {
@@ -599,6 +633,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplHierarchyLeafResponse rs = new ReplHierarchyLeafResponse()
             {
@@ -616,6 +651,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplHierarchyHospDealResponse rs = new ReplHierarchyHospDealResponse()
             {
@@ -633,6 +669,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplHierarchyHospDealLineResponse rs = new ReplHierarchyHospDealLineResponse()
             {
@@ -650,6 +687,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplItemRecipeResponse rs = new ReplItemRecipeResponse()
             {
@@ -667,6 +705,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplItemModifierResponse rs = new ReplItemModifierResponse()
             {
@@ -684,6 +723,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             ReplInvStatusResponse resp = new ReplInvStatusResponse()
             {
@@ -701,6 +741,7 @@ namespace LSOmni.BLL.Loyalty
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
             int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
 
             List<LoyItem> ids = BOLoyConnection.ReplEcommFullItem(replRequest.AppId, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining);
 

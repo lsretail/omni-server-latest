@@ -21,6 +21,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.Service
 {
@@ -523,6 +524,27 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "Failed: ContactGetPointBalance() cardId:{0}", cardId);
                 return 0;  //never gets here
+            }
+        }
+
+        public virtual List<PointEntry> CardGetPointEnties(string cardId, DateTime dateFrom)
+        {
+            if (string.IsNullOrEmpty(cardId))
+                throw new LSOmniServiceException(StatusCode.CardIdInvalid, "Card No missing");
+            if (dateFrom == null)
+                dateFrom = DateTime.MinValue;
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "cardId:{0} dateFrom:{1}", cardId, dateFrom);
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return contactBLL.CardGetPointEnties(cardId, dateFrom);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed: CardGetPointEnties() cardId:{0}", cardId);
+                return null;  //never gets here
             }
         }
 
@@ -1636,13 +1658,13 @@ namespace LSOmni.Service
             return string.Empty;
         }
 
-        public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request)
+        public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request, bool shippingOrder)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(request));
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                return bll.OrderAvailabilityCheck(request);
+                return bll.OrderAvailabilityCheck(request, shippingOrder);
             }
             catch (Exception ex)
             {
@@ -1868,6 +1890,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual bool OrderMessagePayment(OrderMessagePayment orderPayment, ref string message)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(orderPayment));
+                OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
+                return bll.OrderMessagePayment(orderPayment, ref message);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "OrderMessagePayment");
+                return false; //never gets here
+            }
+        }
+
         #endregion OrderMessage
 
         #region LS Recommends
@@ -1917,20 +1954,18 @@ namespace LSOmni.Service
 
         #endregion LS Recommends
 
-        #region Payment
+        #region ScanPayGo
 
         public virtual ClientToken PaymentClientTokenGet(string customerId)
         {
-            try
-            {
-                // Handle payment here
-                return new ClientToken();
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Empty);
-                return null; //never gets here
-            }
+            // TODO: Handle payments
+            return new ClientToken();
+        }
+
+        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        {
+            StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
+            return bll.ScanPayGoProfileGet(profileId, storeNo);
         }
 
         #endregion

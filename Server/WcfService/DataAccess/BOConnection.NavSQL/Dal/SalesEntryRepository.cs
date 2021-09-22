@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [StName],'' AS [POS Terminal No_],0 AS [Transaction] " +
                             "FROM [" + navCompanyName + "Customer Order Header] mt " +
                             "UNION " +
-                            "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_],1 AS Posted," +
+                            "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_],0 AS Posted," +
                             "(SELECT COUNT(*) FROM [" + navCompanyName + "Posted Customer Order Payment] cop WHERE cop.[" + documentId + "]=mt.[" + documentId + "]) AS PayCount," +
                             "mt.[" + externalId + "],mt.[" + cac + "] AS [CAC],mt.[" + shiptoPost + "] AS [Ship-to Name]," +
                             "'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
@@ -409,8 +409,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (NavVersion > new Version("14.2"))
                         {
                             command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate," +
-                                    ((NavVersion > new Version("13.5")) ? "ml.[Card or Customer No_] AS No " : "ml.[Card or Customer number] AS No ") +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
                                     "FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
                                     "WHERE ml.[" + documentId + "]=@id AND [Type]=4 ORDER BY ml.[Line No_]";
                         }
@@ -418,7 +417,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             command.CommandText = "SELECT " +
                                         "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate," +
-                                        ((NavVersion > new Version("13.5")) ? "ml.[Card or Customer No_] AS No " : "ml.[Card or Customer number] AS No ") +
+                                        ((NavVersion < new Version("13.6")) ? "ml.[Card or Customer number] AS No " : "ml.[Card or Customer No_] AS No ") +
                                         "FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
                                         "WHERE ml.[" + documentId + "]=@id ORDER BY ml.[Line No_]";
                         }
@@ -442,8 +441,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (NavVersion > new Version("14.2"))
                         {
                             command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate," +
-                                    ((NavVersion > new Version("13.5")) ? "ml.[Card or Customer No_] AS No " : "ml.[Card or Customer number] AS No ") +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
                                     "FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
                                     "WHERE ml.[" + documentId + "]=@id AND [Type]=1 ORDER BY ml.[Line No_]";
                         }
@@ -451,7 +449,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             command.CommandText = "SELECT " +
                                     "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate," +
-                                    ((NavVersion > new Version("13.5")) ? "ml.[Card or Customer No_] AS No " : "ml.[Card or Customer number] AS No ") +
+                                    ((NavVersion < new Version("13.6")) ? "ml.[Card or Customer number] AS No " : "ml.[Card or Customer No_] AS No ") +
                                     "FROM [" + navCompanyName + "Posted Customer Order Payment] ml " +
                                     "WHERE ml.[" + documentId + "]=@id ORDER BY ml.[Line No_]";
                         }

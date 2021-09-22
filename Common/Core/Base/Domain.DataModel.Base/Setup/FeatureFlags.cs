@@ -60,6 +60,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "HIDE VOIDED TRANSACTION":
                     flagName = FeatureFlagName.HideVoidedTransaction;
                     break;
+                case "ALLOW ANONYMOUS":
+                    flagName = FeatureFlagName.AllowAnonymousUser;
+                    break;
+                case "ALLOW SHOP HOME":
+                    flagName = FeatureFlagName.AllowShopHome;
+                    break;
+                case "EXTRA1":
+                    flagName = FeatureFlagName.SPGExtra1;
+                    break;
             }
 
             Flags.Add(new FeatureFlag()
@@ -145,6 +154,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         PosInventoryLookup,
         SettingsPassword,
         HideVoidedTransaction,
-        AllowCentralLogin
+        AllowCentralLogin,
+
+        AllowAnonymousUser,
+        AllowShopHome,
+        SPGExtra1
     }
 }

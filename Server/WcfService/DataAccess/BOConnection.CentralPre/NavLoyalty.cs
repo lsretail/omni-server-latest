@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using LSOmni.DataAccess.BOConnection.CentralPre.Dal;
 using LSOmni.DataAccess.Interface.BOConnection;
 
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
@@ -19,7 +20,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
-using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre
 {
@@ -42,6 +43,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
                 throw new ApplicationException(ver);
 
             return ver;
+        }
+
+        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        {
+            return LSCentralWSBase.ScanPayGoProfileGet(profileId, storeNo);
         }
 
         #region Contact
@@ -235,13 +241,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return exchrate.CurrencyFactor;
         }
 
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        {
+            ContactRepository rep = new ContactRepository(config);
+            return rep.PointEntiesGet(cardNo, dateFrom);
+        }
+
         public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
             ContactRepository rep = new ContactRepository(config);
             return rep.GetGiftCartBalance(cardNo, entryType);
-
-            //NAV WS does not work as for now
-            //return NavWSBase.GiftCardGetBalance(cardNo, entryType);
         }
 
         #endregion
@@ -410,9 +419,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             LSCentralWSBase.OrderCancel(orderId, storeId, userId);
         }
 
-        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
+        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
         {
-            return LSCentralWSBase.OrderAvailabilityCheck(request);
+            return LSCentralWSBase.OrderAvailabilityCheck(request, shippingOrder);
         }
 
         public virtual string OrderCreate(Order request, out string orderId)

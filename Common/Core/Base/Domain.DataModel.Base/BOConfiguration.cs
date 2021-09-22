@@ -18,6 +18,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         public List<TenantSetting> Settings { get; set; }
 
         public bool IsJson { get; set; }
+        public string AppId { get; set; }
         public LSRecommendToken LSRecommToken { get; set; }
 
         public BOConfiguration() : this(string.Empty)

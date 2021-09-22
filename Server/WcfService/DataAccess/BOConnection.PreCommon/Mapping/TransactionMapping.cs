@@ -25,8 +25,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class TransactionMapping : BaseMapping
     {
-        public TransactionMapping(bool json)
+        private Version LSCVersion;
+
+        public TransactionMapping(Version lscVersion, bool json)
         {
+            LSCVersion = lscVersion;
             IsJson = json;
         }
 
@@ -254,15 +257,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             SalesEntry transaction = new SalesEntry()
             {
                 Id = header.ReceiptNo,
-                DocumentRegTime = ConvertTo.SafeJsonDate(header.Date, IsJson),
+                DocumentRegTime = ConvertTo.NavJoinDateAndTime(header.Date, header.Time),
                 CardId = header.MemberCardNo,
                 StoreId = header.StoreNo,
                 TerminalId = header.POSTerminalNo,
-                TotalAmount = header.GrossAmount,
-                TotalNetAmount = header.NetAmount,
-                TotalDiscount = header.DiscountAmount,
-                LineItemCount = (int)header.NoofItemLines,
-                IdType = DocumentIdType.Receipt
+                CustomerOrderNo = header.CustomerOrderNo,
+                ClickAndCollectOrder = header.CustomerOrder,
+                TotalAmount = header.GrossAmount * -1,
+                TotalNetAmount = header.NetAmount * -1,
+                TotalDiscount = header.DiscountAmount * -1,
+                LineItemCount = (int)header.NoofItems,
+                IdType = DocumentIdType.Receipt,
+                Status = SalesEntryStatus.Complete,
+                Posted = true
             };
 
             //now loop through the discount lines
@@ -423,7 +430,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             root.HospTransaction = trans.ToArray();
 
             List<LSCentral.WebDeliveryOrder> delivery = new List<LSCentral.WebDeliveryOrder>();
-            delivery.Add(new LSCentral.WebDeliveryOrder()
+            LSCentral.WebDeliveryOrder devord = new LSCentral.WebDeliveryOrder()
             {
                 StreetName = XMLHelper.GetString(order.Address?.Address1),
                 StreetNo = XMLHelper.GetString(order.Address?.HouseNo),
@@ -437,17 +444,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 OrderDate = ConvertTo.NavGetDate(order.OrderDate, true),
                 ContactPickupTime = order.PickupTime,
                 RestaurantNo = order.RestaurantNo,
-                TenderType = ((int)order.PaymentType).ToString(),
                 Email = XMLHelper.GetString(order.Email),
                 Directions = XMLHelper.GetString(order.Directions),
-                SalesType = order.SalesType,
+                SalesType = XMLHelper.GetString(order.SalesType),
                 AddressType = "0",
+                PaymentType = order.PaymentType.ToString(),
 
+                TenderType = string.Empty,
                 CompanyNo = string.Empty,
                 GridCode = string.Empty,
                 OrderNo = string.Empty,
                 PreOrder = string.Empty
-            });
+            };
+
+            if (LSCVersion > new Version("18.2"))
+            {
+                devord.PreOrderPrintDateTime = ConvertTo.NavGetDate(DateTime.MinValue, true);
+                devord.PaymentType = string.Empty;
+            }
+
+            delivery.Add(devord);
             root.WebDeliveryOrder = delivery.ToArray();
 
             //MobileTransLines
@@ -675,8 +691,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     DocumentRegTime = ConvertTo.SafeJsonDate(trans.Date, IsJson),
                     TotalAmount = trans.GrossAmount,
                     LineItemCount = (int)trans.Quantity,
+                    StoreId = trans.StoreNo,
                     StoreName = trans.StoreName,
-                    CardId = trans.MemberCardNo
+                    CardId = trans.MemberCardNo,
+                    IdType = DocumentIdType.Receipt
                 });
             }
             return list;

@@ -187,6 +187,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback MobilelPosGetLastReceiptNoOperationCompleted;
         
+        private System.Threading.SendOrPostCallback SPGProfileGetOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SendASNScannedLinesOperationCompleted;
         
         private System.Threading.SendOrPostCallback SendDocumentImageOperationCompleted;
@@ -481,6 +483,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event MobilelPosGetLastReceiptNoCompletedEventHandler MobilelPosGetLastReceiptNoCompleted;
+        
+        /// <remarks/>
+        public event SPGProfileGetCompletedEventHandler SPGProfileGetCompleted;
         
         /// <remarks/>
         public event SendASNScannedLinesCompletedEventHandler SendASNScannedLinesCompleted;
@@ -3704,6 +3709,51 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.MobilelPosGetLastReceiptNoCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MobilelPosGetLastReceiptNoCompleted(this, new MobilelPosGetLastReceiptNoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGProfileGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGProfileGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SPGProfileGet(string profileID, string storeID, ref RootSPGProfileGet sPGProfileGetXML, ref RootSPGProfileTender sPGProfileValidTenderXML, ref RootSPGProfileFlags sPGProfileFeatureFlagsXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SPGProfileGet", new object[] {
+                        profileID,
+                        storeID,
+                        sPGProfileGetXML,
+                        sPGProfileValidTenderXML,
+                        sPGProfileFeatureFlagsXML,
+                        responseCode,
+                        errorText});
+            sPGProfileGetXML = ((RootSPGProfileGet)(results[0]));
+            sPGProfileValidTenderXML = ((RootSPGProfileTender)(results[1]));
+            sPGProfileFeatureFlagsXML = ((RootSPGProfileFlags)(results[2]));
+            responseCode = ((string)(results[3]));
+            errorText = ((string)(results[4]));
+        }
+        
+        /// <remarks/>
+        public void SPGProfileGetAsync(string profileID, string storeID, RootSPGProfileGet sPGProfileGetXML, RootSPGProfileTender sPGProfileValidTenderXML, RootSPGProfileFlags sPGProfileFeatureFlagsXML, string responseCode, string errorText) {
+            this.SPGProfileGetAsync(profileID, storeID, sPGProfileGetXML, sPGProfileValidTenderXML, sPGProfileFeatureFlagsXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SPGProfileGetAsync(string profileID, string storeID, RootSPGProfileGet sPGProfileGetXML, RootSPGProfileTender sPGProfileValidTenderXML, RootSPGProfileFlags sPGProfileFeatureFlagsXML, string responseCode, string errorText, object userState) {
+            if ((this.SPGProfileGetOperationCompleted == null)) {
+                this.SPGProfileGetOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGProfileGetOperationCompleted);
+            }
+            this.InvokeAsync("SPGProfileGet", new object[] {
+                        profileID,
+                        storeID,
+                        sPGProfileGetXML,
+                        sPGProfileValidTenderXML,
+                        sPGProfileFeatureFlagsXML,
+                        responseCode,
+                        errorText}, this.SPGProfileGetOperationCompleted, userState);
+        }
+        
+        private void OnSPGProfileGetOperationCompleted(object arg) {
+            if ((this.SPGProfileGetCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SPGProfileGetCompleted(this, new SPGProfileGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -20610,6 +20660,258 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016654")]
+    public partial class SPGProfileFeatureFlags {
+        
+        private string profileCodeField;
+        
+        private string featureIdField;
+        
+        private string descriptionField;
+        
+        private string fatureValueField;
+        
+        /// <remarks/>
+        public string ProfileCode {
+            get {
+                return this.profileCodeField;
+            }
+            set {
+                this.profileCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FeatureId {
+            get {
+                return this.featureIdField;
+            }
+            set {
+                this.featureIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FatureValue {
+            get {
+                return this.fatureValueField;
+            }
+            set {
+                this.fatureValueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016654")]
+    public partial class RootSPGProfileFlags {
+        
+        private SPGProfileFeatureFlags[] sPGProfileFeatureFlagsField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGProfileFeatureFlags")]
+        public SPGProfileFeatureFlags[] SPGProfileFeatureFlags {
+            get {
+                return this.sPGProfileFeatureFlagsField;
+            }
+            set {
+                this.sPGProfileFeatureFlagsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016653")]
+    public partial class SPGProfileTender {
+        
+        private string profileCodeField;
+        
+        private string tenderTypeField;
+        
+        private string descriptionField;
+        
+        /// <remarks/>
+        public string ProfileCode {
+            get {
+                return this.profileCodeField;
+            }
+            set {
+                this.profileCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TenderType {
+            get {
+                return this.tenderTypeField;
+            }
+            set {
+                this.tenderTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016653")]
+    public partial class RootSPGProfileTender {
+        
+        private SPGProfileTender[] sPGProfileTenderField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGProfileTender")]
+        public SPGProfileTender[] SPGProfileTender {
+            get {
+                return this.sPGProfileTenderField;
+            }
+            set {
+                this.sPGProfileTenderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016652")]
+    public partial class SPGProfileGet {
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private string securityCheckTriggerField;
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SecurityCheckTrigger {
+            get {
+                return this.securityCheckTriggerField;
+            }
+            set {
+                this.securityCheckTriggerField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016652")]
+    public partial class RootSPGProfileGet {
+        
+        private SPGProfileGet[] sPGProfileGetField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGProfileGet")]
+        public SPGProfileGet[] SPGProfileGet {
+            get {
+                return this.sPGProfileGetField;
+            }
+            set {
+                this.sPGProfileGetField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033008")]
     public partial class PosPrintBuffer {
         
@@ -32239,6 +32541,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool OverridePLBItem {
             get {
                 return this.overridePLBItemField;
@@ -32259,6 +32562,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime OverrideDateTime {
             get {
                 return this.overrideDateTimeField;
@@ -48026,6 +48330,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.DateTime preOrderPrintDateTimeField;
         
+        private string paymentTypeField;
+        
         public WebDeliveryOrder() {
             this.orderDateField = new System.DateTime(0);
             this.contactPickupTimeField = new System.DateTime(0);
@@ -48292,6 +48598,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.preOrderPrintDateTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PaymentType {
+            get {
+                return this.paymentTypeField;
+            }
+            set {
+                this.paymentTypeField = value;
             }
         }
     }
@@ -55582,6 +55898,64 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void SPGProfileGetCompletedEventHandler(object sender, SPGProfileGetCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SPGProfileGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SPGProfileGetCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public RootSPGProfileGet sPGProfileGetXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootSPGProfileGet)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootSPGProfileTender sPGProfileValidTenderXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootSPGProfileTender)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootSPGProfileFlags sPGProfileFeatureFlagsXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootSPGProfileFlags)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[4]));
             }
         }
     }

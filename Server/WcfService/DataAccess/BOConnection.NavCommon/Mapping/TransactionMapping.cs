@@ -256,15 +256,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             SalesEntry transaction = new SalesEntry()
             {
                 Id = header.ReceiptNo,
-                DocumentRegTime = ConvertTo.SafeJsonDate(header.Date, IsJson),
+                DocumentRegTime = ConvertTo.NavJoinDateAndTime(header.Date, header.Time),
                 CardId = header.MemberCardNo,
                 StoreId = header.StoreNo,
                 TerminalId = header.POSTerminalNo,
-                TotalAmount = header.GrossAmount,
-                TotalNetAmount = header.NetAmount,
-                TotalDiscount = header.DiscountAmount,
-                LineItemCount = (int)header.NoofItemLines,
-                IdType = DocumentIdType.Receipt
+                CustomerOrderNo = header.CustomerOrderNo,
+                ClickAndCollectOrder = header.CustomerOrder,
+                TotalAmount = header.GrossAmount * -1,
+                TotalNetAmount = header.NetAmount * -1,
+                TotalDiscount = header.DiscountAmount * -1,
+                LineItemCount = (int)header.NoofItems,
+                IdType = DocumentIdType.Receipt,
+                Status = SalesEntryStatus.Complete,
+                Posted = true
             };
 
             //now loop through the discount lines
@@ -404,10 +408,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 SaleIsReturnSale = false,
                 MemberCardNo = XMLHelper.GetString(order.CardId),
                 CurrencyFactor = 1,
-                TerminalId = string.Empty,
-                StaffId = string.Empty,
                 SalesType = order.SalesType,
 
+                TerminalId = string.Empty,
+                StaffId = string.Empty,
                 ReceiptNo = string.Empty,
                 CurrencyCode = string.Empty,
                 BusinessTAXCode = string.Empty,
@@ -536,7 +540,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 SaleIsReturnSale = false,
                 MemberCardNo = XMLHelper.GetString(request.CardId),
                 CurrencyFactor = 1,
-                SalesType = request.SalesType,
+                SalesType = XMLHelper.GetString(request.SalesType),
 
                 TerminalId = string.Empty,
                 StaffId = string.Empty,
@@ -563,7 +567,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             List<NavWS.MobileTransDiscountLine> discLines = new List<NavWS.MobileTransDiscountLine>();
 
             // find highest lineNo count in sub line, if user has set some
-            int LineCounter = 1;
+            int LineCounter = 0;
             int nr = 0;
             foreach (OneListItem l in request.Items)
             {
@@ -677,8 +681,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     DocumentRegTime = ConvertTo.SafeJsonDate(trans.Date, IsJson),
                     TotalAmount = trans.GrossAmount,
                     LineItemCount = (int)trans.Quantity,
+                    StoreId = trans.StoreNo,
                     StoreName = trans.StoreName,
-                    CardId = trans.MemberCardNo
+                    CardId = trans.MemberCardNo,
+                    IdType = DocumentIdType.Receipt
                 });
             }
             return list;
@@ -819,24 +825,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 CurrencyCode = transaction.Terminal.Store.Currency.Id,
                 CurrencyFactor = 1,
                 BusinessTAXCode = transaction.Terminal.Store.TaxGroupId ?? string.Empty,
-                PriceGroupCode = string.Empty,
                 CustomerId = (transaction.Customer == null) ? string.Empty : transaction.Customer.Id,
                 CustDiscGroup = (transaction.Customer == null) ? string.Empty : transaction.Customer.TaxGroup,
                 MemberCardNo = cardId,
-                MemberPriceGroupCode = string.Empty,
                 ManualTotalDiscAmount = manualTotalDisAmount,
                 ManualTotalDiscPercent = manualTotalDiscPercent,
                 NetAmount = transaction.NetAmount.Value,
                 GrossAmount = transaction.GrossAmount.Value,
                 LineDiscount = transaction.TotalDiscount.Value,
                 Payment = transaction.PaymentAmount.Value,
-                DiningTblDescription = string.Empty,
-                SalesType = string.Empty,
                 RefundedFromStoreNo = transaction.RefundedFromStoreNo ?? string.Empty,
                 RefundedFromPOSTermNo = transaction.RefundedFromTerminalNo ?? string.Empty,
                 RefundedFromTransNo = ConvertTo.SafeInt(transaction.RefundedFromTransNo),
                 RefundedReceiptNo = transaction.RefundedReceiptNo ?? string.Empty,
-                SaleIsReturnSale = transaction.IsRefundByReceiptTransaction
+                SaleIsReturnSale = transaction.IsRefundByReceiptTransaction,
+
+                PriceGroupCode = string.Empty,
+                MemberPriceGroupCode = string.Empty,
+                DiningTblDescription = string.Empty,
+                SalesType = string.Empty
             };
         }
 
@@ -1099,8 +1106,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Number = (line.LineType == LineType.Item ? line.ItemId : string.Empty),
                 Barcode = (line.LineType == LineType.Coupon ? line.ItemId : string.Empty),
                 StoreId = storeId,
-                StaffId = string.Empty,
-                CurrencyCode = string.Empty,
                 CurrencyFactor = 1,
                 VariantCode = XMLHelper.GetString(line.VariantId),
                 UomId = XMLHelper.GetString(line.UomId),
@@ -1115,6 +1120,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 RecommendedItem = false,
                 DealItem = (line.IsADeal ? 1 : 0),  //0=Item line, 1=Deal line
 
+                StaffId = string.Empty,
+                CurrencyCode = string.Empty,
                 TAXProductCode = string.Empty,
                 TAXBusinessCode = string.Empty,
                 CardOrCustNo = string.Empty,
@@ -1250,13 +1257,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Description = XMLHelper.GetString(rq.Description),
                 VariantDescription = XMLHelper.GetString(rq.VariantDescription),
                 UomDescription = XMLHelper.GetString(rq.Uom),
-                StaffId = string.Empty,
                 ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
                 ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
                 DealLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealLineId),
                 DealModLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealModLineId),
                 DealId = string.IsNullOrEmpty(parentItemNo) ? "0" : parentItemNo,
 
+                StaffId = string.Empty,
                 Barcode = string.Empty,
                 TAXBusinessCode = string.Empty,
                 TAXProductCode = string.Empty,
@@ -1316,7 +1323,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 Description = XMLHelper.GetString(rq.Description),
                 VariantDescription = XMLHelper.GetString(rq.VariantDescription),
                 UomDescription = XMLHelper.GetString(rq.Uom),
-                StaffId = string.Empty,
                 ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
                 ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
                 DealLine = rq.DealLineId,
@@ -1324,6 +1330,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 DealId = XMLHelper.GetString(rq.DealCode),
                 PriceReductionOnExclusion = (rq.PriceReductionOnExclusion ? 1 : 0),
 
+                StaffId = string.Empty,
                 Barcode = string.Empty,
                 TAXBusinessCode = string.Empty,
                 TAXProductCode = string.Empty,
@@ -1431,7 +1438,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 EntryStatus = entryStatus,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.Payment.TenderType.Id,
-                CurrencyCode = currencyCode,
+                CurrencyCode = XMLHelper.GetString(currencyCode),
                 CurrencyFactor = currencyFactor,
                 NetAmount = paymentLine.Payment.Amount.Value,
                 StoreId = paymentLine.Payment.StoreId,
@@ -1471,27 +1478,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
         private NavWS.HospTransactionLine TransPaymentLine(string id, OrderPayment paymentLine, string storeId, int lineNumber)
         {
-            int entryStatus = paymentLine.PaymentType == PaymentType.Refund ? (int)EntryStatus.Voided : (int)EntryStatus.Normal; //0=normal, 1=voided
-
             NavWS.HospTransactionLine tline = new NavWS.HospTransactionLine()
             {
                 Id = id,
                 LineNo = LineNumberToNav(lineNumber),
-                EntryStatus = entryStatus,
+                EntryStatus = (paymentLine.PaymentType == PaymentType.Refund) ? (int)EntryStatus.Voided : (int)EntryStatus.Normal, //0=normal, 1=voided,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.TenderType,
-                CurrencyCode = paymentLine.CurrencyCode,
+                CurrencyCode = XMLHelper.GetString(paymentLine.CurrencyCode),
                 CurrencyFactor = paymentLine.CurrencyFactor,
                 NetAmount = paymentLine.Amount,
                 StoreId = storeId,
-                TerminalId = string.Empty,
-                StaffId = string.Empty,
                 EFTCardNumber = XMLHelper.GetString(paymentLine.CardNumber),
                 EFTAuthCode = XMLHelper.GetString(paymentLine.AuthorizationCode),
                 EFTTransactionNo = XMLHelper.GetString(paymentLine.ExternalReference),
+
                 EFTMessage = string.Empty,
                 EFTCardName = string.Empty,
-
+                TerminalId = string.Empty,
+                StaffId = string.Empty,
                 VariantCode = string.Empty,
                 VariantDescription = string.Empty,
                 Barcode = string.Empty,

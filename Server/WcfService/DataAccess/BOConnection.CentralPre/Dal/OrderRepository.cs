@@ -32,7 +32,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
-                        "mt.[Shipping Agent Service Code], 0 AS Posted,0 AS Cancelled " +
+                        "mt.[Shipping Agent Service Code], 0 AS Posted,0 AS Cancelled,mt.[Requested Delivery Date] " +
                         "FROM [" + navCompanyName + "LSC Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] " +
                         "UNION " +
@@ -42,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
-                        "mt.[Shipping Agent Service Code],1 AS Posted,mt.[CancelledOrder] AS Cancelled " +
+                        "mt.[Shipping Agent Service Code],1 AS Posted,mt.[CancelledOrder] AS Cancelled,mt.[Requested Delivery Date] " +
                         "FROM [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store]" +
                         ") AS Orders " +
@@ -286,6 +286,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ShippingAgentCode = SQLHelper.GetString(reader["Shipping Agent Code"]),
                 ShippingAgentServiceCode = SQLHelper.GetString(reader["Shipping Agent Service Code"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
+                RequestedDeliveryDate = SQLHelper.GetDateTime(reader["Requested Delivery Date"]),
 
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 CustomerId = SQLHelper.GetString(reader["Customer No_"]),

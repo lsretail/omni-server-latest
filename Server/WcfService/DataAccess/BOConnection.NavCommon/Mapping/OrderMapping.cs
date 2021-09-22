@@ -818,7 +818,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 storeId =  order.CollectLocation.ToUpper();
                 useHeaderCAC = true;
             }
-
             root.CustomerOrderCreateCOHeaderV5 = header.ToArray();
 
             int lineNo = order.OrderLines.Max(l => l.LineNumber);
@@ -1075,10 +1074,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             List<NavWS.MobileTransactionLine> transLines = new List<NavWS.MobileTransactionLine>();
             foreach (OneListItem line in list.Items)
             {
+                line.LineNumber = lineno++;
                 NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
                 {
                     Id = root.MobileTransaction[0].Id,
-                    LineNo = LineNumberToNav(lineno++),
+                    LineNo = LineNumberToNav(line.LineNumber),
                     EntryStatus = (int)EntryStatus.Normal,
                     LineType = (int)LineType.Item,
                     Number = line.ItemId,
@@ -1093,6 +1093,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Price = line.Price,
                     NetPrice = line.NetPrice,
                     StoreId = list.StoreId.ToUpper(),
+                    TransDate = DateTime.Now,
 
                     Barcode = string.Empty,
                     CardOrCustNo = string.Empty,
@@ -1116,8 +1117,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     TenderDescription = string.Empty,
                     TerminalId = string.Empty,
                     UomDescription = string.Empty,
-                    VariantDescription = string.Empty,
-                    TransDate = DateTime.Now
+                    VariantDescription = string.Empty
                 };
                 if (NavVersion > new Version("14.2"))
                     tline.RetailImageID = string.Empty;
@@ -1137,18 +1137,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         LineType = (int)LineType.Coupon,
                         Number = line.Id,
                         CurrencyFactor = 1,
-                        VariantCode = string.Empty,
-                        UomId = string.Empty,
-                        Quantity = 0,
-                        DiscountAmount = 0,
-                        DiscountPercent = 0,
-                        NetAmount = 0,
-                        TAXAmount = 0,
-                        Price = 0,
-                        NetPrice = 0,
                         StoreId = list.StoreId.ToUpper(),
+                        TransDate = DateTime.Now,
 
                         Barcode = line.Id,
+                        VariantCode = string.Empty,
+                        UomId = string.Empty,
                         CardOrCustNo = string.Empty,
                         CouponCode = string.Empty,
                         CurrencyCode = string.Empty,
@@ -1170,8 +1164,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         TenderDescription = string.Empty,
                         TerminalId = string.Empty,
                         UomDescription = string.Empty,
-                        VariantDescription = string.Empty,
-                        TransDate = DateTime.Now
+                        VariantDescription = string.Empty
                     };
                     if (NavVersion > new Version("14.2"))
                         tline.RetailImageID = string.Empty;
@@ -1389,14 +1382,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return rootin;
         }
 
-        public NavWS.RootCOQtyAvailabilityInV2 MapOneListToInvReq2(OneList list)
+        public NavWS.RootCOQtyAvailabilityInV2 MapOneListToInvReq2(OneList list, bool shippingOrder)
         {
             List<NavWS.CustomerOrderHeader> header = new List<NavWS.CustomerOrderHeader>();
             header.Add(new NavWS.CustomerOrderHeader()
             {
                 DocumentID = string.Empty,
                 CreatedAtStore = list.StoreId,
-                MemberCardNo = list.CardId ?? string.Empty
+                MemberCardNo = list.CardId ?? string.Empty,
+                ShipOrder = shippingOrder
             });
 
             List<NavWS.CustomerOrderLine> lines = new List<NavWS.CustomerOrderLine>();

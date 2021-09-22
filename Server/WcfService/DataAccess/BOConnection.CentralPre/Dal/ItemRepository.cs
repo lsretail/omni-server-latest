@@ -552,7 +552,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository(config);
                 VariantRegistration variantReg = vreop.VariantRegGetById(bcode.VariantId, item.Id);
                 if (variantReg != null)
+                {
                     item.VariantsRegistration.Add(variantReg);
+                    item.Images = item.VariantsRegistration[0].Images;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(bcode.UnitOfMeasureId) == false)

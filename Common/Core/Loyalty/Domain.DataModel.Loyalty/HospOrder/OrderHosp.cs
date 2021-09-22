@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
@@ -89,7 +90,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         [DataMember]
         public string ReceiptNo { get; set; }
         [DataMember]
-        public HospPaymentType PaymentType { get; set; }
+        public PaymentType PaymentType { get; set; }
 
         [DataMember]
         public decimal TotalNetAmount { get; set; }
@@ -137,21 +138,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         Other = 3,
         [EnumMember]
         Takeout = 4
-    }
-
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2020")]
-    public enum HospPaymentType
-    {
-        [EnumMember]
-        None = 0,
-        [EnumMember]
-        Cash = 1,
-        [EnumMember]
-        Card = 2,
-        [EnumMember]
-        Invoice = 3,
-        [EnumMember]
-        Prepaid = 4
     }
 }
 

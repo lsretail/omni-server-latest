@@ -20,6 +20,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -47,6 +48,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 throw new ApplicationException(ver);
 
             return ver;
+        }
+
+        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new ScanPayGoProfile();
+
+            return LSCWSBase.ScanPayGoProfileGet(profileId, storeNo);
         }
 
         #region Contact
@@ -342,6 +351,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.GetPointRate();
         }
 
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.PointEntiesGet(cardNo, dateFrom);
+
+            return LSCWSBase.PointEntiesGet(cardNo, dateFrom);
+        }
+
         public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
             if (NAVVersion < new Version("17.5"))
@@ -500,33 +517,61 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             List<SalesEntry> list;
             if (NAVVersion < new Version("17.5"))
             {
-                list = NavWSBase.SalesHistory(cardId, maxNumberOfEntries);
+                list = NavWSBase.SalesHistory(cardId);
                 list.AddRange(NavWSBase.OrderHistoryGet(cardId));
-                list = list.OrderByDescending(l => l.DocumentRegTime).ToList();
             }
             else
             {
-                list = LSCWSBase.SalesHistory(cardId, maxNumberOfEntries);
+                list = LSCWSBase.SalesHistory(cardId);
                 list.AddRange(LSCWSBase.OrderHistoryGet(cardId));
-                list = list.OrderByDescending(l => l.DocumentRegTime).ToList();
             }
-            return list;
+
+            list = list.OrderByDescending(l => l.DocumentRegTime).ToList();
+
+            int cnt = 0;
+            List<SalesEntry> trans = new List<SalesEntry>();
+            foreach (SalesEntry entry in list)
+            {
+                cnt++;
+                SalesEntry e;
+                if (entry.IdType == DocumentIdType.Receipt)
+                {
+                    e = SalesEntryGet(string.Empty, Convert.ToInt32(entry.Id), entry.StoreId, entry.TerminalId, entry.IdType);
+                }
+                else
+                {
+                    e = SalesEntryGet(entry.Id, entry.IdType);
+                }
+                e.Lines.Clear();
+                e.DiscountLines.Clear();
+                e.Payments.Clear();
+                trans.Add(e);
+
+                if (cnt >= maxNumberOfEntries)
+                    break;
+            }
+            return trans;
         }
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)
         {
+            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type);
+        }
+
+        public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type)
+        {
             if (NAVVersion < new Version("17.5"))
             {
                 if (type == DocumentIdType.Receipt)
-                    return NavWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
-                return NavWSBase.OrderGet(entryId);
+                    return NavWSBase.TransactionGet(docId, storeId, terminalId, transId);
+                return NavWSBase.OrderGet(docId);
             }
 
             SalesEntry entry;
             if (type == DocumentIdType.Receipt)
-                entry = LSCWSBase.TransactionGet(entryId, string.Empty, string.Empty, 0);
+                entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId);
             else
-                entry = LSCWSBase.OrderGet(entryId);
+                entry = LSCWSBase.OrderGet(docId);
 
             if (entry.Payments != null)
             {
@@ -617,12 +662,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             LSCWSBase.OrderCancel(orderId, storeId, userId);
         }
 
-        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request)
+        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.OrderAvailabilityCheck(request);
+                return NavWSBase.OrderAvailabilityCheck(request, shippingOrder);
 
-            return LSCWSBase.OrderAvailabilityCheck(request);
+            return LSCWSBase.OrderAvailabilityCheck(request, shippingOrder);
         }
 
         public virtual string OrderCreate(Order request, out string orderId)

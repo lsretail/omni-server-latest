@@ -56,7 +56,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             ecomAppType = config.SettingsGetByKey(ConfigKey.NavAppType);
 
             string rpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dat");
-            ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{ecomAppId}.txt");
+            ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{(string.IsNullOrEmpty(configuration.AppId) ? ecomAppId : configuration.AppId)}.txt");
             if (Directory.Exists(rpath) == false)
             {
                 Directory.CreateDirectory(rpath);

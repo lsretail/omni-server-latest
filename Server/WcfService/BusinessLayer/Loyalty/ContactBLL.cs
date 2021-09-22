@@ -35,6 +35,11 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.MemberCardGetPoints(cardId);
         }
 
+        public virtual List<PointEntry> CardGetPointEnties(string cardNo, DateTime dateFrom)
+        {
+            return BOLoyConnection.PointEntiesGet(cardNo, dateFrom);
+        }
+
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
         {
             return BOLoyConnection.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact);

@@ -32,7 +32,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommBarcodes(replRequest);
             }
@@ -47,7 +47,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCurrency(replRequest);
             }
@@ -62,7 +62,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCurrencyRate(replRequest);
             }
@@ -77,7 +77,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommExtendedVariants(replRequest);
             }
@@ -92,7 +92,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommImageLinks(replRequest);
             }
@@ -107,7 +107,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommImages(replRequest);
             }
@@ -122,7 +122,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemCategories(replRequest);
             }
@@ -137,7 +137,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItems(replRequest);
             }
@@ -152,7 +152,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemUnitOfMeasures(replRequest);
             }
@@ -167,7 +167,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemVariantRegistrations(replRequest);
             }
@@ -182,7 +182,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommPrices(replRequest);
             }
@@ -197,7 +197,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommBasePrices(replRequest);
             }
@@ -212,7 +212,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommProductGroups(replRequest);
             }
@@ -227,7 +227,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommStores(replRequest);
             }
@@ -242,7 +242,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommUnitOfMeasures(replRequest);
             }
@@ -257,7 +257,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCollection(replRequest);
             }
@@ -272,7 +272,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommVendor(replRequest);
             }
@@ -287,7 +287,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommVendorItemMapping(replRequest);
             }
@@ -302,7 +302,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommAttribute(replRequest);
             }
@@ -317,7 +317,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommAttributeValue(replRequest);
             }
@@ -332,7 +332,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommAttributeOptionValue(replRequest);
             }
@@ -347,7 +347,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDataTranslation(replRequest);
             }
@@ -362,7 +362,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDataTranslationLangCode(replRequest);
             }
@@ -377,7 +377,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommValidationSchedule(replRequest);
             }
@@ -392,7 +392,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchy(replRequest);
             }
@@ -407,7 +407,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyNode(replRequest);
             }
@@ -422,7 +422,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyLeaf(replRequest);
             }
@@ -437,7 +437,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyHospDeal(replRequest);
             }
@@ -452,7 +452,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommHierarchyHospDealLine(replRequest);
             }
@@ -467,7 +467,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplicateItemRecipe(replRequest);
             }
@@ -482,7 +482,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommItemModifier(replRequest);
             }
@@ -497,7 +497,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommInventoryStatus(replRequest);
             }
@@ -512,7 +512,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommFullItem(replRequest);
             }
@@ -527,7 +527,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDiscount(replRequest);
             }
@@ -542,7 +542,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommMixAndMatch(replRequest);
             }
@@ -557,7 +557,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommDiscountValidation(replRequest);
             }
@@ -572,7 +572,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommMember(replRequest);
             }
@@ -587,7 +587,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommShippingAgent(replRequest);
             }
@@ -602,7 +602,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommCountryCode(replRequest);
             }
@@ -617,7 +617,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommStoreTenderTypes(replRequest);
             }
@@ -632,7 +632,7 @@ namespace LSOmni.Service
         {
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(replRequest));
+                logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
                 return bll.ReplEcommTaxSetup(replRequest);
             }

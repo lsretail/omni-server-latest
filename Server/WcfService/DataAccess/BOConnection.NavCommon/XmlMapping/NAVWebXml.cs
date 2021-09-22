@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
 {
@@ -149,8 +150,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             restorePoint = XMLHelper.GetXMLInt32(body, "Restore_Point_ID");
 
             NAVSyncCycleStatus status = NAVSyncCycleStatus.New;
-            foreach (XElement el in body.Elements("Web_Application_Sync_Status"))
+            bool found = false;
+            foreach (XElement el in body.Elements("Web_Applic._Sync_Status"))
             {
+                found = true;
                 int tableNo = XMLHelper.GetXMLInt32(el, "Table_No.");
                 if (tableNo == tableToGet)
                 {
@@ -158,6 +161,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
                     break;
                 }
             }
+            if (found == false)
+                throw new LSOmniServiceException(StatusCode.Error, "Web_Applic._Sync_Status Not Found in GET_SYNC_STATUS result xml");
             return status;
         }
 
@@ -220,8 +225,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             restorePoint = XMLHelper.GetXMLInt32(body, "Restore_Point_ID");
 
             List<XMLTableData> tablist = new List<XMLTableData>();
-            foreach (XElement el in body.Elements("Web_Application_Sync_Status"))
+            bool found = false;
+            foreach (XElement el in body.Elements("Web_Applic._Sync_Status"))
             {
+                found = true;
                 XMLTableData table = new XMLTableData();
                 table.TableId = XMLHelper.GetXMLInt32(el, "Table_No.");
                 table.TableName = XMLHelper.GetXMLValue(el, "Table_Name");
@@ -231,6 +238,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
                 table.MaxRecPerRequest = XMLHelper.GetXMLInt32(el, "Max_Records_Per_Request");
                 tablist.Add(table);
             }
+            if (found == false)
+                throw new LSOmniServiceException(StatusCode.Error, "Web_Applic._Sync_Status Not Found in START_SYNC_CYCLE result xml");
 
             return tablist;
         }
@@ -857,6 +866,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping
             AddField(body, 99001462, 225);
             AddField(body, 99001462, 305);
             AddField(body, 99001462, 390);
+
+            // VAT Posting Setup
+            AddTable(body, 325, false);
+            AddField(body, 325, 1);
+            AddField(body, 325, 2);
+            AddField(body, 325, 4);
 
             // Retail Image
             AddTable(body, 99009063, false);

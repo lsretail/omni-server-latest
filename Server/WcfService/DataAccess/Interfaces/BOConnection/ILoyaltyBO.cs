@@ -15,6 +15,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -23,6 +24,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
     {
         int TimeoutInSeconds { set; }
         string Ping();
+        ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
 
         #region Contact
 
@@ -58,6 +60,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         long MemberCardGetPoints(string cardId);
         decimal GetPointRate();
         GiftCard GiftCardGetBalance(string cardNo, string entryType);
+        List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom);
 
         #endregion
 
@@ -124,7 +127,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Order
 
         OrderStatusResponse OrderStatusCheck(string orderId);
-        OrderAvailabilityResponse OrderAvailabilityCheck(OneList request);
+        OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder);
         void OrderCancel(string orderId, string storeId, string userId);
         string OrderCreate(Order request, out string orderId);
         Order BasketCalcToOrder(OneList list);

@@ -255,6 +255,50 @@ namespace LSOmni.Common.Util
             return value;
         }
 
+        static public int GetWebBoolInt(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return 0;
+            if (value.Equals("true", StringComparison.InvariantCultureIgnoreCase))
+                return 1;
+            if (value.Equals("false", StringComparison.InvariantCultureIgnoreCase))
+                return 0;
+            return Convert.ToInt32(value);
+        }
+
+        static public bool GetWebBool(string value)
+        {
+            return (GetWebBoolInt(value) == 1);
+        }
+
+        static public DateTime GetWebDateTime(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return DateTime.MinValue;
+            return DateTime.Parse(value);
+        }
+
+        static public int GetWebInt(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return 0;
+            return Convert.ToInt32(value);
+        }
+
+        static public decimal GetWebDecimal(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return 0;
+            return Convert.ToDecimal(value);
+        }
+
+        static public string ToNAVDate(DateTime dt)
+        {
+            if (dt == null || dt == DateTime.MinValue)
+                return string.Empty;
+            return string.Format("{0}{1}{2}", dt.Day.ToString("D2"), dt.Month.ToString("D2"), dt.Year);
+        }
+
         static public DateTime GetSQLNAVDate(DateTime date)
         {
             if (date == DateTime.MinValue)
