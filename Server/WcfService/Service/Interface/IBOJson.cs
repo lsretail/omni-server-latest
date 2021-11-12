@@ -41,7 +41,7 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        void OrderMessageSave(string orderId, int status, string subject, string message);
+        bool OrderMessageSave(string orderId, int status, string subject, string message);
 
         /// <summary>
         /// Send Order Status to ECOM platform and Notifications to Devices
@@ -79,7 +79,7 @@ namespace LSOmni.Service
         /// <param name="orderMessage"></param>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        void OrderMessageStatusUpdate(OrderMessage orderMessage);
+        bool OrderMessageStatusUpdate(OrderMessageStatus orderMessage);
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -92,6 +92,10 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool OrderMessagePayment(OrderMessagePayment orderPayment, ref string message);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        OrderMessageShippingResult OrderMessageShipping(OrderMessageShipping orderShipping);
 
         #endregion OrderMessage
 
@@ -122,7 +126,7 @@ namespace LSOmni.Service
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        void LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock);
+        bool LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock);
 
         #endregion
     }

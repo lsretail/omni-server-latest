@@ -50,6 +50,8 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return ver;
         }
 
+        #region ScanPayGo
+
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
         {
             if (NAVVersion < new Version("17.5"))
@@ -57,6 +59,16 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
             return LSCWSBase.ScanPayGoProfileGet(profileId, storeNo);
         }
+
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
+        {
+            if (NAVVersion < new Version("18.3"))
+                return false;
+
+            return LSCWSBase.SecurityCheckProfile(orderNo, storeNo);
+        }
+
+        #endregion
 
         #region Contact
 

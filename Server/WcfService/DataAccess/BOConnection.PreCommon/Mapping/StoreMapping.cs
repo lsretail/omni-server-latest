@@ -26,6 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 storehr.StoreId = line.CalendarID;
                 storehr.Description = string.IsNullOrEmpty(line.ReasonClosed) ? storehr.NameOfDay : line.ReasonClosed;
                 storehr.Type = (StoreHourOpeningType)ConvertTo.SafeInt(line.LineType);
+                storehr.CalendarType = (StoreHourCalendarType)ConvertTo.SafeInt(line.CalendarType);
 
                 storehr.DayOfWeek = (dayofweek == 7) ? 0 : dayofweek; //NAV starts with Sunday as 1 but .Net Sunday=0
                 storehr.OpenFrom = ConvertTo.SafeDateTime(storehr.OpenFrom.AddHours(offset));

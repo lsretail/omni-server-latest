@@ -4,12 +4,18 @@ using System.Runtime.Serialization;
 namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
-    public enum StoreHourType
+    public enum StoreHourCalendarType
     {
         [EnumMember]
-        MainStore = 0,
+        All = 0,
         [EnumMember]
-        DriveThruWindow = 1,
+        OpeningHours = 1,
+        [EnumMember]
+        Receiving = 2,
+        [EnumMember]
+        RestOrderTaking = 3,
+        [EnumMember]
+        Other = 7
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -36,7 +42,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             OpenTo = new DateTime(1900, 1, 1);
             StartDate = new DateTime(1900, 1, 1);
             EndDate = new DateTime(1900, 1, 1);
-            StoreHourtype = StoreHourType.MainStore;
+            CalendarType = StoreHourCalendarType.All;
             Type = StoreHourOpeningType.Normal;
         }
 
@@ -59,7 +65,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         }
 
         [DataMember]
-        public StoreHourType StoreHourtype { get; set; }
+        public StoreHourCalendarType CalendarType { get; set; }
         [DataMember]
         public string StoreId { get; set; }
         [DataMember]

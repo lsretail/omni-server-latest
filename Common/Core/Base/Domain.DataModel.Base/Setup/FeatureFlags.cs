@@ -60,14 +60,85 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "HIDE VOIDED TRANSACTION":
                     flagName = FeatureFlagName.HideVoidedTransaction;
                     break;
+                //SPG
                 case "ALLOW ANONYMOUS":
                     flagName = FeatureFlagName.AllowAnonymousUser;
                     break;
                 case "ALLOW SHOP HOME":
                     flagName = FeatureFlagName.AllowShopHome;
                     break;
-                case "EXTRA1":
-                    flagName = FeatureFlagName.SPGExtra1;
+                case "DEVICE TYPE":
+                    flagName = FeatureFlagName.DeviceType;
+                    break;
+                case "CATALOG TYPE":
+                    flagName = FeatureFlagName.CatalogType;
+                    break;
+                case "DEFAULT WEB STORE":
+                    flagName = FeatureFlagName.DefaultWebStore;
+                    break;
+                case "ALLOWED PAYMENT WITH POS":
+                    flagName = FeatureFlagName.AllowedPaymentWithPOS;
+                    break;
+                case "ALLOWED PAYMENT WITH CARD":
+                    flagName = FeatureFlagName.AllowedPaymentWithCard;
+                    break;
+                case "ALLOWED PAYMENT WITH LOYALTY":
+                    flagName = FeatureFlagName.AllowedPaymentWithLoyalty;
+                    break;
+                case "CARD PAYMENT TYPE":
+                    flagName = FeatureFlagName.CardPaymentType;
+                    break;
+                case "CHECK STATUS TIMER":
+                    flagName = FeatureFlagName.CheckStatusTimer;
+                    break;
+                case "TERMS AND CONDITION URL":
+                    flagName = FeatureFlagName.TermsAndConditionURL;
+                    break;
+                case "TERMS AND CONDITION VERSION":
+                    flagName = FeatureFlagName.TermsAndConditionVersion;
+                    break;
+                case "ENABLE PLATFORM PAYMENT":
+                    flagName = FeatureFlagName.EnablePlatformPayment;
+                    break;
+                case "PLATFORM PAYMENT CURRENCY CODE":
+                    flagName = FeatureFlagName.PlatformPaymentCurrencyCode;
+                    break;
+                case "PLATFORM PAYMENT COUNTRY CODE":
+                    flagName = FeatureFlagName.PlatformPaymentCountryCode;
+                    break;
+                case "GOOGLE PAY GATEWAYJSON":
+                    flagName = FeatureFlagName.GooglePayGatewayJson;
+                    break;
+                case "GOOGLE PAY ALLOWED AUTH METHODSJSON":
+                    flagName = FeatureFlagName.GooglePayAllowedAuthMethodsJson;
+                    break;
+                case "GOOGLE PAY ALLOWED CARD NETWORKJSON":
+                    flagName = FeatureFlagName.GooglePayAllowedCardNetworksJson;
+                    break;
+                case "GOOGLE PAY MERCHANT NAME":
+                    flagName = FeatureFlagName.GooglePayMerchantName;
+                    break;
+                case "APPLE PAY MERCHANT NAME":
+                    flagName = FeatureFlagName.GooglePayMerchantName;
+                    break;
+                    //AUDKENNI SPG
+                case "AUDKENNI BASE URL":
+                    flagName = FeatureFlagName.AudkenniBaseURL;
+                    break;
+                case "AUDKENNI CLIENT ID":
+                    flagName = FeatureFlagName.AudkenniClientId;
+                    break;
+                case "AUDKENNI REDIRECT URL":
+                    flagName = FeatureFlagName.AudkenniRedirectURL;
+                    break;
+                case "AUDKENNI SECRET":
+                    flagName = FeatureFlagName.AudkenniSecret;
+                    break;
+                case "AUDKENNI MESSAGE TO USER":
+                    flagName = FeatureFlagName.AudkenniMessageToUser;
+                    break;
+                case "AUDKENNI LOGIN ENABLED":
+                    flagName = FeatureFlagName.AudkenniLoginEnabled;
                     break;
             }
 
@@ -156,8 +227,35 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         HideVoidedTransaction,
         AllowCentralLogin,
 
+        //ScanPayGo
         AllowAnonymousUser,
         AllowShopHome,
-        SPGExtra1
+        DeviceType,
+        CatalogType,
+        DefaultWebStore,
+        AllowedPaymentWithPOS,
+        AllowedPaymentWithCard,
+        AllowedPaymentWithLoyalty,
+        CardPaymentType,
+        CheckStatusTimer,
+        TermsAndConditionURL,
+        TermsAndConditionVersion,
+
+        //ScanPayGoPaymentFlags
+        EnablePlatformPayment,
+        PlatformPaymentCurrencyCode,
+        PlatformPaymentCountryCode,
+        GooglePayGatewayJson,
+        GooglePayAllowedAuthMethodsJson,
+        GooglePayAllowedCardNetworksJson,
+        GooglePayMerchantName,
+
+        //AudkenniFlags
+        AudkenniBaseURL,
+        AudkenniClientId,
+        AudkenniRedirectURL,
+        AudkenniSecret,
+        AudkenniMessageToUser,
+        AudkenniLoginEnabled
     }
 }

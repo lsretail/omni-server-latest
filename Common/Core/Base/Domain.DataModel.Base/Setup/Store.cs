@@ -80,7 +80,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [DataMember]
         public bool IsWebStore { get; set; }
         [DataMember]
+        public bool UseSourcingLocation { get; set; }
+        [DataMember]
         public List<SalesType> HospSalesTypes { get; set; }
+        [DataMember]
+        public List<SourcingLocation> SourcingLocations { get; set; }
         [DataMember]
         public string WebOmniTerminal { get; set; }
         [DataMember]
@@ -346,6 +350,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     {
         [DataMember]
         public string Code { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public class SourcingLocation : Entity
+    {
+        [DataMember]
+        public int Priority { get; set; }
+        [DataMember]
+        public bool CanShip { get; set; }
+        [DataMember]
+        public bool CanCollect { get; set; }
         [DataMember]
         public string Description { get; set; }
     }

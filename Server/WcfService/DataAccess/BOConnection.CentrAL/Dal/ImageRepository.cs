@@ -29,7 +29,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqllinkfrom = " FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
 
-
         public ImageView ImageGetById(string id, bool includeBlob)
         {
             if (NavVersion.Major > 16)

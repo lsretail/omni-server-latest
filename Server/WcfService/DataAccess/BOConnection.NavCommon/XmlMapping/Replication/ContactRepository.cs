@@ -26,7 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Club Code": rec.Club = new Club(field.Values[i]); break;
-                        case "Min. Point for Upgrade": rec.PointsNeeded = (long)XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Min. Point for Upgrade": rec.PointsNeeded = (long)ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Next Scheme Benefits": rec.Perks = field.Values[i]; break;
                         case "NextScheme": rec.NextScheme = new Scheme(field.Values[i]); break;
                         case "Update Sequence": rec.UpdateSequence = Convert.ToInt32(field.Values[i]); break;
@@ -105,7 +105,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Card No.": rec.Id = field.Values[i]; break;
                         case "Contact No.": rec.ContactId = field.Values[i]; break;
                         case "Club Code": rec.ClubId = field.Values[i]; break;
-                        case "Status": rec.Status = (CardStatus)XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Status": rec.Status = (CardStatus)ConvertTo.SafeInt(field.Values[i]); break;
                         case "Reason Blocked": rec.BlockedReason = field.Values[i]; break;
                         case "Date Blocked": rec.DateBlocked = XMLHelper.GetWebDateTime(field.Values[i]); break;
                         case "Blocked by": rec.BlockedBy = field.Values[i]; break;
@@ -131,9 +131,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     {
                         case "Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "Attribute Type": rec.DataType = (ProfileDataType)XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Attribute Type": rec.DataType = (ProfileDataType)ConvertTo.SafeInt(field.Values[i]); break;
                         case "Default Value": rec.DefaultValue = field.Values[i]; break;
-                        case "Mandatory": rec.Mandatory = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Mandatory": rec.Mandatory = ConvertTo.SafeBoolean(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -165,7 +165,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Phone No.": rec.Address.PhoneNumber = field.Values[i]; break;
                         case "E-Mail": rec.Email = field.Values[i]; break;
                         case "Currency Code": rec.Currency = new Currency(field.Values[i]); break;
-                        case "Blocked": rec.IsBlocked = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Blocked": rec.IsBlocked = ConvertTo.SafeBoolean(field.Values[i]); break;
                         case "Prices Including VAT": rec.InclTax = XMLHelper.GetWebBoolInt(field.Values[i]); break;
                     }
                 }
@@ -187,7 +187,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                     case "ID": rec.Id = field.Values[0]; break;
                     case "Security Token": rec.SecurityToken = field.Values[0]; break;
                     case "Friendly Name": rec.DeviceFriendlyName = field.Values[0]; break;
-                    case "Status": rec.Status = XMLHelper.GetWebInt(field.Values[0]); break;
+                    case "Status": rec.Status = ConvertTo.SafeInt(field.Values[0]); break;
                     case "Reason Blocked": rec.BlockedReason = field.Values[0]; break;
                     case "Date Blocked": rec.BlockedDate = XMLHelper.GetWebDateTime(field.Values[0]); break;
                     case "Blocked By": rec.BlockedBy = field.Values[0]; break;
@@ -218,8 +218,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Source Type": rec.SourceType = (MemberPointSourceType)Convert.ToInt32(field.Values[i]); break;
                         case "Entry Type": rec.EntryType = (MemberPointEntryType)Convert.ToInt32(field.Values[i]); break;
                         case "Point Type": rec.PointType = (MemberPointType)Convert.ToInt32(field.Values[i]); break;
-                        case "Points": rec.Points = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Remaining Points": rec.RemainingPoints = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Points": rec.Points = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Remaining Points": rec.RemainingPoints = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

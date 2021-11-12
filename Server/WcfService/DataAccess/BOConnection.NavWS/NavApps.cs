@@ -77,12 +77,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemsInStoreGet(items, storeId, locationId);
 
-            return LSCWSBase.ItemsInStoreGet(items, storeId, locationId);
+            return LSCWSBase.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation);
         }
 
         public virtual string ItemDetailsGetById(string itemId)

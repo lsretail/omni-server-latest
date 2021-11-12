@@ -162,7 +162,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootGetItemInventory root = new LSCentral.RootGetItemInventory();
             foreach (string id in locationIds)
             {
-                centralWS.GetItemInventory(ref respCode, ref errorText, itemId, variantId, id, string.Empty, string.Empty, string.Empty, string.Empty, arrivingInStockInDays, ref root);
+                centralWS.GetItemInventory(ref respCode, ref errorText, itemId, XMLHelper.GetString(variantId), id, string.Empty, string.Empty, string.Empty, string.Empty, arrivingInStockInDays, ref root);
                 HandleWS2ResponseCode("GetItemInventory", respCode, errorText);
                 logger.Debug(config.LSKey.Key, "GetItemInventory Response - " + Serialization.ToXml(root, true));
 
@@ -187,7 +187,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
         {
             List<InventoryResponse> list = new List<InventoryResponse>();
             string respCode = string.Empty;
@@ -214,7 +214,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             LSCentral.RootGetInventoryMultipleOut rootout = new LSCentral.RootGetInventoryMultipleOut();
 
-            centralWS.GetInventoryMultiple(ref respCode, ref errorText, storeId, locationId, rootin, ref rootout);
+            if (LSCVersion >= new Version("18.4"))
+                centralWS.GetInventoryMultipleV2(storeId, locationId, useSourcingLocation, rootin, ref respCode, ref errorText, ref rootout);
+            else
+                centralWS.GetInventoryMultiple(ref respCode, ref errorText, storeId, locationId, rootin, ref rootout);
+
             HandleWS2ResponseCode("GetInventoryMultiple", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetInventoryMultiple Response - " + Serialization.ToXml(rootout, true));
 
@@ -706,7 +710,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             LSCentral.RootGetMemberContact rootContact = new LSCentral.RootGetMemberContact();
             logger.Debug(config.LSKey.Key, "GetMemberContact - CardId: {0}", card);
-            centralWS.GetMemberContact2(ref respCode, ref errorText, card, accountId, contactId, loginId.ToLower(), email.ToLower(), ref rootContact);
+            centralWS.GetMemberContact2(ref respCode, ref errorText, XMLHelper.GetString(card), XMLHelper.GetString(accountId), XMLHelper.GetString(contactId), loginId.ToLower(), email.ToLower(), ref rootContact);
             if (respCode == "1000") // not found
                 return null;
 
@@ -885,7 +889,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             decimal remainingPoints = 0;
 
             logger.Debug(config.LSKey.Key, "MemberLogon - userName: {0}", userName);
-            centralWS.MemberLogon(ref respCode, ref errorText, userName, password, deviceID, deviceName, ref remainingPoints, ref root);
+            centralWS.MemberLogon(ref respCode, ref errorText, userName, password, XMLHelper.GetString(deviceID), XMLHelper.GetString(deviceName), ref remainingPoints, ref root);
             HandleWS2ResponseCode("MemberLogon", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberLogon Response - " + Serialization.ToXml(root, true));
 
@@ -954,7 +958,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string errorText = string.Empty;
             LSCentral.RootGetDataEntryBalance root = new LSCentral.RootGetDataEntryBalance();
             logger.Debug(config.LSKey.Key, "GetDataEntryBalance - GiftCardNo: {0}", cardNo);
-            centralWS.GetDataEntryBalance(ref respCode, ref errorText, entryType, cardNo, ref root);
+            centralWS.GetDataEntryBalance(ref respCode, ref errorText, XMLHelper.GetString(entryType), cardNo, ref root);
             if (root.POSDataEntry == null)
             {
                 throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift card not found");
@@ -1466,7 +1470,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetTransaction root = new LSCentral.RootGetTransaction();
-            centralWS.GetTransaction(ref respCode, ref errorText, receiptNo, storeId, terminalId, transId, ref root);
+            centralWS.GetTransaction(ref respCode, ref errorText, receiptNo, XMLHelper.GetString(storeId), XMLHelper.GetString(terminalId), transId, ref root);
             HandleWS2ResponseCode("GetTransaction", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetTransaction Response - " + Serialization.ToXml(root, true));
 
@@ -1718,7 +1722,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootSPGProfileFlags rootFlag = new LSCentral.RootSPGProfileFlags();
 
             logger.Debug(config.LSKey.Key, $"SPGProfileGet Request - Profile:{profileId} store:{storeNo}");
-            centralWS.SPGProfileGet(profileId, storeNo, ref rootProfile, ref rootTender, ref rootFlag, ref respCode, ref errorText);
+            centralWS.SPGProfileGet(XMLHelper.GetString(profileId), XMLHelper.GetString(storeNo), ref rootProfile, ref rootTender, ref rootFlag, ref respCode, ref errorText);
             HandleWS2ResponseCode("SPGProfileGet", respCode, errorText);
             logger.Debug(config.LSKey.Key, "SPGProfileGet Response - Profile:" + Serialization.ToXml(rootProfile, true) +
                                                                 "> Tender:" + Serialization.ToXml(rootTender, true) +
@@ -1736,7 +1740,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 foreach (LSCentral.SPGProfileFeatureFlags flag in rootFlag.SPGProfileFeatureFlags)
                 {
-                    profile.Flags.AddFlag(flag.FeatureId, flag.FatureValue);
+                    profile.Flags.AddFlag(flag.FeatureId, string.Join("", flag.FeatureValue));
                 }
             }
 
@@ -1753,6 +1757,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
             return profile;
+        }
+
+        public bool SecurityCheckProfile(string orderNo, string storeNo)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            bool exist = false;
+            logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Request - OrderNo:{orderNo} storeNo:{storeNo}");
+            centralWS.SecurityCheckProfile(ref respCode, ref errorText, ref exist, XMLHelper.GetString(storeNo), XMLHelper.GetString(orderNo));
+            HandleWS2ResponseCode("SecurityCheckProfile", respCode, errorText);
+            logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Response - ProfileExist:{exist}");
+            return exist;
         }
 
         #endregion
@@ -1915,7 +1931,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
 
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
-            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, storeId, ref root);
+            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, XMLHelper.GetString(cardId), XMLHelper.GetString(itemId), XMLHelper.GetString(storeId), ref root);
             HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
             return map.MapFromRootToPublishedOffers(root);
@@ -1930,7 +1946,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootGetReturnPolicy root = new LSCentral.RootGetReturnPolicy();
 
             logger.Debug(config.LSKey.Key, "GetReturnPolicy - storeId:{0}, storeGroup:{1} itemCat:{2} prodGroup:{3}", storeId, storeGroupCode, itemCategory, productGroup);
-            centralWS.GetReturnPolicy(ref respCode, ref errorText, storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1, ref root);
+            centralWS.GetReturnPolicy(ref respCode, ref errorText, XMLHelper.GetString(storeId), XMLHelper.GetString(storeGroupCode), XMLHelper.GetString(itemCategory), XMLHelper.GetString(productGroup), XMLHelper.GetString(itemId), XMLHelper.GetString(variantCode), XMLHelper.GetString(variantDim1), ref root);
             string ret = HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, new string[] { "1000" });
             if (ret == "1000")
                 return new List<ReturnPolicy>();

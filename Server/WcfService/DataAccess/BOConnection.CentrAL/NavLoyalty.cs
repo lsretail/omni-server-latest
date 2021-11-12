@@ -45,10 +45,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return ver;
         }
 
+        #region ScanPayGo
+
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
         {
             return new ScanPayGoProfile();
         }
+
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
+        {
+            return false;
+        }
+
+        #endregion
 
         #region Contact
 

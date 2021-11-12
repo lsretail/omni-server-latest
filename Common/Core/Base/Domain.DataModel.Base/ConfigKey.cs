@@ -29,6 +29,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         BOSql = 100,
         [EnumMember]
         BOTimeout = 101,
+        [EnumMember]
+        BOEncode = 102,
 
         //Proxy setup
         [EnumMember]

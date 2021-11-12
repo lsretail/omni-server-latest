@@ -21,6 +21,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         string ActivityReservationUpdate(Reservation request);
         MembershipResponse ActivityMembershipSell(string contactNo, string membersShipType);
         bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment);
+        List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays);
+        List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays);
 
         #endregion
 
@@ -38,6 +40,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<SubscriptionEntry> ActivitySubscriptionChargesGet(string contactNo);
         List<AdmissionEntry> ActivityAdmissionEntriesGet(string contactNo);
         List<Membership> ActivityMembershipsGet(string contactNo);
+        List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate);
+        List<ActivityResource> ActivityResourceGet();
 
         #endregion
     }

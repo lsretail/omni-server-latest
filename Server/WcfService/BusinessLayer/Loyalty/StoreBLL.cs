@@ -69,5 +69,10 @@ namespace LSOmni.BLL.Loyalty
         {
             return BOLoyConnection.ScanPayGoProfileGet(profileId, storeNo);
         }
+
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
+        {
+            return BOLoyConnection.SecurityCheckProfile(orderNo, storeNo);
+        }
     }
 }

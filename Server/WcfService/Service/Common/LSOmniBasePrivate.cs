@@ -180,6 +180,8 @@ namespace LSOmni.Service
                 //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Timeout"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value = (ConfigSetting.GetInt("BOConnection.Nav.Timeout")).ToString();  //millisecs,  60 seconds
+                if (ConfigSetting.KeyExists("BOConnection.Nav.Encoding"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOEncode.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Encoding");  //millisecs,  60 seconds
 
                 if (ConfigSetting.KeyExists("ECom.Url"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");

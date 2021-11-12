@@ -45,10 +45,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return ver;
         }
 
+        #region ScanPayGo
+
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
         {
             return LSCentralWSBase.ScanPayGoProfileGet(profileId, storeNo);
         }
+
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
+        {
+            return LSCentralWSBase.SecurityCheckProfile(orderNo, storeNo);
+        }
+
+        #endregion
 
         #region Contact
 
@@ -200,7 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Store> StoreLoySearch(string search)
         {
-            StoreRepository rep = new StoreRepository(config);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             return rep.StoreLoySearch(search);
         }
 
@@ -391,7 +400,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
         {
-            InvStatusRepository rep = new InvStatusRepository(config);
+            InvStatusRepository rep = new InvStatusRepository(config, NAVVersion);
             return rep.CheckAvailability(request, storeId);
         }
 
@@ -514,7 +523,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual Store StoreGetById(string id, bool details)
         {
-            StoreRepository rep = new StoreRepository(config);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             Store store = rep.StoreLoyGetById(id, details);
             if (store != null)
                 store.StoreHours = StoreHoursGetByStoreId(id);
@@ -523,7 +532,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
         {
-            StoreRepository rep = new StoreRepository(config);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             List<Store> stores = rep.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, units);
             foreach (Store store in stores)
             {
@@ -534,7 +543,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Store> StoresGetAll(bool clickAndCollectOnly)
         {
-            StoreRepository rep = new StoreRepository(config);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             List<Store> stores = rep.StoreLoyGetAll(clickAndCollectOnly);
             foreach (Store store in stores)
             {
@@ -551,7 +560,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
         {
-            StoreRepository rep = new StoreRepository(config);
+            StoreRepository rep = new StoreRepository(config, NAVVersion);
             return rep.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
         }
 
@@ -630,7 +639,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            InvStatusRepository rep = new InvStatusRepository(config);
+            InvStatusRepository rep = new InvStatusRepository(config, NAVVersion);
             return rep.ReplicateInventoryStatus(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

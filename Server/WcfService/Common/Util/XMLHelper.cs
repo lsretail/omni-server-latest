@@ -257,18 +257,8 @@ namespace LSOmni.Common.Util
 
         static public int GetWebBoolInt(string value)
         {
-            if (string.IsNullOrWhiteSpace(value))
-                return 0;
-            if (value.Equals("true", StringComparison.InvariantCultureIgnoreCase))
-                return 1;
-            if (value.Equals("false", StringComparison.InvariantCultureIgnoreCase))
-                return 0;
-            return Convert.ToInt32(value);
-        }
-
-        static public bool GetWebBool(string value)
-        {
-            return (GetWebBoolInt(value) == 1);
+            bool b = ConvertTo.SafeBoolean(value);
+            return (b) ? 1 : 0;
         }
 
         static public DateTime GetWebDateTime(string value)
@@ -276,20 +266,6 @@ namespace LSOmni.Common.Util
             if (string.IsNullOrWhiteSpace(value))
                 return DateTime.MinValue;
             return DateTime.Parse(value);
-        }
-
-        static public int GetWebInt(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return 0;
-            return Convert.ToInt32(value);
-        }
-
-        static public decimal GetWebDecimal(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-                return 0;
-            return Convert.ToDecimal(value);
         }
 
         static public string ToNAVDate(DateTime dt)

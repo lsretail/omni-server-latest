@@ -111,6 +111,22 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityMembershipCancel(contactNo, memberShipNo, comment);
         }
 
+        public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new List<AvailabilityResponse>();
+
+            return LSCWSBase.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
+        }
+
+        public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new List<AvailabilityResponse>();
+
+            return LSCWSBase.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
+        }
+
         #endregion
 
         #region Data Get (Replication)
@@ -209,6 +225,22 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return NavWSBase.ActivityMembershipsGet(contactNo);
 
             return LSCWSBase.ActivityMembershipsGet(contactNo);
+        }
+
+        public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new List<Booking>();
+
+            return LSCWSBase.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
+        }
+
+        public virtual List<ActivityResource> ActivityResourceGet()
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new List<ActivityResource>();
+
+            return LSCWSBase.ActivityResourceGet();
         }
 
         #endregion

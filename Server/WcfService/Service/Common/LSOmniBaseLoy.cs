@@ -991,19 +991,28 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Get the inventory levels for list of items in store
-        /// </summary>
-        /// <param name="storeId">id of store</param>
-        /// <param name="items">list of items</param>
-        /// <returns></returns>
         public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, items.Count);
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                return bll.ItemsInStoreGet(items, storeId);
+                return bll.ItemsInStoreGet(items, storeId, string.Empty, false);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "storeId:{0} itemCnt:{1}", storeId, items.Count);
+                return null; //never gets here
+            }
+        }
+
+        public virtual List<InventoryResponse> ItemsInStoreGetEx(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, items.Count);
+                ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
+                return bll.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation);
             }
             catch (Exception ex)
             {
@@ -1832,31 +1841,35 @@ namespace LSOmni.Service
 
         #region OrderMessage
 
-        public virtual void OrderMessageStatusUpdate(OrderMessage orderMessage)
+        public virtual bool OrderMessageStatusUpdate(OrderMessageStatus orderMessage)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(orderMessage));
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
                 bll.OrderMessageStatusUpdate(orderMessage);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "OrderId:{0}, Line count:{1}", orderMessage.OrderId, orderMessage.Lines.Count);
+                return false;
             }
         }
 
-        public virtual void OrderMessageSave(string orderId, int status, string subject, string message)
+        public virtual bool OrderMessageSave(string orderId, int status, string subject, string message)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "OrderId:{0} Status:{1} Subject:{2} Message:{3}", orderId, status, subject, message);
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
                 bll.OrderMessageSave(orderId, status, subject, message);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "OrderId:{0} Status:{1} Subject:{2}", orderId, status, subject);
+                return false;
             }
         }
 
@@ -1905,6 +1918,23 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual OrderMessageShippingResult OrderMessageShipping(OrderMessageShipping orderShipping)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "Request - " + LogJson(orderShipping));
+                OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
+                OrderMessageShippingResult result = bll.OrderMessageShipping(orderShipping);
+                logger.Debug(config.LSKey.Key, "Result - " + LogJson(result));
+                return result;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "OrderMessageShipping");
+                return null; //never gets here
+            }
+        }
+
         #endregion OrderMessage
 
         #region LS Recommends
@@ -1938,17 +1968,19 @@ namespace LSOmni.Service
             }
         }
 
-        public void LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
+        public bool LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "companyName:{0} batchNo:{1) modelReaderURL:{2}", companyName, batchNo, modelReaderURL);
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, true);
                 bll.LSRecommendSetting(XMLHelper.GetString(lsKey), companyName, batchNo, modelReaderURL, authenticationURL, clientId, clientSecret, userName, password, numberOfDownloadedItems, numberOfDisplayedItems, filterByInventory, minInvStock);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "LSRecommend Setting Error");
+                return false;
             }
         }
 
@@ -1958,14 +1990,32 @@ namespace LSOmni.Service
 
         public virtual ClientToken PaymentClientTokenGet(string customerId)
         {
-            // TODO: Handle payments
-            return new ClientToken();
+            try
+            {
+                return new ClientToken()
+                {
+                    CustomerId = customerId,
+                    Token = "12345"
+                };
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Empty);
+                return null; //never gets here
+            }
         }
 
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
         {
             StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
             return bll.ScanPayGoProfileGet(profileId, storeNo);
+        }
+
+
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
+        {
+            StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
+            return bll.SecurityCheckProfile(orderNo, storeNo);
         }
 
         #endregion

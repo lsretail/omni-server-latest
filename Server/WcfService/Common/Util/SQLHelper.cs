@@ -22,21 +22,33 @@ namespace LSOmni.Common.Util
         /// </summary>
         /// <param name="value">Database object</param>
         /// <returns>String Value</returns>
-        static public string GetStringByte(object value)
+        static public string GetStringByte(object value, string encoding)
         {
             if (value == null || value == DBNull.Value)
                 return string.Empty;
 
-            byte[] data = value as byte[];
-
-            if (data.Length > 1 && data[data.Length - 1] == 0)
+            if (encoding.Equals("utf-8", StringComparison.InvariantCultureIgnoreCase) || encoding.Equals("utf8", StringComparison.InvariantCultureIgnoreCase))
             {
-                byte[] tmp = new byte[data.Length - 1];
-                Buffer.BlockCopy(data, 0, tmp, 0, data.Length - 1);
-                data = tmp;
+                byte[] data = value as byte[];
+                if (data.Length > 1 && data[data.Length - 1] == 0)
+                {
+                    byte[] tmp = new byte[data.Length - 1];
+                    Buffer.BlockCopy(data, 0, tmp, 0, data.Length - 1);
+                    data = tmp;
+                }
+                return System.Text.Encoding.UTF8.GetString(data);
             }
 
-            return System.Text.Encoding.UTF8.GetString(data);
+            if (encoding.Equals("unicode", StringComparison.InvariantCultureIgnoreCase))
+                return System.Text.Encoding.Unicode.GetString(value as byte[]);
+            if (encoding.Equals("ascii", StringComparison.InvariantCultureIgnoreCase))
+                return System.Text.Encoding.ASCII.GetString(value as byte[]);
+            if (encoding.Equals("utf7", StringComparison.InvariantCultureIgnoreCase))
+                return System.Text.Encoding.UTF7.GetString(value as byte[]);
+            if (encoding.Equals("utf32", StringComparison.InvariantCultureIgnoreCase))
+                return System.Text.Encoding.UTF32.GetString(value as byte[]);
+
+            return System.Text.Encoding.Default.GetString(value as byte[]);
         }
 
         /// <summary>

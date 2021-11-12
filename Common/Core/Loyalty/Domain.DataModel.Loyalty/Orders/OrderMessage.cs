@@ -5,7 +5,7 @@ using System.Runtime.Serialization;
 namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public class OrderMessage
+    public class OrderMessageStatus
     {
         [DataMember]
         public string OrderId { get; set; }
@@ -20,11 +20,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string MsgDetail { get; set; }
         [DataMember]
-        public List<OrderMessageLine> Lines { get; set; }
+        public List<OrderMessageStatusLine> Lines { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public class OrderMessageLine
+    public class OrderMessageStatusLine
     {
         [DataMember]
         public string LineNo { get; set; }
@@ -64,11 +64,28 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string Reference { get; set; }
         [DataMember]
-        public List<OrderMessagePaymentLine> Lines { get; set; }
+        public List<OrderMessageLine> Lines { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
-    public class OrderMessagePaymentLine
+    public class OrderMessageShipping
+    {
+        [DataMember]
+        public string OrderId { get; set; }
+        [DataMember]
+        public string TrackingId { get; set; }
+        [DataMember]
+        public string TrackingUrl { get; set; }
+        [DataMember]
+        public string Provider { get; set; }
+        [DataMember]
+        public string Service { get; set; }
+        [DataMember]
+        public List<OrderMessageLine> Lines { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public class OrderMessageLine
     {
         [DataMember]
         public string LineNo { get; set; }
@@ -91,5 +108,29 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public bool success { get; set; }
         [DataMember]
         public string message { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public class OrderMessageTrackingResult
+    {
+        [DataMember]
+        public string trackingId { get; set; }
+        [DataMember]
+        public string trackingUrl { get; set; }
+        [DataMember]
+        public string shipmentProvider { get; set; }
+        [DataMember]
+        public string service { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public class OrderMessageShippingResult
+    {
+        [DataMember]
+        public bool success { get; set; }
+        [DataMember]
+        public string message { get; set; }
+        [DataMember]
+        public List<OrderMessageTrackingResult> trackingInfo { get; set; }
     }
 }

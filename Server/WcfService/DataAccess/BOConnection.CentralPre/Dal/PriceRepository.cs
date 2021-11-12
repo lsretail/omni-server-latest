@@ -357,7 +357,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplPrice()
+            ReplPrice price = new ReplPrice()
             {
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
@@ -368,10 +368,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 UnitPrice = SQLHelper.GetDecimal(reader, "Net Unit Price"),
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price"),
-                PriceInclVat = true,
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
+            price.PriceInclVat = (price.UnitPrice == price.UnitPriceInclVat);
+            return price;
         }
 
         private Price ReaderToLoyPrice(SqlDataReader reader, string culture)

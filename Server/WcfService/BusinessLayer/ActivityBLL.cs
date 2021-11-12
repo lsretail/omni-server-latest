@@ -87,6 +87,16 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityMembershipCancel(contactNo, memberShipNo, comment);
         }
 
+        public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
+        {
+            return BOActConnection.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
+        }
+
+        public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
+        {
+            return BOActConnection.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
+        }
+
         #region Data Get (Replication)
 
         public virtual List<ActivityProduct> ActivityProductsGet()
@@ -148,6 +158,16 @@ namespace LSOmni.BLL
         public virtual List<Membership> ActivityMembershipsGet(string contactNo)
         {
             return BOActConnection.ActivityMembershipsGet(contactNo);
+        }
+
+        public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
+        {
+            return BOActConnection.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
+        }
+
+        public virtual List<ActivityResource> ActivityResourceGet()
+        {
+            return BOActConnection.ActivityResourceGet();
         }
 
         #endregion

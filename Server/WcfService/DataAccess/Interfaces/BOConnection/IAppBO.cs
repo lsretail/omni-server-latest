@@ -16,7 +16,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         VariantRegistration VariantRegGetById(string id, string itemId);
         Currency CurrencyGetById(string id, string culture);
         List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores);
-        List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId);
+        List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation);
         string ItemDetailsGetById(string itemId);
         List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode);
 

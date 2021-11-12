@@ -17,7 +17,7 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("4.22.0")]
-[assembly: AssemblyFileVersion("4.22.0")]
-[assembly: AssemblyInformationalVersion("LS Commerce Service 4.22")]
+[assembly: AssemblyVersion("4.24.0")]
+[assembly: AssemblyFileVersion("4.24.0")]
+[assembly: AssemblyInformationalVersion("LS Commerce Service 4.24")]
  

@@ -38,7 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "VAT Prod. Posting Group": rec.TaxItemGroupId = field.Values[i]; break;
                         case "Zero Price Valid": rec.ZeroPriceValId = XMLHelper.GetWebBoolInt(field.Values[i]); break;
 
-                        case "Unit Price": rec.UnitPrice = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Unit Price": rec.UnitPrice = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Purch. Unit of Measure": rec.PurchUnitOfMeasure = field.Values[i]; break;
                         case "Sales Unit of Measure": rec.SalseUnitOfMeasure = field.Values[i]; break;
                         case "Vendor No.": rec.VendorId = field.Values[i]; break;
@@ -50,9 +50,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Retail Product Code": rec.ProductGroupId = field.Values[i]; break;
                         case "Product Group Code": rec.ProductGroupId = field.Values[i]; break;
 
-                        case "Gross Weight": rec.GrossWeight = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Units per Parcel": rec.UnitsPerParcel = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Unit Volume": rec.UnitVolume = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Gross Weight": rec.GrossWeight = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Units per Parcel": rec.UnitsPerParcel = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Unit Volume": rec.UnitVolume = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -121,11 +121,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                 {
                     switch (field.FieldName)
                     {
-                        case "Mask Entry No.": rec.MaskId = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Segment No": rec.Number = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Type": rec.SegmentType = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Length": rec.Length = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Decimals": rec.Decimals = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Mask Entry No.": rec.MaskId = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Segment No": rec.Number = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Type": rec.SegmentType = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Length": rec.Length = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Decimals": rec.Decimals = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Char": rec.Char = field.Values[i]; break;
                     }
                 }
@@ -148,12 +148,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                 {
                     switch (field.FieldName)
                     {
-                        case "Entry No.": rec.Id = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Entry No.": rec.Id = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Mask": rec.Mask = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "Type": rec.MaskType = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Type": rec.MaskType = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Prefix": rec.Prefix = field.Values[i]; break;
-                        case "Symbology": rec.Symbology = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Symbology": rec.Symbology = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Number Series": rec.NumberSeries = field.Values[i]; break;
                     }
                 }
@@ -180,7 +180,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Code": rec.Code = field.Values[i]; break;
                         case "Value": rec.Value = field.Values[i]; break;
                         case "Framework Code": rec.FrameworkCode = field.Values[i]; break;
-                        case "Logical Order": rec.LogicalOrder = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Logical Order": rec.LogicalOrder = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -277,7 +277,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "Code": rec.Code = field.Values[i]; break;
                         case "Item No.": rec.ItemId = field.Values[i]; break;
-                        case "Qty. per Unit of Measure": rec.QtyPrUOM = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Qty. per Unit of Measure": rec.QtyPrUOM = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -332,12 +332,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Loyalty Scheme Code": rec.LoyaltySchemeCode = field.Values[i]; break;
                         case "Currency Code": rec.CurrencyCode = field.Values[i]; break;
                         case "Last Modify Date": rec.ModifyDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "Unit Price": rec.UnitPrice = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Unit Price": rec.UnitPriceInclVat = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Net Unit Price": rec.UnitPrice = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
-                rec.PriceInclVat = true;
-                rec.UnitPriceInclVat = rec.UnitPrice;
 
+                rec.PriceInclVat = (rec.UnitPrice == rec.UnitPriceInclVat);
                 lastKey = string.Format($"{rec.StoreId};{rec.ItemId};{rec.VariantId};{rec.UnitOfMeasure};{rec.CustomerDiscountGroup};{rec.LoyaltySchemeCode}");
                 list.Add(rec);
             }
@@ -364,9 +364,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Customer Disc. Group": rec.CustomerDiscountGroup = field.Values[i]; break;
                         case "Loyalty Scheme Code": rec.LoyaltySchemeCode = field.Values[i]; break;
                         case "Currency Code": rec.CurrencyCode = field.Values[i]; break;
-                        case "Priority No.": rec.PriorityNo = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Minimum Quantity": rec.MinimumQuantity = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Discount %": rec.DiscountValue = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Priority No.": rec.PriorityNo = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Minimum Quantity": rec.MinimumQuantity = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Discount %": rec.DiscountValue = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "From Date": rec.FromDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                         case "To Date": rec.ToDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                         case "Offer No.": rec.OfferNo = field.Values[i]; break;
@@ -397,7 +397,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "Hierarchy Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "Type": rec.Type = (HierarchyType)XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Type": rec.Type = (HierarchyType)ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
                 rec.StartDate = startdate;
@@ -423,9 +423,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Node ID": rec.Id = field.Values[i]; break;
                         case "Parent Node ID": rec.ParentNode = field.Values[i]; break;
-                        case "Children Order": rec.ChildrenOrder = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Indentation": rec.Indentation = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Presentation Order": rec.PresentationOrder = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Children Order": rec.ChildrenOrder = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Indentation": rec.Indentation = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Presentation Order": rec.PresentationOrder = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Retail Image Code": rec.ImageId = field.Values[i]; break;
                     }
                 }
@@ -450,7 +450,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Hierarchy Code": rec.HierarchyCode = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Node ID": rec.NodeId = field.Values[i]; break;
-                        case "Type": rec.Type = (HierarchyLeafType)XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Type": rec.Type = (HierarchyLeafType)ConvertTo.SafeInt(field.Values[i]); break;
                         case "No.": rec.Id = field.Values[i]; break;
                     }
                 }
@@ -475,7 +475,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Code": rec.Code = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Default Value": rec.DefaultValue = field.Values[i]; break;
-                        case "Value Type": rec.ValueType = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Value Type": rec.ValueType = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -498,12 +498,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "Attribute Code": rec.Code = field.Values[i]; break;
                         case "Attribute Value": rec.Value = field.Values[i]; break;
-                        case "Numeric Value": rec.NumbericValue = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Link Type": rec.LinkType = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Numeric Value": rec.NumbericValue = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Link Type": rec.LinkType = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Link Field 1": rec.LinkField1 = field.Values[i]; break;
                         case "Link Field 2": rec.LinkField2 = field.Values[i]; break;
                         case "Link Field 3": rec.LinkField3 = field.Values[i]; break;
-                        case "Sequence": rec.Sequence = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Sequence": rec.Sequence = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -526,7 +526,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "Attribute Code": rec.Code = field.Values[i]; break;
                         case "Option Value": rec.Value = field.Values[i]; break;
-                        case "Sequence": rec.Sequence = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Sequence": rec.Sequence = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -645,7 +645,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Unit Of Measure": rec.UnitOfMeasureId = field.Values[i]; break;
                         case "Item": rec.ItemId = field.Values[i]; break;
                         case "Variant": rec.VariantId = field.Values[i]; break;
-                        case "Qty.": rec.Quantity = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Qty.": rec.Quantity = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -669,11 +669,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "Code": rec.CurrencyCode = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "Amount Rounding Precision": rec.RoundOfSales = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Invoice Rounding Type": rec.RoundOfTypeAmount = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Invoice Rounding Precision": rec.RoundOfAmount = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Amount Rounding Precision": rec.RoundOfSales = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Invoice Rounding Type": rec.RoundOfTypeAmount = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Invoice Rounding Precision": rec.RoundOfAmount = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "POS Currency Symbol": rec.Symbol = field.Values[i]; break;
-                        case "Placement Of Currency Symbol": curplace = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Placement Of Currency Symbol": curplace = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
 
@@ -714,11 +714,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "Currency Code": rec.CurrencyCode = field.Values[i]; break;
                         case "Starting Date": rec.StartingDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "POS Exchange Rate Amount": posextamt = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "POS Rel. Exch. Rate Amount": posrelamt = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "POS Exchange Rate Amount": posextamt = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "POS Rel. Exch. Rate Amount": posrelamt = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Relational Currency Code": code = field.Values[i]; break;
-                        case "Exchange Rate Amount": extamt = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Relational Exch. Rate Amount": relamt = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Exchange Rate Amount": extamt = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Relational Exch. Rate Amount": relamt = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
 
@@ -772,13 +772,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "City": rec.City = field.Values[i]; break;
                         case "County": rec.County = field.Values[i]; break;
                         case "Country Code": rec.Country = field.Values[i]; break;
-                        case "Latitude": rec.Latitute = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Longitude": rec.Longitude = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Latitude": rec.Latitute = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Longitude": rec.Longitude = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Phone No.": rec.Phone = field.Values[i]; break;
                         case "Currency Code": rec.Currency = field.Values[i]; break;
                         case "Functionality Profile": rec.FunctionalityProfile = field.Values[i]; break;
                         case "Store VAT Bus. Post. Gr.": rec.TaxGroup = field.Values[i]; break;
-                        case "Click and Collect": rec.ClickAndCollect = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Click and Collect": rec.ClickAndCollect = ConvertTo.SafeBoolean(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -827,15 +827,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Store No.": rec.StoreID = field.Values[i]; break;
                         case "Code": rec.TenderTypeId = field.Values[i]; break;
                         case "Description": rec.Name = field.Values[i]; break;
-                        case "Function": rec.TenderFunction = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Function": rec.TenderFunction = ConvertTo.SafeInt(field.Values[i]); break;
                         case "Valid on Mobile POS": rec.ValidOnMobilePOS = XMLHelper.GetWebBoolInt(field.Values[i]); break;
                         case "Change Tend. Code": rec.ChangeTenderId = field.Values[i]; break;
                         case "Above Min. Change Tender Type": rec.AboveMinimumTenderId = field.Values[i]; break;
-                        case "Min. Change": rec.MinimumChangeAmount = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Rounding": rec.RoundingMethode = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "Rounding To": rec.Rounding = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Min. Change": rec.MinimumChangeAmount = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Rounding": rec.RoundingMethode = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Rounding To": rec.Rounding = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Overtender Allowed": rec.AllowOverTender = XMLHelper.GetWebBoolInt(field.Values[i]); break;
-                        case "Overtender Max. Amt.": rec.MaximumOverTenderAmount = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Overtender Max. Amt.": rec.MaximumOverTenderAmount = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Undertender Allowed": rec.AllowUnderTender = XMLHelper.GetWebBoolInt(field.Values[i]); break;
                         case "Return/Minus Allowed": rec.ReturnAllowed = XMLHelper.GetWebBoolInt(field.Values[i]); break;
                         case "Drawer Opens": rec.OpenDrawer = XMLHelper.GetWebBoolInt(field.Values[i]); break;
@@ -871,7 +871,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Name on Receipt": rec.NameOnReceipt = field.Values[i]; break;
                         case "Blocked": rec.Blocked = XMLHelper.GetWebBoolInt(field.Values[i]); break;
                         case "Date to Be Blocked": rec.BlockingDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "Inventory Active": rec.InventoryActive = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Inventory Active": rec.InventoryActive = ConvertTo.SafeBoolean(field.Values[i]); break;
                         case "Inventory Main Menu": rec.InventoryMainMenu = field.Values[i]; break;
                     }
                 }
@@ -973,7 +973,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "No.": rec.Id = field.Values[i]; break;
                         case "Name": rec.Name = field.Values[i]; break;
-                        case "Blocked": rec.Blocked = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Blocked": rec.Blocked = ConvertTo.SafeBoolean(field.Values[i]); break;
                         case "Last Date Modified": rec.UpdatedOnUtc = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                     }
                 }
@@ -996,7 +996,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     switch (field.FieldName)
                     {
                         case "Image Id": rec.ImageId = field.Values[i]; break;
-                        case "Display Order": rec.DisplayOrder = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Display Order": rec.DisplayOrder = ConvertTo.SafeInt(field.Values[i]); break;
                         case "TableName": rec.TableName = field.Values[i]; break;
                         case "KeyValue": rec.KeyValue = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
@@ -1023,7 +1023,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Image Location": rec.Location = field.Values[i]; break;
-                        case "Type": rec.LocationType = (LocationType)XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Type": rec.LocationType = (LocationType)ConvertTo.SafeInt(field.Values[i]); break;
                         case "Image Blob": rec.Image64 = field.Values[i]; break;
                     }
                 }
@@ -1113,22 +1113,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "SaturdayEndingTime": rec.SaturdayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                         case "SundayStartingTime": rec.SundayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                         case "SundayEndingTime": rec.SundayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "TimewithinBounds": rec.TimeWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "EndingTimeAfterMidnight": rec.EndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Mon_TimewithinBounds": rec.MondayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Mon_End_TimeAfterMidnight": rec.MondayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Tue_TimewithinBounds": rec.TuesdayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Tue_End_TimeAfterMidnight": rec.TuesdayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Wed_TimewithinBounds": rec.WednesdayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Wed_End_TimeAfterMidnight": rec.WednesdayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Thu_TimewithinBounds": rec.ThursdayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Thu_End_TimeAfterMidnight": rec.ThursdayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Fri_TimewithinBounds": rec.FridayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Fri_End_TimeAfterMidnight": rec.FridayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Sat_TimewithinBounds": rec.SaturdayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Sat_End_TimeAfterMidnight": rec.SaturdayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Sun_TimewithinBounds": rec.SundayWithinBounds = XMLHelper.GetWebBool(field.Values[i]); break;
-                        case "Sun_End_TimeAfterMidnight": rec.SundayEndAfterMidnight = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "TimewithinBounds": rec.TimeWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "EndingTimeAfterMidnight": rec.EndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Mon_TimewithinBounds": rec.MondayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Mon_End_TimeAfterMidnight": rec.MondayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Tue_TimewithinBounds": rec.TuesdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Tue_End_TimeAfterMidnight": rec.TuesdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Wed_TimewithinBounds": rec.WednesdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Wed_End_TimeAfterMidnight": rec.WednesdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Thu_TimewithinBounds": rec.ThursdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Thu_End_TimeAfterMidnight": rec.ThursdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Fri_TimewithinBounds": rec.FridayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Fri_End_TimeAfterMidnight": rec.FridayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sat_TimewithinBounds": rec.SaturdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sat_End_TimeAfterMidnight": rec.SaturdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sun_TimewithinBounds": rec.SundayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sun_End_TimeAfterMidnight": rec.SundayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -1231,8 +1231,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     switch (field.FieldName)
                     {
                         case "StoreId": rec.StoreId = field.Values[i]; break;
-                        case "PageId": rec.PageId = XMLHelper.GetWebInt(field.Values[i]); break;
-                        case "PageIndex": rec.PageIndex = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "PageId": rec.PageId = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "PageIndex": rec.PageIndex = ConvertTo.SafeInt(field.Values[i]); break;
                         case "ItemId": rec.ItemId = field.Values[i]; break;
                         case "Description": rec.Descritpion = field.Values[i]; break;
                         case "ItemImageId": rec.ItemImageId = field.Values[i]; break;
@@ -1258,6 +1258,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
 
             for (int i = 0; i < table.NumberOfValues; i++)
             {
+                decimal qty = 0;
                 ReplInvStatus rec = new ReplInvStatus();
                 foreach (XMLFieldData field in table.FieldList)
                 {
@@ -1266,15 +1267,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Item No.": rec.ItemId = field.Values[i]; break;
                         case "Variant Code": rec.VariantId = field.Values[i]; break;
                         case "Store No.": rec.StoreId = field.Values[i]; break;
-                        case "Net Inventory": rec.Quantity = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Net Inventory": rec.Quantity = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Sourcing Location Inventory": qty = ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Serial No.": serialno = field.Values[i]; break;
                         case "Lot No.": lotno = field.Values[i]; break;
-                        case "Replication Counter": replcnt = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Replication Counter": replcnt = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
 
                 if (replcnt > Convert.ToInt32(maxKey))
                     maxKey = replcnt.ToString();
+
+                if (qty > rec.Quantity)
+                    rec.Quantity = qty;
 
                 lastKey = string.Format($"{rec.ItemId};{rec.VariantId};{rec.StoreId};{lotno};{serialno}");
                 list.Add(rec);

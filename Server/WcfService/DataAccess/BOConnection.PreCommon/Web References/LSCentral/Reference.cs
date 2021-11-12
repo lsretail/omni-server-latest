@@ -93,6 +93,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback GetHospOrderEstimatedTimeOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetInventoryMultipleV2OperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetInventoryMultipleOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetItemCardOperationCompleted;
@@ -188,6 +190,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback MobilelPosGetLastReceiptNoOperationCompleted;
         
         private System.Threading.SendOrPostCallback SPGProfileGetOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SecurityCheckProfileOperationCompleted;
         
         private System.Threading.SendOrPostCallback SendASNScannedLinesOperationCompleted;
         
@@ -344,6 +348,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event GetHospOrderEstimatedTimeCompletedEventHandler GetHospOrderEstimatedTimeCompleted;
         
         /// <remarks/>
+        public event GetInventoryMultipleV2CompletedEventHandler GetInventoryMultipleV2Completed;
+        
+        /// <remarks/>
         public event GetInventoryMultipleCompletedEventHandler GetInventoryMultipleCompleted;
         
         /// <remarks/>
@@ -486,6 +493,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event SPGProfileGetCompletedEventHandler SPGProfileGetCompleted;
+        
+        /// <remarks/>
+        public event SecurityCheckProfileCompletedEventHandler SecurityCheckProfileCompleted;
         
         /// <remarks/>
         public event SendASNScannedLinesCompletedEventHandler SendASNScannedLinesCompleted;
@@ -1760,6 +1770,49 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.GetHospOrderEstimatedTimeCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetHospOrderEstimatedTimeCompleted(this, new GetHospOrderEstimatedTimeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetInventoryMultipleV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetInventoryMultipleV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetInventoryMultipleV2(string storeNo, string locationCode, bool sourcingLocationAvailability, RootGetInventoryMultipleIn getInventoryMultipleInXML, ref string responseCode, ref string errorText, ref RootGetInventoryMultipleOut getInventoryMultipleOutXML) {
+            object[] results = this.Invoke("GetInventoryMultipleV2", new object[] {
+                        storeNo,
+                        locationCode,
+                        sourcingLocationAvailability,
+                        getInventoryMultipleInXML,
+                        responseCode,
+                        errorText,
+                        getInventoryMultipleOutXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            getInventoryMultipleOutXML = ((RootGetInventoryMultipleOut)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetInventoryMultipleV2Async(string storeNo, string locationCode, bool sourcingLocationAvailability, RootGetInventoryMultipleIn getInventoryMultipleInXML, string responseCode, string errorText, RootGetInventoryMultipleOut getInventoryMultipleOutXML) {
+            this.GetInventoryMultipleV2Async(storeNo, locationCode, sourcingLocationAvailability, getInventoryMultipleInXML, responseCode, errorText, getInventoryMultipleOutXML, null);
+        }
+        
+        /// <remarks/>
+        public void GetInventoryMultipleV2Async(string storeNo, string locationCode, bool sourcingLocationAvailability, RootGetInventoryMultipleIn getInventoryMultipleInXML, string responseCode, string errorText, RootGetInventoryMultipleOut getInventoryMultipleOutXML, object userState) {
+            if ((this.GetInventoryMultipleV2OperationCompleted == null)) {
+                this.GetInventoryMultipleV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetInventoryMultipleV2OperationCompleted);
+            }
+            this.InvokeAsync("GetInventoryMultipleV2", new object[] {
+                        storeNo,
+                        locationCode,
+                        sourcingLocationAvailability,
+                        getInventoryMultipleInXML,
+                        responseCode,
+                        errorText,
+                        getInventoryMultipleOutXML}, this.GetInventoryMultipleV2OperationCompleted, userState);
+        }
+        
+        private void OnGetInventoryMultipleV2OperationCompleted(object arg) {
+            if ((this.GetInventoryMultipleV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetInventoryMultipleV2Completed(this, new GetInventoryMultipleV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -3754,6 +3807,45 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.SPGProfileGetCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SPGProfileGetCompleted(this, new SPGProfileGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SecurityCheckProfile", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SecurityCheckProfile_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SecurityCheckProfile(ref string responseCode, ref string errorText, ref bool securityProfileExist, string storeNo, string customerOrderID) {
+            object[] results = this.Invoke("SecurityCheckProfile", new object[] {
+                        responseCode,
+                        errorText,
+                        securityProfileExist,
+                        storeNo,
+                        customerOrderID});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            securityProfileExist = ((bool)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void SecurityCheckProfileAsync(string responseCode, string errorText, bool securityProfileExist, string storeNo, string customerOrderID) {
+            this.SecurityCheckProfileAsync(responseCode, errorText, securityProfileExist, storeNo, customerOrderID, null);
+        }
+        
+        /// <remarks/>
+        public void SecurityCheckProfileAsync(string responseCode, string errorText, bool securityProfileExist, string storeNo, string customerOrderID, object userState) {
+            if ((this.SecurityCheckProfileOperationCompleted == null)) {
+                this.SecurityCheckProfileOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSecurityCheckProfileOperationCompleted);
+            }
+            this.InvokeAsync("SecurityCheckProfile", new object[] {
+                        responseCode,
+                        errorText,
+                        securityProfileExist,
+                        storeNo,
+                        customerOrderID}, this.SecurityCheckProfileOperationCompleted, userState);
+        }
+        
+        private void OnSecurityCheckProfileOperationCompleted(object arg) {
+            if ((this.SecurityCheckProfileCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SecurityCheckProfileCompleted(this, new SecurityCheckProfileCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -7322,6 +7414,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal postDeliveredQtyField;
         
+        private string taxGroupCodeField;
+        
+        private string taxCalculationTypeField;
+        
+        private decimal salesTaxRoundingField;
+        
         public TransactionOrderEntry() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -7402,6 +7500,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.qtytoHandleField = ((decimal)(0m));
             this.postAvilableQtyField = ((decimal)(0m));
             this.postDeliveredQtyField = ((decimal)(0m));
+            this.salesTaxRoundingField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -8830,6 +8929,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.postDeliveredQtyField = value;
             }
         }
+        
+        /// <remarks/>
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxCalculationType {
+            get {
+                return this.taxCalculationTypeField;
+            }
+            set {
+                this.taxCalculationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal SalesTaxRounding {
+            get {
+                return this.salesTaxRoundingField;
+            }
+            set {
+                this.salesTaxRoundingField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -8958,6 +9088,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool preCancelationField;
         
+        private string taxAreaCodeField;
+        
+        private bool taxLiableField;
+        
+        private string taxExemptionNoField;
+        
+        private decimal netIncExpAmountField;
+        
         public TransactionOrderHeader() {
             this.transactionNoField = 0;
             this.transDateField = new System.DateTime(0);
@@ -8976,6 +9114,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.errorinProcessField = false;
             this.cancelationField = false;
             this.preCancelationField = false;
+            this.taxLiableField = false;
+            this.netIncExpAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -9578,6 +9718,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.preCancelationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxExemptionNo {
+            get {
+                return this.taxExemptionNoField;
+            }
+            set {
+                this.taxExemptionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal NetIncExpAmount {
+            get {
+                return this.netIncExpAmountField;
+            }
+            set {
+                this.netIncExpAmountField = value;
             }
         }
     }
@@ -15554,6 +15736,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private int replicationCounterField;
         
+        private string taxGroupCodeField;
+        
+        private decimal salesTaxRoundingField;
+        
         public TransIncomeExpenseEntry1() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -15568,6 +15754,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.exchangeRateField = ((decimal)(0m));
             this.amountinCurrencyField = ((decimal)(0m));
             this.replicationCounterField = 0;
+            this.salesTaxRoundingField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -15845,6 +16032,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.replicationCounterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal SalesTaxRounding {
+            get {
+                return this.salesTaxRoundingField;
+            }
+            set {
+                this.salesTaxRoundingField = value;
             }
         }
     }
@@ -17905,6 +18113,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private string taxAreaCodeField;
+        
+        private bool wICTransactionField;
+        
+        private bool taxLiableField;
+        
+        private string taxExemptionNoField;
+        
+        private decimal netIncExpAmountField;
+        
         public TransactionHeader2() {
             this.transactionNoField = 0;
             this.dateField = new System.DateTime(0);
@@ -17950,6 +18168,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.wICTransactionField = false;
+            this.taxLiableField = false;
+            this.netIncExpAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -18726,6 +18947,59 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.restrictedFlagField = value;
             }
         }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool WICTransaction {
+            get {
+                return this.wICTransactionField;
+            }
+            set {
+                this.wICTransactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxExemptionNo {
+            get {
+                return this.taxExemptionNoField;
+            }
+            set {
+                this.taxExemptionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal NetIncExpAmount {
+            get {
+                return this.netIncExpAmountField;
+            }
+            set {
+                this.netIncExpAmountField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -19253,6 +19527,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private string taxAreaCodeField;
+        
+        private bool wICTransactionField;
+        
+        private bool taxLiableField;
+        
+        private string taxExemptionNoField;
+        
+        private decimal netIncExpAmountField;
+        
         public TransactionHeader1() {
             this.transactionNoField = 0;
             this.dateField = new System.DateTime(0);
@@ -19296,6 +19580,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.wICTransactionField = false;
+            this.taxLiableField = false;
+            this.netIncExpAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -20031,6 +20318,59 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.restrictedFlagField = value;
             }
         }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool WICTransaction {
+            get {
+                return this.wICTransactionField;
+            }
+            set {
+                this.wICTransactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxExemptionNo {
+            get {
+                return this.taxExemptionNoField;
+            }
+            set {
+                this.taxExemptionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal NetIncExpAmount {
+            get {
+                return this.netIncExpAmountField;
+            }
+            set {
+                this.netIncExpAmountField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -20669,7 +21009,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string descriptionField;
         
-        private string fatureValueField;
+        private string[] featureValueField;
         
         /// <remarks/>
         public string ProfileCode {
@@ -20702,12 +21042,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public string FatureValue {
+        [System.Xml.Serialization.XmlElementAttribute("FeatureValue")]
+        public string[] FeatureValue {
             get {
-                return this.fatureValueField;
+                return this.featureValueField;
             }
             set {
-                this.fatureValueField = value;
+                this.featureValueField = value;
             }
         }
     }
@@ -29236,6 +29577,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private int replicationCounterField;
         
+        private string taxGroupCodeField;
+        
+        private decimal salesTaxRoundingField;
+        
         public TransIncomeExpenseEntry() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -29250,6 +29595,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.exchangeRateField = ((decimal)(0m));
             this.amountinCurrencyField = ((decimal)(0m));
             this.replicationCounterField = 0;
+            this.salesTaxRoundingField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -29537,6 +29883,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.replicationCounterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxGroupCode {
+            get {
+                return this.taxGroupCodeField;
+            }
+            set {
+                this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal SalesTaxRounding {
+            get {
+                return this.salesTaxRoundingField;
+            }
+            set {
+                this.salesTaxRoundingField = value;
             }
         }
     }
@@ -31735,6 +32102,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private string taxAreaCodeField;
+        
+        private bool wICTransactionField;
+        
+        private bool taxLiableField;
+        
+        private string taxExemptionNoField;
+        
+        private decimal netIncExpAmountField;
+        
         public TransactionHeader() {
             this.transactionNoField = 0;
             this.dateField = new System.DateTime(0);
@@ -31781,6 +32158,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.wICTransactionField = false;
+            this.taxLiableField = false;
+            this.netIncExpAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -32581,6 +32961,59 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.restrictedFlagField = value;
             }
         }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool WICTransaction {
+            get {
+                return this.wICTransactionField;
+            }
+            set {
+                this.wICTransactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxExemptionNo {
+            get {
+                return this.taxExemptionNoField;
+            }
+            set {
+                this.taxExemptionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal NetIncExpAmount {
+            get {
+                return this.netIncExpAmountField;
+            }
+            set {
+                this.netIncExpAmountField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -33354,6 +33787,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool restrictedFlagField;
         
+        private string taxAreaCodeField;
+        
+        private bool wICTransactionField;
+        
+        private bool taxLiableField;
+        
+        private string taxExemptionNoField;
+        
+        private decimal netIncExpAmountField;
+        
         public POSTransaction() {
             this.newTransactionField = false;
             this.supervisorRightsField = false;
@@ -33392,6 +33835,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.overridePLBItemField = false;
             this.overrideDateTimeField = new System.DateTime(0);
             this.restrictedFlagField = false;
+            this.wICTransactionField = false;
+            this.taxLiableField = false;
+            this.netIncExpAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -34141,6 +34587,59 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.restrictedFlagField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool WICTransaction {
+            get {
+                return this.wICTransactionField;
+            }
+            set {
+                this.wICTransactionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxExemptionNo {
+            get {
+                return this.taxExemptionNoField;
+            }
+            set {
+                this.taxExemptionNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal NetIncExpAmount {
+            get {
+                return this.netIncExpAmountField;
+            }
+            set {
+                this.netIncExpAmountField = value;
             }
         }
     }
@@ -44183,6 +44682,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal issuedPointsField;
         
+        private string shipToCountryRegionCodeField;
+        
         public MobileTransaction() {
             this.idField = "{00000000-0000-0000-0000-000000000000}";
             this.transactionTypeField = 0;
@@ -44656,6 +45157,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.issuedPointsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCountryRegionCode {
+            get {
+                return this.shipToCountryRegionCodeField;
+            }
+            set {
+                this.shipToCountryRegionCodeField = value;
             }
         }
     }
@@ -47759,13 +48270,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.DateTime requestedDeliveryDateField;
         
-        private bool shopPaygoField;
+        private bool scanPaygoField;
+        
+        private decimal roundingAmountField;
+        
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
         
         public CustomerOrderCreateCOHeaderV5() {
             this.sourceTypeField = 0;
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
-            this.shopPaygoField = false;
+            this.scanPaygoField = false;
+            this.roundingAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -48083,12 +48601,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         [System.ComponentModel.DefaultValueAttribute(false)]
-        public bool ShopPaygo {
+        public bool ScanPaygo {
             get {
-                return this.shopPaygoField;
+                return this.scanPaygoField;
             }
             set {
-                this.shopPaygoField = value;
+                this.scanPaygoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal RoundingAmount {
+            get {
+                return this.roundingAmountField;
+            }
+            set {
+                this.roundingAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
             }
         }
     }
@@ -53818,6 +54367,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetInventoryMultipleV2CompletedEventHandler(object sender, GetInventoryMultipleV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetInventoryMultipleV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetInventoryMultipleV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootGetInventoryMultipleOut getInventoryMultipleOutXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetInventoryMultipleOut)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void GetInventoryMultipleCompletedEventHandler(object sender, GetInventoryMultipleCompletedEventArgs e);
     
     /// <remarks/>
@@ -55956,6 +56547,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[4]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void SecurityCheckProfileCompletedEventHandler(object sender, SecurityCheckProfileCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SecurityCheckProfileCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SecurityCheckProfileCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public bool securityProfileExist {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[2]));
             }
         }
     }

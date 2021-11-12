@@ -25,10 +25,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt.[Post Code],mt.[City],mt.[County],mt.[Country Code],mt.[Latitude],mt.[Longitude]," +
                         "mt.[Phone No_],mt.[Currency Code],mt.[Functionality Profile],mt.[Store VAT Bus_ Post_ Gr_],mt.[Click and Collect]," +
-                        "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID]," +
+                        "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID],tr.[Sales Type Filter]," +
                         "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
-            sqlfrom = " FROM [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+            sqlfrom = " FROM [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                      " LEFT OUTER JOIN [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]";
 
             sqlcolumnsinv = "mt.[Store],st.[Name],st.[Address],st.[Post Code],st.[City],st.[County],st.[Country Code],st.[Latitude],st.[Longitude]," +
                             "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect]," +
@@ -206,8 +207,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
 
-                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter]" + sqlfrom +
-                                          " LEFT OUTER JOIN [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
                                           " WHERE mt.[No_]=@id";
                     command.Parameters.AddWithValue("@id", storeId);
                     TraceSqlCommand(command);
@@ -233,8 +233,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter]" + sqlfrom +
-                                          " LEFT OUTER JOIN [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
                                           ((clickAndCollectOnly) ? " WHERE mt.[Click and Collect]=1" : string.Empty) + 
                                           " ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
@@ -284,8 +283,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter] " + sqlfrom +
-                                          " LEFT OUTER JOIN [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
                                           sqlwhere + ((searchitems.Length == 1) ? ") OR" : ") AND") + sqlwhere2 + ") ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
                     connection.Open();
@@ -493,6 +491,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Latitute = SQLHelper.GetDecimal(reader, "Latitude"),
                 Longitude = SQLHelper.GetDecimal(reader, "Longitude"),
                 ClickAndCollect = SQLHelper.GetBool(reader["Click and Collect"]),
+                HospSalesTypes = SQLHelper.GetString(reader["Sales Type Filter"]),
 
                 State = string.Empty,
                 CultureName = string.Empty,

@@ -63,6 +63,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback GetProductChargesOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetResourceAvailabilityOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetResourceGroupAvailabilityOperationCompleted;
+        
         private System.Threading.SendOrPostCallback InsertMemberDepositOperationCompleted;
         
         private System.Threading.SendOrPostCallback InsertReservationOperationCompleted;
@@ -82,6 +86,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback UploadActivityLocationsOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadActivityProductsOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UploadActivityResourcesOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadActivityTypesOperationCompleted;
         
@@ -106,6 +112,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback UploadPurchasedAllowancesOperationCompleted;
         
         private System.Threading.SendOrPostCallback UploadReservationActivitiesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UploadResourceActivitiesOperationCompleted;
         
         private bool useDefaultCredentialsSetExplicitly;
         
@@ -197,6 +205,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event GetProductChargesCompletedEventHandler GetProductChargesCompleted;
         
         /// <remarks/>
+        public event GetResourceAvailabilityCompletedEventHandler GetResourceAvailabilityCompleted;
+        
+        /// <remarks/>
+        public event GetResourceGroupAvailabilityCompletedEventHandler GetResourceGroupAvailabilityCompleted;
+        
+        /// <remarks/>
         public event InsertMemberDepositCompletedEventHandler InsertMemberDepositCompleted;
         
         /// <remarks/>
@@ -225,6 +239,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event UploadActivityProductsCompletedEventHandler UploadActivityProductsCompleted;
+        
+        /// <remarks/>
+        public event UploadActivityResourcesCompletedEventHandler UploadActivityResourcesCompleted;
         
         /// <remarks/>
         public event UploadActivityTypesCompletedEventHandler UploadActivityTypesCompleted;
@@ -261,6 +278,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event UploadReservationActivitiesCompletedEventHandler UploadReservationActivitiesCompleted;
+        
+        /// <remarks/>
+        public event UploadResourceActivitiesCompletedEventHandler UploadResourceActivitiesCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:CancelActivity", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="CancelActivity_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -1351,6 +1371,94 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetResourceAvailability", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetResourceAvailability_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool GetResourceAvailability(string locationNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string resourceNo, string intervalType, int noOfDays, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+            object[] results = this.Invoke("GetResourceAvailability", new object[] {
+                        locationNo,
+                        activityDate,
+                        resourceNo,
+                        intervalType,
+                        noOfDays,
+                        errorString,
+                        getAvailabilityResponse});
+            errorString = ((string)(results[1]));
+            getAvailabilityResponse = ((ActivityAvailabilityResponse)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetResourceAvailabilityAsync(string locationNo, System.DateTime activityDate, string resourceNo, string intervalType, int noOfDays, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetResourceAvailabilityAsync(locationNo, activityDate, resourceNo, intervalType, noOfDays, errorString, getAvailabilityResponse, null);
+        }
+        
+        /// <remarks/>
+        public void GetResourceAvailabilityAsync(string locationNo, System.DateTime activityDate, string resourceNo, string intervalType, int noOfDays, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+            if ((this.GetResourceAvailabilityOperationCompleted == null)) {
+                this.GetResourceAvailabilityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetResourceAvailabilityOperationCompleted);
+            }
+            this.InvokeAsync("GetResourceAvailability", new object[] {
+                        locationNo,
+                        activityDate,
+                        resourceNo,
+                        intervalType,
+                        noOfDays,
+                        errorString,
+                        getAvailabilityResponse}, this.GetResourceAvailabilityOperationCompleted, userState);
+        }
+        
+        private void OnGetResourceAvailabilityOperationCompleted(object arg) {
+            if ((this.GetResourceAvailabilityCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetResourceAvailabilityCompleted(this, new GetResourceAvailabilityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetResourceGroupAvailability", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetResourceGroupAvailability_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool GetResourceGroupAvailability(string locationNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string groupNo, string intervalType, int noOfDays, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+            object[] results = this.Invoke("GetResourceGroupAvailability", new object[] {
+                        locationNo,
+                        activityDate,
+                        groupNo,
+                        intervalType,
+                        noOfDays,
+                        errorString,
+                        getAvailabilityResponse});
+            errorString = ((string)(results[1]));
+            getAvailabilityResponse = ((ActivityAvailabilityResponse)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetResourceGroupAvailabilityAsync(string locationNo, System.DateTime activityDate, string groupNo, string intervalType, int noOfDays, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetResourceGroupAvailabilityAsync(locationNo, activityDate, groupNo, intervalType, noOfDays, errorString, getAvailabilityResponse, null);
+        }
+        
+        /// <remarks/>
+        public void GetResourceGroupAvailabilityAsync(string locationNo, System.DateTime activityDate, string groupNo, string intervalType, int noOfDays, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+            if ((this.GetResourceGroupAvailabilityOperationCompleted == null)) {
+                this.GetResourceGroupAvailabilityOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetResourceGroupAvailabilityOperationCompleted);
+            }
+            this.InvokeAsync("GetResourceGroupAvailability", new object[] {
+                        locationNo,
+                        activityDate,
+                        groupNo,
+                        intervalType,
+                        noOfDays,
+                        errorString,
+                        getAvailabilityResponse}, this.GetResourceGroupAvailabilityOperationCompleted, userState);
+        }
+        
+        private void OnGetResourceGroupAvailabilityOperationCompleted(object arg) {
+            if ((this.GetResourceGroupAvailabilityCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetResourceGroupAvailabilityCompleted(this, new GetResourceGroupAvailabilityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:InsertMemberDeposit", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="InsertMemberDeposit_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool InsertMemberDeposit(string clientNo, decimal amount, ref string errorString, ref string returnItemNo, ref string returnBookingRef) {
@@ -1928,6 +2036,35 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UploadActivityResources", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UploadActivityResources_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void UploadActivityResources(ref ActivityUploadResources uploadResources) {
+            object[] results = this.Invoke("UploadActivityResources", new object[] {
+                        uploadResources});
+            uploadResources = ((ActivityUploadResources)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadActivityResourcesAsync(ActivityUploadResources uploadResources) {
+            this.UploadActivityResourcesAsync(uploadResources, null);
+        }
+        
+        /// <remarks/>
+        public void UploadActivityResourcesAsync(ActivityUploadResources uploadResources, object userState) {
+            if ((this.UploadActivityResourcesOperationCompleted == null)) {
+                this.UploadActivityResourcesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadActivityResourcesOperationCompleted);
+            }
+            this.InvokeAsync("UploadActivityResources", new object[] {
+                        uploadResources}, this.UploadActivityResourcesOperationCompleted, userState);
+        }
+        
+        private void OnUploadActivityResourcesOperationCompleted(object arg) {
+            if ((this.UploadActivityResourcesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadActivityResourcesCompleted(this, new UploadActivityResourcesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UploadActivityTypes", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UploadActivityTypes_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void UploadActivityTypes(ref ActivityUploadTypes uploadTypes) {
             object[] results = this.Invoke("UploadActivityTypes", new object[] {
@@ -2295,6 +2432,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.UploadReservationActivitiesCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UploadReservationActivitiesCompleted(this, new UploadReservationActivitiesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UploadResourceActivities", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UploadResourceActivities_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void UploadResourceActivities(string location, string resourceNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime fromDate, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime toDate, ref ActivityUploadReservations activityReservations) {
+            object[] results = this.Invoke("UploadResourceActivities", new object[] {
+                        location,
+                        resourceNo,
+                        fromDate,
+                        toDate,
+                        activityReservations});
+            activityReservations = ((ActivityUploadReservations)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UploadResourceActivitiesAsync(string location, string resourceNo, System.DateTime fromDate, System.DateTime toDate, ActivityUploadReservations activityReservations) {
+            this.UploadResourceActivitiesAsync(location, resourceNo, fromDate, toDate, activityReservations, null);
+        }
+        
+        /// <remarks/>
+        public void UploadResourceActivitiesAsync(string location, string resourceNo, System.DateTime fromDate, System.DateTime toDate, ActivityUploadReservations activityReservations, object userState) {
+            if ((this.UploadResourceActivitiesOperationCompleted == null)) {
+                this.UploadResourceActivitiesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUploadResourceActivitiesOperationCompleted);
+            }
+            this.InvokeAsync("UploadResourceActivities", new object[] {
+                        location,
+                        resourceNo,
+                        fromDate,
+                        toDate,
+                        activityReservations}, this.UploadResourceActivitiesOperationCompleted, userState);
+        }
+        
+        private void OnUploadResourceActivitiesOperationCompleted(object arg) {
+            if ((this.UploadResourceActivitiesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UploadResourceActivitiesCompleted(this, new UploadResourceActivitiesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -5156,6 +5330,122 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityUploadResourcesXML")]
+    public partial class ActivityResources {
+        
+        private string resourceNoField;
+        
+        private string descriptionField;
+        
+        private string resourceGroupField;
+        
+        private string fixedLocationField;
+        
+        private string phoneField;
+        
+        private string emailField;
+        
+        /// <remarks/>
+        public string ResourceNo {
+            get {
+                return this.resourceNoField;
+            }
+            set {
+                this.resourceNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ResourceGroup {
+            get {
+                return this.resourceGroupField;
+            }
+            set {
+                this.resourceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FixedLocation {
+            get {
+                return this.fixedLocationField;
+            }
+            set {
+                this.fixedLocationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Phone {
+            get {
+                return this.phoneField;
+            }
+            set {
+                this.phoneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityUploadResourcesXML")]
+    public partial class ActivityUploadResources {
+        
+        private ActivityResources[] activityResourcesField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ActivityResources")]
+        public ActivityResources[] ActivityResources {
+            get {
+                return this.activityResourcesField;
+            }
+            set {
+                this.activityResourcesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/ActivityUploadProductsXML")]
     public partial class ActivityProducts {
         
@@ -6896,6 +7186,90 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetResourceAvailabilityCompletedEventHandler(object sender, GetResourceAvailabilityCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetResourceAvailabilityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetResourceAvailabilityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public ActivityAvailabilityResponse getAvailabilityResponse {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityAvailabilityResponse)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetResourceGroupAvailabilityCompletedEventHandler(object sender, GetResourceGroupAvailabilityCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetResourceGroupAvailabilityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetResourceGroupAvailabilityCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public ActivityAvailabilityResponse getAvailabilityResponse {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityAvailabilityResponse)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void InsertMemberDepositCompletedEventHandler(object sender, InsertMemberDepositCompletedEventArgs e);
     
     /// <remarks/>
@@ -7340,6 +7714,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void UploadActivityResourcesCompletedEventHandler(object sender, UploadActivityResourcesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadActivityResourcesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadActivityResourcesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityUploadResources uploadResources {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityUploadResources)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void UploadActivityTypesCompletedEventHandler(object sender, UploadActivityTypesCompletedEventArgs e);
     
     /// <remarks/>
@@ -7637,6 +8037,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal UploadReservationActivitiesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityUploadReservations activityReservations {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityUploadReservations)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void UploadResourceActivitiesCompletedEventHandler(object sender, UploadResourceActivitiesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UploadResourceActivitiesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UploadResourceActivitiesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

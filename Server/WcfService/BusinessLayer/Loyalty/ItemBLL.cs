@@ -53,9 +53,9 @@ namespace LSOmni.BLL.Loyalty
             return base.BOAppConnection.ItemInStockGet(itemId, variantId, arrivingInStockInDays, list, false);
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
         {
-            return base.BOAppConnection.ItemsInStoreGet(items, storeId, string.Empty);
+            return base.BOAppConnection.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation);
         }
 
         public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)

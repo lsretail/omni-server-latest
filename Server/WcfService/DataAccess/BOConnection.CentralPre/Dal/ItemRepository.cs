@@ -645,7 +645,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Details = SQLHelper.GetStringByte(reader["Html"]),
+                Details = SQLHelper.GetStringByte(reader["Html"], config.SettingsGetByKey(ConfigKey.BOEncode)),
                 KeyingInPrice = SQLHelper.GetInt32(reader["LSC Keying in Price"]),
                 KeyingInQty = SQLHelper.GetInt32(reader["LSC Keying in Quantity"]),
                 NoDiscountAllowed = SQLHelper.GetInt32(reader["LSC No Discount Allowed"]),
@@ -689,7 +689,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Details = SQLHelper.GetStringByte(reader["Html"]),
+                Details = SQLHelper.GetStringByte(reader["Html"], config.SettingsGetByKey(ConfigKey.BOEncode)),
 
                 ProductGroupId = SQLHelper.GetString(reader["LSC Retail Product Code"]),
                 SalesUomId = SQLHelper.GetString(reader["Sales Unit of Measure"]),

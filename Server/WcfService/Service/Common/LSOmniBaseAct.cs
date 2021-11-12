@@ -180,6 +180,34 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return null; //never gets here
+            }
+        }
+
+        public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return null; //never gets here
+            }
+        }
+
         #endregion
 
         #region Data Get (Replication)
@@ -344,6 +372,34 @@ namespace LSOmni.Service
             {
                 ActivityBLL bll = new ActivityBLL(config);
                 return bll.ActivityMembershipsGet(contactNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
+                return null; //never gets here
+            }
+        }
+
+        public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
+                return null; //never gets here
+            }
+        }
+
+        public virtual List<ActivityResource> ActivityResourceGet()
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityResourceGet();
             }
             catch (Exception ex)
             {

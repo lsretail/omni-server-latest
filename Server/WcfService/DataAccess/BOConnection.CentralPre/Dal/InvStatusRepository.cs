@@ -11,7 +11,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
     public class InvStatusRepository : BaseRepository
     {
-        public InvStatusRepository(BOConfiguration config) : base(config)
+        public InvStatusRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
         }
 
@@ -21,6 +21,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string sqlfrom = " FROM [" + navCompanyName + "LSC Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
             string sqlwhere = " WHERE " + ((fullReplication) ? "mt.[timestamp]>@cnt" : "mt.[Replication Counter]>@cnt");
             sqlwhere += string.IsNullOrEmpty(storeId) ? string.Empty : " AND mt.[Store No_]=@sid";
+
+            if (LSCVersion >= new Version("18.4"))
+            {
+                sqlcolumns += ",mt.[Sourcing Location Inventory]";
+            }
 
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
@@ -68,19 +73,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         int cnt = 0;
                         while (reader.Read())
                         {
-                            if (fullReplication)
-                                lastKey = ByteArrayToString(reader["timestamp"] as byte[]);
-                            else
-                                lastKey = SQLHelper.GetString(reader["Replication Counter"]);
-
-                            list.Add(new ReplInvStatus()
-                            {
-                                ItemId = SQLHelper.GetString(reader["Item No_"]),
-                                VariantId = SQLHelper.GetString(reader["Variant Code"]),
-                                StoreId = SQLHelper.GetString(reader["Store No_"]),
-                                Quantity = SQLHelper.GetDecimal(reader, "Net Inventory"),
-                                IsDeleted = false
-                            });
+                            list.Add(ReaderToStatus(reader, fullReplication, ref lastKey));
                             cnt++;
                         }
                         reader.Close();
@@ -167,6 +160,28 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             }
             return list;
+        }
+
+        private ReplInvStatus ReaderToStatus(SqlDataReader reader, bool fullRepl, ref string lastKey)
+        {
+            if (fullRepl)
+                lastKey = ByteArrayToString(reader["timestamp"] as byte[]);
+            else
+                lastKey = SQLHelper.GetString(reader["Replication Counter"]);
+
+            ReplInvStatus rec = new ReplInvStatus()
+            {
+                ItemId = SQLHelper.GetString(reader["Item No_"]),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Net Inventory"),
+                IsDeleted = false
+            };
+            if (LSCVersion >= new Version("18.4"))
+            {
+                rec.Quantity += SQLHelper.GetDecimal(reader, "Sourcing Location Inventory");
+            }
+            return rec;
         }
 
         private HospAvailabilityResponse ReaderToHospResponse(SqlDataReader reader)

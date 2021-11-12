@@ -1236,15 +1236,48 @@ namespace LSOmni.Service
         /// ]]>
         /// </code>
         /// </example>
-        /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
         /// <param name="items">Items to get status for</param>
+        /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId);
 
         /// <summary>
-        /// Gets Hospitality Kitchen Current Availabilty
+        /// Get stock status for list of items from Store and/or Sourcing Location
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetInventoryMultipleV2<p/><p/>
+        /// If storeId is empty, all store that have item available will be returned.
+        /// If locationId is set, only status for that location will be shown (with or without storeId)
+        /// </remarks>
+        /// <example>
+        /// Sample request including minimum data needed to be able to process the request in LS Commerce
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        /// 	"items": [{
+        /// 		"ItemId": "40020",
+        /// 		"VariantId": "010"
+        ///     }],
+        ///     "locationId": "W0001",
+        /// 	"storeId": "S0001",
+        /// 	"useSourcingLocation": 0
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
+        /// <param name="items">Items to get status for</param>
+        /// <param name="storeId">Store to get Stock status for, if empty get status for all stores</param>
+        /// <param name="locationId">Sourcing Location to get status for</param>
+        /// <param name="useSourcingLocation">Get Inventory status from all Sourcing Locations</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<InventoryResponse> ItemsInStoreGetEx(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation);
+
+        /// <summary>
+        /// Gets Hospitality Kitchen Current Availability
         /// </summary>
         /// <param name="request">List of items to get, if empty, get all items</param>
         /// <param name="storeId">Store to get, if empty get all stores</param>
@@ -1995,7 +2028,7 @@ namespace LSOmni.Service
         /// <remarks>
         /// LS Central Main Table data: 10000955 - LSC Validation Schedule
         /// <p/><p/>
-        /// This function only checks if there are any available preactions for any of the tables involved in the Schedule data 
+        /// This function only checks if there are any available pre-actions for any of the tables involved in the Schedule data 
         /// and if there is, the whole Validation Schedule will be replicated again.
         /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
@@ -2619,6 +2652,36 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment);
 
+        /// <summary>
+        /// Get availability for specific resource, for a specific date and location (all required parameters)
+        /// Optional parameters - Interval Type - Use specific intervals setup in the system or leave blank for whole day
+        /// NoOfDays - Set how many days to return availability, if set to 0 then use default setting (10 days normally)
+        /// </summary>
+        /// <param name="locationNo"></param>
+        /// <param name="activityDate"></param>
+        /// <param name="resourceNo"></param>
+        /// <param name="intervalType"></param>
+        /// <param name="noOfDays"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays);
+
+        /// <summary>
+        /// Get availability for all active resource in specific resource group, for a specific date and location (all required parameters)
+        /// Optional parameters - Interval Type - Use specific intervals setup in the system or leave blank for whole day
+        /// NoOfDays - Set how many days to return availability, if set to 0 then use default setting (10 days normally)
+        /// </summary>
+        /// <param name="locationNo"></param>
+        /// <param name="activityDate"></param>
+        /// <param name="groupNo"></param>
+        /// <param name="intervalType"></param>
+        /// <param name="noOfDays"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays);
+
         #endregion
 
         #region Activity Data Get (Replication)
@@ -2768,6 +2831,26 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Membership> ActivityMembershipsGet(string contactNo);
 
+        /// <summary>
+        /// Get list of activities assigned to a resource, required parameters Resource code (number), Date from and to date
+        /// </summary>
+        /// <param name="locationNo"></param>
+        /// <param name="resourceNo"></param>
+        /// <param name="fromDate"></param>
+        /// <param name="toDate"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate);
+
+        /// <summary>
+        /// Get list of all resources 
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<ActivityResource> ActivityResourceGet();
+
         #endregion
 
         #region ScanPayGo
@@ -2784,6 +2867,10 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool SecurityCheckProfile(string orderNo, string storeNo);
 
         #endregion
     }

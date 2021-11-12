@@ -1,16 +1,12 @@
 ﻿using System;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Utils;
 
 namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
 {
-    public enum ScanPayGoDeviceType
-    {
-        CustomerDevice,
-        RetailOwnedDevice
-    }
     public enum ScanPayGoCatalogType
     {
-        ItemCategories,
-        Hierarchies
+        Hierarchies,
+        ItemCategories
     }
 
     [Flags]
@@ -30,14 +26,15 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
 
     public class ScanPayGoSetup
     {
-        public ScanPayGoDeviceType DeviceType { get; set; }
         public ScanPayGoCatalogType CatalogType { get; set; }
         public string DefaultWebStore { get; set; }
         public ScanPayGoPaymentType AllowedPaymentTypes { get; set; }
         public ScanPayCardPaymentType CardPaymentType { get; set; }
+        public ScanPayGoDeviceType DeviceType { get; set; }
 
         public int CheckStatusTimer { get; set; }
-
+        public string TermsAndConditionURL { get; set; }
+        public string TermsAndConditionVersion { get; set; }
         public bool EnablePlatformPayment { get; set; }
         public string PlatformPaymentCountryCode { get; set; }
         public string PlatformPaymentCurrencyCode { get; set; }
@@ -45,5 +42,15 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public string GooglePayAllowedAuthMethodsJson { get; set; }
         public string GooglePayAllowedCardNetworksJson { get; set; }
         public string GooglePayMerchantName { get; set; }
+        public bool AllowAnonymousUser { get; set; }
+        public string AllowShopHome { get; set; }
+        public string ApplePayMerchantName { get; set; }
+
+        public string AudkenniClientID { get; set; }
+        public string AudkenniSecret { get; set; }
+        public string AudkenniBaseUrl { get; set; }
+        public string AudkenniRedirectUrl { get; set; }
+        public string AudkenniMessageToUser { get; set; }
+        public bool AudkenniLoginEnabled { get; set; }
     }
 }

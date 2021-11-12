@@ -449,5 +449,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Sequence = rec.Sequence
             };
         }
+
+        public List<ActivityResource> MapRootToResource(LSActivity.ActivityUploadResources root)
+        {
+            if (root.ActivityResources == null || root.ActivityResources.Length == 0)
+                return new List<ActivityResource>();
+
+            List<ActivityResource> list = new List<ActivityResource>();
+            foreach (LSActivity.ActivityResources line in root.ActivityResources)
+            {
+                list.Add(new ActivityResource(line.ResourceNo)
+                {
+                    Group = line.ResourceGroup,
+                    Description = line.Description,
+                    FixedLocation = line.FixedLocation,
+                    Phone = line.Phone,
+                    Email = line.Email
+                });
+            }
+            return list;
+        }
     }
 }

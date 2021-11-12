@@ -270,6 +270,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return true;
         }
 
+        public List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
+        {
+            logger.Debug(config.LSKey.Key, string.Format("GetResourceAvailability: locNo:{0}, actDate:{1}, resNo:{2}, intType:{3}, noOfDays:{4}", 
+                locationNo, activityDate, resourceNo, intervalType, noOfDays));
+
+            string error = string.Empty;
+            LSActivity.ActivityAvailabilityResponse root = new LSActivity.ActivityAvailabilityResponse();
+            activityWS.GetResourceAvailability(locationNo, activityDate, resourceNo, intervalType, noOfDays, ref error, ref root);
+
+            logger.Debug(config.LSKey.Key, "GetResourceAvailability - " + error);
+            if (string.IsNullOrEmpty(error) == false)
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
+
+            logger.Debug(config.LSKey.Key, "GetResourceAvailability - " + Serialization.ToXml(root, true));
+            ActivityMapping map = new ActivityMapping(config.IsJson);
+            return map.MapRootToAvailabilityResponse(root);
+        }
+
+        public List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
+        {
+            logger.Debug(config.LSKey.Key, string.Format("GetResourceGroupAvailability: locNo:{0}, actDate:{1}, groupNo:{2}, intType:{3}, noOfDays:{4}",
+                locationNo, activityDate, groupNo, intervalType, noOfDays));
+
+            string error = string.Empty;
+            LSActivity.ActivityAvailabilityResponse root = new LSActivity.ActivityAvailabilityResponse();
+            activityWS.GetResourceGroupAvailability(locationNo, activityDate, groupNo, intervalType, noOfDays, ref error, ref root);
+
+            logger.Debug(config.LSKey.Key, "GetResourceGroupAvailability - " + error);
+            if (string.IsNullOrEmpty(error) == false)
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
+
+            logger.Debug(config.LSKey.Key, "GetResourceGroupAvailability - " + Serialization.ToXml(root, true));
+            ActivityMapping map = new ActivityMapping(config.IsJson);
+            return map.MapRootToAvailabilityResponse(root);
+        }
+
         #endregion
 
         #region Data Get (Replication)
@@ -414,6 +450,31 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "UploadMembershipEntries Response - " + Serialization.ToXml(root, true));
             return map.MapRootToMemberships(root);
+        }
+
+        public List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
+        {
+            logger.Debug(config.LSKey.Key, string.Format("UploadResourceActivities: locNo:{0}, resNo:{1}, fromDate:{2}, toDate:{3}", 
+                locationNo, resourceNo, fromDate, toDate));
+
+            ActivityMapping map = new ActivityMapping(config.IsJson);
+            LSActivity.ActivityUploadReservations root = new LSActivity.ActivityUploadReservations();
+            activityWS.UploadResourceActivities(locationNo, resourceNo, fromDate, toDate, ref root);
+
+            logger.Debug(config.LSKey.Key, "UploadResourceActivities Response - " + Serialization.ToXml(root, true));
+            return map.MapRootToReservations(root);
+        }
+
+        public List<ActivityResource> ActivityResourceGet()
+        {
+            logger.Debug(config.LSKey.Key, "UploadActivityResources");
+
+            ActivityMapping map = new ActivityMapping(config.IsJson);
+            LSActivity.ActivityUploadResources root = new LSActivity.ActivityUploadResources();
+            activityWS.UploadActivityResources(ref root);
+
+            logger.Debug(config.LSKey.Key, "UploadActivityResources Response - " + Serialization.ToXml(root, true));
+            return map.MapRootToResource(root);
         }
 
         #endregion

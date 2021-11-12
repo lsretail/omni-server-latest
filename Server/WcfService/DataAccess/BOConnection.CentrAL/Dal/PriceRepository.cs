@@ -372,7 +372,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Loyalty Scheme Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price"),
-                PriceInclVat = true,
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
@@ -386,6 +385,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 price.UnitPrice = SQLHelper.GetDecimal(reader, "Net Unit Price");
             }
 
+            price.PriceInclVat = (price.UnitPrice == price.UnitPriceInclVat);
             return price;
         }
 

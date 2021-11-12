@@ -41,7 +41,7 @@ namespace LSOmni.BLL.Loyalty
             SendToEcom("orderstatus", new { document_id = orderId, status = status });
         }
 
-        public virtual void OrderMessageStatusUpdate(OrderMessage orderMessage)
+        public virtual void OrderMessageStatusUpdate(OrderMessageStatus orderMessage)
         {
             // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
             CreateNotificationsFromOrderMessage(orderMessage);
@@ -105,6 +105,28 @@ namespace LSOmni.BLL.Loyalty
             message = json;
             return json.Equals("OK", StringComparison.InvariantCultureIgnoreCase);
         }
+
+        public virtual OrderMessageShippingResult OrderMessageShipping(OrderMessageShipping orderShipping)
+        {
+            // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
+            string payloadJson = new JavaScriptSerializer().Serialize(orderShipping);
+            string json = SendToEcom("ordershipping", payloadJson);
+
+            try
+            {
+                return Serialization.Deserialize<OrderMessageShippingResult>(json);
+            }
+            catch (Exception ex)
+            {
+                logger.Error(config.LSKey.Key, ex);
+                return new OrderMessageShippingResult()
+                {
+                    success = false,
+                    message = ex.Message
+                };
+            }
+        }
+
 
         #region private
 
@@ -324,7 +346,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private void CreateNotificationsFromOrderMessage(OrderMessage orderMsg)
+        private void CreateNotificationsFromOrderMessage(OrderMessageStatus orderMsg)
         {
             if (orderMsg == null || string.IsNullOrEmpty(orderMsg.MsgDetail))
                 return;     // nothing to save here

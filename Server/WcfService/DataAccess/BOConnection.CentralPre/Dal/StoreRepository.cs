@@ -21,14 +21,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlfrom = string.Empty;
         private string sqlfrominv = string.Empty;
 
-        public StoreRepository(BOConfiguration config) : base(config)
+        public StoreRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt.[Post Code],mt.[City],mt.[County],mt.[Country Code],mt.[Latitude],mt.[Longitude]," +
                         "mt.[Phone No_],mt.[Currency Code],mt.[Functionality Profile],mt.[Store VAT Bus_ Post_ Gr_],mt.[Click and Collect]," +
-                        "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID]," +
+                        "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID],tr.[Sales Type Filter]," +
                         "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
-            sqlfrom = " FROM [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+            if (LSCVersion > new Version("18.4"))
+            {
+                sqlcolumns += ",mt.[Calc Inv for Sourcing Location]";
+            }
+
+            sqlfrom = " FROM [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                      " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]";
 
             sqlcolumnsinv = "mt.[Store],st.[Name],st.[Address],st.[Post Code],st.[City],st.[County],st.[Country Code],st.[Latitude],st.[Longitude]," +
                             "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect]," +
@@ -206,8 +212,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
 
-                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter]" + sqlfrom +
-                                          " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
                                           " WHERE mt.[No_]=@id";
                     command.Parameters.AddWithValue("@id", storeId);
                     TraceSqlCommand(command);
@@ -233,8 +238,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter]" + sqlfrom +
-                                          " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
                                           ((clickAndCollectOnly) ? " WHERE mt.[Click and Collect]=1" : string.Empty) + 
                                           " ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
@@ -284,8 +288,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + ",tr.[Sales Type Filter] " + sqlfrom +
-                                          " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]" +
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
                                           sqlwhere + ((searchitems.Length == 1) ? ") OR" : ") AND") + sqlwhere2 + ") ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
                     connection.Open();
@@ -374,6 +377,32 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 Description = desc
                             });
                         }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        private List<SourcingLocation> GetSourcingLocation(string storeId)
+        {
+            List<SourcingLocation> list = new List<SourcingLocation>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Sourcing Location],[Priority],[Will Ship Orders],[Orders can be Collected],[Description] " +
+                        "FROM [" + navCompanyName + "LSC CO Sourcing Locations$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Delivery Store]=@id";
+                    command.Parameters.AddWithValue("@id", storeId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToSrcLoc(reader));
+                        }
+                        reader.Close();
                     }
                     connection.Close();
                 }
@@ -470,6 +499,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
         }
 
+        private SourcingLocation ReaderToSrcLoc(SqlDataReader reader)
+        {
+            return new SourcingLocation()
+            {
+                Id = SQLHelper.GetString(reader["Sourcing Location"]),
+                Priority = SQLHelper.GetInt32(reader["Priority"]),
+                CanShip = SQLHelper.GetBool(reader["Will Ship Orders"]),
+                CanCollect = SQLHelper.GetBool(reader["Orders can be Collected"]),
+                Description = SQLHelper.GetString(reader["Description"])
+            };
+        }
+
         private ReplStore ReaderToStore(SqlDataReader reader, bool invmode, out string timestamp)
         {
             ReplStore store = new ReplStore()
@@ -487,6 +528,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Latitute = SQLHelper.GetDecimal(reader, "Latitude"),
                 Longitude = SQLHelper.GetDecimal(reader, "Longitude"),
                 ClickAndCollect = SQLHelper.GetBool(reader["Click and Collect"]),
+                HospSalesTypes = SQLHelper.GetString(reader["Sales Type Filter"]),
 
                 State = string.Empty,
                 CultureName = string.Empty,
@@ -498,6 +540,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             if (string.IsNullOrWhiteSpace(store.Currency))
                 store.Currency = SQLHelper.GetString(reader["LCYCode"]);
+
+            if (LSCVersion > new Version("18.4"))
+            {
+                store.UseSourcingLocation = SQLHelper.GetBool(reader["Calc Inv for Sourcing Location"]);
+            }
 
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
             return store;
@@ -518,6 +565,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]),
                 WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]),
                 HospSalesTypes = GetSalesTypes(SQLHelper.GetString(reader["Sales Type Filter"])),
+                SourcingLocations = GetSourcingLocation(SQLHelper.GetString(reader["No_"])),
 
                 Address = new Address()
                 {
@@ -536,6 +584,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 store.Currency = new Currency(SQLHelper.GetString(reader["LCYCode"]));
             else
                 store.Currency = new Currency(cur);
+
+            if (LSCVersion > new Version("18.4"))
+            {
+                store.UseSourcingLocation = SQLHelper.GetBool(reader["Calc Inv for Sourcing Location"]);
+            }
 
             ImageRepository imgrepo = new ImageRepository(config);
             store.Images = imgrepo.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, includeDetails);

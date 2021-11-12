@@ -24,7 +24,13 @@ namespace LSOmni.DataAccess.Interface.BOConnection
     {
         int TimeoutInSeconds { set; }
         string Ping();
+
+        #region ScanPayGo
+
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
+        bool SecurityCheckProfile(string orderNo, string storeNo);
+
+        #endregion
 
         #region Contact
 

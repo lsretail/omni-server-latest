@@ -119,7 +119,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public ReplCurrency CurrencyGetByStoreId(string storeId)
         {
-            StoreRepository storeRep = new StoreRepository(config);
+            StoreRepository storeRep = new StoreRepository(config, LSCVersion);
             ReplStore store = storeRep.StoreGetById(storeId);
             return CurrencyGetById(store.Currency);
         }

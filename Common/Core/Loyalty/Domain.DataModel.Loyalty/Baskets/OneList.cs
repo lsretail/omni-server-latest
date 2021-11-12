@@ -124,6 +124,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember]
         public string SalesType { get; set; }
         [DataMember]
+        public string ShipToCountryCode { get; set; }
+        [DataMember]
         public virtual ObservableCollection<OneListItem> Items { get; set; }
         [DataMember]
         public virtual List<OneListPublishedOffer> PublishedOffers { get; set; }
@@ -159,7 +161,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             return clone;
         }
 
-        public void AddItem(OneListItem itemToAdd)
+        public void AddItem(OneListItem itemToAdd, bool moveExistingItemToTop = false)
         {
             OneListItem existingItem = this.Items.FirstOrDefault(x => x.HaveTheSameItemAndVariant(itemToAdd));
             if (existingItem == null)
@@ -169,6 +171,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             else
             {
                 existingItem.Quantity += itemToAdd.Quantity;
+
+                if (moveExistingItemToTop)
+                {
+                    Items.Remove(existingItem);
+                    Items.Insert(0, existingItem);
+                }
             }
             CalculateBasket();
         }

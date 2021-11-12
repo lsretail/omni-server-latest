@@ -351,7 +351,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             LSCentral.RootCustomerOrderCreateV5 root = new LSCentral.RootCustomerOrderCreateV5();
 
             List<LSCentral.CustomerOrderCreateCOHeaderV5> header = new List<LSCentral.CustomerOrderCreateCOHeaderV5>();
-            header.Add(new LSCentral.CustomerOrderCreateCOHeaderV5()
+            LSCentral.CustomerOrderCreateCOHeaderV5 head = new LSCentral.CustomerOrderCreateCOHeaderV5()
             {
                 DocumentID = string.Empty,
                 ExternalID = order.Id.ToUpper(),
@@ -383,10 +383,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 ShipOrder = (order.ShippingStatus != ShippingStatus.ShippigNotRequired && order.ShippingStatus != 0),
                 CreatedAtStore = order.StoreId,
                 RequestedDeliveryDate = order.RequestedDeliveryDate,
-                ShopPaygo = (order.OrderType == OrderType.ScanPayGo),
+                ScanPaygo = (order.OrderType == OrderType.ScanPayGo),
                 TerritoryCode = string.Empty
-            });
+            };
 
+            if (LSCVersion > new Version("18.5"))
+            {
+                head.ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode);
+                head.ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode);
+            }
+
+            header.Add(head);
             bool useHeaderCAC = false;
             string storeId = order.StoreId.ToUpper();
             if (order.OrderType == OrderType.ClickAndCollect && string.IsNullOrEmpty(order.CollectLocation) == false)
@@ -509,13 +516,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             //MobileTrans
             List<LSCentral.MobileTransaction> trans = new List<LSCentral.MobileTransaction>();
-            trans.Add(new LSCentral.MobileTransaction()
+            LSCentral.MobileTransaction head = new LSCentral.MobileTransaction()
             {
                 Id = list.Id,
                 StoreId = list.StoreId.ToUpper(),
                 TransactionType = 2,
                 EntryStatus = (int)EntryStatus.Normal,
                 MemberCardNo = XMLHelper.GetString(list.CardId),
+                TransDate = DateTime.Now,
+                PointsUsedInBasket = list.PointAmount,
 
                 // fill out null fields
                 CustomerId = string.Empty,
@@ -531,10 +540,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 RefundedReceiptNo = string.Empty,
                 SalesType = string.Empty,
                 StaffId = string.Empty,
-                TerminalId = string.Empty,
-                TransDate = DateTime.Now,
-                PointsUsedInBasket = list.PointAmount
-            });
+                TerminalId = string.Empty
+            };
+
+            if (LSCVersion > new Version("19.0"))
+            {
+                head.ShipToCountryRegionCode = XMLHelper.GetString(list.ShipToCountryCode);
+            }
+
+            trans.Add(head);
             root.MobileTransaction = trans.ToArray();
 
             //MobileTransLines

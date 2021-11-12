@@ -76,6 +76,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityMembershipCancel(contactNo, memberShipNo, comment);
         }
 
+        public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
+        {
+            return LSCentralWSBase.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
+        }
+
+        public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
+        {
+            return LSCentralWSBase.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
+        }
+
         #endregion
 
         #region Data Get (Replication)
@@ -138,6 +148,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<Membership> ActivityMembershipsGet(string contactNo)
         {
             return LSCentralWSBase.ActivityMembershipsGet(contactNo);
+        }
+
+        public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
+        {
+            return LSCentralWSBase.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
+        }
+
+        public virtual List<ActivityResource> ActivityResourceGet()
+        {
+            return LSCentralWSBase.ActivityResourceGet();
         }
 
         #endregion

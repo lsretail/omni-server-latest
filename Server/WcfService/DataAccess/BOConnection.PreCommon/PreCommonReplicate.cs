@@ -299,7 +299,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             case "Qty. per Unit of Measure":
                                 ReplPrice it = list.Find(f => f.ItemId == item && f.UnitOfMeasure == code);
                                 if (it != null)
-                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : XMLHelper.GetWebDecimal(field.Values[0]));
+                                    it.QtyPerUnitOfMeasure = (string.IsNullOrEmpty(field.Values[0]) ? 0 : ConvertTo.SafeDecimal(field.Values[0]));
                                 break;
                         }
                     }
@@ -327,29 +327,31 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplStore> list = rep.ReplicateStores(table);
+            string curcode = string.Empty;
+            try
+            {
+                NAVWebXml xml = new NAVWebXml();
+                string xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+                string xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table != null && table.NumberOfValues > 0)
+                {
+                    XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                    curcode = field.Values[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Warn(ex, "Failed to get Logical local currency");
+            }
 
-            NAVWebXml xml = new NAVWebXml();
             foreach (ReplStore store in list)
             {
                 if (string.IsNullOrWhiteSpace(store.Currency) == false)
                     continue;
 
-                try
-                {
-                    string xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
-                    string xmlResponse = RunOperation(xmlRequest, true);
-                    HandleResponseCode(ref xmlResponse);
-                    table = xml.GetGeneralWebResponseXML(xmlResponse);
-                    if (table != null && table.NumberOfValues > 0)
-                    {
-                        XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
-                        store.Currency = field.Values[0];
-                    }
-                }
-                catch (Exception ex)
-                {
-                    logger.Warn(ex, "Failed to get Logical local currency");
-                }
+                store.Currency = curcode;
             }
             return list;
         }
@@ -458,10 +460,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             it.OfferNo = field.Values[0];
                             break;
                         case "Type":
-                            it.Type = (ReplDiscountType)XMLHelper.GetWebInt(field.Values[0]);
+                            it.Type = (ReplDiscountType)ConvertTo.SafeInt(field.Values[0]);
                             break;
                         case "Discount Type":
-                            it.DiscountValueType = (DiscountValueType)XMLHelper.GetWebInt(field.Values[0]);
+                            it.DiscountValueType = (DiscountValueType)ConvertTo.SafeInt(field.Values[0]);
                             break;
                         case "Description":
                             it.Description = field.Values[0];
@@ -473,10 +475,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 it.Details += (string.IsNullOrEmpty(it.Details) ? string.Empty : "\r\n") + field.Values[0];
                             break;
                         case "Validation Period ID":
-                            it.ValidationPeriodId = XMLHelper.GetWebInt(field.Values[0]);
+                            it.ValidationPeriodId = ConvertTo.SafeInt(field.Values[0]);
                             break;
                         case "Discount Amount Value":
-                            amt = XMLHelper.GetWebDecimal(field.Values[0]);
+                            amt = ConvertTo.SafeDecimal(field.Values[0]);
                             break;
                     }
 
@@ -563,11 +565,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             break;
                         case "Type":
                             if (it != null)
-                                it.Type = (ReplDiscountType)XMLHelper.GetWebInt(field.Values[0]);
+                                it.Type = (ReplDiscountType)ConvertTo.SafeInt(field.Values[0]);
                             break;
                         case "Discount Type":
                             if (it != null)
-                                it.DiscountValueType = (DiscountValueType)XMLHelper.GetWebInt(field.Values[0]);
+                                it.DiscountValueType = (DiscountValueType)ConvertTo.SafeInt(field.Values[0]);
                             break;
                         case "Description":
                             if (it != null)
@@ -581,11 +583,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             break;
                         case "Validation Period ID":
                             if (it != null)
-                                it.ValidationPeriodId = XMLHelper.GetWebInt(field.Values[0]);
+                                it.ValidationPeriodId = ConvertTo.SafeInt(field.Values[0]);
                             break;
                         case "Discount Amount Value":
                             if (it != null)
-                                amt = XMLHelper.GetWebDecimal(field.Values[0]);
+                                amt = ConvertTo.SafeDecimal(field.Values[0]);
                             break;
                     }
                 }
@@ -912,6 +914,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 "Item No.", "Variant Code", "Store No.", "Serial No.", "Lot No.", "Net Inventory", "Replication Counter"
             };
 
+            if (LSCVersion >= new Version("18.3"))
+            {
+                fields.Add("Sourcing Location Inventory");
+            }
+
             // filter
             List<XMLFieldData> filter = new List<XMLFieldData>();
             filter.Add(new XMLFieldData()
@@ -920,17 +927,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 Values = new List<string>() { storeId }
             });
 
-            if (fullReplication == false)
-            {
-                if (string.IsNullOrWhiteSpace(lastKey))
-                    lastKey = "0";
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
 
-                filter.Add(new XMLFieldData()
-                {
-                    FieldName = "Replication Counter",
-                    Values = new List<string>() { ">" + lastKey }
-                });
-            }
+            filter.Add(new XMLFieldData()
+            {
+                FieldName = "Replication Counter",
+                Values = new List<string>() { ">" + lastKey }
+            });
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetBatchWebRequestXML("LSC Inventory Lookup Table", fields, filter, (fullReplication) ? lastKey : string.Empty, batchSize);

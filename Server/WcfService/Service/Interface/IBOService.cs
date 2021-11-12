@@ -27,10 +27,10 @@ namespace LSOmni.Service
         #region OrderMessage
 
         [OperationContract]
-        void OrderMessageSave(string orderId, int status, string subject, string message);
+        bool OrderMessageSave(string orderId, int status, string subject, string message);
 
         [OperationContract]
-        void OrderMessageStatusUpdate(OrderMessage orderMessage);
+        bool OrderMessageStatusUpdate(OrderMessageStatus orderMessage);
 
         [OperationContract]
         string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference);
@@ -40,6 +40,9 @@ namespace LSOmni.Service
 
         [OperationContract]
         bool OrderMessagePayment(OrderMessagePayment orderPayment, ref string message);
+
+        [OperationContract]
+        OrderMessageShippingResult OrderMessageShipping(OrderMessageShipping orderShipping);
 
         #endregion OrderMessage
 
@@ -63,7 +66,7 @@ namespace LSOmni.Service
         #region LSRecommend
 
         [OperationContract]
-        void LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock);
+        bool LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock);
 
         #endregion
     }

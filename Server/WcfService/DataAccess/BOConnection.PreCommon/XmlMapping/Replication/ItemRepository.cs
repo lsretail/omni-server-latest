@@ -30,7 +30,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Code": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
                         case "Item No.": rec.ItemId = field.Values[i]; break;
-                        case "Qty. per Unit of Measure": rec.QtyPerUom = XMLHelper.GetWebDecimal(field.Values[i]); break;
+                        case "Qty. per Unit of Measure": rec.QtyPerUom = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
                 rec.Decimals = 0;
@@ -105,7 +105,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     switch (field.FieldName)
                     {
                         case "Value": rec.Value = field.Values[i]; break;
-                        case "Logical Order": rec.DisplayOrder = XMLHelper.GetWebInt(field.Values[i]); break;
+                        case "Logical Order": rec.DisplayOrder = ConvertTo.SafeInt(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);
@@ -155,7 +155,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Product Group Code": rec.ProductGroupId = field.Values[i]; break;
                         case "Item Category Code": rec.ItemCategoryCode = field.Values[i]; break;
                         case "Sales Unit of Measure": rec.SalesUomId = field.Values[i]; break;
-                        case "Blocked": rec.Blocked = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Blocked": rec.Blocked = ConvertTo.SafeBoolean(field.Values[i]); break;
                         case "Season Code": rec.SeasonCode = field.Values[i]; break;
                         case "Item Family Code": rec.ItemFamilyCode = field.Values[i]; break;
                     }
@@ -226,8 +226,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "No.": rec.Number = field.Values[i]; break;
                         case "Unit of Measure": rec.UnitOfMeasure = field.Values[i]; break;
                         case "Store No.": rec.StoreId = field.Values[i]; break;
-                        case "Available Qty.": rec.Quantity = XMLHelper.GetWebDecimal(field.Values[i]); break;
-                        case "Type": rec.IsDeal = XMLHelper.GetWebBool(field.Values[i]); break;
+                        case "Available Qty.": rec.Quantity = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Type": rec.IsDeal = ConvertTo.SafeBoolean(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

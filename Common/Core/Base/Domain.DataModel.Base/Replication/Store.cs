@@ -115,6 +115,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public bool ClickAndCollect { get; set; }
         [DataMember]
+        public bool UseSourcingLocation { get; set; }
+        [DataMember]
         public string MainMenuID { get; set; }
+        [DataMember]
+        public string HospSalesTypes { get; set; }
     }
 }

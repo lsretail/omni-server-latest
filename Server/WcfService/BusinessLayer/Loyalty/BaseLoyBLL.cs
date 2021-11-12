@@ -128,7 +128,7 @@ namespace LSOmni.BLL.Loyalty
                 if (ecomUrl.ToUpper() == "DEMO")
                 {
                     logger.Info(config.LSKey.Key, "ECOM Demo mode on, return OK");
-                    return "{ \"success\": true, \"message\": \"Payment posted successfully\" }";
+                    return "{ \"success\": true, \"message\": \"Command posted successfully\" }";
                 }
 
                 Uri url = new Uri(ecomUrl + "/" + command);

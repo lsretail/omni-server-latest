@@ -198,7 +198,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             trans.Terminal.Staff = new Staff(SQLHelper.GetString(reader["Staff ID"]));
 
-            StoreRepository strep = new StoreRepository(config);
+            StoreRepository strep = new StoreRepository(config, LSCVersion);
             trans.Terminal.Store = strep.StoreLoyGetById(SQLHelper.GetString(reader["Store No_"]), false);
 
             DateTime navdate = SQLHelper.GetDateTime(reader["Date"]);
