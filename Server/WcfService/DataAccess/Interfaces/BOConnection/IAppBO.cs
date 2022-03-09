@@ -11,6 +11,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
     //Inventory Interface to the back office, Nav, Ax, etc.
     public interface IAppBO
     {
+        int TimeoutInSeconds { set; }
+
         Terminal TerminalGetById(string terminalId);
         UnitOfMeasure UnitOfMeasureGetById(string id);
         VariantRegistration VariantRegGetById(string id, string itemId);

@@ -18,7 +18,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             // using database lookup
             if (usedatabase)
             {
-                MyCustomRepository rep = new MyCustomRepository(config, NAVVersion);
+                MyCustomRepository rep = new MyCustomRepository(config, LSCVersion);
                 return rep.GetMyData(data);
             }
             else

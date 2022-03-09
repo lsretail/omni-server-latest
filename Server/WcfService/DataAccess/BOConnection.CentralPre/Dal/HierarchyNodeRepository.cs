@@ -364,7 +364,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 IsMemberClub = SQLHelper.GetBool(reader["Member Type"]),
                 MemberValue = SQLHelper.GetString(reader["Member Value"]),
                 DealPrice = SQLHelper.GetDecimal(reader, "Deal Price"),
-                ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
+                ValidationPeriod = SQLHelper.GetString(reader["Validation Period ID"]),
                 IsActive = SQLHelper.GetBool(reader["Status"]),
                 ItemUOM = SQLHelper.GetString(reader["Item Unit of Measure"]),
                 SortOrder = SQLHelper.GetInt32(reader["Sort Order"])

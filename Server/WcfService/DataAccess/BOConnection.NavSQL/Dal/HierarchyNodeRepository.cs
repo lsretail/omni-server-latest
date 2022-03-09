@@ -322,7 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 IsMemberClub = SQLHelper.GetBool(reader["Member Type"]),
                 MemberValue = SQLHelper.GetString(reader["Member Value"]),
                 DealPrice = SQLHelper.GetDecimal(reader, "Deal Price"),
-                ValidationPeriod = SQLHelper.GetInt32(reader["Validation Period ID"]),
+                ValidationPeriod = SQLHelper.GetString(reader["Validation Period ID"]),
                 IsActive = SQLHelper.GetBool(reader["Status"])
             };
         }

@@ -14,11 +14,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
     {
         // Key: No.
         const int TABLEID = 27;
+        private int TABLEHTMLID = 10001411;
 
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ItemRepository(BOConfiguration config) : base(config)
+        public ItemRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt2.[LSC Keying in Price],mt2.[LSC Keying in Quantity],mt2.[LSC No Discount Allowed]," +
                          "mt2.[LSC Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt2.[LSC Zero Price Valid]," +
@@ -41,8 +42,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
 
             sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] " +
-                      "LEFT OUTER JOIN [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
+                      "INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] ";
+
+            if (LSCVersion >= new Version("19.2"))
+            {
+                sqlfrom += "LEFT OUTER JOIN [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_] AND ih.[Language]=''";
+                TABLEHTMLID = 10001410;
+            }
+            else
+            {
+                sqlfrom += "LEFT OUTER JOIN [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
+            }
         }
 
         public List<ReplItem> ReplicateItems(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -76,7 +86,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
                 // get item HTML
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref maxKey);
-                List<JscActions> itemact = LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining);
+                List<JscActions> itemact = LoadActions(fullReplication, TABLEHTMLID, batchSize, ref tmplastkey, ref recordsRemaining);
                 if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
                     mainlastkey = tmplastkey;
 
@@ -273,7 +283,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 // Check for actions from Item HTML
                 tmplastkey = lastKey;
                 recordsRemaining += GetRecordCount(10001411, tmplastkey, string.Empty, keys, ref maxKey);
-                itemact.AddRange(LoadActions(fullReplication, 10001411, batchSize, ref tmplastkey, ref recordsRemaining));
+                itemact.AddRange(LoadActions(fullReplication, TABLEHTMLID, batchSize, ref tmplastkey, ref recordsRemaining));
                 if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
                     mainlastkey = tmplastkey;
 
@@ -579,7 +589,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Html] FROM [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Item No_]=@id";
+                    if (LSCVersion >= new Version("19.2"))
+                        command.CommandText = "SELECT [Html] FROM [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Item No_]=@id AND [Language]=''";
+                    else
+                        command.CommandText = "SELECT [Html] FROM [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Item No_]=@id";
+                    
                     command.Parameters.AddWithValue("@id", itemId);
                     TraceSqlCommand(command);
                     connection.Open();

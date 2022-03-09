@@ -13,8 +13,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class OrderMapping : BaseMapping
     {
-        private Version LSCVersion;
-
         public OrderMapping(Version lscVersion, bool json)
         {
             LSCVersion = lscVersion;
@@ -358,7 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 MemberCardNo = XMLHelper.GetString(order.CardId),
                 CustomerNo = XMLHelper.GetString(order.CustomerId),
                 Name = XMLHelper.GetString(order.ContactName),
-                SourceType = 1, //NAV POS = 0, Omni = 1
+                SourceType = "1", //NAV POS = 0, Omni = 1
                 Address = XMLHelper.GetString(order.ContactAddress.Address1),
                 Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
                 HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
@@ -387,7 +385,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TerritoryCode = string.Empty
             };
 
-            if (LSCVersion > new Version("18.5"))
+            if (LSCVersion >= new Version("19.0"))
             {
                 head.ShippingAgentCode = XMLHelper.GetString(order.ShippingAgentCode);
                 head.ShippingAgentServiceCode = XMLHelper.GetString(order.ShippingAgentServiceCode);
@@ -444,7 +442,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     TerminalNo = string.Empty
                 };
 
-                if (LSCVersion > new Version("18.2"))
+                if (LSCVersion >= new Version("18.2"))
                     ln.ValidateTaxParameter = line.ValidateTax;
 
                 orderLines.Add(ln);
@@ -543,7 +541,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TerminalId = string.Empty
             };
 
-            if (LSCVersion > new Version("19.0"))
+            if (LSCVersion >= new Version("19.0"))
             {
                 head.ShipToCountryRegionCode = XMLHelper.GetString(list.ShipToCountryCode);
             }

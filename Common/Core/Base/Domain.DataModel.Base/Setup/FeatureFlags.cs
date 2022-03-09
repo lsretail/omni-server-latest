@@ -140,6 +140,24 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "AUDKENNI LOGIN ENABLED":
                     flagName = FeatureFlagName.AudkenniLoginEnabled;
                     break;
+                case "FACEBOOK LOGIN ENABLED":
+                    flagName = FeatureFlagName.FacebookLoginEnabled;
+                    break;
+                case "GOOGLE LOGIN ENABLED":
+                    flagName = FeatureFlagName.GoogleLoginEnabled;
+                    break;
+                case "GOOGLE IOS CLIENT ID":
+                    flagName = FeatureFlagName.GoogleIosClientId;
+                    break;
+                case "APPLE LOGIN ENABLED":
+                    flagName = FeatureFlagName.AppleLoginEnabled;
+                    break;
+                case "OPEN GATE":
+                    flagName = FeatureFlagName.OpenGate;
+                    break;
+                case "CLOSE GATE":
+                    flagName = FeatureFlagName.CloseGate;
+                    break;
             }
 
             Flags.Add(new FeatureFlag()
@@ -213,49 +231,62 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
     public enum FeatureFlagName
     {
-        None,
-        AllowAutoLogoff,
-        AutoLogOffAfterMin,
-        AllowOffline,
-        ExitAfterEachTransaction,
-        SendReceiptInEmail,
-        ShowNumberPad,
-        UseLoyaltySystem,
-        PosShowInventory,
-        PosInventoryLookup,
-        SettingsPassword,
-        HideVoidedTransaction,
-        AllowCentralLogin,
+        None = 100,
+        AllowAutoLogoff = 101,
+        AutoLogOffAfterMin = 102,
+        AllowOffline = 103,
+        ExitAfterEachTransaction = 104,
+        SendReceiptInEmail = 105,
+        ShowNumberPad = 106,
+        UseLoyaltySystem = 107,
+        PosShowInventory = 108,
+        PosInventoryLookup = 109,
+        SettingsPassword = 110,
+        HideVoidedTransaction = 111,
+        AllowCentralLogin = 112,
 
         //ScanPayGo
-        AllowAnonymousUser,
-        AllowShopHome,
-        DeviceType,
-        CatalogType,
-        DefaultWebStore,
-        AllowedPaymentWithPOS,
-        AllowedPaymentWithCard,
-        AllowedPaymentWithLoyalty,
-        CardPaymentType,
-        CheckStatusTimer,
-        TermsAndConditionURL,
-        TermsAndConditionVersion,
+        AllowAnonymousUser = 200,
+        AllowShopHome = 201,
+        DeviceType = 202,
+        CatalogType = 203,
+        DefaultWebStore = 204,
+        AllowedPaymentWithPOS = 205,
+        AllowedPaymentWithCard = 206,
+        AllowedPaymentWithLoyalty = 207,
+        CardPaymentType = 208,
+        CheckStatusTimer = 209,
+        TermsAndConditionURL = 210,
+        TermsAndConditionVersion = 211,
+        OpenGate = 212,
+        CloseGate = 213,
 
         //ScanPayGoPaymentFlags
-        EnablePlatformPayment,
-        PlatformPaymentCurrencyCode,
-        PlatformPaymentCountryCode,
-        GooglePayGatewayJson,
-        GooglePayAllowedAuthMethodsJson,
-        GooglePayAllowedCardNetworksJson,
-        GooglePayMerchantName,
+        EnablePlatformPayment = 300,
+        PlatformPaymentCurrencyCode = 301,
+        PlatformPaymentCountryCode = 302,
+        GooglePayGatewayJson = 303,
+        GooglePayAllowedAuthMethodsJson = 304,
+        GooglePayAllowedCardNetworksJson = 305,
+        GooglePayMerchantName = 306,
 
+        //Alternate Logins
         //AudkenniFlags
-        AudkenniBaseURL,
-        AudkenniClientId,
-        AudkenniRedirectURL,
-        AudkenniSecret,
-        AudkenniMessageToUser,
-        AudkenniLoginEnabled
+        AudkenniBaseURL = 400,
+        AudkenniClientId = 401,
+        AudkenniRedirectURL = 402,
+        AudkenniSecret = 403,
+        AudkenniMessageToUser = 404,
+        AudkenniLoginEnabled = 405,
+
+        //Google
+        GoogleLoginEnabled = 410,
+        GoogleIosClientId = 411,
+
+        //Facebook
+        FacebookLoginEnabled = 420,
+
+        //Apple
+        AppleLoginEnabled = 430,
     }
 }

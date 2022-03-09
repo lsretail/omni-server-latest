@@ -45,7 +45,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ReplBarcodeMask()
         {
-            Del = false;
+            IsDeleted = false;
             Mask = string.Empty;
             Description = string.Empty;
             Prefix = string.Empty;
@@ -68,7 +68,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public bool Del { get; set; }
+        public bool IsDeleted { get; set; }
         [DataMember]
         public string Mask { get; set; }
         [DataMember]

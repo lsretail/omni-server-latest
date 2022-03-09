@@ -246,7 +246,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             if (includeItems)
             {
-                ItemRepository itrep = new ItemRepository(config);
+                ItemRepository itrep = new ItemRepository(config, LSCVersion);
                 prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail);
                 ImageRepository imrep = new ImageRepository(config);
                 prgr.Images = imrep.ImageGetByKey("LSC Retail Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);

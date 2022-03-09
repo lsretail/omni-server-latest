@@ -12,52 +12,59 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class ContactMapping : BaseMapping
     {
-        public ContactMapping(bool json)
+        public ContactMapping(bool json, Version version)
         {
             IsJson = json;
+            LSCVersion = version;
         }
 
         public LSCentral.RootMemberContactCreate MapToRoot(MemberContact contact)
         {
             Address addr = (contact.Addresses == null || contact.Addresses.Count == 0) ? new Address() : contact.Addresses[0];
 
-            List<LSCentral.ContactCreateParameters> member = new List<LSCentral.ContactCreateParameters>()
+            List<LSCentral.ContactCreateParameters> members = new List<LSCentral.ContactCreateParameters>();
+            LSCentral.ContactCreateParameters mem = new LSCentral.ContactCreateParameters()
             {
-                new LSCentral.ContactCreateParameters()
-                {
-                    ContactID = XMLHelper.GetString(contact.Id),
-                    AccountID = XMLHelper.GetString(contact.Account?.Id),
-                    ClubID = XMLHelper.GetString(contact.Account?.Scheme?.Club?.Id),
-                    SchemeID = XMLHelper.GetString(contact.Account?.Scheme?.Id),
-                    ExternalID = XMLHelper.GetString(contact.AlternateId),
+                ContactID = XMLHelper.GetString(contact.Id),
+                AccountID = XMLHelper.GetString(contact.Account?.Id),
+                ClubID = XMLHelper.GetString(contact.Account?.Scheme?.Club?.Id),
+                SchemeID = XMLHelper.GetString(contact.Account?.Scheme?.Id),
+                ExternalID = XMLHelper.GetString(contact.AlternateId),
 
-                    FirstName = contact.FirstName,
-                    MiddleName = XMLHelper.GetString(contact.MiddleName),
-                    LastName = contact.LastName,
-                    DateOfBirth = contact.BirthDay,
-                    Email = contact.Email.ToLower(),
-                    Gender = ((int)contact.Gender).ToString(),
+                FirstName = contact.FirstName,
+                MiddleName = XMLHelper.GetString(contact.MiddleName),
+                LastName = contact.LastName,
+                DateOfBirth = contact.BirthDay,
+                Email = contact.Email.ToLower(),
+                Gender = ((int)contact.Gender).ToString(),
 
-                    Address1 = XMLHelper.GetString(addr.Address1),
-                    Address2 = XMLHelper.GetString(addr.Address2),
-                    City = XMLHelper.GetString(addr.City),
-                    Country = XMLHelper.GetString(addr.Country),
-                    PostCode = XMLHelper.GetString(addr.PostCode),
-                    StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
-                    Phone = XMLHelper.GetString(addr.PhoneNumber),
-                    MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
+                Address1 = XMLHelper.GetString(addr.Address1),
+                Address2 = XMLHelper.GetString(addr.Address2),
+                City = XMLHelper.GetString(addr.City),
+                Country = XMLHelper.GetString(addr.Country),
+                PostCode = XMLHelper.GetString(addr.PostCode),
+                StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
+                Phone = XMLHelper.GetString(addr.PhoneNumber),
+                MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
-                    LoginID = contact.UserName.ToLower(),
-                    Password = contact.Password,
-                    DeviceID = contact.LoggedOnToDevice.Id,
-                    DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
+                LoginID = contact.UserName.ToLower(),
+                Password = contact.Password,
+                AuthenticationId = contact.AuthenticationId,
+                Authenticator = contact.Authenticator,
+                DeviceID = contact.LoggedOnToDevice.Id,
+                DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
 
-                    ExternalSystem = string.Empty
-                }
+                ExternalSystem = string.Empty
             };
 
+            if (LSCVersion >= new Version("19.2"))
+            {
+                mem.SendReceiptbyEmail = ((int)contact.SendReceiptByEMail).ToString();
+            }
+
             LSCentral.RootMemberContactCreate root = new LSCentral.RootMemberContactCreate();
-            root.ContactCreateParameters = member.ToArray();
+            members.Add(mem);
+            root.ContactCreateParameters = members.ToArray();
 
             List<LSCentral.MemberAttributeValue> attr = new List<LSCentral.MemberAttributeValue>();
             if (contact.Profiles != null)
@@ -82,33 +89,36 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
         {
             Address addr = (contact.Addresses == null || contact.Addresses.Count == 0) ? new Address() : contact.Addresses[0];
 
-            List<LSCentral.ContactCreateParameters1> member = new List<LSCentral.ContactCreateParameters1>()
+            List<LSCentral.ContactCreateParameters1> member = new List<LSCentral.ContactCreateParameters1>();
+            LSCentral.ContactCreateParameters1 mem = new LSCentral.ContactCreateParameters1()
             {
-                new LSCentral.ContactCreateParameters1()
-                {
-                    ContactID = XMLHelper.GetString(contact.Id),
-                    AccountID = XMLHelper.GetString(accountId),
-                    ExternalID = XMLHelper.GetString(contact.AlternateId),
+                ContactID = XMLHelper.GetString(contact.Id),
+                AccountID = XMLHelper.GetString(accountId),
+                ExternalID = XMLHelper.GetString(contact.AlternateId),
 
-                    FirstName = contact.FirstName,
-                    MiddleName = XMLHelper.GetString(contact.MiddleName),
-                    LastName = contact.LastName,
-                    DateOfBirth = contact.BirthDay,
-                    Email = contact.Email,
-                    Gender = ((int)contact.Gender).ToString(),
+                FirstName = contact.FirstName,
+                MiddleName = XMLHelper.GetString(contact.MiddleName),
+                LastName = contact.LastName,
+                DateOfBirth = contact.BirthDay,
+                Email = contact.Email,
+                Gender = ((int)contact.Gender).ToString(),
 
-                    Address1 = XMLHelper.GetString(addr.Address1),
-                    Address2 = XMLHelper.GetString(addr.Address2),
-                    City = XMLHelper.GetString(addr.City),
-                    Country = XMLHelper.GetString(addr.Country),
-                    PostCode = XMLHelper.GetString(addr.PostCode),
-                    StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
-                    Phone = XMLHelper.GetString(addr.PhoneNumber),
-                    MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
+                Address1 = XMLHelper.GetString(addr.Address1),
+                Address2 = XMLHelper.GetString(addr.Address2),
+                City = XMLHelper.GetString(addr.City),
+                Country = XMLHelper.GetString(addr.Country),
+                PostCode = XMLHelper.GetString(addr.PostCode),
+                StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
+                Phone = XMLHelper.GetString(addr.PhoneNumber),
+                MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
-                    ExternalSystem = string.Empty
-                }
+                ExternalSystem = string.Empty
             };
+
+            if (LSCVersion >= new Version("19.2"))
+            {
+                mem.SendReceiptbyEmail = ((int)contact.SendReceiptByEMail).ToString();
+            }
 
             List<LSCentral.MemberAttributeValue1> attr = new List<LSCentral.MemberAttributeValue1>();
             if (contact.Profiles != null)
@@ -123,6 +133,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 }
             }
 
+            member.Add(mem);
             LSCentral.RootMemberContactCreate1 root = new LSCentral.RootMemberContactCreate1()
             {
                 ContactCreateParameters = member.ToArray(),
@@ -206,6 +217,86 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
         }
 
         public MemberContact MapFromRootToLogonContact(LSCentral.RootMemberLogon root, decimal pointBalance)
+        {
+            if (root.MemberContact == null)
+                throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "No Contact found");
+
+            LSCentral.MemberContact3 contact = root.MemberContact.FirstOrDefault();
+            MemberContact memberContact = new MemberContact()
+            {
+                Id = contact.ContactNo,
+                AlternateId = contact.ExternalID,
+                Email = contact.EMail,
+                FirstName = contact.FirstName,
+                MiddleName = contact.MiddleName,
+                LastName = contact.Surname,
+                Gender = (Gender)Convert.ToInt32(contact.Gender),
+                MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
+            };
+
+            memberContact.Addresses = new List<Address>();
+            memberContact.Addresses.Add(new Address()
+            {
+                Type = AddressType.Residential,
+                Address1 = contact.Address,
+                Address2 = contact.Address2,
+                City = contact.City,
+                PostCode = contact.PostCode,
+                StateProvinceRegion = contact.TerritoryCode,
+                Country = contact.Country,
+                PhoneNumber = contact.PhoneNo,
+                CellPhoneNumber = contact.MobilePhoneNo
+            });
+
+            memberContact.Account = new Account(contact.AccountNo);
+            memberContact.Account.PointBalance = (long)pointBalance;
+            memberContact.Account.Scheme = new Scheme(contact.SchemeCode);
+            memberContact.Account.Scheme.Club = new Club(contact.ClubCode);
+
+            if (root.MemberClub != null)
+            {
+                memberContact.Account.Scheme.Club.Name = root.MemberClub.FirstOrDefault().Description;
+            }
+
+            if (root.MembershipCard != null)
+            {
+                foreach (LSCentral.MembershipCard4 card in root.MembershipCard)
+                {
+                    memberContact.Cards.Add(new Card()
+                    {
+                        Id = card.CardNo,
+                        BlockedBy = card.Blockedby,
+                        BlockedReason = card.ReasonBlocked,
+                        DateBlocked = ConvertTo.SafeJsonDate(card.DateBlocked, IsJson),
+                        LinkedToAccount = card.LinkedtoAccount,
+                        ClubId = card.ClubCode,
+                        ContactId = card.ContactNo,
+                        Status = (CardStatus)Convert.ToInt32(card.Status)
+                    });
+                }
+            }
+
+            if (root.MemberAttributeList != null)
+            {
+                foreach (LSCentral.MemberAttributeList3 attr in root.MemberAttributeList)
+                {
+                    if (attr.Type != "0" || attr.AttributeType != "4")
+                        continue;
+
+                    memberContact.Profiles.Add(new Profile()
+                    {
+                        Id = attr.Code,
+                        Description = attr.Description,
+                        ContactValue = (attr.Value.ToUpper().Equals("YES")),
+                        DataType = (ProfileDataType)Convert.ToInt32(attr.AttributeType)
+                    });
+                }
+            }
+            return memberContact;
+        }
+
+        public MemberContact MapFromRootToLogonAuth(LSCentral.RootMemberauthLogin root, decimal pointBalance)
         {
             if (root.MemberContact == null)
                 throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "No Contact found");

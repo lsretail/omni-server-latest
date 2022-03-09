@@ -74,5 +74,10 @@ namespace LSOmni.BLL.Loyalty
         {
             return BOLoyConnection.SecurityCheckProfile(orderNo, storeNo);
         }
+
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        {
+            return BOLoyConnection.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping);
+        }
     }
 }

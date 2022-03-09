@@ -127,6 +127,16 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
         }
 
+        public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
+        {
+            if (NAVVersion < new Version("17.5"))
+            {
+                messageString = "Not Supported";
+                return false;
+            }
+            return LSCWSBase.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
+        }
+
         #endregion
 
         #region Data Get (Replication)

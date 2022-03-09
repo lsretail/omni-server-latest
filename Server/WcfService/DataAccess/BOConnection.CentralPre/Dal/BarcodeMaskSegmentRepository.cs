@@ -85,7 +85,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 {
                                     MaskId = Convert.ToInt32(par[0]),
                                     Number = Convert.ToInt32(par[1]),
-                                    Del = true
+                                    IsDeleted = true
                                 });
                                 continue;
                             }

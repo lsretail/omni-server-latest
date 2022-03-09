@@ -607,6 +607,101 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
 
         private void AddEComTableData(XElement body, Version navVer)
         {
+            // Store
+            AddTable(body, 99001470, false);
+            AddField(body, 99001470, 1);
+            AddField(body, 99001470, 3);
+            AddField(body, 99001470, 5);
+            AddField(body, 99001470, 7);
+            AddField(body, 99001470, 8);
+            AddField(body, 99001470, 13);
+            AddField(body, 99001470, 14);
+            AddField(body, 99001470, 17);
+            AddField(body, 99001470, 70);
+            AddField(body, 99001470, 182);
+            AddField(body, 99001470, 160);
+            AddField(body, 99001470, 740);
+            AddField(body, 99001470, 741);
+            AddField(body, 99001470, 745);
+
+            // Vendors
+            AddTable(body, 23, false);
+            AddField(body, 23, 1);
+            AddField(body, 23, 2);
+            AddField(body, 23, 39);
+            AddField(body, 23, 54);
+
+            // Tender Type
+            AddTable(body, 99001462, false);
+            AddField(body, 99001462, 1);
+            AddField(body, 99001462, 5);
+            AddField(body, 99001462, 10);
+            AddField(body, 99001462, 11);
+            AddField(body, 99001462, 25);
+            AddField(body, 99001462, 26);
+            AddField(body, 99001462, 30);
+            AddField(body, 99001462, 35);
+            AddField(body, 99001462, 40);
+            AddField(body, 99001462, 110);
+            AddField(body, 99001462, 111);
+            AddField(body, 99001462, 115);
+            AddField(body, 99001462, 120);
+            AddField(body, 99001462, 125);
+            AddField(body, 99001462, 225);
+            AddField(body, 99001462, 305);
+            AddField(body, 99001462, 390);
+
+            // Collection Framework
+            AddTable(body, 10001430, false);
+            AddField(body, 10001430, 1);
+            AddField(body, 10001430, 2);
+            AddField(body, 10001430, 3);
+            AddField(body, 10001430, 4);
+
+            // Data Translation Lang Code
+            AddTable(body, 10000972, false);
+            AddField(body, 10000972, 1);
+
+            // Shipping agent
+            AddTable(body, 291, false);
+            AddField(body, 291, 1);
+            AddField(body, 291, 2);
+            AddField(body, 291, 3);
+            AddField(body, 291, 4);
+
+            // Member Contact
+            AddTable(body, 99009002, false);
+            AddField(body, 99009002, 1);
+            AddField(body, 99009002, 2);
+            AddField(body, 99009002, 3);
+            AddField(body, 99009002, 5);
+            AddField(body, 99009002, 10);
+            AddField(body, 99009002, 13);
+            AddField(body, 99009002, 14);
+            AddField(body, 99009002, 15);
+            AddField(body, 99009002, 17);
+            AddField(body, 99009002, 18);
+            AddField(body, 99009002, 19);
+            AddField(body, 99009002, 20);
+            AddField(body, 99009002, 21);
+            AddField(body, 99009002, 26);
+            AddField(body, 99009002, 27);
+            AddField(body, 99009002, 30);
+            AddField(body, 99009002, 31);
+            AddField(body, 99009002, 35);
+            AddField(body, 99009002, 100);
+            AddField(body, 99009002, 5054);
+            AddField(body, 99009002, 5055);
+            AddField(body, 99009002, 5056);
+
+            // Country_Region
+            AddTable(body, 9, false);
+            AddField(body, 9, 1);
+            AddField(body, 9, 2);
+
+            if (navVer >= new Version("19.3"))
+                return;
+
             // Item
             AddTable(body, 27, true);
             AddField(body, 27, 1);
@@ -623,7 +718,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 27, 5425);
             AddField(body, 27, 5426);
             AddField(body, 27, 5702);
-            AddField(body, 27, (navVer > new Version("14.2")) ? 10000703 : 5704);
+            AddField(body, 27, 10000703);
             AddField(body, 27, 10001401);
             AddField(body, 27, 99001463);
             AddField(body, 27, 99001480);
@@ -635,11 +730,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 5722, 3);
 
             // Product Group
-            int pgtableid = (navVer > new Version("14.2")) ? 10000705 : 5723;
-            AddTable(body, pgtableid, false);
-            AddField(body, pgtableid, 1);
-            AddField(body, pgtableid, 2);
-            AddField(body, pgtableid, 3);
+            AddTable(body, 10000705, false);
+            AddField(body, 10000705, 1);
+            AddField(body, 10000705, 2);
+            AddField(body, 10000705, 3);
 
             // Hierarchy
             AddTable(body, 10000920, false);
@@ -721,13 +815,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 5404, 1);
             AddField(body, 5404, 2);
             AddField(body, 5404, 3);
-
-            // Collection Framework
-            AddTable(body, 10001430, false);
-            AddField(body, 10001430, 1);
-            AddField(body, 10001430, 2);
-            AddField(body, 10001430, 3);
-            AddField(body, 10001430, 4);
 
             // WI Discounts
             AddTable(body, 10012862, true);
@@ -823,50 +910,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 330, 99001450);
             AddField(body, 330, 99001451);
 
-            // Vendors
-            AddTable(body, 23, false);
-            AddField(body, 23, 1);
-            AddField(body, 23, 2);
-            AddField(body, 23, 39);
-            AddField(body, 23, 54);
-
-            // Store
-            AddTable(body, 99001470, false);
-            AddField(body, 99001470, 1);
-            AddField(body, 99001470, 3);
-            AddField(body, 99001470, 5);
-            AddField(body, 99001470, 7);
-            AddField(body, 99001470, 8);
-            AddField(body, 99001470, 13);
-            AddField(body, 99001470, 14);
-            AddField(body, 99001470, 17);
-            AddField(body, 99001470, 70);
-            AddField(body, 99001470, 182);
-            AddField(body, 99001470, 160);
-            AddField(body, 99001470, 740);
-            AddField(body, 99001470, 741);
-            AddField(body, 99001470, 745);
-
-            // Tender Type
-            AddTable(body, 99001462, false);
-            AddField(body, 99001462, 1);
-            AddField(body, 99001462, 5);
-            AddField(body, 99001462, 10);
-            AddField(body, 99001462, 11);
-            AddField(body, 99001462, 25);
-            AddField(body, 99001462, 26);
-            AddField(body, 99001462, 30);
-            AddField(body, 99001462, 35);
-            AddField(body, 99001462, 40);
-            AddField(body, 99001462, 110);
-            AddField(body, 99001462, 111);
-            AddField(body, 99001462, 115);
-            AddField(body, 99001462, 120);
-            AddField(body, 99001462, 125);
-            AddField(body, 99001462, 225);
-            AddField(body, 99001462, 305);
-            AddField(body, 99001462, 390);
-
             // VAT Posting Setup
             AddTable(body, 325, false);
             AddField(body, 325, 1);
@@ -895,51 +938,64 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 10000971, 2);
             AddField(body, 10000971, 3);
             AddField(body, 10000971, 10);
-
-            // Data Translation Lang Code
-            AddTable(body, 10000972, false);
-            AddField(body, 10000972, 1);
-
-            // Shipping agent
-            AddTable(body, 291, false);
-            AddField(body, 291, 1);
-            AddField(body, 291, 2);
-            AddField(body, 291, 3);
-            AddField(body, 291, 4);
-
-            // Member Contact
-            AddTable(body, 99009002, false);
-            AddField(body, 99009002, 1);
-            AddField(body, 99009002, 2);
-            AddField(body, 99009002, 3);
-            AddField(body, 99009002, 5);
-            AddField(body, 99009002, 10);
-            AddField(body, 99009002, 13);
-            AddField(body, 99009002, 14);
-            AddField(body, 99009002, 15);
-            AddField(body, 99009002, 17);
-            AddField(body, 99009002, 18);
-            AddField(body, 99009002, 19);
-            AddField(body, 99009002, 20);
-            AddField(body, 99009002, 21);
-            AddField(body, 99009002, 26);
-            AddField(body, 99009002, 27);
-            AddField(body, 99009002, 30);
-            AddField(body, 99009002, 31);
-            AddField(body, 99009002, 35);
-            AddField(body, 99009002, 100);
-            AddField(body, 99009002, 5054);
-            AddField(body, 99009002, 5055);
-            AddField(body, 99009002, 5056);
-
-            // Country_Region
-            AddTable(body, 9, false);
-            AddField(body, 9, 1);
-            AddField(body, 9, 2);
         }
 
         private void AddMPosTableData(XElement body, Version navVer)
         {
+            // Store
+            AddTable(body, 99001470, false);
+            AddField(body, 99001470, 1);
+            AddField(body, 99001470, 3);
+            AddField(body, 99001470, 5);
+            AddField(body, 99001470, 7);
+            AddField(body, 99001470, 8);
+            AddField(body, 99001470, 13);
+            AddField(body, 99001470, 14);
+            AddField(body, 99001470, 17);
+            AddField(body, 99001470, 70);
+            AddField(body, 99001470, 182);
+            AddField(body, 99001470, 160);
+            AddField(body, 99001470, 740);
+            AddField(body, 99001470, 741);
+            AddField(body, 99001470, 745);
+
+            // Tender Type Currency Setup
+            AddTable(body, 99001636, false);
+            AddField(body, 99001636, 1);
+            AddField(body, 99001636, 2);
+            AddField(body, 99001636, 3);
+            AddField(body, 99001636, 4);
+
+            // Vendors
+            AddTable(body, 23, false);
+            AddField(body, 23, 1);
+            AddField(body, 23, 2);
+            AddField(body, 23, 39);
+            AddField(body, 23, 54);
+
+            // Tender Type
+            AddTable(body, 99001462, false);
+            AddField(body, 99001462, 1);
+            AddField(body, 99001462, 5);
+            AddField(body, 99001462, 10);
+            AddField(body, 99001462, 11);
+            AddField(body, 99001462, 25);
+            AddField(body, 99001462, 26);
+            AddField(body, 99001462, 30);
+            AddField(body, 99001462, 35);
+            AddField(body, 99001462, 40);
+            AddField(body, 99001462, 110);
+            AddField(body, 99001462, 111);
+            AddField(body, 99001462, 115);
+            AddField(body, 99001462, 120);
+            AddField(body, 99001462, 125);
+            AddField(body, 99001462, 225);
+            AddField(body, 99001462, 305);
+            AddField(body, 99001462, 390);
+
+            if (navVer >= new Version("19.3"))
+                return;
+
             // Item
             AddTable(body, 27, true);
             AddField(body, 27, 1);
@@ -956,7 +1012,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 27, 5425);
             AddField(body, 27, 5426);
             AddField(body, 27, 5702);
-            AddField(body, 27, (navVer > new Version("14.2")) ? 10000703 : 5704);
+            AddField(body, 27, 10000703);
             AddField(body, 27, 10001401);
             AddField(body, 27, 99001463);
             AddField(body, 27, 99001480);
@@ -968,11 +1024,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 5722, 3);
 
             // Product Group
-            int pgtableid = (navVer > new Version("14.2")) ? 10000705 : 5723;
-            AddTable(body, pgtableid, false);
-            AddField(body, pgtableid, 1);
-            AddField(body, pgtableid, 2);
-            AddField(body, pgtableid, 3);
+            AddTable(body, 10000705, false);
+            AddField(body, 10000705, 1);
+            AddField(body, 10000705, 2);
+            AddField(body, 10000705, 3);
 
             // Hierarchy
             AddTable(body, 10000920, false);
@@ -1102,43 +1157,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 330, 99001450);
             AddField(body, 330, 99001451);
 
-            // Store
-            AddTable(body, 99001470, false);
-            AddField(body, 99001470, 1);
-            AddField(body, 99001470, 3);
-            AddField(body, 99001470, 5);
-            AddField(body, 99001470, 7);
-            AddField(body, 99001470, 8);
-            AddField(body, 99001470, 13);
-            AddField(body, 99001470, 14);
-            AddField(body, 99001470, 17);
-            AddField(body, 99001470, 70);
-            AddField(body, 99001470, 182);
-            AddField(body, 99001470, 160);
-            AddField(body, 99001470, 740);
-            AddField(body, 99001470, 741);
-            AddField(body, 99001470, 745);
-
-            // Tender Type
-            AddTable(body, 99001462, false);
-            AddField(body, 99001462, 1);
-            AddField(body, 99001462, 5);
-            AddField(body, 99001462, 10);
-            AddField(body, 99001462, 11);
-            AddField(body, 99001462, 25);
-            AddField(body, 99001462, 26);
-            AddField(body, 99001462, 30);
-            AddField(body, 99001462, 35);
-            AddField(body, 99001462, 40);
-            AddField(body, 99001462, 110);
-            AddField(body, 99001462, 111);
-            AddField(body, 99001462, 115);
-            AddField(body, 99001462, 120);
-            AddField(body, 99001462, 125);
-            AddField(body, 99001462, 225);
-            AddField(body, 99001462, 305);
-            AddField(body, 99001462, 390);
-
             // Staff
             AddTable(body, 99001461, false);
             AddField(body, 99001461, 1);
@@ -1196,20 +1214,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 99001466, 5);
             AddField(body, 99001466, 10);
 
-            // Tender Type Currency Setup
-            AddTable(body, 99001636, false);
-            AddField(body, 99001636, 1);
-            AddField(body, 99001636, 2);
-            AddField(body, 99001636, 3);
-            AddField(body, 99001636, 4);
-
-            // Vendors
-            AddTable(body, 23, false);
-            AddField(body, 23, 1);
-            AddField(body, 23, 2);
-            AddField(body, 23, 39);
-            AddField(body, 23, 54);
-
             // POS Terminal
             AddTable(body, 99001471, false);
             AddField(body, 99001471, 1);
@@ -1229,6 +1233,49 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
 
         private void AddInvTableData(XElement body, Version navVer)
         {
+            // Store
+            AddTable(body, 99001470, false);
+            AddField(body, 99001470, 1);
+            AddField(body, 99001470, 3);
+            AddField(body, 99001470, 5);
+            AddField(body, 99001470, 7);
+            AddField(body, 99001470, 8);
+            AddField(body, 99001470, 13);
+            AddField(body, 99001470, 14);
+            AddField(body, 99001470, 17);
+            AddField(body, 99001470, 70);
+            AddField(body, 99001470, 182);
+            AddField(body, 99001470, 160);
+            AddField(body, 99001470, 740);
+            AddField(body, 99001470, 741);
+            AddField(body, 99001470, 745);
+
+            // Vendors
+            AddTable(body, 23, false);
+            AddField(body, 23, 1);
+            AddField(body, 23, 2);
+            AddField(body, 23, 39);
+            AddField(body, 23, 54);
+
+            // GS1 DataBar Barcode Setup
+            AddTable(body, 10000936, false);
+            AddField(body, 10000936, 1);
+            AddField(body, 10000936, 2);
+            AddField(body, 10000936, 3);
+            AddField(body, 10000936, 4);
+            AddField(body, 10000936, 5);
+            AddField(body, 10000936, 6);
+            AddField(body, 10000936, 7);
+            AddField(body, 10000936, 8);
+            AddField(body, 10000936, 9);
+            AddField(body, 10000936, 10);
+            AddField(body, 10000936, 100);
+            AddField(body, 10000936, 101);
+            AddField(body, 10000936, 102);
+
+            if (navVer >= new Version("19.3"))
+                return;
+
             // Item
             AddTable(body, 27, true);
             AddField(body, 27, 1);
@@ -1245,7 +1292,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 27, 5425);
             AddField(body, 27, 5426);
             AddField(body, 27, 5702);
-            AddField(body, 27, (navVer > new Version("14.2")) ? 10000703 : 5704);
+            AddField(body, 27, 10000703);
             AddField(body, 27, 10001401);
             AddField(body, 27, 99001463);
             AddField(body, 27, 99001480);
@@ -1305,39 +1352,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 99001480, 35);
             AddField(body, 99001480, 40);
 
-            // GS1 DataBar Barcode Setup
-            AddTable(body, 10000936, false);
-            AddField(body, 10000936, 1);
-            AddField(body, 10000936, 2);
-            AddField(body, 10000936, 3);
-            AddField(body, 10000936, 4);
-            AddField(body, 10000936, 5);
-            AddField(body, 10000936, 6);
-            AddField(body, 10000936, 7);
-            AddField(body, 10000936, 8);
-            AddField(body, 10000936, 9);
-            AddField(body, 10000936, 10);
-            AddField(body, 10000936, 100);
-            AddField(body, 10000936, 101);
-            AddField(body, 10000936, 102);
-
-            // Store
-            AddTable(body, 99001470, false);
-            AddField(body, 99001470, 1);
-            AddField(body, 99001470, 3);
-            AddField(body, 99001470, 5);
-            AddField(body, 99001470, 7);
-            AddField(body, 99001470, 8);
-            AddField(body, 99001470, 13);
-            AddField(body, 99001470, 14);
-            AddField(body, 99001470, 17);
-            AddField(body, 99001470, 70);
-            AddField(body, 99001470, 182);
-            AddField(body, 99001470, 160);
-            AddField(body, 99001470, 740);
-            AddField(body, 99001470, 741);
-            AddField(body, 99001470, 745);
-
             // Staff
             AddTable(body, 99001461, false);
             AddField(body, 99001461, 1);
@@ -1369,13 +1383,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 18, 103);
             AddField(body, 18, 110);
             AddField(body, 18, 10012701);
-
-            // Vendors
-            AddTable(body, 23, false);
-            AddField(body, 23, 1);
-            AddField(body, 23, 2);
-            AddField(body, 23, 39);
-            AddField(body, 23, 54);
 
             // Inventory Location List
             AddTable(body, 10012808, false);

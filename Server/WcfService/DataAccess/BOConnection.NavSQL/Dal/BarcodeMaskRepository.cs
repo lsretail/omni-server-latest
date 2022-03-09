@@ -80,7 +80,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 list.Add(new ReplBarcodeMask()
                                 {
                                     Id = Convert.ToInt32(act.ParamValue),
-                                    Del = true
+                                    IsDeleted = true
                                 });
                                 continue;
                             }

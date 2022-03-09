@@ -22,11 +22,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ContactRepository(BOConfiguration config) : base(config)
+        public ContactRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page],mt.[County]," +
                          "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[Country_Region Code],ma.[Club Code],ma.[Scheme Code]";
+
+            if (LSCVersion >= new Version("19.2"))
+            {
+                sqlcolumns += ",mt.[Send Receipt by E-mail]";
+            }
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
                       " LEFT OUTER JOIN [" + navCompanyName + "LSC Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
@@ -707,7 +712,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         else
                         {
                             connection.Close();
-                            throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift Card not found");
+                            throw new LSOmniServiceException(StatusCode.GiftCardNotFound, $"Gift Card {cardId} of type {type} not found");
                         }
                         reader.Close();
                     }
@@ -784,6 +789,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
                 }
             };
+
+            if (LSCVersion >= new Version("19.2"))
+            {
+                cont.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
+            }
             return cont;
         }
 

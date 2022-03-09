@@ -11,13 +11,25 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
     //Navision back office connection
     public class NavBase
     {
-        protected int TimeOutInSeconds { get; set; }
+        private int TimeoutSec = 0;
+        protected int TimeOutInSeconds 
+        { 
+            get
+            {
+                return TimeoutSec;
+            }
+            set
+            {
+                TimeoutSec = value;
+                LSCentralWSBase.TimeOutInSeconds = TimeoutSec;
+            }
+        }
 
         protected static LSLogger logger = new LSLogger();
 
         protected static BOConfiguration config = null;
 
-        public static Version NAVVersion = null; //use this in code to check Nav version
+        public static Version LSCVersion = null; //use this in code to check Nav version
         public static PreCommonBase LSCentralWSBase = null;
 
         public NavBase(BOConfiguration configuration)
@@ -25,7 +37,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             config = configuration;
 
             LSCentralWSBase = new PreCommonBase(configuration);
-            NAVVersion = LSCentralWSBase.LSCVersion;
+            LSCVersion = LSCentralWSBase.LSCVersion;
 
             NetworkCredential credentials = null;
 

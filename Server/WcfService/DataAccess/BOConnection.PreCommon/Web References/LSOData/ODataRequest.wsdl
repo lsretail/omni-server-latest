@@ -1,0 +1,1626 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/ODataRequest" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="GetAttributeOptionValues">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetAttributeOptionValues_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetAttributeValues">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetAttributeValues_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetAttribute">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetAttribute_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcodeMaskSegment">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcodeMaskSegment_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcodeMask">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcodeMask_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcode">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcode_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCurrencyExchRate">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCurrencyExchRate_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCurrency">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCurrency_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCustomer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCustomer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetDataTranslation">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetDataTranslation_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetExtdVariantValues">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetExtdVariantValues_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyDealLine">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyDealLine_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyDeal">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyDeal_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyLeaf">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyLeaf_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyNodes">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchyNodes_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchy">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetHierarchy_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetImageLink">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetImageLink_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInvWorksheetBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInvWorksheetBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryMenuLines">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryMenuLines_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryMenu">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryMenu_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryStatus">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryStatus_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemCategory">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemCategory_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemUnitOfMeasure">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemUnitOfMeasure_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPOSTerminal">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPOSTerminal_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPluBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetPluBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetProductGroup">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetProductGroup_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStaff">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStaff_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStoreBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStoreBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStoreStaff">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStoreStaff_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetTenderTypeCurrency">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetTenderTypeCurrency_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetTenderType">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetTenderType_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetUnitOfMeasure">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetUnitOfMeasure_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVATPostingSetup">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVATPostingSetup_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetValidationPeriod">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetValidationPeriod_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVariantReg">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVariantReg_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIDiscounts">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIDiscounts_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIImageBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIImageBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIInvLocationBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIInvLocationBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemLocationBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemLocationBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemModifier">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemModifier_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemRecipeBuffer">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIItemRecipeBuffer_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIMixMatch">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIMixMatch_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIPrice">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetWIPrice_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="GetAttributeOptionValues">
+    <part name="parameters" element="tns:GetAttributeOptionValues" />
+  </message>
+  <message name="GetAttributeOptionValues_Result">
+    <part name="parameters" element="tns:GetAttributeOptionValues_Result" />
+  </message>
+  <message name="GetAttributeValues">
+    <part name="parameters" element="tns:GetAttributeValues" />
+  </message>
+  <message name="GetAttributeValues_Result">
+    <part name="parameters" element="tns:GetAttributeValues_Result" />
+  </message>
+  <message name="GetAttribute">
+    <part name="parameters" element="tns:GetAttribute" />
+  </message>
+  <message name="GetAttribute_Result">
+    <part name="parameters" element="tns:GetAttribute_Result" />
+  </message>
+  <message name="GetBarcodeMaskSegment">
+    <part name="parameters" element="tns:GetBarcodeMaskSegment" />
+  </message>
+  <message name="GetBarcodeMaskSegment_Result">
+    <part name="parameters" element="tns:GetBarcodeMaskSegment_Result" />
+  </message>
+  <message name="GetBarcodeMask">
+    <part name="parameters" element="tns:GetBarcodeMask" />
+  </message>
+  <message name="GetBarcodeMask_Result">
+    <part name="parameters" element="tns:GetBarcodeMask_Result" />
+  </message>
+  <message name="GetBarcode">
+    <part name="parameters" element="tns:GetBarcode" />
+  </message>
+  <message name="GetBarcode_Result">
+    <part name="parameters" element="tns:GetBarcode_Result" />
+  </message>
+  <message name="GetCurrencyExchRate">
+    <part name="parameters" element="tns:GetCurrencyExchRate" />
+  </message>
+  <message name="GetCurrencyExchRate_Result">
+    <part name="parameters" element="tns:GetCurrencyExchRate_Result" />
+  </message>
+  <message name="GetCurrency">
+    <part name="parameters" element="tns:GetCurrency" />
+  </message>
+  <message name="GetCurrency_Result">
+    <part name="parameters" element="tns:GetCurrency_Result" />
+  </message>
+  <message name="GetCustomer">
+    <part name="parameters" element="tns:GetCustomer" />
+  </message>
+  <message name="GetCustomer_Result">
+    <part name="parameters" element="tns:GetCustomer_Result" />
+  </message>
+  <message name="GetDataTranslation">
+    <part name="parameters" element="tns:GetDataTranslation" />
+  </message>
+  <message name="GetDataTranslation_Result">
+    <part name="parameters" element="tns:GetDataTranslation_Result" />
+  </message>
+  <message name="GetExtdVariantValues">
+    <part name="parameters" element="tns:GetExtdVariantValues" />
+  </message>
+  <message name="GetExtdVariantValues_Result">
+    <part name="parameters" element="tns:GetExtdVariantValues_Result" />
+  </message>
+  <message name="GetHierarchyDealLine">
+    <part name="parameters" element="tns:GetHierarchyDealLine" />
+  </message>
+  <message name="GetHierarchyDealLine_Result">
+    <part name="parameters" element="tns:GetHierarchyDealLine_Result" />
+  </message>
+  <message name="GetHierarchyDeal">
+    <part name="parameters" element="tns:GetHierarchyDeal" />
+  </message>
+  <message name="GetHierarchyDeal_Result">
+    <part name="parameters" element="tns:GetHierarchyDeal_Result" />
+  </message>
+  <message name="GetHierarchyLeaf">
+    <part name="parameters" element="tns:GetHierarchyLeaf" />
+  </message>
+  <message name="GetHierarchyLeaf_Result">
+    <part name="parameters" element="tns:GetHierarchyLeaf_Result" />
+  </message>
+  <message name="GetHierarchyNodes">
+    <part name="parameters" element="tns:GetHierarchyNodes" />
+  </message>
+  <message name="GetHierarchyNodes_Result">
+    <part name="parameters" element="tns:GetHierarchyNodes_Result" />
+  </message>
+  <message name="GetHierarchy">
+    <part name="parameters" element="tns:GetHierarchy" />
+  </message>
+  <message name="GetHierarchy_Result">
+    <part name="parameters" element="tns:GetHierarchy_Result" />
+  </message>
+  <message name="GetImageLink">
+    <part name="parameters" element="tns:GetImageLink" />
+  </message>
+  <message name="GetImageLink_Result">
+    <part name="parameters" element="tns:GetImageLink_Result" />
+  </message>
+  <message name="GetInvWorksheetBuffer">
+    <part name="parameters" element="tns:GetInvWorksheetBuffer" />
+  </message>
+  <message name="GetInvWorksheetBuffer_Result">
+    <part name="parameters" element="tns:GetInvWorksheetBuffer_Result" />
+  </message>
+  <message name="GetInventoryMenuLines">
+    <part name="parameters" element="tns:GetInventoryMenuLines" />
+  </message>
+  <message name="GetInventoryMenuLines_Result">
+    <part name="parameters" element="tns:GetInventoryMenuLines_Result" />
+  </message>
+  <message name="GetInventoryMenu">
+    <part name="parameters" element="tns:GetInventoryMenu" />
+  </message>
+  <message name="GetInventoryMenu_Result">
+    <part name="parameters" element="tns:GetInventoryMenu_Result" />
+  </message>
+  <message name="GetInventoryStatus">
+    <part name="parameters" element="tns:GetInventoryStatus" />
+  </message>
+  <message name="GetInventoryStatus_Result">
+    <part name="parameters" element="tns:GetInventoryStatus_Result" />
+  </message>
+  <message name="GetItemCategory">
+    <part name="parameters" element="tns:GetItemCategory" />
+  </message>
+  <message name="GetItemCategory_Result">
+    <part name="parameters" element="tns:GetItemCategory_Result" />
+  </message>
+  <message name="GetItemUnitOfMeasure">
+    <part name="parameters" element="tns:GetItemUnitOfMeasure" />
+  </message>
+  <message name="GetItemUnitOfMeasure_Result">
+    <part name="parameters" element="tns:GetItemUnitOfMeasure_Result" />
+  </message>
+  <message name="GetPOSTerminal">
+    <part name="parameters" element="tns:GetPOSTerminal" />
+  </message>
+  <message name="GetPOSTerminal_Result">
+    <part name="parameters" element="tns:GetPOSTerminal_Result" />
+  </message>
+  <message name="GetPluBuffer">
+    <part name="parameters" element="tns:GetPluBuffer" />
+  </message>
+  <message name="GetPluBuffer_Result">
+    <part name="parameters" element="tns:GetPluBuffer_Result" />
+  </message>
+  <message name="GetProductGroup">
+    <part name="parameters" element="tns:GetProductGroup" />
+  </message>
+  <message name="GetProductGroup_Result">
+    <part name="parameters" element="tns:GetProductGroup_Result" />
+  </message>
+  <message name="GetStaff">
+    <part name="parameters" element="tns:GetStaff" />
+  </message>
+  <message name="GetStaff_Result">
+    <part name="parameters" element="tns:GetStaff_Result" />
+  </message>
+  <message name="GetStoreBuffer">
+    <part name="parameters" element="tns:GetStoreBuffer" />
+  </message>
+  <message name="GetStoreBuffer_Result">
+    <part name="parameters" element="tns:GetStoreBuffer_Result" />
+  </message>
+  <message name="GetStoreStaff">
+    <part name="parameters" element="tns:GetStoreStaff" />
+  </message>
+  <message name="GetStoreStaff_Result">
+    <part name="parameters" element="tns:GetStoreStaff_Result" />
+  </message>
+  <message name="GetTenderTypeCurrency">
+    <part name="parameters" element="tns:GetTenderTypeCurrency" />
+  </message>
+  <message name="GetTenderTypeCurrency_Result">
+    <part name="parameters" element="tns:GetTenderTypeCurrency_Result" />
+  </message>
+  <message name="GetTenderType">
+    <part name="parameters" element="tns:GetTenderType" />
+  </message>
+  <message name="GetTenderType_Result">
+    <part name="parameters" element="tns:GetTenderType_Result" />
+  </message>
+  <message name="GetUnitOfMeasure">
+    <part name="parameters" element="tns:GetUnitOfMeasure" />
+  </message>
+  <message name="GetUnitOfMeasure_Result">
+    <part name="parameters" element="tns:GetUnitOfMeasure_Result" />
+  </message>
+  <message name="GetVATPostingSetup">
+    <part name="parameters" element="tns:GetVATPostingSetup" />
+  </message>
+  <message name="GetVATPostingSetup_Result">
+    <part name="parameters" element="tns:GetVATPostingSetup_Result" />
+  </message>
+  <message name="GetValidationPeriod">
+    <part name="parameters" element="tns:GetValidationPeriod" />
+  </message>
+  <message name="GetValidationPeriod_Result">
+    <part name="parameters" element="tns:GetValidationPeriod_Result" />
+  </message>
+  <message name="GetVariantReg">
+    <part name="parameters" element="tns:GetVariantReg" />
+  </message>
+  <message name="GetVariantReg_Result">
+    <part name="parameters" element="tns:GetVariantReg_Result" />
+  </message>
+  <message name="GetWIDiscounts">
+    <part name="parameters" element="tns:GetWIDiscounts" />
+  </message>
+  <message name="GetWIDiscounts_Result">
+    <part name="parameters" element="tns:GetWIDiscounts_Result" />
+  </message>
+  <message name="GetWIImageBuffer">
+    <part name="parameters" element="tns:GetWIImageBuffer" />
+  </message>
+  <message name="GetWIImageBuffer_Result">
+    <part name="parameters" element="tns:GetWIImageBuffer_Result" />
+  </message>
+  <message name="GetWIInvLocationBuffer">
+    <part name="parameters" element="tns:GetWIInvLocationBuffer" />
+  </message>
+  <message name="GetWIInvLocationBuffer_Result">
+    <part name="parameters" element="tns:GetWIInvLocationBuffer_Result" />
+  </message>
+  <message name="GetWIItemBuffer">
+    <part name="parameters" element="tns:GetWIItemBuffer" />
+  </message>
+  <message name="GetWIItemBuffer_Result">
+    <part name="parameters" element="tns:GetWIItemBuffer_Result" />
+  </message>
+  <message name="GetWIItemLocationBuffer">
+    <part name="parameters" element="tns:GetWIItemLocationBuffer" />
+  </message>
+  <message name="GetWIItemLocationBuffer_Result">
+    <part name="parameters" element="tns:GetWIItemLocationBuffer_Result" />
+  </message>
+  <message name="GetWIItemModifier">
+    <part name="parameters" element="tns:GetWIItemModifier" />
+  </message>
+  <message name="GetWIItemModifier_Result">
+    <part name="parameters" element="tns:GetWIItemModifier_Result" />
+  </message>
+  <message name="GetWIItemRecipeBuffer">
+    <part name="parameters" element="tns:GetWIItemRecipeBuffer" />
+  </message>
+  <message name="GetWIItemRecipeBuffer_Result">
+    <part name="parameters" element="tns:GetWIItemRecipeBuffer_Result" />
+  </message>
+  <message name="GetWIMixMatch">
+    <part name="parameters" element="tns:GetWIMixMatch" />
+  </message>
+  <message name="GetWIMixMatch_Result">
+    <part name="parameters" element="tns:GetWIMixMatch_Result" />
+  </message>
+  <message name="GetWIPrice">
+    <part name="parameters" element="tns:GetWIPrice" />
+  </message>
+  <message name="GetWIPrice_Result">
+    <part name="parameters" element="tns:GetWIPrice_Result" />
+  </message>
+  <portType name="ODataRequest_Port">
+    <operation name="GetAttributeOptionValues">
+      <input name="GetAttributeOptionValues" message="tns:GetAttributeOptionValues" />
+      <output name="GetAttributeOptionValues_Result" message="tns:GetAttributeOptionValues_Result" />
+    </operation>
+    <operation name="GetAttributeValues">
+      <input name="GetAttributeValues" message="tns:GetAttributeValues" />
+      <output name="GetAttributeValues_Result" message="tns:GetAttributeValues_Result" />
+    </operation>
+    <operation name="GetAttribute">
+      <input name="GetAttribute" message="tns:GetAttribute" />
+      <output name="GetAttribute_Result" message="tns:GetAttribute_Result" />
+    </operation>
+    <operation name="GetBarcodeMaskSegment">
+      <input name="GetBarcodeMaskSegment" message="tns:GetBarcodeMaskSegment" />
+      <output name="GetBarcodeMaskSegment_Result" message="tns:GetBarcodeMaskSegment_Result" />
+    </operation>
+    <operation name="GetBarcodeMask">
+      <input name="GetBarcodeMask" message="tns:GetBarcodeMask" />
+      <output name="GetBarcodeMask_Result" message="tns:GetBarcodeMask_Result" />
+    </operation>
+    <operation name="GetBarcode">
+      <input name="GetBarcode" message="tns:GetBarcode" />
+      <output name="GetBarcode_Result" message="tns:GetBarcode_Result" />
+    </operation>
+    <operation name="GetCurrencyExchRate">
+      <input name="GetCurrencyExchRate" message="tns:GetCurrencyExchRate" />
+      <output name="GetCurrencyExchRate_Result" message="tns:GetCurrencyExchRate_Result" />
+    </operation>
+    <operation name="GetCurrency">
+      <input name="GetCurrency" message="tns:GetCurrency" />
+      <output name="GetCurrency_Result" message="tns:GetCurrency_Result" />
+    </operation>
+    <operation name="GetCustomer">
+      <input name="GetCustomer" message="tns:GetCustomer" />
+      <output name="GetCustomer_Result" message="tns:GetCustomer_Result" />
+    </operation>
+    <operation name="GetDataTranslation">
+      <input name="GetDataTranslation" message="tns:GetDataTranslation" />
+      <output name="GetDataTranslation_Result" message="tns:GetDataTranslation_Result" />
+    </operation>
+    <operation name="GetExtdVariantValues">
+      <input name="GetExtdVariantValues" message="tns:GetExtdVariantValues" />
+      <output name="GetExtdVariantValues_Result" message="tns:GetExtdVariantValues_Result" />
+    </operation>
+    <operation name="GetHierarchyDealLine">
+      <input name="GetHierarchyDealLine" message="tns:GetHierarchyDealLine" />
+      <output name="GetHierarchyDealLine_Result" message="tns:GetHierarchyDealLine_Result" />
+    </operation>
+    <operation name="GetHierarchyDeal">
+      <input name="GetHierarchyDeal" message="tns:GetHierarchyDeal" />
+      <output name="GetHierarchyDeal_Result" message="tns:GetHierarchyDeal_Result" />
+    </operation>
+    <operation name="GetHierarchyLeaf">
+      <input name="GetHierarchyLeaf" message="tns:GetHierarchyLeaf" />
+      <output name="GetHierarchyLeaf_Result" message="tns:GetHierarchyLeaf_Result" />
+    </operation>
+    <operation name="GetHierarchyNodes">
+      <input name="GetHierarchyNodes" message="tns:GetHierarchyNodes" />
+      <output name="GetHierarchyNodes_Result" message="tns:GetHierarchyNodes_Result" />
+    </operation>
+    <operation name="GetHierarchy">
+      <input name="GetHierarchy" message="tns:GetHierarchy" />
+      <output name="GetHierarchy_Result" message="tns:GetHierarchy_Result" />
+    </operation>
+    <operation name="GetImageLink">
+      <input name="GetImageLink" message="tns:GetImageLink" />
+      <output name="GetImageLink_Result" message="tns:GetImageLink_Result" />
+    </operation>
+    <operation name="GetInvWorksheetBuffer">
+      <input name="GetInvWorksheetBuffer" message="tns:GetInvWorksheetBuffer" />
+      <output name="GetInvWorksheetBuffer_Result" message="tns:GetInvWorksheetBuffer_Result" />
+    </operation>
+    <operation name="GetInventoryMenuLines">
+      <input name="GetInventoryMenuLines" message="tns:GetInventoryMenuLines" />
+      <output name="GetInventoryMenuLines_Result" message="tns:GetInventoryMenuLines_Result" />
+    </operation>
+    <operation name="GetInventoryMenu">
+      <input name="GetInventoryMenu" message="tns:GetInventoryMenu" />
+      <output name="GetInventoryMenu_Result" message="tns:GetInventoryMenu_Result" />
+    </operation>
+    <operation name="GetInventoryStatus">
+      <input name="GetInventoryStatus" message="tns:GetInventoryStatus" />
+      <output name="GetInventoryStatus_Result" message="tns:GetInventoryStatus_Result" />
+    </operation>
+    <operation name="GetItemCategory">
+      <input name="GetItemCategory" message="tns:GetItemCategory" />
+      <output name="GetItemCategory_Result" message="tns:GetItemCategory_Result" />
+    </operation>
+    <operation name="GetItemUnitOfMeasure">
+      <input name="GetItemUnitOfMeasure" message="tns:GetItemUnitOfMeasure" />
+      <output name="GetItemUnitOfMeasure_Result" message="tns:GetItemUnitOfMeasure_Result" />
+    </operation>
+    <operation name="GetPOSTerminal">
+      <input name="GetPOSTerminal" message="tns:GetPOSTerminal" />
+      <output name="GetPOSTerminal_Result" message="tns:GetPOSTerminal_Result" />
+    </operation>
+    <operation name="GetPluBuffer">
+      <input name="GetPluBuffer" message="tns:GetPluBuffer" />
+      <output name="GetPluBuffer_Result" message="tns:GetPluBuffer_Result" />
+    </operation>
+    <operation name="GetProductGroup">
+      <input name="GetProductGroup" message="tns:GetProductGroup" />
+      <output name="GetProductGroup_Result" message="tns:GetProductGroup_Result" />
+    </operation>
+    <operation name="GetStaff">
+      <input name="GetStaff" message="tns:GetStaff" />
+      <output name="GetStaff_Result" message="tns:GetStaff_Result" />
+    </operation>
+    <operation name="GetStoreBuffer">
+      <input name="GetStoreBuffer" message="tns:GetStoreBuffer" />
+      <output name="GetStoreBuffer_Result" message="tns:GetStoreBuffer_Result" />
+    </operation>
+    <operation name="GetStoreStaff">
+      <input name="GetStoreStaff" message="tns:GetStoreStaff" />
+      <output name="GetStoreStaff_Result" message="tns:GetStoreStaff_Result" />
+    </operation>
+    <operation name="GetTenderTypeCurrency">
+      <input name="GetTenderTypeCurrency" message="tns:GetTenderTypeCurrency" />
+      <output name="GetTenderTypeCurrency_Result" message="tns:GetTenderTypeCurrency_Result" />
+    </operation>
+    <operation name="GetTenderType">
+      <input name="GetTenderType" message="tns:GetTenderType" />
+      <output name="GetTenderType_Result" message="tns:GetTenderType_Result" />
+    </operation>
+    <operation name="GetUnitOfMeasure">
+      <input name="GetUnitOfMeasure" message="tns:GetUnitOfMeasure" />
+      <output name="GetUnitOfMeasure_Result" message="tns:GetUnitOfMeasure_Result" />
+    </operation>
+    <operation name="GetVATPostingSetup">
+      <input name="GetVATPostingSetup" message="tns:GetVATPostingSetup" />
+      <output name="GetVATPostingSetup_Result" message="tns:GetVATPostingSetup_Result" />
+    </operation>
+    <operation name="GetValidationPeriod">
+      <input name="GetValidationPeriod" message="tns:GetValidationPeriod" />
+      <output name="GetValidationPeriod_Result" message="tns:GetValidationPeriod_Result" />
+    </operation>
+    <operation name="GetVariantReg">
+      <input name="GetVariantReg" message="tns:GetVariantReg" />
+      <output name="GetVariantReg_Result" message="tns:GetVariantReg_Result" />
+    </operation>
+    <operation name="GetWIDiscounts">
+      <input name="GetWIDiscounts" message="tns:GetWIDiscounts" />
+      <output name="GetWIDiscounts_Result" message="tns:GetWIDiscounts_Result" />
+    </operation>
+    <operation name="GetWIImageBuffer">
+      <input name="GetWIImageBuffer" message="tns:GetWIImageBuffer" />
+      <output name="GetWIImageBuffer_Result" message="tns:GetWIImageBuffer_Result" />
+    </operation>
+    <operation name="GetWIInvLocationBuffer">
+      <input name="GetWIInvLocationBuffer" message="tns:GetWIInvLocationBuffer" />
+      <output name="GetWIInvLocationBuffer_Result" message="tns:GetWIInvLocationBuffer_Result" />
+    </operation>
+    <operation name="GetWIItemBuffer">
+      <input name="GetWIItemBuffer" message="tns:GetWIItemBuffer" />
+      <output name="GetWIItemBuffer_Result" message="tns:GetWIItemBuffer_Result" />
+    </operation>
+    <operation name="GetWIItemLocationBuffer">
+      <input name="GetWIItemLocationBuffer" message="tns:GetWIItemLocationBuffer" />
+      <output name="GetWIItemLocationBuffer_Result" message="tns:GetWIItemLocationBuffer_Result" />
+    </operation>
+    <operation name="GetWIItemModifier">
+      <input name="GetWIItemModifier" message="tns:GetWIItemModifier" />
+      <output name="GetWIItemModifier_Result" message="tns:GetWIItemModifier_Result" />
+    </operation>
+    <operation name="GetWIItemRecipeBuffer">
+      <input name="GetWIItemRecipeBuffer" message="tns:GetWIItemRecipeBuffer" />
+      <output name="GetWIItemRecipeBuffer_Result" message="tns:GetWIItemRecipeBuffer_Result" />
+    </operation>
+    <operation name="GetWIMixMatch">
+      <input name="GetWIMixMatch" message="tns:GetWIMixMatch" />
+      <output name="GetWIMixMatch_Result" message="tns:GetWIMixMatch_Result" />
+    </operation>
+    <operation name="GetWIPrice">
+      <input name="GetWIPrice" message="tns:GetWIPrice" />
+      <output name="GetWIPrice_Result" message="tns:GetWIPrice_Result" />
+    </operation>
+  </portType>
+  <binding name="ODataRequest_Binding" type="tns:ODataRequest_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GetAttributeOptionValues">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttributeOptionValues" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetAttributeOptionValues">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetAttributeOptionValues_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetAttributeValues">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttributeValues" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetAttributeValues">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetAttributeValues_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetAttribute">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetAttribute" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetAttribute">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetAttribute_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetBarcodeMaskSegment">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeMaskSegment" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetBarcodeMaskSegment">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetBarcodeMaskSegment_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetBarcodeMask">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeMask" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetBarcodeMask">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetBarcodeMask_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetBarcode">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcode" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetBarcode">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetBarcode_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetCurrencyExchRate">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCurrencyExchRate" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetCurrencyExchRate">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetCurrencyExchRate_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetCurrency">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCurrency" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetCurrency">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetCurrency_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetCustomer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCustomer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetCustomer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetCustomer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetDataTranslation">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDataTranslation" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetDataTranslation">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetDataTranslation_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetExtdVariantValues">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetExtdVariantValues" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetExtdVariantValues">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetExtdVariantValues_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetHierarchyDealLine">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyDealLine" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetHierarchyDealLine">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetHierarchyDealLine_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetHierarchyDeal">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyDeal" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetHierarchyDeal">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetHierarchyDeal_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetHierarchyLeaf">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyLeaf" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetHierarchyLeaf">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetHierarchyLeaf_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetHierarchyNodes">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchyNodes" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetHierarchyNodes">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetHierarchyNodes_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetHierarchy">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetHierarchy" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetHierarchy">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetHierarchy_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetImageLink">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetImageLink" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetImageLink">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetImageLink_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetInvWorksheetBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetInvWorksheetBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetInvWorksheetBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetInvWorksheetBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetInventoryMenuLines">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetInventoryMenuLines" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetInventoryMenuLines">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetInventoryMenuLines_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetInventoryMenu">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetInventoryMenu" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetInventoryMenu">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetInventoryMenu_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetInventoryStatus">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetInventoryStatus" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetInventoryStatus">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetInventoryStatus_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetItemCategory">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemCategory" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetItemCategory">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetItemCategory_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetItemUnitOfMeasure">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemUnitOfMeasure" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetItemUnitOfMeasure">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetItemUnitOfMeasure_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetPOSTerminal">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetPOSTerminal" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetPOSTerminal">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetPOSTerminal_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetPluBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetPluBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetPluBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetPluBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetProductGroup">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetProductGroup" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetProductGroup">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetProductGroup_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetStaff">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaff" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetStaff">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetStaff_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetStoreBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStoreBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetStoreBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetStoreBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetStoreStaff">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStoreStaff" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetStoreStaff">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetStoreStaff_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetTenderTypeCurrency">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetTenderTypeCurrency" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetTenderTypeCurrency">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetTenderTypeCurrency_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetTenderType">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetTenderType" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetTenderType">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetTenderType_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetUnitOfMeasure">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetUnitOfMeasure" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetUnitOfMeasure">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetUnitOfMeasure_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetVATPostingSetup">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVATPostingSetup" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetVATPostingSetup">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetVATPostingSetup_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetValidationPeriod">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetValidationPeriod" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetValidationPeriod">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetValidationPeriod_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetVariantReg">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVariantReg" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetVariantReg">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetVariantReg_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIDiscounts">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIDiscounts" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIDiscounts">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIDiscounts_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIImageBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIImageBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIImageBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIImageBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIInvLocationBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIInvLocationBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIInvLocationBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIInvLocationBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIItemBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIItemBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIItemBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIItemLocationBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemLocationBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIItemLocationBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIItemLocationBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIItemModifier">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemModifier" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIItemModifier">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIItemModifier_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIItemRecipeBuffer">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIItemRecipeBuffer" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIItemRecipeBuffer">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIItemRecipeBuffer_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIMixMatch">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIMixMatch" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIMixMatch">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIMixMatch_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetWIPrice">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIPrice" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetWIPrice">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetWIPrice_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="ODataRequest">
+    <port name="ODataRequest_Port" binding="tns:ODataRequest_Binding">
+      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

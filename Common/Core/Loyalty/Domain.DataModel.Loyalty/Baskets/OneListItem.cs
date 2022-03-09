@@ -204,6 +204,22 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
         }
 
+        [IgnoreDataMember]
+        public bool ItemHasVariant
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(VariantId))
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         public string OneListId { get; set; }
 
         public decimal GetDiscount()

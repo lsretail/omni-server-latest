@@ -147,36 +147,34 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private ReplCurrencyExchRate ReaderToCurrencyExchRate(SqlDataReader reader, out string timestamp, bool getTS)
         {
-            decimal exchrate = 0;
+            ReplCurrencyExchRate currency = new ReplCurrencyExchRate()
+            {
+                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
+                RelationalCurrencyCode = SQLHelper.GetString(reader["Relational Currency Code"]),
+                StartingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson)
+            };
+
             if (SQLHelper.GetDecimal(reader, "LSC POS Exchange Rate Amount") != 0)
             {
-                exchrate = ((1 / SQLHelper.GetDecimal(reader, "LSC POS Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "LSC POS Rel_ Exch_ Rate Amount"));
+                currency.CurrencyFactor = ((1 / SQLHelper.GetDecimal(reader, "LSC POS Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "LSC POS Rel_ Exch_ Rate Amount"));
             }
             else
             {
-                string code = SQLHelper.GetString(reader["Relational Currency Code"]);
-                if (string.IsNullOrWhiteSpace(code))
+                if (string.IsNullOrWhiteSpace(currency.RelationalCurrencyCode))
                 {
                     if (SQLHelper.GetDecimal(reader, "Exchange Rate Amount") != 0)
                     {
-                        exchrate = ((1 / SQLHelper.GetDecimal(reader, "Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "Relational Exch_ Rate Amount"));
+                        currency.CurrencyFactor = ((1 / SQLHelper.GetDecimal(reader, "Exchange Rate Amount")) * SQLHelper.GetDecimal(reader, "Relational Exch_ Rate Amount"));
                     }
                 }
                 else
                 {
-                    using (ReplCurrencyExchRate relcur = CurrencyExchRateGetById(code))
+                    using (ReplCurrencyExchRate relcur = CurrencyExchRateGetById(currency.RelationalCurrencyCode))
                     {
-                        exchrate = relcur.CurrencyFactor;
+                        currency.CurrencyFactor = relcur.CurrencyFactor;
                     }
                 }
             }
-
-            ReplCurrencyExchRate currency = new ReplCurrencyExchRate()
-            {
-                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
-                CurrencyFactor = exchrate,
-                StartingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson)
-            };
 
             if (getTS)
                 timestamp = ByteArrayToString(reader["timestamp"] as byte[]);

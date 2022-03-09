@@ -97,6 +97,11 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
         }
 
+        public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
+        {
+            return BOActConnection.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
+        }
+
         #region Data Get (Replication)
 
         public virtual List<ActivityProduct> ActivityProductsGet()

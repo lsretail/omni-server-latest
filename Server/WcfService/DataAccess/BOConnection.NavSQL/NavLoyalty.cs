@@ -57,6 +57,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return false;
         }
 
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        {
+            return "Not Supported";
+        }
+
         #endregion
 
         #region Contact
@@ -113,20 +118,30 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.ContactAddCard(contactId, accountId, cardId);
         }
 
-        public MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
+        public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
             return NavWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
         }
 
-        //Change the password in NAV
-        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword)
+        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails)
         {
-            NavWSBase.ChangePassword(userName, token, newPassword, oldPassword);
+            throw new NotImplementedException();
         }
 
-        public virtual string ResetPassword(string userName, string email, string newPassword)
+        //Change the password in NAV
+        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod)
         {
-            return NavWSBase.ResetPassword(userName, email, newPassword);
+            NavWSBase.ChangePassword(userName, token, newPassword, oldPassword, ref oldmethod);
+        }
+
+        public virtual string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod)
+        {
+            return NavWSBase.ResetPassword(userName, email, newPassword, ref oldmethod);
+        }
+
+        public virtual string SPGPassword(string email, string token, string newPwd)
+        {
+            return string.Empty;
         }
 
         public virtual void LoginChange(string oldUserName, string newUserName, string password)
@@ -420,7 +435,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
             if (NAVVersion < new Version("13.5"))
                 return;
@@ -468,6 +483,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
                 }
             }
             return entry;
+        }
+
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        {
+            return new List<SalesEntry>();
         }
 
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
@@ -615,6 +635,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
             DataTranslationRepository rep = new DataTranslationRepository(config);
             return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return new List<ReplDataTranslation>();
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

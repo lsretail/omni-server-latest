@@ -72,6 +72,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         public Address Address { get; set; }
         [DataMember]
         public string Directions { get; set; }
+        [DataMember]
+        public string Comment { get; set; }
 
         [DataMember]
         public string RestaurantNo { get; set; }
@@ -89,8 +91,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         /// </summary>
         [DataMember]
         public string ReceiptNo { get; set; }
-        [DataMember]
-        public PaymentType PaymentType { get; set; }
 
         [DataMember]
         public decimal TotalNetAmount { get; set; }

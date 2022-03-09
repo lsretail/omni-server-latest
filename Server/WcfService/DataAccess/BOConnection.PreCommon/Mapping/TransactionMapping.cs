@@ -25,8 +25,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class TransactionMapping : BaseMapping
     {
-        private Version LSCVersion;
-
         public TransactionMapping(Version lscVersion, bool json)
         {
             LSCVersion = lscVersion;
@@ -448,7 +446,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Directions = XMLHelper.GetString(order.Directions),
                 SalesType = XMLHelper.GetString(order.SalesType),
                 AddressType = "0",
-                PaymentType = order.PaymentType.ToString(),
+                TotalAmount = order.TotalAmount,
+                Comment = XMLHelper.GetString(order.Comment),
 
                 TenderType = string.Empty,
                 CompanyNo = string.Empty,
@@ -457,10 +456,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 PreOrder = string.Empty
             };
 
-            if (LSCVersion > new Version("18.2"))
+            if (LSCVersion >= new Version("18.2"))
             {
                 devord.PreOrderPrintDateTime = ConvertTo.NavGetDate(DateTime.MinValue, true);
-                devord.PaymentType = string.Empty;
             }
 
             delivery.Add(devord);

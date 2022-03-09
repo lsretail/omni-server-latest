@@ -443,12 +443,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 OrderDate = ConvertTo.NavGetDate(order.OrderDate, true),
                 ContactPickupTime = order.PickupTime,
                 RestaurantNo = order.RestaurantNo,
-                TenderType = ((int)order.PaymentType).ToString(),
                 Email = XMLHelper.GetString(order.Email),
                 Directions = XMLHelper.GetString(order.Directions),
                 SalesType = order.SalesType,
                 AddressType = "0",
 
+                TenderType = string.Empty,
                 CompanyNo = string.Empty,
                 GridCode = string.Empty,
                 OrderNo = string.Empty,

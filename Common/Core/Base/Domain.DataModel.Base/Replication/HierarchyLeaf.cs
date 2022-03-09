@@ -101,7 +101,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public decimal DealPrice { get; set; }
         [DataMember]
-        public int ValidationPeriod { get; set; }
+        public string ValidationPeriod { get; set; }
         [DataMember]
         public bool IsActive { get; set; }
     }

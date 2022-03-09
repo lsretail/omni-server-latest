@@ -961,13 +961,15 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         }
 
         //Change the password in NAV
-        public void ChangePassword(string userName, string token, string newPassword, string oldPassword)
+        public void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod)
         {
+            oldmethod = false;
             if (NAVVersion < new Version("16.2"))
             {
+                oldmethod = true;
                 if (string.IsNullOrEmpty(oldPassword))
                 {
-                    logger.Debug(config.LSKey.Key, "Calling old NAV WS1 ChangePassword works only with oldPassword provided");
+                    // reset password
                     return;
                 }
 
@@ -986,19 +988,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("MemberPasswordChange", respCode, errorText);
         }
 
-        public string ResetPassword(string userName, string email, string newPassword)
+        public string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod)
         {
             //Reset the password in NAV
             //used when a user forgot his password, and has been validated (URL sent to him)
 
             //If newPassword is empty then NAV creates a random password ?
             //return the Encrypted password that NAV returned to us
+            oldmethod = false;
             if (NAVVersion < new Version("16.2"))
             {
+                oldmethod = true;
                 if (string.IsNullOrEmpty(newPassword))
                 {
-                    logger.Debug(config.LSKey.Key, "Calling old NAV WS1 ResetPassword works only with newPassword provided");
-                    return string.Empty;
+                    string resetCode = GuidHelper.NewGuidString();
+                    return resetCode.Replace("-", "");
                 }
 
                 NavXml navXml = new NavXml();

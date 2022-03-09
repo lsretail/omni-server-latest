@@ -134,7 +134,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 return null;
 
             LoyItem item = new LoyItem();
-            string uom = string.Empty;
             foreach (LSCentral.LeftRightLine line in root.LeftRightLine)
             {
                 switch (line.LeftLine)
@@ -398,8 +397,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
             SetupRepository rep = new SetupRepository(config);
             ImageView img = rep.GetImage(table);
+            string id = img.Id;
 
-            xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media Set", "ID", img.MediaId.ToString(), "Company Name", centralCompany);
+            xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media Set", "ID", img.MediaId.ToString(), "Company Name", NavCompany);
             xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
@@ -409,14 +409,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Media ID");
             img.MediaId = new Guid(fld.Values[0]);
 
-            xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media", "ID", img.MediaId.ToString());
-            xmlResponse = RunOperation(xmlRequest, true, false);
+            img = ImageGetByMediaId(img.MediaId.ToString());
+            img.MediaId = new Guid(img.Id);
+            img.Id = id;
+            return img;
+        }
+
+        public ImageView ImageGetByMediaId(string id)
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media", "ID", id);
+            string xmlResponse = RunOperation(xmlRequest, true, false);
             HandleResponseCode(ref xmlResponse);
-            table = xml.GetGeneralWebResponseXML(xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ImageView img = new ImageView(id);
             if (table.NumberOfValues == 0)
                 return img;
 
-            fld = table.FieldList.Find(f => f.FieldName == "Content");
+            XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Content");
             img.ImgBytes = Convert.FromBase64String(fld.Values[0]);
 
             fld = table.FieldList.Find(f => f.FieldName == "Height");
@@ -450,11 +461,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 using (ImageView img = ImageGetById(link.Id))
                 {
-                    link.Location = img.Location;
-                    link.LocationType = img.LocationType;
-                    link.Image = img.Image;
-                    link.ImgBytes = img.ImgBytes;
-                    link.MediaId = img.MediaId;
+                    if (img != null)
+                    {
+                        link.Location = img.Location;
+                        link.LocationType = img.LocationType;
+                        link.Image = img.Image;
+                        link.ImgBytes = img.ImgBytes;
+                        link.MediaId = img.MediaId;
+                    }
                 }
             }
             return list;
@@ -656,7 +670,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             string respCode = string.Empty;
             string errorText = string.Empty;
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
 
             string clubId = string.Empty;
             string cardId = string.Empty;
@@ -688,7 +702,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             string respCode = string.Empty;
             string errorText = string.Empty;
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
 
             LSCentral.RootMemberContactCreate1 root = map.MapToRoot1(contact, accountId);
             logger.Debug(config.LSKey.Key, "MemberContactUpdate Request - " + Serialization.ToXml(root, true));
@@ -705,7 +719,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table;
             XMLFieldData field;
             NAVWebXml xml = new NAVWebXml();
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             MemberContact contact = null;
 
             LSCentral.RootGetMemberContact rootContact = new LSCentral.RootGetMemberContact();
@@ -819,7 +833,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             centralWS.MobileGetProfiles(ref respCode, ref errorText, string.Empty, string.Empty, ref root);
             HandleWS2ResponseCode("MobileGetProfiles", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MobileGetProfiles Response - " + Serialization.ToXml(root, true));
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             return map.MapFromRootToProfiles(root);
         }
 
@@ -893,9 +907,29 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("MemberLogon", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberLogon Response - " + Serialization.ToXml(root, true));
 
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             MemberContact contact = map.MapFromRootToLogonContact(root, remainingPoints);
             contact.UserName = userName;
+            if (includeDetails)
+                contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
+
+            return contact;
+        }
+
+        public MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            LSCentral.RootMemberauthLogin root = new LSCentral.RootMemberauthLogin();
+            decimal remainingPoints = 0;
+
+            logger.Debug(config.LSKey.Key, "MemberAuthenticatorLogin - authenticator: {0}", authenticator);
+            centralWS.MemberAuthenticatorLogin(authenticator, authenticationId, XMLHelper.GetString(deviceID), XMLHelper.GetString(deviceName), ref remainingPoints, ref root, ref respCode, ref errorText);
+            HandleWS2ResponseCode("MemberAuthenticatorLogin", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MemberAuthenticatorLogin Response - " + Serialization.ToXml(root, true));
+
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
+            MemberContact contact = map.MapFromRootToLogonAuth(root, remainingPoints);
             if (includeDetails)
                 contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
 
@@ -913,7 +947,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("MemberPasswordChange", respCode, errorText);
         }
 
-        public string ResetPassword(string userName, string email, string newPassword)
+        public string ResetPassword(string userName, string email)
         {
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -922,6 +956,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "MemberPasswordReset - UserName:{0} Email:{1}", userName, email);
             centralWS.MemberPasswordReset(ref respCode, ref errorText, userName, email, ref token, ref tokenExp);
+            HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "MemberPasswordReset Response - Token:{0}", token);
+            return token;
+        }
+
+        public string SPGPassword(string email, string token, string newPwd)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            DateTime tokenExp = DateTime.Now.AddMonths(1);
+
+            logger.Debug(config.LSKey.Key, "MemberPasswordReset - Email:{0}", email);
+            centralWS.SPGResetPassword(email, ref token, ref newPwd, ref respCode, ref errorText);
             HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberPasswordReset Response - Token:{0}", token);
             return token;
@@ -1243,7 +1290,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
         }
 
-        public void OrderCancel(string orderId, string storeId, string userId)
+        public void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
             if (string.IsNullOrWhiteSpace(orderId))
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderStatusCheck orderId can not be empty");
@@ -1263,6 +1310,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             };
             root.CustomerOrderStatusLog = log.ToArray();
+
+            if (lineNo != null && lineNo.Count > 0)
+            {
+                List<LSCentral.CustomerOrderCancelCOLine> lines = new List<LSCentral.CustomerOrderCancelCOLine>();
+                foreach (int no in lineNo)
+                {
+                    lines.Add(new LSCentral.CustomerOrderCancelCOLine()
+                    {
+                        DocumentID = orderId,
+                        LineNo = no
+                    });
+                }
+                root.CustomerOrderCancelCOLine = lines.ToArray();
+            }
 
             centralWS.CustomerOrderCancel(ref respCode, ref errorText, orderId, 0, root);
             HandleWS2ResponseCode("CustomerOrderCancel", respCode, errorText);
@@ -1771,6 +1832,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return exist;
         }
 
+        public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        {
+            string respCode = string.Empty;
+            bool retValue = false;
+            string errorText = string.Empty;
+
+            logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Request - QRCode:{qrCode} store:{storeNo} devLoc:{devLocation} memAccount:{memberAccount} exitWoutShop:{exitWithoutShopping}");
+            centralWS.SPGOpenGate(qrCode, ref storeNo, ref devLocation, ref memberAccount, ref exitWithoutShopping, ref retValue, ref respCode, ref errorText);
+            logger.Debug(config.LSKey.Key, $"SPGOpenGate Response -  resCode:{respCode} errMsg:{errorText}");
+            if (respCode != "0000")
+                return errorText;
+
+            return string.Empty;
+        }
+
         #endregion
 
         public Currency CurrencyGetById(string id, string culture)
@@ -1835,7 +1911,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
 
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             return map.MapFromRootToNotifications(root);
         }
 
@@ -1927,7 +2003,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             string respCode = string.Empty;
             string errorText = string.Empty;
-            ContactMapping map = new ContactMapping(config.IsJson);
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
 
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
@@ -1970,7 +2046,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public MobileMenu MenuGet(string storeId, string salesType, Currency currency)
         {
-            throw new LSOmniServiceException(StatusCode.GenericError, "Not supported in LS Central");
+            logger.Error(config.LSKey.Key, "Not supported in LS Central");
+            return new MobileMenu();
         }
     }
 }

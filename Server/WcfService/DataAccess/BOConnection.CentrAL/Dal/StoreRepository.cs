@@ -138,7 +138,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             // get records
             string sql = GetSQL(true, 0) + sqlcolumnsinv + sqlfrominv + string.Format(" WHERE mt.[Terminal No_]='{0}'", terminalId);
             bool foundmystore = false;
-            string lastKey;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -151,7 +150,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         while (reader.Read())
                         {
-                            ReplStore store = ReaderToStore(reader, true, out lastKey);
+                            ReplStore store = ReaderToStore(reader, true, out string lastKey);
                             list.Add(store);
                             if (store.Id.Equals(storeId))
                                 foundmystore = true;
@@ -491,7 +490,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Latitute = SQLHelper.GetDecimal(reader, "Latitude"),
                 Longitude = SQLHelper.GetDecimal(reader, "Longitude"),
                 ClickAndCollect = SQLHelper.GetBool(reader["Click and Collect"]),
-                HospSalesTypes = SQLHelper.GetString(reader["Sales Type Filter"]),
 
                 State = string.Empty,
                 CultureName = string.Empty,
@@ -500,6 +498,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
                 Currency = SQLHelper.GetString(reader["Currency Code"])
             };
+
+            if (invmode == false)
+            {
+                store.HospSalesTypes = SQLHelper.GetString(reader["Sales Type Filter"]);
+            }
 
             if (string.IsNullOrWhiteSpace(store.Currency))
                 store.Currency = SQLHelper.GetString(reader["LCYCode"]);

@@ -28,7 +28,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[Loyalty],mt.[Web Store],mt.[Web Store POS Terminal],mt.[Web Store Staff ID],tr.[Sales Type Filter]," +
                         "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
-            if (LSCVersion > new Version("18.4"))
+            if (LSCVersion >= new Version("18.4"))
             {
                 sqlcolumns += ",mt.[Calc Inv for Sourcing Location]";
             }
@@ -37,7 +37,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                       " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]";
 
             sqlcolumnsinv = "mt.[Store],st.[Name],st.[Address],st.[Post Code],st.[City],st.[County],st.[Country Code],st.[Latitude],st.[Longitude]," +
-                            "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect]," +
+                            "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect],'' AS [Sales Type Filter]," +
                             "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
             sqlfrominv = " FROM [" + navCompanyName + "LSC Inventory Terminal-Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt INNER JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store]";
@@ -541,7 +541,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (string.IsNullOrWhiteSpace(store.Currency))
                 store.Currency = SQLHelper.GetString(reader["LCYCode"]);
 
-            if (LSCVersion > new Version("18.4"))
+            if (LSCVersion >= new Version("18.4") && invmode == false)
             {
                 store.UseSourcingLocation = SQLHelper.GetBool(reader["Calc Inv for Sourcing Location"]);
             }
@@ -585,7 +585,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             else
                 store.Currency = new Currency(cur);
 
-            if (LSCVersion > new Version("18.4"))
+            if (LSCVersion >= new Version("18.4"))
             {
                 store.UseSourcingLocation = SQLHelper.GetBool(reader["Calc Inv for Sourcing Location"]);
             }

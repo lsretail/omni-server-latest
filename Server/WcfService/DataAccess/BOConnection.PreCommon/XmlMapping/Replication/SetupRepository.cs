@@ -213,6 +213,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
 
             Terminal rec = new Terminal();
             rec.Features = new FeatureFlags();
+            rec.StoreInventory = true;
             foreach (XMLFieldData field in table.FieldList)
             {
                 switch (field.FieldName)

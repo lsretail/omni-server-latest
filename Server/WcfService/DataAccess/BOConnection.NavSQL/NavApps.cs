@@ -17,6 +17,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
     //Navision back office connection
     public class NavApps : NavBase, IAppBO
     {
+        public int TimeoutInSeconds
+        {
+            set { base.TimeOutInSeconds = value; }
+        }
+
         public NavApps(BOConfiguration config) : base(config)
         {
         }

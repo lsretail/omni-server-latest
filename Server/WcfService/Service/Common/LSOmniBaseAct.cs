@@ -208,6 +208,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                messageString = "Error";
+                return false; //never gets here
+            }
+        }
+
         #endregion
 
         #region Data Get (Replication)

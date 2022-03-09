@@ -509,6 +509,26 @@
           </sequence>
         </complexType>
       </element>
+      <element name="CheckAccess">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="searchReference" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="locationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="gateNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="registerAccessEntry" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="checkType" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="messageString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CheckAccess_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="messageString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="ConfirmActivityV2">
         <complexType>
           <sequence>
@@ -1385,6 +1405,12 @@
   <message name="CancelReservation_Result">
     <part name="parameters" element="tns:CancelReservation_Result" />
   </message>
+  <message name="CheckAccess">
+    <part name="parameters" element="tns:CheckAccess" />
+  </message>
+  <message name="CheckAccess_Result">
+    <part name="parameters" element="tns:CheckAccess_Result" />
+  </message>
   <message name="ConfirmActivityV2">
     <part name="parameters" element="tns:ConfirmActivityV2" />
   </message>
@@ -1638,6 +1664,10 @@
       <input name="CancelReservation" message="tns:CancelReservation" />
       <output name="CancelReservation_Result" message="tns:CancelReservation_Result" />
     </operation>
+    <operation name="CheckAccess">
+      <input name="CheckAccess" message="tns:CheckAccess" />
+      <output name="CheckAccess_Result" message="tns:CheckAccess_Result" />
+    </operation>
     <operation name="ConfirmActivityV2">
       <input name="ConfirmActivityV2" message="tns:ConfirmActivityV2" />
       <output name="ConfirmActivityV2_Result" message="tns:ConfirmActivityV2_Result" />
@@ -1825,6 +1855,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="CancelReservation_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="CheckAccess">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:CheckAccess" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CheckAccess">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CheckAccess_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -2191,7 +2230,7 @@
   </binding>
   <service name="Activity">
     <port name="Activity_Port" binding="tns:Activity_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/ReplaceWithAPercentEncodedCompanyName/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

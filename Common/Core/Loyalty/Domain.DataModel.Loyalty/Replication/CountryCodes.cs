@@ -1,5 +1,4 @@
-﻿using LSRetail.Omni.Domain.DataModel.Base.Base;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -44,13 +43,50 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class ReplCountryCode : IDisposable
     {
-        public ReplCountryCode(string id)
+        public ReplCountryCode()
         {
-            Id = id;
+            Code = string.Empty;
+            Name = string.Empty;
+            CustomerNo = string.Empty;
+            TaxPostGroup = string.Empty;
+            TaxItemGroups = new List<TaxItemGroup>();
         }
 
-        public ReplCountryCode() : this(string.Empty)
+        public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (TaxItemGroups != null)
+                    TaxItemGroups.Clear();
+            }
+        }
+
+        [DataMember]
+        public bool IsDeleted { get; set; }
+        [DataMember]
+        public string Code { get; set; }
+        [DataMember]
+        public string Name { get; set; }
+        [DataMember]
+        public string CustomerNo { get; set; }
+        [DataMember]
+        public string TaxPostGroup { get; set; }
+        [DataMember]
+        public List<TaxItemGroup> TaxItemGroups { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public class TaxItemGroup : IDisposable
+    {
+        public TaxItemGroup()
+        {
+            Code = string.Empty;
         }
 
         public void Dispose()
@@ -67,10 +103,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         }
 
         [DataMember]
-        public bool IsDeleted { get; set; }
+        public string Code { get; set; }
         [DataMember]
-        public string Id { get; set; }
-        [DataMember]
-        public string Name { get; set; }
+        public decimal TaxPercent { get; set; }
     }
 }

@@ -79,7 +79,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         {
                             list.Add(new ReplCountryCode()
                             {
-                                Id = SQLHelper.GetString(reader["Code"]),
+                                Code = SQLHelper.GetString(reader["Code"]),
                                 Name = SQLHelper.GetString(reader["Name"])
                             });
                         }

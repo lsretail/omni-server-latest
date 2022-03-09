@@ -30,6 +30,9 @@ namespace LSOmni.Common.Util
             if (encoding.Equals("utf-8", StringComparison.InvariantCultureIgnoreCase) || encoding.Equals("utf8", StringComparison.InvariantCultureIgnoreCase))
             {
                 byte[] data = value as byte[];
+                if (data.Length == 1 && data[0] == 0)
+                    return string.Empty;
+
                 if (data.Length > 1 && data[data.Length - 1] == 0)
                 {
                     byte[] tmp = new byte[data.Length - 1];

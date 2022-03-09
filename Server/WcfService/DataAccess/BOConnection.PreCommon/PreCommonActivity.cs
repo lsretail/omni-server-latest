@@ -306,6 +306,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return map.MapRootToAvailabilityResponse(root);
         }
 
+        public bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
+        {
+            messageString = string.Empty;
+
+            logger.Debug(config.LSKey.Key, $"ActivityCheckAccess: SearchRef:{searchReference}, Loc:{locationNo}, Gate:{gateNo}, RegAccEntry:{registerAccessEntry}, Type:{checkType}");
+            bool ret = activityWS.CheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, ref messageString);
+            logger.Debug(config.LSKey.Key, $"CheckAccess > Ret:{ret} Msg:{messageString}");
+            return ret;
+        }
+
         #endregion
 
         #region Data Get (Replication)

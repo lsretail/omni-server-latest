@@ -46,7 +46,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ReplBarcodeMaskSegment()
         {
-            Del = false;
+            IsDeleted = false;
             Char = string.Empty;
         }
 
@@ -66,7 +66,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int Id { get; set; }
         [DataMember]
-        public bool Del { get; set; }
+        public bool IsDeleted { get; set; }
         [DataMember]
         public int MaskId { get; set; }
         [DataMember]
@@ -82,7 +82,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
 
         public override string ToString()
         {
-            return $"{nameof(Id)}: {Id}, {nameof(Del)}: {Del}, {nameof(MaskId)}: {MaskId}, {nameof(Number)}: {Number}, {nameof(Length)}: {Length}, {nameof(SegmentType)}: {SegmentType}, {nameof(Decimals)}: {Decimals}, {nameof(Char)}: {Char}";
+            return $"{nameof(Id)}: {Id}, {nameof(IsDeleted)}: {IsDeleted}, {nameof(MaskId)}: {MaskId}, {nameof(Number)}: {Number}, {nameof(Length)}: {Length}, {nameof(SegmentType)}: {SegmentType}, {nameof(Decimals)}: {Decimals}, {nameof(Char)}: {Char}";
         }
     }
 }

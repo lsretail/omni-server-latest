@@ -17,6 +17,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
     //Navision back office connection
     public class NavApps : NavBase, IAppBO
     {
+        public int TimeoutInSeconds
+        {
+            set { base.TimeOutInSeconds = value; }
+        }
+
         public NavApps(BOConfiguration config) : base(config)
         {
         }
@@ -58,7 +63,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
                 //JIJ add the distance calc for them, radius of X km ?
                 int recordsRemaining = 0;
                 string lastKey = "", maxKey = "";
-                StoreRepository rep = new StoreRepository(config, NAVVersion);
+                StoreRepository rep = new StoreRepository(config, LSCVersion);
                 List<ReplStore> totalList = rep.ReplicateStores(100, true, ref lastKey, ref maxKey, ref recordsRemaining);
 
                 //get the storeIds close to this store
@@ -76,7 +81,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual string ItemDetailsGetById(string itemId)
         {
-            ItemRepository itemRep = new ItemRepository(config);
+            ItemRepository itemRep = new ItemRepository(config, LSCVersion);
             return itemRep.ItemDetailsGetById(itemId);
         }
 
@@ -84,7 +89,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplItem> ReplicateItems(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             return rep.ReplicateItems(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -198,13 +203,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             return rep.ReplicateStores(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplStore> ReplicateInvStores(string appId, string appType, string storeId, bool fullReplication, string terminalId)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             return rep.ReplicateInvStores(storeId, terminalId);
         }
 

@@ -86,6 +86,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return new List<AvailabilityResponse>();
         }
 
+        public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
+        {
+            messageString = "Not Supported";
+            return false;
+        }
+
         #endregion
 
         #region Data Get (Replication)

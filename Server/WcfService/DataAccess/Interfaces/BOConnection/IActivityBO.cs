@@ -23,6 +23,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment);
         List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays);
         List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays);
+        bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString);
 
         #endregion
 

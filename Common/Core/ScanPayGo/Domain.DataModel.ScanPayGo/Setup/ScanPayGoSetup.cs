@@ -52,5 +52,12 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public string AudkenniRedirectUrl { get; set; }
         public string AudkenniMessageToUser { get; set; }
         public bool AudkenniLoginEnabled { get; set; }
+        public bool GoogleLoginEnabled { get; set; }
+        public string GoogleIosClientId { get; set; }
+        public bool FacebookLoginEnabled { get; set; }
+        public bool AppleLoginEnabled { get; set; }
+        public bool OpenGateEnabled { get; set; }
+        public bool CloseGateEnabled { get; set; }
+        public bool ExperienceSurveyEnabled { get; set; } = true;
     }
 }

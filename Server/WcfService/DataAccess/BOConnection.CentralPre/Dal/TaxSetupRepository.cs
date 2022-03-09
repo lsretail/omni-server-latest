@@ -116,25 +116,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public decimal VATGet(string busCode, string vatCode)
-        {
-            decimal vat = 0;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = "SELECT mt.[VAT _]" + sqlfrom + " WHERE [VAT Bus_ Posting Group]=@busCode AND [VAT Prod_ Posting Group]=@vatCode";
-                    command.Parameters.AddWithValue("@busCode", busCode);
-                    command.Parameters.AddWithValue("@vatCode", vatCode);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    vat = SQLHelper.GetDecimal(command.ExecuteScalar());
-                    connection.Close();
-                }
-            }
-            return vat;
-        }
-
         private ReplTaxSetup ReaderToTaxGroup(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);

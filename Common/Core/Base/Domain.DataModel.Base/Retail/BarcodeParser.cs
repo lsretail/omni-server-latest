@@ -254,6 +254,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 
             BarcodeParseResult result = new BarcodeParseResult(barcode, mask);
             string barcodeProccessed = barcode.Substring(mask.Prefix.Length);
+
+            if (mask.Segments.Count == 0)
+            {
+                return null;
+            }
+
             foreach (Segment segment in mask.Segments)
             {
                 if (segment.Length > barcodeProccessed.Length)

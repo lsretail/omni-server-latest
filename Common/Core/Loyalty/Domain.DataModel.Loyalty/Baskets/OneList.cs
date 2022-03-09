@@ -154,6 +154,19 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         public BasketState State { get; set; }
 
+        [IgnoreDataMember]
+        public int NumberOfItems {
+            get
+            {
+                if (Items == null)
+                {
+                    return 0;
+                }
+
+                return Items.Count;
+            }
+        }
+
         public OneList Clone()
         {
             OneList clone = (OneList)MemberwiseClone();
@@ -188,14 +201,13 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         public void RemoveItem(OneListItem itemToRemove)
         {
-            if (itemToRemove == null || itemToRemove.Quantity == 1)
+            if (itemToRemove == null)
             {
-                this.Items.Remove(itemToRemove);
+                return;
             }
-            else
-            {
-                itemToRemove.Quantity -= 1;
-            }
+
+            this.Items.Remove(itemToRemove);
+
             CalculateBasket();
         }
 

@@ -25,6 +25,14 @@ namespace LSOmni.BLL.Loyalty
 
             return BOLoyConnection.SalesEntryGet(entryId, type);
         }
+
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        {
+            if (string.IsNullOrEmpty(receiptNo))
+                throw new LSOmniException(StatusCode.TransacitionIdMissing, "receiptNo can not be empty");
+
+            return BOLoyConnection.SalesEntryGetReturnSales(receiptNo);
+        }
     }
 }
 

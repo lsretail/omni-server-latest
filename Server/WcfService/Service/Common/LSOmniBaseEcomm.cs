@@ -358,6 +358,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual ReplDataTranslationResponse ReplEcommHtmlTranslation(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommHtmlTranslation(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
         public virtual ReplDataTranslationLangCodeResponse ReplEcommDataTranslationLangCode(ReplRequest replRequest)
         {
             try

@@ -11,7 +11,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
     //Navision back office connection
     public class NavBase
     {
-        protected int TimeOutInSeconds { get; set; }
+        private int TimeoutSec = 0;
+        protected int TimeOutInSeconds
+        {
+            get
+            {
+                return TimeoutSec;
+            }
+            set
+            {
+                TimeoutSec = value;
+                NavWSBase.TimeOutInSeconds = TimeoutSec;
+            }
+        }
 
         protected static LSLogger logger = new LSLogger();
 

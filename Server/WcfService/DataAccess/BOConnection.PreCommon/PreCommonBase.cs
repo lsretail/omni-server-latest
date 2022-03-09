@@ -18,7 +18,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
     //Navision back office connection
     public partial class PreCommonBase
     {
-        protected int TimeOutInSeconds { get; set; }
+        private int TimeoutSec = 0;
+        public int TimeOutInSeconds
+        {
+            get
+            {
+                return TimeoutSec;
+            }
+            set
+            {
+                // sever timeout before client (2 sec)
+                TimeoutSec = value;
+                if (centralWS != null)
+                    centralWS.Timeout = (value - 2) * 1000;
+                if (centralQryWS != null)
+                    centralQryWS.Timeout = (value - 2) * 1000;
+                if (activityWS != null)
+                    activityWS.Timeout = (value - 2) * 1000;
+                if (odataWS != null)
+                    odataWS.Timeout = (value - 2) * 1000;
+            }
+        }
 
         protected static LSLogger logger = new LSLogger();
 
@@ -27,10 +47,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public LSCentral.OmniWrapper centralWS = null;
         public LSCentral.OmniWrapper centralQryWS = null;
         public LSActivity.Activity activityWS = null;
+        public LSOData.ODataRequest odataWS = null;
         private int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
         private static readonly object Locker = new object();
 
         public Version LSCVersion = null; //use this in code to check Nav version
+        public string NavCompany = string.Empty;
 
         protected BOConfiguration config = null;
 
@@ -52,6 +74,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ecomAppId = config.SettingsGetByKey(ConfigKey.NavAppId);
             ecomAppType = config.SettingsGetByKey(ConfigKey.NavAppType);
+            string url = config.SettingsGetByKey(ConfigKey.BOUrl);
 
             string rpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dat");
             ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{(string.IsNullOrEmpty(configuration.AppId) ? ecomAppId : configuration.AppId)}.txt");
@@ -108,7 +131,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 string timeout = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value;
 
                 navWebReference = new NavWebReference.RetailWebServices();
-                navWebReference.Url = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value;
+                navWebReference.Url = url;
                 navWebReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
                 navWebReference.PreAuthenticate = true;
                 navWebReference.AllowAutoRedirect = true;
@@ -125,24 +148,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 navWebQryReference.PreAuthenticate = true;
                 navWebQryReference.AllowAutoRedirect = true;
 
-                //don't set the credentials unless we have them. Can use the app pool too.
-                if (credentials != null)
-                {
-                    navWebReference.Credentials = credentials;
-                    navWebQryReference.Credentials = credentials;
-                }
-
-                if (string.IsNullOrEmpty(config.SettingsGetByKey(ConfigKey.Proxy_Server)) == false)
-                {
-                    navWebReference.Proxy = GetWebProxy();
-                    navWebQryReference.Proxy = GetWebProxy();
-                }
-
                 centralWS = new LSCentral.OmniWrapper();
                 centralQryWS = new LSCentral.OmniWrapper();
                 activityWS = new LSActivity.Activity();
+                odataWS = new LSOData.ODataRequest();
 
-                centralWS.Url = config.SettingsGetByKey(ConfigKey.BOUrl).Replace("RetailWebServices", "OmniWrapper");
+                centralWS.Url = url.Replace("RetailWebServices", "OmniWrapper");
                 centralWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
                 centralWS.PreAuthenticate = true;
                 centralWS.AllowAutoRedirect = true;
@@ -153,29 +164,56 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 centralQryWS.PreAuthenticate = true;
                 centralQryWS.AllowAutoRedirect = true;
 
-                activityWS.Url = config.SettingsGetByKey(ConfigKey.BOUrl).Replace("RetailWebServices", "Activity");
+                activityWS.Url = url.Replace("RetailWebServices", "Activity");
                 activityWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
                 activityWS.PreAuthenticate = true;
                 activityWS.AllowAutoRedirect = true;
 
+                odataWS.Url = url.Replace("RetailWebServices", "ODataRequest");
+                odataWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+                odataWS.PreAuthenticate = true;
+                odataWS.AllowAutoRedirect = true;
+
+                //don't set the credentials unless we have them. Can use the app pool too.
                 if (credentials != null)
                 {
+                    navWebReference.Credentials = credentials;
+                    navWebQryReference.Credentials = credentials;
+
                     centralWS.Credentials = credentials;
                     centralQryWS.Credentials = credentials;
                     activityWS.Credentials = credentials;
+                    odataWS.Credentials = credentials;
                 }
+
+                if (string.IsNullOrEmpty(config.SettingsGetByKey(ConfigKey.Proxy_Server)) == false)
+                {
+                    navWebReference.Proxy = GetWebProxy();
+                    navWebQryReference.Proxy = GetWebProxy();
+
+                    centralWS.Proxy = GetWebProxy();
+                    centralQryWS.Proxy = GetWebProxy();
+                    activityWS.Proxy = GetWebProxy();
+                    odataWS.Proxy = GetWebProxy();
+                }
+
+                int sp = url.ToLower().IndexOf("/ws/");
+                int ep = url.ToLower().IndexOf("/codeunit");
+                NavCompany = url.Substring(sp + 4, ep - sp - 4).Replace("%20", " ");
 
                 NavVersionToUse();
             }
         }
 
-        public void ResetReplication(bool fullreplication, string lastkey)
+        public bool ResetReplication(bool fullreplication, string lastkey)
         {
             if (fullreplication && (string.IsNullOrEmpty(lastkey) || lastkey == "0"))
             {
                 File.WriteAllText(ecomAppRestoreFileName, true.ToString());
                 ecomAppRestore = true;
+                return true;
             }
+            return false;
         }
 
         public XMLTableData DoReplication(int tableid, string storeId, string appid, string apptype, int batchSize, ref string lastKey, out int totalrecs)
@@ -314,6 +352,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
         }
 
+        public List<XMLTableData> StartWebReplication(NAVWebXml xml, int batchSize, ref int restorePoint)
+        {
+            string xmlRequest;
+            string xmlResponse;
+
+            // get tables to replicate and current status
+            xmlRequest = xml.StartSyncRequestXML(batchSize);
+            xmlResponse = RunOperation(xmlRequest, true);
+            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" }, false);
+            if (string.IsNullOrEmpty(ret) == false)
+            {
+                // App is not registered, so lets register it
+                xmlRequest = xml.RegisterApplicationRequestXML(LSCVersion);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse, new string[] { "1920" }, false); // seems like its already registered
+
+                // Now try again to start Sync Cycle
+                xmlRequest = xml.StartSyncRequestXML(batchSize);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+            }
+            return xml.SyncResponseXML(xmlResponse, out restorePoint);
+        }
+
         #region private members
 
         private void Base64StringConvertion(ref string xmlRequest)
@@ -349,14 +411,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         protected string RunOperation(string xmlRequest, bool useQuery = false, bool logResponse = true)
         {
             bool doBase64 = false;
-            string originalxmlRequest = "";
             //only larger requests should be converted to base64
             if (xmlRequest.Length >= base64ConversionMinLength && (xmlRequest.Contains("WEB_POS") || xmlRequest.Contains("IM_SEND_DOCUMENT") || xmlRequest.Contains("IM_SEND_INVENTORY_TRANSACTION")))
             {
                 //add key Nav.SkipBase64Conversion  true to skip this basel64 trick
-                if (config.SettingsBoolGetByKey(ConfigKey.SkipBase64Conversion))
+                if (config.SettingsBoolGetByKey(ConfigKey.SkipBase64Conversion) == false)
                 {
-                    originalxmlRequest = xmlRequest;//save it for logging
                     doBase64 = true;
                     Base64StringConvertion(ref xmlRequest);
                     logger.Debug(config.LSKey.Key, "Base64 string sent to Nav as <Encoded_Request>");
@@ -405,30 +465,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             LogXml(xmlRequest, xmlResponse, elapsedTime, logResponse);
             return xmlResponse;
-        }
-
-        private List<XMLTableData> StartWebReplication(NAVWebXml xml, int batchSize, ref int restorePoint)
-        {
-            string xmlRequest;
-            string xmlResponse;
-
-            // get tables to replicate and current status
-            xmlRequest = xml.StartSyncRequestXML(batchSize);
-            xmlResponse = RunOperation(xmlRequest, true);
-            string ret = HandleResponseCode(ref xmlResponse, new string[] { "1921" }, false);
-            if (string.IsNullOrEmpty(ret) == false)
-            {
-                // App is not registered, so lets register it
-                xmlRequest = xml.RegisterApplicationRequestXML(LSCVersion);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse, new string[] { "1920" }, false); // seems like its already registered
-
-                // Now try again to start Sync Cycle
-                xmlRequest = xml.StartSyncRequestXML(batchSize);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-            }
-            return xml.SyncResponseXML(xmlResponse, out restorePoint);
         }
 
         private List<XMLTableData> RestoreWebReplication(NAVWebXml xml, int restorePoint)
@@ -497,28 +533,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             //only log XML in debug mode, since passwords are logged
             else if (logger.IsDebugEnabled)
             {
-                xmlRequest = RemoveNode("Password", xmlRequest);
-                xmlRequest = RemoveNode("NewPassword", xmlRequest);
-                xmlRequest = RemoveNode("OldPassword", xmlRequest);
+                xmlRequest = Serialization.RemoveNode("Password", xmlRequest);
+                xmlRequest = Serialization.RemoveNode("NewPassword", xmlRequest);
+                xmlRequest = Serialization.RemoveNode("OldPassword", xmlRequest);
                 XDocument doc = XDocument.Parse(xmlResponse);
                 xmlResponse = doc.ToString();//get better XML parsing
                 XDocument docRq = XDocument.Parse(xmlRequest);
                 xmlRequest = docRq.ToString();//get better XML parsing
                 logger.Debug(config.LSKey.Key, "\r\nNLOG DEBUG MODE ONLY:  {0}\r\n{1}\r\n  \r\n{2}\r\n", elapsedTime, xmlRequest, (logResponse) ? xmlResponse : string.Empty);
-            }
-        }
-
-        protected string RemoveNode(string nodeName, string xml)
-        {
-            try
-            {
-                //remove a node from XML,, nodeName=Password removes value between <Password>
-                string regex = "<" + nodeName + ">.*?</" + nodeName + ">"; //strip out 
-                return System.Text.RegularExpressions.Regex.Replace(xml, regex, "<" + nodeName + ">XXX</" + nodeName + ">");
-            }
-            catch
-            {
-                return xml;
             }
         }
 
@@ -529,9 +551,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             try
             {
-                //first time comes in at NavWsVersion.Unknown so defaults to NAV7
-                if (TimeOutInSeconds > 0)
-                    wsToUse.Timeout = (TimeOutInSeconds - 2) * 1000;//-2 to make sure server timeout before client
+                if (TimeoutSec > 0)
+                    wsToUse.Timeout = (TimeoutSec - 2) * 1000;//-2 to make sure server timeout before client
 
                 wsToUse.WebRequest(ref xmlRequest, ref xmlResponse);
             }

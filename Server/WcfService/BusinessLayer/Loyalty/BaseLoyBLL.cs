@@ -47,6 +47,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 if (iAppBOConnection == null)
                     iAppBOConnection = GetBORepository<IAppBO>(config.LSKey.Key, config.IsJson);
+                iAppBOConnection.TimeoutInSeconds = this.timeoutInSeconds;
                 return iAppBOConnection;
             }
         }

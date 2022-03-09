@@ -6,23 +6,22 @@ namespace LSOmni.Common.Util
 {
     public static class ConvertTo
     {
-        public static Decimal RoundIt(string val, decimal unit, CurrencyGetHelper.RoundingMethod roundMethod)
+        public static decimal RoundIt(string val, decimal unit, CurrencyGetHelper.RoundingMethod roundMethod)
         {
             decimal d = Convert.ToDecimal(val, CultureInfo.InvariantCulture);
             return CurrencyGetHelper.RoundToUnit(d, unit, roundMethod);
         }
 
-        public static Decimal RoundIt(decimal val, decimal unit, CurrencyGetHelper.RoundingMethod roundMethod)
+        public static decimal RoundIt(decimal val, decimal unit, CurrencyGetHelper.RoundingMethod roundMethod)
         {
             return CurrencyGetHelper.RoundToUnit(val, unit, roundMethod);
         }
 
-        public static Decimal SafeDecimal(string val, bool absValue = false)
+        public static decimal SafeDecimal(string val, bool absValue = false)
         {
             if (string.IsNullOrWhiteSpace(val))
                 return 0M;
             val = SafeDecimalString(val, absValue);
-            //d = Math.Round(d,decimals);
             return Convert.ToDecimal(val, CultureInfo.InvariantCulture);
         }
 
@@ -31,11 +30,14 @@ namespace LSOmni.Common.Util
             if (string.IsNullOrEmpty(val))
                 return 0;
 
-            int retVal;
-            if (Int32.TryParse(val, out retVal))
+            if (int.TryParse(val, out int retVal))
                 return retVal;
             else
+            {
+                if (decimal.TryParse(val, out decimal retdec))
+                    return decimal.ToInt32(SafeDecimal(val));
                 return 0;
+            }
         }
 
         public static long SafeLong(string val)
@@ -43,8 +45,7 @@ namespace LSOmni.Common.Util
             if (string.IsNullOrEmpty(val))
                 return 0L;
 
-            long retVal;
-            if (Int64.TryParse(val, out retVal))
+            if (long.TryParse(val, out long retVal))
                 return retVal;
             else
                 return 0L;
@@ -76,7 +77,7 @@ namespace LSOmni.Common.Util
             return val;
         }
 
-        public static Double SafeDouble(string val, bool absValue = false)
+        public static double SafeDouble(string val, bool absValue = false)
         {
             val = SafeDecimalString(val, absValue);
             return Convert.ToDouble(val, CultureInfo.InvariantCulture);
@@ -187,7 +188,6 @@ namespace LSOmni.Common.Util
             {
                 return new DateTime(1970, 1, 1, 0, 0, 0); //1970 is a safe json year
             }
-
         }
 
         public static string Base64Encode(string plainText)
@@ -199,6 +199,9 @@ namespace LSOmni.Common.Util
         public static string Base64Decode(string base64EncodedData)
         {
             byte[] base64EncodedBytes = Convert.FromBase64String(base64EncodedData);
+
+            if (base64EncodedBytes.Length == 1 && base64EncodedBytes[0] == 0)
+                return string.Empty;
 
             if (base64EncodedBytes.Length > 1 && base64EncodedBytes[base64EncodedBytes.Length - 1] == 0)
             {

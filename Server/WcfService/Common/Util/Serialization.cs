@@ -61,6 +61,8 @@ namespace LSOmni.Common.Util
 						result = sr.ReadToEnd();
 					}
 				}
+
+				result = RemoveNode("Password", result);
 			}
 			catch (Exception)
             {
@@ -116,6 +118,20 @@ namespace LSOmni.Common.Util
 			}
 
 			return contract;
+		}
+
+		public static string RemoveNode(string nodeName, string xml)
+		{
+			try
+			{
+				//remove a node from XML,, nodeName=Password removes value between <Password>
+				string regex = "<" + nodeName + ">.*?</" + nodeName + ">"; //strip out 
+				return System.Text.RegularExpressions.Regex.Replace(xml, regex, "<" + nodeName + ">XXX</" + nodeName + ">");
+			}
+			catch
+			{
+				return xml;
+			}
 		}
 
 		public static bool TestXmlSerialize(Type classname, object classdata)

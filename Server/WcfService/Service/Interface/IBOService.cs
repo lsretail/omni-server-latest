@@ -66,7 +66,7 @@ namespace LSOmni.Service
         #region LSRecommend
 
         [OperationContract]
-        bool LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock);
+        bool LSRecommendSetting(string lsKey, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock);
 
         #endregion
     }

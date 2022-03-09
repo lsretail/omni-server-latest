@@ -26,10 +26,9 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "LS Recommend Setup has not yet been sent to LS Commerce Service from LS Central");
         }
 
-        public virtual void LSRecommendSetting(string lskey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
+        public virtual void LSRecommendSetting(string lskey, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
             ConfigBLL bll = new ConfigBLL();
-            bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_Company, companyName, "string", true, "LS Central Company");
             bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_BatchNo, batchNo, "string", true, "Batch Number");
             bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_ModelUrl, modelReaderURL, "string", true, "Model Reader URL");
             bll.ConfigSetByKey(lskey, ConfigKey.LSRecommend_AuthUrl, authenticationURL, "string", true, "Authentication URL");
@@ -53,7 +52,7 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrEmpty(url))
                 throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "Missing LSRecommend_ModelUrl in Appsettings");
 
-            string requrl = $"{url}/{config.SettingsGetByKey(ConfigKey.LSRecommend_Company)}/{config.SettingsGetByKey(ConfigKey.LSRecommend_BatchNo)}/BasketRecommendation?numberOfRecommendations={config.SettingsGetByKey(ConfigKey.LSRecommend_NoOfDownloadedItems)}";
+            string requrl = $"{url}/{config.SettingsGetByKey(ConfigKey.LSRecommend_BatchNo)}/BasketRecommendation?numberOfRecommendations={config.SettingsGetByKey(ConfigKey.LSRecommend_NoOfDownloadedItems)}";
 
             string json = string.Format("{{\"items\": {0}}}", JsonConvert.SerializeObject(items));
             string result = SendCommand(requrl, json, token);

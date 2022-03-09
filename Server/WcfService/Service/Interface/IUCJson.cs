@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
@@ -69,6 +70,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get related items in a published offer
         /// </summary>
+        /// <remarks>
+        /// LS Nav WS1 : LOAD_PUBLISHED_OFFER_ITEMS<p/><p/>
+        /// </remarks>
         /// <param name="pubOfferId">Published offer id</param>
         /// <param name="numberOfItems">Number of items to return</param>
         /// <returns></returns>
@@ -637,7 +641,7 @@ namespace LSOmni.Service
         OrderStatusResponse OrderStatusCheck(string orderId);
 
         /// <summary>
-        /// Cancel Customer Order
+        /// Cancel Customer Order with lineNo option to cancel individual lines
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : CustomerOrderCancel<p/><p/>
@@ -645,10 +649,11 @@ namespace LSOmni.Service
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
         /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
+        /// <param name="lineNo">list of Order Line numbers to cancel, if empty whole order will be canceled</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string OrderCancel(string orderId, string storeId, string userId);
+        string OrderCancel(string orderId, string storeId, string userId, List<int> lineNo);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -720,6 +725,15 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type);
+
+        /// <summary>
+        /// Get Return sales transactions based on orginal transaction with HasReturnSale = true
+        /// </summary>
+        /// <param name="receiptNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<SalesEntry> SalesEntryGetReturnSales(string receiptNo);
 
         #endregion
 
@@ -840,6 +854,9 @@ namespace LSOmni.Service
         ///       "PostCode": "1001",
         ///       "StateProvinceRegion": "",
         ///       "Type": "0"
+        ///     }],
+        ///     "Cards": [{
+    	///	      "Id": "10033"
         ///     }],
         ///     "Email": "Sarah@Hollywood.com",
         ///     "FirstName": "Sarah",
@@ -1080,6 +1097,7 @@ namespace LSOmni.Service
         /// <summary>
         /// Reset current password or request new password for new Member Contact.  
         /// Send either login or email depending on which function is required.
+        /// If sendEmail is true, send only email address, login is not used in this mode
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
@@ -1109,6 +1127,17 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool PasswordChange(string userName, string token, string newPassword, string oldPassword);
+
+        /// <summary>
+        /// Change password in SPG App
+        /// </summary>
+        /// <param name="email">EMail to send token to</param>
+        /// <param name="token">Token from PasswordReset</param>
+        /// <param name="newPassword">New Password</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        string SPGPassword(string email, string token, string newPassword);
 
         /// <summary>
         /// Change Login Id for Member Contact
@@ -1159,6 +1188,22 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         MemberContact Login(string userName, string password, string deviceId);
+
+        /// <summary>
+        /// Soical authentication login
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : MemberAuthenticatorLogin<p/><p/>
+        /// </remarks>
+        /// <param name="authenticator"></param>
+        /// <param name="authenticationId"></param>
+        /// <param name="deviceId">Device Id. Should be empty for non device user (web apps)</param>
+        /// <param name="deviceName">Device name or description</param>
+        /// <param name="includeDetails">Include detailed Contact information, like  Publish offer and transactions</param>
+        /// <returns>Contact</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        MemberContact SocialLogon(string authenticator, string authenticationId, string deviceId, string deviceName, bool includeDetails);
 
         /// <summary>
         /// Login user from web page.  This function is light version of Login and returns less data.
@@ -2009,6 +2054,25 @@ namespace LSOmni.Service
         ReplDataTranslationResponse ReplEcommDataTranslation(ReplRequest replRequest);
 
         /// <summary>
+        /// Replicate Translation text for Item HTML table
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 10001410 - LSC Item HTML ML
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of texts</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplDataTranslationResponse ReplEcommHtmlTranslation(ReplRequest replRequest);
+
+        /// <summary>
         /// Replicate Translation Language Codes
         /// </summary>
         /// <remarks>
@@ -2654,14 +2718,15 @@ namespace LSOmni.Service
 
         /// <summary>
         /// Get availability for specific resource, for a specific date and location (all required parameters)
-        /// Optional parameters - Interval Type - Use specific intervals setup in the system or leave blank for whole day
-        /// NoOfDays - Set how many days to return availability, if set to 0 then use default setting (10 days normally)
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetResourceAvailability<p/><p/>
+        /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="activityDate"></param>
         /// <param name="resourceNo"></param>
-        /// <param name="intervalType"></param>
-        /// <param name="noOfDays"></param>
+        /// <param name="intervalType">Use specific intervals setup in the system or leave blank for whole day</param>
+        /// <param name="noOfDays">Set how many days to return availability, if set to 0 then use default setting (10 days normally)</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -2669,18 +2734,36 @@ namespace LSOmni.Service
 
         /// <summary>
         /// Get availability for all active resource in specific resource group, for a specific date and location (all required parameters)
-        /// Optional parameters - Interval Type - Use specific intervals setup in the system or leave blank for whole day
-        /// NoOfDays - Set how many days to return availability, if set to 0 then use default setting (10 days normally)
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetResourceGroupAvailability<p/><p/>
+        /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="activityDate"></param>
         /// <param name="groupNo"></param>
-        /// <param name="intervalType"></param>
-        /// <param name="noOfDays"></param>
+        /// <param name="intervalType">Use specific intervals setup in the system or leave blank for whole day</param>
+        /// <param name="noOfDays">Set how many days to return availability, if set to 0 then use default setting (10 days normally)</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays);
+
+        /// <summary>
+        /// Check if valid access for either membership or ticketing.  
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : CheckAccess<p/><p/>
+        /// </remarks>
+        /// <param name="searchReference">Either TicketBarcode, Member No. or Membership No. LocationNo</param>
+        /// <param name="locationNo">Optional Activity Location</param>
+        /// <param name="gateNo">Optional Gate number</param>
+        /// <param name="registerAccessEntry">Set if to register admission</param>
+        /// <param name="checkType">0 = All checks, 1 = CheckTicket only, 2 = CheckMembership only</param>
+        /// <param name="messageString">Returned info</param>
+        /// <returns>Returns true or false if access is valid</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString);
 
         #endregion
 
@@ -2738,6 +2821,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Look up Reservation Headers
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetActReservations<p/><p/>
+        /// </remarks>
         /// <param name="reservationNo"></param>
         /// <param name="reservationType"></param>
         /// <param name="status"></param>
@@ -2834,6 +2920,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get list of activities assigned to a resource, required parameters Resource code (number), Date from and to date
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : UploadResourceActivities<p/><p/>
+        /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="resourceNo"></param>
         /// <param name="fromDate"></param>
@@ -2846,6 +2935,9 @@ namespace LSOmni.Service
         /// <summary>
         /// Get list of all resources 
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : UploadActivityResources<p/><p/>
+        /// </remarks>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -2871,6 +2963,10 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool SecurityCheckProfile(string orderNo, string storeNo);
+
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping);
 
         #endregion
     }

@@ -92,7 +92,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         TenderType_Mapping = 1280,
 
-        LSRecommend_Company = 1321,
         LSRecommend_BatchNo = 1322,
         LSRecommend_ModelUrl = 1323,
         LSRecommend_AuthUrl = 1324,

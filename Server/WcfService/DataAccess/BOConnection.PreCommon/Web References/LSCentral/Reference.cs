@@ -14,16 +14,16 @@
 #pragma warning disable 1591
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
-    using System;
-    using System.Web.Services;
     using System.Diagnostics;
-    using System.Web.Services.Protocols;
+    using System;
     using System.Xml.Serialization;
     using System.ComponentModel;
+    using System.Web.Services.Protocols;
+    using System.Web.Services;
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="OmniWrapper_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper")]
@@ -137,6 +137,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback ItemSalesInfoOperationCompleted;
         
+        private System.Threading.SendOrPostCallback LSCCOShipAgentsInfoGetOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback LSCSalesShipmentGetOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback LSCSalesShipmentUpdateOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback MemberAuthenticatorLoginOperationCompleted;
+        
         private System.Threading.SendOrPostCallback MemberCardToContactOperationCompleted;
         
         private System.Threading.SendOrPostCallback MemberContactBlockOperationCompleted;
@@ -189,7 +197,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback MobilelPosGetLastReceiptNoOperationCompleted;
         
+        private System.Threading.SendOrPostCallback SPGOpenGateOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SPGProfileGetOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SPGResetPasswordOperationCompleted;
         
         private System.Threading.SendOrPostCallback SecurityCheckProfileOperationCompleted;
         
@@ -208,6 +220,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback StoreInvTransactionSendV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback StoreInvTransactionSendOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback StoreInventoryLinesGetV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback StoreInventoryLinesGetOperationCompleted;
         
@@ -414,6 +428,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event ItemSalesInfoCompletedEventHandler ItemSalesInfoCompleted;
         
         /// <remarks/>
+        public event LSCCOShipAgentsInfoGetCompletedEventHandler LSCCOShipAgentsInfoGetCompleted;
+        
+        /// <remarks/>
+        public event LSCSalesShipmentGetCompletedEventHandler LSCSalesShipmentGetCompleted;
+        
+        /// <remarks/>
+        public event LSCSalesShipmentUpdateCompletedEventHandler LSCSalesShipmentUpdateCompleted;
+        
+        /// <remarks/>
+        public event MemberAuthenticatorLoginCompletedEventHandler MemberAuthenticatorLoginCompleted;
+        
+        /// <remarks/>
         public event MemberCardToContactCompletedEventHandler MemberCardToContactCompleted;
         
         /// <remarks/>
@@ -492,7 +518,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event MobilelPosGetLastReceiptNoCompletedEventHandler MobilelPosGetLastReceiptNoCompleted;
         
         /// <remarks/>
+        public event SPGOpenGateCompletedEventHandler SPGOpenGateCompleted;
+        
+        /// <remarks/>
         public event SPGProfileGetCompletedEventHandler SPGProfileGetCompleted;
+        
+        /// <remarks/>
+        public event SPGResetPasswordCompletedEventHandler SPGResetPasswordCompleted;
         
         /// <remarks/>
         public event SecurityCheckProfileCompletedEventHandler SecurityCheckProfileCompleted;
@@ -520,6 +552,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event StoreInvTransactionSendCompletedEventHandler StoreInvTransactionSendCompleted;
+        
+        /// <remarks/>
+        public event StoreInventoryLinesGetV2CompletedEventHandler StoreInventoryLinesGetV2Completed;
         
         /// <remarks/>
         public event StoreInventoryLinesGetCompletedEventHandler StoreInventoryLinesGetCompleted;
@@ -2716,6 +2751,160 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:LSCCOShipAgentsInfoGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="LSCCOShipAgentsInfoGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void LSCCOShipAgentsInfoGet(ref string responseCode, ref string errorText, ref RootCOShippingAgentsInfoGetXML cOShipAgentsInfoGetXML) {
+            object[] results = this.Invoke("LSCCOShipAgentsInfoGet", new object[] {
+                        responseCode,
+                        errorText,
+                        cOShipAgentsInfoGetXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            cOShipAgentsInfoGetXML = ((RootCOShippingAgentsInfoGetXML)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void LSCCOShipAgentsInfoGetAsync(string responseCode, string errorText, RootCOShippingAgentsInfoGetXML cOShipAgentsInfoGetXML) {
+            this.LSCCOShipAgentsInfoGetAsync(responseCode, errorText, cOShipAgentsInfoGetXML, null);
+        }
+        
+        /// <remarks/>
+        public void LSCCOShipAgentsInfoGetAsync(string responseCode, string errorText, RootCOShippingAgentsInfoGetXML cOShipAgentsInfoGetXML, object userState) {
+            if ((this.LSCCOShipAgentsInfoGetOperationCompleted == null)) {
+                this.LSCCOShipAgentsInfoGetOperationCompleted = new System.Threading.SendOrPostCallback(this.OnLSCCOShipAgentsInfoGetOperationCompleted);
+            }
+            this.InvokeAsync("LSCCOShipAgentsInfoGet", new object[] {
+                        responseCode,
+                        errorText,
+                        cOShipAgentsInfoGetXML}, this.LSCCOShipAgentsInfoGetOperationCompleted, userState);
+        }
+        
+        private void OnLSCCOShipAgentsInfoGetOperationCompleted(object arg) {
+            if ((this.LSCCOShipAgentsInfoGetCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.LSCCOShipAgentsInfoGetCompleted(this, new LSCCOShipAgentsInfoGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:LSCSalesShipmentGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="LSCSalesShipmentGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void LSCSalesShipmentGet(ref string responseCode, ref string errorText, string documentID, ref Root salesShipmentListXML) {
+            object[] results = this.Invoke("LSCSalesShipmentGet", new object[] {
+                        responseCode,
+                        errorText,
+                        documentID,
+                        salesShipmentListXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            salesShipmentListXML = ((Root)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void LSCSalesShipmentGetAsync(string responseCode, string errorText, string documentID, Root salesShipmentListXML) {
+            this.LSCSalesShipmentGetAsync(responseCode, errorText, documentID, salesShipmentListXML, null);
+        }
+        
+        /// <remarks/>
+        public void LSCSalesShipmentGetAsync(string responseCode, string errorText, string documentID, Root salesShipmentListXML, object userState) {
+            if ((this.LSCSalesShipmentGetOperationCompleted == null)) {
+                this.LSCSalesShipmentGetOperationCompleted = new System.Threading.SendOrPostCallback(this.OnLSCSalesShipmentGetOperationCompleted);
+            }
+            this.InvokeAsync("LSCSalesShipmentGet", new object[] {
+                        responseCode,
+                        errorText,
+                        documentID,
+                        salesShipmentListXML}, this.LSCSalesShipmentGetOperationCompleted, userState);
+        }
+        
+        private void OnLSCSalesShipmentGetOperationCompleted(object arg) {
+            if ((this.LSCSalesShipmentGetCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.LSCSalesShipmentGetCompleted(this, new LSCSalesShipmentGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:LSCSalesShipmentUpdate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="LSCSalesShipmentUpdate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void LSCSalesShipmentUpdate(ref string responseCode, ref string errorText, string documentId, RootSalesShipmentUpdate salesShipmentUpdateXML) {
+            object[] results = this.Invoke("LSCSalesShipmentUpdate", new object[] {
+                        responseCode,
+                        errorText,
+                        documentId,
+                        salesShipmentUpdateXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+        }
+        
+        /// <remarks/>
+        public void LSCSalesShipmentUpdateAsync(string responseCode, string errorText, string documentId, RootSalesShipmentUpdate salesShipmentUpdateXML) {
+            this.LSCSalesShipmentUpdateAsync(responseCode, errorText, documentId, salesShipmentUpdateXML, null);
+        }
+        
+        /// <remarks/>
+        public void LSCSalesShipmentUpdateAsync(string responseCode, string errorText, string documentId, RootSalesShipmentUpdate salesShipmentUpdateXML, object userState) {
+            if ((this.LSCSalesShipmentUpdateOperationCompleted == null)) {
+                this.LSCSalesShipmentUpdateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnLSCSalesShipmentUpdateOperationCompleted);
+            }
+            this.InvokeAsync("LSCSalesShipmentUpdate", new object[] {
+                        responseCode,
+                        errorText,
+                        documentId,
+                        salesShipmentUpdateXML}, this.LSCSalesShipmentUpdateOperationCompleted, userState);
+        }
+        
+        private void OnLSCSalesShipmentUpdateOperationCompleted(object arg) {
+            if ((this.LSCSalesShipmentUpdateCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.LSCSalesShipmentUpdateCompleted(this, new LSCSalesShipmentUpdateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MemberAuthenticatorLogin", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MemberAuthenticatorLogin_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MemberAuthenticatorLogin(string authenticator, string authenticationID, string deviceID, string deviceFriendlyName, ref decimal totalRemainingPoints, ref RootMemberauthLogin memberAuthLoginXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("MemberAuthenticatorLogin", new object[] {
+                        authenticator,
+                        authenticationID,
+                        deviceID,
+                        deviceFriendlyName,
+                        totalRemainingPoints,
+                        memberAuthLoginXML,
+                        responseCode,
+                        errorText});
+            totalRemainingPoints = ((decimal)(results[0]));
+            memberAuthLoginXML = ((RootMemberauthLogin)(results[1]));
+            responseCode = ((string)(results[2]));
+            errorText = ((string)(results[3]));
+        }
+        
+        /// <remarks/>
+        public void MemberAuthenticatorLoginAsync(string authenticator, string authenticationID, string deviceID, string deviceFriendlyName, decimal totalRemainingPoints, RootMemberauthLogin memberAuthLoginXML, string responseCode, string errorText) {
+            this.MemberAuthenticatorLoginAsync(authenticator, authenticationID, deviceID, deviceFriendlyName, totalRemainingPoints, memberAuthLoginXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void MemberAuthenticatorLoginAsync(string authenticator, string authenticationID, string deviceID, string deviceFriendlyName, decimal totalRemainingPoints, RootMemberauthLogin memberAuthLoginXML, string responseCode, string errorText, object userState) {
+            if ((this.MemberAuthenticatorLoginOperationCompleted == null)) {
+                this.MemberAuthenticatorLoginOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMemberAuthenticatorLoginOperationCompleted);
+            }
+            this.InvokeAsync("MemberAuthenticatorLogin", new object[] {
+                        authenticator,
+                        authenticationID,
+                        deviceID,
+                        deviceFriendlyName,
+                        totalRemainingPoints,
+                        memberAuthLoginXML,
+                        responseCode,
+                        errorText}, this.MemberAuthenticatorLoginOperationCompleted, userState);
+        }
+        
+        private void OnMemberAuthenticatorLoginOperationCompleted(object arg) {
+            if ((this.MemberAuthenticatorLoginCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MemberAuthenticatorLoginCompleted(this, new MemberAuthenticatorLoginCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MemberCardToContact", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MemberCardToContact_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void MemberCardToContact(ref string responseCode, ref string errorText, string cardNo, string accountNo, string contactNo, ref decimal totalRemainingPoints) {
             object[] results = this.Invoke("MemberCardToContact", new object[] {
@@ -3053,7 +3242,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosCalculateV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosCalculateV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosCalculateV2(ref string responseCode, ref string errorText, string staffId, ref Root mobileTransactionXMLV2) {
+        public void MobilePosCalculateV2(ref string responseCode, ref string errorText, string staffId, ref Root1 mobileTransactionXMLV2) {
             object[] results = this.Invoke("MobilePosCalculateV2", new object[] {
                         responseCode,
                         errorText,
@@ -3061,16 +3250,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                         mobileTransactionXMLV2});
             responseCode = ((string)(results[0]));
             errorText = ((string)(results[1]));
-            mobileTransactionXMLV2 = ((Root)(results[2]));
+            mobileTransactionXMLV2 = ((Root1)(results[2]));
         }
         
         /// <remarks/>
-        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root mobileTransactionXMLV2) {
+        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root1 mobileTransactionXMLV2) {
             this.MobilePosCalculateV2Async(responseCode, errorText, staffId, mobileTransactionXMLV2, null);
         }
         
         /// <remarks/>
-        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root mobileTransactionXMLV2, object userState) {
+        public void MobilePosCalculateV2Async(string responseCode, string errorText, string staffId, Root1 mobileTransactionXMLV2, object userState) {
             if ((this.MobilePosCalculateV2OperationCompleted == null)) {
                 this.MobilePosCalculateV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosCalculateV2OperationCompleted);
             }
@@ -3766,6 +3955,55 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOpenGate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGOpenGate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SPGOpenGate(string qRCode, ref string storeNo, ref string deviceLocation, ref string memberAccountNo, ref bool exitWithoutShopping, ref bool returnValue, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SPGOpenGate", new object[] {
+                        qRCode,
+                        storeNo,
+                        deviceLocation,
+                        memberAccountNo,
+                        exitWithoutShopping,
+                        returnValue,
+                        responseCode,
+                        errorText});
+            storeNo = ((string)(results[0]));
+            deviceLocation = ((string)(results[1]));
+            memberAccountNo = ((string)(results[2]));
+            exitWithoutShopping = ((bool)(results[3]));
+            returnValue = ((bool)(results[4]));
+            responseCode = ((string)(results[5]));
+            errorText = ((string)(results[6]));
+        }
+        
+        /// <remarks/>
+        public void SPGOpenGateAsync(string qRCode, string storeNo, string deviceLocation, string memberAccountNo, bool exitWithoutShopping, bool returnValue, string responseCode, string errorText) {
+            this.SPGOpenGateAsync(qRCode, storeNo, deviceLocation, memberAccountNo, exitWithoutShopping, returnValue, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SPGOpenGateAsync(string qRCode, string storeNo, string deviceLocation, string memberAccountNo, bool exitWithoutShopping, bool returnValue, string responseCode, string errorText, object userState) {
+            if ((this.SPGOpenGateOperationCompleted == null)) {
+                this.SPGOpenGateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGOpenGateOperationCompleted);
+            }
+            this.InvokeAsync("SPGOpenGate", new object[] {
+                        qRCode,
+                        storeNo,
+                        deviceLocation,
+                        memberAccountNo,
+                        exitWithoutShopping,
+                        returnValue,
+                        responseCode,
+                        errorText}, this.SPGOpenGateOperationCompleted, userState);
+        }
+        
+        private void OnSPGOpenGateOperationCompleted(object arg) {
+            if ((this.SPGOpenGateCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SPGOpenGateCompleted(this, new SPGOpenGateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGProfileGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGProfileGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void SPGProfileGet(string profileID, string storeID, ref RootSPGProfileGet sPGProfileGetXML, ref RootSPGProfileTender sPGProfileValidTenderXML, ref RootSPGProfileFlags sPGProfileFeatureFlagsXML, ref string responseCode, ref string errorText) {
             object[] results = this.Invoke("SPGProfileGet", new object[] {
@@ -3807,6 +4045,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.SPGProfileGetCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SPGProfileGetCompleted(this, new SPGProfileGetCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGResetPassword", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGResetPassword_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SPGResetPassword(string emailAddress, ref string resetCode, ref string newPassword, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SPGResetPassword", new object[] {
+                        emailAddress,
+                        resetCode,
+                        newPassword,
+                        responseCode,
+                        errorText});
+            resetCode = ((string)(results[0]));
+            newPassword = ((string)(results[1]));
+            responseCode = ((string)(results[2]));
+            errorText = ((string)(results[3]));
+        }
+        
+        /// <remarks/>
+        public void SPGResetPasswordAsync(string emailAddress, string resetCode, string newPassword, string responseCode, string errorText) {
+            this.SPGResetPasswordAsync(emailAddress, resetCode, newPassword, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SPGResetPasswordAsync(string emailAddress, string resetCode, string newPassword, string responseCode, string errorText, object userState) {
+            if ((this.SPGResetPasswordOperationCompleted == null)) {
+                this.SPGResetPasswordOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGResetPasswordOperationCompleted);
+            }
+            this.InvokeAsync("SPGResetPassword", new object[] {
+                        emailAddress,
+                        resetCode,
+                        newPassword,
+                        responseCode,
+                        errorText}, this.SPGResetPasswordOperationCompleted, userState);
+        }
+        
+        private void OnSPGResetPasswordOperationCompleted(object arg) {
+            if ((this.SPGResetPasswordCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SPGResetPasswordCompleted(this, new SPGResetPasswordCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -4154,6 +4432,47 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInventoryLinesGetV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="StoreInventoryLinesGetV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void StoreInventoryLinesGetV2(ref string responseCode, ref string errorText, string worksheetSeqNo, string areaCode, bool addCycleCountItems, ref RootStoreInventoryGetLines storeInventoryLinesGetXML) {
+            object[] results = this.Invoke("StoreInventoryLinesGetV2", new object[] {
+                        responseCode,
+                        errorText,
+                        worksheetSeqNo,
+                        areaCode,
+                        addCycleCountItems,
+                        storeInventoryLinesGetXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            storeInventoryLinesGetXML = ((RootStoreInventoryGetLines)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void StoreInventoryLinesGetV2Async(string responseCode, string errorText, string worksheetSeqNo, string areaCode, bool addCycleCountItems, RootStoreInventoryGetLines storeInventoryLinesGetXML) {
+            this.StoreInventoryLinesGetV2Async(responseCode, errorText, worksheetSeqNo, areaCode, addCycleCountItems, storeInventoryLinesGetXML, null);
+        }
+        
+        /// <remarks/>
+        public void StoreInventoryLinesGetV2Async(string responseCode, string errorText, string worksheetSeqNo, string areaCode, bool addCycleCountItems, RootStoreInventoryGetLines storeInventoryLinesGetXML, object userState) {
+            if ((this.StoreInventoryLinesGetV2OperationCompleted == null)) {
+                this.StoreInventoryLinesGetV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnStoreInventoryLinesGetV2OperationCompleted);
+            }
+            this.InvokeAsync("StoreInventoryLinesGetV2", new object[] {
+                        responseCode,
+                        errorText,
+                        worksheetSeqNo,
+                        areaCode,
+                        addCycleCountItems,
+                        storeInventoryLinesGetXML}, this.StoreInventoryLinesGetV2OperationCompleted, userState);
+        }
+        
+        private void OnStoreInventoryLinesGetV2OperationCompleted(object arg) {
+            if ((this.StoreInventoryLinesGetV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.StoreInventoryLinesGetV2Completed(this, new StoreInventoryLinesGetV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:StoreInventoryLinesGet", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="StoreInventoryLinesGet_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void StoreInventoryLinesGet(ref string responseCode, ref string errorText, string worksheetSeqNo, ref RootStoreInventoryGetLines storeInventoryLinesGetXML) {
             object[] results = this.Invoke("StoreInventoryLinesGet", new object[] {
@@ -4254,7 +4573,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4289,7 +4608,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4492,7 +4811,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4541,7 +4860,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4576,7 +4895,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4789,7 +5108,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4824,7 +5143,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5037,7 +5356,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5072,7 +5391,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5208,7 +5527,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5243,7 +5562,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5519,7 +5838,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5737,7 +6056,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5886,7 +6205,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6037,7 +6356,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6176,7 +6495,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6353,7 +6672,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6520,7 +6839,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6717,7 +7036,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6915,7 +7234,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7125,7 +7444,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -8963,7 +9282,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -9765,7 +10084,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -9940,7 +10259,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -10298,7 +10617,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -12811,7 +13130,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -13432,7 +13751,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -13862,7 +14181,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -14047,7 +14366,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -14216,7 +14535,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -14598,7 +14917,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -14982,7 +15301,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -15357,7 +15676,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -15675,7 +15994,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -16058,7 +16377,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -16519,7 +16838,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -17954,7 +18273,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -19003,7 +19322,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -19376,7 +19695,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20374,7 +20693,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20409,7 +20728,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20642,7 +20961,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20788,7 +21107,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20836,7 +21155,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20961,7 +21280,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -20996,7 +21315,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21054,7 +21373,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21089,7 +21408,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21134,7 +21453,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21169,7 +21488,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21214,7 +21533,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21249,7 +21568,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21451,7 +21770,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21486,7 +21805,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21735,7 +22054,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21770,7 +22089,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -21972,7 +22291,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -22007,7 +22326,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -22561,7 +22880,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -22650,7 +22969,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -22789,7 +23108,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -23617,7 +23936,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -24176,12 +24495,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009613")]
-    public partial class Root {
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Root", Namespace="urn:microsoft-dynamics-nav/xmlports/x99009613")]
+    public partial class Root1 {
         
         private MobileTransaction1[] mobileTransactionField;
         
@@ -24263,7 +24582,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -24336,7 +24655,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -24371,11 +24690,2365 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAttributeList", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MemberAttributeList3 {
+        
+        private string typeField;
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private string valueField;
+        
+        private string actionTypeField;
+        
+        private string limitationTypeField;
+        
+        private string attributeTypeField;
+        
+        /// <remarks/>
+        public string Type {
+            get {
+                return this.typeField;
+            }
+            set {
+                this.typeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Value {
+            get {
+                return this.valueField;
+            }
+            set {
+                this.valueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ActionType {
+            get {
+                return this.actionTypeField;
+            }
+            set {
+                this.actionTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LimitationType {
+            get {
+                return this.limitationTypeField;
+            }
+            set {
+                this.limitationTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeType {
+            get {
+                return this.attributeTypeField;
+            }
+            set {
+                this.attributeTypeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberClub", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MemberClub3 {
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private bool pointCalculationField;
+        
+        private string clubTypeField;
+        
+        private string cardRegistrationField;
+        
+        private string startingCardNoField;
+        
+        private int cardNoLengthField;
+        
+        private string barcodeMaskField;
+        
+        private string contactHandlingField;
+        
+        private string defaultSchemeField;
+        
+        private string unassignedAccountNoField;
+        
+        private string showPointsonReceiptField;
+        
+        private string displayMessageonPOSField;
+        
+        private string defaultCustDiscGroupField;
+        
+        private string memberPointTenderTypeField;
+        
+        private string defaultPriceGroupField;
+        
+        private string cardExpirationField;
+        
+        private string unassignedCardExpField;
+        
+        private string pointExpirationField;
+        
+        private string pointRoundingTypeField;
+        
+        private decimal pointRoundingPrecisionField;
+        
+        private decimal pointValueField;
+        
+        private string periodCalcforUpDowngradeField;
+        
+        private decimal minTransAmtforPointCalcField;
+        
+        private string transferredPointTypeField;
+        
+        private string transferredPointExpirField;
+        
+        private string minRemainPeriodforTransField;
+        
+        private decimal transferValueFactorField;
+        
+        private string discBenefitPointTypeField;
+        
+        private string reasonCodesAccountsField;
+        
+        private string reasonCodesContactsField;
+        
+        private string reasonCodesCardsField;
+        
+        private string reasonCodesPointJournalsField;
+        
+        private string accountNoSeriesField;
+        
+        private string cardSetupTypeField;
+        
+        private string cardNoSeriesField;
+        
+        private string contactNoSeriesField;
+        
+        private bool posttoGLField;
+        
+        private string accountNoField;
+        
+        private string balAccountNoField;
+        
+        private string expirationPeriodTypeField;
+        
+        private string showFBPCouponsonReceiptField;
+        
+        public MemberClub3() {
+            this.pointCalculationField = false;
+            this.cardNoLengthField = 0;
+            this.pointRoundingPrecisionField = ((decimal)(0m));
+            this.pointValueField = ((decimal)(0m));
+            this.minTransAmtforPointCalcField = ((decimal)(0m));
+            this.transferValueFactorField = ((decimal)(0m));
+            this.posttoGLField = false;
+        }
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool PointCalculation {
+            get {
+                return this.pointCalculationField;
+            }
+            set {
+                this.pointCalculationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubType {
+            get {
+                return this.clubTypeField;
+            }
+            set {
+                this.clubTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardRegistration {
+            get {
+                return this.cardRegistrationField;
+            }
+            set {
+                this.cardRegistrationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StartingCardNo {
+            get {
+                return this.startingCardNoField;
+            }
+            set {
+                this.startingCardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int CardNoLength {
+            get {
+                return this.cardNoLengthField;
+            }
+            set {
+                this.cardNoLengthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BarcodeMask {
+            get {
+                return this.barcodeMaskField;
+            }
+            set {
+                this.barcodeMaskField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactHandling {
+            get {
+                return this.contactHandlingField;
+            }
+            set {
+                this.contactHandlingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DefaultScheme {
+            get {
+                return this.defaultSchemeField;
+            }
+            set {
+                this.defaultSchemeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnassignedAccountNo {
+            get {
+                return this.unassignedAccountNoField;
+            }
+            set {
+                this.unassignedAccountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShowPointsonReceipt {
+            get {
+                return this.showPointsonReceiptField;
+            }
+            set {
+                this.showPointsonReceiptField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DisplayMessageonPOS {
+            get {
+                return this.displayMessageonPOSField;
+            }
+            set {
+                this.displayMessageonPOSField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DefaultCustDiscGroup {
+            get {
+                return this.defaultCustDiscGroupField;
+            }
+            set {
+                this.defaultCustDiscGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MemberPointTenderType {
+            get {
+                return this.memberPointTenderTypeField;
+            }
+            set {
+                this.memberPointTenderTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DefaultPriceGroup {
+            get {
+                return this.defaultPriceGroupField;
+            }
+            set {
+                this.defaultPriceGroupField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardExpiration {
+            get {
+                return this.cardExpirationField;
+            }
+            set {
+                this.cardExpirationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnassignedCardExp {
+            get {
+                return this.unassignedCardExpField;
+            }
+            set {
+                this.unassignedCardExpField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PointExpiration {
+            get {
+                return this.pointExpirationField;
+            }
+            set {
+                this.pointExpirationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PointRoundingType {
+            get {
+                return this.pointRoundingTypeField;
+            }
+            set {
+                this.pointRoundingTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PointRoundingPrecision {
+            get {
+                return this.pointRoundingPrecisionField;
+            }
+            set {
+                this.pointRoundingPrecisionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PointValue {
+            get {
+                return this.pointValueField;
+            }
+            set {
+                this.pointValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("PeriodCalcforUp-Downgrade")]
+        public string PeriodCalcforUpDowngrade {
+            get {
+                return this.periodCalcforUpDowngradeField;
+            }
+            set {
+                this.periodCalcforUpDowngradeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal MinTransAmtforPointCalc {
+            get {
+                return this.minTransAmtforPointCalcField;
+            }
+            set {
+                this.minTransAmtforPointCalcField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransferredPointType {
+            get {
+                return this.transferredPointTypeField;
+            }
+            set {
+                this.transferredPointTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TransferredPointExpir {
+            get {
+                return this.transferredPointExpirField;
+            }
+            set {
+                this.transferredPointExpirField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MinRemainPeriodforTrans {
+            get {
+                return this.minRemainPeriodforTransField;
+            }
+            set {
+                this.minRemainPeriodforTransField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TransferValueFactor {
+            get {
+                return this.transferValueFactorField;
+            }
+            set {
+                this.transferValueFactorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DiscBenefitPointType {
+            get {
+                return this.discBenefitPointTypeField;
+            }
+            set {
+                this.discBenefitPointTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesAccounts {
+            get {
+                return this.reasonCodesAccountsField;
+            }
+            set {
+                this.reasonCodesAccountsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesContacts {
+            get {
+                return this.reasonCodesContactsField;
+            }
+            set {
+                this.reasonCodesContactsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesCards {
+            get {
+                return this.reasonCodesCardsField;
+            }
+            set {
+                this.reasonCodesCardsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonCodesPointJournals {
+            get {
+                return this.reasonCodesPointJournalsField;
+            }
+            set {
+                this.reasonCodesPointJournalsField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNoSeries {
+            get {
+                return this.accountNoSeriesField;
+            }
+            set {
+                this.accountNoSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardSetupType {
+            get {
+                return this.cardSetupTypeField;
+            }
+            set {
+                this.cardSetupTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardNoSeries {
+            get {
+                return this.cardNoSeriesField;
+            }
+            set {
+                this.cardNoSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactNoSeries {
+            get {
+                return this.contactNoSeriesField;
+            }
+            set {
+                this.contactNoSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool PosttoGL {
+            get {
+                return this.posttoGLField;
+            }
+            set {
+                this.posttoGLField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BalAccountNo {
+            get {
+                return this.balAccountNoField;
+            }
+            set {
+                this.balAccountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExpirationPeriodType {
+            get {
+                return this.expirationPeriodTypeField;
+            }
+            set {
+                this.expirationPeriodTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShowFBPCouponsonReceipt {
+            get {
+                return this.showFBPCouponsonReceiptField;
+            }
+            set {
+                this.showFBPCouponsonReceiptField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberContact", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MemberContact3 {
+        
+        private string accountNoField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string contactNoField;
+        
+        private bool mainContactField;
+        
+        private string nameField;
+        
+        private string searchNameField;
+        
+        private string name2Field;
+        
+        private string addressField;
+        
+        private string address2Field;
+        
+        private string cityField;
+        
+        private string houseApartmentNoField;
+        
+        private string postCodeField;
+        
+        private string eMailField;
+        
+        private string homePageField;
+        
+        private string phoneNoField;
+        
+        private string mobilePhoneNoField;
+        
+        private string territoryCodeField;
+        
+        private string countyField;
+        
+        private string countryField;
+        
+        private string genderField;
+        
+        private System.DateTime dateofBirthField;
+        
+        private string birthdayField;
+        
+        private string maritalStatusField;
+        
+        private bool blockedField;
+        
+        private string reasonBlockedField;
+        
+        private System.DateTime dateBlockedField;
+        
+        private string blockedbyField;
+        
+        private System.DateTime createdDateField;
+        
+        private string createdbyField;
+        
+        private string noSeriesField;
+        
+        private string externalIDField;
+        
+        private string externalSystemField;
+        
+        private string firstNameField;
+        
+        private string middleNameField;
+        
+        private string surnameField;
+        
+        private string salutationCodeField;
+        
+        private string searchEMailField;
+        
+        public MemberContact3() {
+            this.mainContactField = false;
+            this.dateofBirthField = new System.DateTime(0);
+            this.blockedField = false;
+            this.dateBlockedField = new System.DateTime(0);
+            this.createdDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactNo {
+            get {
+                return this.contactNoField;
+            }
+            set {
+                this.contactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool MainContact {
+            get {
+                return this.mainContactField;
+            }
+            set {
+                this.mainContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SearchName {
+            get {
+                return this.searchNameField;
+            }
+            set {
+                this.searchNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Name2 {
+            get {
+                return this.name2Field;
+            }
+            set {
+                this.name2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address {
+            get {
+                return this.addressField;
+            }
+            set {
+                this.addressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address2 {
+            get {
+                return this.address2Field;
+            }
+            set {
+                this.address2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string City {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HouseApartmentNo {
+            get {
+                return this.houseApartmentNoField;
+            }
+            set {
+                this.houseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PostCode {
+            get {
+                return this.postCodeField;
+            }
+            set {
+                this.postCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("E-Mail")]
+        public string EMail {
+            get {
+                return this.eMailField;
+            }
+            set {
+                this.eMailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HomePage {
+            get {
+                return this.homePageField;
+            }
+            set {
+                this.homePageField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PhoneNo {
+            get {
+                return this.phoneNoField;
+            }
+            set {
+                this.phoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MobilePhoneNo {
+            get {
+                return this.mobilePhoneNoField;
+            }
+            set {
+                this.mobilePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TerritoryCode {
+            get {
+                return this.territoryCodeField;
+            }
+            set {
+                this.territoryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string County {
+            get {
+                return this.countyField;
+            }
+            set {
+                this.countyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Country {
+            get {
+                return this.countryField;
+            }
+            set {
+                this.countryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Gender {
+            get {
+                return this.genderField;
+            }
+            set {
+                this.genderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateofBirth {
+            get {
+                return this.dateofBirthField;
+            }
+            set {
+                this.dateofBirthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Birthday {
+            get {
+                return this.birthdayField;
+            }
+            set {
+                this.birthdayField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MaritalStatus {
+            get {
+                return this.maritalStatusField;
+            }
+            set {
+                this.maritalStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonBlocked {
+            get {
+                return this.reasonBlockedField;
+            }
+            set {
+                this.reasonBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Blockedby {
+            get {
+                return this.blockedbyField;
+            }
+            set {
+                this.blockedbyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime CreatedDate {
+            get {
+                return this.createdDateField;
+            }
+            set {
+                this.createdDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Createdby {
+            get {
+                return this.createdbyField;
+            }
+            set {
+                this.createdbyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string NoSeries {
+            get {
+                return this.noSeriesField;
+            }
+            set {
+                this.noSeriesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalSystem {
+            get {
+                return this.externalSystemField;
+            }
+            set {
+                this.externalSystemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FirstName {
+            get {
+                return this.firstNameField;
+            }
+            set {
+                this.firstNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MiddleName {
+            get {
+                return this.middleNameField;
+            }
+            set {
+                this.middleNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Surname {
+            get {
+                return this.surnameField;
+            }
+            set {
+                this.surnameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalutationCode {
+            get {
+                return this.salutationCodeField;
+            }
+            set {
+                this.salutationCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SearchE-Mail")]
+        public string SearchEMail {
+            get {
+                return this.searchEMailField;
+            }
+            set {
+                this.searchEMailField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MembershipCard4 {
+        
+        private string cardNoField;
+        
+        private string statusField;
+        
+        private bool linkedtoAccountField;
+        
+        private string clubCodeField;
+        
+        private string schemeCodeField;
+        
+        private string accountNoField;
+        
+        private string contactNoField;
+        
+        private System.DateTime firstDateUsedField;
+        
+        private System.DateTime lastValidDateField;
+        
+        private string reasonBlockedField;
+        
+        private System.DateTime dateBlockedField;
+        
+        private string blockedbyField;
+        
+        public MembershipCard4() {
+            this.linkedtoAccountField = false;
+            this.firstDateUsedField = new System.DateTime(0);
+            this.lastValidDateField = new System.DateTime(0);
+            this.dateBlockedField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string CardNo {
+            get {
+                return this.cardNoField;
+            }
+            set {
+                this.cardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool LinkedtoAccount {
+            get {
+                return this.linkedtoAccountField;
+            }
+            set {
+                this.linkedtoAccountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeCode {
+            get {
+                return this.schemeCodeField;
+            }
+            set {
+                this.schemeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactNo {
+            get {
+                return this.contactNoField;
+            }
+            set {
+                this.contactNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime FirstDateUsed {
+            get {
+                return this.firstDateUsedField;
+            }
+            set {
+                this.firstDateUsedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime LastValidDate {
+            get {
+                return this.lastValidDateField;
+            }
+            set {
+                this.lastValidDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonBlocked {
+            get {
+                return this.reasonBlockedField;
+            }
+            set {
+                this.reasonBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Blockedby {
+            get {
+                return this.blockedbyField;
+            }
+            set {
+                this.blockedbyField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberDevice", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class MemberDevice1 {
+        
+        private string idField;
+        
+        private string securityTokenField;
+        
+        private string friendlyNameField;
+        
+        private string statusField;
+        
+        private string reasonBlockedField;
+        
+        private System.DateTime dateBlockedField;
+        
+        private string blockedByField;
+        
+        private string systemIdField;
+        
+        public MemberDevice1() {
+            this.dateBlockedField = new System.DateTime(0);
+            this.systemIdField = "{00000000-0000-0000-0000-000000000000}";
+        }
+        
+        /// <remarks/>
+        public string ID {
+            get {
+                return this.idField;
+            }
+            set {
+                this.idField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SecurityToken {
+            get {
+                return this.securityTokenField;
+            }
+            set {
+                this.securityTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FriendlyName {
+            get {
+                return this.friendlyNameField;
+            }
+            set {
+                this.friendlyNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReasonBlocked {
+            get {
+                return this.reasonBlockedField;
+            }
+            set {
+                this.reasonBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateBlocked {
+            get {
+                return this.dateBlockedField;
+            }
+            set {
+                this.dateBlockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string BlockedBy {
+            get {
+                return this.blockedByField;
+            }
+            set {
+                this.blockedByField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SystemId {
+            get {
+                return this.systemIdField;
+            }
+            set {
+                this.systemIdField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="LoginCardBuffer", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class LoginCardBuffer1 {
+        
+        private string clubCodeField;
+        
+        private string clubDescriptionField;
+        
+        private string cardNoField;
+        
+        private string clubHolderNameField;
+        
+        private bool blockedField;
+        
+        private string systemIdField;
+        
+        public LoginCardBuffer1() {
+            this.blockedField = false;
+            this.systemIdField = "{00000000-0000-0000-0000-000000000000}";
+        }
+        
+        /// <remarks/>
+        public string ClubCode {
+            get {
+                return this.clubCodeField;
+            }
+            set {
+                this.clubCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubDescription {
+            get {
+                return this.clubDescriptionField;
+            }
+            set {
+                this.clubDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardNo {
+            get {
+                return this.cardNoField;
+            }
+            set {
+                this.cardNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubHolderName {
+            get {
+                return this.clubHolderNameField;
+            }
+            set {
+                this.clubHolderNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool Blocked {
+            get {
+                return this.blockedField;
+            }
+            set {
+                this.blockedField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SystemId {
+            get {
+                return this.systemIdField;
+            }
+            set {
+                this.systemIdField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    public partial class RootMemberLogon {
+        
+        private LoginCardBuffer1[] loginCardBufferField;
+        
+        private MemberDevice1[] memberDeviceField;
+        
+        private MembershipCard4[] membershipCardField;
+        
+        private MemberContact3[] memberContactField;
+        
+        private MemberClub3[] memberClubField;
+        
+        private MemberAttributeList3[] memberAttributeListField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("LoginCardBuffer")]
+        public LoginCardBuffer1[] LoginCardBuffer {
+            get {
+                return this.loginCardBufferField;
+            }
+            set {
+                this.loginCardBufferField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberDevice")]
+        public MemberDevice1[] MemberDevice {
+            get {
+                return this.memberDeviceField;
+            }
+            set {
+                this.memberDeviceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MembershipCard")]
+        public MembershipCard4[] MembershipCard {
+            get {
+                return this.membershipCardField;
+            }
+            set {
+                this.membershipCardField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberContact")]
+        public MemberContact3[] MemberContact {
+            get {
+                return this.memberContactField;
+            }
+            set {
+                this.memberContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberClub")]
+        public MemberClub3[] MemberClub {
+            get {
+                return this.memberClubField;
+            }
+            set {
+                this.memberClubField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAttributeList")]
+        public MemberAttributeList3[] MemberAttributeList {
+            get {
+                return this.memberAttributeListField;
+            }
+            set {
+                this.memberAttributeListField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAttributeValue", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033020")]
+    public partial class MemberAttributeValue1 {
+        
+        private string attributeCodeField;
+        
+        private string attributeValueField;
+        
+        /// <remarks/>
+        public string AttributeCode {
+            get {
+                return this.attributeCodeField;
+            }
+            set {
+                this.attributeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeValue {
+            get {
+                return this.attributeValueField;
+            }
+            set {
+                this.attributeValueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="ContactCreateParameters", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033020")]
+    public partial class ContactCreateParameters1 {
+        
+        private string contactIDField;
+        
+        private string emailField;
+        
+        private string firstNameField;
+        
+        private string lastNameField;
+        
+        private string middleNameField;
+        
+        private string genderField;
+        
+        private string phoneField;
+        
+        private string address1Field;
+        
+        private string address2Field;
+        
+        private string cityField;
+        
+        private string postCodeField;
+        
+        private string stateProvinceRegionField;
+        
+        private string countryField;
+        
+        private string accountIDField;
+        
+        private string externalIDField;
+        
+        private string externalSystemField;
+        
+        private System.DateTime dateOfBirthField;
+        
+        private string mobilePhoneNoField;
+        
+        private string houseApartmentNoField;
+        
+        private string territoryCodeField;
+        
+        private string sendReceiptbyEmailField;
+        
+        public ContactCreateParameters1() {
+            this.dateOfBirthField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string ContactID {
+            get {
+                return this.contactIDField;
+            }
+            set {
+                this.contactIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FirstName {
+            get {
+                return this.firstNameField;
+            }
+            set {
+                this.firstNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LastName {
+            get {
+                return this.lastNameField;
+            }
+            set {
+                this.lastNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MiddleName {
+            get {
+                return this.middleNameField;
+            }
+            set {
+                this.middleNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Gender {
+            get {
+                return this.genderField;
+            }
+            set {
+                this.genderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Phone {
+            get {
+                return this.phoneField;
+            }
+            set {
+                this.phoneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address1 {
+            get {
+                return this.address1Field;
+            }
+            set {
+                this.address1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address2 {
+            get {
+                return this.address2Field;
+            }
+            set {
+                this.address2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string City {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PostCode {
+            get {
+                return this.postCodeField;
+            }
+            set {
+                this.postCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StateProvinceRegion {
+            get {
+                return this.stateProvinceRegionField;
+            }
+            set {
+                this.stateProvinceRegionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Country {
+            get {
+                return this.countryField;
+            }
+            set {
+                this.countryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountID {
+            get {
+                return this.accountIDField;
+            }
+            set {
+                this.accountIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalSystem {
+            get {
+                return this.externalSystemField;
+            }
+            set {
+                this.externalSystemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateOfBirth {
+            get {
+                return this.dateOfBirthField;
+            }
+            set {
+                this.dateOfBirthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MobilePhoneNo {
+            get {
+                return this.mobilePhoneNoField;
+            }
+            set {
+                this.mobilePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HouseApartmentNo {
+            get {
+                return this.houseApartmentNoField;
+            }
+            set {
+                this.houseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TerritoryCode {
+            get {
+                return this.territoryCodeField;
+            }
+            set {
+                this.territoryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SendReceiptbyEmail {
+            get {
+                return this.sendReceiptbyEmailField;
+            }
+            set {
+                this.sendReceiptbyEmailField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="RootMemberContactCreate", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033020")]
+    public partial class RootMemberContactCreate1 {
+        
+        private ContactCreateParameters1[] contactCreateParametersField;
+        
+        private MemberAttributeValue1[] memberAttributeValueField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ContactCreateParameters")]
+        public ContactCreateParameters1[] ContactCreateParameters {
+            get {
+                return this.contactCreateParametersField;
+            }
+            set {
+                this.contactCreateParametersField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAttributeValue")]
+        public MemberAttributeValue1[] MemberAttributeValue {
+            get {
+                return this.memberAttributeValueField;
+            }
+            set {
+                this.memberAttributeValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033019")]
+    public partial class MemberAttributeValue {
+        
+        private string attributeCodeField;
+        
+        private string attributeValueField;
+        
+        /// <remarks/>
+        public string AttributeCode {
+            get {
+                return this.attributeCodeField;
+            }
+            set {
+                this.attributeCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AttributeValue {
+            get {
+                return this.attributeValueField;
+            }
+            set {
+                this.attributeValueField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033019")]
+    public partial class ContactCreateParameters {
+        
+        private string loginIDField;
+        
+        private string passwordField;
+        
+        private string emailField;
+        
+        private string firstNameField;
+        
+        private string lastNameField;
+        
+        private string middleNameField;
+        
+        private string genderField;
+        
+        private string phoneField;
+        
+        private string address1Field;
+        
+        private string address2Field;
+        
+        private string cityField;
+        
+        private string postCodeField;
+        
+        private string stateProvinceRegionField;
+        
+        private string countryField;
+        
+        private string accountIDField;
+        
+        private string deviceIDField;
+        
+        private string deviceFriendlyNameField;
+        
+        private string externalIDField;
+        
+        private string externalSystemField;
+        
+        private string contactIDField;
+        
+        private string clubIDField;
+        
+        private string schemeIDField;
+        
+        private System.DateTime dateOfBirthField;
+        
+        private string mobilePhoneNoField;
+        
+        private string houseApartmentNoField;
+        
+        private string territoryCodeField;
+        
+        private string sendReceiptbyEmailField;
+        
+        private string authenticatorField;
+        
+        private string authenticationIdField;
+        
+        public ContactCreateParameters() {
+            this.dateOfBirthField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string LoginID {
+            get {
+                return this.loginIDField;
+            }
+            set {
+                this.loginIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Password {
+            get {
+                return this.passwordField;
+            }
+            set {
+                this.passwordField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Email {
+            get {
+                return this.emailField;
+            }
+            set {
+                this.emailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string FirstName {
+            get {
+                return this.firstNameField;
+            }
+            set {
+                this.firstNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string LastName {
+            get {
+                return this.lastNameField;
+            }
+            set {
+                this.lastNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MiddleName {
+            get {
+                return this.middleNameField;
+            }
+            set {
+                this.middleNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Gender {
+            get {
+                return this.genderField;
+            }
+            set {
+                this.genderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Phone {
+            get {
+                return this.phoneField;
+            }
+            set {
+                this.phoneField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address1 {
+            get {
+                return this.address1Field;
+            }
+            set {
+                this.address1Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Address2 {
+            get {
+                return this.address2Field;
+            }
+            set {
+                this.address2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string City {
+            get {
+                return this.cityField;
+            }
+            set {
+                this.cityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PostCode {
+            get {
+                return this.postCodeField;
+            }
+            set {
+                this.postCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StateProvinceRegion {
+            get {
+                return this.stateProvinceRegionField;
+            }
+            set {
+                this.stateProvinceRegionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Country {
+            get {
+                return this.countryField;
+            }
+            set {
+                this.countryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountID {
+            get {
+                return this.accountIDField;
+            }
+            set {
+                this.accountIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DeviceID {
+            get {
+                return this.deviceIDField;
+            }
+            set {
+                this.deviceIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string DeviceFriendlyName {
+            get {
+                return this.deviceFriendlyNameField;
+            }
+            set {
+                this.deviceFriendlyNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalSystem {
+            get {
+                return this.externalSystemField;
+            }
+            set {
+                this.externalSystemField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactID {
+            get {
+                return this.contactIDField;
+            }
+            set {
+                this.contactIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClubID {
+            get {
+                return this.clubIDField;
+            }
+            set {
+                this.clubIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SchemeID {
+            get {
+                return this.schemeIDField;
+            }
+            set {
+                this.schemeIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime DateOfBirth {
+            get {
+                return this.dateOfBirthField;
+            }
+            set {
+                this.dateOfBirthField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MobilePhoneNo {
+            get {
+                return this.mobilePhoneNoField;
+            }
+            set {
+                this.mobilePhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string HouseApartmentNo {
+            get {
+                return this.houseApartmentNoField;
+            }
+            set {
+                this.houseApartmentNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TerritoryCode {
+            get {
+                return this.territoryCodeField;
+            }
+            set {
+                this.territoryCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SendReceiptbyEmail {
+            get {
+                return this.sendReceiptbyEmailField;
+            }
+            set {
+                this.sendReceiptbyEmailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Authenticator {
+            get {
+                return this.authenticatorField;
+            }
+            set {
+                this.authenticatorField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AuthenticationId {
+            get {
+                return this.authenticationIdField;
+            }
+            set {
+                this.authenticationIdField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033019")]
+    public partial class RootMemberContactCreate {
+        
+        private ContactCreateParameters[] contactCreateParametersField;
+        
+        private MemberAttributeValue[] memberAttributeValueField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ContactCreateParameters")]
+        public ContactCreateParameters[] ContactCreateParameters {
+            get {
+                return this.contactCreateParametersField;
+            }
+            set {
+                this.contactCreateParametersField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("MemberAttributeValue")]
+        public MemberAttributeValue[] MemberAttributeValue {
+            get {
+                return this.memberAttributeValueField;
+            }
+            set {
+                this.memberAttributeValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAttributeList", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MemberAttributeList2 {
         
         private string typeField;
@@ -24464,11 +27137,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberClub", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberClub", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MemberClub2 {
         
         private string codeField;
@@ -24988,11 +27661,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberContact", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberContact", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MemberContact2 {
         
         private string accountNoField;
@@ -25469,11 +28142,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MembershipCard", Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MembershipCard3 {
         
         private string cardNoField;
@@ -25635,11 +28308,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class MemberDevice {
         
         private string idField;
@@ -25747,11 +28420,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
     public partial class LoginCardBuffer {
         
         private string clubCodeField;
@@ -25833,12 +28506,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033215")]
-    public partial class RootMemberLogon {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032990")]
+    public partial class RootMemberauthLogin {
         
         private LoginCardBuffer[] loginCardBufferField;
         
@@ -25933,326 +28606,70 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="MemberAttributeValue", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033020")]
-    public partial class MemberAttributeValue1 {
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="SalesShipmentHeader", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033225")]
+    public partial class SalesShipmentHeader1 {
         
-        private string attributeCodeField;
+        private string shippingAgentCodeField;
         
-        private string attributeValueField;
+        private string shippingAgentServiceCodeField;
+        
+        private string packageTrackingNoField;
         
         /// <remarks/>
-        public string AttributeCode {
+        public string ShippingAgentCode {
             get {
-                return this.attributeCodeField;
+                return this.shippingAgentCodeField;
             }
             set {
-                this.attributeCodeField = value;
+                this.shippingAgentCodeField = value;
             }
         }
         
         /// <remarks/>
-        public string AttributeValue {
+        public string ShippingAgentServiceCode {
             get {
-                return this.attributeValueField;
+                return this.shippingAgentServiceCodeField;
             }
             set {
-                this.attributeValueField = value;
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PackageTrackingNo {
+            get {
+                return this.packageTrackingNoField;
+            }
+            set {
+                this.packageTrackingNoField = value;
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="ContactCreateParameters", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033020")]
-    public partial class ContactCreateParameters1 {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033225")]
+    public partial class RootSalesShipmentUpdate {
         
-        private string contactIDField;
-        
-        private string emailField;
-        
-        private string firstNameField;
-        
-        private string lastNameField;
-        
-        private string middleNameField;
-        
-        private string genderField;
-        
-        private string phoneField;
-        
-        private string address1Field;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string postCodeField;
-        
-        private string stateProvinceRegionField;
-        
-        private string countryField;
-        
-        private string accountIDField;
-        
-        private string externalIDField;
-        
-        private string externalSystemField;
-        
-        private System.DateTime dateOfBirthField;
-        
-        private string mobilePhoneNoField;
-        
-        private string houseApartmentNoField;
-        
-        private string territoryCodeField;
-        
-        public ContactCreateParameters1() {
-            this.dateOfBirthField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string ContactID {
-            get {
-                return this.contactIDField;
-            }
-            set {
-                this.contactIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FirstName {
-            get {
-                return this.firstNameField;
-            }
-            set {
-                this.firstNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LastName {
-            get {
-                return this.lastNameField;
-            }
-            set {
-                this.lastNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MiddleName {
-            get {
-                return this.middleNameField;
-            }
-            set {
-                this.middleNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Gender {
-            get {
-                return this.genderField;
-            }
-            set {
-                this.genderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Phone {
-            get {
-                return this.phoneField;
-            }
-            set {
-                this.phoneField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address1 {
-            get {
-                return this.address1Field;
-            }
-            set {
-                this.address1Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StateProvinceRegion {
-            get {
-                return this.stateProvinceRegionField;
-            }
-            set {
-                this.stateProvinceRegionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Country {
-            get {
-                return this.countryField;
-            }
-            set {
-                this.countryField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AccountID {
-            get {
-                return this.accountIDField;
-            }
-            set {
-                this.accountIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalSystem {
-            get {
-                return this.externalSystemField;
-            }
-            set {
-                this.externalSystemField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
-        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime DateOfBirth {
-            get {
-                return this.dateOfBirthField;
-            }
-            set {
-                this.dateOfBirthField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MobilePhoneNo {
-            get {
-                return this.mobilePhoneNoField;
-            }
-            set {
-                this.mobilePhoneNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string HouseApartmentNo {
-            get {
-                return this.houseApartmentNoField;
-            }
-            set {
-                this.houseApartmentNoField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string TerritoryCode {
-            get {
-                return this.territoryCodeField;
-            }
-            set {
-                this.territoryCodeField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(TypeName="RootMemberContactCreate", Namespace="urn:microsoft-dynamics-nav/xmlports/x10033020")]
-    public partial class RootMemberContactCreate1 {
-        
-        private ContactCreateParameters1[] contactCreateParametersField;
-        
-        private MemberAttributeValue1[] memberAttributeValueField;
+        private SalesShipmentHeader1[] salesShipmentHeaderField;
         
         private string[] textField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ContactCreateParameters")]
-        public ContactCreateParameters1[] ContactCreateParameters {
+        [System.Xml.Serialization.XmlElementAttribute("SalesShipmentHeader")]
+        public SalesShipmentHeader1[] SalesShipmentHeader {
             get {
-                return this.contactCreateParametersField;
+                return this.salesShipmentHeaderField;
             }
             set {
-                this.contactCreateParametersField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("MemberAttributeValue")]
-        public MemberAttributeValue1[] MemberAttributeValue {
-            get {
-                return this.memberAttributeValueField;
-            }
-            set {
-                this.memberAttributeValueField = value;
+                this.salesShipmentHeaderField = value;
             }
         }
         
@@ -26269,398 +28686,163 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033019")]
-    public partial class MemberAttributeValue {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033224")]
+    public partial class SalesShipmentHeader {
         
-        private string attributeCodeField;
+        private string noField;
         
-        private string attributeValueField;
+        private string sellToCustomerNoField;
+        
+        private string sellToCustomerNameField;
+        
+        private System.DateTime postingDateField;
+        
+        private System.DateTime shipmentDateField;
+        
+        private string shipToCodeField;
+        
+        private string shipToNameField;
+        
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
+        private string packageTrackingNoField;
+        
+        public SalesShipmentHeader() {
+            this.postingDateField = new System.DateTime(0);
+            this.shipmentDateField = new System.DateTime(0);
+        }
         
         /// <remarks/>
-        public string AttributeCode {
+        public string No {
             get {
-                return this.attributeCodeField;
+                return this.noField;
             }
             set {
-                this.attributeCodeField = value;
+                this.noField = value;
             }
         }
         
         /// <remarks/>
-        public string AttributeValue {
+        public string SellToCustomerNo {
             get {
-                return this.attributeValueField;
+                return this.sellToCustomerNoField;
             }
             set {
-                this.attributeValueField = value;
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
-    [System.SerializableAttribute()]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033019")]
-    public partial class ContactCreateParameters {
-        
-        private string loginIDField;
-        
-        private string passwordField;
-        
-        private string emailField;
-        
-        private string firstNameField;
-        
-        private string lastNameField;
-        
-        private string middleNameField;
-        
-        private string genderField;
-        
-        private string phoneField;
-        
-        private string address1Field;
-        
-        private string address2Field;
-        
-        private string cityField;
-        
-        private string postCodeField;
-        
-        private string stateProvinceRegionField;
-        
-        private string countryField;
-        
-        private string accountIDField;
-        
-        private string deviceIDField;
-        
-        private string deviceFriendlyNameField;
-        
-        private string externalIDField;
-        
-        private string externalSystemField;
-        
-        private string contactIDField;
-        
-        private string clubIDField;
-        
-        private string schemeIDField;
-        
-        private System.DateTime dateOfBirthField;
-        
-        private string mobilePhoneNoField;
-        
-        private string houseApartmentNoField;
-        
-        private string territoryCodeField;
-        
-        public ContactCreateParameters() {
-            this.dateOfBirthField = new System.DateTime(0);
-        }
-        
-        /// <remarks/>
-        public string LoginID {
-            get {
-                return this.loginIDField;
-            }
-            set {
-                this.loginIDField = value;
+                this.sellToCustomerNoField = value;
             }
         }
         
         /// <remarks/>
-        public string Password {
+        public string SellToCustomerName {
             get {
-                return this.passwordField;
+                return this.sellToCustomerNameField;
             }
             set {
-                this.passwordField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Email {
-            get {
-                return this.emailField;
-            }
-            set {
-                this.emailField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string FirstName {
-            get {
-                return this.firstNameField;
-            }
-            set {
-                this.firstNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string LastName {
-            get {
-                return this.lastNameField;
-            }
-            set {
-                this.lastNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string MiddleName {
-            get {
-                return this.middleNameField;
-            }
-            set {
-                this.middleNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Gender {
-            get {
-                return this.genderField;
-            }
-            set {
-                this.genderField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Phone {
-            get {
-                return this.phoneField;
-            }
-            set {
-                this.phoneField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address1 {
-            get {
-                return this.address1Field;
-            }
-            set {
-                this.address1Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Address2 {
-            get {
-                return this.address2Field;
-            }
-            set {
-                this.address2Field = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string City {
-            get {
-                return this.cityField;
-            }
-            set {
-                this.cityField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string PostCode {
-            get {
-                return this.postCodeField;
-            }
-            set {
-                this.postCodeField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string StateProvinceRegion {
-            get {
-                return this.stateProvinceRegionField;
-            }
-            set {
-                this.stateProvinceRegionField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string Country {
-            get {
-                return this.countryField;
-            }
-            set {
-                this.countryField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string AccountID {
-            get {
-                return this.accountIDField;
-            }
-            set {
-                this.accountIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DeviceID {
-            get {
-                return this.deviceIDField;
-            }
-            set {
-                this.deviceIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string DeviceFriendlyName {
-            get {
-                return this.deviceFriendlyNameField;
-            }
-            set {
-                this.deviceFriendlyNameField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalID {
-            get {
-                return this.externalIDField;
-            }
-            set {
-                this.externalIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ExternalSystem {
-            get {
-                return this.externalSystemField;
-            }
-            set {
-                this.externalSystemField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ContactID {
-            get {
-                return this.contactIDField;
-            }
-            set {
-                this.contactIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string ClubID {
-            get {
-                return this.clubIDField;
-            }
-            set {
-                this.clubIDField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string SchemeID {
-            get {
-                return this.schemeIDField;
-            }
-            set {
-                this.schemeIDField = value;
+                this.sellToCustomerNameField = value;
             }
         }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
         [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
-        public System.DateTime DateOfBirth {
+        public System.DateTime PostingDate {
             get {
-                return this.dateOfBirthField;
+                return this.postingDateField;
             }
             set {
-                this.dateOfBirthField = value;
+                this.postingDateField = value;
             }
         }
         
         /// <remarks/>
-        public string MobilePhoneNo {
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ShipmentDate {
             get {
-                return this.mobilePhoneNoField;
+                return this.shipmentDateField;
             }
             set {
-                this.mobilePhoneNoField = value;
+                this.shipmentDateField = value;
             }
         }
         
         /// <remarks/>
-        public string HouseApartmentNo {
+        public string ShipToCode {
             get {
-                return this.houseApartmentNoField;
+                return this.shipToCodeField;
             }
             set {
-                this.houseApartmentNoField = value;
+                this.shipToCodeField = value;
             }
         }
         
         /// <remarks/>
-        public string TerritoryCode {
+        public string ShipToName {
             get {
-                return this.territoryCodeField;
+                return this.shipToNameField;
             }
             set {
-                this.territoryCodeField = value;
+                this.shipToNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PackageTrackingNo {
+            get {
+                return this.packageTrackingNoField;
+            }
+            set {
+                this.packageTrackingNoField = value;
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033019")]
-    public partial class RootMemberContactCreate {
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033224")]
+    public partial class Root {
         
-        private ContactCreateParameters[] contactCreateParametersField;
-        
-        private MemberAttributeValue[] memberAttributeValueField;
+        private SalesShipmentHeader[] salesShipmentHeaderField;
         
         private string[] textField;
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("ContactCreateParameters")]
-        public ContactCreateParameters[] ContactCreateParameters {
+        [System.Xml.Serialization.XmlElementAttribute("SalesShipmentHeader")]
+        public SalesShipmentHeader[] SalesShipmentHeader {
             get {
-                return this.contactCreateParametersField;
+                return this.salesShipmentHeaderField;
             }
             set {
-                this.contactCreateParametersField = value;
-            }
-        }
-        
-        /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("MemberAttributeValue")]
-        public MemberAttributeValue[] MemberAttributeValue {
-            get {
-                return this.memberAttributeValueField;
-            }
-            set {
-                this.memberAttributeValueField = value;
+                this.salesShipmentHeaderField = value;
             }
         }
         
@@ -26677,7 +28859,227 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033072")]
+    public partial class ShippingAgentServices {
+        
+        private string shippingAgentCodeField;
+        
+        private string codeField;
+        
+        private string descriptionField;
+        
+        private string shippingTimeField;
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingTime {
+            get {
+                return this.shippingTimeField;
+            }
+            set {
+                this.shippingTimeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033072")]
+    public partial class ShippingAgent {
+        
+        private string codeField;
+        
+        private string nameField;
+        
+        private string internetAddressField;
+        
+        private string accountNoField;
+        
+        /// <remarks/>
+        public string Code {
+            get {
+                return this.codeField;
+            }
+            set {
+                this.codeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Name {
+            get {
+                return this.nameField;
+            }
+            set {
+                this.nameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string InternetAddress {
+            get {
+                return this.internetAddressField;
+            }
+            set {
+                this.internetAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033072")]
+    public partial class CODefaultShippingAgent {
+        
+        private string storeNoField;
+        
+        private string shippingAgentCodeField;
+        
+        private string agentServiceCodeField;
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AgentServiceCode {
+            get {
+                return this.agentServiceCodeField;
+            }
+            set {
+                this.agentServiceCodeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033072")]
+    public partial class RootCOShippingAgentsInfoGetXML {
+        
+        private CODefaultShippingAgent[] cODefaultShippingAgentField;
+        
+        private ShippingAgent[] shippingAgentField;
+        
+        private ShippingAgentServices[] shippingAgentServicesField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CODefaultShippingAgent")]
+        public CODefaultShippingAgent[] CODefaultShippingAgent {
+            get {
+                return this.cODefaultShippingAgentField;
+            }
+            set {
+                this.cODefaultShippingAgentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ShippingAgent")]
+        public ShippingAgent[] ShippingAgent {
+            get {
+                return this.shippingAgentField;
+            }
+            set {
+                this.shippingAgentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("ShippingAgentServices")]
+        public ShippingAgentServices[] ShippingAgentServices {
+            get {
+                return this.shippingAgentServicesField;
+            }
+            set {
+                this.shippingAgentServicesField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -26726,7 +29128,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -26761,7 +29163,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -27037,7 +29439,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -27186,7 +29588,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -27363,7 +29765,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -27530,7 +29932,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -27740,7 +30142,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -28361,7 +30763,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -28743,7 +31145,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -29139,7 +31541,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -29514,7 +31916,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -29909,7 +32311,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -30370,7 +32772,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -31939,7 +34341,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -33017,7 +35419,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -33208,7 +35610,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -33394,7 +35796,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -33429,7 +35831,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -33601,7 +36003,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -33636,7 +36038,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -34645,7 +37047,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -34680,7 +37082,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -34855,7 +37257,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -34890,7 +37292,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -35003,7 +37405,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -35101,7 +37503,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -35314,7 +37716,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -35587,7 +37989,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -35808,7 +38210,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -36332,7 +38734,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -36425,7 +38827,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -36894,7 +39296,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -37198,7 +39600,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -37415,7 +39817,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -37567,7 +39969,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -38091,7 +40493,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -38572,7 +40974,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -38738,7 +41140,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -38799,7 +41201,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -38892,7 +41294,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39058,7 +41460,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39106,7 +41508,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39180,7 +41582,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39215,7 +41617,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39390,7 +41792,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39425,7 +41827,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39578,7 +41980,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39613,7 +42015,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39686,7 +42088,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39721,7 +42123,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39754,7 +42156,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39789,7 +42191,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39838,7 +42240,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39937,7 +42339,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -39986,7 +42388,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40031,7 +42433,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40076,7 +42478,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40163,7 +42565,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40224,7 +42626,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40273,7 +42675,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40372,7 +42774,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40421,7 +42823,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40466,7 +42868,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40511,7 +42913,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40611,7 +43013,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40708,7 +43110,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40743,7 +43145,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40776,7 +43178,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -40811,7 +43213,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41068,7 +43470,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41270,7 +43672,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41318,7 +43720,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41471,7 +43873,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41506,7 +43908,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41666,7 +44068,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41715,7 +44117,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41893,7 +44295,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41938,7 +44340,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -41987,7 +44389,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42036,7 +44438,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42085,7 +44487,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42196,7 +44598,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42322,7 +44724,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42362,7 +44764,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42397,7 +44799,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42446,7 +44848,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42481,7 +44883,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42502,7 +44904,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42537,7 +44939,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42623,7 +45025,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42658,7 +45060,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42756,7 +45158,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42791,7 +45193,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42917,7 +45319,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -42952,7 +45354,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -43506,7 +45908,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -43608,7 +46010,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -43747,7 +46149,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -44587,7 +46989,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45172,7 +47574,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45259,7 +47661,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45346,7 +47748,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45381,7 +47783,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45543,7 +47945,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45600,7 +48002,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45648,7 +48050,482 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033060")]
+    public partial class CustomerOrderGetSalesShipmentLineV3 {
+        
+        private string documentIDField;
+        
+        private int lineNoField;
+        
+        private string itemNoField;
+        
+        private string descriptionField;
+        
+        private decimal quantityField;
+        
+        private string unitOfMeasureField;
+        
+        private System.DateTime plannedDeliveryDateField;
+        
+        private System.DateTime plannedShipmentDateField;
+        
+        private System.DateTime shipmentDateField;
+        
+        private decimal grossWeightField;
+        
+        private decimal netWeightField;
+        
+        private decimal unitVolumeField;
+        
+        public CustomerOrderGetSalesShipmentLineV3() {
+            this.lineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.plannedDeliveryDateField = new System.DateTime(0);
+            this.plannedShipmentDateField = new System.DateTime(0);
+            this.shipmentDateField = new System.DateTime(0);
+            this.grossWeightField = ((decimal)(0m));
+            this.netWeightField = ((decimal)(0m));
+            this.unitVolumeField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemNo {
+            get {
+                return this.itemNoField;
+            }
+            set {
+                this.itemNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Description {
+            get {
+                return this.descriptionField;
+            }
+            set {
+                this.descriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitOfMeasure {
+            get {
+                return this.unitOfMeasureField;
+            }
+            set {
+                this.unitOfMeasureField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime PlannedDeliveryDate {
+            get {
+                return this.plannedDeliveryDateField;
+            }
+            set {
+                this.plannedDeliveryDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime PlannedShipmentDate {
+            get {
+                return this.plannedShipmentDateField;
+            }
+            set {
+                this.plannedShipmentDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ShipmentDate {
+            get {
+                return this.shipmentDateField;
+            }
+            set {
+                this.shipmentDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal GrossWeight {
+            get {
+                return this.grossWeightField;
+            }
+            set {
+                this.grossWeightField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal NetWeight {
+            get {
+                return this.netWeightField;
+            }
+            set {
+                this.netWeightField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
+        public decimal UnitVolume {
+            get {
+                return this.unitVolumeField;
+            }
+            set {
+                this.unitVolumeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033060")]
+    public partial class CustomerOrderGetDeliveryCommentV3 {
+        
+        private string documentIDField;
+        
+        private string commentField;
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Comment {
+            get {
+                return this.commentField;
+            }
+            set {
+                this.commentField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033060")]
+    public partial class CustomerOrderGetGeneralCommentV3 {
+        
+        private string documentIDField;
+        
+        private string commentField;
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Comment {
+            get {
+                return this.commentField;
+            }
+            set {
+                this.commentField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033060")]
+    public partial class CustomerOrderGetSalesShipmentHeaderV3 {
+        
+        private string documentIDField;
+        
+        private System.DateTime requestedDateField;
+        
+        private string orderNoField;
+        
+        private string customerOrderIdField;
+        
+        private string shipToNameField;
+        
+        private string shipToName2Field;
+        
+        private string shipToAddressField;
+        
+        private string shipToAddress2Field;
+        
+        private string shipToPostCodeField;
+        
+        private string shipToCityField;
+        
+        private string shipToCountyField;
+        
+        private string shipToCountryField;
+        
+        private string shipToContactField;
+        
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
+        private string packageTrackingNoField;
+        
+        private string packageTrackingUrlField;
+        
+        private System.DateTime shipmentDateField;
+        
+        public CustomerOrderGetSalesShipmentHeaderV3() {
+            this.requestedDateField = new System.DateTime(0);
+            this.shipmentDateField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime RequestedDate {
+            get {
+                return this.requestedDateField;
+            }
+            set {
+                this.requestedDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OrderNo {
+            get {
+                return this.orderNoField;
+            }
+            set {
+                this.orderNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CustomerOrderId {
+            get {
+                return this.customerOrderIdField;
+            }
+            set {
+                this.customerOrderIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToName {
+            get {
+                return this.shipToNameField;
+            }
+            set {
+                this.shipToNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToName2 {
+            get {
+                return this.shipToName2Field;
+            }
+            set {
+                this.shipToName2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToAddress {
+            get {
+                return this.shipToAddressField;
+            }
+            set {
+                this.shipToAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToAddress2 {
+            get {
+                return this.shipToAddress2Field;
+            }
+            set {
+                this.shipToAddress2Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToPostCode {
+            get {
+                return this.shipToPostCodeField;
+            }
+            set {
+                this.shipToPostCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCity {
+            get {
+                return this.shipToCityField;
+            }
+            set {
+                this.shipToCityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCounty {
+            get {
+                return this.shipToCountyField;
+            }
+            set {
+                this.shipToCountyField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToCountry {
+            get {
+                return this.shipToCountryField;
+            }
+            set {
+                this.shipToCountryField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShipToContact {
+            get {
+                return this.shipToContactField;
+            }
+            set {
+                this.shipToContactField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PackageTrackingNo {
+            get {
+                return this.packageTrackingNoField;
+            }
+            set {
+                this.packageTrackingNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PackageTrackingUrl {
+            get {
+                return this.packageTrackingUrlField;
+            }
+            set {
+                this.packageTrackingUrlField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ShipmentDate {
+            get {
+                return this.shipmentDateField;
+            }
+            set {
+                this.shipmentDateField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -45939,7 +48816,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -46077,7 +48954,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -46164,6 +49041,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string boxNoField;
         
+        private bool shipLineField;
+        
         public CustomerOrderGetCOLineV3() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -46182,6 +49061,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.collectTimeLimitField = new System.DateTime(0);
             this.clickAndCollectLineField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
+            this.shipLineField = false;
         }
         
         /// <remarks/>
@@ -46586,10 +49466,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.boxNoField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ShipLine {
+            get {
+                return this.shipLineField;
+            }
+            set {
+                this.shipLineField = value;
+            }
+        }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -46606,7 +49497,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string memberCardNoField;
         
-        private int sourceTypeField;
+        private string sourceTypeField;
         
         private string nameField;
         
@@ -46682,11 +49573,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.DateTime requestedDeliveryDateField;
         
+        private string shippingAgentCodeField;
+        
+        private string shippingAgentServiceCodeField;
+        
+        private string salesPersonCodeField;
+        
         private bool clickandCollectOrderField;
         
         public CustomerOrderGetCOHeaderV3() {
             this.createdField = new System.DateTime(0);
-            this.sourceTypeField = 0;
             this.shipOrderField = false;
             this.showaspostedIntField = false;
             this.onHoldField = false;
@@ -46753,7 +49649,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public int SourceType {
+        public string SourceType {
             get {
                 return this.sourceTypeField;
             }
@@ -47144,6 +50040,36 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        public string ShippingAgentCode {
+            get {
+                return this.shippingAgentCodeField;
+            }
+            set {
+                this.shippingAgentCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ShippingAgentServiceCode {
+            get {
+                return this.shippingAgentServiceCodeField;
+            }
+            set {
+                this.shippingAgentServiceCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalesPersonCode {
+            get {
+                return this.salesPersonCodeField;
+            }
+            set {
+                this.salesPersonCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
         public bool ClickandCollectOrder {
             get {
                 return this.clickandCollectOrderField;
@@ -47155,7 +50081,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -47169,6 +50095,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private CustomerOrderGetCODiscountLineV3[] customerOrderGetCODiscountLineV3Field;
         
         private CustomerOrderGetCOPaymentV3[] customerOrderGetCOPaymentV3Field;
+        
+        private CustomerOrderGetSalesShipmentHeaderV3[] customerOrderGetSalesShipmentHeaderV3Field;
+        
+        private CustomerOrderGetGeneralCommentV3[] customerOrderGetGeneralCommentV3Field;
+        
+        private CustomerOrderGetDeliveryCommentV3[] customerOrderGetDeliveryCommentV3Field;
+        
+        private CustomerOrderGetSalesShipmentLineV3[] customerOrderGetSalesShipmentLineV3Field;
         
         private string[] textField;
         
@@ -47217,6 +50151,50 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetSalesShipmentHeaderV3")]
+        public CustomerOrderGetSalesShipmentHeaderV3[] CustomerOrderGetSalesShipmentHeaderV3 {
+            get {
+                return this.customerOrderGetSalesShipmentHeaderV3Field;
+            }
+            set {
+                this.customerOrderGetSalesShipmentHeaderV3Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetGeneralCommentV3")]
+        public CustomerOrderGetGeneralCommentV3[] CustomerOrderGetGeneralCommentV3 {
+            get {
+                return this.customerOrderGetGeneralCommentV3Field;
+            }
+            set {
+                this.customerOrderGetGeneralCommentV3Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetDeliveryCommentV3")]
+        public CustomerOrderGetDeliveryCommentV3[] CustomerOrderGetDeliveryCommentV3 {
+            get {
+                return this.customerOrderGetDeliveryCommentV3Field;
+            }
+            set {
+                this.customerOrderGetDeliveryCommentV3Field = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderGetSalesShipmentLineV3")]
+        public CustomerOrderGetSalesShipmentLineV3[] CustomerOrderGetSalesShipmentLineV3 {
+            get {
+                return this.customerOrderGetSalesShipmentLineV3Field;
+            }
+            set {
+                this.customerOrderGetSalesShipmentLineV3Field = value;
+            }
+        }
+        
+        /// <remarks/>
         [System.Xml.Serialization.XmlTextAttribute()]
         public string[] Text {
             get {
@@ -47229,7 +50207,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -47286,7 +50264,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -47602,7 +50580,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -47740,7 +50718,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -48201,7 +51179,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -48212,7 +51190,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string memberCardNoField;
         
-        private int sourceTypeField;
+        private string sourceTypeField;
         
         private string customerNoField;
         
@@ -48278,8 +51256,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string shippingAgentServiceCodeField;
         
+        private string salesPersonCodeField;
+        
         public CustomerOrderCreateCOHeaderV5() {
-            this.sourceTypeField = 0;
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
             this.scanPaygoField = false;
@@ -48307,7 +51286,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public int SourceType {
+        public string SourceType {
             get {
                 return this.sourceTypeField;
             }
@@ -48640,10 +51619,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.shippingAgentServiceCodeField = value;
             }
         }
+        
+        /// <remarks/>
+        public string SalesPersonCode {
+            get {
+                return this.salesPersonCodeField;
+            }
+            set {
+                this.salesPersonCodeField = value;
+            }
+        }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -48730,7 +51719,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -48787,16 +51776,66 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033058")]
+    public partial class CustomerOrderCancelCOLine {
+        
+        private string documentIDField;
+        
+        private int lineNoField;
+        
+        public CustomerOrderCancelCOLine() {
+            this.lineNoField = 0;
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033058")]
     public partial class RootCustomerOrderCancel {
         
+        private CustomerOrderCancelCOLine[] customerOrderCancelCOLineField;
+        
         private CustomerOrderStatusLog[] customerOrderStatusLogField;
         
         private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("CustomerOrderCancelCOLine")]
+        public CustomerOrderCancelCOLine[] CustomerOrderCancelCOLine {
+            get {
+                return this.customerOrderCancelCOLineField;
+            }
+            set {
+                this.customerOrderCancelCOLineField = value;
+            }
+        }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("CustomerOrderStatusLog")]
@@ -48822,7 +51861,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -48879,7 +51918,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.DateTime preOrderPrintDateTimeField;
         
-        private string paymentTypeField;
+        private string commentField;
+        
+        private decimal totalAmountField;
         
         public WebDeliveryOrder() {
             this.orderDateField = new System.DateTime(0);
@@ -48889,6 +51930,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.orderTypeOptionField = 0;
             this.estimatedProdTimeField = 0;
             this.preOrderPrintDateTimeField = new System.DateTime(0);
+            this.totalAmountField = ((decimal)(0m));
         }
         
         /// <remarks/>
@@ -49151,18 +52193,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public string PaymentType {
+        public string Comment {
             get {
-                return this.paymentTypeField;
+                return this.commentField;
             }
             set {
-                this.paymentTypeField = value;
+                this.commentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal TotalAmount {
+            get {
+                return this.totalAmountField;
+            }
+            set {
+                this.totalAmountField = value;
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -49716,7 +52768,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -49818,7 +52870,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -49957,7 +53009,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -50797,7 +53849,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51370,7 +54422,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51470,7 +54522,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51544,7 +54596,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51579,7 +54631,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51665,7 +54717,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51700,7 +54752,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51823,7 +54875,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51884,7 +54936,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -51932,7 +54984,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52118,7 +55170,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52153,7 +55205,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52227,7 +55279,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52262,7 +55314,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52581,7 +55633,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52616,7 +55668,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -52979,7 +56031,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -53014,11 +56066,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COFilteredListV2CompletedEventHandler(object sender, COFilteredListV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COFilteredListV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53056,11 +56108,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COGetMobilePickHeadersCompletedEventHandler(object sender, COGetMobilePickHeadersCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COGetMobilePickHeadersCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53098,11 +56150,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COGetMobilePickLinesCompletedEventHandler(object sender, COGetMobilePickLinesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COGetMobilePickLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53140,11 +56192,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COGetPutBackItemsCompletedEventHandler(object sender, COGetPutBackItemsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COGetPutBackItemsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53182,11 +56234,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COMobilePickUpdateLinesCompletedEventHandler(object sender, COMobilePickUpdateLinesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COMobilePickUpdateLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53224,11 +56276,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COMobileUnlockLinesCompletedEventHandler(object sender, COMobileUnlockLinesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COMobileUnlockLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53258,11 +56310,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COQtyAvailabilityV2CompletedEventHandler(object sender, COQtyAvailabilityV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COQtyAvailabilityV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53308,11 +56360,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void COSetMobilePickLabelCompletedEventHandler(object sender, COSetMobilePickLabelCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class COSetMobilePickLabelCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53350,11 +56402,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CancelHospOrderCompletedEventHandler(object sender, CancelHospOrderCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CancelHospOrderCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53384,11 +56436,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CreateHospOrderCompletedEventHandler(object sender, CreateHospOrderCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CreateHospOrderCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53434,11 +56486,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CustomerOrderCancelCompletedEventHandler(object sender, CustomerOrderCancelCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CustomerOrderCancelCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53468,11 +56520,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CustomerOrderCreateV5CompletedEventHandler(object sender, CustomerOrderCreateV5CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CustomerOrderCreateV5CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53510,11 +56562,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CustomerOrderGetV3CompletedEventHandler(object sender, CustomerOrderGetV3CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CustomerOrderGetV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53568,11 +56620,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CustomerOrderStatusV2CompletedEventHandler(object sender, CustomerOrderStatusV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CustomerOrderStatusV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53610,11 +56662,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void CustomerOrderStatusCompletedEventHandler(object sender, CustomerOrderStatusCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CustomerOrderStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53652,11 +56704,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void EcomCalculateBasketCompletedEventHandler(object sender, EcomCalculateBasketCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class EcomCalculateBasketCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53694,11 +56746,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void EcomGetCustomerPriceCompletedEventHandler(object sender, EcomGetCustomerPriceCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class EcomGetCustomerPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53736,11 +56788,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetASNDocumentLinesCompletedEventHandler(object sender, GetASNDocumentLinesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetASNDocumentLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53778,11 +56830,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetASNDocumentListCompletedEventHandler(object sender, GetASNDocumentListCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetASNDocumentListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53820,11 +56872,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetActionsFromRemoteDBCompletedEventHandler(object sender, GetActionsFromRemoteDBCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetActionsFromRemoteDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53862,11 +56914,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetCoStatusExistsCompletedEventHandler(object sender, GetCoStatusExistsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetCoStatusExistsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53904,11 +56956,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetCrossSellingCompletedEventHandler(object sender, GetCrossSellingCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetCrossSellingCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53946,11 +56998,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetCustomerCardCompletedEventHandler(object sender, GetCustomerCardCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetCustomerCardCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -53988,11 +57040,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetDataEntryBalanceCompletedEventHandler(object sender, GetDataEntryBalanceCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDataEntryBalanceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54030,11 +57082,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetDirectMarketingInfoCompletedEventHandler(object sender, GetDirectMarketingInfoCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDirectMarketingInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54072,11 +57124,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetDocumentListV2CompletedEventHandler(object sender, GetDocumentListV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDocumentListV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54114,11 +57166,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetDocumentListCompletedEventHandler(object sender, GetDocumentListCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDocumentListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54156,11 +57208,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetDocumentCompletedEventHandler(object sender, GetDocumentCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDocumentCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54198,11 +57250,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyNodeCompletedEventHandler(object sender, GetHierarchyNodeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyNodeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54240,11 +57292,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyV2ValidationScheduleCompletedEventHandler(object sender, GetHierarchyV2ValidationScheduleCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyV2ValidationScheduleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54282,11 +57334,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyV2CompletedEventHandler(object sender, GetHierarchyV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54324,11 +57376,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHospOrderEstimatedTimeCompletedEventHandler(object sender, GetHospOrderEstimatedTimeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHospOrderEstimatedTimeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54366,11 +57418,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetInventoryMultipleV2CompletedEventHandler(object sender, GetInventoryMultipleV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetInventoryMultipleV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54408,11 +57460,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetInventoryMultipleCompletedEventHandler(object sender, GetInventoryMultipleCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetInventoryMultipleCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54450,11 +57502,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetItemCardCompletedEventHandler(object sender, GetItemCardCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetItemCardCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54492,11 +57544,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetItemDocumentCompletedEventHandler(object sender, GetItemDocumentCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetItemDocumentCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54534,11 +57586,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetItemInventoryCompletedEventHandler(object sender, GetItemInventoryCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetItemInventoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54576,11 +57628,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetItemWithBarcodeCompletedEventHandler(object sender, GetItemWithBarcodeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetItemWithBarcodeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54626,11 +57678,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetKotStatusCompletedEventHandler(object sender, GetKotStatusCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetKotStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54668,11 +57720,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetMemberCardCompletedEventHandler(object sender, GetMemberCardCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMemberCardCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54718,11 +57770,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetMemberContact2CompletedEventHandler(object sender, GetMemberContact2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMemberContact2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54760,11 +57812,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetMemberContactCompletedEventHandler(object sender, GetMemberContactCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMemberContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54802,11 +57854,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetMemberInfoForPosCompletedEventHandler(object sender, GetMemberInfoForPosCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMemberInfoForPosCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54844,11 +57896,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetMemberSalesHistoryCompletedEventHandler(object sender, GetMemberSalesHistoryCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetMemberSalesHistoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54886,11 +57938,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetPosTransSuspListCompletedEventHandler(object sender, GetPosTransSuspListCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPosTransSuspListCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54928,11 +57980,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetReplCountersFromRemoteDBCompletedEventHandler(object sender, GetReplCountersFromRemoteDBCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetReplCountersFromRemoteDBCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -54970,11 +58022,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetReturnPolicyCompletedEventHandler(object sender, GetReturnPolicyCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetReturnPolicyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55012,11 +58064,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetStoreImageCompletedEventHandler(object sender, GetStoreImageCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetStoreImageCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55054,11 +58106,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetStoreOpeningHoursCompletedEventHandler(object sender, GetStoreOpeningHoursCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetStoreOpeningHoursCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55096,11 +58148,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetTokenEntryCompletedEventHandler(object sender, GetTokenEntryCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetTokenEntryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55154,11 +58206,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetTransactionCompletedEventHandler(object sender, GetTransactionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetTransactionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55196,11 +58248,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetVendorCardCompletedEventHandler(object sender, GetVendorCardCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVendorCardCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55238,11 +58290,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void IMDocumentPostCompletedEventHandler(object sender, IMDocumentPostCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class IMDocumentPostCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55280,11 +58332,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void ItemSalesInfoCompletedEventHandler(object sender, ItemSalesInfoCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ItemSalesInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55322,11 +58374,179 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void LSCCOShipAgentsInfoGetCompletedEventHandler(object sender, LSCCOShipAgentsInfoGetCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class LSCCOShipAgentsInfoGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal LSCCOShipAgentsInfoGetCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootCOShippingAgentsInfoGetXML cOShipAgentsInfoGetXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootCOShippingAgentsInfoGetXML)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void LSCSalesShipmentGetCompletedEventHandler(object sender, LSCSalesShipmentGetCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class LSCSalesShipmentGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal LSCSalesShipmentGetCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public Root salesShipmentListXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((Root)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void LSCSalesShipmentUpdateCompletedEventHandler(object sender, LSCSalesShipmentUpdateCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class LSCSalesShipmentUpdateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal LSCSalesShipmentUpdateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void MemberAuthenticatorLoginCompletedEventHandler(object sender, MemberAuthenticatorLoginCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MemberAuthenticatorLoginCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MemberAuthenticatorLoginCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public decimal totalRemainingPoints {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMemberauthLogin memberAuthLoginXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMemberauthLogin)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberCardToContactCompletedEventHandler(object sender, MemberCardToContactCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberCardToContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55364,11 +58584,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberContactBlockCompletedEventHandler(object sender, MemberContactBlockCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberContactBlockCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55398,11 +58618,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberContactCreateCompletedEventHandler(object sender, MemberContactCreateCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberContactCreateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55488,11 +58708,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberContactUpdateCompletedEventHandler(object sender, MemberContactUpdateCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberContactUpdateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55530,11 +58750,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberLogonCompletedEventHandler(object sender, MemberLogonCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberLogonCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55580,11 +58800,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberPasswordChangeCompletedEventHandler(object sender, MemberPasswordChangeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberPasswordChangeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55614,11 +58834,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MemberPasswordResetCompletedEventHandler(object sender, MemberPasswordResetCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MemberPasswordResetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55664,11 +58884,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobileGetProfilesCompletedEventHandler(object sender, MobileGetProfilesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobileGetProfilesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55706,11 +58926,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosCalculateV2CompletedEventHandler(object sender, MobilePosCalculateV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosCalculateV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55739,20 +58959,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public Root mobileTransactionXMLV2 {
+        public Root1 mobileTransactionXMLV2 {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((Root)(this.results[2]));
+                return ((Root1)(this.results[2]));
             }
         }
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosCalculateCompletedEventHandler(object sender, MobilePosCalculateCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosCalculateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55790,11 +59010,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosFloatEntCompletedEventHandler(object sender, MobilePosFloatEntCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosFloatEntCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55832,11 +59052,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosGetDeviceIDCompletedEventHandler(object sender, MobilePosGetDeviceIDCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosGetDeviceIDCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55882,11 +59102,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosPostPrecalcCompletedEventHandler(object sender, MobilePosPostPrecalcCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosPostPrecalcCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55924,11 +59144,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosPostCompletedEventHandler(object sender, MobilePosPostCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosPostCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -55966,11 +59186,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosPriceCheckCompletedEventHandler(object sender, MobilePosPriceCheckCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosPriceCheckCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56008,11 +59228,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosPrintCompletedEventHandler(object sender, MobilePosPrintCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosPrintCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56074,11 +59294,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosRefundCompletedEventHandler(object sender, MobilePosRefundCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosRefundCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56116,11 +59336,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosRetSaveCompletedEventHandler(object sender, MobilePosRetSaveCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosRetSaveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56158,11 +59378,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosRetSuspendedCompletedEventHandler(object sender, MobilePosRetSuspendedCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosRetSuspendedCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56200,11 +59420,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosSalesHistoryCompletedEventHandler(object sender, MobilePosSalesHistoryCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosSalesHistoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56242,11 +59462,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosSaveCompletedEventHandler(object sender, MobilePosSaveCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosSaveCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56284,11 +59504,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosSetDeviceIDCompletedEventHandler(object sender, MobilePosSetDeviceIDCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosSetDeviceIDCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56318,11 +59538,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosSuspendV2CompletedEventHandler(object sender, MobilePosSuspendV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosSuspendV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56360,11 +59580,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosSuspendCompletedEventHandler(object sender, MobilePosSuspendCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosSuspendCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56402,11 +59622,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilePosZReportCompletedEventHandler(object sender, MobilePosZReportCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilePosZReportCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56452,11 +59672,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void MobilelPosGetLastReceiptNoCompletedEventHandler(object sender, MobilelPosGetLastReceiptNoCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class MobilelPosGetLastReceiptNoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56494,11 +59714,85 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void SPGOpenGateCompletedEventHandler(object sender, SPGOpenGateCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SPGOpenGateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SPGOpenGateCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string storeNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string deviceLocation {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string memberAccountNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public bool exitWithoutShopping {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public bool returnValue {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[6]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SPGProfileGetCompletedEventHandler(object sender, SPGProfileGetCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SPGProfileGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56552,11 +59846,61 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void SPGResetPasswordCompletedEventHandler(object sender, SPGResetPasswordCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SPGResetPasswordCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SPGResetPasswordCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string resetCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string newPassword {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SecurityCheckProfileCompletedEventHandler(object sender, SecurityCheckProfileCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SecurityCheckProfileCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56594,11 +59938,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SendASNScannedLinesCompletedEventHandler(object sender, SendASNScannedLinesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SendASNScannedLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56636,11 +59980,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SendDocumentImageCompletedEventHandler(object sender, SendDocumentImageCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SendDocumentImageCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56670,11 +60014,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SendDocumentCompletedEventHandler(object sender, SendDocumentCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SendDocumentCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56704,11 +60048,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SendTransactionHeaderCompletedEventHandler(object sender, SendTransactionHeaderCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SendTransactionHeaderCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56746,11 +60090,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SendTransactionCompletedEventHandler(object sender, SendTransactionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SendTransactionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56788,11 +60132,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void SetTokenEntryCompletedEventHandler(object sender, SetTokenEntryCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SetTokenEntryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56830,11 +60174,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void StoreInvTransactionSendV2CompletedEventHandler(object sender, StoreInvTransactionSendV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class StoreInvTransactionSendV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56864,11 +60208,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void StoreInvTransactionSendCompletedEventHandler(object sender, StoreInvTransactionSendCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class StoreInvTransactionSendCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56898,11 +60242,53 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void StoreInventoryLinesGetV2CompletedEventHandler(object sender, StoreInventoryLinesGetV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class StoreInventoryLinesGetV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal StoreInventoryLinesGetV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootStoreInventoryGetLines storeInventoryLinesGetXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootStoreInventoryGetLines)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void StoreInventoryLinesGetCompletedEventHandler(object sender, StoreInventoryLinesGetCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class StoreInventoryLinesGetCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -56940,11 +60326,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void TestConnectionCompletedEventHandler(object sender, TestConnectionCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class TestConnectionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {

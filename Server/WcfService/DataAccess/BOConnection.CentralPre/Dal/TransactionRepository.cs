@@ -232,7 +232,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 TaxAmount = new Money(SQLHelper.GetDecimal(reader, "VAT Amount", true), currency),
             };
 
-            ItemRepository itemRepo = new ItemRepository(config);
+            ItemRepository itemRepo = new ItemRepository(config, LSCVersion);
             LoyItem item = itemRepo.ItemLoyGetById(SQLHelper.GetString(reader["Item No_"]), storeId, string.Empty, false);
             RetailItem ritem = new RetailItem()
             {

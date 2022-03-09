@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
@@ -35,9 +36,9 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
-            BOLoyConnection.OrderCancel(orderId, storeId, userId);
+            BOLoyConnection.OrderCancel(orderId, storeId, userId, lineNo);
         }
 
         public virtual SalesEntry OrderCreate(Order request)

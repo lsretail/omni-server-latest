@@ -75,7 +75,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                           "ln.[Number] AS COItem,ln.[Variant Code] AS COVar,ln.[Unit of Measure Code] AS COUom,ln.[Quantity] AS COQty," +
                                           "pln.[Number] AS PCOItem,pln.[Variant Code] AS PCOVar,pln.[Unit of Measure Code] AS PCOUom,pln.[Quantity] AS PCOQty," +
                                           "s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed]" +
-                                          (LSCVersion > new Version("18.2") ? ",s0.[External Code] AS Ext0,s1.[External Code] AS Ext1" : string.Empty) +
+                                          (LSCVersion >= new Version("18.2") ? ",s0.[External Code] AS Ext0,s1.[External Code] AS Ext1" : string.Empty) +
                                           " FROM [" + navCompanyName + "LSC CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
                                           "LEFT OUTER JOIN [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
@@ -95,7 +95,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 status.DocumentNo = id;
                                 status.OrderStatus = SQLHelper.GetString(reader["Status Code"]);
                                 status.Description = SQLHelper.GetString(reader["Desc0"]);
-                                if (LSCVersion > new Version("18.2"))
+                                if (LSCVersion >= new Version("18.2"))
                                     status.ExtCode = SQLHelper.GetString(reader["Ext0"]);
                             }
                             else
@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 status.Lines.Add(new OrderLineStatus()
                                 {
                                     LineStatus = SQLHelper.GetString(reader["Status Code"]),
-                                    ExtCode = (LSCVersion > new Version("18.2")) ? SQLHelper.GetString(reader["Ext1"]) : string.Empty,
+                                    ExtCode = (LSCVersion >= new Version("18.2")) ? SQLHelper.GetString(reader["Ext1"]) : string.Empty,
                                     Description = SQLHelper.GetString(reader["Desc1"]),
                                     LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                                     ItemId = SQLHelper.GetString(posted ? reader["PCOItem"] : reader["COItem"]),

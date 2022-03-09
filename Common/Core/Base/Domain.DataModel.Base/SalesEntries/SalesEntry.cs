@@ -128,6 +128,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         /// </summary>
         [DataMember]
         public bool AnonymousOrder { get; set; }
+        /// <summary>
+        /// Transaction is return sale
+        /// </summary>
+        [DataMember]
+        public bool ReturnSale { get; set; }
+        /// <summary>
+        /// Transaction has return sale transaction
+        /// </summary>
+        [DataMember]
+        public bool HasReturnSale { get; set; }
 
         [DataMember]
         public List<SalesEntryLine> Lines { get; set; }

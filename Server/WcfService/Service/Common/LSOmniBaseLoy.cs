@@ -88,26 +88,6 @@ namespace LSOmni.Service
 
         #region contact and account
 
-        /// <summary>
-        /// Get all schemes in system
-        /// </summary>
-        /// <returns>List of schemes</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception> 
         public virtual List<Scheme> SchemesGetAll()
         {
             try
@@ -124,30 +104,6 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Get contact by contact Id
-        /// </summary>
-        /// <param name="cardId">Card Id</param>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>
-        /// </list>        
-        /// </exception> 
         public virtual MemberContact ContactGetByCardId(string cardId)
         {
             if (string.IsNullOrEmpty(cardId))
@@ -188,42 +144,6 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Create a new contact
-        /// </summary>
-        /// <param name="contact">contact</param>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNamePasswordInvalid</description>
-        /// </item>	         
-        /// <item>
-        /// <description>StatusCode.PasswordInvalid</description>
-        /// </item>	   
-        /// <item>
-        /// <description>StatusCode.EmailInvalid</description>
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.UserNameInvalid</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNameExists</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.MissingLastName</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.MissingFirstName</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.AccountNotFound</description>
-        /// </item>
-        /// </list>        
-        /// </exception>   
         public virtual MemberContact ContactCreate(MemberContact contact)
         {
             try
@@ -245,38 +165,6 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Update a contact
-        /// </summary>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>         
-        /// <item>
-        /// <description>StatusCode.ParameterInvalid</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.EmailInvalid</description>
-        /// </item>	          
-        /// <item>
-        /// <description>StatusCode.ContactIdNotFound</description>
-        /// </item>	
-        /// </list>        
-        /// </exception> 
         public virtual MemberContact ContactUpdate(MemberContact contact)
         {
             try
@@ -301,35 +189,6 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Login user
-        /// </summary>
-        /// <param name="userName">user name</param>
-        /// <param name="password">password</param>
-        /// <param name="deviceId">device Id. Should be empty for non device user (web apps)</param>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNamePasswordInvalid</description>
-        /// </item>	         
-        /// <item>
-        /// <description>StatusCode.AuthFailed</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.InvalidPassword</description>
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.LoginIdNotFound</description>
-        /// </item>	         
-        /// </list>                           
-        /// </exception> 
         public virtual MemberContact Login(string userName, string password, string deviceId)
         {
             try
@@ -350,35 +209,26 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Login user from web page.
-        /// Returns contact but only Contact and Card object have data  
-        /// </summary>
-        /// <param name="userName">user name</param>
-        /// <param name="password">password</param>
-        /// <returns>Contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.UserNamePasswordInvalid</description>
-        /// </item>	         
-        /// <item>
-        /// <description>StatusCode.AuthFailed</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.InvalidPassword</description>
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.LoginIdNotFound</description>
-        /// </item>	         
-        /// </list>                           
-        /// </exception> 
+        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceId, string deviceName, bool includeDetails)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, "authenticator:{0} deviceId:{1}", authenticator, deviceId);
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                MemberContact contact = contactBLL.SocialLogon(authenticator, authenticationId, deviceId, deviceName, includeDetails);
+                contact.Environment.Version = this.Version();
+                ContactSetLocation(contact);
+                if (config.IsJson && logger.IsDebugEnabled)
+                    Serialization.TestJsonSerialize(typeof(MemberContact), contact);
+                return contact;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed: Login() authenticator:{0}  deviceId:{1}", authenticator, deviceId);
+                return null; //never gets here
+            }
+        }
+
         public virtual MemberContact LoginWeb(string userName, string password)
         {
             //security token is in card
@@ -395,34 +245,6 @@ namespace LSOmni.Service
             }
         }
 
-        /// <summary>
-        /// Log out
-        /// </summary>
-        /// <param name="userName">user name</param>
-        /// <param name="deviceId">device Id. Should be empty for non device user (web apps)</param>
-        /// <returns>true/false</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.ContactIdNotFound</description>
-        /// </item>	         
-        /// </list>                           
-        /// </exception> 
         public virtual bool Logout(string userName, string deviceId)
         {
             try
@@ -440,41 +262,6 @@ namespace LSOmni.Service
             return false;
         }
 
-        /// <summary>
-        /// Change password
-        /// </summary>
-        /// <param name="userName">user name</param>
-        /// <param name="newPassword">new password</param>
-        /// <param name="oldPassword">old password</param>
-        /// <returns>true/false</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	  
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.ContactIdNotFound</description>
-        /// </item>	    
-        /// <item>
-        /// <description>StatusCode.PasswordInvalid</description>
-        /// </item>	    
-        /// <item>
-        /// <description>StatusCode.PasswordOldInvalid</description>
-        /// </item>	  
-        /// </list>                           
-        /// </exception>    
         public virtual bool ChangePassword(string userName, string newPassword, string oldPassword)
         {
             try
@@ -645,6 +432,20 @@ namespace LSOmni.Service
                 return false;
             }
             return true;
+        }
+
+        public virtual string SPGPassword(string email, string token, string newPassword)
+        {
+            try
+            {
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return contactBLL.SPGPassword(email, token, newPassword);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "email:{0}", email);
+                return string.Empty;
+            }
         }
 
         public virtual bool LoginChange(string oldUserName, string newUserName, string password)
@@ -1605,6 +1406,20 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        {
+            try
+            {
+                TransactionBLL bll = new TransactionBLL(config, clientTimeOutInSeconds);
+                return bll.SalesEntryGetReturnSales(receiptNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "SalesEntryGetReturnSales");
+                return null; //never gets here
+            }
+        }
+
         /// <summary>
         /// Search for text based on searchType
         /// </summary>
@@ -1652,13 +1467,13 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual string OrderCancel(string orderId, string storeId, string userId)
+        public virtual string OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
             try
             {
                 logger.Debug(config.LSKey.Key, "orderId:{0}", orderId);
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                bll.OrderCancel(orderId, storeId, userId);
+                bll.OrderCancel(orderId, storeId, userId, lineNo);
             }
             catch (Exception ex)
             {
@@ -1968,13 +1783,13 @@ namespace LSOmni.Service
             }
         }
 
-        public bool LSRecommendSetting(string lsKey, string companyName, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
+        public bool LSRecommendSetting(string lsKey, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
             try
             {
-                logger.Debug(config.LSKey.Key, "companyName:{0} batchNo:{1) modelReaderURL:{2}", companyName, batchNo, modelReaderURL);
+                logger.Debug(config.LSKey.Key, "batchNo:{0} modelReaderURL:{1}", batchNo, modelReaderURL);
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, true);
-                bll.LSRecommendSetting(XMLHelper.GetString(lsKey), companyName, batchNo, modelReaderURL, authenticationURL, clientId, clientSecret, userName, password, numberOfDownloadedItems, numberOfDisplayedItems, filterByInventory, minInvStock);
+                bll.LSRecommendSetting(XMLHelper.GetString(lsKey), batchNo, modelReaderURL, authenticationURL, clientId, clientSecret, userName, password, numberOfDownloadedItems, numberOfDisplayedItems, filterByInventory, minInvStock);
                 return true;
             }
             catch (Exception ex)
@@ -1990,19 +1805,7 @@ namespace LSOmni.Service
 
         public virtual ClientToken PaymentClientTokenGet(string customerId)
         {
-            try
-            {
-                return new ClientToken()
-                {
-                    CustomerId = customerId,
-                    Token = "12345"
-                };
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Empty);
-                return null; //never gets here
-            }
+            throw new NotImplementedException();
         }
 
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
@@ -2016,6 +1819,12 @@ namespace LSOmni.Service
         {
             StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
             return bll.SecurityCheckProfile(orderNo, storeNo);
+        }
+
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        {
+            StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
+            return bll.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping);
         }
 
         #endregion

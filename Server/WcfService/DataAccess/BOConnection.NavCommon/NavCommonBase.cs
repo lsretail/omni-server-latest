@@ -18,7 +18,27 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
     //Navision back office connection
     public partial class NavCommonBase
     {
-        protected int TimeOutInSeconds { get; set; }
+        private int TimeoutSec = 0;
+        public int TimeOutInSeconds
+        {
+            get
+            {
+                return TimeoutSec;
+            }
+            set
+            {
+                // sever timeout before client (2 sec)
+                TimeoutSec = value;
+                if (navWS != null)
+                    navWS.Timeout = (value - 2) * 1000;
+                if (navQryWS != null)
+                    navQryWS.Timeout = (value - 2) * 1000;
+                if (activityWS != null)
+                    activityWS.Timeout = (value - 2) * 1000;
+                if (activity15WS != null)
+                    activity15WS.Timeout = (value - 2) * 1000;
+            }
+        }
 
         protected static LSLogger logger = new LSLogger();
 
@@ -174,6 +194,14 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     navQryWS.Credentials = credentials;
                     activityWS.Credentials = credentials;
                     activity15WS.Credentials = credentials;
+                }
+
+                if (string.IsNullOrEmpty(config.SettingsGetByKey(ConfigKey.Proxy_Server)) == false)
+                {
+                    navWS.Proxy = GetWebProxy();
+                    navQryWS.Proxy = GetWebProxy(); 
+                    activityWS.Proxy = GetWebProxy();
+                    activity15WS.Proxy = GetWebProxy();
                 }
             }
 
@@ -395,14 +423,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
         protected string RunOperation(string xmlRequest, bool useQuery = false, bool logResponse = true)
         {
             bool doBase64 = false;
-            string originalxmlRequest = "";
             //only larger requests should be converted to base64
             if (xmlRequest.Length >= base64ConversionMinLength && (xmlRequest.Contains("WEB_POS") || xmlRequest.Contains("IM_SEND_DOCUMENT") || xmlRequest.Contains("IM_SEND_INVENTORY_TRANSACTION")))
             {
                 //add key Nav.SkipBase64Conversion  true to skip this basel64 trick
-                if (config.SettingsBoolGetByKey(ConfigKey.SkipBase64Conversion))
+                if (config.SettingsBoolGetByKey(ConfigKey.SkipBase64Conversion) == false)
                 {
-                    originalxmlRequest = xmlRequest;//save it for logging
                     doBase64 = true;
                     Base64StringConvertion(ref xmlRequest);
                     logger.Debug(config.LSKey.Key, "Base64 string sent to Nav as <Encoded_Request>");
@@ -576,8 +602,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             try
             {
                 //first time comes in at NavWsVersion.Unknown so defaults to NAV7
-                if (TimeOutInSeconds > 0)
-                    wsToUse.Timeout = (TimeOutInSeconds - 2) * 1000;//-2 to make sure server timeout before client
+                if (TimeoutSec > 0)
+                    wsToUse.Timeout = (TimeoutSec - 2) * 1000;//-2 to make sure server timeout before client
 
                 wsToUse.WebRequest(ref xmlRequest, ref xmlResponse);
             }

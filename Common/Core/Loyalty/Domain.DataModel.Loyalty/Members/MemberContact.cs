@@ -25,12 +25,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
 
         #region Properties
 
-        [DataMember(IsRequired = true)]
+        [DataMember]
         public string UserName { get; set; }
         [DataMember]
         public string Password { get; set; }
-        [DataMember(IsRequired = true)]
+        [DataMember]
         public string Email { get; set; }
+        [DataMember]
+        public string Authenticator { get; set; }
+        [DataMember]
+        public string AuthenticationId { get; set; }
+        [DataMember]
+        public SendEmail SendReceiptByEMail { get; set; }
 
         [DataMember]
         public string Initials { get; set; }
@@ -326,5 +332,16 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         Divorced = 3,
         [EnumMember]
         Widowed = 4,
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/POS/2014/10")]
+    public enum SendEmail
+    {
+        [EnumMember]
+        Default = 0,
+        [EnumMember]
+        Yes = 1,
+        [EnumMember]
+        No = 2
     }
 }

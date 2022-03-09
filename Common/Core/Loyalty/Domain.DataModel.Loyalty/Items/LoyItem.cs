@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -120,6 +121,26 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public decimal UnitsPerParcel { get; set; }
         [DataMember]
         public decimal UnitVolume { get; set; }
+        
+        [IgnoreDataMember]
+        public UnitOfMeasure SalesUom 
+        {
+            get
+            {
+                if (SelectedUnitOfMeasure != null)
+                {
+                    return SelectedUnitOfMeasure;
+                }
+
+                if (UnitOfMeasures != null && !string.IsNullOrEmpty(SalesUomId))
+                {
+                    return UnitOfMeasures.FirstOrDefault(x => x.Id == SalesUomId);
+                }
+
+                return null;
+            }
+        }
+
 #if WCFSERVER
         //not all data goes to wcf clients
         public byte[] ImgBytes { get; set; }

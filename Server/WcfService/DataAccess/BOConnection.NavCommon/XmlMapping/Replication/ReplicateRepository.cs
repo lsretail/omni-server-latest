@@ -1203,7 +1203,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                 {
                     switch (field.FieldName)
                     {
-                        case "Code": rec.Id = field.Values[i]; break;
+                        case "Code": rec.Code = field.Values[i]; break;
                         case "Name": rec.Name = field.Values[i]; break;
                     }
                 }

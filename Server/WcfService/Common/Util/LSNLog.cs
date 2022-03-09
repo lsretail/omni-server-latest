@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using LSRetail.Omni.Domain.DataModel.Base;
 using NLog;
 

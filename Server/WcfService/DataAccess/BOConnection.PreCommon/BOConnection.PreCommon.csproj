@@ -36,6 +36,9 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -56,6 +59,9 @@
     <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
       <Link>Properties\Version.cs</Link>
     </Compile>
+    <Compile Include="JMapping\BaseJMapping.cs" />
+    <Compile Include="JMapping\ItemJMapping.cs" />
+    <Compile Include="JMapping\SetupJMapping.cs" />
     <Compile Include="Mapping\ActivityMapping.cs" />
     <Compile Include="Mapping\BaseMapping.cs" />
     <Compile Include="Mapping\ContactMapping.cs" />
@@ -75,6 +81,11 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Web References\LSActivity\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\LSOData\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -99,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -147,6 +159,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSActivity\ActivityUploadResHeaders1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSActivity\ActivityUploadResources.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSActivity\ActivityUploadTypes1.datasource">
@@ -199,6 +214,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral\RootCOQtyAvailabilityExtOut1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootCOShippingAgentsInfoGetXML.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral\RootCustomerOrderFilteredList1.datasource">
@@ -381,6 +399,9 @@
     <None Include="Web References\LSCentral\RootLeftRightLine1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\LSCentral\RootMemberauthLogin.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\LSCentral\RootMemberContactCreate.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -459,6 +480,11 @@
     <None Include="Web References\LSCentral\RootStoreInventoryGetLines1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\LSOData\ODataRequest.wsdl" />
+    <None Include="Web References\LSOData\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
     <None Include="Web References\NavWebReference\Reference.map" />
     <None Include="Web References\NavWebReference\RetailWebServices.wsdl" />
     <None Include="Web References\LSCentral\OmniWrapper.wsdl" />
@@ -510,7 +536,18 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralRelease/WS/Codeunit/OmniWrapper">
+    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/ODataRequest">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\LSOData\</RelPath>
+      <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/ODataRequest</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/OmniWrapper">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\LSCentral\</RelPath>
       <UpdateFromURL>http://dhqsrvomni001:9047/LSCentralRelease/WS/Codeunit/OmniWrapper</UpdateFromURL>

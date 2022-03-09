@@ -57,6 +57,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.SecurityCheckProfile(orderNo, storeNo);
         }
 
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        {
+            return LSCentralWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping);
+        }
+
         #endregion
 
         #region Contact
@@ -73,7 +78,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             MemberContact contact = rep.ContactGet(ContactSearchType.CardId, card);
         	if (contact != null && includeDetails)
             {
@@ -89,7 +94,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual MemberContact ContactGetByUserName(string user, bool includeDetails)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             MemberContact contact = rep.ContactGetByUserName(user);
             if (contact != null && includeDetails)
             {
@@ -104,7 +109,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.ContactGet(searchType, searchValue);
         }
 
@@ -113,20 +118,30 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ContactAddCard(contactId, accountId, cardId);
         }
 
-        public MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
+        public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
             return LSCentralWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
         }
 
+        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails)
+        {
+            return LSCentralWSBase.SocialLogon(authenticator, authenticationId, deviceID, deviceName, includeDetails);
+        }
+
         //Change the password in NAV
-        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword)
+        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod)
         {
             LSCentralWSBase.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
-        public virtual string ResetPassword(string userName, string email, string newPassword)
+        public virtual string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod)
         {
-            return LSCentralWSBase.ResetPassword(userName, email, newPassword);
+            return LSCentralWSBase.ResetPassword(userName, email);
+        }
+
+        public virtual string SPGPassword(string email, string token, string newPwd)
+        {
+            return LSCentralWSBase.SPGPassword(email, token, newPwd);
         }
 
         public virtual void LoginChange(string oldUserName, string newUserName, string password)
@@ -136,25 +151,25 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Profile> ProfileGetByCardId(string id)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.ProfileGetByCardId(id);
         }
 
         public virtual List<Profile> ProfileGetAll()
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.ProfileGetAll();
         }
 
         public virtual List<Scheme> SchemeGetAll()
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.SchemeGetAll();
         }
 
         public virtual Scheme SchemeGetById(string schemeId)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             if (schemeId.Equals("Ping"))
             {
                 rep.SchemeGetById(schemeId);
@@ -169,13 +184,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual Device DeviceGetById(string id)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.DeviceGetById(id);
         }
 
         public virtual bool IsUserLinkedToDeviceId(string userName, string deviceId)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.IsUserLinkedToDeviceId(userName, deviceId);
         }
 
@@ -185,13 +200,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact);
         }
 
         public virtual List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             return rep.ItemLoySearch(search, storeId, maxNumberOfItems, includeDetails);
         }
 
@@ -209,13 +224,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Store> StoreLoySearch(string search)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             return rep.StoreLoySearch(search);
         }
 
         public virtual List<Profile> ProfileSearch(string cardId, string search)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.ProfileSearch(cardId, search);
         }
 
@@ -231,7 +246,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual Card CardGetById(string id)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.CardGetById(id);
         }
 
@@ -252,13 +267,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.PointEntiesGet(cardNo, dateFrom);
         }
 
         public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.GetGiftCartBalance(cardNo, entryType);
         }
 
@@ -277,13 +292,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             return rep.ItemLoyGetById(id, storeId, culture, includeDetails);
         }
 
         public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             LoyItem item = rep.ItemLoyGetByBarcode(code, storeId, culture);
             if (item != null)
                 return item;
@@ -299,7 +314,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
             List<LoyItem> tmplist = LSCentralWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
 
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             List<LoyItem> list = new List<LoyItem>();
             foreach (LoyItem item in tmplist)
             {
@@ -310,7 +325,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             return rep.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, storeId, includeDetails);
         }
 
@@ -400,7 +415,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
         {
-            InvStatusRepository rep = new InvStatusRepository(config, NAVVersion);
+            InvStatusRepository rep = new InvStatusRepository(config, LSCVersion);
             return rep.CheckAvailability(request, storeId);
         }
 
@@ -419,13 +434,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
-            OrderRepository repo = new OrderRepository(config, NAVVersion);
+            OrderRepository repo = new OrderRepository(config, LSCVersion);
             return repo.OrderStatusGet(orderId);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
-            LSCentralWSBase.OrderCancel(orderId, storeId, userId);
+            LSCentralWSBase.OrderCancel(orderId, storeId, userId, lineNo);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
@@ -456,10 +471,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config);
                 entry = trepo.POSTransactionGetById(entryId);
+                if (entry == null)
+                    entry = trepo.SalesEntryGetById(entryId);
             }
             else
             {
-                OrderRepository repo = new OrderRepository(config, NAVVersion);
+                OrderRepository repo = new OrderRepository(config, LSCVersion);
                 entry = repo.OrderGetById(entryId, true, (type == DocumentIdType.External));
             }
             if (entry == null)
@@ -473,6 +490,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
                 }
             }
             return entry;
+        }
+
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        {
+            SalesEntryRepository repo = new SalesEntryRepository(config);
+            return repo.SalesEntryGetReturnSales(receiptNo);
         }
 
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
@@ -523,7 +546,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual Store StoreGetById(string id, bool details)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             Store store = rep.StoreLoyGetById(id, details);
             if (store != null)
                 store.StoreHours = StoreHoursGetByStoreId(id);
@@ -532,7 +555,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             List<Store> stores = rep.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, units);
             foreach (Store store in stores)
             {
@@ -543,7 +566,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<Store> StoresGetAll(bool clickAndCollectOnly)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             List<Store> stores = rep.StoreLoyGetAll(clickAndCollectOnly);
             foreach (Store store in stores)
             {
@@ -560,7 +583,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
         {
-            StoreRepository rep = new StoreRepository(config, NAVVersion);
+            StoreRepository rep = new StoreRepository(config, LSCVersion);
             return rep.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
         }
 
@@ -610,6 +633,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            DataTranslationRepository rep = new DataTranslationRepository(config);
+            return rep.ReplicateEcommHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             DataTranslationRepository rep = new DataTranslationRepository(config);
@@ -618,19 +647,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ShippingRepository rep = new ShippingRepository(config);
+            ShippingRepository rep = new ShippingRepository(config, LSCVersion);
             return rep.ReplicateShipping(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCustomer> ReplEcommMember(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ContactRepository rep = new ContactRepository(config);
+            ContactRepository rep = new ContactRepository(config, LSCVersion);
             return rep.ReplicateMembers(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCountryCode> ReplEcommCountryCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ShippingRepository rep = new ShippingRepository(config);
+            ShippingRepository rep = new ShippingRepository(config, LSCVersion);
             lastKey = string.Empty;
             maxKey = string.Empty;
             recordsRemaining = 0;
@@ -639,13 +668,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            InvStatusRepository rep = new InvStatusRepository(config, NAVVersion);
+            InvStatusRepository rep = new InvStatusRepository(config, LSCVersion);
             return rep.ReplicateInventoryStatus(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemRepository rep = new ItemRepository(config);
+            ItemRepository rep = new ItemRepository(config, LSCVersion);
             return rep.ReplicateEcommFullItems(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

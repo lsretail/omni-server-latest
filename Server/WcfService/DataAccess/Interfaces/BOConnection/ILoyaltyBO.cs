@@ -23,12 +23,14 @@ namespace LSOmni.DataAccess.Interface.BOConnection
     public interface ILoyaltyBO
     {
         int TimeoutInSeconds { set; }
+
         string Ping();
 
         #region ScanPayGo
 
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
         bool SecurityCheckProfile(string orderNo, string storeNo);
+        string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping);
 
         #endregion
 
@@ -42,8 +44,10 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         MemberContact ContactGet(ContactSearchType searchType, string searchValue);
 
         MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails);
-        void ChangePassword(string userName, string token, string newPassword, string oldPassword);
-        string ResetPassword(string userName, string email, string newPassword);
+        MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails);
+        void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod);
+        string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod);
+        string SPGPassword(string email, string token, string newPwd);
         void LoginChange(string oldUserName, string newUserName, string password);
 
         List<Profile> ProfileGetByCardId(string id);
@@ -91,6 +95,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries);
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type);
+        List<SalesEntry> SalesEntryGetReturnSales(string receiptNo);
         string FormatAmount(decimal amount, string culture);
         List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions);
 
@@ -134,7 +139,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         OrderStatusResponse OrderStatusCheck(string orderId);
         OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder);
-        void OrderCancel(string orderId, string storeId, string userId);
+        void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo);
         string OrderCreate(Order request, out string orderId);
         Order BasketCalcToOrder(OneList list);
 
@@ -171,6 +176,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplDataTranslation> ReplEcommDataTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplShippingAgent> ReplEcommShippingAgent(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplCustomer> ReplEcommMember(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);

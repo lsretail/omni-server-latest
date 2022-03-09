@@ -62,10 +62,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
         {
-            if (NAVVersion < new Version("18.3"))
+            if (NAVVersion < new Version("17.5"))
                 return false;
 
             return LSCWSBase.SecurityCheckProfile(orderNo, storeNo);
+        }
+
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        {
+            if (NAVVersion < new Version("17.5"))
+            {
+                return "Not Supported";
+            }
+
+            return LSCWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping);
         }
 
         #endregion
@@ -153,7 +163,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return ContactAddCard(contactId, accountId, cardId);
         }
 
-        public MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
+        public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
@@ -161,21 +171,37 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
         }
 
-        //Change the password in NAV
-        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword)
+        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails)
         {
             if (NAVVersion < new Version("17.5"))
-                NavWSBase.ChangePassword(userName, token, newPassword, oldPassword);
+                throw new NotImplementedException();
+
+            return LSCWSBase.SocialLogon(authenticator, authenticationId, deviceID, deviceName, includeDetails);
+        }
+
+        //Change the password in NAV
+        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod)
+        {
+            if (NAVVersion < new Version("17.5"))
+                NavWSBase.ChangePassword(userName, token, newPassword, oldPassword, ref oldmethod);
 
             LSCWSBase.ChangePassword(userName, token, newPassword, oldPassword);
         }
 
-        public virtual string ResetPassword(string userName, string email, string newPassword)
+        public virtual string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ResetPassword(userName, email, newPassword);
+                return NavWSBase.ResetPassword(userName, email, newPassword, ref oldmethod);
 
-            return LSCWSBase.ResetPassword(userName, email, newPassword);
+            return LSCWSBase.ResetPassword(userName, email);
+        }
+
+        public virtual string SPGPassword(string email, string token, string newPwd)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return string.Empty;
+
+            return LSCWSBase.SPGPassword(email, token, newPwd);
         }
 
         public virtual void LoginChange(string oldUserName, string newUserName, string password)
@@ -570,6 +596,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type);
         }
 
+        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        {
+            return new List<SalesEntry>();
+        }
+
         public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type)
         {
             if (NAVVersion < new Version("17.5"))
@@ -663,7 +694,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.OrderStatusCheck(orderId);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
             if (NAVVersion < new Version("13.5"))
                 return;
@@ -671,7 +702,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 NavWSBase.OrderCancel(orderId, storeId, userId);
 
-            LSCWSBase.OrderCancel(orderId, storeId, userId);
+            LSCWSBase.OrderCancel(orderId, storeId, userId, lineNo);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
@@ -816,7 +847,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommImageLinks(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommImageLinks(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateImageLinks(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplImage> ReplEcommImages(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -824,7 +855,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommImages(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommImages(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateImages(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttribute> ReplEcommAttribute(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -832,7 +863,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommAttribute(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommAttribute(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateAttribute(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeValue> ReplEcommAttributeValue(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -840,7 +871,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommAttributeValue(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommAttributeValue(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateAttributeValue(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplAttributeOptionValue> ReplEcommAttributeOptionValue(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -848,7 +879,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommAttributeOptionValue(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommAttributeOptionValue(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateAttributeOptionValue(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -861,7 +892,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommDataTranslation(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommDataTranslation(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateDataTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return new List<ReplDataTranslation>();
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -869,7 +905,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplicateEcommDataTranslationLangCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateEcommDataTranslationLangCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateDataTranslationLangCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplShippingAgent> ReplEcommShippingAgent(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -877,7 +913,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommShippingAgent(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommShippingAgent(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateShippingAgent(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCustomer> ReplEcommMember(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -885,7 +921,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommMember(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommMember(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateMember(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCountryCode> ReplEcommCountryCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -893,7 +929,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommCountryCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplEcommCountryCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateCountryCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -901,7 +937,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommInventoryStatus(appId, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
             
-            return LSCWSBase.ReplEcommInventoryStatus(appId, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateInventoryStatus(appId, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
