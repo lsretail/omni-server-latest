@@ -64,9 +64,9 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public int MinAge { get; set; }
         [DataMember]
         public int MaxAge { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FixedIssueDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime FixedEndDate { get; set; }
         [DataMember]
         public string RequiresMemberShip { get; set; }

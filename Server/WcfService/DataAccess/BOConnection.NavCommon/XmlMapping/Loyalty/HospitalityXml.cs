@@ -355,7 +355,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         rsl.SubLines.AddRange(modiferLineList);
                     }
 
-                    rsl.LineNumber = LineNumberFromNav(rsl.LineNumber); // MPOS expects to get 1 not 10000
+                    rsl.LineNumber = rsl.LineNumber; // MPOS expects to get 1 not 10000
                     rs.OrderLines.Add(rsl);
                 }
 
@@ -401,7 +401,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 //transaction line number
                 if (mobileTransDisc.Element("LineNo") == null)
                     throw new XmlException("LineNo node not found in response xml");
-                rsld.LineNumber = LineNumberFromNav(Convert.ToInt32(mobileTransDisc.Element("LineNo").Value));
+                rsld.LineNumber = Convert.ToInt32(mobileTransDisc.Element("LineNo").Value);
 
                 //discount line number
                 if (mobileTransDisc.Element("No") == null)
@@ -542,8 +542,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 if (mobileTransLine.Element("ManualDiscountAmount") == null)
                     throw new XmlException("ManualDiscountAmount node not found in response xml");
                 rsl.ManualDiscountAmount = ConvertTo.SafeDecimal(mobileTransLine.Element("ManualDiscountAmount").Value);
-
-                rsl.LineNumber = LineNumberFromNav(rsl.LineNumber); // MPOS expects to get 1 not 10000
 
                 if (mobileTransLine.Element("Description") != null)
                     rsl.Description = mobileTransLine.Element("Description").Value;
@@ -696,8 +694,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 {
                     rsl.Quantity = ConvertTo.SafeDecimal(mobileTransLine.Element("Quantity").Value);
                 }
-
-                rsl.LineNumber = LineNumberFromNav(rsl.LineNumber); //mpos expects to get 1 not 10000
                 modLineList.Add(rsl);
             }
             return modLineList;
@@ -769,7 +765,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
             return new XElement("MobileTransactionLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(line.LineNumber)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(line.LineNumber)),
                     new XElement("OrigTransLineNo", 0),
                     new XElement("OrigTransPos", string.Empty),
                     new XElement("OrigTransNo", 0),
@@ -826,7 +822,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
             return new XElement("MobileTransactionLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(line.LineNumber)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(line.LineNumber)),
                     new XElement("OrigTransLineNo", 0),
                     new XElement("OrigTransPos", string.Empty),
                     new XElement("OrigTransNo", 0),
@@ -883,7 +879,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
             return new XElement("MobileTransactionLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(line.LineNumber)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(line.LineNumber)),
                     new XElement("OrigTransLineNo", 0),
                     new XElement("OrigTransPos", string.Empty),
                     new XElement("OrigTransNo", 0),
@@ -940,7 +936,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
             return new XElement("MobileTransDiscountLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(posline.LineNumber)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(posline.LineNumber)),
                     new XElement("No", posline.No),
                     new XElement("DiscountType", (int)posline.DiscountType),
                     new XElement("OfferNo", posline.OfferNumber),
@@ -978,8 +974,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
             return new XElement("MobileTransactionSubLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(rq.LineNumber)),
-                    new XElement("ParentLineNo", LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(rq.LineNumber)),
+                    new XElement("ParentLineNo", XMLHelper.LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo)),
                     new XElement("EntryStatus", (int)EntryStatus.Normal),
                     new XElement("ParentLineIsSubline", (rq.ParentSubLineId > 0) ? 1 : 0),
                     new XElement("LineType", (int)subLineType), //0=item, 1=DealItem,2=Text 
@@ -1023,8 +1019,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
             return new XElement("MobileTransactionSubLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(rq.LineNumber)),
-                    new XElement("ParentLineNo", LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(rq.LineNumber)),
+                    new XElement("ParentLineNo", XMLHelper.LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo)),
                     new XElement("EntryStatus", (int)EntryStatus.Normal),
                     new XElement("ParentLineIsSubline", (rq.ParentSubLineId > 0) ? 1 : 0),
                     new XElement("LineType", (int)rq.Type), // 0=Modifier, 1=Deal, 2=Text 
@@ -1057,8 +1053,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("LineKitchenStatusCode", 0),
                     new XElement("ModifierGroupCode", rq.ModifierGroupCode),
                     new XElement("ModifierSubCode", rq.ModifierSubCode),
-                    new XElement("DealLine", string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealLineId)),
-                    new XElement("DealModLine", string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealModLineId)),
+                    new XElement("DealLine", string.IsNullOrEmpty(parentItemNo) ? 0 : XMLHelper.LineNumberToNav(rq.DealLineId)),
+                    new XElement("DealModLine", string.IsNullOrEmpty(parentItemNo) ? 0 : XMLHelper.LineNumberToNav(rq.DealModLineId)),
                     new XElement("DealId", string.IsNullOrEmpty(parentItemNo) ? "0" : parentItemNo),
                     new XElement("PriceReductionOnExclusion", 0)
                 );
@@ -1068,7 +1064,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         {
             return new XElement("MobileTransactionLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(lineNumber)),
+                    new XElement("LineNo", XMLHelper.LineNumberToNav(lineNumber)),
                     new XElement("OrigTransLineNo", "0"),
                     new XElement("OrigTransPos", string.Empty),
                     new XElement("OrigTransNo", "0"),

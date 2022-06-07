@@ -361,7 +361,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                  "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by],ml.[Login ID] " +
                                  "FROM [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] AS mt " +
                                  "LEFT OUTER JOIN[" + navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] ml on mt.[Card No_] = ml.[Card No_]" +
-                                 "WHERE mt.[Contact No_]=@id AND mt.[Status] != 3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
+                                 "WHERE mt.[Contact No_]=@id AND mt.[Status]!=3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
 
                     command.Parameters.AddWithValue("@id", contactId);
                     TraceSqlCommand(command);
@@ -422,7 +422,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[No_],mt.[Scheme Code]," +
+                    command.CommandText = "SELECT mt.[No_],mt.[Scheme Code],mt.[Linked To Customer No_],mt.[Status],mt.[Account Type]," +
+                                          "mt.[Blocked],mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked By]," +
                                           "(SELECT SUM([Remaining Points]) FROM [" + navCompanyName + "LSC Member Point Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
                                           "WHERE [Account No_]=@id AND [Open]=1) AS Sum1," +
                                           "(SELECT SUM([Points in Transaction]) FROM [" + navCompanyName + "LSC Member Process Order Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
@@ -436,15 +437,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            decimal sum1 = SQLHelper.GetDecimal(reader, "Sum1");
-                            decimal sum2 = SQLHelper.GetDecimal(reader, "Sum2");
-
-                            account = new Account()
-                            {
-                                Id = SQLHelper.GetString(reader["No_"]),
-                                Scheme = SchemeGetById(SQLHelper.GetString(reader["Scheme Code"])),
-                                PointBalance = (Int64)(sum1 + sum2)
-                            };
+                            account = ReaderToAccount(reader);
                         }
                         reader.Close();
                     }
@@ -789,12 +782,27 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])
                 }
             };
-
-            if (LSCVersion >= new Version("19.2"))
-            {
-                cont.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
-            }
             return cont;
+        }
+
+        private Account ReaderToAccount(SqlDataReader reader)
+        {
+            decimal sum1 = SQLHelper.GetDecimal(reader, "Sum1");
+            decimal sum2 = SQLHelper.GetDecimal(reader, "Sum2");
+
+            return new Account()
+            {
+                Id = SQLHelper.GetString(reader["No_"]),
+                CustomerId = SQLHelper.GetString(reader["Linked To Customer No_"]),
+                Status = (AccountStatus)SQLHelper.GetInt32(reader["Status"]),
+                Type = (AccountType)SQLHelper.GetInt32(reader["Account Type"]),
+                Blocked = SQLHelper.GetBool(reader["Blocked"]),
+                BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
+                BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
+                BlockedDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
+                Scheme = SchemeGetById(SQLHelper.GetString(reader["Scheme Code"])),
+                PointBalance = (long)(sum1 + sum2)
+            };
         }
 
         private Card ReaderToCard(SqlDataReader reader)

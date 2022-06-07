@@ -47,13 +47,13 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string ActivityNo { get; set; }
         [DataMember]
         public string ItemNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateTo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeTo { get; set; }
         [DataMember]
         public decimal Quantity { get; set; }

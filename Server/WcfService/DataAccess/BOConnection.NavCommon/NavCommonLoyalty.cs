@@ -1304,6 +1304,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
+            int lineno = 1;
+            foreach (OneListItem item in list.Items)
+            {
+                item.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+            }
+            if (list.PublishedOffers != null)
+            {
+                foreach (OneListPublishedOffer off in list.PublishedOffers)
+                {
+                    off.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+                }
+            }
+
             if (navWS == null)
             {
                 BasketXml xml = new BasketXml();

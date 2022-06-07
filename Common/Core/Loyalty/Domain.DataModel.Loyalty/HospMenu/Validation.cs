@@ -34,9 +34,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
 
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? ValidFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime? ValidTo { get; set; }
         [DataMember]
         public ImageView Image { get; set; }

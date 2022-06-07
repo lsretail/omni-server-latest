@@ -84,7 +84,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string Value { get; set; }
         [DataMember]
         public decimal ValueDec { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ValueDate { get; set; }
     }
 }

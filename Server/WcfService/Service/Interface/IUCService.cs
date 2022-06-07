@@ -25,6 +25,7 @@ using LSRetail.Omni.Domain.DataModel.Activity.Client;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.Service
 {
@@ -2810,6 +2811,71 @@ namespace LSOmni.Service
         [OperationContract]
         bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString);
 
+        /// <summary>
+        /// Get Availability Token
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetAvailabilityToken<p/><p/>
+        /// </remarks>
+        /// <param name="locationNo"></param>
+        /// <param name="productNo"></param>
+        /// <param name="activiyTime"></param>
+        /// <param name="optionalResource"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        [OperationContract]
+        string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity);
+
+        /// <summary>
+        /// Create Group Reservation
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : InsertGroupReservation<p/><p/>
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        string ActivityInsertGroupReservation(Reservation request);
+
+        /// <summary>
+        /// Update Group reservation header.  Blank fields will be ignored
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : UpdateGroupReservation<p/><p/>
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        [OperationContract]
+        string ActivityUpdateGroupReservation(Reservation request);
+
+        /// <summary>
+        /// Confirm Group Activity Booking
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : ActivityConfirmGroup<p/><p/>
+        /// If property [Paid] is set, then returns details for the retail basket.<p/>
+        /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through LS Commerce Service will update the Activities payment status and assign the sales order document as payment document.<p/> 
+        /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
+        /// If [ReservationNo] is blank the system will create new reservation and return the value to ReservationNo.  If ReservationNo is populated parameter then the system will try to add the activity to existing reservation if the reservation exists and is neither canceled or closed.<p/>
+        /// [PromoCode] is validated and adjusts pricing accordingly.
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns>Activity Number and Booking Reference</returns>
+        [OperationContract]
+        ActivityResponse ActivityConfirmGroup(ActivityRequest request);
+
+        /// <summary>
+        /// Delete Group Activity
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : DeleteGroupActivity<p/><p/>
+        /// </remarks>
+        /// <param name="groupNo"></param>
+        /// <param name="lineNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityDeleteGroup(string groupNo, int lineNo);
+
         #endregion
 
         #region Activity Data Get (Replication)
@@ -2993,8 +3059,14 @@ namespace LSOmni.Service
         bool SecurityCheckProfile(string orderNo, string storeNo);
 
         [OperationContract]
-        string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping);
+        string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering);
+
+        [OperationContract]
+        OrderCheck ScanPayGoOrderCheck(string documentId);
 
         #endregion
+
+        [OperationContract]
+        string MyCustomFunction(string data);
     }
 }

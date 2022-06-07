@@ -137,6 +137,46 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
         }
 
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return "Not Supported";
+
+            return LSCWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
+        }
+
+        public virtual string ActivityInsertGroupReservation(Reservation request)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return "Not Supported";
+            
+            return LSCWSBase.ActivityInsertGroupReservation(request);
+        }
+
+        public virtual string ActivityUpdateGroupReservation(Reservation request)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return "Not Supported";
+
+            return LSCWSBase.ActivityUpdateGroupReservation(request);
+        }
+
+        public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new ActivityResponse();
+
+            return LSCWSBase.ActivityConfirmGroup(request);
+        }
+
+        public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return false;
+
+            return LSCWSBase.ActivityDeleteGroup(groupNo, lineNo);
+        }
+
         #endregion
 
         #region Data Get (Replication)

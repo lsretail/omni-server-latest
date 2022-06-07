@@ -21,6 +21,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             UomId = string.Empty;
             ItemImageId = string.Empty;
             StoreId = string.Empty;
+            StoreName = string.Empty;
             ExternalId = string.Empty;
             Quantity = 1.0M;
 
@@ -39,7 +40,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             IsChecked = false;
         }
 
-        public SalesEntryLine() : this(string.Empty)
+        public SalesEntryLine() : this(null)
         {
         }
 
@@ -77,6 +78,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string UomId { get; set; }
         [DataMember]
         public string StoreId { get; set; }
+        [DataMember]
+        public string StoreName { get; set; }
         [DataMember]
         public bool ClickAndCollectLine { get; set; }
         [DataMember]
@@ -127,6 +130,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             }
 
         }
+
+        public bool ItemHasDiscount => DiscountAmount != 0m;
 
         public override string ToString()
         {

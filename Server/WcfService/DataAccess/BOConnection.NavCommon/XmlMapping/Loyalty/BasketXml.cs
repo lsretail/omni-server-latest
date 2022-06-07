@@ -53,10 +53,9 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
             XElement mtransRoot = MobileTrans(Rq);
             body.Add(mtransRoot);
-            int lineno = 1;
             foreach (OneListItem calcRq in Rq.Items)
             {
-                body.Add(MobileTransLine(Rq.Id, lineno++, calcRq));
+                body.Add(MobileTransLine(Rq.Id, calcRq));
             }
 
             return doc.ToString();
@@ -74,12 +73,12 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             return root;
         }
 
-        private XElement MobileTransLine(string id, int lineNumber, OneListItem rq)
+        private XElement MobileTransLine(string id, OneListItem rq)
         {
             XElement root =
                 new XElement("MobileTransactionLine",
                     new XElement("Id", id),
-                    new XElement("LineNo", LineNumberToNav(lineNumber)),
+                    new XElement("LineNo", rq.LineNumber),
                     new XElement("LineType", "0"),
                     new XElement("Barcode", rq.BarcodeId),
                     new XElement("Number", rq.ItemId),
@@ -256,7 +255,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("WI_Basket_Line_Buffer",
                     new XElement("Id", id),
-                    new XElement("Line_No.", LineNumberToNav(line.LineNumber)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(line.LineNumber)),
                     new XElement("LineType", "0"), //new in LS Nav 9.00.03   //LineType=0 is item, 6 is coupon
                     new XElement("Barcode", string.Empty),   //new in LS Nav 9.00.03  used for coupon code
                     new XElement("Item_No.", line.ItemId),
@@ -280,7 +279,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("WI_Basket_Discount_Buffer",
                     new XElement("Id", id),
-                    new XElement("Line_No.", LineNumberToNav(line.LineNumber)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(line.LineNumber)),
                     new XElement("No.", line.No), //Entry number, if more than one discount pr Line No.
                     new XElement("Discount_Type", Convert.ToInt32(line.DiscountType).ToString()),
                     new XElement("Offer_No.", line.OfferNumber),
@@ -298,7 +297,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("WI_Basket_Payment_Buffer",
                     new XElement("Id", id),
-                    new XElement("Line_No.", LineNumberToNav(line.LineNumber)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(line.LineNumber)),
                     new XElement("Tender_Type", line.TenderType.ToString()),
                     new XElement("Currency_Code", line.CurrencyCode),
                     new XElement("CurrencyFactor", "1"),   //new in LS Nav 9.00.03
@@ -453,7 +452,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
 
                 if (mobileTransLine.Element("LineNo") == null)
                     throw new XmlException("LineNo node not found in response XML");
-                rsl.LineNumber = LineNumberFromNav(Convert.ToInt32(mobileTransLine.Element("LineNo").Value));
+                rsl.LineNumber = Convert.ToInt32(mobileTransLine.Element("LineNo").Value);
 
                 if (mobileTransLine.Element("LineType") == null)
                     throw new XmlException("LineType node not found in response XML");

@@ -53,6 +53,23 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetBarcodeGS1Setup">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetBarcodeGS1Setup_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetBarcodeMaskSegment">
         <complexType>
           <sequence>
@@ -99,6 +116,23 @@
         </complexType>
       </element>
       <element name="GetBarcode_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetContact">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetContact_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
@@ -614,6 +648,23 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetVendor">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVendor_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetWIDiscounts">
         <complexType>
           <sequence>
@@ -795,6 +846,12 @@
   <message name="GetAttribute_Result">
     <part name="parameters" element="tns:GetAttribute_Result" />
   </message>
+  <message name="GetBarcodeGS1Setup">
+    <part name="parameters" element="tns:GetBarcodeGS1Setup" />
+  </message>
+  <message name="GetBarcodeGS1Setup_Result">
+    <part name="parameters" element="tns:GetBarcodeGS1Setup_Result" />
+  </message>
   <message name="GetBarcodeMaskSegment">
     <part name="parameters" element="tns:GetBarcodeMaskSegment" />
   </message>
@@ -812,6 +869,12 @@
   </message>
   <message name="GetBarcode_Result">
     <part name="parameters" element="tns:GetBarcode_Result" />
+  </message>
+  <message name="GetContact">
+    <part name="parameters" element="tns:GetContact" />
+  </message>
+  <message name="GetContact_Result">
+    <part name="parameters" element="tns:GetContact_Result" />
   </message>
   <message name="GetCurrencyExchRate">
     <part name="parameters" element="tns:GetCurrencyExchRate" />
@@ -987,6 +1050,12 @@
   <message name="GetVariantReg_Result">
     <part name="parameters" element="tns:GetVariantReg_Result" />
   </message>
+  <message name="GetVendor">
+    <part name="parameters" element="tns:GetVendor" />
+  </message>
+  <message name="GetVendor_Result">
+    <part name="parameters" element="tns:GetVendor_Result" />
+  </message>
   <message name="GetWIDiscounts">
     <part name="parameters" element="tns:GetWIDiscounts" />
   </message>
@@ -1054,6 +1123,10 @@
       <input name="GetAttribute" message="tns:GetAttribute" />
       <output name="GetAttribute_Result" message="tns:GetAttribute_Result" />
     </operation>
+    <operation name="GetBarcodeGS1Setup">
+      <input name="GetBarcodeGS1Setup" message="tns:GetBarcodeGS1Setup" />
+      <output name="GetBarcodeGS1Setup_Result" message="tns:GetBarcodeGS1Setup_Result" />
+    </operation>
     <operation name="GetBarcodeMaskSegment">
       <input name="GetBarcodeMaskSegment" message="tns:GetBarcodeMaskSegment" />
       <output name="GetBarcodeMaskSegment_Result" message="tns:GetBarcodeMaskSegment_Result" />
@@ -1065,6 +1138,10 @@
     <operation name="GetBarcode">
       <input name="GetBarcode" message="tns:GetBarcode" />
       <output name="GetBarcode_Result" message="tns:GetBarcode_Result" />
+    </operation>
+    <operation name="GetContact">
+      <input name="GetContact" message="tns:GetContact" />
+      <output name="GetContact_Result" message="tns:GetContact_Result" />
     </operation>
     <operation name="GetCurrencyExchRate">
       <input name="GetCurrencyExchRate" message="tns:GetCurrencyExchRate" />
@@ -1182,6 +1259,10 @@
       <input name="GetVariantReg" message="tns:GetVariantReg" />
       <output name="GetVariantReg_Result" message="tns:GetVariantReg_Result" />
     </operation>
+    <operation name="GetVendor">
+      <input name="GetVendor" message="tns:GetVendor" />
+      <output name="GetVendor_Result" message="tns:GetVendor_Result" />
+    </operation>
     <operation name="GetWIDiscounts">
       <input name="GetWIDiscounts" message="tns:GetWIDiscounts" />
       <output name="GetWIDiscounts_Result" message="tns:GetWIDiscounts_Result" />
@@ -1248,6 +1329,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="GetBarcodeGS1Setup">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeGS1Setup" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetBarcodeGS1Setup">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetBarcodeGS1Setup_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="GetBarcodeMaskSegment">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeMaskSegment" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="GetBarcodeMaskSegment">
@@ -1272,6 +1362,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetBarcode_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetContact">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetContact">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetContact_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -1533,6 +1632,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetVariantReg_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetVendor">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendor" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetVendor">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetVendor_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

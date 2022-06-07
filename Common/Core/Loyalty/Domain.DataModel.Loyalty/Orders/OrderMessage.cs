@@ -73,6 +73,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string OrderId { get; set; }
         [DataMember]
+        public string ShipmentNo { get; set; }
+        [DataMember]
         public string TrackingId { get; set; }
         [DataMember]
         public string TrackingUrl { get; set; }

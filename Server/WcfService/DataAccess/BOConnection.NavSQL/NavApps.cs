@@ -225,7 +225,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateCollection(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-
         public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config);

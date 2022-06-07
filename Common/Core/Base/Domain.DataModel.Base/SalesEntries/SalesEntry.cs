@@ -13,6 +13,21 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
     {
         public SalesEntry(string id) : base(id)
         {
+            StoreId = String.Empty;
+            StoreName = String.Empty;
+            CreateAtStoreId = String.Empty;
+            ExternalId = String.Empty;
+            CustomerId = String.Empty;
+            CustomerOrderNo = String.Empty;
+            ContactDayTimePhoneNo = String.Empty;
+            ContactEmail = String.Empty;
+            ContactName = String.Empty;
+            CardId = String.Empty;
+            ShippingAgentCode = String.Empty;
+            ShippingAgentServiceCode = String.Empty;
+            ShipToEmail = String.Empty;
+            ShipToName = String.Empty;
+
             IdType = DocumentIdType.Order;
             Status = SalesEntryStatus.Pending;
             ShippingStatus = ShippingStatus.ShippigNotRequired;
@@ -57,6 +72,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public string StoreId { get; set; }
         [DataMember]
+        public string CreateAtStoreId { get; set; }
+        [DataMember]
         public string StoreName { get; set; }
         [DataMember]
         public string TerminalId { get; set; }
@@ -85,7 +102,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public Address ShipToAddress { get; set; }
         [DataMember]
         public string ShipToEmail { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime RequestedDeliveryDate { get; set; }
 
         [DataMember]
@@ -109,6 +126,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [JsonIgnore]
         public decimal VatAmount => TotalAmount - TotalNetAmount;
 
+        [DataMember]
+        public int LineCount { get; set; }
         [DataMember]
         public int LineItemCount { get; set; }
 

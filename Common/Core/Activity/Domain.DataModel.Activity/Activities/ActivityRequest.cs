@@ -60,5 +60,13 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public string PromoCode { get; set; }
         [DataMember]
         public string Email { get; set; }
+        [DataMember]
+        public string Token { get; set; }
+        [DataMember]
+        public string GroupNo { get; set; }
+        [DataMember]
+        public string SetGroupReservation { get; set; }
+        [DataMember]
+        public decimal UnitPrice { get; set; }
     }
 }

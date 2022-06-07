@@ -588,6 +588,7 @@
           <element minOccurs="0" maxOccurs="1" name="TokenNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="ExternalReference" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TaxGroupCode" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="EFTCardType" type="string" />
         </sequence>
       </complexType>
       <complexType name="CustomerOrderCreateCOStatusLogV5">
@@ -2343,6 +2344,8 @@
           <element minOccurs="1" maxOccurs="1" name="TaxGroupCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="TaxCalculationType" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="SalesTaxRounding" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="Limitation" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="LimitationTaxExempted" type="boolean" />
         </sequence>
       </complexType>
       <complexType name="TransPaymentEntry">
@@ -3457,6 +3460,28 @@
       </complexType>
       <element name="RootMobilePosZReport" type="tns:RootMobilePosZReport" />
     </schema>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10016680" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10016680" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="SPGOrderCheckCOLine">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="DocumentID" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="LineNo" type="int" />
+          <element minOccurs="1" maxOccurs="1" name="Number" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ItemDescription" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="VariantCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="VariantDescription" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="UnitofMeasureCode" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="UoMDescription" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Quantity" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Amount" type="decimal" />
+        </sequence>
+      </complexType>
+      <complexType name="RootSPGOrderCheck" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="SPGOrderCheckCOLine" type="tns:SPGOrderCheckCOLine" />
+        </sequence>
+      </complexType>
+      <element name="RootSPGOrderCheck" type="tns:RootSPGOrderCheck" />
+    </schema>
     <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10016652" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10016652" xmlns="http://www.w3.org/2001/XMLSchema">
       <complexType name="SPGProfileGet">
         <sequence>
@@ -3859,6 +3884,8 @@
           <element minOccurs="1" maxOccurs="1" name="TaxGroupCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="TaxCalculationType" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="SalesTaxRounding" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="Limitation" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" default="false" name="LimitationTaxExempted" type="boolean" />
         </sequence>
       </complexType>
       <complexType name="TransPaymentEntry">
@@ -6707,6 +6734,7 @@
             <element minOccurs="1" maxOccurs="1" name="deviceLocation" type="string" />
             <element minOccurs="1" maxOccurs="1" name="memberAccountNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="exitWithoutShopping" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="isEntering" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="returnValue" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
@@ -6720,7 +6748,33 @@
             <element minOccurs="1" maxOccurs="1" name="deviceLocation" type="string" />
             <element minOccurs="1" maxOccurs="1" name="memberAccountNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="exitWithoutShopping" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="isEntering" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="returnValue" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="SPGOrderCheck">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="documentID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="orderPaid" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="doCheck" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="numberOfItemsToCheck" type="int" />
+            <element xmlns:q138="urn:microsoft-dynamics-nav/xmlports/x10016680" minOccurs="1" maxOccurs="1" name="sPGOrderCheckXML" type="q138:RootSPGOrderCheck" />
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="SPGOrderCheck_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="orderPaid" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="doCheck" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="numberOfItemsToCheck" type="int" />
+            <element xmlns:q139="urn:microsoft-dynamics-nav/xmlports/x10016680" minOccurs="1" maxOccurs="1" name="sPGOrderCheckXML" type="q139:RootSPGOrderCheck" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
           </sequence>
@@ -6731,9 +6785,9 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="profileID" type="string" />
             <element minOccurs="1" maxOccurs="1" name="storeID" type="string" />
-            <element xmlns:q138="urn:microsoft-dynamics-nav/xmlports/x10016652" minOccurs="1" maxOccurs="1" name="sPGProfileGetXML" type="q138:RootSPGProfileGet" />
-            <element xmlns:q139="urn:microsoft-dynamics-nav/xmlports/x10016653" minOccurs="1" maxOccurs="1" name="sPGProfileValidTenderXML" type="q139:RootSPGProfileTender" />
-            <element xmlns:q140="urn:microsoft-dynamics-nav/xmlports/x10016654" minOccurs="1" maxOccurs="1" name="sPGProfileFeatureFlagsXML" type="q140:RootSPGProfileFlags" />
+            <element xmlns:q140="urn:microsoft-dynamics-nav/xmlports/x10016652" minOccurs="1" maxOccurs="1" name="sPGProfileGetXML" type="q140:RootSPGProfileGet" />
+            <element xmlns:q141="urn:microsoft-dynamics-nav/xmlports/x10016653" minOccurs="1" maxOccurs="1" name="sPGProfileValidTenderXML" type="q141:RootSPGProfileTender" />
+            <element xmlns:q142="urn:microsoft-dynamics-nav/xmlports/x10016654" minOccurs="1" maxOccurs="1" name="sPGProfileFeatureFlagsXML" type="q142:RootSPGProfileFlags" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
           </sequence>
@@ -6742,9 +6796,9 @@
       <element name="SPGProfileGet_Result">
         <complexType>
           <sequence>
-            <element xmlns:q141="urn:microsoft-dynamics-nav/xmlports/x10016652" minOccurs="1" maxOccurs="1" name="sPGProfileGetXML" type="q141:RootSPGProfileGet" />
-            <element xmlns:q142="urn:microsoft-dynamics-nav/xmlports/x10016653" minOccurs="1" maxOccurs="1" name="sPGProfileValidTenderXML" type="q142:RootSPGProfileTender" />
-            <element xmlns:q143="urn:microsoft-dynamics-nav/xmlports/x10016654" minOccurs="1" maxOccurs="1" name="sPGProfileFeatureFlagsXML" type="q143:RootSPGProfileFlags" />
+            <element xmlns:q143="urn:microsoft-dynamics-nav/xmlports/x10016652" minOccurs="1" maxOccurs="1" name="sPGProfileGetXML" type="q143:RootSPGProfileGet" />
+            <element xmlns:q144="urn:microsoft-dynamics-nav/xmlports/x10016653" minOccurs="1" maxOccurs="1" name="sPGProfileValidTenderXML" type="q144:RootSPGProfileTender" />
+            <element xmlns:q145="urn:microsoft-dynamics-nav/xmlports/x10016654" minOccurs="1" maxOccurs="1" name="sPGProfileFeatureFlagsXML" type="q145:RootSPGProfileFlags" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
           </sequence>
@@ -6794,7 +6848,7 @@
       <element name="SendASNScannedLines">
         <complexType>
           <sequence>
-            <element xmlns:q144="urn:microsoft-dynamics-nav/xmlports/x99009629" minOccurs="1" maxOccurs="1" name="sendASNScannedLinesXML" type="q144:RootSendASNScannedLines" />
+            <element xmlns:q146="urn:microsoft-dynamics-nav/xmlports/x99009629" minOccurs="1" maxOccurs="1" name="sendASNScannedLinesXML" type="q146:RootSendASNScannedLines" />
             <element minOccurs="1" maxOccurs="1" name="result" type="string" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
@@ -6839,7 +6893,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="addOnly" type="boolean" />
-            <element xmlns:q145="urn:microsoft-dynamics-nav/xmlports/x10033063" minOccurs="1" maxOccurs="1" name="sendDocumentXML" type="q145:RootSendDocument" />
+            <element xmlns:q147="urn:microsoft-dynamics-nav/xmlports/x10033063" minOccurs="1" maxOccurs="1" name="sendDocumentXML" type="q147:RootSendDocument" />
           </sequence>
         </complexType>
       </element>
@@ -6857,7 +6911,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="updateReplicationCounter" type="boolean" />
-            <element xmlns:q146="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q146:RootSendTransactionHeader" />
+            <element xmlns:q148="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q148:RootSendTransactionHeader" />
           </sequence>
         </complexType>
       </element>
@@ -6866,7 +6920,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q147="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q147:RootSendTransactionHeader" />
+            <element xmlns:q149="urn:microsoft-dynamics-nav/xmlports/x10033016" minOccurs="1" maxOccurs="1" name="sendTransactionHeaderXML" type="q149:RootSendTransactionHeader" />
           </sequence>
         </complexType>
       </element>
@@ -6877,7 +6931,7 @@
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="addOnly" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="updateReplicationCounter" type="boolean" />
-            <element xmlns:q148="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q148:RootSendTransaction" />
+            <element xmlns:q150="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q150:RootSendTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -6886,7 +6940,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q149="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q149:RootSendTransaction" />
+            <element xmlns:q151="urn:microsoft-dynamics-nav/xmlports/x10033014" minOccurs="1" maxOccurs="1" name="sendTransactionXML" type="q151:RootSendTransaction" />
           </sequence>
         </complexType>
       </element>
@@ -6895,7 +6949,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="contractRecordId_p" type="string" />
             <element minOccurs="1" maxOccurs="1" name="memberCardNo" type="string" />
-            <element xmlns:q150="urn:microsoft-dynamics-nav/xmlports/x99009616" minOccurs="1" maxOccurs="1" name="setTokenEntryXML" type="q150:RootSetTokenEntry" />
+            <element xmlns:q152="urn:microsoft-dynamics-nav/xmlports/x99009616" minOccurs="1" maxOccurs="1" name="setTokenEntryXML" type="q152:RootSetTokenEntry" />
             <element minOccurs="1" maxOccurs="1" name="result" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
@@ -6916,7 +6970,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q151="urn:microsoft-dynamics-nav/xmlports/x10033071" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendV2XML" type="q151:RootStoreInvTransactionSendV2XML" />
+            <element xmlns:q153="urn:microsoft-dynamics-nav/xmlports/x10033071" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendV2XML" type="q153:RootStoreInvTransactionSendV2XML" />
           </sequence>
         </complexType>
       </element>
@@ -6933,7 +6987,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q152="urn:microsoft-dynamics-nav/xmlports/x10033059" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendXML" type="q152:RootStoreInvTransactionSendXML" />
+            <element xmlns:q154="urn:microsoft-dynamics-nav/xmlports/x10033059" minOccurs="1" maxOccurs="1" name="storeInvTransactionSendXML" type="q154:RootStoreInvTransactionSendXML" />
           </sequence>
         </complexType>
       </element>
@@ -6953,7 +7007,7 @@
             <element minOccurs="1" maxOccurs="1" name="worksheetSeqNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="areaCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="addCycleCountItems" type="boolean" />
-            <element xmlns:q153="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q153:RootStoreInventoryGetLines" />
+            <element xmlns:q155="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q155:RootStoreInventoryGetLines" />
           </sequence>
         </complexType>
       </element>
@@ -6962,7 +7016,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q154="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q154:RootStoreInventoryGetLines" />
+            <element xmlns:q156="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q156:RootStoreInventoryGetLines" />
           </sequence>
         </complexType>
       </element>
@@ -6972,7 +7026,7 @@
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
             <element minOccurs="1" maxOccurs="1" name="worksheetSeqNo" type="string" />
-            <element xmlns:q155="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q155:RootStoreInventoryGetLines" />
+            <element xmlns:q157="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q157:RootStoreInventoryGetLines" />
           </sequence>
         </complexType>
       </element>
@@ -6981,7 +7035,7 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
-            <element xmlns:q156="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q156:RootStoreInventoryGetLines" />
+            <element xmlns:q158="urn:microsoft-dynamics-nav/xmlports/x10001324" minOccurs="1" maxOccurs="1" name="storeInventoryLinesGetXML" type="q158:RootStoreInventoryGetLines" />
           </sequence>
         </complexType>
       </element>
@@ -7521,6 +7575,12 @@
   <message name="SPGOpenGate_Result">
     <part name="parameters" element="tns:SPGOpenGate_Result" />
   </message>
+  <message name="SPGOrderCheck">
+    <part name="parameters" element="tns:SPGOrderCheck" />
+  </message>
+  <message name="SPGOrderCheck_Result">
+    <part name="parameters" element="tns:SPGOrderCheck_Result" />
+  </message>
   <message name="SPGProfileGet">
     <part name="parameters" element="tns:SPGProfileGet" />
   </message>
@@ -7945,6 +8005,10 @@
     <operation name="SPGOpenGate">
       <input name="SPGOpenGate" message="tns:SPGOpenGate" />
       <output name="SPGOpenGate_Result" message="tns:SPGOpenGate_Result" />
+    </operation>
+    <operation name="SPGOrderCheck">
+      <input name="SPGOrderCheck" message="tns:SPGOrderCheck" />
+      <output name="SPGOrderCheck_Result" message="tns:SPGOrderCheck_Result" />
     </operation>
     <operation name="SPGProfileGet">
       <input name="SPGProfileGet" message="tns:SPGProfileGet" />
@@ -8767,6 +8831,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="SPGOpenGate_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="SPGOrderCheck">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOrderCheck" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="SPGOrderCheck">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="SPGOrderCheck_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

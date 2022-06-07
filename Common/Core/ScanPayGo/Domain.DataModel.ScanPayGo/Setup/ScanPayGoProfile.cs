@@ -6,7 +6,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
 namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2021")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Spg/2021")]
     public class ScanPayGoProfile : Entity
     {
         [DataMember]
@@ -21,14 +21,14 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public FeatureFlags Flags { get; set; }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2021")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Spg/2021")]
     public class ScanPayGoTender : Entity
     {
         [DataMember]
         public string Description { get; set; }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2021")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Spg/2021")]
     public enum SPGSecurityTrigger
     {
         [EnumMember]

@@ -126,9 +126,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember]
         public string ShipToCountryCode { get; set; }
         [DataMember]
-        public virtual ObservableCollection<OneListItem> Items { get; set; }
+        public ObservableCollection<OneListItem> Items { get; set; }
         [DataMember]
-        public virtual List<OneListPublishedOffer> PublishedOffers { get; set; }
+        public List<OneListPublishedOffer> PublishedOffers { get; set; }
 
         [DataMember]
         public decimal TotalAmount
@@ -177,7 +177,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public void AddItem(OneListItem itemToAdd, bool moveExistingItemToTop = false)
         {
             OneListItem existingItem = this.Items.FirstOrDefault(x => x.HaveTheSameItemAndVariant(itemToAdd));
-            if (existingItem == null)
+            if (existingItem == null || itemToAdd.Immutable )
             {
                 this.Items.Insert(0, itemToAdd);
             }

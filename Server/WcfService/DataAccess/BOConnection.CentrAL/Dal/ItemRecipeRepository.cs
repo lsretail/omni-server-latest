@@ -5,6 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
@@ -13,16 +14,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         // Key: Code
         const int TABLEID = 90;
 
-        private string sqlcolumnsRecipe = string.Empty;
-        private string sqlfromRecipe = string.Empty;
+        private string sqlcolumns = string.Empty;
+        private string sqlfrom = string.Empty;
 
         public ItemRecipeRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumnsRecipe = "mt.[timestamp],mt.[Parent Item No_],mt.[Item No_],mt.Exclusion,mt.[Price on Exclusion]," +
-                               "mt2.[Description],mt2.[Line No_],mt2.[Unit of Measure Code],mt2.[Quantity per],il.[Image Id]";
-            sqlfromRecipe = " FROM [" + navCompanyName + "BOM Component$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                            " INNER JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt2 ON mt2.[Parent Item No_]=mt.[Parent Item No_] AND mt2.[Line No_]=mt.[Line No_]" +
-                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item' AND [Image Id]<>''";
+            sqlcolumns = "mt.[Parent Item No_],mt.[Item No_],mt.Exclusion,mt.[Price on Exclusion]," +
+                         "mt2.[Description],mt2.[Line No_],mt2.[Unit of Measure Code],mt2.[Quantity per],il.[Image Id]";
+            sqlfrom = " FROM [" + navCompanyName + "BOM Component$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                      " INNER JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt2 ON mt2.[Parent Item No_]=mt.[Parent Item No_] AND mt2.[Line No_]=mt.[Line No_]" +
+                      " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item' AND [Image Id]<>''";
         }
 
         public List<ReplItemRecipe> ReplicateItemRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -37,7 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfromRecipe + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
@@ -45,7 +46,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             List<ReplItemRecipe> list = new List<ReplItemRecipe>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumnsRecipe + sqlfromRecipe + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -121,6 +122,31 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
+        public List<ItemRecipe> RecipeGetByItemId(string id)
+        {
+            List<ItemRecipe> list = new List<ItemRecipe>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
+                        " WHERE mt.[Parent Item No_]=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToRecipe(reader));
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
         private ReplItemRecipe ReaderToRecipe(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
@@ -131,6 +157,21 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 LineNo = SQLHelper.GetInt32(reader["Line No_"]),
                 ItemNo = SQLHelper.GetString(reader["Item No_"]),
+                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
+                Exclusion = SQLHelper.GetBool(reader["Exclusion"]),
+                ExclusionPrice = SQLHelper.GetDecimal(reader, "Price on Exclusion"),
+                QuantityPer = SQLHelper.GetDecimal(reader, "Quantity per"),
+                ImageId = SQLHelper.GetString(reader["Image Id"])
+            };
+        }
+
+        private ItemRecipe ReaderToRecipe(SqlDataReader reader)
+        {
+            return new ItemRecipe()
+            {
+                Id = SQLHelper.GetString(reader["Item No_"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                LineNo = SQLHelper.GetInt32(reader["Line No_"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 Exclusion = SQLHelper.GetBool(reader["Exclusion"]),
                 ExclusionPrice = SQLHelper.GetDecimal(reader, "Price on Exclusion"),

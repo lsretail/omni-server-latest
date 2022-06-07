@@ -361,7 +361,7 @@ namespace LSOmni.DataAccess.Dal
                 {
                     command.CommandText = "SELECT [Id],[OneListId],[DisplayOrderId],[ItemId],[UomId],[VariantId]," +
                         "[ItemDescription],[VariantDescription],[ItemCategory],[ProductGroup],[ImageId],[BarcodeId],[Location],[IsADeal],[IsManual]," +
-                        "[Quantity],[NetPrice],[Price],[NetAmount],[TaxAmount],[DiscountAmount],[DiscountPercent],[CreateDate]" +
+                        "[Quantity],[NetPrice],[Price],[NetAmount],[TaxAmount],[DiscountAmount],[DiscountPercent],[CreateDate],[Immutable]" +
                         " FROM [OneListItem] WHERE [OneListId]=@id ORDER BY [DisplayOrderid] ASC";
 
                     command.Parameters.AddWithValue("@id", oneListId);
@@ -395,7 +395,8 @@ namespace LSOmni.DataAccess.Dal
                                 DiscountAmount = SQLHelper.GetDecimal(reader, "DiscountAmount"),
                                 DiscountPercent = SQLHelper.GetDecimal(reader, "DiscountPercent"),
                                 IsADeal = SQLHelper.GetBool(reader["IsADeal"]),
-                                IsManualItem = SQLHelper.GetBool(reader["IsManual"])
+                                IsManualItem = SQLHelper.GetBool(reader["IsManual"]),
+                                Immutable = SQLHelper.GetBool(reader["Immutable"])
                             };
                             line.Amount = line.NetAmount + line.TaxAmount;
                             line.OnelistSubLines = OneListSubLineGetByItemId(line.OneListId, line.Id);
@@ -601,8 +602,8 @@ namespace LSOmni.DataAccess.Dal
                 //now add the line
                 command.CommandText = "INSERT INTO [OneListItem] (" +
                     "[Id],[OneListId],[DisplayOrderId],[ItemId],[ItemDescription],[BarcodeId],[UomId],[VariantId],[VariantDescription],[ImageId]," +
-                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location],[IsADeal],[ItemCategory],[ProductGroup],[IsManual]" +
-                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18,@f19,@f20,@f21,@f22)";
+                    "[Quantity],[NetAmount],[TaxAmount],[Price],[NetPrice],[DiscountAmount],[DiscountPercent],[CreateDate],[Location],[IsADeal],[ItemCategory],[ProductGroup],[IsManual],[Immutable]" +
+                    ") VALUES (@f0,@f1,@f2,@f3,@f4,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15,@f16,@f17,@f18,@f19,@f20,@f21,@f22,@f23)";
 
                 command.Parameters.Clear();
                 command.Parameters.Add("@f0", SqlDbType.NVarChar);
@@ -628,6 +629,7 @@ namespace LSOmni.DataAccess.Dal
                 command.Parameters.Add("@f20", SqlDbType.NVarChar);
                 command.Parameters.Add("@f21", SqlDbType.NVarChar);
                 command.Parameters.Add("@f22", SqlDbType.TinyInt);
+                command.Parameters.Add("@f23", SqlDbType.TinyInt);
 
                 foreach (OneListItem line in listLines)
                 {
@@ -659,6 +661,7 @@ namespace LSOmni.DataAccess.Dal
                     command.Parameters["@f20"].Value = NullToString(line.ItemCategory, 20);
                     command.Parameters["@f21"].Value = NullToString(line.ProductGroup, 20);
                     command.Parameters["@f22"].Value = line.IsManualItem;
+                    command.Parameters["@f23"].Value = line.Immutable;
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();
 

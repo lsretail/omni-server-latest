@@ -96,7 +96,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("Customer_Order_Line",
                     new XElement("Document_Id", string.Empty),
-                    new XElement("Line_No.", LineNumberToNav(linenNo)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(linenNo)),
                     new XElement("Line_Type", (int)LineType.Item),
                     new XElement("Number", rq.ItemId),
                     new XElement("Variant_Code", rq.VariantId),
@@ -322,7 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                 int lastsubline = 1;
                 foreach (OrderDiscountLine orderDiscountRq in Rq.OrderDiscountLines)
                 {
-                    int lineno = LineNumberToNav(orderDiscountRq.LineNumber);
+                    int lineno = XMLHelper.LineNumberToNav(orderDiscountRq.LineNumber);
                     if (orderDiscountRq.LineNumber == lastlineindex)
                     {
                         lineno += (lastsubline * 100);
@@ -409,7 +409,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("Customer_Order_Line",
                     new XElement("Document_Id", id),
-                    new XElement("Line_No.", LineNumberToNav(rq.LineNumber)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(rq.LineNumber)),
                     new XElement("Line_Type", Convert.ToInt32(rq.LineType).ToString()),
                     new XElement("Number", rq.ItemId),
                     new XElement("Variant_Code", rq.VariantId),
@@ -433,7 +433,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("Customer_Order_Discount_Line",
                     new XElement("Document_Id", id),
-                    new XElement("Line_No.", LineNumberToNav(rq.LineNumber)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(rq.LineNumber)),
                     new XElement("Entry_No.", rq.No),  //Entry number, if more than one discount pr Line No.
                     new XElement("Discount_Type", Convert.ToInt32(rq.DiscountType).ToString()),
                     new XElement("Offer_No.", rq.OfferNumber),
@@ -451,7 +451,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XElement root =
                 new XElement("Customer_Order_Payment",
                     new XElement("Document_Id", id),
-                    new XElement("Line_No.", LineNumberToNav(rq.LineNumber)),
+                    new XElement("Line_No.", XMLHelper.LineNumberToNav(rq.LineNumber)),
                     new XElement("Pre_Approved_Amount", rq.Amount),  //Entry number, if more than one discount pr Line No.
                     new XElement("Finalised_Amount", rq.Amount),
                     new XElement("Tender_Type", rq.TenderType),

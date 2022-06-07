@@ -26,6 +26,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -1221,6 +1222,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
+            int lineno = 1;
+            foreach (OneListItem item in list.Items)
+            {
+                item.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+            }
+            if (list.PublishedOffers != null)
+            {
+                foreach (OneListPublishedOffer off in list.PublishedOffers)
+                {
+                    off.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+                }
+            }
+
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1231,7 +1245,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             centralQryWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
             HandleWS2ResponseCode("EcomCalculateBasket", respCode, errorText);
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootTransactionToOrder(root);
+            Order order = map.MapFromRootTransactionToOrder(root);
+
+            List<OrderLine> lines = new List<OrderLine>();
+            foreach (OrderLine line in order.OrderLines)
+            {
+                OrderLine oline = lines.Find(l =>
+                        l.ItemId == line.ItemId &&
+                        l.VariantId == line.VariantId &&
+                        l.UomId == line.UomId &&
+                        l.LineType == line.LineType);
+
+                if (oline == null)
+                {
+                    lines.Add(line);
+                }
+                else
+                {
+                    OneListItem item = list.Items.ToList().Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId && i.UnitOfMeasureId == line.UomId);
+                    if (item != null && item.Immutable)
+                    {
+                        lines.Add(line);
+                        continue;
+                    }
+
+                    if ((oline.DiscountLineNumbers.Count() > 0 && line.DiscountLineNumbers.Count() == 0) ||
+                        (oline.DiscountLineNumbers.Count() == 0 && line.DiscountLineNumbers.Count() > 0))
+                    {
+                        lines.Add(line);
+                        continue;
+                    }
+
+                    oline.DiscountAmount += line.DiscountAmount;
+                    oline.NetAmount += line.NetAmount;
+                    oline.Quantity += line.Quantity;
+                    oline.TaxAmount += line.TaxAmount;
+                    oline.Amount += line.Amount;
+                }
+            }
+            order.OrderLines = lines;
+            return order;
         }
 
         public OrderStatusResponse OrderStatusCheck(string orderId)
@@ -1329,7 +1382,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("CustomerOrderCancel", respCode, errorText);
         }
 
-        public SalesEntry OrderGet(string id)
+        public SalesEntry OrderGet(string id, bool getimages)
         {
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
@@ -1347,7 +1400,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             order.PointsRewarded = pointEarned;
             order.PointsUsedInOrder = pointUsed;
 
-            Store store = StoreGetById(order.StoreId);
+            Store store = StoreGetById(order.StoreId, getimages);
             order.StoreName = store.Description;
 
             List<SalesEntryLine> list = new List<SalesEntryLine>();
@@ -1356,17 +1409,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
                 if (exline == null)
                 {
-                    if (string.IsNullOrEmpty(line.VariantId))
+                    if (getimages)
                     {
-                        List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty);
-                        if (img != null && img.Count > 0)
-                            line.ItemImageId = img[0].Id;
-                    }
-                    else
-                    {
-                        List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty);
-                        if (img != null && img.Count > 0)
-                            line.ItemImageId = img[0].Id;
+                        if (string.IsNullOrEmpty(line.VariantId))
+                        {
+                            List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty);
+                            if (img != null && img.Count > 0)
+                                line.ItemImageId = img[0].Id;
+                        }
+                        else
+                        {
+                            List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty);
+                            if (img != null && img.Count > 0)
+                                line.ItemImageId = img[0].Id;
+                        }
                     }
 
                     list.Add(line);
@@ -1525,7 +1581,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.SalesEntryList(table);
         }
 
-        public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId)
+        public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId, bool getimages)
         {
             TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
@@ -1537,12 +1593,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             SalesEntry entry = map.MapFromRootToRetailTransaction(root);
 
-            Store store = StoreGetById(entry.StoreId);
+            Store store = StoreGetById(entry.StoreId, getimages);
             entry.StoreName = store.Description;
 
             if (string.IsNullOrEmpty(entry.CustomerOrderNo) == false)
             {
-                SalesEntry order = OrderGet(entry.CustomerOrderNo);
+                SalesEntry order = OrderGet(entry.CustomerOrderNo, getimages);
                 entry.ShipToEmail = order.ShipToEmail;
                 entry.ShipToName = order.ShipToName;
                 entry.ShipToAddress = order.ShipToAddress;
@@ -1561,7 +1617,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Store
 
-        public Store StoreGetById(string id)
+        public Store StoreGetById(string id, bool getimages)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "No.", id);
@@ -1614,7 +1670,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
 
-            store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty);
+            if (getimages)
+                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty);
+
             return store;
         }
 
@@ -1820,6 +1878,51 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return profile;
         }
 
+        public OrderCheck ScanPayGoOrderCheck(string documentId)
+        {
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            bool orderPayed = false;
+            bool doCheck = false;
+            int numOfItem = 0;
+            LSCentral.RootSPGOrderCheck root = new LSCentral.RootSPGOrderCheck();
+
+            logger.Debug(config.LSKey.Key, $"SPGOrderCheck Request - docId:{documentId}");
+            centralWS.SPGOrderCheck(documentId, ref orderPayed, ref doCheck, ref numOfItem, ref root, ref respCode, ref errorText);
+            HandleWS2ResponseCode("SPGOrderCheck", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "SPGOrderCheck Response - " + Serialization.ToXml(root, true));
+
+            List<OrderCheckLines> lines = new List<OrderCheckLines>();
+            if (root.SPGOrderCheckCOLine != null)
+            {
+                foreach (LSCentral.SPGOrderCheckCOLine line in root.SPGOrderCheckCOLine)
+                {
+                    lines.Add(new OrderCheckLines()
+                    {
+                        DocumentID = line.DocumentID,
+                        ItemId = line.Number,
+                        ItemDescription = line.ItemDescription,
+                        VariantCode = line.VariantCode,
+                        VariantDescription = line.VariantDescription,
+                        UnitofMeasureCode = line.UnitofMeasureCode,
+                        UOMDescription = line.UoMDescription,
+                        Amount = line.Amount,
+                        LineNo = line.LineNo,
+                        Quantity = line.Quantity
+                    });
+                }
+            }
+
+            OrderCheck orderCheck = new OrderCheck()
+            {
+                OrderPayed = orderPayed,
+                DoCheck = doCheck,
+                NumberOfItemsToCheck = numOfItem,
+                Lines = lines
+            };
+            return orderCheck;
+        }
+
         public bool SecurityCheckProfile(string orderNo, string storeNo)
         {
             string respCode = string.Empty;
@@ -1832,14 +1935,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return exist;
         }
 
-        public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
         {
             string respCode = string.Empty;
             bool retValue = false;
             string errorText = string.Empty;
 
-            logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Request - QRCode:{qrCode} store:{storeNo} devLoc:{devLocation} memAccount:{memberAccount} exitWoutShop:{exitWithoutShopping}");
-            centralWS.SPGOpenGate(qrCode, ref storeNo, ref devLocation, ref memberAccount, ref exitWithoutShopping, ref retValue, ref respCode, ref errorText);
+            logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Request - QRCode:{qrCode} store:{storeNo} devLoc:{devLocation} memAccount:{memberAccount} exitWoutShop:{exitWithoutShopping} isEntering:{isEntering}");
+            centralWS.SPGOpenGate(qrCode, ref storeNo, ref devLocation, ref memberAccount, ref exitWithoutShopping, ref isEntering, ref retValue, ref respCode, ref errorText);
             logger.Debug(config.LSKey.Key, $"SPGOpenGate Response -  resCode:{respCode} errMsg:{errorText}");
             if (respCode != "0000")
                 return errorText;

@@ -24,6 +24,11 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays);
         List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays);
         bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString);
+        string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity);
+        string ActivityInsertGroupReservation(Reservation request);
+        string ActivityUpdateGroupReservation(Reservation request);
+        ActivityResponse ActivityConfirmGroup(ActivityRequest request);
+        bool ActivityDeleteGroup(string groupNo, int lineNo);
 
         #endregion
 

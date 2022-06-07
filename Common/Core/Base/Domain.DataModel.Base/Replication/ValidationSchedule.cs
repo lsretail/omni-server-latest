@@ -178,9 +178,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public int LineNo { get; set; }
         [DataMember]
         public bool Exclude { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartingDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EndingDate { get; set; }
     }
 
@@ -240,9 +240,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string Period { get; set; }
         [DataMember]
         public string DiningDurationCode { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeTo { get; set; }
         [DataMember]
         public bool TimeToIsPastMidnight { get; set; }

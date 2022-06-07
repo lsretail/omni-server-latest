@@ -70,6 +70,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         [DataMember]
         public int Internalstatus { set; get; }
         [DataMember]
+        public int NoOfPerson { set; get; }
+        [DataMember]
         public string Status { set; get; }
     }
 }

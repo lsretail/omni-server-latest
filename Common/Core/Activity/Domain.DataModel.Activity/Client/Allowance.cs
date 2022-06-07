@@ -41,7 +41,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string ValidLocation { get; set; }
         [DataMember]
         public decimal QtyIssued { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateIssued { get; set; }
         [DataMember]
         public decimal UnitPrice { get; set; }
@@ -49,7 +49,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string ClientNo { get; set; }
         [DataMember]
         public string ClientName { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ExpiryDate { get; set; }
         [DataMember]
         public decimal QuantityConsumed { get; set; }

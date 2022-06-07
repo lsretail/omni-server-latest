@@ -114,7 +114,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string ShippingAgentCode { get; set; }
         [DataMember]
         public string ShippingAgentServiceCode { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime RequestedDeliveryDate { get; set; }
 
         /// <summary>

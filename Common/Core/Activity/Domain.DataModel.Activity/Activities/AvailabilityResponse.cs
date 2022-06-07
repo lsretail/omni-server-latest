@@ -33,9 +33,9 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
 
         [DataMember]
         public string ItemNo { set; get; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime AvailDate { set; get; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime AvailTime { set; get; }
         [DataMember]
         public string WeekDay { set; get; }

@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
-
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
@@ -19,8 +19,8 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
-using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -68,14 +68,24 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.SecurityCheckProfile(orderNo, storeNo);
         }
 
-        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
         {
             if (NAVVersion < new Version("17.5"))
             {
                 return "Not Supported";
             }
 
-            return LSCWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping);
+            return LSCWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering);
+        }
+
+        public virtual OrderCheck ScanPayGoOrderCheck(string documentId)
+        {
+            if (NAVVersion < new Version("17.5"))
+            {
+                return new OrderCheck();
+            }
+
+            return LSCWSBase.ScanPayGoOrderCheck(documentId);
         }
 
         #endregion
@@ -574,18 +584,18 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 SalesEntry e;
                 if (entry.IdType == DocumentIdType.Receipt)
                 {
-                    e = SalesEntryGet(string.Empty, Convert.ToInt32(entry.Id), entry.StoreId, entry.TerminalId, entry.IdType);
+                    e = SalesEntryGet(string.Empty, Convert.ToInt32(entry.Id), entry.StoreId, entry.TerminalId, entry.IdType, false);
                 }
                 else
                 {
-                    e = SalesEntryGet(entry.Id, entry.IdType);
+                    e = SalesEntryGet(entry.Id, 0, string.Empty, string.Empty, entry.IdType, false);
                 }
                 e.Lines.Clear();
                 e.DiscountLines.Clear();
                 e.Payments.Clear();
                 trans.Add(e);
 
-                if (cnt >= maxNumberOfEntries)
+                if (maxNumberOfEntries > 0 && cnt >= maxNumberOfEntries)
                     break;
             }
             return trans;
@@ -593,7 +603,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)
         {
-            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type);
+            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type, true);
         }
 
         public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
@@ -601,7 +611,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return new List<SalesEntry>();
         }
 
-        public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type)
+        public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type, bool getimages)
         {
             if (NAVVersion < new Version("17.5"))
             {
@@ -612,9 +622,9 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
             SalesEntry entry;
             if (type == DocumentIdType.Receipt)
-                entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId);
+                entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId, getimages);
             else
-                entry = LSCWSBase.OrderGet(docId);
+                entry = LSCWSBase.OrderGet(docId, getimages);
 
             if (entry.Payments != null)
             {
@@ -786,7 +796,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
             else
             {
-                store = LSCWSBase.StoreGetById(id);
+                store = LSCWSBase.StoreGetById(id, details);
                 store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(id, offset);
             }
             return store;
@@ -921,7 +931,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommMember(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateMember(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateMember(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplCountryCode> ReplEcommCountryCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

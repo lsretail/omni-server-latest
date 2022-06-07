@@ -348,7 +348,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             catch (Exception ex)
             {
                 logger.Error(config.LSKey.Key, ex, "Failed to determine NavVersion");
-                return "ERROR " + ex.Message;
+                return "ERROR " + ex.Message + ((ex.InnerException == null) ? string.Empty : " >> " + ex.InnerException.Message);
             }
         }
 

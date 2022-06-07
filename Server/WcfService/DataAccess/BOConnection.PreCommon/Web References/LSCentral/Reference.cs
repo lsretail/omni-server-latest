@@ -199,6 +199,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback SPGOpenGateOperationCompleted;
         
+        private System.Threading.SendOrPostCallback SPGOrderCheckOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SPGProfileGetOperationCompleted;
         
         private System.Threading.SendOrPostCallback SPGResetPasswordOperationCompleted;
@@ -519,6 +521,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event SPGOpenGateCompletedEventHandler SPGOpenGateCompleted;
+        
+        /// <remarks/>
+        public event SPGOrderCheckCompletedEventHandler SPGOrderCheckCompleted;
         
         /// <remarks/>
         public event SPGProfileGetCompletedEventHandler SPGProfileGetCompleted;
@@ -3956,13 +3961,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOpenGate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGOpenGate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void SPGOpenGate(string qRCode, ref string storeNo, ref string deviceLocation, ref string memberAccountNo, ref bool exitWithoutShopping, ref bool returnValue, ref string responseCode, ref string errorText) {
+        public void SPGOpenGate(string qRCode, ref string storeNo, ref string deviceLocation, ref string memberAccountNo, ref bool exitWithoutShopping, ref bool isEntering, ref bool returnValue, ref string responseCode, ref string errorText) {
             object[] results = this.Invoke("SPGOpenGate", new object[] {
                         qRCode,
                         storeNo,
                         deviceLocation,
                         memberAccountNo,
                         exitWithoutShopping,
+                        isEntering,
                         returnValue,
                         responseCode,
                         errorText});
@@ -3970,18 +3976,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             deviceLocation = ((string)(results[1]));
             memberAccountNo = ((string)(results[2]));
             exitWithoutShopping = ((bool)(results[3]));
-            returnValue = ((bool)(results[4]));
-            responseCode = ((string)(results[5]));
-            errorText = ((string)(results[6]));
+            isEntering = ((bool)(results[4]));
+            returnValue = ((bool)(results[5]));
+            responseCode = ((string)(results[6]));
+            errorText = ((string)(results[7]));
         }
         
         /// <remarks/>
-        public void SPGOpenGateAsync(string qRCode, string storeNo, string deviceLocation, string memberAccountNo, bool exitWithoutShopping, bool returnValue, string responseCode, string errorText) {
-            this.SPGOpenGateAsync(qRCode, storeNo, deviceLocation, memberAccountNo, exitWithoutShopping, returnValue, responseCode, errorText, null);
+        public void SPGOpenGateAsync(string qRCode, string storeNo, string deviceLocation, string memberAccountNo, bool exitWithoutShopping, bool isEntering, bool returnValue, string responseCode, string errorText) {
+            this.SPGOpenGateAsync(qRCode, storeNo, deviceLocation, memberAccountNo, exitWithoutShopping, isEntering, returnValue, responseCode, errorText, null);
         }
         
         /// <remarks/>
-        public void SPGOpenGateAsync(string qRCode, string storeNo, string deviceLocation, string memberAccountNo, bool exitWithoutShopping, bool returnValue, string responseCode, string errorText, object userState) {
+        public void SPGOpenGateAsync(string qRCode, string storeNo, string deviceLocation, string memberAccountNo, bool exitWithoutShopping, bool isEntering, bool returnValue, string responseCode, string errorText, object userState) {
             if ((this.SPGOpenGateOperationCompleted == null)) {
                 this.SPGOpenGateOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGOpenGateOperationCompleted);
             }
@@ -3991,6 +3998,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                         deviceLocation,
                         memberAccountNo,
                         exitWithoutShopping,
+                        isEntering,
                         returnValue,
                         responseCode,
                         errorText}, this.SPGOpenGateOperationCompleted, userState);
@@ -4000,6 +4008,52 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.SPGOpenGateCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SPGOpenGateCompleted(this, new SPGOpenGateCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOrderCheck", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGOrderCheck_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SPGOrderCheck(string documentID, ref bool orderPaid, ref bool doCheck, ref int numberOfItemsToCheck, ref RootSPGOrderCheck sPGOrderCheckXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SPGOrderCheck", new object[] {
+                        documentID,
+                        orderPaid,
+                        doCheck,
+                        numberOfItemsToCheck,
+                        sPGOrderCheckXML,
+                        responseCode,
+                        errorText});
+            orderPaid = ((bool)(results[0]));
+            doCheck = ((bool)(results[1]));
+            numberOfItemsToCheck = ((int)(results[2]));
+            sPGOrderCheckXML = ((RootSPGOrderCheck)(results[3]));
+            responseCode = ((string)(results[4]));
+            errorText = ((string)(results[5]));
+        }
+        
+        /// <remarks/>
+        public void SPGOrderCheckAsync(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck sPGOrderCheckXML, string responseCode, string errorText) {
+            this.SPGOrderCheckAsync(documentID, orderPaid, doCheck, numberOfItemsToCheck, sPGOrderCheckXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SPGOrderCheckAsync(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck sPGOrderCheckXML, string responseCode, string errorText, object userState) {
+            if ((this.SPGOrderCheckOperationCompleted == null)) {
+                this.SPGOrderCheckOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGOrderCheckOperationCompleted);
+            }
+            this.InvokeAsync("SPGOrderCheck", new object[] {
+                        documentID,
+                        orderPaid,
+                        doCheck,
+                        numberOfItemsToCheck,
+                        sPGOrderCheckXML,
+                        responseCode,
+                        errorText}, this.SPGOrderCheckOperationCompleted, userState);
+        }
+        
+        private void OnSPGOrderCheckOperationCompleted(object arg) {
+            if ((this.SPGOrderCheckCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SPGOrderCheckCompleted(this, new SPGOrderCheckCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -17069,6 +17123,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal salesTaxRoundingField;
         
+        private bool limitationField;
+        
+        private bool limitationTaxExemptedField;
+        
         public TransSalesEntry1() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -17136,6 +17194,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.refundedTransNoField = 0;
             this.pLBItemField = false;
             this.salesTaxRoundingField = ((decimal)(0m));
+            this.limitationField = false;
+            this.limitationTaxExemptedField = false;
         }
         
         /// <remarks/>
@@ -18268,6 +18328,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.salesTaxRoundingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Limitation {
+            get {
+                return this.limitationField;
+            }
+            set {
+                this.limitationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool LimitationTaxExempted {
+            get {
+                return this.limitationTaxExemptedField;
+            }
+            set {
+                this.limitationTaxExemptedField = value;
             }
         }
     }
@@ -21552,6 +21634,176 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.sPGProfileGetField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016680")]
+    public partial class SPGOrderCheckCOLine {
+        
+        private string documentIDField;
+        
+        private int lineNoField;
+        
+        private string numberField;
+        
+        private string itemDescriptionField;
+        
+        private string variantCodeField;
+        
+        private string variantDescriptionField;
+        
+        private string unitofMeasureCodeField;
+        
+        private string uoMDescriptionField;
+        
+        private decimal quantityField;
+        
+        private decimal amountField;
+        
+        public SPGOrderCheckCOLine() {
+            this.lineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.amountField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Number {
+            get {
+                return this.numberField;
+            }
+            set {
+                this.numberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemDescription {
+            get {
+                return this.itemDescriptionField;
+            }
+            set {
+                this.itemDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantDescription {
+            get {
+                return this.variantDescriptionField;
+            }
+            set {
+                this.variantDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitofMeasureCode {
+            get {
+                return this.unitofMeasureCodeField;
+            }
+            set {
+                this.unitofMeasureCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UoMDescription {
+            get {
+                return this.uoMDescriptionField;
+            }
+            set {
+                this.uoMDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4161.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016680")]
+    public partial class RootSPGOrderCheck {
+        
+        private SPGOrderCheckCOLine[] sPGOrderCheckCOLineField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGOrderCheckCOLine")]
+        public SPGOrderCheckCOLine[] SPGOrderCheckCOLine {
+            get {
+                return this.sPGOrderCheckCOLineField;
+            }
+            set {
+                this.sPGOrderCheckCOLineField = value;
             }
         }
         
@@ -33007,6 +33259,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal salesTaxRoundingField;
         
+        private bool limitationField;
+        
+        private bool limitationTaxExemptedField;
+        
         public TransSalesEntry() {
             this.transactionNoField = 0;
             this.lineNoField = 0;
@@ -33075,6 +33331,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.bITimestampField = new System.DateTime(0);
             this.pLBItemField = false;
             this.salesTaxRoundingField = ((decimal)(0m));
+            this.limitationField = false;
+            this.limitationTaxExemptedField = false;
         }
         
         /// <remarks/>
@@ -34336,6 +34594,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.salesTaxRoundingField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=114)]
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool Limitation {
+            get {
+                return this.limitationField;
+            }
+            set {
+                this.limitationField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=115)]
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool LimitationTaxExempted {
+            get {
+                return this.limitationTaxExemptedField;
+            }
+            set {
+                this.limitationTaxExemptedField = value;
             }
         }
     }
@@ -50319,6 +50601,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string taxGroupCodeField;
         
+        private string eFTCardTypeField;
+        
         public CustomerOrderCreateCOPaymentV5() {
             this.lineNoField = 0;
             this.preApprovedAmountField = ((decimal)(0m));
@@ -50575,6 +50859,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.taxGroupCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string EFTCardType {
+            get {
+                return this.eFTCardTypeField;
+            }
+            set {
+                this.eFTCardTypeField = value;
             }
         }
     }
@@ -59763,7 +60057,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public bool returnValue {
+        public bool isEntering {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((bool)(this.results[4]));
@@ -59771,10 +60065,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        public bool returnValue {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
         public string responseCode {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[5]));
+                return ((string)(this.results[6]));
             }
         }
         
@@ -59782,7 +60084,73 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public string errorText {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[6]));
+                return ((string)(this.results[7]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void SPGOrderCheckCompletedEventHandler(object sender, SPGOrderCheckCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SPGOrderCheckCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SPGOrderCheckCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool orderPaid {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public bool doCheck {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public int numberOfItemsToCheck {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootSPGOrderCheck sPGOrderCheckXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootSPGOrderCheck)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[5]));
             }
         }
     }

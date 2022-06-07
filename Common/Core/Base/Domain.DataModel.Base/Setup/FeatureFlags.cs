@@ -97,6 +97,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "TERMS AND CONDITION VERSION":
                     flagName = FeatureFlagName.TermsAndConditionVersion;
                     break;
+                case "PRIVACY POLICY URL":
+                    flagName = FeatureFlagName.PrivacyPolicyURL;
+                    break;
+                case "PRIVACY POLICY VERSION":
+                    flagName = FeatureFlagName.PrivacyPolicyVersion;
+                    break;
                 case "ENABLE PLATFORM PAYMENT":
                     flagName = FeatureFlagName.EnablePlatformPayment;
                     break;
@@ -121,7 +127,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "APPLE PAY MERCHANT NAME":
                     flagName = FeatureFlagName.GooglePayMerchantName;
                     break;
-                    //AUDKENNI SPG
+
+                case "ADD CARD BEFORE SHOPPING":
+                    flagName = FeatureFlagName.AddCardBeforeShopping;
+                    break;
+
+                case "SHOW CUSTOMER QR CODE":
+                    flagName = FeatureFlagName.ShowCustomerQrCode;
+                    break;
+
+                //AUDKENNI SPG
                 case "AUDKENNI BASE URL":
                     flagName = FeatureFlagName.AudkenniBaseURL;
                     break;
@@ -157,6 +172,23 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                     break;
                 case "CLOSE GATE":
                     flagName = FeatureFlagName.CloseGate;
+                    break;
+                case "SHOW CUSTOMER SURVEY":
+                    flagName = FeatureFlagName.ShowCustomerSurvey;
+                    break;
+
+                //Card Payments
+                case "CARD PAYMENT METHOD":
+                    flagName = FeatureFlagName.CardPaymentMethod;
+                    break;
+                case "LS PAY SERVICE IP ADDRESS":
+                    flagName = FeatureFlagName.LsPayServiceIpAddress;
+                    break;
+                case "LS PAY SERVICE PORT":
+                    flagName = FeatureFlagName.LsPayServicePort;
+                    break;
+                case "LS PAY PLUGIN ID":
+                    flagName = FeatureFlagName.LsPayPluginId;
                     break;
             }
 
@@ -260,6 +292,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         TermsAndConditionVersion = 211,
         OpenGate = 212,
         CloseGate = 213,
+        PrivacyPolicyURL = 214,
+        PrivacyPolicyVersion = 215,
+        ShowCustomerSurvey = 216,
+        AddCardBeforeShopping = 217,
+        ShowCustomerQrCode = 218,
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,
@@ -269,6 +306,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         GooglePayAllowedAuthMethodsJson = 304,
         GooglePayAllowedCardNetworksJson = 305,
         GooglePayMerchantName = 306,
+        CardPaymentMethod = 307,
+        LsPayServiceIpAddress = 308,
+        LsPayServicePort = 309,
+        LsPayPluginId = 310,
 
         //Alternate Logins
         //AudkenniFlags

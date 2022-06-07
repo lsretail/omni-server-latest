@@ -52,7 +52,7 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrEmpty(url))
                 throw new LSOmniServiceException(StatusCode.LSRecommendSetupMissing, "Missing LSRecommend_ModelUrl in Appsettings");
 
-            string requrl = $"{url}/{config.SettingsGetByKey(ConfigKey.LSRecommend_BatchNo)}/BasketRecommendation?numberOfRecommendations={config.SettingsGetByKey(ConfigKey.LSRecommend_NoOfDownloadedItems)}";
+            string requrl = $"{url}/api/{config.SettingsGetByKey(ConfigKey.LSRecommend_BatchNo)}/BasketRecommendation?numberOfRecommendations={config.SettingsGetByKey(ConfigKey.LSRecommend_NoOfDownloadedItems)}";
 
             string json = string.Format("{{\"items\": {0}}}", JsonConvert.SerializeObject(items));
             string result = SendCommand(requrl, json, token);

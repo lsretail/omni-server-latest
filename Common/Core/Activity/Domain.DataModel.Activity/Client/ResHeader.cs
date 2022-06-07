@@ -55,13 +55,13 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string ReservationType { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateTo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime TimeTo { get; set; }
         [DataMember]
         public decimal NoOfPersons { get; set; }

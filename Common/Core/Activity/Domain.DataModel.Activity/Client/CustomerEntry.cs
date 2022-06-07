@@ -39,7 +39,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string Description { get; set; }
         [DataMember]
         public string CustomerNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PostingDate { get; set; }
         [DataMember]
         public string DocumentType { get; set; }

@@ -223,6 +223,76 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return string.Empty; //never gets here
+            }
+        }
+
+        public virtual string ActivityInsertGroupReservation(Reservation request)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityInsertGroupReservation(request);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return string.Empty; //never gets here
+            }
+        }
+
+        public virtual string ActivityUpdateGroupReservation(Reservation request)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityUpdateGroupReservation(request);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return string.Empty; //never gets here
+            }
+        }
+
+        public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityConfirmGroup(request);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return null;
+            }
+        }
+
+        public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
+        {
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityDeleteGroup(groupNo, lineNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                return false; //never gets here
+            }
+        }
+
         #endregion
 
         #region Data Get (Replication)

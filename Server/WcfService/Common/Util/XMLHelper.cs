@@ -306,5 +306,11 @@ namespace LSOmni.Common.Util
             name = name.Replace(']', '_');
             return name;
         }
+
+        public static int LineNumberToNav(int lineNumber)
+        {
+            //multiply with 1000 for nav, if not already done!
+            return (lineNumber >= 1000 ? lineNumber : lineNumber * 10000);
+        }
     }
 }

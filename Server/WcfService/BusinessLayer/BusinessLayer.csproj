@@ -83,6 +83,7 @@
     <Compile Include="Loyalty\OrderMessageBLL.cs" />
     <Compile Include="Loyalty\PushNotificationBLL.cs" />
     <Compile Include="Loyalty\ReplicationBLL.cs" />
+    <Compile Include="Loyalty\ScanPayGoBLL.cs" />
     <Compile Include="Loyalty\SearchBLL.cs" />
     <Compile Include="Loyalty\StoreBLL.cs" />
     <Compile Include="Loyalty\TransactionBLL.cs" />

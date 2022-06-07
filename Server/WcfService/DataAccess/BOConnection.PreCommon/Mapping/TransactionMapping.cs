@@ -109,7 +109,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     discount.Description = mobileTransDisc.Description;
                     discount.No = mobileTransDisc.Id;
                     discount.OfferNo = mobileTransDisc.OfferNo;
-                    discount.LineNumber = LineNumberFromNav(mobileTransDisc.LineNo);
+                    discount.LineNumber = mobileTransDisc.LineNo;
                     discounts.Add(discount);
                 }
             }
@@ -211,7 +211,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                             oline.SubLines.AddRange(modiferLineList);
                         }
 
-                        oline.LineNumber = LineNumberFromNav(oline.LineNumber); // MPOS expects to get 1 not 10000
+                        oline.LineNumber = oline.LineNumber; // MPOS expects to get 1 not 10000
                         order.OrderLines.Add(oline);
                     }
                 }
@@ -232,7 +232,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         Description = mobileTransDisc.Description,
                         No = mobileTransDisc.Id,
                         OfferNumber = mobileTransDisc.OfferNo,
-                        LineNumber = LineNumberFromNav(mobileTransDisc.LineNo)
+                        LineNumber = mobileTransDisc.LineNo
                     };
 
                     if (discount.DiscountType == DiscountType.Coupon)
@@ -279,7 +279,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     transaction.DiscountLines.Add(new SalesEntryDiscountLine()
                     {
                         OfferNumber = mobileTransDisc.OfferNo,
-                        LineNumber = LineNumberFromNav(mobileTransDisc.LineNo),
+                        LineNumber = mobileTransDisc.LineNo,
                         DiscountAmount = mobileTransDisc.DiscountAmount,
                         PeriodicDiscType = (PeriodicDiscType)(Convert.ToInt32(mobileTransDisc.OfferType) + 1)
                     });
@@ -304,7 +304,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         Quantity = mobileTransLine.Quantity,
                         Price = mobileTransLine.Price,
                         NetPrice = mobileTransLine.NetPrice,
-                        LineNumber = LineNumberFromNav(mobileTransLine.LineNo)
+                        LineNumber = mobileTransLine.LineNo
                     });
                 }
             }
@@ -348,7 +348,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         discLines.Add(new LSCentral.MobileTransDiscountLine()
                         {
                             Id = transaction.Id,
-                            LineNo = LineNumberToNav(posLine.LineNumber),
+                            LineNo = XMLHelper.LineNumberToNav(posLine.LineNumber),
                             No = discNo++,
                             DiscountType = (int)disc.Type,
                             OfferNo = XMLHelper.GetString(disc.OfferNo),
@@ -504,7 +504,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     discLines.Add(new LSCentral.HospTransDiscountLine()
                     {
                         Id = XMLHelper.GetString(dline.Id),
-                        LineNo = LineNumberToNav(dline.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(dline.LineNumber),
                         No = discNo++,
                         DiscountType = (int)dline.DiscountType,
                         OfferNo = XMLHelper.GetString(dline.OfferNumber),
@@ -579,7 +579,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             int nr = 0;
             foreach (OneListItem l in request.Items)
             {
-                nr = LineNumberFromNav(l.LineNumber);
+                nr = l.LineNumber;
                 if (LineCounter < nr)
                     LineCounter = nr;
 
@@ -587,7 +587,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 {
                     foreach (OneListItemSubLine s in l.OnelistSubLines)
                     {
-                        nr = LineNumberFromNav(s.LineNumber);
+                        nr = s.LineNumber;
                         if (LineCounter < nr)
                             LineCounter = nr;
                     }
@@ -737,7 +737,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 {
                     Payment payment = new Payment()
                     {
-                        Amount = new Money(pay.AmountTendered, transactionCurrency),
+                        Amount = new Money(pay.AmountTendered, transactionCurrency)
                     };
                     transaction.TenderLines.Add(new PaymentLine(lineno++, payment));
                 }
@@ -1041,7 +1041,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 discountAmount = saleLine.LineDiscount.Amount.Value;
                 discountPercent = saleLine.LineDiscount.Percentage;
 
-                lineOrgNumber = LineNumberToNav(saleLine.OriginalTransactionLineNo);
+                lineOrgNumber = XMLHelper.LineNumberToNav(saleLine.OriginalTransactionLineNo);
                 entryStatus = (saleLine.Voided) ? EntryStatus.Voided : EntryStatus.Normal;
                 quantity = (saleLine.IsReturnLine) ? -1 * Math.Abs(saleLine.Quantity) : Math.Abs(saleLine.Quantity);
 
@@ -1083,7 +1083,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(line.LineNumber),
+                LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                 EntryStatus = (int)entryStatus,
                 LineType = (int)lineType,
                 Number = itemId,
@@ -1138,7 +1138,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(line.LineNumber),
+                LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                 EntryStatus = (int)EntryStatus.Normal,
                 LineType = (int)LineType.Item,
                 Number = line.ItemId,
@@ -1187,7 +1187,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(line.LineNumber),
+                LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                 EntryStatus = (int)EntryStatus.Normal,
                 LineType = (int)LineType.Item,
                 Number = line.ItemId,
@@ -1242,7 +1242,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.HospTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(line.LineNumber),
+                LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                 EntryStatus = (int)EntryStatus.Normal,
                 LineType = (int)line.LineType,
                 Number = (line.LineType == LineType.Item ? line.ItemId : string.Empty),
@@ -1337,7 +1337,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(lineNumber),
+                LineNo = XMLHelper.LineNumberToNav(lineNumber),
                 EntryStatus = (int)EntryStatus.Normal,
                 LineType = (int)LineType.Coupon,
                 Barcode = XMLHelper.GetString(offer.Id),
@@ -1381,8 +1381,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionSubLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(rq.LineNumber),
-                ParentLineNo = LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
+                LineNo = XMLHelper.LineNumberToNav(rq.LineNumber),
+                ParentLineNo = XMLHelper.LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
                 EntryStatus = (int)EntryStatus.Normal,
                 ParentLineIsSubline = (rq.ParentSubLineId > 0) ? 1 : 0,
                 LineType = (int)rq.Type,
@@ -1395,8 +1395,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 UomDescription = XMLHelper.GetString(rq.Uom),
                 ModifierGroupCode = XMLHelper.GetString(rq.ModifierGroupCode),
                 ModifierSubCode = XMLHelper.GetString(rq.ModifierSubCode),
-                DealLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealLineId),
-                DealModLine = string.IsNullOrEmpty(parentItemNo) ? 0 : LineNumberToNav(rq.DealModLineId),
+                DealLine = string.IsNullOrEmpty(parentItemNo) ? 0 : XMLHelper.LineNumberToNav(rq.DealLineId),
+                DealModLine = string.IsNullOrEmpty(parentItemNo) ? 0 : XMLHelper.LineNumberToNav(rq.DealModLineId),
                 DealId = string.IsNullOrEmpty(parentItemNo) ? "0" : parentItemNo,
 
                 StaffId = string.Empty,
@@ -1439,8 +1439,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.HospTransactionSubLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(rq.LineNumber),
-                ParentLineNo = LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
+                LineNo = XMLHelper.LineNumberToNav(rq.LineNumber),
+                ParentLineNo = XMLHelper.LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
                 EntryStatus = (int)EntryStatus.Normal,
                 ParentLineIsSubline = (rq.ParentSubLineId > 0) ? 1 : 0,
                 LineType = (int)subLineType,
@@ -1570,7 +1570,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(lineNumber),
+                LineNo = XMLHelper.LineNumberToNav(lineNumber),
                 EntryStatus = entryStatus,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.Payment.TenderType.Id,
@@ -1615,7 +1615,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.HospTransactionLine()
             {
                 Id = id,
-                LineNo = LineNumberToNav(lineNumber),
+                LineNo = XMLHelper.LineNumberToNav(lineNumber),
                 EntryStatus = (paymentLine.PaymentType == PaymentType.Refund) ? (int)EntryStatus.Voided : (int)EntryStatus.Normal, //0=normal, 1=voided,
                 LineType = (int)LineType.Payment,
                 Number = paymentLine.TenderType,
@@ -1656,7 +1656,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
         {
             LineType lineType = (LineType)mobileTransLine.LineType;
             EntryStatus entryStatus = (EntryStatus)mobileTransLine.EntryStatus;
-            int lineNumber = LineNumberFromNav(mobileTransLine.LineNo);
+            int lineNumber = mobileTransLine.LineNo;
             Currency transLineCurrency = new UnknownCurrency(mobileTransLine.CurrencyCode);
 
             decimal quantity = mobileTransLine.Quantity;
@@ -1770,7 +1770,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             LSCentral.MobileReceiptInfo info = new LSCentral.MobileReceiptInfo()
             {
                 Id = id,
-                Line_No = LineNumberToNav(lineNumber),
+                Line_No = XMLHelper.LineNumberToNav(lineNumber),
                 Key = receiptInfo.Key,
                 Type = receiptInfo.Type,
                 Transaction_No = string.IsNullOrEmpty(transactionNo) ? 0 : ConvertTo.SafeInt(transactionNo)

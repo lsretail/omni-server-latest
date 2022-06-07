@@ -47,5 +47,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public string ReservationNo { get; set; }
         [DataMember]
         public string ItemNo { get; set; }
+        [DataMember]
+        public int GroupLineNo { get; set; }
     }
 }

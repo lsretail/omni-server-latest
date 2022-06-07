@@ -28,7 +28,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         public MemberPointSourceType SourceType { get; set; }
         [DataMember]
         public string DocumentNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime Date { get; set; }
         [DataMember]
         public MemberPointEntryType EntryType { get; set; }
@@ -38,7 +38,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         public decimal Points { get; set; }
         [DataMember]
         public decimal RemainingPoints { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ExpirationDate { get; set; }
         [DataMember]
         public string StoreNo { get; set; }

@@ -42,15 +42,26 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         {
         }
 
-        public OneListItem(LoyItem item, decimal qty, bool isManualItem) : this(null)
+        public OneListItem(LoyItem item, decimal qty, bool immutable, bool isManualItem) : this(null)
         {
             ItemId = item.Id;
+
+            if (item.SelectedUnitOfMeasure != null)
+            {
+                UnitOfMeasureId = item.SelectedUnitOfMeasure?.Id;
+                UnitOfMeasureDescription = item.SelectedUnitOfMeasure?.DisplayString;
+            }
+
+            if (item.SelectedVariant != null)
+            {
+                VariantId = item.SelectedVariant.Id;
+                VariantDescription = item.SelectedVariant.ToString();
+            }
+
             ItemDescription = item.Description;
-            UnitOfMeasureId = item.SelectedUnitOfMeasure?.Id;
-            UnitOfMeasureDescription = item.SelectedUnitOfMeasure?.Description;
             Image = item.DefaultImage;
             Quantity = qty;
-            Price = item.AmtFromVariantsAndUOM(item.SelectedVariant?.Id, item.SelectedUnitOfMeasure?.Id);
+            Price = item.AmtFromVariantsAndUOM(VariantId, UnitOfMeasureId);
             Detail = item.Details;
             VariantRegistration = item.SelectedVariant;
             IsManualItem = isManualItem;
@@ -64,12 +75,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             }
 
             ProductGroup = item.ProductGroupId;
-            
-            if (item.SelectedVariant != null)
-            {
-                VariantId = item.SelectedVariant.Id;
-                VariantDescription = item.SelectedVariant.ToString();
-            }
+            Immutable = immutable;
         }
 
         public void Dispose()
@@ -123,6 +129,23 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
             {
                 quantity = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged("DisplayQty");
+            }
+        }
+
+        [IgnoreDataMember]
+        public decimal DisplayQty
+        {
+            get
+            {
+                if (Immutable)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return Quantity;
+                }
             }
         }
 
@@ -177,6 +200,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         [DataMember]
         public bool IsManualItem { get; set; }
+        [DataMember]
+        public bool Immutable { get; set; }
         /// <summary>
         /// Hospitality Deal (Hierarchy Leaf Type=Deal)
         /// </summary>

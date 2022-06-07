@@ -33,9 +33,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Menu
         public List<MenuNodeLine> MenuNodeLines { get; set; }
         [DataMember]
         public List<MenuNode> MenuGroupNodes { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ValidationStartTime { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ValidationEndTime { get; set; }
         /// <summary>
         /// Validation TimeWithinBounds 

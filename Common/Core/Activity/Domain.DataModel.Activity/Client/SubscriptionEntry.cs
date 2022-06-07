@@ -58,15 +58,15 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string InvoiceNo { get; set; }
         [DataMember]
         public string MembershipNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PostingDate { get; set; }
         [DataMember]
         public decimal AdditionalCharges { get; set; }
         [DataMember]
         public string MembershipType { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PeriodFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PeriodTo { get; set; }
     }
 }

@@ -112,20 +112,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             id = act.id,
                             TableId = act.TableId,
-                            Type = act.Type,
+                            Type = DDStatementType.Insert,
                             ParamValue = (parvalues.Length > 2) ? parvalues[2] : act.ParamValue
                         };
                     }
                     else
                     {
-                        if (act.Type == DDStatementType.Delete)
-                            continue;       // skip delete actions for extra tables
-
                         newact = new JscActions()
                         {
                             id = act.id,
                             TableId = act.TableId,
-                            Type = act.Type,
+                            Type = DDStatementType.Insert,
                             ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
                         };
                     }
@@ -308,20 +305,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             id = act.id,
                             TableId = act.TableId,
-                            Type = act.Type,
+                            Type = DDStatementType.Insert,
                             ParamValue = (parvalues.Length > 2) ? parvalues[2] : act.ParamValue
                         };
                     }
                     else
                     {
-                        if (act.Type == DDStatementType.Delete)
-                            continue;       // skip delete actions for extra tables
-
                         newact = new JscActions()
                         {
                             id = act.id,
                             TableId = act.TableId,
-                            Type = act.Type,
+                            Type = DDStatementType.Insert,
                             ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
                         };
                     }
@@ -558,7 +552,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository(config);
                 VariantRegistration variantReg = vreop.VariantRegGetById(bcode.VariantId, item.Id);
                 if (variantReg != null)
+                {
                     item.VariantsRegistration.Add(variantReg);
+                    item.Images = item.VariantsRegistration[0].Images;
+                }
             }
 
             if (string.IsNullOrWhiteSpace(bcode.UnitOfMeasureId) == false)
@@ -741,6 +738,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             
             AttributeValueRepository attrrep = new AttributeValueRepository(config);
             item.ItemAttributes = attrrep.AttributesGetByItemId(item.Id);
+
+            ItemRecipeRepository recrep = new ItemRecipeRepository(config);
+            item.Recipes = recrep.RecipeGetByItemId(item.Id);
+
+            ItemModifierRepository modrep = new ItemModifierRepository(config);
+            item.Modifiers = modrep.ModifierGetByItemId(item.Id);
 
             return item;
         }

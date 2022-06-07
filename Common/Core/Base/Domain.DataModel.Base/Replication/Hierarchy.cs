@@ -72,7 +72,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string Id { get; set; }
         [DataMember]
         public string Description { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartDate { get; set; }
         [DataMember]
         public HierarchyType Type { get; set; }

@@ -47,6 +47,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string CardType { get; set; }
         [DataMember]
+        public string EFTCardType { get; set; }
+        [DataMember]
         public string CurrencyCode { get; set; }
         [DataMember]
         public decimal CurrencyFactor { get; set; }

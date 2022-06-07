@@ -102,6 +102,31 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
         }
 
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        {
+            return BOActConnection.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
+        }
+
+        public virtual string ActivityInsertGroupReservation(Reservation request)
+        {
+            return BOActConnection.ActivityInsertGroupReservation(request);
+        }
+
+        public virtual string ActivityUpdateGroupReservation(Reservation request)
+        {
+            return BOActConnection.ActivityUpdateGroupReservation(request);
+        }
+
+        public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
+        {
+            return BOActConnection.ActivityConfirmGroup(request);
+        }
+
+        public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
+        {
+            return BOActConnection.ActivityDeleteGroup(groupNo, lineNo);
+        }
+
         #region Data Get (Replication)
 
         public virtual List<ActivityProduct> ActivityProductsGet()

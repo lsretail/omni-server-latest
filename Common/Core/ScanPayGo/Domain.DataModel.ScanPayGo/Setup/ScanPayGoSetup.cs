@@ -24,6 +24,12 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         Braintree = 1,
     }
 
+    public enum ScanPayGoCardPaymentMethod
+    {
+        Demo = 0,
+        LsPay = 1,
+    }
+
     public class ScanPayGoSetup
     {
         public ScanPayGoCatalogType CatalogType { get; set; }
@@ -35,6 +41,12 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public int CheckStatusTimer { get; set; }
         public string TermsAndConditionURL { get; set; }
         public string TermsAndConditionVersion { get; set; }
+        public string PrivacyPolicyURL { get; set; }
+        public string PrivacyPolicyVersion { get; set; }
+        public ScanPayGoCardPaymentMethod CardPaymentMethod { get; set; }
+        public string LsPayServiceIpAddress { get; set; }
+        public string LsPayServicePort { get; set; }
+        public string LsPayPluginId { get; set; }
         public bool EnablePlatformPayment { get; set; }
         public string PlatformPaymentCountryCode { get; set; }
         public string PlatformPaymentCurrencyCode { get; set; }
@@ -58,6 +70,8 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public bool AppleLoginEnabled { get; set; }
         public bool OpenGateEnabled { get; set; }
         public bool CloseGateEnabled { get; set; }
-        public bool ExperienceSurveyEnabled { get; set; } = true;
+        public bool CustomerSurveyEnabled { get; set; }
+        public bool AddCardBeforeShopping { get; set; }
+        public bool ShowCustomerQrCode { get; set; }
     }
 }

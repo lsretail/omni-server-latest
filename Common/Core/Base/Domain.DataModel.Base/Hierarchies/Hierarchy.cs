@@ -20,7 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         public string Description { get; set; }
         [DataMember]
         public HierarchyType Type { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StartDate { get; set; }
         [DataMember]
         public int Priority { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -313,30 +314,28 @@ namespace LSOmni.BLL.Loyalty
                     OnelistItemDiscounts = new List<OneListItemDiscount>()
                 };
 
-                foreach (OneListItem olditem in list.Items)
+                OneListItem olditem = list.Items.ToList().Find(i => i.ItemId == line.ItemId && i.LineNumber == line.LineNumber);
+                if (olditem != null)
                 {
-                    if (olditem.ItemId == line.ItemId && olditem.LineNumber == line.LineNumber)
+                    if (string.IsNullOrEmpty(line.ItemImageId))
+                        item.Image = olditem.Image;
+
+                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
                     {
-                        if (string.IsNullOrEmpty(line.ItemImageId))
-                            item.Image = olditem.Image;
-
-                        if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
-                        {
-                            item.VariantId = olditem.VariantId;
-                            item.VariantDescription = olditem.VariantDescription;
-                        }
-
-                        if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
-                        {
-                            item.UnitOfMeasureId = olditem.UnitOfMeasureId;
-                            item.UnitOfMeasureDescription = olditem.UnitOfMeasureDescription;
-                        }
-
-                        item.BarcodeId = olditem.BarcodeId;
-                        item.ProductGroup = olditem.ProductGroup;
-                        item.ItemCategory = olditem.ItemCategory;
-                        break;
+                        item.VariantId = olditem.VariantId;
+                        item.VariantDescription = olditem.VariantDescription;
                     }
+
+                    if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    {
+                        item.UnitOfMeasureId = olditem.UnitOfMeasureId;
+                        item.UnitOfMeasureDescription = olditem.UnitOfMeasureDescription;
+                    }
+
+                    item.BarcodeId = olditem.BarcodeId;
+                    item.ProductGroup = olditem.ProductGroup;
+                    item.ItemCategory = olditem.ItemCategory;
+                    item.Immutable = olditem.Immutable;
                 }
                 newitems.Add(item);
             }
@@ -344,27 +343,37 @@ namespace LSOmni.BLL.Loyalty
             list.Items.Clear();
             list.Items = newitems;
 
+            List<OneListItemDiscount> newdisclines = new List<OneListItemDiscount>();
             foreach (OrderDiscountLine disc in calcResp.OrderDiscountLines)
             {
-                foreach (OneListItem line in list.Items)
+                int lineno = disc.LineNumber;
+                foreach (OrderLine oline in calcResp.OrderLines)
                 {
-                    if (line.LineNumber == disc.LineNumber / 10000 || line.LineNumber == disc.LineNumber)
+                    if (oline.DiscountLineNumbers.Contains(disc.LineNumber))
                     {
-                        OneListItemDiscount discount = new OneListItemDiscount()
-                        {
-                            Description = disc.Description,
-                            DiscountAmount = disc.DiscountAmount,
-                            DiscountPercent = disc.DiscountPercent,
-                            DiscountType = disc.DiscountType,
-                            LineNumber = disc.LineNumber,
-                            No = disc.No,
-                            OfferNumber = disc.OfferNumber,
-                            PeriodicDiscGroup = disc.PeriodicDiscGroup,
-                            PeriodicDiscType = disc.PeriodicDiscType,
-                            Quantity = line.Quantity
-                        };
-                        line.OnelistItemDiscounts.Add(discount);
+                        lineno = oline.LineNumber;
+                        break;
                     }
+                }
+
+                OneListItem line = list.Items.ToList().Find(i => i.LineNumber == lineno);
+                if (line != null)
+                {
+                    OneListItemDiscount discount = new OneListItemDiscount()
+                    {
+                        Description = disc.Description,
+                        DiscountAmount = disc.DiscountAmount,
+                        DiscountPercent = disc.DiscountPercent,
+                        DiscountType = disc.DiscountType,
+                        LineNumber = disc.LineNumber,
+                        No = disc.No,
+                        OfferNumber = disc.OfferNumber,
+                        PeriodicDiscGroup = disc.PeriodicDiscGroup,
+                        PeriodicDiscType = disc.PeriodicDiscType,
+                        Quantity = line.Quantity
+                    };
+                    line.OnelistItemDiscounts.Add(discount);
+                    continue;
                 }
             }
             return list;

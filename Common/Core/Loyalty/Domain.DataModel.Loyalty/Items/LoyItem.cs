@@ -26,6 +26,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
             VariantsExt = new List<VariantExt>(); //Variant extended
             VariantsRegistration = new List<VariantRegistration>();
             ItemAttributes = new List<RetailAttribute>();
+            Recipes = new List<ItemRecipe>();
+            Modifiers = new List<ItemModifier>();
             UnitOfMeasures = new List<UnitOfMeasure>();
             Locations = new List<ItemLocation>();
             Images = new List<ImageView>();
@@ -60,6 +62,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
                     VariantsRegistration.Clear();
                 if (ItemAttributes != null)
                     ItemAttributes.Clear();
+                if (Recipes != null)
+                    Recipes.Clear();
+                if (Modifiers != null)
+                    Modifiers.Clear();
                 if (UnitOfMeasures != null)
                     UnitOfMeasures.Clear();
                 if (Locations != null)
@@ -84,6 +90,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public List<VariantRegistration> VariantsRegistration { get; set; }
         [DataMember]
         public List<RetailAttribute> ItemAttributes { get; set; }
+        [DataMember]
+        public List<ItemRecipe> Recipes { get; set; }
+        [DataMember]
+        public List<ItemModifier> Modifiers { get; set; }
         [DataMember]
         public List<ItemLocation> Locations { get; set; }
         [DataMember]

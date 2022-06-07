@@ -30,7 +30,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.Parameters.Clear();
                     command.CommandText = "SELECT * FROM (" +
                         "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
-                        "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
+                        "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS [Name],mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[" + storeId + "] " +
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
-                        "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS Name,mt.[Address],mt.[Address 2]," +
+                        "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS [Name],mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
@@ -158,9 +158,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
-        private void OrderLinesGetTotals(string orderId, out int itemCount, out decimal totalAmount, out decimal totalNetAmount, out decimal totalDiscount)
+        public void OrderLinesGetTotals(string orderId, out int itemCount, out int lineCount, out decimal totalAmount, out decimal totalNetAmount, out decimal totalDiscount)
         {
             itemCount = 0;
+            lineCount = 0;
             totalAmount = 0;
             totalNetAmount = 0;
             totalDiscount = 0;
@@ -186,6 +187,21 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             totalAmount = SQLHelper.GetDecimal(reader, "Amt");
                             totalNetAmount = SQLHelper.GetDecimal(reader, "NAmt");
                             totalDiscount = SQLHelper.GetDecimal(reader, "Disc");
+                        }
+                    }
+
+                    select = "SELECT [Document ID],[Line No_]";
+                    command.CommandText = "SELECT COUNT(*) AS [Cnt] FROM (" + select +
+                                            " FROM [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d]" +
+                                            " UNION " + select +
+                                            " FROM [" + navCompanyName + "Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d]" +
+                                            ") AS OrderTotals WHERE [Document ID]=@id";
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            lineCount = SQLHelper.GetInt32(reader["Cnt"]);
                         }
                     }
                 }
@@ -323,12 +339,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 }
             };
 
-			entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
+            entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
             entry.CustomerOrderNo = entry.Id;
 
-            OrderLinesGetTotals(entry.Id, out int cnt, out decimal amt, out decimal namt, out decimal disc);
+            OrderLinesGetTotals(entry.Id, out int cnt, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
             entry.LineItemCount = cnt;
+            entry.LineCount = lcnt;
             entry.TotalAmount = amt;
             entry.TotalNetAmount = namt;
             entry.TotalDiscount = disc;

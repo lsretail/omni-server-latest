@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.CentrAL.Dal;
 using LSOmni.DataAccess.Interface.BOConnection;
 
-using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
@@ -21,6 +21,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL
 {
@@ -57,9 +58,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return false;
         }
 
-        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
         {
             return "Not Supported";
+        }
+
+        public virtual OrderCheck ScanPayGoOrderCheck(string documentId)
+        {
+            return new OrderCheck();
         }
 
         #endregion

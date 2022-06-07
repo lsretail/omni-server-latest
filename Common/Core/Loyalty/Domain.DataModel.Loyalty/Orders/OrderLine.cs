@@ -33,7 +33,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             TaxAmount = 0.0M;
             Amount = 0.0M;
 
-            LineNumbers = new List<int>();
+            DiscountLineNumbers = new List<int>();
         }
 
         public OrderLine() : this(string.Empty)
@@ -123,7 +123,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             }
         }
 
-        public List<int> LineNumbers { get; set; }
+        public List<int> DiscountLineNumbers { get; set; }
 
         public override string ToString()
         {

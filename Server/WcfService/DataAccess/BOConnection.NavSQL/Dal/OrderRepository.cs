@@ -239,10 +239,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 Id = SQLHelper.GetString(reader[documentId]),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 IdType = DocumentIdType.Order,
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
-                Status = SalesEntryStatus.Created
+                Status = SalesEntryStatus.Created,
+                RequestedDeliveryDate = ConvertTo.SafeJsonDate(DateTime.MinValue, config.IsJson)
             };
 
             entry.CustomerOrderNo = entry.Id;

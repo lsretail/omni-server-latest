@@ -22,6 +22,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.Service
 {
@@ -1805,26 +1806,40 @@ namespace LSOmni.Service
 
         public virtual ClientToken PaymentClientTokenGet(string customerId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                // TODO Handle payment Token
+                return new ClientToken();
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, string.Empty);
+                return null; //never gets here
+            }
         }
 
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
         {
-            StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
+            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
             return bll.ScanPayGoProfileGet(profileId, storeNo);
         }
 
-
         public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
         {
-            StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
+            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
             return bll.SecurityCheckProfile(orderNo, storeNo);
         }
 
-        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping)
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
         {
-            StoreBLL bll = new StoreBLL(config, clientTimeOutInSeconds);
-            return bll.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping);
+            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+            return bll.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering);
+        }
+
+        public virtual OrderCheck ScanPayGoOrderCheck(string documentId)
+        {
+            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+            return bll.ScanPayGoOrderCheck(documentId);
         }
 
         #endregion

@@ -180,13 +180,13 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 
         public void DecrementQty()
         {
-            if (this.Quantity - 1 >= 0)
+            if (this.Quantity - 1 > 0)
             {
                 this.Quantity--;
             }
             else
             {
-                this.Quantity = 0;
+                Void();
             }
             ContainsExternalValues = false;
             Dirty = true;
@@ -194,9 +194,16 @@ namespace LSRetail.Omni.Domain.DataModel.Pos.Transactions
 
         public void SetQty(decimal qty)
         {
-            this.Quantity = Math.Min(qty, MPOSFeatures.MaximumQty);
-            ContainsExternalValues = false;
-            Dirty = true;
+            if (qty == 0)
+            {
+                Void();
+            }
+            else
+            {
+                this.Quantity = Math.Min(qty, MPOSFeatures.MaximumQty);
+                ContainsExternalValues = false;
+                Dirty = true;
+            }
         }
 
         public void SetUOM(UnitOfMeasure uom)

@@ -78,18 +78,42 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
         {
-            return new List<AvailabilityResponse>();
+            throw new NotImplementedException("Only available in Central Pre");
         }
 
         public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
         {
-            return new List<AvailabilityResponse>();
+            throw new NotImplementedException("Only available in Central Pre");
         }
 
         public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
         {
-            messageString = "Not Supported";
-            return false;
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual string ActivityInsertGroupReservation(Reservation request)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual string ActivityUpdateGroupReservation(Reservation request)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
         }
 
         #endregion
@@ -158,12 +182,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
         {
-            return new List<Booking>();
+            throw new NotImplementedException("Only available in Central Pre");
         }
 
         public virtual List<ActivityResource> ActivityResourceGet()
         {
-            return new List<ActivityResource>();
+            throw new NotImplementedException("Only available in Central Pre");
         }
 
         #endregion

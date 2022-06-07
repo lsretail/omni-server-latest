@@ -64,7 +64,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     {
                         OrderLine line = new OrderLine()
                         {
-                            LineNumber = LineNumberFromNav(mobileTransLine.LineNo),
+                            LineNumber = mobileTransLine.LineNo,
                             ItemId = mobileTransLine.Number,
                             Quantity = mobileTransLine.Quantity,
                             DiscountAmount = mobileTransLine.DiscountAmount,
@@ -83,7 +83,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         if (NavVersion > new Version("14.2"))
                             line.ItemImageId = mobileTransLine.RetailImageID;
 
-                        line.LineNumbers.Add(line.LineNumber);
+                        line.DiscountLineNumbers.Add(line.LineNumber);
                         order.OrderLines.Add(line);
                     }
                     else
@@ -93,7 +93,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         oline.Quantity += mobileTransLine.Quantity;
                         oline.TaxAmount += mobileTransLine.TAXAmount;
                         oline.Amount += (mobileTransLine.NetAmount + mobileTransLine.TAXAmount);
-                        oline.LineNumbers.Add(LineNumberFromNav(mobileTransLine.LineNo));
+                        oline.DiscountLineNumbers.Add(mobileTransLine.LineNo);
                     }
                 }
             }
@@ -116,7 +116,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     if (dline != null)
                     {
                         // find line, if found we keep that discount
-                        OrderLine oline = order.OrderLines.Find(l => l.LineNumber == LineNumberFromNav(mobileTransDisc.LineNo));
+                        OrderLine oline = order.OrderLines.Find(l => l.LineNumber == mobileTransDisc.LineNo);
                         if (oline == null)
                         {
                             dline.DiscountAmount += mobileTransDisc.DiscountAmount;
@@ -135,7 +135,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Description = mobileTransDisc.Description,
                         No = mobileTransDisc.No.ToString(),
                         OfferNumber = mobileTransDisc.OfferNo,
-                        LineNumber = LineNumberFromNav(mobileTransDisc.LineNo)
+                        LineNumber = mobileTransDisc.LineNo
                     };
 
                     if (discount.DiscountType == DiscountType.Coupon)
@@ -148,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     // check line number if extra discount
                     foreach (OrderLine ol in order.OrderLines)
                     {
-                        if (ol.LineNumbers.Contains(discount.LineNumber))
+                        if (ol.DiscountLineNumbers.Contains(discount.LineNumber))
                         {
                             discount.LineNumber = ol.LineNumber;
                             break;
@@ -174,7 +174,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 items.Add(new ItemCustomerPrice()
                 {
-                    LineNo = LineNumberFromNav(mobileTransLine.LineNo),
+                    LineNo = mobileTransLine.LineNo,
                     Id = mobileTransLine.Number,
                     Quantity = mobileTransLine.Quantity,
                     DiscountPercent = mobileTransLine.DiscountPercent,
@@ -248,7 +248,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Description = line.Description,
                         No = line.EntryNo.ToString(),
                         OfferNumber = line.OfferNo,
-                        LineNumber = LineNumberFromNav(line.LineNo)
+                        LineNumber = line.LineNo
                     };
                     order.DiscountLines.Add(discount);
                 }
@@ -267,7 +267,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
                     SalesEntryLine line = new SalesEntryLine()
                     {
-                        LineNumber = LineNumberFromNav(oline.LineNo),
+                        LineNumber = oline.LineNo,
                         ItemId = oline.Number,
                         Quantity = oline.Quantity,
                         DiscountAmount = oline.DiscountAmount,
@@ -300,7 +300,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     SalesEntryPayment pay = new SalesEntryPayment()
                     {
-                        LineNumber = LineNumberFromNav(line.LineNo),
+                        LineNumber = line.LineNo,
                         Amount = (line.FinalisedAmount > 0) ? line.FinalisedAmount : line.PreApprovedAmount,
                         CurrencyCode = line.CurrencyCode,
                         TenderType = line.TenderType
@@ -383,7 +383,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                         Description = line.Description,
                         No = line.EntryNo.ToString(),
                         OfferNumber = line.OfferNo,
-                        LineNumber = LineNumberFromNav(line.LineNo)
+                        LineNumber = line.LineNo
                     };
                     order.DiscountLines.Add(discount);
                 }
@@ -404,7 +404,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
 
                     SalesEntryLine line = new SalesEntryLine()
                     {
-                        LineNumber = LineNumberFromNav(oline.LineNo),
+                        LineNumber = oline.LineNo,
                         ExternalId = oline.ExternalID,
                         ItemId = oline.Number,
                         Quantity = oline.Quantity,
@@ -438,7 +438,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     SalesEntryPayment pay = new SalesEntryPayment()
                     {
-                        LineNumber = LineNumberFromNav(line.LineNo),
+                        LineNumber = line.LineNo,
                         Amount = (line.FinalizedAmount > 0) ? line.FinalizedAmount : line.PreApprovedAmount,
                         CurrencyCode = line.CurrencyCode,
                         TenderType = line.TenderType
@@ -556,7 +556,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 orderLines.Add(new NavWS.CustomerOrderLineV2()
                 {
                     DocumentID = string.Empty,
-                    LineNo = LineNumberToNav(line.LineNumber),
+                    LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
                     VariantCode = XMLHelper.GetString(line.VariantId),
@@ -586,7 +586,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     discLines.Add(new NavWS.CustomerOrderDiscountLineV2()
                     {
                         DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
                         OfferNo = XMLHelper.GetString(line.OfferNumber),
@@ -608,7 +608,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     payLines.Add(new NavWS.CustomerOrderPaymentV2()
                     {
                         DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         PreApprovedAmount = line.Amount,
                         FinalisedAmount = 0,
                         TenderType = line.TenderType,
@@ -692,7 +692,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 orderLines.Add(new NavWS.CustomerOrderCreateCOLineV4()
                 {
                     DocumentID = string.Empty,
-                    LineNo = LineNumberToNav(line.LineNumber),
+                    LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
                     VariantCode = XMLHelper.GetString(line.VariantId),
@@ -723,7 +723,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     discLines.Add(new NavWS.CustomerOrderCreateCODiscountLineV4()
                     {
                         DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
                         OfferNo = XMLHelper.GetString(line.OfferNumber),
@@ -748,7 +748,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV4()
                     {
                         DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         PreApprovedAmount = line.Amount,
                         Type = ((int)line.PaymentType).ToString(),
                         TenderType = line.TenderType,
@@ -831,7 +831,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 {
                     DocumentID = string.Empty,
                     ExternalID = (string.IsNullOrEmpty(line.Id)) ? string.Empty : line.Id.ToUpper(),
-                    LineNo = LineNumberToNav(line.LineNumber),
+                    LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
                     VariantCode = XMLHelper.GetString(line.VariantId),
@@ -870,7 +870,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     discLines.Add(new NavWS.CustomerOrderCreateCODiscountLineV5()
                     {
                         DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
                         OfferNo = XMLHelper.GetString(line.OfferNumber),
@@ -895,7 +895,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV5()
                     {
                         DocumentID = string.Empty,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         PreApprovedAmount = line.Amount,
                         PreApprovedAmountLCY = line.CurrencyFactor * line.Amount,
                         Type = ((int)line.PaymentType).ToString(),
@@ -970,7 +970,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 orderLines.Add(new NavWS.CustomerOrderLine2()
                 {
                     DocumentId = order.Id,
-                    LineNo = LineNumberToNav(line.LineNumber),
+                    LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                     LineType = Convert.ToInt32(line.LineType).ToString(),
                     Number = line.ItemId,
                     VariantCode = XMLHelper.GetString(line.VariantId),
@@ -997,7 +997,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     discLines.Add(new NavWS.CustomerOrderDiscountLine()
                     {
                         DocumentId = order.Id,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         EntryNo = Convert.ToInt32(line.No),
                         DiscountType = (int)line.DiscountType,
                         OfferNo = XMLHelper.GetString(line.OfferNumber),
@@ -1019,7 +1019,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     payLines.Add(new NavWS.CustomerOrderPayment()
                     {
                         DocumentId = order.Id,
-                        LineNo = LineNumberToNav(line.LineNumber),
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
                         PreApprovedAmount = line.Amount,
                         TenderType = line.TenderType,
                         CardType = XMLHelper.GetString(line.CardType),
@@ -1070,15 +1070,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             root.MobileTransaction = trans.ToArray();
 
             //MobileTransLines
-            int lineno = 1;
             List<NavWS.MobileTransactionLine> transLines = new List<NavWS.MobileTransactionLine>();
             foreach (OneListItem line in list.Items)
             {
-                line.LineNumber = lineno++;
                 NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
                 {
                     Id = root.MobileTransaction[0].Id,
-                    LineNo = LineNumberToNav(line.LineNumber),
+                    LineNo = line.LineNumber,
                     EntryStatus = (int)EntryStatus.Normal,
                     LineType = (int)LineType.Item,
                     Number = line.ItemId,
@@ -1132,7 +1130,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     NavWS.MobileTransactionLine tline = new NavWS.MobileTransactionLine()
                     {
                         Id = root.MobileTransaction[0].Id,
-                        LineNo = LineNumberToNav(lineno++),
+                        LineNo = line.LineNumber,
                         EntryStatus = (int)EntryStatus.Normal,
                         LineType = (int)LineType.Coupon,
                         Number = line.Id,
@@ -1223,7 +1221,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 transLines.Add(new NavWS.MobileTransactionLine()
                 {
                     Id = id,
-                    LineNo = LineNumberToNav(lineno++),
+                    LineNo = XMLHelper.LineNumberToNav(lineno++),
                     EntryStatus = (int)EntryStatus.Normal,
                     LineType = (int)LineType.Item,
                     Number = line.Id,
@@ -1367,7 +1365,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 lines.Add(new NavWS.CustomerOrderLine1()
                 {
                     DocumentID = string.Empty,
-                    LineNo = LineNumberToNav(linenr++),
+                    LineNo = XMLHelper.LineNumberToNav(linenr++),
                     Number = item.ItemId,
                     VariantCode = item.VariantId,
                     UnitofMeasureCode = item.UnitOfMeasureId,
@@ -1400,7 +1398,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 lines.Add(new NavWS.CustomerOrderLine()
                 {
                     DocumentID = string.Empty,
-                    LineNo = LineNumberToNav(linenr++),
+                    LineNo = XMLHelper.LineNumberToNav(linenr++),
                     Number = item.ItemId,
                     VariantCode = item.VariantId,
                     UnitofMeasureCode = item.UnitOfMeasureId,

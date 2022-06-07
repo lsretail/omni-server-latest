@@ -23,7 +23,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="ODataRequest_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest")]
@@ -35,11 +35,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         private System.Threading.SendOrPostCallback GetAttributeOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetBarcodeGS1SetupOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetBarcodeMaskSegmentOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetBarcodeMaskOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetBarcodeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetContactOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetCurrencyExchRateOperationCompleted;
         
@@ -98,6 +102,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private System.Threading.SendOrPostCallback GetValidationPeriodOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetVariantRegOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetVendorOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetWIDiscountsOperationCompleted;
         
@@ -165,6 +171,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         public event GetAttributeCompletedEventHandler GetAttributeCompleted;
         
         /// <remarks/>
+        public event GetBarcodeGS1SetupCompletedEventHandler GetBarcodeGS1SetupCompleted;
+        
+        /// <remarks/>
         public event GetBarcodeMaskSegmentCompletedEventHandler GetBarcodeMaskSegmentCompleted;
         
         /// <remarks/>
@@ -172,6 +181,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         /// <remarks/>
         public event GetBarcodeCompletedEventHandler GetBarcodeCompleted;
+        
+        /// <remarks/>
+        public event GetContactCompletedEventHandler GetContactCompleted;
         
         /// <remarks/>
         public event GetCurrencyExchRateCompletedEventHandler GetCurrencyExchRateCompleted;
@@ -259,6 +271,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         /// <remarks/>
         public event GetVariantRegCompletedEventHandler GetVariantRegCompleted;
+        
+        /// <remarks/>
+        public event GetVendorCompletedEventHandler GetVendorCompleted;
         
         /// <remarks/>
         public event GetWIDiscountsCompletedEventHandler GetWIDiscountsCompleted;
@@ -396,6 +411,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeGS1Setup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetBarcodeGS1Setup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetBarcodeGS1Setup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetBarcodeGS1Setup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetBarcodeGS1SetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetBarcodeGS1SetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetBarcodeGS1SetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetBarcodeGS1SetupOperationCompleted == null)) {
+                this.GetBarcodeGS1SetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetBarcodeGS1SetupOperationCompleted);
+            }
+            this.InvokeAsync("GetBarcodeGS1Setup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetBarcodeGS1SetupOperationCompleted, userState);
+        }
+        
+        private void OnGetBarcodeGS1SetupOperationCompleted(object arg) {
+            if ((this.GetBarcodeGS1SetupCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetBarcodeGS1SetupCompleted(this, new GetBarcodeGS1SetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetBarcodeMaskSegment", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetBarcodeMaskSegment_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public string GetBarcodeMaskSegment(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
@@ -502,6 +553,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetBarcodeCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetBarcodeCompleted(this, new GetBarcodeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetContact_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetContact(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetContact", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetContactAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetContactAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetContactAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetContactOperationCompleted == null)) {
+                this.GetContactOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetContactOperationCompleted);
+            }
+            this.InvokeAsync("GetContact", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetContactOperationCompleted, userState);
+        }
+        
+        private void OnGetContactOperationCompleted(object arg) {
+            if ((this.GetContactCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetContactCompleted(this, new GetContactCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1582,6 +1669,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendor", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetVendor_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetVendor(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetVendor", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetVendorAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetVendorAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetVendorAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetVendorOperationCompleted == null)) {
+                this.GetVendorOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVendorOperationCompleted);
+            }
+            this.InvokeAsync("GetVendor", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetVendorOperationCompleted, userState);
+        }
+        
+        private void OnGetVendorOperationCompleted(object arg) {
+            if ((this.GetVendorCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetVendorCompleted(this, new GetVendorCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetWIDiscounts", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetWIDiscounts_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public string GetWIDiscounts(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
@@ -1941,11 +2064,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetAttributeOptionValuesCompletedEventHandler(object sender, GetAttributeOptionValuesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAttributeOptionValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -1967,11 +2090,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetAttributeValuesCompletedEventHandler(object sender, GetAttributeValuesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAttributeValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -1993,11 +2116,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetAttributeCompletedEventHandler(object sender, GetAttributeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAttributeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2019,11 +2142,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void GetBarcodeGS1SetupCompletedEventHandler(object sender, GetBarcodeGS1SetupCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetBarcodeGS1SetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetBarcodeGS1SetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetBarcodeMaskSegmentCompletedEventHandler(object sender, GetBarcodeMaskSegmentCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBarcodeMaskSegmentCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2045,11 +2194,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetBarcodeMaskCompletedEventHandler(object sender, GetBarcodeMaskCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBarcodeMaskCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2071,11 +2220,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetBarcodeCompletedEventHandler(object sender, GetBarcodeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetBarcodeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2097,11 +2246,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void GetContactCompletedEventHandler(object sender, GetContactCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetContactCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetContactCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetCurrencyExchRateCompletedEventHandler(object sender, GetCurrencyExchRateCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetCurrencyExchRateCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2123,11 +2298,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetCurrencyCompletedEventHandler(object sender, GetCurrencyCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetCurrencyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2149,11 +2324,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetCustomerCompletedEventHandler(object sender, GetCustomerCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetCustomerCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2175,11 +2350,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetDataTranslationCompletedEventHandler(object sender, GetDataTranslationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetDataTranslationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2201,11 +2376,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetExtdVariantValuesCompletedEventHandler(object sender, GetExtdVariantValuesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetExtdVariantValuesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2227,11 +2402,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyDealLineCompletedEventHandler(object sender, GetHierarchyDealLineCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyDealLineCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2253,11 +2428,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyDealCompletedEventHandler(object sender, GetHierarchyDealCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyDealCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2279,11 +2454,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyLeafCompletedEventHandler(object sender, GetHierarchyLeafCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyLeafCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2305,11 +2480,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyNodesCompletedEventHandler(object sender, GetHierarchyNodesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyNodesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2331,11 +2506,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetHierarchyCompletedEventHandler(object sender, GetHierarchyCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetHierarchyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2357,11 +2532,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetImageLinkCompletedEventHandler(object sender, GetImageLinkCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetImageLinkCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2383,11 +2558,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetInvWorksheetBufferCompletedEventHandler(object sender, GetInvWorksheetBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetInvWorksheetBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2409,11 +2584,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetInventoryMenuLinesCompletedEventHandler(object sender, GetInventoryMenuLinesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetInventoryMenuLinesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2435,11 +2610,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetInventoryMenuCompletedEventHandler(object sender, GetInventoryMenuCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetInventoryMenuCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2461,11 +2636,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetInventoryStatusCompletedEventHandler(object sender, GetInventoryStatusCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetInventoryStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2487,11 +2662,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetItemCategoryCompletedEventHandler(object sender, GetItemCategoryCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetItemCategoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2513,11 +2688,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetItemUnitOfMeasureCompletedEventHandler(object sender, GetItemUnitOfMeasureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetItemUnitOfMeasureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2539,11 +2714,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetPOSTerminalCompletedEventHandler(object sender, GetPOSTerminalCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPOSTerminalCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2565,11 +2740,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetPluBufferCompletedEventHandler(object sender, GetPluBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetPluBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2591,11 +2766,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetProductGroupCompletedEventHandler(object sender, GetProductGroupCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetProductGroupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2617,11 +2792,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetStaffCompletedEventHandler(object sender, GetStaffCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetStaffCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2643,11 +2818,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetStoreBufferCompletedEventHandler(object sender, GetStoreBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetStoreBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2669,11 +2844,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetStoreStaffCompletedEventHandler(object sender, GetStoreStaffCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetStoreStaffCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2695,11 +2870,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetTenderTypeCurrencyCompletedEventHandler(object sender, GetTenderTypeCurrencyCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetTenderTypeCurrencyCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2721,11 +2896,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetTenderTypeCompletedEventHandler(object sender, GetTenderTypeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetTenderTypeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2747,11 +2922,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetUnitOfMeasureCompletedEventHandler(object sender, GetUnitOfMeasureCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetUnitOfMeasureCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2773,11 +2948,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetVATPostingSetupCompletedEventHandler(object sender, GetVATPostingSetupCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVATPostingSetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2799,11 +2974,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetValidationPeriodCompletedEventHandler(object sender, GetValidationPeriodCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetValidationPeriodCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2825,11 +3000,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetVariantRegCompletedEventHandler(object sender, GetVariantRegCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetVariantRegCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2851,11 +3026,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    public delegate void GetVendorCompletedEventHandler(object sender, GetVendorCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetVendorCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetVendorCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIDiscountsCompletedEventHandler(object sender, GetWIDiscountsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIDiscountsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2877,11 +3078,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIImageBufferCompletedEventHandler(object sender, GetWIImageBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIImageBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2903,11 +3104,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIInvLocationBufferCompletedEventHandler(object sender, GetWIInvLocationBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIInvLocationBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2929,11 +3130,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIItemBufferCompletedEventHandler(object sender, GetWIItemBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIItemBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2955,11 +3156,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIItemLocationBufferCompletedEventHandler(object sender, GetWIItemLocationBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIItemLocationBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -2981,11 +3182,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIItemModifierCompletedEventHandler(object sender, GetWIItemModifierCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIItemModifierCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3007,11 +3208,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIItemRecipeBufferCompletedEventHandler(object sender, GetWIItemRecipeBufferCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIItemRecipeBufferCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3033,11 +3234,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIMixMatchCompletedEventHandler(object sender, GetWIMixMatchCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIMixMatchCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -3059,11 +3260,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     public delegate void GetWIPriceCompletedEventHandler(object sender, GetWIPriceCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetWIPriceCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {

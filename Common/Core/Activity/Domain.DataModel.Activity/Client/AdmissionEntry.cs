@@ -44,7 +44,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string GateNo { get; set; }
         [DataMember]
         public int LineNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime EntryTime { get; set; }
         [DataMember]
         public string MemberType { get; set; }

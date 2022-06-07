@@ -15,6 +15,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
@@ -30,7 +31,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
         bool SecurityCheckProfile(string orderNo, string storeNo);
-        string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping);
+        string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering);
+        OrderCheck ScanPayGoOrderCheck(string documentId);
 
         #endregion
 

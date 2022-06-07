@@ -77,9 +77,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
 
         [DataMember]
         public string RestaurantNo { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime OrderDate { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PickupTime { get; set; }
         [DataMember]
         public HospDeliveryType DeliveryType { get; set; }

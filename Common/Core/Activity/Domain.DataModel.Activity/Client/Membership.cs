@@ -50,13 +50,13 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string MembershipType { get; set; }
         [DataMember]
         public string MembershipDescription { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateIssued { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateCreated { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateExpires { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateLastProcessed { get; set; }
         [DataMember]
         public string LastProcessBatch { get; set; }
@@ -68,7 +68,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public decimal Discount { get; set; }
         [DataMember]
         public decimal Amount { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime CommitmentDate { get; set; }
         [DataMember]
         public string DiscountReasonCode { get; set; }
@@ -80,21 +80,21 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string EntryType { get; set; }
         [DataMember]
         public int NoOfVisits { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime OnHoldUntil { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime StatusDate { get; set; }
         [DataMember]
         public string ChargeTo { get; set; }
         [DataMember]
         public string ChargeToName { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime AccessFrom { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime AccessUntil { get; set; }
         [DataMember]
         public string StatusCode { get; set; }
-        [DataMember]
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime PriceCommitmentExpires { get; set; }
         [DataMember]
         public string PaymentMethodCode { get; set; }

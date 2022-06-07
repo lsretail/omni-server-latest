@@ -91,6 +91,31 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
         }
 
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        {
+            return LSCentralWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
+        }
+
+        public virtual string ActivityInsertGroupReservation(Reservation request)
+        { 
+            return LSCentralWSBase.ActivityInsertGroupReservation(request); 
+        }
+
+        public virtual string ActivityUpdateGroupReservation(Reservation request)
+        { 
+            return LSCentralWSBase.ActivityUpdateGroupReservation(request);
+        }
+
+        public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
+        { 
+            return LSCentralWSBase.ActivityConfirmGroup(request); 
+        }
+
+        public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
+        { 
+            return LSCentralWSBase.ActivityDeleteGroup(groupNo, lineNo); 
+        }
+
         #endregion
 
         #region Data Get (Replication)
