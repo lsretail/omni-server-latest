@@ -94,5 +94,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string VariantDimension5 { get; set; }
         [DataMember]
         public string VariantDimension6 { get; set; }
+        [DataMember]
+        public int BlockedOnPos { get; set; }
+        [DataMember]
+        public int BlockedOnECom { get; set; }
     }
 }

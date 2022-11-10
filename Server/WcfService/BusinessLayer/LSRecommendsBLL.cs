@@ -3,10 +3,10 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Collections.Generic;
+
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
-using Newtonsoft.Json;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -14,8 +14,6 @@ namespace LSOmni.BLL.Loyalty
     //  read from the appsettings.config
     public class LSRecommendsBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-
         public LSRecommendsBLL(BOConfiguration config, bool settings) : base(config, 0)
         {
             if (settings)   // sending settings, don't load them
@@ -44,7 +42,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<RecommendedItem> RecommendedItemsGet(List<string> items)
         {
-            string token = CheckToken();
+            string token = CheckRecommendToken();
             if (string.IsNullOrEmpty(token))
                 throw new LSOmniServiceException(StatusCode.LSRecommendError, "Cannot Get Token to access LS Recommend Service");
 
@@ -54,18 +52,24 @@ namespace LSOmni.BLL.Loyalty
 
             string requrl = $"{url}/api/{config.SettingsGetByKey(ConfigKey.LSRecommend_BatchNo)}/BasketRecommendation?numberOfRecommendations={config.SettingsGetByKey(ConfigKey.LSRecommend_NoOfDownloadedItems)}";
 
-            string json = string.Format("{{\"items\": {0}}}", JsonConvert.SerializeObject(items));
+            string json = string.Format("{{\"items\": {0}}}", Serialization.Serialize<List<string>>(items));
             string result = SendCommand(requrl, json, token);
-            return JsonConvert.DeserializeObject<List<RecommendedItem>>(result);
+            return Serialization.Deserialize<List<RecommendedItem>>(result);
         }
 
-        private string CheckToken()
+        private string CheckRecommendToken()
         {
-            if (config.LSRecommToken != null)
+            string token = config.SettingsGetByKey(ConfigKey.LSRecommend_Token);
+            if (string.IsNullOrEmpty(token) == false)
             {
-                if (DateTime.Now < config.LSRecommToken.lastCheck.AddSeconds(config.LSRecommToken.expires_in - 100))
+                DateTime regtime = DateTime.MinValue;
+                string reg = config.SettingsGetByKey(ConfigKey.LSRecommend_Time);
+                if (string.IsNullOrEmpty(reg) == false)
+                    regtime = Convert.ToDateTime(reg);
+
+                if (regtime > DateTime.Now)
                 {
-                    return config.LSRecommToken.token_type + " " + config.LSRecommToken.access_token;
+                    return token;
                 }
             }
 
@@ -76,9 +80,13 @@ namespace LSOmni.BLL.Loyalty
             string body = $"grant_type=password&client_id={config.SettingsGetByKey(ConfigKey.LSRecommend_ClientId)}&client_secret={config.SettingsGetByKey(ConfigKey.LSRecommend_ClientSecret)}&username={config.SettingsGetByKey(ConfigKey.LSRecommend_UserName)}&password={config.SettingsGetByKey(ConfigKey.LSRecommend_Password)}";
 
             string result = SendCommand(url, body, string.Empty);
-            config.LSRecommToken = JsonConvert.DeserializeObject<LSRecommendToken>(result);
-            config.LSRecommToken.lastCheck = DateTime.Now;
-            return config.LSRecommToken.token_type + " " + config.LSRecommToken.access_token;
+            TokenS2S data = Serialization.Deserialize<TokenS2S>(result);
+            token = data.token_type + " " + data.access_token;
+
+            ConfigBLL bll = new ConfigBLL();
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSRecommend_Token, token, "string", true, "Active token");
+            bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSRecommend_Time, DateTime.Now.AddSeconds(data.expires_in - 90).ToString(), "string", true, "Token Reg");
+            return token;
         }
 
         protected string SendCommand(string url, string data, string authcode)

@@ -1,6 +1,5 @@
 ﻿using System;
 
-using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
 
@@ -8,7 +7,6 @@ namespace LSOmni.BLL
 {
     public class CustomBLL : BaseBLL
     {
-        private static LSLogger logger = new LSLogger();
         private ICustomBO iBOCustom = null;
 
         protected ICustomBO BOCustom

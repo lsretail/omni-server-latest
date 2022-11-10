@@ -509,22 +509,24 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         "Item No."
                     };
 
-                    List<XMLFieldData> filter = new List<XMLFieldData>();
-                    filter.Add(new XMLFieldData()
+                    List<XMLFieldData> filter = new List<XMLFieldData>()
                     {
-                        FieldName = "Offer No.",
-                        Values = new List<string>() { disc.Id }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Store No.",
-                        Values = new List<string>() { storeId }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Loyalty Scheme Code",
-                        Values = new List<string>() { "", loyaltySchemeCode }
-                    });
+                        new XMLFieldData()
+                        {
+                            FieldName = "Offer No.",
+                            Values = new List<string>() { disc.Id }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Store No.",
+                            Values = new List<string>() { storeId }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Loyalty Scheme Code",
+                            Values = new List<string>() { "", loyaltySchemeCode }
+                        }
+                    };
 
                     try
                     {
@@ -565,22 +567,24 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         "Unit Price"
                     };
 
-                    List<XMLFieldData> filter = new List<XMLFieldData>();
-                    filter.Add(new XMLFieldData()
+                    List<XMLFieldData> filter = new List<XMLFieldData>()
                     {
-                        FieldName = "Store No.",
-                        Values = new List<string>() { storeId }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Item No.",
-                        Values = new List<string>() { disc.ItemId }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Variant Code",
-                        Values = new List<string>() { disc.VariantId }
-                    });
+                        new XMLFieldData()
+                        {
+                            FieldName = "Store No.",
+                            Values = new List<string>() { storeId }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Item No.",
+                            Values = new List<string>() { disc.ItemId }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Variant Code",
+                            Values = new List<string>() { disc.VariantId }
+                        }
+                    };
 
                     try
                     {
@@ -780,11 +784,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return contact;
         }
 
-        public MemberContact ContactGetByUserName(string username, bool includeDetails)
-        {
-            return ContactGet(string.Empty, string.Empty, string.Empty, username, string.Empty, includeDetails);
-        }
-
         public MemberContact ContactGetByEmail(string email, bool includeDetails)
         {
             NAVWebXml xml = new NAVWebXml();
@@ -822,6 +821,33 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberCardToContact Response - points:", points);
             return (double)points;
+        }
+
+        public List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned)
+        {
+            string fldname = "Name";
+            search += "*";
+            switch (searchType)
+            {
+                case CustomerSearchType.CustomerId:
+                    fldname = "No.";
+                    break;
+                case CustomerSearchType.Email:
+                    fldname = "E-Mail";
+                    break;
+                case CustomerSearchType.PhoneNumber:
+                    fldname = "Phone No.";
+                    break;
+            }
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Customer", fldname, search, maxNumberOfRowsReturned);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ContactRepository rep = new ContactRepository();
+            return rep.CustomerGet(table);
         }
 
         #endregion
@@ -908,7 +934,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return list;
         }
 
-        public MemberContact Logon(string userName, string password, string deviceID, string deviceName, bool includeDetails)
+        public MemberContact Logon(string userName, string password, string deviceID, string deviceName)
         {
             MemberContact contact = null;
             if (NAVVersion < new Version("16.3"))
@@ -954,9 +980,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             ContactMapping map = new ContactMapping(config.IsJson);
             contact = map.MapFromRootToLogonContact(root, remainingPoints);
             contact.UserName = userName;
-            if (includeDetails)
-                contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
-
             return contact;
         }
 
@@ -1481,13 +1504,13 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 {
                     //<Response_Text>Unknown Request_ID CO_QTY_AVAILABILITY</Response_Text>
                     //0004 = Unknown Request_ID,  NavResponseCode.Error = 0004
-                    logger.Info(config.LSKey.Key, "responseCode {0} - this is only supported by default for LS Nav 11.0 and later", navResponseCode);
+                    logger.Warn(config.LSKey.Key, "responseCode {0} - this is only supported by default for LS Nav 11.0 and later", navResponseCode);
                     return new OrderAvailabilityResponse();
                 }
 
                 if (navResponseCode != "0000")
                 {
-                    logger.Info(config.LSKey.Key, "responseCode {0} - Inventory Not available for store {1}", navResponseCode, request.StoreId);
+                    logger.Warn(config.LSKey.Key, "responseCode {0} - Inventory Not available for store {1}", navResponseCode, request.StoreId);
                     OrderAvailabilityResponse resp = new OrderAvailabilityResponse();
                     foreach (OneListItem item in request.Items)
                     {

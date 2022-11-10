@@ -22,6 +22,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre
 {
@@ -37,9 +38,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
         }
 
-        public virtual string Ping()
+        public virtual string Ping(out string centralVersion)
         {
-            string ver = LSCentralWSBase.NavVersionToUse();
+            string ver = LSCentralWSBase.NavVersionToUse(true, out centralVersion);
             if (ver.Contains("ERROR"))
                 throw new ApplicationException(ver);
 
@@ -48,339 +49,380 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         #region ScanPayGo
 
-        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
         {
-            return LSCentralWSBase.ScanPayGoProfileGet(profileId, storeNo);
+            return LSCentralWSBase.ScanPayGoProfileGet(profileId, storeNo, stat);
         }
 
-        public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
+        public virtual bool SecurityCheckProfile(string orderNo, string storeNo, Statistics stat)
         {
-            return LSCentralWSBase.SecurityCheckProfile(orderNo, storeNo);
+            return LSCentralWSBase.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
-        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
+        public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
-            return LSCentralWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering);
+            return LSCentralWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering, stat);
         }
 
-        public virtual OrderCheck ScanPayGoOrderCheck(string documentId)
+        public virtual OrderCheck ScanPayGoOrderCheck(string documentId, Statistics stat)
         {
-            return LSCentralWSBase.ScanPayGoOrderCheck(documentId);
+            return LSCentralWSBase.ScanPayGoOrderCheck(documentId, stat);
+        }
+
+        public virtual bool TokenEntrySet(ClientToken token, Statistics stat)
+        {
+            return LSCentralWSBase.TokenEntrySet(token, stat);
+        }
+
+        public virtual ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        {
+            return LSCentralWSBase.TokenEntryGet(cardNo, stat);
         }
 
         #endregion
 
         #region Contact
 
-        public virtual string ContactCreate(MemberContact contact)
+        public virtual string ContactCreate(MemberContact contact, Statistics stat)
         {
-            return LSCentralWSBase.ContactCreate(contact);
+            return LSCentralWSBase.ContactCreate(contact, stat);
         }
 
-        public virtual void ContactUpdate(MemberContact contact, string accountId)
+        public virtual void ContactUpdate(MemberContact contact, string accountId, Statistics stat)
         {
-            LSCentralWSBase.ContactUpdate(contact, accountId);
+            LSCentralWSBase.ContactUpdate(contact, accountId, stat);
         }
 
-        public virtual MemberContact ContactGetByCardId(string card, int numberOfTrans, bool includeDetails)
+        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue, Statistics stat)
         {
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            MemberContact contact = rep.ContactGet(ContactSearchType.CardId, card);
-        	if (contact != null && includeDetails)
-            {
-                long totalPoints = MemberCardGetPoints(card);
-                contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
-
-                contact.Profiles = ProfileGetByCardId(card);
-                contact.PublishedOffers = PublishedOffersGet(card, string.Empty, string.Empty);
-                contact.SalesEntries = SalesEntriesGetByCardId(card, string.Empty, DateTime.MinValue, false, numberOfTrans);
-            }
-            return contact;
+            return rep.ContactGet(searchType, searchValue, stat);
         }
 
-        public virtual MemberContact ContactGetByUserName(string user, bool includeDetails)
+        public virtual List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
-            ContactRepository rep = new ContactRepository(config, LSCVersion);
-            MemberContact contact = rep.ContactGetByUserName(user);
-            if (contact != null && includeDetails)
-            {
-                long totalPoints = MemberCardGetPoints(contact.Cards[0].Id);
-                contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
-
-                contact.Profiles = ProfileGetByCardId(contact.Cards[0].Id);
-                contact.PublishedOffers = PublishedOffersGet(contact.Cards[0].Id, string.Empty, string.Empty);
-            }
-            return contact;
+            logger.StatisticStartSub(false, ref stat, out int index);
+            CustomerRepository rep = new CustomerRepository(config);
+            List<Customer> list = rep.CustomerSearch(searchType, search, maxNumberOfRowsReturned);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
+        public virtual double ContactAddCard(string contactId, string accountId, string cardId, Statistics stat)
         {
-            ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.ContactGet(searchType, searchValue);
+            return LSCentralWSBase.ContactAddCard(contactId, accountId, cardId, stat);
         }
 
-        public virtual double ContactAddCard(string contactId, string accountId, string cardId)
+        public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
         {
-            return LSCentralWSBase.ContactAddCard(contactId, accountId, cardId);
+            LSCentralWSBase.ConatctBlock(accountId, cardId, stat);
         }
 
-        public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, bool includeDetails)
+        public virtual MemberContact Login(string userName, string password, string deviceID, string deviceName, Statistics stat)
         {
-            return LSCentralWSBase.Logon(userName, password, deviceID, deviceName, includeDetails);
+            return LSCentralWSBase.Logon(userName, password, deviceID, deviceName, stat);
         }
 
-        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails)
+        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, Statistics stat)
         {
-            return LSCentralWSBase.SocialLogon(authenticator, authenticationId, deviceID, deviceName, includeDetails);
+            return LSCentralWSBase.SocialLogon(authenticator, authenticationId, deviceID, deviceName, stat);
         }
 
         //Change the password in NAV
-        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod)
+        public virtual void ChangePassword(string userName, string token, string newPassword, string oldPassword, ref bool oldmethod, Statistics stat)
         {
-            LSCentralWSBase.ChangePassword(userName, token, newPassword, oldPassword);
+            LSCentralWSBase.ChangePassword(userName, token, newPassword, oldPassword, stat);
         }
 
-        public virtual string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod)
+        public virtual string ResetPassword(string userName, string email, string newPassword, ref bool oldmethod, Statistics stat)
         {
-            return LSCentralWSBase.ResetPassword(userName, email);
+            return LSCentralWSBase.ResetPassword(userName, email, stat);
         }
 
-        public virtual string SPGPassword(string email, string token, string newPwd)
+        public virtual string SPGPassword(string email, string token, string newPwd, Statistics stat)
         {
-            return LSCentralWSBase.SPGPassword(email, token, newPwd);
+            return LSCentralWSBase.SPGPassword(email, token, newPwd, stat);
         }
 
-        public virtual void LoginChange(string oldUserName, string newUserName, string password)
+        public virtual void LoginChange(string oldUserName, string newUserName, string password, Statistics stat)
         {
-            LSCentralWSBase.LoginChange(oldUserName, newUserName, password);
+            LSCentralWSBase.LoginChange(oldUserName, newUserName, password, stat);
         }
 
-        public virtual List<Profile> ProfileGetByCardId(string id)
+        public virtual List<Profile> ProfileGetByCardId(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.ProfileGetByCardId(id);
+            List<Profile> list = rep.ProfileGetByCardId(id);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual List<Profile> ProfileGetAll()
+        public virtual List<Profile> ProfileGetAll(Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.ProfileGetAll();
+            List<Profile> list = rep.ProfileGetAll();
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual List<Scheme> SchemeGetAll()
+        public virtual List<Scheme> SchemeGetAll(Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.SchemeGetAll();
+            List<Scheme> list = rep.SchemeGetAll();
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual Scheme SchemeGetById(string schemeId)
+        public virtual Scheme SchemeGetById(string schemeId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
             if (schemeId.Equals("Ping"))
             {
                 rep.SchemeGetById(schemeId);
                 return new Scheme("NAV");
             }
-            return rep.SchemeGetById(schemeId);
+            Scheme data = rep.SchemeGetById(schemeId);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         #endregion
 
         #region Device
 
-        public virtual Device DeviceGetById(string id)
+        public virtual Device DeviceGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.DeviceGetById(id);
+            Device data = rep.DeviceGetById(id);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual bool IsUserLinkedToDeviceId(string userName, string deviceId)
+        public virtual bool IsUserLinkedToDeviceId(string userName, string deviceId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.IsUserLinkedToDeviceId(userName, deviceId);
+            bool data = rep.IsUserLinkedToDeviceId(userName, deviceId);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         #endregion
 
         #region Search
 
-        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
+        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact);
+            return rep.ContactSearch(searchType, search, maxNumberOfRowsReturned, stat);
         }
 
-        public virtual List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails)
+        public virtual List<LoyItem> ItemsSearch(string search, string storeId, int maxNumberOfItems, bool includeDetails, Statistics stat)
         {
             ItemRepository rep = new ItemRepository(config, LSCVersion);
-            return rep.ItemLoySearch(search, storeId, maxNumberOfItems, includeDetails);
+            return rep.ItemLoySearch(search, storeId, maxNumberOfItems, includeDetails, stat);
         }
 
-        public virtual List<ItemCategory> ItemCategorySearch(string search)
+        public virtual List<ItemCategory> ItemCategorySearch(string search, Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config);
-            return rep.ItemCategorySearch(search);
+            return rep.ItemCategorySearch(search, stat);
         }
 
-        public virtual List<ProductGroup> ProductGroupSearch(string search)
+        public virtual List<ProductGroup> ProductGroupSearch(string search, Statistics stat)
         {
             ProductGroupRepository rep = new ProductGroupRepository(config);
-            return rep.ProductGroupSearch(search);
+            return rep.ProductGroupSearch(search, stat);
         }
 
-        public virtual List<Store> StoreLoySearch(string search)
+        public virtual List<Store> StoreLoySearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
-            return rep.StoreLoySearch(search);
+            List<Store> list = rep.StoreLoySearch(search);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual List<Profile> ProfileSearch(string cardId, string search)
+        public virtual List<Profile> ProfileSearch(string cardId, string search, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.ProfileSearch(cardId, search);
+            List<Profile> list = rep.ProfileSearch(cardId, search);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions)
+        public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntryRepository rep = new SalesEntryRepository(config);
-            return rep.SalesEntrySearch(search, cardId, maxNumberOfTransactions);
+            List<SalesEntry> list = rep.SalesEntrySearch(search, cardId, maxNumberOfTransactions);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
         #endregion
 
         #region Card
 
-        public virtual Card CardGetById(string id)
+        public virtual Card CardGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.CardGetById(id);
+            Card data = rep.CardGetById(id);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual long MemberCardGetPoints(string cardId)
+        public virtual long MemberCardGetPoints(string cardId, Statistics stat)
         {
-            return LSCentralWSBase.MemberCardGetPoints(cardId);
+            return LSCentralWSBase.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual decimal GetPointRate()
+        public virtual decimal GetPointRate(Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
             ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById("LOY");
+            logger.StatisticEndSub(ref stat, index);
             if (exchrate == null)
                 return 0;
 
             return exchrate.CurrencyFactor;
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.PointEntiesGet(cardNo, dateFrom);
+            List<PointEntry> list = rep.PointEntiesGet(cardNo, dateFrom);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            return rep.GetGiftCartBalance(cardNo, entryType);
+            GiftCard data = rep.GetGiftCartBalance(cardNo, entryType);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         #endregion
 
         #region Notification
 
-        public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
+        public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications, Statistics stat)
         {
-            return LSCentralWSBase.NotificationsGetByCardId(cardId);
+            return LSCentralWSBase.NotificationsGetByCardId(cardId, stat);
         }
 
         #endregion
 
         #region Item
 
-        public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails)
+        public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails, Statistics stat)
         {
             ItemRepository rep = new ItemRepository(config, LSCVersion);
-            return rep.ItemLoyGetById(id, storeId, culture, includeDetails);
+            return rep.ItemLoyGetById(id, storeId, culture, includeDetails, stat);
         }
 
-        public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
+        public virtual LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ItemRepository rep = new ItemRepository(config, LSCVersion);
-            LoyItem item = rep.ItemLoyGetByBarcode(code, storeId, culture);
+            LoyItem item = rep.ItemLoyGetByBarcode(code, storeId, culture, stat);
             if (item != null)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return item;
+            }
 
-            LoyItem bitem = LSCentralWSBase.ItemFindByBarcode(code, storeId, config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal));
-            item = rep.ItemLoyGetById(bitem.Id, storeId, string.Empty, true);
+            LoyItem bitem = LSCentralWSBase.ItemFindByBarcode(code, storeId, config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal), stat);
+            item = rep.ItemLoyGetById(bitem.Id, storeId, string.Empty, true, stat);
             item.GrossWeight = bitem.GrossWeight;
             item.Price = bitem.Price;
+            logger.StatisticEndSub(ref stat, index);
             return item;
         }
 
-        public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)
+        public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems, Statistics stat)
         {
-            List<LoyItem> tmplist = LSCentralWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
+            logger.StatisticStartSub(false, ref stat, out int index);
+            List<LoyItem> tmplist = LSCentralWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems, stat);
 
             ItemRepository rep = new ItemRepository(config, LSCVersion);
             List<LoyItem> list = new List<LoyItem>();
             foreach (LoyItem item in tmplist)
             {
-                list.Add(rep.ItemLoyGetById(item.Id, string.Empty, string.Empty, true));
+                list.Add(rep.ItemLoyGetById(item.Id, string.Empty, string.Empty, true, stat));
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails)
+        public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails, Statistics stat)
         {
             ItemRepository rep = new ItemRepository(config, LSCVersion);
-            return rep.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, storeId, includeDetails);
+            return rep.ItemsPage(pageSize, pageNumber, itemCategoryId, productGroupId, search, storeId, includeDetails, stat);
         }
 
-        public virtual UnitOfMeasure ItemUOMGetByIds(string itemid, string uomid)
+        public virtual UnitOfMeasure ItemUOMGetByIds(string itemid, string uomid, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ItemUOMRepository rep = new ItemUOMRepository(config);
-            return rep.ItemUOMGetByIds(itemid, uomid);
+            UnitOfMeasure data = rep.ItemUOMGetByIds(itemid, uomid);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items, Statistics stat)
         {
-            return LSCentralWSBase.ItemCustomerPricesGet(storeId, cardId, items);
+            return LSCentralWSBase.ItemCustomerPricesGet(storeId, cardId, items, stat);
         }
 
         #endregion
 
         #region ItemCategory and ProductGroup and Hierarchy
 
-        public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture)
+        public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture, Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config);
-            return rep.ItemCategoriesGetAll(storeId, culture);
+            return rep.ItemCategoriesGetAll(storeId, culture, stat);
         }
 
-        public virtual ItemCategory ItemCategoriesGetById(string id)
+        public virtual ItemCategory ItemCategoriesGetById(string id, Statistics stat)
         {
             ItemCategoryRepository rep = new ItemCategoryRepository(config);
-            return rep.ItemCategoryGetById(id);
+            return rep.ItemCategoryGetById(id, stat);
         }
 
-        public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems)
+        public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
         {
             ProductGroupRepository rep = new ProductGroupRepository(config);
-            return rep.ProductGroupGetByItemCategoryId(itemcategoryId, culture, includeChildren, includeItems);
+            return rep.ProductGroupGetByItemCategoryId(itemcategoryId, culture, includeChildren, includeItems, stat);
         }
 
-        public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail)
+        public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
         {
             ProductGroupRepository rep = new ProductGroupRepository(config);
-            return rep.ProductGroupGetById(id, culture, includeItems, includeItemDetail);
+            return rep.ProductGroupGetById(id, culture, includeItems, includeItemDetail, stat);
         }
 
-        public virtual List<Hierarchy> HierarchyGet(string storeId)
+        public virtual List<Hierarchy> HierarchyGet(string storeId, Statistics stat)
         {
             HierarchyRepository rep = new HierarchyRepository(config);
-            return rep.HierarchyGetByStore(storeId);
+            return rep.HierarchyGetByStore(storeId, stat);
         }
 
-        public virtual MobileMenu MenuGet(string storeId, string salesType, Currency currency)
+        public virtual MobileMenu MenuGet(string storeId, string salesType, Currency currency, Statistics stat)
         {
             return LSCentralWSBase.MenuGet(storeId, salesType, currency);
         }
@@ -399,91 +441,97 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         #region Hospitality Order
 
-        public virtual OrderHosp HospOrderCalculate(OneList list)
+        public virtual OrderHosp HospOrderCalculate(OneList list, Statistics stat)
         {
-            return LSCentralWSBase.HospOrderCalculate(list);
+            return LSCentralWSBase.HospOrderCalculate(list, stat);
         }
 
-        public virtual string HospOrderCreate(OrderHosp request)
+        public virtual string HospOrderCreate(OrderHosp request, Statistics stat)
         {
-            return LSCentralWSBase.HospOrderCreate(request);
+            return LSCentralWSBase.HospOrderCreate(request, stat);
         }
 
-        public virtual void HospOrderCancel(string storeId, string orderId)
+        public virtual void HospOrderCancel(string storeId, string orderId, Statistics stat)
         {
-            LSCentralWSBase.HospOrderCancel(storeId, orderId);
+            LSCentralWSBase.HospOrderCancel(storeId, orderId, stat);
         }
 
-        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
+        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat)
         {
-            return LSCentralWSBase.HospOrderKotStatus(storeId, orderId);
+            return LSCentralWSBase.HospOrderKotStatus(storeId, orderId, stat);
         }
 
-        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             InvStatusRepository rep = new InvStatusRepository(config, LSCVersion);
-            return rep.CheckAvailability(request, storeId);
+            List<HospAvailabilityResponse> list = rep.CheckAvailability(request, storeId);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
         #endregion
 
         #region Basket
 
-        public virtual Order BasketCalcToOrder(OneList list)
+        public virtual Order BasketCalcToOrder(OneList list, Statistics stat)
         {
-            return LSCentralWSBase.BasketCalcToOrder(list);
+            return LSCentralWSBase.BasketCalcToOrder(list, stat);
         }
 
         #endregion
 
         #region Order
 
-        public virtual OrderStatusResponse OrderStatusCheck(string orderId)
+        public virtual OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             OrderRepository repo = new OrderRepository(config, LSCVersion);
-            return repo.OrderStatusGet(orderId);
+            OrderStatusResponse data = repo.OrderStatusGet(orderId);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
         {
-            LSCentralWSBase.OrderCancel(orderId, storeId, userId, lineNo);
+            LSCentralWSBase.OrderCancel(orderId, storeId, userId, lineNo, stat);
         }
 
-        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
+        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder, Statistics stat)
         {
-            return LSCentralWSBase.OrderAvailabilityCheck(request, shippingOrder);
+            return LSCentralWSBase.OrderAvailabilityCheck(request, shippingOrder, stat);
         }
 
-        public virtual string OrderCreate(Order request, out string orderId)
+        public virtual string OrderCreate(Order request, out string orderId, Statistics stat)
         {
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
                 orderId = string.Empty;
-                return LSCentralWSBase.ScanPayGoSuspend(request);
+                return LSCentralWSBase.ScanPayGoSuspend(request, stat);
             }
 
-            return LSCentralWSBase.OrderCreate(request, out orderId);
+            return LSCentralWSBase.OrderCreate(request, out orderId, stat);
         }
 
-        public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type)
+        public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
         {
             SalesEntry entry;
             if (type == DocumentIdType.Receipt)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config);
-                entry = trepo.SalesEntryGetById(entryId);
+                entry = trepo.SalesEntryGetById(entryId, stat);
             }
             else if (type == DocumentIdType.HospOrder)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config);
-                entry = trepo.POSTransactionGetById(entryId);
+                entry = trepo.POSTransactionGetById(entryId, stat);
                 if (entry == null)
-                    entry = trepo.SalesEntryGetById(entryId);
+                    entry = trepo.SalesEntryGetById(entryId, stat);
             }
             else
             {
                 OrderRepository repo = new OrderRepository(config, LSCVersion);
-                entry = repo.OrderGetById(entryId, true, (type == DocumentIdType.External));
+                entry = repo.OrderGetById(entryId, true, (type == DocumentIdType.External), stat);
             }
             if (entry == null)
                 return null;
@@ -498,99 +546,116 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return entry;
         }
 
-        public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntryRepository repo = new SalesEntryRepository(config);
-            return repo.SalesEntryGetReturnSales(receiptNo);
+            List<SalesEntryId> list = repo.SalesEntryGetReturnSales(receiptNo);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
+        public virtual List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntryRepository repo = new SalesEntryRepository(config);
-            return repo.SalesEntriesByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
+            List<SalesEntryId> list = repo.SalesEntryGetSalesByOrderId(orderId);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
+            SalesEntryRepository repo = new SalesEntryRepository(config);
+            List<SalesEntry> data = repo.SalesEntriesByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         #endregion
 
         #region Offer and Advertisement
 
-        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
+        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
         {
-            return LSCentralWSBase.PublishedOffersGet(cardId, itemId, storeId);
+            return LSCentralWSBase.PublishedOffersGet(cardId, itemId, storeId, stat);
         }
 
-        public virtual List<Advertisement> AdvertisementsGetById(string id)
+        public virtual List<Advertisement> AdvertisementsGetById(string id, Statistics stat)
         {
-            return LSCentralWSBase.AdvertisementsGetById(id);
+            return LSCentralWSBase.AdvertisementsGetById(id, stat);
         }
 
         #endregion
 
         #region Image
 
-        public virtual ImageView ImageGetById(string imageId, bool includeBlob)
+        public virtual ImageView ImageGetById(string imageId, bool includeBlob, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ImageRepository rep = new ImageRepository(config);
-            return rep.ImageGetById(imageId, includeBlob);
+            ImageView img = rep.ImageGetById(imageId, includeBlob);
+            logger.StatisticEndSub(ref stat, index);
+            return img;
         }
 
-        public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob)
+        public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ImageRepository rep = new ImageRepository(config);
-            return rep.ImageGetByKey(tableName, key1, key2, key3, imgCount, includeBlob);
+            List<ImageView> list = rep.ImageGetByKey(tableName, key1, key2, key3, imgCount, includeBlob);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
         #endregion
 
         #region Store
 
-        private List<StoreHours> StoreHoursGetByStoreId(string storeId)
+        private List<StoreHours> StoreHoursGetByStoreId(string storeId, Statistics stat)
         {
             int offset = config.SettingsIntGetByKey(ConfigKey.Timezone_HoursOffset);
-            return LSCentralWSBase.StoreHoursGetByStoreId(storeId, offset);
+            return LSCentralWSBase.StoreHoursGetByStoreId(storeId, offset, stat);
         }
 
-        public virtual Store StoreGetById(string id, bool details)
+        public virtual Store StoreGetById(string id, bool details, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
             Store store = rep.StoreLoyGetById(id, details);
             if (store != null)
-                store.StoreHours = StoreHoursGetByStoreId(id);
+                store.StoreHours = StoreHoursGetByStoreId(id, stat);
+            logger.StatisticEndSub(ref stat, index);
             return store;
         }
 
-        public virtual List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
+        public virtual List<Store> StoresGetAll(bool clickAndCollectOnly, Statistics stat)
         {
-            StoreRepository rep = new StoreRepository(config, LSCVersion);
-            List<Store> stores = rep.StoresLoyGetByCoordinates(latitude, longitude, maxDistance, units);
-            foreach (Store store in stores)
-            {
-                store.StoreHours = StoreHoursGetByStoreId(store.Id);
-            }
-            return stores;
-        }
-
-        public virtual List<Store> StoresGetAll(bool clickAndCollectOnly)
-        {
+            logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
             List<Store> stores = rep.StoreLoyGetAll(clickAndCollectOnly);
             foreach (Store store in stores)
             {
-                store.StoreHours = StoreHoursGetByStoreId(store.Id);
-                store.StoreServices = StoreServicesGetByStoreId(store.Id);
+                store.StoreHours = StoreHoursGetByStoreId(store.Id, stat);
+                store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
             }
+            logger.StatisticEndSub(ref stat, index);
             return stores;
         }
 
-        public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId)
+        public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat)
         {
-            return LSCentralWSBase.StoreServicesGetByStoreId(storeId);
+            return LSCentralWSBase.StoreServicesGetByStoreId(storeId, stat);
         }
 
-        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
-            return rep.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+            List<ReturnPolicy> list = rep.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
         #endregion

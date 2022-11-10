@@ -96,7 +96,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mlr.[Device License Key]" + sqlfrom +
-                                         " INNER JOIN [" + navCompanyName + "MobileLicenseRegistration$5ecfc871-5d82-43f1-9c54-59685e82318d] mlr ON mt.[No_]=mlr.[Terminal ID]" +
+                                         " JOIN [" + navCompanyName + "MobileLicenseRegistration$5ecfc871-5d82-43f1-9c54-59685e82318d] mlr ON mt.[No_]=mlr.[Terminal ID]" +
                                          " WHERE mt.[No_]=@termid AND mlr.[App ID]=@appid";
                     command.Parameters.AddWithValue("@termid", terminalId);
                     command.Parameters.AddWithValue("@appid", appid);

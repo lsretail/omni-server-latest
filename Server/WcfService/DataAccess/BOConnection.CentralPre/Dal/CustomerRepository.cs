@@ -23,8 +23,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[E-Mail],mt.[Home Page]," +
                          "mt.[Phone No_],mt.[Mobile Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Customer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_]";
+            sqlfrom = " FROM [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
+                      " JOIN [" + navCompanyName + "Customer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_]";
         }
 
         public List<ReplCustomer> ReplicateCustomer(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

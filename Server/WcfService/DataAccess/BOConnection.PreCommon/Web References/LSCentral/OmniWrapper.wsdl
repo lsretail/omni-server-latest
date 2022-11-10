@@ -19,6 +19,7 @@
           <element minOccurs="0" maxOccurs="1" name="StatusInt" type="string" />
           <element minOccurs="0" maxOccurs="1" default="0001-01-01" name="RequestedDeliveryDate" type="date" />
           <element minOccurs="0" maxOccurs="1" default="false" name="ShipOrder" type="boolean" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalID" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootCOFilteredListV2" mixed="true">
@@ -1667,6 +1668,7 @@
           <element minOccurs="1" maxOccurs="1" name="Surname" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SalutationCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SearchE-Mail" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="SendReceiptbyE-mail" type="string" />
         </sequence>
       </complexType>
       <complexType name="MemberClub">
@@ -2850,6 +2852,7 @@
           <element minOccurs="1" maxOccurs="1" name="Surname" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SalutationCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SearchE-Mail" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="SendReceiptbyE-mail" type="string" />
         </sequence>
       </complexType>
       <complexType name="MemberClub">
@@ -3088,6 +3091,7 @@
           <element minOccurs="1" maxOccurs="1" name="Surname" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SalutationCode" type="string" />
           <element minOccurs="1" maxOccurs="1" name="SearchE-Mail" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="SendReceiptbyE-mail" type="string" />
         </sequence>
       </complexType>
       <complexType name="MemberClub">
@@ -4981,6 +4985,24 @@
       <element name="RootStoreInventoryGetLines" type="tns:RootStoreInventoryGetLines" />
     </schema>
     <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="BlockMemberAccount">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="memberAccountNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="membershipCardNo" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="BlockMemberAccount_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="COFilteredListV2">
         <complexType>
           <sequence>
@@ -7065,6 +7087,12 @@
       </element>
     </schema>
   </types>
+  <message name="BlockMemberAccount">
+    <part name="parameters" element="tns:BlockMemberAccount" />
+  </message>
+  <message name="BlockMemberAccount_Result">
+    <part name="parameters" element="tns:BlockMemberAccount_Result" />
+  </message>
   <message name="COFilteredListV2">
     <part name="parameters" element="tns:COFilteredListV2" />
   </message>
@@ -7666,6 +7694,10 @@
     <part name="parameters" element="tns:TestConnection_Result" />
   </message>
   <portType name="OmniWrapper_Port">
+    <operation name="BlockMemberAccount">
+      <input name="BlockMemberAccount" message="tns:BlockMemberAccount" />
+      <output name="BlockMemberAccount_Result" message="tns:BlockMemberAccount_Result" />
+    </operation>
     <operation name="COFilteredListV2">
       <input name="COFilteredListV2" message="tns:COFilteredListV2" />
       <output name="COFilteredListV2_Result" message="tns:COFilteredListV2_Result" />
@@ -8069,6 +8101,15 @@
   </portType>
   <binding name="OmniWrapper_Binding" type="tns:OmniWrapper_Port">
     <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="BlockMemberAccount">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:BlockMemberAccount" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="BlockMemberAccount">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="BlockMemberAccount_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="COFilteredListV2">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:COFilteredListV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="COFilteredListV2">
@@ -8972,7 +9013,7 @@
   </binding>
   <service name="OmniWrapper">
     <port name="OmniWrapper_Port" binding="tns:OmniWrapper_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSC-20790/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

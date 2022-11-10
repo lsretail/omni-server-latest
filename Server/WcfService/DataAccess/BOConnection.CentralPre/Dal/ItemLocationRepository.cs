@@ -130,8 +130,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ItemLocation> ItemLocationGetByItemId(string itemId, string storeId)
+        public List<ItemLocation> ItemLocationGetByItemId(string itemId, string storeId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<ItemLocation> list = new List<ItemLocation>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -157,6 +158,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 

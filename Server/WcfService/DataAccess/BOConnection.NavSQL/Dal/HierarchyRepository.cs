@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Hierarchy] mt INNER JOIN [" + navCompanyName + "Hierarchy Date] hd " +
+            sqlfrom = " FROM [" + navCompanyName + "Hierarchy] mt JOIN [" + navCompanyName + "Hierarchy Date] hd " +
                       "ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
         }
 
@@ -162,7 +162,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Attribute Code],at.[Description] FROM [" + navCompanyName + "Hierarchy Attribute] mt " +
-                                          "INNER JOIN [" + navCompanyName + "Attribute] at ON at.[Code]=mt.[Attribute Code] WHERE mt.[Hierarchy Code]=@id";
+                                          "JOIN [" + navCompanyName + "Attribute] at ON at.[Code]=mt.[Attribute Code] WHERE mt.[Hierarchy Code]=@id";
                     command.Parameters.AddWithValue("@id", code);
 
                     TraceSqlCommand(command);

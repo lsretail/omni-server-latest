@@ -26,7 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 sql = "SELECT ml.[Parameter],ml.[Command],bp.[Parameter Value]" +
                         " FROM dbo.[" + navCompanyName + "Store] st" +
                         " LEFT JOIN [" + navCompanyName + "POS Menu Line] ml ON ml.[Menu ID]=st.[PLU Menu ID] AND ml.[Profile ID]=st.[PLU Menu Profile]" +
-                        " LEFT OUTER JOIN [" + navCompanyName + "POS Button Parameters] bp ON ml.[Profile ID]=bp.[POS Menu Profile ID] AND" +
+                        " LEFT JOIN [" + navCompanyName + "POS Button Parameters] bp ON ml.[Profile ID]=bp.[POS Menu Profile ID] AND" +
                         " ml.[Menu ID]=bp.[Menu ID] AND ml.[Key No_]=bp.[Key No_] AND ml.[Command]=bp.[POS Command] AND bp.[Parameter Value]>''" +
                         " WHERE st.[No_]='" + storeId + "' AND ml.[Parameter]>''";
             }
@@ -35,7 +35,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 sql = "SELECT ml.[Parameter],ml.[Command],bp.[Parameter Value]" +
                         " FROM dbo.[" + navCompanyName + "WI Store] st" +
                         " LEFT JOIN [" + navCompanyName + "POS Menu Line] ml ON ml.[Menu ID]=st.[PLU Menu ID] AND ml.[Profile ID]=st.[PLU Menu Profile]" +
-                        " LEFT OUTER JOIN [" + navCompanyName + "POS Button Parameters] bp ON ml.[Profile ID]=bp.[POS Menu Profile ID] AND" +
+                        " LEFT JOIN [" + navCompanyName + "POS Button Parameters] bp ON ml.[Profile ID]=bp.[POS Menu Profile ID] AND" +
                         " ml.[Menu ID]=bp.[Menu ID] AND ml.[Key No_]=bp.[Key No_] AND ml.[Command]=bp.[POS Command] AND bp.[Parameter Value]>''" +
                         " WHERE st.[Store No_]='" + storeId + "' AND ml.[Parameter]>''";
             }
@@ -59,8 +59,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         {
                             itemsql = "SELECT it.[No_],it.[Description],it.[Search Description],i.[Code],i.[Image Blob]" +
                                             " FROM dbo.[" + navCompanyName + "Item] it" +
-                                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON it.[No_]=il.[KeyValue] AND il.[TableName]='Item' AND il.[Display Order]=0" +
-                                            " LEFT OUTER JOIN [" + navCompanyName + "Retail Image] i ON i.[Code]= il.[Image Id] and i.[Type]=1";
+                                            " LEFT JOIN [" + navCompanyName + "Retail Image Link] il ON it.[No_]=il.[KeyValue] AND il.[TableName]='Item' AND il.[Display Order]=0" +
+                                            " LEFT JOIN [" + navCompanyName + "Retail Image] i ON i.[Code]= il.[Image Id] and i.[Type]=1";
 
                             string cmd = SQLHelper.GetString(reader["Command"]);
                             string par = SQLHelper.GetString(reader["Parameter"]);

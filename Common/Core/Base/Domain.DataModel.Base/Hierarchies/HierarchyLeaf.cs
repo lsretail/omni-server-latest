@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
 {
@@ -38,5 +40,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         public int MaxSelection { get; set; }
         [DataMember]
         public decimal AddedAmount { get; set; }
+        [DataMember]
+        public decimal Prepayment { get; set; }
+        [DataMember]
+        public List<ItemModifier> Modifiers { get; set; }
+        [DataMember]
+        public List<ItemRecipe> Recipies { get; set; }
     }
 }

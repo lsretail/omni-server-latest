@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using LSRetail.Omni.Domain.DataModel.Base;
@@ -7,6 +8,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -22,26 +24,26 @@ namespace LSOmni.BLL.Loyalty
         {
         }
 
-        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
+        public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder, Statistics stat)
         {
             //validation
             if (request == null)
                 throw new LSOmniException(StatusCode.ObjectMissing, "OrderAvailabilityCheck() request is empty");
 
-            return BOLoyConnection.OrderAvailabilityCheck(request, shippingOrder);
+            return BOLoyConnection.OrderAvailabilityCheck(request, shippingOrder, stat);
         }
 
-        public virtual OrderStatusResponse OrderStatusCheck(string orderId)
+        public virtual OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat)
         {
-            return BOLoyConnection.OrderStatusCheck(orderId);
+            return BOLoyConnection.OrderStatusCheck(orderId, stat);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
         {
-            BOLoyConnection.OrderCancel(orderId, storeId, userId, lineNo);
+            BOLoyConnection.OrderCancel(orderId, storeId, userId, lineNo, stat);
         }
 
-        public virtual SalesEntry OrderCreate(Order request)
+        public virtual SalesEntry OrderCreate(Order request, Statistics stat)
         {
             //validation
             if (request == null)
@@ -49,7 +51,7 @@ namespace LSOmni.BLL.Loyalty
 
             if (string.IsNullOrEmpty(request.CardId) == false)
             {
-                MemberContact contact = BOLoyConnection.ContactGetByCardId(request.CardId, 0, false);
+                MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.CardId, request.CardId, stat);
                 if (contact == null)
                     throw new LSOmniServiceException(StatusCode.CardIdInvalid, "Invalid card number");
                 if (string.IsNullOrEmpty(request.ContactId))
@@ -64,36 +66,51 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
 
-            string extId = BOLoyConnection.OrderCreate(request, out string orderId);
+            if (request.OrderType == OrderType.ScanPayGo && config.SettingsBoolGetByKey(ConfigKey.ScanPayGo_CheckPayAuth))
+            {
+                ScanPayGoBLL sBll = new ScanPayGoBLL(config, timeoutInSeconds);
+                if (request.OrderPayments != null && request.OrderPayments.Count > 0)
+                {
+                    Task<bool> ok = sBll.GetAuthPaymentCodeAsync(request.OrderPayments[0].AuthorizationCode, stat);
+                    Task.WaitAll(ok);
+                    if (ok.Result == false)
+                        throw new LSOmniServiceException(StatusCode.PaymentAuthError, "Payment Authentication error");
+                }
+            }
+
+            string extId = BOLoyConnection.OrderCreate(request, out string orderId, stat);
 
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
                 return new SalesEntry(extId);
             }
 
+            TransactionBLL tBLL = new TransactionBLL(config, timeoutInSeconds);
             if (string.IsNullOrEmpty(orderId))
-                return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.External);
+                return tBLL.SalesEntryGet(extId, DocumentIdType.External, stat);
 
-            return BOLoyConnection.SalesEntryGet(orderId, DocumentIdType.Order);
+            return tBLL.SalesEntryGet(orderId, DocumentIdType.Order, stat);
         }
 
-        public virtual SalesEntry OrderHospCreate(OrderHosp request)
+        public virtual SalesEntry OrderHospCreate(OrderHosp request, Statistics stat)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
 
-            string extId = BOLoyConnection.HospOrderCreate(request);
-            return BOLoyConnection.SalesEntryGet(extId, DocumentIdType.HospOrder);
+            string extId = BOLoyConnection.HospOrderCreate(request, stat);
+
+            TransactionBLL tBLL = new TransactionBLL(config, timeoutInSeconds);
+            return tBLL.SalesEntryGet(extId, DocumentIdType.HospOrder, stat);
         }
 
-        public virtual void HospOrderCancel(string storeId, string orderId)
+        public virtual void HospOrderCancel(string storeId, string orderId, Statistics stat)
         {
-            BOLoyConnection.HospOrderCancel(storeId, orderId);
+            BOLoyConnection.HospOrderCancel(storeId, orderId, stat);
         }
 
-        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
+        public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId, Statistics stat)
         {
-            return BOLoyConnection.HospOrderStatus(storeId, orderId);
+            return BOLoyConnection.HospOrderStatus(storeId, orderId, stat);
         }
     }
 }

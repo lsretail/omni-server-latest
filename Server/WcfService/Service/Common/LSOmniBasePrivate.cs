@@ -31,7 +31,7 @@ namespace LSOmni.Service
         {
             if (imgView == null)
             {
-                logger.Info(config.LSKey.Key, "imgView is null");
+                logger.Warn(config.LSKey.Key, "imgView is null");
                 return "";
             }
             // return http://localhost/LSOmniService/ucjson.svc/ImageStreamGetById?id=66&width=255&height=455
@@ -99,7 +99,7 @@ namespace LSOmni.Service
                 }
                 catch (Exception)
                 {
-                    logger.Info(config.LSKey.Key, Serialization.ToXml(objIn, true));
+                    logger.Error(config.LSKey.Key, Serialization.ToXml(objIn, true));
                 }
             }
             return sOut; //FormatOutput(sOut);
@@ -117,7 +117,7 @@ namespace LSOmni.Service
             if (ex.GetType() == typeof(LSOmniServiceException))
             {
                 LSOmniServiceException lEx = (LSOmniServiceException)ex;
-                throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, errMsg + " - " + lEx.Message), exStatusCode);
+                throw new WebFaultException<LSOmniException>(new LSOmniException(lEx.StatusCode, "ERROR:" + errMsg + " - " + lEx.Message), exStatusCode);
             }
             if (ex.GetType() == typeof(LSOmniException))
             {
@@ -173,6 +173,8 @@ namespace LSOmni.Service
 
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Protocol"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOProtocol.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Protocol");
+                if (ConfigSetting.KeyExists("BOConnection.Nav.Tenant"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTenant.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Tenant");
 
                 if (ConfigSetting.KeyExists("SqlConnectionString.Nav"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOSql.ToString()).Value = ConfigSetting.GetString("SqlConnectionString.Nav");
@@ -194,11 +196,6 @@ namespace LSOmni.Service
             else if (bll.ConfigKeyExists(ConfigKey.LSKey, config.LSKey.Key))
             {
                 config = bll.ConfigGet(config.LSKey.Key);
-            }
-            //Check default LSOne Appsettings values (single tenant)
-            else if (ConfigSetting.KeyExists("LSOneConnection.LSOneUser"))
-            {
-                //TODO: get LS One config from appsettings
             }
             else if (serverUri.Contains("PortalService.svc") || serverUri.Contains("PortalJson.svc"))
             {

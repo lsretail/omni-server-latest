@@ -118,7 +118,7 @@ namespace LSOmni.Service
         OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
+        bool OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status);
 
         #endregion One List 
 

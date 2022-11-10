@@ -4,14 +4,12 @@ using System.Collections.Generic;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class PushNotificationBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-        private IPushNotificationRepository iPushRepository;
+        private readonly IPushNotificationRepository iPushRepository;
 
         public PushNotificationBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
             : base(config, deviceId, timeoutInSeconds)

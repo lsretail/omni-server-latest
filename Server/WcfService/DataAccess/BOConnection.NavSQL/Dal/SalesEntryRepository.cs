@@ -63,7 +63,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_] " +
                             "FROM [" + navCompanyName + "Transaction Header] mt " +
                             "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
-                            "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                            "LEFT JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
                             "UNION " +
                             "SELECT mt.[Document ID],mt.[Store No_],mt.[Created] AS [Date]," +
                             "mt.[External ID],mt.[Member Card No_],0 AS [Posted],'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC]," +
@@ -150,7 +150,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "co.[External ID] AS [External ID],co.[Ship-to Name],mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC] " +
                             "FROM [" + navCompanyName + "Transaction Header] mt " +
                             "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
-                            "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                            "LEFT JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
                             "WHERE [Receipt No_]=@id";
                     }
                     else
@@ -214,9 +214,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_] " +
                             "FROM [" + navCompanyName + "Transaction Header] mt " +
                             "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
-                            "INNER JOIN [" + navCompanyName + "Trans_ Sales Entry] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
-                            "INNER JOIN [" + navCompanyName + "Item] i ON i.[No_]=tl.[Item No_]" +
-                            "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                            "JOIN [" + navCompanyName + "Trans_ Sales Entry] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
+                            "JOIN [" + navCompanyName + "Item] i ON i.[No_]=tl.[Item No_]" +
+                            "LEFT JOIN [" + navCompanyName + "Posted Customer Order Header] co ON co.[Document ID]=mt.[Customer Order ID] " +
                             "WHERE UPPER(i.[Description]) LIKE UPPER(@search) " +
                             "UNION " +
                             "SELECT DISTINCT mt.[Document ID],mt.[Store No_],mt.[Created] AS [Date]," +
@@ -225,7 +225,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                             "0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
                             "FROM [" + navCompanyName + "Customer Order Header] mt " +
-                            "INNER JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[Document ID]=mt.[Document ID] " +
+                            "JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[Document ID]=mt.[Document ID] " +
                             "JOIN [" + navCompanyName + "Store] st ON st.[No_]= mt.[Store No_] " +
                             "WHERE UPPER(ol.[Item Description]) LIKE UPPER(@search) " +
                             ") AS SalesEntries " +
@@ -243,7 +243,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "MAX(st.[Name]) AS [StName],MAX(mt.[POS Terminal No_]) AS [POS Terminal No_],1 AS [Transaction] " +
                             "FROM [" + navCompanyName + "Member Sales Entry] mt " +
                             "JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_] " +
-                            "INNER JOIN [" + navCompanyName + "Item] i ON mt.[Item No_]=i.[No_] " +
+                            "JOIN [" + navCompanyName + "Item] i ON mt.[Item No_]=i.[No_] " +
                             "WHERE [Transaction No_]!=0 AND UPPER(i.Description) LIKE UPPER(@search) GROUP BY [Document No_] " +
                             "UNION " +
                             "SELECT DISTINCT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_], 0 AS [Posted]," +
@@ -251,7 +251,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "mt.[" + externalId + "],mt.[" + cac2 + "] AS [CAC],mt.[" + shipto + "Full Name] AS [Ship-to Name],'' AS [Transaction No_],0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
                             "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [StName],'' AS [POS Terminal No_],0 AS [Transaction] " +
                             "FROM [" + navCompanyName + "Customer Order Header] mt " +
-                            "INNER JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
+                            "JOIN [" + navCompanyName + "Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
                             "WHERE UPPER([Item Description]) LIKE UPPER(@search) " +
                             "UNION " +
                             "SELECT mt.[" + documentId + "],mt.[Store No_],mt.[Document DateTime],mt.[Member Card No_],1 AS [Posted]," +
@@ -259,7 +259,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             "mt.[" + externalId + "],mt.[" + cac + "] AS [CAC],mt.[" + shiptoPost + "] AS [Ship-to Name],'' AS [Transaction No_], 0 AS [Quantity],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount]," +
                             "(SELECT [Name] FROM [" + navCompanyName + "Store] WHERE [No_]=mt.[Store No_]) AS [StName],'' AS [POS Terminal No_], 0 AS [Transaction] " +
                             "FROM [" + navCompanyName + "Posted Customer Order Header] mt " +
-                            "INNER JOIN [" + navCompanyName + "Posted Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
+                            "JOIN [" + navCompanyName + "Posted Customer Order Line] ol ON ol.[" + documentId + "]=mt.[" + documentId + "] " +
                             "WHERE (SELECT COUNT(*) FROM [" + navCompanyName + "Member Sales Entry] se WHERE se.[Document No_]=mt.[Receipt No_])=0 " +
                             "AND UPPER([Item Description]) LIKE UPPER(@search) " +
                             ") AS SalesEntries WHERE [Member Card No_]=@id ORDER BY [Date] DESC";
@@ -338,8 +338,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "Trans_ Sales Entry] ml" +
-                                " INNER JOIN [" + navCompanyName + "Item] i ON i.[No_]=ml.[Item No_]" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "Item Variant Registration] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
+                                " JOIN [" + navCompanyName + "Item] i ON i.[No_]=ml.[Item No_]" +
+                                " LEFT JOIN [" + navCompanyName + "Item Variant Registration] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id ";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -513,7 +513,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 connection.Close();
             }
 
-            logger.Info(config.LSKey.Key, "Get Point Ballance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
+            logger.Debug(config.LSKey.Key, "Get Point Ballance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
                 entryId, custId, rewarded, used);
         }
 

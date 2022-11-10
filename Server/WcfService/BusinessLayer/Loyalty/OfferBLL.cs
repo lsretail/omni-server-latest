@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-
+using LSOmni.Common.Util;
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -17,17 +17,17 @@ namespace LSOmni.BLL.Loyalty
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
-            return BOAppConnection.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+            return BOAppConnection.DiscountsGet(storeId, itemIds, loyaltySchemeCode, stat);
         }
 
-        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
+        public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
         {
             // this new published offers method came with LS Nav 9.00.03
             // before that it didn't make sense to show the coupons since they couldn't be used in mpos transaction anyway!
             // old style didn't have offerId 
-            return BOLoyConnection.PublishedOffersGet(cardId, itemId, storeId);
+            return BOLoyConnection.PublishedOffersGet(cardId, itemId, storeId, stat);
         }
     }
 }

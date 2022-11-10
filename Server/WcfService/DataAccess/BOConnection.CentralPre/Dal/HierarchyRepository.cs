@@ -22,7 +22,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date],hd.[Priority],hd.[Sales Type Filter],hd.[Validation Schedule ID]";
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                      " INNER JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]";
+                      " JOIN [" + navCompanyName + "LSC Hierar_ Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code]";
         }
 
         public List<ReplHierarchy> ReplicateHierarchy(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -118,8 +118,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<Hierarchy> HierarchyGetByStore(string storeId)
+        public List<Hierarchy> HierarchyGetByStore(string storeId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<Hierarchy> list = new List<Hierarchy>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -143,7 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             foreach (Hierarchy root in list)
             {
                 HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
-                List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId);
+                List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId, stat);
 
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));
                 for (int i = 0; i < root.Nodes.Count; i++)
@@ -152,6 +153,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     root.RecursiveBuilder(ref node, nodes);
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -163,7 +165,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Attribute Code],at.[Description] FROM [" + navCompanyName + "LSC Hierar_ Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] at ON at.[Code]=mt.[Attribute Code] WHERE mt.[Hierarchy Code]=@id";
+                                          "JOIN [" + navCompanyName + "LSC Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] at ON at.[Code]=mt.[Attribute Code] WHERE mt.[Hierarchy Code]=@id";
                     command.Parameters.AddWithValue("@id", code);
 
                     TraceSqlCommand(command);

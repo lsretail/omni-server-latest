@@ -26,15 +26,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page],mt.[County]," +
-                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[Country_Region Code],ma.[Club Code],ma.[Scheme Code]";
+                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[Country_Region Code]";
 
-            if (LSCVersion >= new Version("19.2"))
-            {
-                sqlcolumns += ",mt.[Send Receipt by E-mail]";
-            }
-
-            sqlfrom = " FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "LSC Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
+            sqlfrom = " FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
 
         public List<ReplCustomer> ReplicateMembers(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -46,6 +40,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             // get records remaining
             string sql = string.Empty;
+            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code]";
+            sqlfrom += " LEFT JOIN [" + navCompanyName + "LSC Member Account$5ecfc871-5d82-43f1-9c54-59685e82318d] ma ON ma.[No_]=mt.[Account No_]";
+
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
@@ -132,17 +129,26 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
+        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
             if (maxNumberOfRowsReturned < 1)
                 maxNumberOfRowsReturned = 0;
 
             List<MemberContact> list = new List<MemberContact>();
+            if (string.IsNullOrEmpty(search))
+                return list;
+
+            logger.StatisticStartSub(false, ref stat, out int index);
+
+            bool exact = maxNumberOfRowsReturned == 1;
             string col = sqlcolumns;
             string from = sqlfrom;
             string where = string.Empty;
             string order = string.Empty;
             string like = (exact) ? "=" : " LIKE ";
+
+            if (LSCVersion >= new Version("19.2"))
+                col += ",mt.[Send Receipt by E-mail]";
 
             switch (searchType)
             {
@@ -166,17 +172,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     break;
 
                 case ContactSearchType.CardId:
-                    col += ", mc.[Card No_] ";
-                    from += " LEFT OUTER JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    col += ",mc.[Card No_] ";
+                    from += " LEFT JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
                     where = "mc.[Card No_]=@value";
                     order = "mc.[Card No_]";
                     exact = true;
                     break;
 
                 case ContactSearchType.UserName:
-                    col += ", mlc.[Login ID]";
-                    from += " LEFT OUTER JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] " +
-                            "LEFT OUTER JOIN[" + navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mlc on mc.[Card No_]=mlc.[Card No_]";
+                    col += ",mlc.[Login ID]";
+                    from += " LEFT JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_]" +
+                            " LEFT JOIN [" + navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mlc on mlc.[Card No_]=mc.[Card No_]";
                     where = string.Format("mlc.[Login ID]{0}@value {1}", like, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
@@ -198,7 +204,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToContact(reader));
+                            list.Add(ReaderToContact(reader, stat));
                         }
                         reader.Close();
                     }
@@ -207,33 +213,53 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
 
             TraceIt(string.Format("Number of Contacts returned: {0} ", list.Count));
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public MemberContact ContactGet(ContactSearchType searchType, string searchValue)
+        public MemberContact ContactGet(ContactSearchType searchType, string searchValue, Statistics stat)
         {
             MemberContact contact = null;
+            if (string.IsNullOrEmpty(searchValue))
+                return contact;
+
+            logger.StatisticStartSub(false, ref stat, out int index);
             string col = sqlcolumns;
             string from = sqlfrom;
             string where = string.Empty;
 
-            if (string.IsNullOrEmpty(searchValue))
-                searchValue = string.Empty;
+            if (LSCVersion >= new Version("19.2"))
+                col += ",mt.[Send Receipt by E-mail]";
 
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
-                    where = "mt.[Contact No_]=@id";
+                    where = "mt.[Contact No_]=@value";
                     break;
 
                 case ContactSearchType.Email:
-                    where = "mt.[E-Mail]=@id " + GetDbCICollation();
+                    where = "mt.[Search E-Mail]=@value " + GetDbCICollation();
+                    break;
+
+                case ContactSearchType.Name:
+                    where = "mt.[Search Name]=@value " + GetDbCICollation();
                     break;
 
                 case ContactSearchType.CardId:
-                    col += ", mc.[Card No_] ";
-                    from += " LEFT OUTER JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
-                    where = "mc.[Card No_]=@id";
+                    col += ",mc.[Card No_] ";
+                    from += " LEFT JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    where = "mc.[Card No_]=@value";
+                    break;
+
+                case ContactSearchType.PhoneNumber:
+                    where = "(mt.[Phone No_]=@value OR mt.[Mobile Phone No_]=@value)";
+                    break;
+
+                case ContactSearchType.UserName:
+                    col += ",mlc.[Login ID]";
+                    from += " LEFT JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_]" +
+                            " LEFT JOIN [" + navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mlc on mlc.[Card No_]=mc.[Card No_]";
+                    where = "mlc.[Login ID]=@value " + GetDbCICollation();
                     break;
             }
 
@@ -242,52 +268,21 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + col + from + " WHERE " + where;
-                    command.Parameters.AddWithValue("@id", searchValue);
+                    command.Parameters.AddWithValue("@value", searchValue);
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.Read())
                         {
-                            contact = ReaderToContact(reader);
+                            contact = ReaderToContact(reader, stat);
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
-            return contact;
-        }
-
-        public MemberContact ContactGetByUserName(string user)
-        {
-            MemberContact contact = null;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = 
-                        "SELECT " + sqlcolumns + ",ml.[Login ID],ml.[Password]" + sqlfrom +
-                        " LEFT OUTER JOIN["+ navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc on mc.[Contact No_]=mt.[Contact No_]" +
-                        " LEFT OUTER JOIN["+ navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mlc on mc.[Card No_]=mlc.[Card No_]" +
-                        " INNER JOIN [" + navCompanyName + "LSC Member Login$5ecfc871-5d82-43f1-9c54-59685e82318d] ml ON ml.[Login ID]=mlc.[Login ID]" +
-                        " WHERE ml.[Login ID]=@id " + GetDbCICollation();
-
-                    command.Parameters.AddWithValue("@id", user);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            contact = ReaderToContact(reader);
-                            contact.Password = SQLHelper.GetString(reader["Password"]);
-                        }
-                        reader.Close();
-                    }
-                    connection.Close();
-                }
-            }
+            logger.StatisticEndSub(ref stat, index);
             return contact;
         }
 
@@ -349,8 +344,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return isUserLinkedToDevice;
         }
 
-        public List<Card> CardsGetByContactId(string contactId, out string username)
+        public List<Card> CardsGetByContactId(string contactId, out string username, Statistics stat)
         {
+            logger.StatisticStartSub(false ,ref stat, out int index);
             List<Card> list = new List<Card>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -360,7 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status],mt.[Linked to Account]," +
                                  "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by],ml.[Login ID] " +
                                  "FROM [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] AS mt " +
-                                 "LEFT OUTER JOIN[" + navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] ml on mt.[Card No_] = ml.[Card No_]" +
+                                 "LEFT JOIN [" + navCompanyName + "LSC Member Login Card$5ecfc871-5d82-43f1-9c54-59685e82318d] ml on ml.[Card No_]=mt.[Card No_]" +
                                  "WHERE mt.[Contact No_]=@id AND mt.[Status]!=3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
 
                     command.Parameters.AddWithValue("@id", contactId);
@@ -378,6 +374,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             }
             username = list.FirstOrDefault(c => string.IsNullOrEmpty(c.LoginId) == false)?.LoginId ?? string.Empty;
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -412,12 +409,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return card;
         }
 
-        public Account AccountGetById(string id)
+        public Account AccountGetById(string id, Statistics stat)
         {
             Account account = null;
             if (string.IsNullOrWhiteSpace(id))
                 return null;
 
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -444,6 +442,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return account;
         }
 
@@ -457,7 +456,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence],mt.[Next Scheme Benefits]," +
                                           "up.[Min_ Point for Upgrade],up.[Code] AS NextScheme " +
                                           "FROM [" + navCompanyName + "LSC Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] up " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1";
 
                     connection.Open();
@@ -489,7 +488,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence]," +
                                           "up.[Min_ Point for Upgrade], mt.[Next Scheme Benefits], up.[Code] AS NextScheme " +
                                           "FROM [" + navCompanyName + "LSC Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] up " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC Member Scheme$5ecfc871-5d82-43f1-9c54-59685e82318d] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1" +
                                           "WHERE mt.[Code]=@id";
 
@@ -553,8 +552,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
                                           "FROM [" + navCompanyName + "LSC Member Attribute Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Member Management Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] mms ON mms.[Mobile Default Club Code]=mt.[Club Code] " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Code] " +
+                                          "JOIN [" + navCompanyName + "LSC Member Management Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] mms ON mms.[Mobile Default Club Code]=mt.[Club Code] " +
+                                          "JOIN [" + navCompanyName + "LSC Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0";
 
                     connection.Open();
@@ -582,9 +581,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory],v.[Attribute Value] " +
                                           "FROM [" + navCompanyName + "LSC Member Attribute Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Card No_]=@id " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Code] " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Member Attribute Value$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Attribute Code]=mt.[Code] " +
+                                          "JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Card No_]=@id " +
+                                          "JOIN [" + navCompanyName + "LSC Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Code] " +
+                                          "JOIN [" + navCompanyName + "LSC Member Attribute Value$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Attribute Code]=mt.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0 AND v.[Contact No_]=mc.[Contact No_]";
 
                     command.Parameters.AddWithValue("@id", id);
@@ -627,9 +626,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT a.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
                                           "FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mc " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Member Attribute Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] ms ON ms.[Club Code]=mc.[Club Code] " +
-                                          "INNER JOIN [" + navCompanyName + "LSC Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=ms.[Code] " +
-                                          "INNER JOIN[" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] c on c.[Contact No_]=mc.[Contact No_]" +
+                                          "JOIN [" + navCompanyName + "LSC Member Attribute Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] ms ON ms.[Club Code]=mc.[Club Code] " +
+                                          "JOIN [" + navCompanyName + "LSC Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=ms.[Code] " +
+                                          "JOIN [" + navCompanyName + "LSC Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] c on c.[Contact No_]=mc.[Contact No_]" +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0" + sqlwhere;
                     command.Parameters.AddWithValue("@id", cardId);
                     TraceSqlCommand(command);
@@ -741,12 +740,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ClubCode = SQLHelper.GetString(reader["Club Code"]),
                 SchemeCode = SQLHelper.GetString(reader["Scheme Code"])
             };
-            cust.Cards = CardsGetByContactId(cust.Id, out string username);
+            cust.Cards = CardsGetByContactId(cust.Id, out string username, new Statistics());
             cust.UserName = username;
             return cust;
         }
 
-        private MemberContact ReaderToContact(SqlDataReader reader)
+        private MemberContact ReaderToContact(SqlDataReader reader, Statistics stat)
         {
             MemberContact cont = new MemberContact()
             {
@@ -760,12 +759,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"])
             };
 
-            cont.Cards = CardsGetByContactId(cont.Id, out string username);
-            cont.UserName = username;
-            cont.Account = AccountGetById(SQLHelper.GetString(reader["Account No_"]));
-            if (cont.Cards.Count > 0)
-                cont.Profiles = ProfileGetByCardId(cont.Cards[0].Id);
+            if (LSCVersion >= new Version("19.2"))
+                cont.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
 
+            cont.Cards = CardsGetByContactId(cont.Id, out string username, stat);
+            cont.UserName = username;
+            cont.Account = AccountGetById(SQLHelper.GetString(reader["Account No_"]), stat);
+
+            cont.Profiles = new List<Profile>();
             cont.SalesEntries = new List<SalesEntry>();
             cont.OneLists = new List<OneList>();
             cont.Addresses = new List<Address>()
@@ -848,7 +849,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
             if (contactValues)
             {
-                pro.ContactValue = (SQLHelper.GetString(reader["Attribute Value"]).Equals("Yes", StringComparison.InvariantCultureIgnoreCase)) ? true : false;
+                if (pro.DataType == ProfileDataType.Boolean)
+                    pro.ContactValue = (SQLHelper.GetString(reader["Attribute Value"]).Equals("Yes", StringComparison.InvariantCultureIgnoreCase)) ? true : false;
+                else
+                    pro.TextValue = SQLHelper.GetString(reader["Attribute Value"]);
             }
             else
             {

@@ -743,6 +743,58 @@
           </sequence>
         </complexType>
       </element>
+      <element name="ConfirmGroupActivityV2">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="groupNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="locationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="productNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="activityDate" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="activityTime" type="time" />
+            <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="optionalResource" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="optionalComment" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="setQuantity" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="setNoOfPeople" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="paid" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="setGroupReservation" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="promoCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="clientName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="email" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="unitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnGroupLineNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="returnActivityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnUnitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnLineDiscount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnTotalAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnCurrency" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnRetailItem" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="customerAccountNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="token" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="setGroupHeaderStatus" type="boolean" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ConfirmGroupActivityV2_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="returnGroupLineNo" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="returnActivityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnUnitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnLineDiscount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnTotalAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnCurrency" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnRetailItem" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="ConfirmGroupActivity">
         <complexType>
           <sequence>
@@ -1645,6 +1697,12 @@
   <message name="ConfirmActivity_Result">
     <part name="parameters" element="tns:ConfirmActivity_Result" />
   </message>
+  <message name="ConfirmGroupActivityV2">
+    <part name="parameters" element="tns:ConfirmGroupActivityV2" />
+  </message>
+  <message name="ConfirmGroupActivityV2_Result">
+    <part name="parameters" element="tns:ConfirmGroupActivityV2_Result" />
+  </message>
   <message name="ConfirmGroupActivity">
     <part name="parameters" element="tns:ConfirmGroupActivity" />
   </message>
@@ -1928,6 +1986,10 @@
       <input name="ConfirmActivity" message="tns:ConfirmActivity" />
       <output name="ConfirmActivity_Result" message="tns:ConfirmActivity_Result" />
     </operation>
+    <operation name="ConfirmGroupActivityV2">
+      <input name="ConfirmGroupActivityV2" message="tns:ConfirmGroupActivityV2" />
+      <output name="ConfirmGroupActivityV2_Result" message="tns:ConfirmGroupActivityV2_Result" />
+    </operation>
     <operation name="ConfirmGroupActivity">
       <input name="ConfirmGroupActivity" message="tns:ConfirmGroupActivity" />
       <output name="ConfirmGroupActivity_Result" message="tns:ConfirmGroupActivity_Result" />
@@ -2173,6 +2235,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="ConfirmActivity_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ConfirmGroupActivityV2">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmGroupActivityV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ConfirmGroupActivityV2">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ConfirmGroupActivityV2_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

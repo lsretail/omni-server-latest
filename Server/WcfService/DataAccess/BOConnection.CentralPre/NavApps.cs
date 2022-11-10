@@ -10,6 +10,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre
 {
@@ -26,38 +27,51 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             DiscountOfferRepository rep = new DiscountOfferRepository(config);
-            return rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+            List<ProactiveDiscount> list = rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual Terminal TerminalGetById(string terminalId)
+        public virtual Terminal TerminalGetById(string terminalId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             TerminalRepository rep = new TerminalRepository(config);
-            return rep.TerminalBaseGetById(terminalId);
+            Terminal data = rep.TerminalBaseGetById(terminalId);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id)
+        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
-            return rep.UnitOfMeasureGetById(id);
+            UnitOfMeasure data = rep.UnitOfMeasureGetById(id);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId)
+        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
             ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
-            return rep.VariantRegGetById(id, itemId);
+            return rep.VariantRegGetById(id, itemId, stat);
         }
 
-        public virtual Currency CurrencyGetById(string id, string culture)
+        public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             CurrencyRepository rep = new CurrencyRepository(config);
-            return rep.CurrencyLoyGetById(id, culture);
+            Currency data = rep.CurrencyLoyGetById(id, culture);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
+        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             if (locationIds.Count == 0)
             {
                 //JIJ add the distance calc for them, radius of X km ?
@@ -71,18 +85,23 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
                     locationIds.Add(store.Id);
             }
 
-            return LSCentralWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
+            List<InventoryResponse> list = LSCentralWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores, stat);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat)
         {
-            return LSCentralWSBase.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation);
+            return LSCentralWSBase.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation, stat);
         }
 
-        public virtual string ItemDetailsGetById(string itemId)
+        public virtual string ItemDetailsGetById(string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ItemRepository itemRep = new ItemRepository(config, LSCVersion);
-            return itemRep.ItemDetailsGetById(itemId);
+            string data = itemRep.ItemDetailsGetById(itemId);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         #region replication

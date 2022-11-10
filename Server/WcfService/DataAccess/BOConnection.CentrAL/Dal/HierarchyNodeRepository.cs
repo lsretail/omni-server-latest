@@ -23,16 +23,21 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public HierarchyNodeRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumnsNode = "mt.[Hierarchy Code],mt.[Node ID],mt.[Parent Node ID],mt.[Description],mt.[Children Order],mt.[Indentation],mt.[Presentation Order],mt.[Retail Image Code]";
+            sqlcolumnsNode = "mt.[Hierarchy Code],mt.[Node ID],mt.[Parent Node ID],mt.[Description],mt.[Children Order],mt.[Indentation],mt.[Presentation Order]," +
+                             "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                             "WHERE il.[KeyValue]=(mt.[Hierarchy Code] + ',' + mt.[Node ID]) AND il.[TableName]='Hierar. Nodes' " +
+                             "ORDER BY il.[Display Order]) AS ImageId";
             sqlfromNode = " FROM [" + navCompanyName + "Hierarchy Nodes$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
+                          " JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
 
-            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description],il.[Image Id],o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]";
+            sqlcolumnsLink = "mt.[Hierarchy Code],mt.[Node ID],mt.[Type],mt.[No_],mt.[Description]," +
+                             "o.[Member Type],o.[Member Value],o.[Deal Price],o.[Validation Period ID],o.[Status]," +
+                             "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                             "WHERE il.[KeyValue]=mt.[No_] AND il.[TableName]=CASE WHEN mt.[Type]=0 THEN 'Item' ELSE 'Offer' END " +
+                             "ORDER BY il.[Display Order]) AS ImageId";
             sqlfromLink = " FROM [" + navCompanyName + "Hierarchy Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                          " LEFT OUTER JOIN [" + navCompanyName + "Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=mt.[No_]" +
-                          " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.[KeyValue]=mt.[No_] AND il.[Display Order]=0" +
-                          " AND [Image Id]<>'' AND il.[TableName]=CASE WHEN mt.[Type]=0 THEN 'Item' ELSE 'Offer' END";
+                          " JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " LEFT JOIN [" + navCompanyName + "Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=mt.[No_]";
         }
 
         public List<ReplHierarchyNode> ReplicateHierarchyNode(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -162,6 +167,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                             foreach (HierarchyNode node in rec.Nodes)
                             {
                                 node.Nodes = rep.HierarchyDealGet(node.HierarchyCode, node.ParentNode, node.Id);
+                                node.Leafs = rep.HierarchyDealLeafGet(node.HierarchyCode, node.ParentNode, node.Id);
                             }
                             list.Add(rec);
                         }
@@ -190,6 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             recordsRemaining = GetRecordCount(TABLELINKID, lastKey, sql, keys, ref maxKey);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLELINKID, batchSize, ref lastKey, ref recordsRemaining);
+
             List<ReplHierarchyLeaf> list = new List<ReplHierarchyLeaf>();
 
             // get records
@@ -340,7 +347,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ChildrenOrder = SQLHelper.GetInt32(reader["Children Order"]),
                 Indentation = SQLHelper.GetInt32(reader["Indentation"]),
                 PresentationOrder = SQLHelper.GetInt32(reader["Presentation Order"]),
-                ImageId = SQLHelper.GetString(reader["Retail Image Code"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
 
@@ -355,7 +362,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"]),
+                ImageId = SQLHelper.GetString(reader["ImageId"]),
                 IsMemberClub = SQLHelper.GetBool(reader["Member Type"]),
                 MemberValue = SQLHelper.GetString(reader["Member Value"]),
                 DealPrice = SQLHelper.GetDecimal(reader, "Deal Price"),
@@ -372,7 +379,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ParentNode = SQLHelper.GetString(reader["Parent Node ID"]),
                 Id = SQLHelper.GetString(reader["Node ID"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ImageId = SQLHelper.GetString(reader["Retail Image Code"]),
+                ImageId = SQLHelper.GetString(reader["ImageId"]),
                 Indentation = SQLHelper.GetInt32(reader["Indentation"]),
                 ChildrenOrder = SQLHelper.GetInt32(reader["Children Order"]),
                 PresentationOrder = SQLHelper.GetInt32(reader["Presentation Order"])
@@ -381,15 +388,22 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private HierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader)
         {
-            return new HierarchyLeaf()
+            HierarchyLeaf leaf = new HierarchyLeaf()
             {
                 HierarchyCode = SQLHelper.GetString(reader["Hierarchy Code"]),
                 ParentNode = SQLHelper.GetString(reader["Node ID"]),
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 Type = (HierarchyLeafType)SQLHelper.GetInt32(reader["Type"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
+
+            ItemModifierRepository mrep = new ItemModifierRepository(config);
+            leaf.Modifiers = mrep.ModifierGetByItemId(leaf.Id);
+
+            ItemRecipeRepository rrep = new ItemRecipeRepository(config);
+            leaf.Recipies = rrep.RecipeGetByItemId(leaf.Id);
+            return leaf;
         }
 
         private HierarchyNode ReaderToHierarchyDealNode(SqlDataReader reader)
@@ -400,8 +414,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ParentNode = SQLHelper.GetString(reader["Node ID"]),
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                Type = HierarchyDealType.Item,
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                Type = HierarchyDealType.Deal,
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
     }

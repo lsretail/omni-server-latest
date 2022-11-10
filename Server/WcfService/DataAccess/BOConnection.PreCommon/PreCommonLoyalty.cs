@@ -27,6 +27,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -36,8 +37,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Item
 
-        public LoyItem ItemGetById(string id)
+        public LoyItem ItemGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item", "No.", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -74,18 +77,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 ext.Values = rep.GetDimValues(table);
             }
 
+            logger.StatisticEndSub(ref stat, index);
             return item;
         }
 
-        public LoyItem ItemGetByBarcode(string barcode)
+        public LoyItem ItemGetByBarcode(string barcode, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Barcodes", "Barcode No.", barcode);
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
             if (table == null || table.NumberOfValues == 0)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return null;
+            }
 
             XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Item No."));
             string itemId = field.Values[0];
@@ -94,7 +103,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             field = table.FieldList.Find(f => f.FieldName.Equals("Unit of Measure Code"));
             string uomId = field.Values[0];
 
-            LoyItem item = ItemGetById(itemId);
+            LoyItem item = ItemGetById(itemId, stat);
 
             if (string.IsNullOrWhiteSpace(variantId) == false)
             {
@@ -106,11 +115,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 item.SelectedUnitOfMeasure = item.UnitOfMeasures.Find(u => u.Id == uomId);
             }
 
+            logger.StatisticEndSub(ref stat, index);
             return item;
         }
 
-        public LoyItem ItemFindByBarcode(string barcode, string storeId, string terminalId)
+        public LoyItem ItemFindByBarcode(string barcode, string storeId, string terminalId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             string itemHTML = string.Empty;
@@ -120,19 +132,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 logger.Debug(config.LSKey.Key, "GetItemCard - StoreId:{0}, TermId:{1}, barcode:{2}", storeId, terminalId, barcode);
                 centralWS.GetItemCard(ref respCode, ref errorText, terminalId, storeId, string.Empty, string.Empty, string.Empty, barcode, string.Empty, ref root);
-                HandleWS2ResponseCode("GetItemCard", respCode, errorText);
+                HandleWS2ResponseCode("GetItemCard", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "GetItemCard Response - " + Serialization.ToXml(root, true));
             }
             else
             {
                 logger.Debug(config.LSKey.Key, "GetItemWithBarcode - StoreId:{0}, TermId:{1}, barcode:{2}", storeId, terminalId, barcode);
                 centralWS.GetItemWithBarcode(barcode, ref root, ref respCode, ref errorText, ref itemHTML);
-                HandleWS2ResponseCode("GetItemWithBarcode", respCode, errorText);
+                HandleWS2ResponseCode("GetItemWithBarcode", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "GetItemWithBarcode Response - " + Serialization.ToXml(root, true));
             }
 
             if (root.LeftRightLine == null)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return null;
+            }
 
             LoyItem item = new LoyItem();
             foreach (LSCentral.LeftRightLine line in root.LeftRightLine)
@@ -150,11 +165,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         break;
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return item;
         }
 
-        public List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
+        public List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             //locationIds are storeIds in NAV
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -163,7 +181,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             foreach (string id in locationIds)
             {
                 centralWS.GetItemInventory(ref respCode, ref errorText, itemId, XMLHelper.GetString(variantId), id, string.Empty, string.Empty, string.Empty, string.Empty, arrivingInStockInDays, ref root);
-                HandleWS2ResponseCode("GetItemInventory", respCode, errorText);
+                HandleWS2ResponseCode("GetItemInventory", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "GetItemInventory Response - " + Serialization.ToXml(root, true));
 
                 if (root.WSInventoryBuffer == null)
@@ -184,11 +202,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     });
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             List<InventoryResponse> list = new List<InventoryResponse>();
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -215,15 +236,23 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootGetInventoryMultipleOut rootout = new LSCentral.RootGetInventoryMultipleOut();
 
             if (LSCVersion >= new Version("18.4"))
+            {
                 centralWS.GetInventoryMultipleV2(storeId, locationId, useSourcingLocation, rootin, ref respCode, ref errorText, ref rootout);
+                HandleWS2ResponseCode("GetInventoryMultipleV2", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, "GetInventoryMultipleV2 Response - " + Serialization.ToXml(rootout, true));
+            }
             else
+            {
                 centralWS.GetInventoryMultiple(ref respCode, ref errorText, storeId, locationId, rootin, ref rootout);
-
-            HandleWS2ResponseCode("GetInventoryMultiple", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetInventoryMultiple Response - " + Serialization.ToXml(rootout, true));
+                HandleWS2ResponseCode("GetInventoryMultiple", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, "GetInventoryMultiple Response - " + Serialization.ToXml(rootout, true));
+            }
 
             if (rootout.InventoryBufferOut == null)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return list;
+            }
 
             foreach (LSCentral.InventoryBufferOut buffer in rootout.InventoryBufferOut)
             {
@@ -235,12 +264,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     StoreId = buffer.Store
                 });
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
+        public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId, Statistics stat)
         {
             // filter
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             List<XMLFieldData> filter = new List<XMLFieldData>();
             if (string.IsNullOrEmpty(storeId) == false)
             {
@@ -259,17 +291,23 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ItemRepository rep = new ItemRepository(config);
             List<HospAvailabilityResponse> list = rep.CurrentAvail(table);
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)
+        public List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             if (numberOfItems <= 0)
                 numberOfItems = 50;
 
             List<LoyItem> list = new List<LoyItem>();
             if (string.IsNullOrWhiteSpace(pubOfferId))
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return list;
+            }
 
             PublishedOfferXml xml = new PublishedOfferXml();
             string xmlRequest = xml.PublishedOfferItemsRequestXML(pubOfferId, numberOfItems);
@@ -280,14 +318,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 //<Response_Text>Unknown Request_ID LOAD_PUBLISHED_OFFER_ITEMS</Response_Text>
                 //0004 = Unknown Request_ID,  NavResponseCode.Error = 0004
                 logger.Error(config.LSKey.Key, "responseCode {0} - LOAD_PUBLISHED_OFFER_ITEMS is only supported by default in LS Nav 9.00.03", navResponseCode);
+                logger.StatisticEndSub(ref stat, index);
                 return list; //request not found so return empty list instead of breaking
             }
             HandleResponseCode(ref xmlResponse);
-            return xml.PublishedOfferItemsResponseXML(xmlResponse);
+            list = xml.PublishedOfferItemsResponseXML(xmlResponse);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<LoyItem> ItemsGetByProductGroup(string prodGroup)
+        public List<LoyItem> ItemsGetByProductGroup(string prodGroup, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item", "LSC Retail Product Code", prodGroup);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -295,11 +338,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ItemRepository rep = new ItemRepository(config);
-            return rep.ItemsGet(table);
+            List<LoyItem> list = rep.ItemsGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<LoyItem> ItemPage(string storeId, int page, bool details)
+        public List<LoyItem> ItemPage(string storeId, int page, bool details, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC MobilePlu", "StoreId", storeId, "PageId", page.ToString());
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -317,8 +364,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             ItemRepository rep = new ItemRepository(config);
             foreach (string no in itemno)
             {
-                items.Add(ItemGetById(no));
+                items.Add(ItemGetById(no, stat));
             }
+            logger.StatisticEndSub(ref stat, index);
             return items;
         }
 
@@ -326,8 +374,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Item Related
 
-        public VariantRegistration VariantRegGetById(string id, string itemId)
+        public VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Variant Registration", "Variant", id, "Item No.", itemId);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -336,11 +386,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ItemRepository rep = new ItemRepository(config);
             List<VariantRegistration> list = rep.GetVariantRegistrations(table);
+            logger.StatisticEndSub(ref stat, index);
             return (list.Count == 0) ? null : list[0];
         }
 
-        public ProductGroup ProductGroupGetById(string id)
+        public ProductGroup ProductGroupGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Retail Product Group", "Code", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -349,11 +402,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ItemRepository rep = new ItemRepository(config);
             List<ProductGroup> list = rep.ProductGroupGet(table);
+            logger.StatisticEndSub(ref stat, index);
             return (list.Count == 0) ? null : list[0];
         }
 
-        public List<ProductGroup> ProductGroupGetByItemCategory(string id)
+        public List<ProductGroup> ProductGroupGetByItemCategory(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Retail Product Group", "Item Category Code", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -361,11 +417,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ItemRepository rep = new ItemRepository(config);
-            return rep.ProductGroupGet(table);
+            List<ProductGroup> list = rep.ProductGroupGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public ItemCategory ItemCategoriesGetById(string id)
+        public ItemCategory ItemCategoriesGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Category", "Code", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -374,11 +434,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ItemRepository rep = new ItemRepository(config);
             List<ItemCategory> list = rep.ItemCategoryGet(table);
+            logger.StatisticEndSub(ref stat, index);
             return (list.Count == 0) ? null : list[0];
         }
 
-        public List<ItemCategory> ItemCategories()
+        public List<ItemCategory> ItemCategories(Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Item Category");
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -386,11 +449,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ItemRepository rep = new ItemRepository(config);
-            return rep.ItemCategoryGet(table);
+            List<ItemCategory> list = rep.ItemCategoryGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public ImageView ImageGetById(string imageId)
+        public ImageView ImageGetById(string imageId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Retail Image", "Code", imageId);
             string xmlResponse = RunOperation(xmlRequest, true, false);
@@ -405,19 +472,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleResponseCode(ref xmlResponse);
             table = xml.GetGeneralWebResponseXML(xmlResponse);
             if (table.NumberOfValues == 0)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return img;
+            }
 
             XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Media ID");
             img.MediaId = new Guid(fld.Values[0]);
 
-            img = ImageGetByMediaId(img.MediaId.ToString());
+            img = ImageGetByMediaId(img.MediaId.ToString(), stat);
             img.MediaId = new Guid(img.Id);
             img.Id = id;
+            logger.StatisticEndSub(ref stat, index);
             return img;
         }
 
-        public ImageView ImageGetByMediaId(string id)
+        public ImageView ImageGetByMediaId(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Tenant Media", "ID", id);
             string xmlResponse = RunOperation(xmlRequest, true, false);
@@ -426,7 +499,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ImageView img = new ImageView(id);
             if (table.NumberOfValues == 0)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return img;
+            }
 
             XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Content");
             img.ImgBytes = Convert.FromBase64String(fld.Values[0]);
@@ -437,11 +513,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             int w = Convert.ToInt32(fld.Values[0]);
             img.ImgSize = new ImageSize(w, h);
 
+            logger.StatisticEndSub(ref stat, index);
             return img;
         }
 
-        public List<ImageView> ImagesGetByLink(string tableName, string key1, string key2, string key3)
+        public List<ImageView> ImagesGetByLink(string tableName, string key1, string key2, string key3, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             string keyvalue = key1;
             if (string.IsNullOrWhiteSpace(key2) == false)
@@ -460,7 +538,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             foreach (ImageView link in list)
             {
-                using (ImageView img = ImageGetById(link.Id))
+                using (ImageView img = ImageGetById(link.Id, stat))
                 {
                     if (img != null)
                     {
@@ -472,10 +550,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     }
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
+        public List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(storeId))
                 throw new LSOmniServiceException(StatusCode.MissingStoreId, "Missing Store Id");
@@ -485,6 +564,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (items == null && items.Count == 0)
                 return new List<ItemCustomerPrice>();
 
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -493,13 +574,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, "EcomGetCustomerPrice Request - " + Serialization.ToXml(root, true));
 
             centralQryWS.EcomGetCustomerPrice(ref respCode, ref errorText, ref root);
-            HandleWS2ResponseCode("EcomGetCustomerPrice", respCode, errorText);
+            HandleWS2ResponseCode("EcomGetCustomerPrice", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "EcomGetCustomerPrice Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootTransactionToItemCustPrice(root);
+            List<ItemCustomerPrice> list = map.MapFromRootTransactionToItemCustPrice(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest;
             string xmlResponse;
@@ -550,22 +635,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         "Item No."
                     };
 
-                    List<XMLFieldData> filter = new List<XMLFieldData>();
-                    filter.Add(new XMLFieldData()
+                    List<XMLFieldData> filter = new List<XMLFieldData>()
                     {
-                        FieldName = "Offer No.",
-                        Values = new List<string>() { disc.Id }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Store No.",
-                        Values = new List<string>() { storeId }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Loyalty Scheme Code",
-                        Values = new List<string>() { "", loyaltySchemeCode }
-                    });
+                        new XMLFieldData()
+                        {
+                            FieldName = "Offer No.",
+                            Values = new List<string>() { disc.Id }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Store No.",
+                            Values = new List<string>() { storeId }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Loyalty Scheme Code",
+                            Values = new List<string>() { "", loyaltySchemeCode }
+                        }
+                    };
 
                     try
                     {
@@ -606,22 +693,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         "Unit Price"
                     };
 
-                    List<XMLFieldData> filter = new List<XMLFieldData>();
-                    filter.Add(new XMLFieldData()
+                    List<XMLFieldData> filter = new List<XMLFieldData>()
                     {
-                        FieldName = "Store No.",
-                        Values = new List<string>() { storeId }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Item No.",
-                        Values = new List<string>() { disc.ItemId }
-                    });
-                    filter.Add(new XMLFieldData()
-                    {
-                        FieldName = "Variant Code",
-                        Values = new List<string>() { disc.VariantId }
-                    });
+                        new XMLFieldData()
+                        {
+                            FieldName = "Store No.",
+                            Values = new List<string>() { storeId }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Item No.",
+                            Values = new List<string>() { disc.ItemId }
+                        },
+                        new XMLFieldData()
+                        {
+                            FieldName = "Variant Code",
+                            Values = new List<string>() { disc.VariantId }
+                        }
+                    };
 
                     try
                     {
@@ -641,6 +730,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     }
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -648,10 +738,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Contact
 
-        public string ContactCreate(MemberContact contact)
+        public string ContactCreate(MemberContact contact, Statistics stat)
         {
             if (contact == null)
                 throw new LSOmniException(StatusCode.ContactIdNotFound, "Contact can not be null");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             //must have a deviceId, otherwise no "Member Login Card" entry is made in nav
             if (contact.LoggedOnToDevice == null)
@@ -684,17 +776,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, "MemberContactCreate Request - " + Serialization.ToXml(root, true));
 
             centralWS.MemberContactCreate(ref respCode, ref errorText, ref clubId, ref schmId, ref acctId, ref contId, ref cardId, ref point, ref root);
-            HandleWS2ResponseCode("MemberContactCreate", respCode, errorText);
+            HandleWS2ResponseCode("MemberContactCreate", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MemberContactCreate Response - ClubId: {0}, SchemeId: {1}, AccountId: {2}, ContactId: {3}, CardId: {4}, PointsRemaining: {5}",
                 clubId, schmId, acctId, contId, cardId, point);
+
+            logger.StatisticEndSub(ref stat, index);
             return cardId;
         }
 
-        public void ContactUpdate(MemberContact contact, string accountId)
+        public void ContactUpdate(MemberContact contact, string accountId, Statistics stat)
         {
-            NavXml navXml = new NavXml();
             if (contact == null)
                 throw new LSOmniException(StatusCode.ContactIdNotFound, "ContactRq can not be null");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             if (contact.Profiles == null)
             {
@@ -708,11 +803,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootMemberContactCreate1 root = map.MapToRoot1(contact, accountId);
             logger.Debug(config.LSKey.Key, "MemberContactUpdate Request - " + Serialization.ToXml(root, true));
             centralWS.MemberContactUpdate(ref respCode, ref errorText, ref root);
-            HandleWS2ResponseCode("MemberContactUpdate", respCode, errorText);
+            HandleWS2ResponseCode("MemberContactUpdate", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public MemberContact ContactGet(string contactId, string accountId, string card, string loginId, string email, bool includeDetails)
+        public MemberContact ContactGet(string contactId, string accountId, string card, string loginId, string email, bool includeDetails, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string xmlRequest;
             string xmlResponse;
             string respCode = string.Empty;
@@ -724,23 +822,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             MemberContact contact = null;
 
             LSCentral.RootGetMemberContact rootContact = new LSCentral.RootGetMemberContact();
-            logger.Debug(config.LSKey.Key, "GetMemberContact - CardId: {0}", card);
+            logger.Debug(config.LSKey.Key, "GetMemberContact2 - CardId: {0}", card);
             centralWS.GetMemberContact2(ref respCode, ref errorText, XMLHelper.GetString(card), XMLHelper.GetString(accountId), XMLHelper.GetString(contactId), loginId.ToLower(), email.ToLower(), ref rootContact);
             if (respCode == "1000") // not found
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return null;
+            }
 
-            HandleWS2ResponseCode("GetMemberContact", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetMemberContact Response - " + Serialization.ToXml(rootContact, true));
+            HandleWS2ResponseCode("GetMemberContact2", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "GetMemberContact2 Response - " + Serialization.ToXml(rootContact, true));
 
-            List<Scheme> schemelist = SchemeGetAll();
+            List<Scheme> schemelist = SchemeGetAll(stat);
             contact = map.MapFromRootToContact(rootContact, schemelist);
             contact.UserName = loginId;
 
             if (contact.Cards.Count == 0)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return contact;
+            }
 
             Card mcard = contact.Cards.FirstOrDefault();
-
             if (string.IsNullOrEmpty(loginId))
             {
                 xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Login Card", "Card No.", mcard.Id, 1);
@@ -757,11 +860,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             decimal remainingPoints = 0;
-            contact.Profiles = ProfileGet(mcard.Id, ref remainingPoints);
+            contact.Profiles = ProfileGet(mcard.Id, ref remainingPoints, stat);
             contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
 
             if (includeDetails == false)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return contact;
+            }
 
             xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Login", "Login ID", contact.UserName.ToLower(), 1);
             xmlResponse = RunOperation(xmlRequest);
@@ -776,102 +882,168 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootGetDirectMarketingInfo rootMarket = new LSCentral.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", mcard.Id);
             centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, mcard.Id, string.Empty, string.Empty, ref rootMarket);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "GetDirectMarketing Response - " + Serialization.ToXml(rootMarket, true));
 
             contact.PublishedOffers = map.MapFromRootToPublishedOffers(rootMarket);
 
             contact.SalesEntries = new List<SalesEntry>();
             contact.OneLists = new List<OneList>();
+            logger.StatisticEndSub(ref stat, index);
             return contact;
         }
 
-        public MemberContact ContactGetByUserName(string username, bool includeDetails)
+        public MemberContact ContactGetByEmail(string email, bool includeDetails, Statistics stat)
         {
-            return ContactGet(string.Empty, string.Empty, string.Empty, username, string.Empty, includeDetails);
-        }
+            logger.StatisticStartSub(true, ref stat, out int index);
 
-        public MemberContact ContactGetByEmail(string email, bool includeDetails)
-        {
             NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Contact", "E-Mail", email, 1);
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Contact", "Search E-Mail", email, 1);
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
             if (table == null || table.NumberOfValues == 0)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return null;
+            }
 
             XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Contact No."));
             string contactId = field.Values[0];
             field = table.FieldList.Find(f => f.FieldName.Equals("Account No."));
             string accountId = field.Values[0];
 
-            return ContactGet(contactId, accountId, string.Empty, string.Empty, string.Empty, includeDetails);
+            MemberContact data = ContactGet(contactId, accountId, string.Empty, string.Empty, string.Empty, includeDetails, stat);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public double ContactAddCard(string contactId, string accountId, string cardId)
+        public double ContactAddCard(string contactId, string accountId, string cardId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             decimal points = 0;
 
             centralWS.MemberCardToContact(ref respCode, ref errorText, cardId, accountId, contactId, ref points);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            HandleWS2ResponseCode("MemberCardToContact", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MemberCardToContact Response - points:", points);
+            logger.StatisticEndSub(ref stat, index);
             return (double)points;
+        }
+
+        public List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string fldname = "Name";
+            search += "*";
+            switch (searchType)
+            {
+                case CustomerSearchType.CustomerId:
+                    fldname = "No.";
+                    break;
+                case CustomerSearchType.Email:
+                    fldname = "Search E-Mail";
+                    break;
+                case CustomerSearchType.PhoneNumber:
+                    fldname = "Phone No.";
+                    break;
+            }
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Customer", fldname, search, maxNumberOfRowsReturned);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ContactRepository rep = new ContactRepository(config);
+            List<Customer> list = rep.CustomerGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public void ConatctBlock(string accountId, string cardId, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+
+            centralWS.BlockMemberAccount(ref respCode, ref errorText, accountId, cardId);
+            HandleWS2ResponseCode("BlockMemberAccount", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
         }
 
         #endregion
 
         #region Contact Related
 
-        public List<Profile> ProfileGetAll()
+        public List<Profile> ProfileGetAll(Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMobileGetProfiles root = new LSCentral.RootMobileGetProfiles();
 
             centralWS.MobileGetProfiles(ref respCode, ref errorText, string.Empty, string.Empty, ref root);
-            HandleWS2ResponseCode("MobileGetProfiles", respCode, errorText);
+            if (respCode == "1000") // not found
+            {
+                logger.StatisticEndSub(ref stat, index);
+                return new List<Profile>();
+            }
+
+            HandleWS2ResponseCode("MobileGetProfiles", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MobileGetProfiles Response - " + Serialization.ToXml(root, true));
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
-            return map.MapFromRootToProfiles(root);
+            List<Profile> list = map.MapFromRootToProfiles(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
 
-        public List<Profile> ProfileGet(string cardId, ref decimal remainingPoints)
+        public List<Profile> ProfileGet(string cardId, ref decimal remainingPoints, Statistics stat)
         {
-            List<Profile> list = new List<Profile>();
+            logger.StatisticStartSub(true, ref stat, out int index);
 
+            List<Profile> list = new List<Profile>();
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetMemberCard rootCard = new LSCentral.RootGetMemberCard();
 
             logger.Debug(config.LSKey.Key, "GetMemberCard - CardId: {0}", cardId);
             centralWS.GetMemberCard(ref respCode, ref errorText, cardId, ref remainingPoints, ref rootCard);
-            HandleWS2ResponseCode("GetMemberCard", respCode, errorText);
+            HandleWS2ResponseCode("GetMemberCard", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "GetMemberCard Response - " + Serialization.ToXml(rootCard, true));
 
-            foreach (LSCentral.MemberAttributeList att in rootCard.MemberAttributeList)
+            if (rootCard.MemberAttributeList != null)
             {
-                if (att.AttributeType != "4")
-                    continue;
-                if (att.Code == "BIRTHDAY")
-                    continue;
-
-                list.Add(new Profile()
+                foreach (LSCentral.MemberAttributeList att in rootCard.MemberAttributeList)
                 {
-                    Id = att.Code,
-                    Description = att.Description,
-                    DefaultValue = string.Empty,
-                    ContactValue = att.Value.ToLower().Trim() == "yes"
-                });
+                    if (att.AttributeType != "4")
+                        continue;
+                    if (att.Code == "BIRTHDAY")
+                        continue;
+
+                    list.Add(new Profile()
+                    {
+                        Id = att.Code,
+                        Description = att.Description,
+                        DefaultValue = string.Empty,
+                        ContactValue = att.Value.ToLower().Trim() == "yes"
+                    });
+                }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<Scheme> SchemeGetAll()
+        public List<Scheme> SchemeGetAll(Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Scheme");
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -893,11 +1065,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     sc.Club.Name = field.Values[0];
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public MemberContact Logon(string userName, string password, string deviceID, string deviceName, bool includeDetails)
+        public MemberContact Logon(string userName, string password, string deviceID, string deviceName, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMemberLogon root = new LSCentral.RootMemberLogon();
@@ -905,20 +1080,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "MemberLogon - userName: {0}", userName);
             centralWS.MemberLogon(ref respCode, ref errorText, userName, password, XMLHelper.GetString(deviceID), XMLHelper.GetString(deviceName), ref remainingPoints, ref root);
-            HandleWS2ResponseCode("MemberLogon", respCode, errorText);
+            HandleWS2ResponseCode("MemberLogon", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MemberLogon Response - " + Serialization.ToXml(root, true));
 
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             MemberContact contact = map.MapFromRootToLogonContact(root, remainingPoints);
             contact.UserName = userName;
-            if (includeDetails)
-                contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
-
+            logger.StatisticEndSub(ref stat, index);
             return contact;
         }
 
-        public MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, bool includeDetails)
+        public MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootMemberauthLogin root = new LSCentral.RootMemberauthLogin();
@@ -926,30 +1101,33 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "MemberAuthenticatorLogin - authenticator: {0}", authenticator);
             centralWS.MemberAuthenticatorLogin(authenticator, authenticationId, XMLHelper.GetString(deviceID), XMLHelper.GetString(deviceName), ref remainingPoints, ref root, ref respCode, ref errorText);
-            HandleWS2ResponseCode("MemberAuthenticatorLogin", respCode, errorText);
+            HandleWS2ResponseCode("MemberAuthenticatorLogin", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MemberAuthenticatorLogin Response - " + Serialization.ToXml(root, true));
 
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
-            MemberContact contact = map.MapFromRootToLogonAuth(root, remainingPoints);
-            if (includeDetails)
-                contact.PublishedOffers = PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty);
-
-            return contact;
+            MemberContact data = map.MapFromRootToLogonAuth(root, remainingPoints);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         //Change the password in NAV
-        public void ChangePassword(string userName, string token, string newPassword, string oldPassword)
+        public void ChangePassword(string userName, string token, string newPassword, string oldPassword, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
 
             logger.Debug(config.LSKey.Key, "MemberPasswordChange - UserName:{0} Token:{1}", userName, token);
             centralWS.MemberPasswordChange(ref respCode, ref errorText, userName, token, oldPassword, newPassword);
-            HandleWS2ResponseCode("MemberPasswordChange", respCode, errorText);
+            HandleWS2ResponseCode("MemberPasswordChange", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public string ResetPassword(string userName, string email)
+        public string ResetPassword(string userName, string email, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             string token = string.Empty;
@@ -957,36 +1135,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "MemberPasswordReset - UserName:{0} Email:{1}", userName, email);
             centralWS.MemberPasswordReset(ref respCode, ref errorText, userName, email, ref token, ref tokenExp);
-            HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText);
+            HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MemberPasswordReset Response - Token:{0}", token);
+            logger.StatisticEndSub(ref stat, index);
             return token;
         }
 
-        public string SPGPassword(string email, string token, string newPwd)
+        public string SPGPassword(string email, string token, string newPwd, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
-            DateTime tokenExp = DateTime.Now.AddMonths(1);
 
-            logger.Debug(config.LSKey.Key, "MemberPasswordReset - Email:{0}", email);
+            logger.Debug(config.LSKey.Key, "SPGResetPassword - Email:{0}", email);
             centralWS.SPGResetPassword(email, ref token, ref newPwd, ref respCode, ref errorText);
-            HandleWS2ResponseCode("MemberPasswordReset", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "MemberPasswordReset Response - Token:{0}", token);
+            HandleWS2ResponseCode("SPGResetPassword", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "SPGResetPassword Response - Token:{0}", token);
+            logger.StatisticEndSub(ref stat, index);
             return token;
         }
 
-        public void LoginChange(string oldUserName, string newUserName, string password)
+        public void LoginChange(string oldUserName, string newUserName, string password, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NavXml navXml = new NavXml();
             string xmlRequest = navXml.ChangeLoginRequestXML(oldUserName, newUserName, password);
             string xmlResponse = RunOperation(xmlRequest);
             HandleResponseCode(ref xmlResponse);
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public long MemberCardGetPoints(string cardId)
+        public long MemberCardGetPoints(string cardId, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(cardId))
                 throw new LSOmniException(StatusCode.CardIdInvalid, "cardId can not be empty");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -995,13 +1181,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "GetMemberCard - CardId: {0}", cardId);
             centralWS.GetMemberCard(ref respCode, ref errorText, cardId, ref remainingPoints, ref root);
-            HandleWS2ResponseCode("GetMemberCard", respCode, errorText);
+            HandleWS2ResponseCode("GetMemberCard", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "GetMemberCard Response - Remaining points: {0}", Convert.ToInt64(Math.Floor(remainingPoints)));
+            logger.StatisticEndSub(ref stat, index);
             return Convert.ToInt64(Math.Floor(remainingPoints));
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetDataEntryBalance root = new LSCentral.RootGetDataEntryBalance();
@@ -1013,6 +1202,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             logger.Debug(config.LSKey.Key, "GetDataEntryBalance response - Balance:{0} Expire:{1}", root.POSDataEntry.First().Balance, root.POSDataEntry.First().ExpiryDate);
+            logger.StatisticEndSub(ref stat, index);
             return new GiftCard(cardNo)
             {
                 Balance = root.POSDataEntry.First().Balance,
@@ -1024,8 +1214,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Searches
 
-        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
+        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string fldname = "Search Name";
             switch (searchType)
             {
@@ -1033,7 +1225,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     fldname = "Contact No.";
                     break;
                 case ContactSearchType.Email:
-                    fldname = "E-Mail";
+                    fldname = "Search E-Mail";
                     break;
                 case ContactSearchType.PhoneNumber:
                     fldname = "Mobile Phone No.";
@@ -1051,11 +1243,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository(config);
-            return rep.ContactGet(table);
+            List<MemberContact> list = rep.ContactGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<LoyItem> ItemSearch(string search)
+        public List<LoyItem> ItemSearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             search = string.Format("*{0}*", search.ToUpper());
 
             NAVWebXml xml = new NAVWebXml();
@@ -1065,11 +1261,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ItemRepository rep = new ItemRepository(config);
-            return rep.ItemsGet(table);
+            List<LoyItem> list = rep.ItemsGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<ItemCategory> ItemCategorySearch(string search)
+        public List<ItemCategory> ItemCategorySearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             search = string.Format("*{0}*", search);
 
             NAVWebXml xml = new NAVWebXml();
@@ -1079,11 +1279,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ItemRepository rep = new ItemRepository(config);
-            return rep.ItemCategoryGet(table);
+            List<ItemCategory> list = rep.ItemCategoryGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<ProductGroup> ProductGroupSearch(string search)
+        public List<ProductGroup> ProductGroupSearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             search = string.Format("*{0}*", search);
 
             NAVWebXml xml = new NAVWebXml();
@@ -1093,11 +1297,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ItemRepository rep = new ItemRepository(config);
-            return rep.ProductGroupGet(table);
+            List<ProductGroup> list = rep.ProductGroupGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<Profile> ProfileSearch(string search)
+        public List<Profile> ProfileSearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             search = string.Format("*{0}*", search);
 
             NAVWebXml xml = new NAVWebXml();
@@ -1107,11 +1315,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository(config);
-            return rep.ProfileGet(table);
+            List<Profile> list = rep.ProfileGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<Store> StoreSearch(string search)
+        public List<Store> StoreSearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             search = string.Format("*{0}*", search);
 
             NAVWebXml xml = new NAVWebXml();
@@ -1121,17 +1333,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository(config);
-            return rep.StoresGet(table);
+            List<Store> list = rep.StoresGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
         #endregion
 
         #region Hospitality Order
 
-        public OrderHosp HospOrderCalculate(OneList list)
+        public OrderHosp HospOrderCalculate(OneList list, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
+
+            // find highest lineNo count in sub line, if user has set some
+            int lineno = 1;
+            int sublineno = 1;
+            foreach (OneListItem item in list.Items)
+            {
+                item.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+                if (item.OnelistSubLines != null)
+                {
+                    foreach (OneListItemSubLine sub in item.OnelistSubLines)
+                    {
+                        sub.LineNumber = XMLHelper.LineNumberToNav(sublineno++);
+                    }
+                }
+            }
+
+            if (list.PublishedOffers != null)
+            {
+                foreach (OneListPublishedOffer off in list.PublishedOffers)
+                {
+                    off.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+                }
+            }
 
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1140,15 +1379,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "MobilePosCalculate Request - " + Serialization.ToXml(root, true));
             centralQryWS.MobilePosCalculate(ref respCode, ref errorText, string.Empty, ref root);
-            HandleWS2ResponseCode("MobilePosCalculate", respCode, errorText);
+            HandleWS2ResponseCode("MobilePosCalculate", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MobilePosCalculate Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToOrderHosp(root);
+            OrderHosp data = map.MapFromRootToOrderHosp(root);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public string HospOrderCreate(OrderHosp request)
+        public string HospOrderCreate(OrderHosp request, Statistics stat)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
@@ -1173,32 +1416,39 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, "CreateHospOrder Request - " + Serialization.ToXml(root, true));
 
             centralQryWS.CreateHospOrder(ref respCode, ref errorText, string.Empty, ref receiptNo, ref root);
-            HandleWS2ResponseCode("CreateHospOrder", respCode, errorText);
+            HandleWS2ResponseCode("CreateHospOrder", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "CreateHospOrder Response - " + Serialization.ToXml(root, true));
+            logger.StatisticEndSub(ref stat, index);
             return receiptNo;
         }
 
-        public void HospOrderCancel(string storeId, string orderId)
+        public void HospOrderCancel(string storeId, string orderId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
 
             centralQryWS.CancelHospOrder(ref respCode, ref errorText, orderId, storeId);
-            HandleWS2ResponseCode("CancelHospOrder", respCode, errorText);
+            HandleWS2ResponseCode("CancelHospOrder", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public OrderHospStatus HospOrderKotStatus(string storeId, string orderId)
+        public OrderHospStatus HospOrderKotStatus(string storeId, string orderId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             int estTime = 0;
 
             centralQryWS.GetHospOrderEstimatedTime(ref respCode, ref errorText, storeId, orderId, ref estTime);
-            HandleWS2ResponseCode("GetHospOrderEstimatedTime", respCode, errorText);
+            HandleWS2ResponseCode("GetHospOrderEstimatedTime", respCode, errorText, ref stat, index);
 
             LSCentral.RootKotStatus root = new LSCentral.RootKotStatus();
             centralQryWS.GetKotStatus(ref respCode, ref errorText, storeId, orderId, ref root);
-            HandleWS2ResponseCode("GetKotStatus", respCode, errorText);
+            HandleWS2ResponseCode("GetKotStatus", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
             if (root.KotStatus == null || root.KotStatus.Length == 0)
                 return new OrderHospStatus();
 
@@ -1217,8 +1467,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Order
 
-        public Order BasketCalcToOrder(OneList list)
+        public Order BasketCalcToOrder(OneList list, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             if (string.IsNullOrWhiteSpace(list.Id))
                 list.Id = GuidHelper.NewGuidString();
 
@@ -1243,7 +1495,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Request - " + Serialization.ToXml(root, true));
 
             centralQryWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
-            HandleWS2ResponseCode("EcomCalculateBasket", respCode, errorText);
+            HandleWS2ResponseCode("EcomCalculateBasket", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Response - " + Serialization.ToXml(root, true));
             Order order = map.MapFromRootTransactionToOrder(root);
 
@@ -1284,13 +1536,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
             order.OrderLines = lines;
+            logger.StatisticEndSub(ref stat, index);
             return order;
         }
 
-        public OrderStatusResponse OrderStatusCheck(string orderId)
+        public OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(orderId))
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderStatusCheck orderId can not be empty");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1298,9 +1553,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 LSCentral.RootCustomerOrderStatus root = new LSCentral.RootCustomerOrderStatus();
                 centralWS.CustomerOrderStatus(ref respCode, ref errorText, orderId, ref root);
-                HandleWS2ResponseCode("CustomerOrderStatus", respCode, errorText);
+                HandleWS2ResponseCode("CustomerOrderStatus", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "CustomerOrderStatus Response - " + Serialization.ToXml(root, true));
 
+                logger.StatisticEndSub(ref stat, index);
                 return new OrderStatusResponse()
                 {
                     DocumentNo = root.CustomerOrderStatus[0].DocumentID,
@@ -1311,42 +1567,51 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 LSCentral.RootNodeName root = new LSCentral.RootNodeName();
                 centralWS.CustomerOrderStatusV2(ref respCode, ref errorText, orderId, ref root);
-                HandleWS2ResponseCode("CustomerOrderStatusV2", respCode, errorText);
+                HandleWS2ResponseCode("CustomerOrderStatusV2", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "CustomerOrderStatusV2 Response - " + Serialization.ToXml(root, true));
 
                 OrderStatusResponse resp = new OrderStatusResponse();
                 if (root.CustomerOrderStatusLog == null)
+                {
+                    logger.StatisticEndSub(ref stat, index);
                     return resp;
+                }
 
                 resp.DocumentNo = root.CustomerOrderStatusLog[0].DocumentID;
                 resp.Description = root.CustomerOrderStatusLog[0].Description;
                 resp.ExtCode = root.CustomerOrderStatusLog[0].ExtCode;
                 resp.OrderStatus = root.CustomerOrderStatusLog[0].StatusCode;
 
-                foreach (LSCentral.CustomerOrderStatusLineLog it in root.CustomerOrderStatusLineLog)
+                if (root.CustomerOrderStatusLineLog != null)
                 {
-                    resp.Lines.Add(new OrderLineStatus()
+                    foreach (LSCentral.CustomerOrderStatusLineLog it in root.CustomerOrderStatusLineLog)
                     {
-                        LineNumber = it.ItemLineNo,
-                        LineStatus = it.StatusCode,
-                        ExtCode = it.ExtCode,
-                        ItemId = it.ItenNo,
-                        VariantId = it.VariantCode,
-                        UnitOfMeasureId = it.UnitOfMeasure,
-                        Quantity = it.Quantity,
-                        Description = it.Description,
-                        AllowModify = it.AllowModify,
-                        AllowCancel = it.AllowCancel
-                    });
+                        resp.Lines.Add(new OrderLineStatus()
+                        {
+                            LineNumber = it.ItemLineNo,
+                            LineStatus = it.StatusCode,
+                            ExtCode = it.ExtCode,
+                            ItemId = it.ItenNo,
+                            VariantId = it.VariantCode,
+                            UnitOfMeasureId = it.UnitOfMeasure,
+                            Quantity = it.Quantity,
+                            Description = it.Description,
+                            AllowModify = it.AllowModify,
+                            AllowCancel = it.AllowCancel
+                        });
+                    }
                 }
+                logger.StatisticEndSub(ref stat, index);
                 return resp;
             }
         }
 
-        public void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
+        public void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(orderId))
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderStatusCheck orderId can not be empty");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1379,11 +1644,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             centralWS.CustomerOrderCancel(ref respCode, ref errorText, orderId, 0, root);
-            HandleWS2ResponseCode("CustomerOrderCancel", respCode, errorText);
+            HandleWS2ResponseCode("CustomerOrderCancel", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public SalesEntry OrderGet(string id, bool getimages)
+        public SalesEntry OrderGet(string id, bool getimages, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1393,14 +1661,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             decimal pointEarned = 0;
             LSCentral.RootCustomerOrderGetV3 root = new LSCentral.RootCustomerOrderGetV3();
             centralWS.CustomerOrderGetV3(ref respCode, ref errorText, "LOOKUP", id, string.Empty, ref root, ref pointEarned, ref pointUsed);
-            HandleWS2ResponseCode("CustomerOrderGet", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "CustomerOrderGetV2 Response - " + Serialization.ToXml(root, true));
+            HandleWS2ResponseCode("CustomerOrderGetV3", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "CustomerOrderGetV3 Response - " + Serialization.ToXml(root, true));
 
             order = map.MapFromRootToSalesEntry(root);
             order.PointsRewarded = pointEarned;
             order.PointsUsedInOrder = pointUsed;
 
-            Store store = StoreGetById(order.StoreId, getimages);
+            Store store = StoreGetById(order.StoreId, getimages, stat);
             order.StoreName = store.Description;
 
             List<SalesEntryLine> list = new List<SalesEntryLine>();
@@ -1413,13 +1681,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     {
                         if (string.IsNullOrEmpty(line.VariantId))
                         {
-                            List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty);
+                            List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty, stat);
                             if (img != null && img.Count > 0)
                                 line.ItemImageId = img[0].Id;
                         }
                         else
                         {
-                            List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty);
+                            List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, stat);
                             if (img != null && img.Count > 0)
                                 line.ItemImageId = img[0].Id;
                         }
@@ -1446,11 +1714,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             if (string.IsNullOrEmpty(order.CardId))
                 order.AnonymousOrder = true;
+            logger.StatisticEndSub(ref stat, index);
             return order;
         }
 
-        public List<SalesEntry> OrderHistoryGet(string cardId)
+        public List<SalesEntry> OrderHistoryGet(string cardId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1465,14 +1736,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             root.CustomerOrderHeaderV2 = hd.ToArray();
 
             centralWS.COFilteredListV2(ref respCode, ref errorText, false, ref root);
-            HandleWS2ResponseCode("CustomerOrderFilteredList", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "CustomerOrderFilteredList Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToSalesEntryHistory(root);
+            HandleWS2ResponseCode("COFilteredListV2", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "COFilteredListV2 Response - " + Serialization.ToXml(root, true));
+            List<SalesEntry> list = map.MapFromRootToSalesEntryHistory(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder)
+        public OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder, Statistics stat)
         {
             // Click N Collect
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             if (string.IsNullOrWhiteSpace(request.Id))
                 request.Id = GuidHelper.NewGuidString();
 
@@ -1484,22 +1759,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootCOQtyAvailabilityExtOut rootout = new LSCentral.RootCOQtyAvailabilityExtOut();
 
             LSCentral.RootCOQtyAvailabilityInV2 rootin = map.MapOneListToInvReq2(request, shippingOrder);
-            logger.Debug(config.LSKey.Key, "COQtyAvailability Request - " + Serialization.ToXml(rootin, true));
+            logger.Debug(config.LSKey.Key, "COQtyAvailabilityV2 Request - " + Serialization.ToXml(rootin, true));
 
             centralWS.COQtyAvailabilityV2(rootin, ref respCode, ref errorText, ref pefSourceLoc, ref rootout);
-
-            HandleWS2ResponseCode("COQtyAvailability", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "COQtyAvailability Response - " + Serialization.ToXml(rootout, true));
+            HandleWS2ResponseCode("COQtyAvailabilityV2", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "COQtyAvailabilityV2 Response - " + Serialization.ToXml(rootout, true));
 
             OrderAvailabilityResponse data = map.MapRootToOrderavailabilty2(rootin, rootout);
             data.PreferredSourcingLocation = pefSourceLoc;
+            logger.StatisticEndSub(ref stat, index);
             return data;
         }
 
-        public string OrderCreate(Order request, out string orderId)
+        public string OrderCreate(Order request, out string orderId, Statistics stat)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             orderId = string.Empty;
             if (string.IsNullOrWhiteSpace(request.Id))
@@ -1547,7 +1824,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request);
             logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
             centralWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
-            HandleWS2ResponseCode("CustomerOrderCreate", respCode, errorText);
+            HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
             return request.Id;
         }
 
@@ -1555,8 +1833,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region SalesEntry
 
-        public List<SalesEntry> SalesHistory(string cardId)
+        public List<SalesEntry> SalesHistory(string cardId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             // fields to get 
             List<string> fields = new List<string>()
             {
@@ -1578,27 +1858,31 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository(config);
-            return rep.SalesEntryList(table);
+            List<SalesEntry> list = rep.SalesEntryList(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId, bool getimages)
+        public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId, bool getimages, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetTransaction root = new LSCentral.RootGetTransaction();
             centralWS.GetTransaction(ref respCode, ref errorText, receiptNo, XMLHelper.GetString(storeId), XMLHelper.GetString(terminalId), transId, ref root);
-            HandleWS2ResponseCode("GetTransaction", respCode, errorText);
+            HandleWS2ResponseCode("GetTransaction", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "GetTransaction Response - " + Serialization.ToXml(root, true));
 
             SalesEntry entry = map.MapFromRootToRetailTransaction(root);
 
-            Store store = StoreGetById(entry.StoreId, getimages);
+            Store store = StoreGetById(entry.StoreId, getimages, stat);
             entry.StoreName = store.Description;
 
             if (string.IsNullOrEmpty(entry.CustomerOrderNo) == false)
             {
-                SalesEntry order = OrderGet(entry.CustomerOrderNo, getimages);
+                SalesEntry order = OrderGet(entry.CustomerOrderNo, getimages, stat);
                 entry.ShipToEmail = order.ShipToEmail;
                 entry.ShipToName = order.ShipToName;
                 entry.ShipToAddress = order.ShipToAddress;
@@ -1610,6 +1894,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 entry.ContactName = order.ContactName;
                 entry.ExternalId = order.ExternalId;
             }
+            logger.StatisticEndSub(ref stat, index);
             return entry;
         }
 
@@ -1617,8 +1902,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Store
 
-        public Store StoreGetById(string id, bool getimages)
+        public Store StoreGetById(string id, bool getimages, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "No.", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -1628,7 +1915,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
             if (list.Count == 0)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return null;
+            }
 
             Store store = list.FirstOrDefault();
             if (store.Currency == null || string.IsNullOrEmpty(store.Currency.Id))
@@ -1671,13 +1961,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             if (getimages)
-                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty);
+                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, stat);
 
+            logger.StatisticEndSub(ref stat, index);
             return store;
         }
 
-        public List<Store> StoresGet(bool clickAndCollectOnly, bool details)
+        public List<Store> StoresGet(bool clickAndCollectOnly, bool details, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest;
             if (clickAndCollectOnly)
@@ -1692,7 +1985,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
             if (details == false)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return list;
+            }
 
             foreach (Store store in list)
             {
@@ -1735,32 +2031,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     }
                 }
 
-                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty);
+                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, stat);
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset)
+        public List<StoreHours> StoreHoursGetByStoreId(string storeId, int offset, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetStoreOpeningHours root = new LSCentral.RootGetStoreOpeningHours();
 
             logger.Debug(config.LSKey.Key, "GetStoreOpeningHours Store: " + storeId);
             centralQryWS.GetStoreOpeningHours(ref respCode, ref errorText, storeId, ref root);
-            HandleWS2ResponseCode("GetStoreOpeningHours", respCode, errorText, new string[] { "1000" });
+            HandleWS2ResponseCode("GetStoreOpeningHours", respCode, errorText, ref stat, index, new string[] { "1000" });
             logger.Debug(config.LSKey.Key, "GetStoreOpeningHours Response - " + Serialization.ToXml(root, true));
 
             StoreMapping map = new StoreMapping();
-            return map.MapFromRootToOpeningHours(root, offset);
+            List<StoreHours> list = map.MapFromRootToOpeningHours(root, offset);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<StoreServices> StoreServicesGetByStoreId(string storeId)
+        public List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             List<StoreServices> serviceListFound = new List<StoreServices>();
             string fullFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xml", "navdata_StoreFeatures.xml");
             if (File.Exists(fullFileName) == false)
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return serviceListFound;
+            }
 
             string xml = File.ReadAllText(fullFileName);
             StoreServicesXml xmlParse = new StoreServicesXml(xml);
@@ -1770,6 +2076,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 if (serv.StoreId.ToLowerInvariant() == storeId.ToLowerInvariant())
                     serviceListFound.Add(serv);
             }
+            logger.StatisticEndSub(ref stat, index);
             return serviceListFound;
         }
 
@@ -1777,8 +2084,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Device
 
-        public Device DeviceGetById(string id)
+        public Device DeviceGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Device", "ID", id);
             string xmlResponse = RunOperation(xmlRequest);
@@ -1786,7 +2095,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository(config);
-            return rep.DeviceGetById(table);
+            Device data = rep.DeviceGetById(table);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         private string GetDefaultDeviceId(string userName)
@@ -1794,8 +2105,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return ("WEB-" + userName);
         }
 
-        public Terminal TerminalGetById(string id)
+        public Terminal TerminalGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC POS Terminal", "No.", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -1808,6 +2121,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (ter.InventoryMainMenuId == null)
                 ter.InventoryMainMenuId = string.Empty;
 
+            logger.StatisticEndSub(ref stat, index);
             return ter;
         }
 
@@ -1815,8 +2129,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region ScanPayGo
 
-        public string ScanPayGoSuspend(Order request)
+        public string ScanPayGoSuspend(Order request, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -1825,15 +2141,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             root.MobileTransaction[0].TerminalId = config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal);
             root.MobileTransaction[0].StaffId = config.SettingsGetByKey(ConfigKey.ScanPayGo_Staff);
 
-            logger.Debug(config.LSKey.Key, "MobilePosSuspend Request - " + Serialization.ToXml(root, true));
+            logger.Debug(config.LSKey.Key, "MobilePosSuspendV2 Request - " + Serialization.ToXml(root, true));
             centralWS.MobilePosSuspendV2(ref respCode, ref errorText, root, ref receiptNo);
-            HandleWS2ResponseCode("MobilePosSuspend", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "MobilePosSuspend Response - " + Serialization.ToXml(root, true));
+            HandleWS2ResponseCode("MobilePosSuspendV2", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "MobilePosSuspendV2 Response - " + Serialization.ToXml(root, true));
+            logger.StatisticEndSub(ref stat, index);
             return receiptNo;
         }
 
-        public ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
+        public ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootSPGProfileGet rootProfile = new LSCentral.RootSPGProfileGet();
@@ -1842,7 +2161,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, $"SPGProfileGet Request - Profile:{profileId} store:{storeNo}");
             centralWS.SPGProfileGet(XMLHelper.GetString(profileId), XMLHelper.GetString(storeNo), ref rootProfile, ref rootTender, ref rootFlag, ref respCode, ref errorText);
-            HandleWS2ResponseCode("SPGProfileGet", respCode, errorText);
+            HandleWS2ResponseCode("SPGProfileGet", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "SPGProfileGet Response - Profile:" + Serialization.ToXml(rootProfile, true) +
                                                                 "> Tender:" + Serialization.ToXml(rootTender, true) +
                                                                 "> Flags:" + Serialization.ToXml(rootFlag, true));
@@ -1875,11 +2194,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     });
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return profile;
         }
 
-        public OrderCheck ScanPayGoOrderCheck(string documentId)
+        public OrderCheck ScanPayGoOrderCheck(string documentId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             bool orderPayed = false;
@@ -1889,7 +2211,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, $"SPGOrderCheck Request - docId:{documentId}");
             centralWS.SPGOrderCheck(documentId, ref orderPayed, ref doCheck, ref numOfItem, ref root, ref respCode, ref errorText);
-            HandleWS2ResponseCode("SPGOrderCheck", respCode, errorText);
+            HandleWS2ResponseCode("SPGOrderCheck", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "SPGOrderCheck Response - " + Serialization.ToXml(root, true));
 
             List<OrderCheckLines> lines = new List<OrderCheckLines>();
@@ -1920,23 +2242,29 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 NumberOfItemsToCheck = numOfItem,
                 Lines = lines
             };
+            logger.StatisticEndSub(ref stat, index);
             return orderCheck;
         }
 
-        public bool SecurityCheckProfile(string orderNo, string storeNo)
+        public bool SecurityCheckProfile(string orderNo, string storeNo, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             bool exist = false;
             logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Request - OrderNo:{orderNo} storeNo:{storeNo}");
             centralWS.SecurityCheckProfile(ref respCode, ref errorText, ref exist, XMLHelper.GetString(storeNo), XMLHelper.GetString(orderNo));
-            HandleWS2ResponseCode("SecurityCheckProfile", respCode, errorText);
+            HandleWS2ResponseCode("SecurityCheckProfile", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Response - ProfileExist:{exist}");
+            logger.StatisticEndSub(ref stat, index);
             return exist;
         }
 
-        public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
+        public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             bool retValue = false;
             string errorText = string.Empty;
@@ -1944,16 +2272,78 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, $"SecurityCheckProfile Request - QRCode:{qrCode} store:{storeNo} devLoc:{devLocation} memAccount:{memberAccount} exitWoutShop:{exitWithoutShopping} isEntering:{isEntering}");
             centralWS.SPGOpenGate(qrCode, ref storeNo, ref devLocation, ref memberAccount, ref exitWithoutShopping, ref isEntering, ref retValue, ref respCode, ref errorText);
             logger.Debug(config.LSKey.Key, $"SPGOpenGate Response -  resCode:{respCode} errMsg:{errorText}");
+            logger.StatisticEndSub(ref stat, index);
             if (respCode != "0000")
                 return errorText;
 
             return string.Empty;
         }
 
+        public bool TokenEntrySet(ClientToken token, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            bool retValue = false;
+            string errorText = string.Empty;
+
+            List<LSCentral.Token> tokens = new List<LSCentral.Token>()
+            {
+                new LSCentral.Token()
+                {
+                    AccountNo = token.AccountNo,
+                    CardMask = token.CardMask,
+                    ContactNo = token.ContactNo,
+                    Created = token.Created,
+                    DefaultToken = token.DefaultToken,
+                    EntryNo = token.EntryNo,
+                    PSPID = token.pSPID,
+                    Token1 = token.Token1,
+                    TokenId = token.Token,
+                    TokenType = token.Type
+                }
+            };
+
+            LSCentral.RootSetTokenEntry entry = new LSCentral.RootSetTokenEntry();
+            entry.Token = tokens.ToArray();
+
+            logger.Debug(config.LSKey.Key, $"SetTokenEntry Request - token:{Serialization.ToXml(token, true)}");
+            centralWS.SetTokenEntry(token.ContactNo, token.CardNo, entry, ref retValue, ref respCode, ref errorText);
+            HandleWS2ResponseCode("SetTokenEntry", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
+            return retValue;
+        }
+
+        public ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+
+            string result = string.Empty;
+            string token = string.Empty;
+            DateTime exp = DateTime.MinValue;
+
+            logger.Debug(config.LSKey.Key, $"GetTokenEntry Request - cardNo:{cardNo}");
+            centralWS.GetTokenEntry(string.Empty, cardNo, ref token, ref exp, ref result, ref respCode, ref errorText);
+            HandleWS2ResponseCode("GetTokenEntry", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, $"GetTokenEntry Response - token:{token} ExpD:{exp} Result:{result}");
+            logger.StatisticEndSub(ref stat, index);
+            return new ClientTokenResult()
+            {
+                Token = token,
+                ExpireDate = exp,
+                Result = result
+            };
+        }
+
         #endregion
 
-        public Currency CurrencyGetById(string id, string culture)
+        public Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Currency", "Code", id);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -1961,11 +2351,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository(config);
-            return rep.GetCurrency(table, culture);
+            Currency data = rep.GetCurrency(table, culture);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public List<ShippingAgentService> GetShippingAgentService(string agentId)
+        public List<ShippingAgentService> GetShippingAgentService(string agentId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Shipping Agent Services", "Shipping Agent Code", agentId);
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -1973,11 +2367,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository(config);
-            return rep.GetShippingAgentServices(table);
+            List<ShippingAgentService> list = rep.GetShippingAgentServices(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public decimal GetPointRate()
+        public decimal GetPointRate(Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");
             string xmlResponse = RunOperation(xmlRequest);
@@ -1985,11 +2383,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository(config);
-            return rep.GetPointRate(table);
+            decimal data = rep.GetPointRate(table);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
             string xmlResponse = RunOperation(xmlRequest);
@@ -1997,38 +2399,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ContactRepository rep = new ContactRepository(config);
-            return rep.PointEntryGet(table);
+            List<PointEntry> list = rep.PointEntryGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<Notification> NotificationsGetByCardId(string cardId)
+        public List<Notification> NotificationsGetByCardId(string cardId, Statistics stat)
         {
             List<Notification> pol = new List<Notification>();
             if (string.IsNullOrWhiteSpace(cardId))
                 return pol;
+
+            logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", cardId);
             centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
 
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
-            return map.MapFromRootToNotifications(root);
+            List<Notification> list = map.MapFromRootToNotifications(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<Hierarchy> HierarchyGet(string storeId)
+        public List<Hierarchy> HierarchyGet(string storeId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             List<Hierarchy> list = new List<Hierarchy>();
             List<HierarchyNode> nodes = new List<HierarchyNode>();
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetHierarchyValSched rootRoot = new LSCentral.RootGetHierarchyValSched();
-            logger.Debug(config.LSKey.Key, "GetHierarchy - StoreId: {0}", storeId);
+            logger.Debug(config.LSKey.Key, "GetHierarchyV2ValidationSchedule - StoreId: {0}", storeId);
             centralQryWS.GetHierarchyV2ValidationSchedule(ref respCode, ref errorText, storeId, ref rootRoot);
-            HandleWS2ResponseCode("GetHierarchy", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetHierarchy Response - " + Serialization.ToXml(rootRoot, true));
+            HandleWS2ResponseCode("GetHierarchyV2ValidationSchedule", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "GetHierarchyV2ValidationSchedule Response - " + Serialization.ToXml(rootRoot, true));
 
             if (rootRoot.HierarchyValSched == null || rootRoot.HierarchyDateValSched == null)
                 throw new LSOmniServiceException(StatusCode.NoEntriesFound, "No Hierarchy found");
@@ -2068,7 +2478,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 logger.Debug(config.LSKey.Key, "GetHierarchyNode - HierarchyCode: {0}, NodeId: {1}, StoreId: {2}, NodeIn: {3}",
                     val.HierarchyCode, val.NodeID, storeId, Serialization.ToXml(rootNodeIn, true));
                 centralQryWS.GetHierarchyNode(ref respCode, ref errorText, val.HierarchyCode, val.NodeID, storeId, rootNodeIn, ref rootNodeOut);
-                HandleWS2ResponseCode("GetHierarchyNode", respCode, errorText);
+                HandleWS2ResponseCode("GetHierarchyNode", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "GetHierarchyNode Response - " + Serialization.ToXml(rootNodeOut, true));
 
                 if (rootNodeOut.HierarchyNodeLink == null)
@@ -2099,11 +2509,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     root.RecursiveBuilder(ref node, nodes);
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
+        public List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
@@ -2111,13 +2524,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
             centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, XMLHelper.GetString(cardId), XMLHelper.GetString(itemId), XMLHelper.GetString(storeId), ref root);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToPublishedOffers(root);
+            List<PublishedOffer> data = map.MapFromRootToPublishedOffers(root);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
-        public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
+        public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat)
         {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string respCode = string.Empty;
             string errorText = string.Empty;
 
@@ -2126,31 +2543,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "GetReturnPolicy - storeId:{0}, storeGroup:{1} itemCat:{2} prodGroup:{3}", storeId, storeGroupCode, itemCategory, productGroup);
             centralWS.GetReturnPolicy(ref respCode, ref errorText, XMLHelper.GetString(storeId), XMLHelper.GetString(storeGroupCode), XMLHelper.GetString(itemCategory), XMLHelper.GetString(productGroup), XMLHelper.GetString(itemId), XMLHelper.GetString(variantCode), XMLHelper.GetString(variantDim1), ref root);
-            string ret = HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, new string[] { "1000" });
+            string ret = HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, ref stat, index, new string[] { "1000" });
             if (ret == "1000")
+            {
+                logger.StatisticEndSub(ref stat, index);
                 return new List<ReturnPolicy>();
+            }
 
             logger.Debug(config.LSKey.Key, "GetReturnPolicy Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToReturnPolicy(root);
+            List<ReturnPolicy> list = map.MapFromRootToReturnPolicy(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
-        public List<Advertisement> AdvertisementsGetById(string id)
+        public List<Advertisement> AdvertisementsGetById(string id, Statistics stat)
         {
             List<Advertisement> ads = new List<Advertisement>();
             string fullFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xml", "navdata_ads.xml");
             if (File.Exists(fullFileName) == false)
                 return ads;
 
+            logger.StatisticStartSub(true, ref stat, out int index);
+
             string xml = File.ReadAllText(fullFileName);
             AdvertisementXml xmlParse = new AdvertisementXml(xml);
             ads = xmlParse.ParseXml(id);
+            logger.StatisticEndSub(ref stat, index);
             return ads;
         }
 
         public MobileMenu MenuGet(string storeId, string salesType, Currency currency)
         {
-            logger.Error(config.LSKey.Key, "Not supported in LS Central");
-            return new MobileMenu();
+            throw new NotImplementedException();
         }
     }
 }

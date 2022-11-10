@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             List<JscKey> keys = GetPrimaryKeys(tablename);
             string prevLastKey = lastKey;
-            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[" + fieldname + "]=mt.[Code]";
+            string sqlfrom2 = sqlfrom + " LEFT JOIN [" + navCompanyName + "Item] it ON it.[" + fieldname + "]=mt.[Code]";
 
             // get records remaining
             string sql = string.Empty;

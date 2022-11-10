@@ -69,8 +69,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.CommandText = "SELECT mt.[Code],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location],mt.[Last Date Modified]" +
                                           ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                                           " FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
-                                          "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                                          "LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                                          "LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                                           "WHERE mt.[Code]=@id AND tms.[Company Name]=@cmp";
                     command.Parameters.AddWithValue("@id", id);
                     command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
@@ -135,7 +135,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
                 string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",mt.[Image Blob]" : string.Empty) +
-                             sqlimgfrom + " INNER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
+                             sqlimgfrom + " JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
                              " ORDER BY il.[Display Order]";
 
@@ -185,8 +185,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width],tm.[ID]" : string.Empty) +
                              sqlimgfrom + " JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
-                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
-                             " LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]" +
+                             " LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
+                             " LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
                              " ORDER BY il.[Display Order]";
 
@@ -383,8 +383,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sql = GetSQL(fullReplication, batchSize) +
                     "mt.[Code],tm.[ID],mt.[Type],mt.[Image Location],mt.[Description],tm.[Content],tm.[Height],tm.[Width]" +
                     "FROM [" + navCompanyName + "Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                    "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
-                    "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                    "LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] " +
+                    "LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                     GetWhereStatement(fullReplication, keys, " AND tms.[Company Name]=@cmp", true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))

@@ -30,7 +30,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                          "spg.[Create Customers] AS FLD_B13,spg.[Update Customers] AS FLD_B14,spg.[View Sales History] AS FLD_B15,spg.[Customer Comments] AS FLD_B16";
 
             sqlfrom = " FROM [" + navCompanyName + "Staff$5ecfc871-5d82-43f1-9c54-59685e82318d] st" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Staff Permission Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg ON spg.[Code]=st.[Permission Group]";
+                      " LEFT JOIN [" + navCompanyName + "Staff Permission Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg ON spg.[Code]=st.[Permission Group]";
         }
 
         public List<ReplStaffPermission> ReplicateStaffPermission(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

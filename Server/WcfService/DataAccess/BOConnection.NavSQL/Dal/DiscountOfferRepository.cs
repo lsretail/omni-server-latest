@@ -32,14 +32,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                          "p.[Type],p.[Discount Type],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID],p.[Discount Amount Value]";
 
             sqlfrom = " FROM [" + navCompanyName + "WI Discounts] mt" +
-                      " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
+                      " JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
             sqlMMcolumns = "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
                            "mt.[To Date],mt.[Offer No_],mt.[Last Modify Date]," +
                            "p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID]";
 
             sqlMMfrom = " FROM [" + navCompanyName + "WI Mix & Match Offer] mt" +
-                      " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
+                      " JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
             sqlVcolumns = "mt.[ID],mt.[Description],mt.[Starting Date],mt.[Ending Date],mt.[Starting Time],mt.[Ending Time],mt.[Time within Bounds],mt.[Monday Starting Time],mt.[Monday Ending Time] " +
                         ",mt.[Mon_ Time within Bounds],mt.[Tuesday Starting Time],mt.[Tuesday Ending Time],mt.[Tue_ Time within Bounds],mt.[Wednesday Starting Time],mt.[Wednesday Ending Time] " +

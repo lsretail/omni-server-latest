@@ -133,8 +133,10 @@ namespace LSOmni.DataAccess.Dal
             return imageList;
         }
 
-        public List<ImageView> NotificationImagesById(string notificationId)
+        public List<ImageView> NotificationImagesById(string notificationId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
+
             List<ImageView> imageList = new List<ImageView>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
@@ -165,6 +167,7 @@ namespace LSOmni.DataAccess.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return imageList;
         }
 

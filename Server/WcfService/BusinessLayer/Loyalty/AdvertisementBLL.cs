@@ -9,13 +9,11 @@ namespace LSOmni.BLL.Loyalty
 {
     public class AdvertisementBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-
         public AdvertisementBLL(BOConfiguration config, int timeoutInSeconds) : base(config, timeoutInSeconds)
         {
         }
 
-        public virtual List<Advertisement> AdvertisementsGetById(string id, string contactId)
+        public virtual List<Advertisement> AdvertisementsGetById(string id, string contactId, Statistics stat)
         {
             //call local db or BO web service. 
             List<Advertisement> ads = new List<Advertisement>();
@@ -23,7 +21,7 @@ namespace LSOmni.BLL.Loyalty
             try
             {
                 //not exist in cache so get them from BO
-                ads = BOLoyConnection.AdvertisementsGetById(id);
+                ads = BOLoyConnection.AdvertisementsGetById(id, stat);
             }
             catch (LSOmniServiceException ex)
             {

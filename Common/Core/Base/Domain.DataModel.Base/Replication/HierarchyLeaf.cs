@@ -87,6 +87,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public HierarchyLeafType Type { get; set; }
         [DataMember]
         public int SortOrder { get; set; }
+        [DataMember]
+        public decimal Prepayment { get; set; }
+        [DataMember]
+        public bool VendorSourcing { get; set; }
 
         /// <summary>
         /// Default Member Value is Member Scheme, if true, Member Value is Member Club

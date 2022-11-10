@@ -14,6 +14,8 @@ namespace LSOmni.Service
 
         public virtual ActivityResponse ActivityConfirm(ActivityRequest request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -24,10 +26,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityConfirm");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual ActivityResponse ActivityCancel(string activityNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -38,10 +46,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityCancel");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string contactAccount, string optionalResource, string promoCode, string activityNo, int noOfPersons)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -52,10 +66,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityAvailabilityGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -66,10 +86,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityAdditionalChargesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -80,10 +106,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityProductChargesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool ActivityAdditionalChargesSet(AdditionalCharge request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -94,10 +126,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -108,10 +146,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityAttributesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual int ActivityAttributeSet(AttributeType type, string linkNo, string attributeCode, string attributeValue)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -122,10 +166,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityAttributeSet");
                 return -1; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string ActivityReservationInsert(Reservation request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -136,10 +186,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityInsertReservation");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string ActivityReservationUpdate(Reservation request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -150,10 +206,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityUpdateReservation");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual MembershipResponse ActivityMembershipSell(string contactNo, string membersShipType)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -164,10 +226,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipSell");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -178,10 +246,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -192,10 +266,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -206,10 +286,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -221,10 +307,16 @@ namespace LSOmni.Service
                 messageString = "Error";
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -235,10 +327,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return string.Empty; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string ActivityInsertGroupReservation(Reservation request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -249,10 +347,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return string.Empty; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string ActivityUpdateGroupReservation(Reservation request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -263,10 +367,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return string.Empty; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -277,10 +387,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return null;
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -291,6 +407,10 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         #endregion
@@ -299,6 +419,8 @@ namespace LSOmni.Service
 
         public virtual List<ActivityProduct> ActivityProductsGet()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -309,10 +431,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityProducts");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<ActivityType> ActivityTypesGet()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -323,10 +451,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityTypes");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<ActivityLocation> ActivityLocationsGet()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -337,10 +471,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityLocationsGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<Booking> ActivityReservationsGet(string reservationNo, string contactNo, string activityType)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -351,10 +491,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityReservationsGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<ResHeader> ActivityReservationsHeaderGet(string reservationNo, string reservationType, string status, string locationNo, DateTime fromDate)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -365,10 +511,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityReservationsHeaderGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<Promotion> ActivityPromotionsGet()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -379,10 +531,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityPromotionsGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<Allowance> ActivityAllowancesGet(string contactNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -393,10 +551,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityAllowancesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<CustomerEntry> ActivityCustomerEntriesGet(string contactNo, string customerNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -407,10 +571,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityCustomerEntriesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<MemberProduct> ActivityMembershipProductsGet()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -421,10 +591,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipProductsGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<SubscriptionEntry> ActivitySubscriptionChargesGet(string contactNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -435,10 +611,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivitySubscriptionChargesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<AdmissionEntry> ActivityAdmissionEntriesGet(string contactNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -449,10 +631,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivitySubscriptionChargesGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<Membership> ActivityMembershipsGet(string contactNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -463,10 +651,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -477,10 +671,16 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<ActivityResource> ActivityResourceGet()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 ActivityBLL bll = new ActivityBLL(config);
@@ -490,6 +690,10 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 

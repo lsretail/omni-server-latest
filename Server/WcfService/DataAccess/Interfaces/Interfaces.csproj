@@ -85,6 +85,10 @@
       <Project>{6A6D7EFF-5FB2-4A4A-91E2-4BE6D4F08AC3}</Project>
       <Name>Domain.DataModel.ScanPayGo</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{8AA4327B-1018-46B1-9C47-882494DD8435}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

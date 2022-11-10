@@ -1,4 +1,5 @@
-﻿using LSRetail.Omni.Domain.DataModel.Base;
+﻿using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 
@@ -11,21 +12,21 @@ namespace LSOmni.BLL.Loyalty
         {
         }
 
-        public virtual Currency CurrencyGetLocal()
+        public virtual Currency CurrencyGetLocal(Statistics stat)
         {
             string id = config.SettingsGetByKey(ConfigKey.Currency_Code);
             string culture = config.SettingsGetByKey(ConfigKey.Currency_Culture);
-            return BOAppConnection.CurrencyGetById(id, culture);
+            return BOAppConnection.CurrencyGetById(id, culture, stat);
         }
 
-        public virtual decimal GetPointRate()
+        public virtual decimal GetPointRate(Statistics stat)
         {
-            return this.BOLoyConnection.GetPointRate();
+            return this.BOLoyConnection.GetPointRate(stat);
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, Statistics stat)
         {
-            return BOLoyConnection.GiftCardGetBalance(cardNo, config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType));
+            return BOLoyConnection.GiftCardGetBalance(cardNo, config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType), stat);
         }
     }
 }

@@ -12,24 +12,23 @@ namespace LSOmni.BLL.Loyalty
 {
     public class MenuBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-        private IImageCacheRepository iImageCacheRepository;
+        private readonly IImageCacheRepository iImageCacheRepository;
 
         public MenuBLL(BOConfiguration config, int timeoutInSeconds) : base(config, timeoutInSeconds)
         {
             iImageCacheRepository = GetDbRepository<IImageCacheRepository>(config);
         }
 
-        public virtual MobileMenu MenuGet(string storeId, string salesType, bool loadDetails, ImageSize imageSize)
+        public virtual MobileMenu MenuGet(string storeId, string salesType, bool loadDetails, ImageSize imageSize, Statistics stat)
         {
             MobileMenu mobileMenu;
 
             try
             {
                 CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
-                Currency currency = curBLL.CurrencyGetLocal();
+                Currency currency = curBLL.CurrencyGetLocal(stat);
 
-                mobileMenu = BOLoyConnection.MenuGet(storeId, salesType, currency);
+                mobileMenu = BOLoyConnection.MenuGet(storeId, salesType, currency, stat);
                 mobileMenu.Currency = currency;
 
                 if (loadDetails == false)
@@ -42,7 +41,7 @@ namespace LSOmni.BLL.Loyalty
                 {
                     if (string.IsNullOrWhiteSpace(mobileMenu.Products[k].Detail))
                     {
-                        mobileMenu.Items[k].Details = BOAppConnection.ItemDetailsGetById(mobileMenu.Products[k].Id);
+                        mobileMenu.Items[k].Details = BOAppConnection.ItemDetailsGetById(mobileMenu.Products[k].Id, stat);
                     }
 
                     iviews.Clear();
@@ -59,7 +58,7 @@ namespace LSOmni.BLL.Loyalty
                 {
                     if (string.IsNullOrWhiteSpace(mobileMenu.Products[k].Detail))
                     {
-                        mobileMenu.Products[k].Detail = BOAppConnection.ItemDetailsGetById(mobileMenu.Products[k].Id);
+                        mobileMenu.Products[k].Detail = BOAppConnection.ItemDetailsGetById(mobileMenu.Products[k].Id, stat);
                     }
 
                     iviews.Clear();
@@ -76,7 +75,7 @@ namespace LSOmni.BLL.Loyalty
                 {
                     if (string.IsNullOrWhiteSpace(mobileMenu.Recipes[k].Detail))
                     {
-                        mobileMenu.Recipes[k].Detail = BOAppConnection.ItemDetailsGetById(mobileMenu.Recipes[k].Id);
+                        mobileMenu.Recipes[k].Detail = BOAppConnection.ItemDetailsGetById(mobileMenu.Recipes[k].Id, stat);
                     }
 
                     //get all the views related to this Recipes image (the menu should be returning a list of images, instead we get from db)

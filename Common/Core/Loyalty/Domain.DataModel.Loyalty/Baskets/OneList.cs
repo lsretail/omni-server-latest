@@ -13,12 +13,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
     {
         private decimal totalAmount;
         private bool isChecked;
+        private ObservableCollection<OneListItem> items;
 
         public OneList(string id) : base(id)
         {
             Description = string.Empty;
             CardId = string.Empty;
             StoreId = string.Empty;
+            Name = string.Empty;
             CreateDate = DateTime.Now;
             ListType = ListType.Basket; // basket, wish
             Items = new ObservableCollection<OneListItem>();
@@ -74,6 +76,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         [DataMember(IsRequired = true)]
         public string CardId { get; set; }
         [DataMember]
+        public string Name { get; set; }
+        [DataMember]
         public virtual List<OneListLink> CardLinks { get; set; }
 
         [IgnoreDataMember]
@@ -81,10 +85,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         {
             get
             {
+                var links = CardLinks.Where(x => !string.IsNullOrEmpty(x.CardId));
+
                 var cardLinkNames = string.Empty;
                 
-                OneListLink lastItem = CardLinks.Last();
-                foreach (var name in CardLinks)
+                OneListLink lastItem = links.Last();
+                foreach (var name in links)
                 {
                     if (name.Equals(lastItem))
                     {
@@ -125,8 +131,21 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string SalesType { get; set; }
         [DataMember]
         public string ShipToCountryCode { get; set; }
+
         [DataMember]
-        public ObservableCollection<OneListItem> Items { get; set; }
+        public ObservableCollection<OneListItem> Items
+        {
+            get
+            {
+                return items;
+            }
+            set
+            {
+                items = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [DataMember]
         public List<OneListPublishedOffer> PublishedOffers { get; set; }
 

@@ -21,8 +21,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
         }
 
-        public RetailTransaction TransactionGetByReceipt(string receiptNo, string culture, bool includeLines)
+        public RetailTransaction TransactionGetByReceipt(string receiptNo, string culture, bool includeLines, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             RetailTransaction trans = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -42,18 +43,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            trans = ReaderToLoyTransHeader(reader, culture, includeLines);
+                            trans = ReaderToLoyTransHeader(reader, culture, includeLines, stat);
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return trans;
         }
 
-        public List<SaleLine> SalesLineGet(string transId, string storeId, string terminalId, Currency currency)
+        public List<SaleLine> SalesLineGet(string transId, string storeId, string terminalId, Currency currency, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SaleLine> list = new List<SaleLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -74,18 +77,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToSaleLine(reader, storeId, terminalId, currency));
+                            list.Add(ReaderToSaleLine(reader, storeId, terminalId, currency, stat));
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<DiscountLine> DiscountLineGet(string transId, string storeId, string terminalId, int lineNo, Currency currency)
+        public List<DiscountLine> DiscountLineGet(string transId, string storeId, string terminalId, int lineNo, Currency currency, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<DiscountLine> list = new List<DiscountLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -115,11 +120,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<PaymentLine> LoyTenderLineGet(string transId, string storeId, string terminalId, string culture)
+        public List<PaymentLine> LoyTenderLineGet(string transId, string storeId, string terminalId, string culture, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<PaymentLine> list = new List<PaymentLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -128,7 +135,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT ml.[Store No_],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Line No_],ml.[Tender Type]," +
                                           "ml.[Amount Tendered],ml.[Currency Code],ml.[Amount in Currency],t.[Description] " +
                                           "FROM [" + navCompanyName + "LSC Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
                                           "ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_] " +
                                           "WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid " +
                                           "ORDER BY ml.[Line No_]";
@@ -149,6 +156,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -180,7 +188,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        private RetailTransaction ReaderToLoyTransHeader(SqlDataReader reader, string culture, bool includeLines)
+        private RetailTransaction ReaderToLoyTransHeader(SqlDataReader reader, string culture, bool includeLines, Statistics stat)
         {
             Currency cur = new Currency(SQLHelper.GetString(reader["Trans_ Currency"]));
 
@@ -207,8 +215,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             if (includeLines)
             {
-                trans.SaleLines = SalesLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, cur);
-                trans.TenderLines = LoyTenderLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, culture);
+                trans.SaleLines = SalesLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, cur, stat);
+                trans.TenderLines = LoyTenderLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, culture, stat);
             }
             else
             {
@@ -218,7 +226,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return trans;
         }
 
-        private SaleLine ReaderToSaleLine(SqlDataReader reader, string storeId, string terminalId, Currency currency)
+        private SaleLine ReaderToSaleLine(SqlDataReader reader, string storeId, string terminalId, Currency currency, Statistics stat)
         {
             SaleLine line = new SaleLine()
             {
@@ -233,7 +241,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
 
             ItemRepository itemRepo = new ItemRepository(config, LSCVersion);
-            LoyItem item = itemRepo.ItemLoyGetById(SQLHelper.GetString(reader["Item No_"]), storeId, string.Empty, false);
+            LoyItem item = itemRepo.ItemLoyGetById(SQLHelper.GetString(reader["Item No_"]), storeId, string.Empty, false, stat);
             RetailItem ritem = new RetailItem()
             {
                 Id = item.Id,
@@ -252,13 +260,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (string.IsNullOrEmpty(vid) == false)
             {
                 ItemVariantRegistrationRepository vrepo = new ItemVariantRegistrationRepository(config);
-                ritem.SelectedVariant = vrepo.VariantRegGetById(vid, ritem.Id);
+                ritem.SelectedVariant = vrepo.VariantRegGetById(vid, ritem.Id, stat);
             }
 
             decimal discount = SQLHelper.GetDecimal(reader, "Discount Amount", false);
             if (discount > 0)
             {
-                line.Discounts = DiscountLineGet(line.Id, storeId, terminalId, line.LineNumber, currency);
+                line.Discounts = DiscountLineGet(line.Id, storeId, terminalId, line.LineNumber, currency, stat);
             }
 
             line.Item = ritem;

@@ -56,14 +56,32 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private string autoUpdatePath;
         private int serviceUpdateTimer;
         private bool windowFullScreen;
+
+        private bool requireAuthentication;
         private string settingsUsername;
         private string settingsPassword;
+
+        private bool useFixedSizeGrid;
+        private int fixedSizeGridRows;
+        private int fixedSizeGridColumns;
+
+        private bool showHardwareOverlay;
+        private bool openDevTools;
+
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";
         public const string WindowFullScreenKey = "WindowFullScreenKey";
+        public const string RequireAuthenticationKey = "RequireAuthenticationKey";
         public const string SettingsUsernameKey = "SettingsUsernameKey";
         public const string SettingsPasswordKey = "SettingsPasswordKey";
+
+        public const string UseFixedSizeGridKey = "UseFixedSizeGridKey";
+        public const string FixedSizeGridRowsKey = "FixedSizeGridRowsKey";
+        public const string FixedSizeGridColumnsKey = "FixedSizeGridColumnsKey";
+
+        public const string ShowHardwareOverlayKey = "ShowHardwareOverlayKey";
+        public const string OpenDevToolsKey = "OpenDevToolsKey";
 
         [System.Xml.Serialization.XmlElementAttribute("AutoUpdate")]
         public bool AutoUpdate
@@ -109,6 +127,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("RequireAuthentication")]
+        public bool RequireAuthentication
+        {
+            get => requireAuthentication;
+            set
+            {
+                requireAuthentication = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [System.Xml.Serialization.XmlElementAttribute("SettingsUsername")]
         public string SettingsUsername
         {
@@ -116,6 +145,61 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 settingsUsername = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("UseFixedSizeGrid")]
+        public bool UseFixedSizeGrid
+        {
+            get => useFixedSizeGrid;
+            set
+            {
+                useFixedSizeGrid = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("FixedSizeGridRows")]
+        public int FixedSizeGridRows
+        {
+            get => fixedSizeGridRows;
+            set
+            {
+                fixedSizeGridRows = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("FixedSizeGridColumns")]
+        public int FixedSizeGridColumns
+        {
+            get => fixedSizeGridColumns;
+            set
+            {
+                fixedSizeGridColumns = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("ShowHardwareOverlay")]
+        public bool ShowHardwareOverlay
+        {
+            get => showHardwareOverlay;
+            set
+            {
+                showHardwareOverlay = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("OpenDevTools")]
+        public bool OpenDevTools
+        {
+            get => openDevTools;
+            set
+            {
+                openDevTools = value;
                 NotifyPropertyChanged();
             }
         }
@@ -185,6 +269,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         private int level;
 
+        private int gridRow;
+        private int gridColumn;
+
         private static SettingsConfig emptyConfig;
 
         public SettingsConfig(string id) : base(id)
@@ -222,6 +309,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             this.hexColor = config.hexColor;
             this.parameters = config.parameters;
             this.allowLegacyEdge = config.allowLegacyEdge;
+            this.gridRow = config.gridRow;
+            this.gridColumn = config.gridColumn;
             EftSelectedDevice = config.EftSelectedDevice;
             EftIpAddress = config.EftIpAddress;
             EftMainPort = config.EftMainPort;
@@ -251,6 +340,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             PreventClosing = config.PreventClosing;
             RunOnStartup = config.RunOnStartup;
             ShowBackButton = config.ShowBackButton;
+            OpenInNewWindow = config.OpenInNewWindow;
 
             hardwareStationServiceName = config.hardwareStationServiceName;
             hardwareStationPort = config.hardwareStationPort;
@@ -315,6 +405,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             hexColor = string.Empty;
             parameters = string.Empty;
             allowLegacyEdge = false;
+            gridRow = 0;
+            gridColumn = 0;
 
             hardwareStationServiceName = string.Empty;
             hardwareStationRemoteComputer = false;
@@ -787,6 +879,28 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 serviceStatusMessage = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("GridRow")]
+        public int GridRow
+        {
+            get => gridRow;
+            set
+            {
+                gridRow = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("GridColumn")]
+        public int GridColumn
+        {
+            get => gridColumn;
+            set
+            {
+                gridColumn = value;
                 NotifyPropertyChanged();
             }
         }

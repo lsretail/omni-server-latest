@@ -16,8 +16,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
         }
 
-        public SalesEntry OrderGetById(string id, bool includeLines, bool external)
+        public SalesEntry OrderGetById(string id, bool includeLines, bool external, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntry order = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -52,13 +53,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            order = ReaderToSalesEntry(reader, includeLines);
+                            order = ReaderToSalesEntry(reader, includeLines, stat);
                         }
                         reader.Close();
                     }
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return order;
         }
 
@@ -75,10 +77,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                           "s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed]" +
                                           (LSCVersion >= new Version("18.2") ? ",s0.[External Code] AS Ext0,s1.[External Code] AS Ext1" : string.Empty) +
                                           " FROM [" + navCompanyName + "LSC CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "LSC CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
                                           "WHERE mt.[Document ID]=@id ORDER BY mt.[Line No_]";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
@@ -121,8 +123,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return status;
         }
 
-        private List<SalesEntryLine> OrderLinesGet(string id)
+        private List<SalesEntryLine> OrderLinesGet(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             string select = "SELECT ml.[Number],ml.[Variant Code],ml.[Unit of Measure Code],ml.[Line No_],ml.[Line Type]," +
                             "ml.[Net Price],ml.[Price],ml.[Quantity],ml.[Discount Amount],ml.[Discount Percent]," +
                             "ml.[Net Amount],ml.[Vat Amount],ml.[Amount],ml.[Item Description],ml.[Variant Description]" +
@@ -153,6 +156,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -207,8 +211,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
         }
 
-        private List<SalesEntryPayment> OrderPayGet(string id)
+        private List<SalesEntryPayment> OrderPayGet(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -252,11 +257,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        private List<SalesEntryDiscountLine> OrderDiscGet(string id)
+        private List<SalesEntryDiscountLine> OrderDiscGet(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryDiscountLine> list = new List<SalesEntryDiscountLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -283,10 +290,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        private SalesEntry ReaderToSalesEntry(SqlDataReader reader, bool includeLines)
+        private SalesEntry ReaderToSalesEntry(SqlDataReader reader, bool includeLines, Statistics stat)
         {
             SalesEntry entry = new SalesEntry
             {
@@ -359,9 +367,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             if (includeLines)
             {
-                entry.Lines = OrderLinesGet(entry.Id);
-                entry.Payments = OrderPayGet(entry.Id);
-                entry.DiscountLines = OrderDiscGet(entry.Id);
+                entry.Lines = OrderLinesGet(entry.Id, stat);
+                entry.Payments = OrderPayGet(entry.Id, stat);
+                entry.DiscountLines = OrderDiscGet(entry.Id, stat);
 
                 if (entry.Lines != null && entry.Lines.Count > 0)
                 {
@@ -411,7 +419,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
                 entry.Lines = list;
             }
-
             return entry;
         }
 

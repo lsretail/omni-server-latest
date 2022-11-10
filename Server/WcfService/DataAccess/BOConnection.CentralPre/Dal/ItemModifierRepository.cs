@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -28,8 +28,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                          "(SELECT icc.[Max_ Selection] FROM [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] icc " +
                          "WHERE icc.[Code]=mt.[Trigger Code]) AS [MaxSel]";
 
-            sqlfrom = " FROM [" + navCompanyName + "LSC Table Specific Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] tsi " +
-                      "INNER JOIN [" + navCompanyName + "LSC Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Code]=tsi.[Infocode Code]";
+            sqlfrom = " FROM [" + navCompanyName + "LSC Table Specific Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] tsi" +
+                      " JOIN [" + navCompanyName + "LSC Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Code]=tsi.[Infocode Code]";
         }
 
         public List<ReplItemModifier> ReplicateItemModifier(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -53,7 +53,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom +
-                " LEFT OUTER JOIN [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
+                " LEFT JOIN [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
                 GetWhereStatementWithStoreDist(fullReplication, keys, "tsi.[Value]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -144,15 +144,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ItemModifier> ModifierGetByItemId(string id)
+        public List<ItemModifier> ModifierGetByItemId(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<ItemModifier> list = new List<ItemModifier>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
-                        " LEFT OUTER JOIN [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
+                        " LEFT JOIN [" + navCompanyName + "LSC Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
                         " WHERE tsi.[Value]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
@@ -172,6 +173,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 

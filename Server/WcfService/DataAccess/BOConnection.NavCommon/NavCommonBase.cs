@@ -156,7 +156,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     navWebQryReference.Proxy = GetWebProxy();
                 }
 
-                NavVersionToUse(true, false); //check the nav version
+                NavVersionToUse(false, false, out string cVer); //check the nav version
             }
 
             // Use NAV Web Service V2
@@ -272,10 +272,11 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return data;
         }
 
-        public string NavVersionToUse(bool forceCallToNav, bool v2call)
+        public string NavVersionToUse(bool forceCallToNav, bool v2call, out string centralVersion)
         {
             if (NAVVersion == null)
                 NAVVersion = new Version("17.0");
+            centralVersion = NAVVersion.ToString();
 
             //this methods is called in PING and in constructor
             try
@@ -285,64 +286,51 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 //  <add key="LSNAV.Version" value="8.0"/>    or "7.0"  "7.1"
                 //can overwrite what comes from NAV by adding key LSNAV.Version to the appConfig FILE not table.. LSNAV_Version
                 string version = config.SettingsGetByKey(ConfigKey.LSNAV_Version);
-                if (string.IsNullOrEmpty(version) == false)
+                if (forceCallToNav == false && string.IsNullOrEmpty(version) == false)
                 {
                     NAVVersion = new Version(version);
-                    logger.Info(config.LSKey.Key, "Value {0} of key LSNAV.Version from TenantConfig file is being used : {1}", version, NAVVersion);
+                    logger.Debug(config.LSKey.Key, "LSNAV.Version Value {0} from TenantConfig is being used", version);
                     return string.Format("LS:{0} [conf]", version);
                 }
 
                 string navver = string.Empty;
-                if (forceCallToNav)
+                string appVersion = string.Empty;
+                string appBuild = string.Empty;
+                string retailCopyright = string.Empty;
+                string retailVersion = string.Empty;
+
+                if (navWS != null && NAVVersion.Major > 13 && v2call)
                 {
-                    string appVersion = string.Empty;
-                    string appBuild = string.Empty;
-                    string retailCopyright = string.Empty;
-                    string retailVersion = string.Empty;
+                    string respCode = string.Empty;
+                    string errorText = string.Empty;
 
-                    if (navWS != null && NAVVersion.Major > 13 && v2call)
+                    if (navWS.Url.Equals(navQryWS.Url) == false)
                     {
-                        string respCode = string.Empty;
-                        string errorText = string.Empty;
-
-                        if (navWS.Url.Equals(navQryWS.Url) == false)
-                        {
-                            // ping 2nd server first
-                            navQryWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
-                            logger.Info(config.LSKey.Key, "Nav WS2 Query Response > Ver:{0} ErrCode:{1} ErrText:{2}", 
-                                retailVersion, respCode, errorText);
-                            if (respCode != "0000")
-                                throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
-                        }
-
-                        navWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
-                		logger.Info(config.LSKey.Key, "Nav WS2 Main Response > appVersion:{0} appBuild:{1} retailVersion:{2} retailCopyright:{3} ErrCode:{4} ErrText:{5}",
-		                    appVersion, appBuild, retailVersion, retailCopyright, respCode, errorText);
+                        // ping 2nd server first
+                        navQryWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
+                        logger.Debug(config.LSKey.Key, "Nav WS2 Query Response > Ver:{0} ErrCode:{1} ErrText:{2}",
+                            retailVersion, respCode, errorText);
                         if (respCode != "0000")
                             throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
                     }
-                    else
+
+                    navWS.TestConnection(ref respCode, ref errorText, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
+                    logger.Debug(config.LSKey.Key, "Nav WS2 Main Response > appVersion:{0} appBuild:{1} retailVersion:{2} retailCopyright:{3} ErrCode:{4} ErrText:{5}",
+                        appVersion, appBuild, retailVersion, retailCopyright, respCode, errorText);
+                    if (respCode != "0000")
+                        throw new LSOmniServiceException(StatusCode.NavWSError, respCode, errorText);
+                }
+                else
+                {
+                    XmlMapping.Loyalty.NavXml navXml = new XmlMapping.Loyalty.NavXml();
+                    string xmlRequest = navXml.TestConnectionRequestXML();
+
+                    string rCode = string.Empty;
+                    string xmlResponse = string.Empty;
+                    if (navWebReference.Url.Equals(navWebQryReference.Url) == false)
                     {
-                        XmlMapping.Loyalty.NavXml navXml = new XmlMapping.Loyalty.NavXml();
-                        string xmlRequest = navXml.TestConnectionRequestXML();
-
-                        string rCode = string.Empty;
-                        string xmlResponse = string.Empty;
-                        if (navWebReference.Url.Equals(navWebQryReference.Url) == false)
-                        {
-                            xmlResponse = RunOperation(xmlRequest, true);
-                            logger.Info(config.LSKey.Key, "Nav Query Version: " + xmlResponse);
-                            rCode = GetResponseCode(ref xmlResponse);
-
-                            //ignore unknown Request_ID 
-                            //the 0004   Unknown Request_ID   TEST_CONNECTION
-                            if (rCode != "0004")
-                            {
-                                HandleResponseCode(ref xmlResponse);
-                            }
-                        }
-
-                        xmlResponse = RunOperation(xmlRequest);
+                        xmlResponse = RunOperation(xmlRequest, true);
+                        logger.Debug(config.LSKey.Key, "Nav Query Version: " + xmlResponse);
                         rCode = GetResponseCode(ref xmlResponse);
 
                         //ignore unknown Request_ID 
@@ -350,35 +338,47 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         if (rCode != "0004")
                         {
                             HandleResponseCode(ref xmlResponse);
-                            navXml.TestConnectionResponseXML(xmlResponse, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
                         }
                     }
 
-                    int st = retailVersion.IndexOf('(');
-                    int ed = retailVersion.IndexOf(')');
-                    if (st == -1)
+                    xmlResponse = RunOperation(xmlRequest);
+                    rCode = GetResponseCode(ref xmlResponse);
+
+                    //ignore unknown Request_ID 
+                    //the 0004   Unknown Request_ID   TEST_CONNECTION
+                    if (rCode != "0004")
                     {
-                        if (retailVersion.Contains("LS Central"))
-                        {
-                            string vv1 = retailVersion.Substring(11, retailVersion.Length - 11);
-                            NAVVersion = new Version(vv1);
-                            navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
-                        }
-                        else
-                        {
-                            navver = string.Format("LS:{0} [{1}]", NAVVersion, appBuild);
-                        }
+                        HandleResponseCode(ref xmlResponse);
+                        navXml.TestConnectionResponseXML(xmlResponse, ref appVersion, ref appBuild, ref retailVersion, ref retailCopyright);
                     }
-                    else
+                }
+
+                int st = retailVersion.IndexOf('(');
+                int ed = retailVersion.IndexOf(')');
+                if (st == -1)
+                {
+                    if (retailVersion.Contains("LS Central"))
                     {
-                        string vv1 = retailVersion.Substring(st + 1, ed - st - 1);
+                        string vv1 = retailVersion.Substring(11, retailVersion.Length - 11);
                         NAVVersion = new Version(vv1);
                         navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
                     }
-
-                    logger.Info(config.LSKey.Key, "appVer:{0} appBuild:{1} retailVer:{2} retailCopyright:{3} NavVersionToUse:{4}",
-                        appVersion, appBuild, retailVersion, retailCopyright, (NAVVersion == null) ? "None" : NAVVersion.ToString());
+                    else
+                    {
+                        navver = string.Format("LS:{0} [{1}]", NAVVersion, appBuild);
+                    }
                 }
+                else
+                {
+                    string vv1 = retailVersion.Substring(st + 1, ed - st - 1);
+                    NAVVersion = new Version(vv1);
+                    navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
+                }
+
+                logger.Debug(config.LSKey.Key, "appVer:{0} appBuild:{1} retailVer:{2} retailCopyright:{3} NavVersionToUse:{4}",
+                    appVersion, appBuild, retailVersion, retailCopyright, (NAVVersion == null) ? "None" : NAVVersion.ToString());
+
+                centralVersion = NAVVersion.ToString();
                 return navver;
             }
             catch (Exception ex)

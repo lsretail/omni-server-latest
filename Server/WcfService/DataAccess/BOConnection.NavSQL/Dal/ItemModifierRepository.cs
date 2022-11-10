@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -25,7 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                      "tsi.[Usage Category],tsi.[Usage Sub-Category],ic.[Explanatory Header Text],ic.[Prompt]";
 
             sqlfrom = " FROM [" + navCompanyName + "Table Specific Infocode] tsi " +
-                      "INNER JOIN [" + navCompanyName + "Information Subcode] mt ON mt.[Code]=tsi.[Infocode Code]";
+                      "JOIN [" + navCompanyName + "Information Subcode] mt ON mt.[Code]=tsi.[Infocode Code]";
         }
 
         public List<ReplItemModifier> ReplicateItemModifier(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -49,7 +49,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom +
-                " LEFT OUTER JOIN [" + navCompanyName + "Infocode] ic ON ic.[Code]=mt.[Code]" +
+                " LEFT JOIN [" + navCompanyName + "Infocode] ic ON ic.[Code]=mt.[Code]" +
                 GetWhereStatementWithStoreDist(fullReplication, keys, "tsi.[Value]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -148,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
-                        " LEFT OUTER JOIN [" + navCompanyName + "Infocode] ic ON ic.[Code]=mt.[Code]" +
+                        " LEFT JOIN [" + navCompanyName + "Infocode] ic ON ic.[Code]=mt.[Code]" +
                         " WHERE tsi.[Value]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);

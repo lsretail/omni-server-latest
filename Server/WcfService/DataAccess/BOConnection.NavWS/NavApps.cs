@@ -8,6 +8,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -24,44 +25,44 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
         }
 
-        public virtual Terminal TerminalGetById(string terminalId)
+        public virtual Terminal TerminalGetById(string terminalId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.TerminalGetById(terminalId);
 
-            return LSCWSBase.TerminalGetById(terminalId);
+            return LSCWSBase.TerminalGetById(terminalId, stat);
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<ProactiveDiscount>();
+                throw new NotImplementedException();
 
-            return LSCWSBase.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+            return LSCWSBase.DiscountsGet(storeId, itemIds, loyaltySchemeCode, stat);
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id)
+        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
         {
             return null;
         }
 
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId)
+        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.VariantRegGetById(id, itemId);
 
-            return LSCWSBase.VariantRegGetById(id, itemId);
+            return LSCWSBase.VariantRegGetById(id, itemId, stat);
         }
 
-        public virtual Currency CurrencyGetById(string id, string culture)
+        public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.CurrencyGetById(id, culture);
 
-            return LSCWSBase.CurrencyGetById(id, culture);
+            return LSCWSBase.CurrencyGetById(id, culture, stat);
         }
 
-        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
+        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat)
         {
             if (locationIds.Count == 0)
             {
@@ -69,7 +70,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 if (NAVVersion < new Version("17.5"))
                     stores = NavWSBase.StoresGet(false, false);
 
-                stores = LSCWSBase.StoresGet(false, false);
+                stores = LSCWSBase.StoresGet(false, false, stat);
 
                 //get the storeIds close to this store
                 foreach (Store store in stores)
@@ -79,18 +80,18 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
 
-            return LSCWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
+            return LSCWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores, stat);
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemsInStoreGet(items, storeId, locationId);
 
-            return LSCWSBase.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation);
+            return LSCWSBase.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation, stat);
         }
 
-        public virtual string ItemDetailsGetById(string itemId)
+        public virtual string ItemDetailsGetById(string itemId, Statistics stat)
         {
             return string.Empty;    //TODO call ws or get it with menu
         }
@@ -163,7 +164,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplStaffPermission> ReplicateStaffPermission(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return new List<ReplStaffPermission>();
+            throw new NotImplementedException();
         }
 
         public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -224,7 +225,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return new List<ReplPrice>();
+            throw new NotImplementedException();
         }
 
         public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -342,7 +343,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<ReplHierarchyHospDeal>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ReplicateHierarchyDeal(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
@@ -350,7 +351,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplHierarchyHospDealLine> ReplicateHierarchyHospDealLine(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<ReplHierarchyHospDealLine>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ReplicateHierarchyDealLine(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
@@ -358,7 +359,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<ReplItemRecipe>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ReplicateItemRecipe(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
@@ -366,7 +367,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<ReplItemModifier>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ReplicateItemModifier(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }

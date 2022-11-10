@@ -10,12 +10,13 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
     public class OneListBLL : BaseLoyBLL
     {
-        private IOneListRepository iRepository;
+        private readonly IOneListRepository iRepository;
 
         public OneListBLL(BOConfiguration config, int timeoutInSeconds)
             : base(config, timeoutInSeconds)
@@ -23,27 +24,27 @@ namespace LSOmni.BLL.Loyalty
             this.iRepository = GetDbRepository<IOneListRepository>(config);
         }
 
-        public virtual List<OneList> OneListGet(MemberContact contact, bool includeLines)
+        public virtual List<OneList> OneListGet(MemberContact contact, bool includeLines, Statistics stat)
         {
             List<OneList> list = new List<OneList>();
             foreach (Card card in contact.Cards)
             {
-                list.AddRange(iRepository.OneListGetByCardId(card.Id, includeLines));
+                list.AddRange(iRepository.OneListGetByCardId(card.Id, includeLines, stat));
             }
             return list;
         }
 
-        public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines = false)
+        public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines, Statistics stat)
         {
-            return iRepository.OneListGetByCardId(cardId, listType, includeLines);
+            return iRepository.OneListGetByCardId(cardId, listType, includeLines, stat);
         }
 
-        public virtual OneList OneListGetById(string oneListId, bool includeLines, bool includeItemDetails)
+        public virtual OneList OneListGetById(string oneListId, bool includeLines, bool includeItemDetails, Statistics stat)
         {
-            return iRepository.OneListGetById(oneListId, includeLines);
+            return iRepository.OneListGetById(oneListId, includeLines, stat);
         }
 
-        public virtual OneList OneListSave(OneList list, bool calculate, bool includeItemDetails)
+        public virtual OneList OneListSave(OneList list, bool calculate, Statistics stat)
         {
             if (list.Items == null)
                 return list;
@@ -54,21 +55,26 @@ namespace LSOmni.BLL.Loyalty
             {
                 if (list.IsHospitality)
                 {
-                    list = CalcuateHospList(list);
+                    list = CalcuateHospList(list, stat);
                 }
                 else
                 {
-                    list = CalcuateList(list);
+                    list = CalcuateList(list, stat);
                 }
             }
 
-            MemberContact cont = BOLoyConnection.ContactGetByCardId(list.CardId, 0, false);
+            if (string.IsNullOrEmpty(list.Name))
+            {
+                MemberContact cont = BOLoyConnection.ContactGet(ContactSearchType.CardId, list.CardId, stat);
+                if (cont != null)
+                    list.Name = cont.Name;
+            }
 
-            iRepository.OneListSave(list, (cont == null) ? string.Empty : cont.Name, calculate);
+            iRepository.OneListSave(list,list.Name, calculate, stat);
             return list;
         }
 
-        public virtual Order OneListCalculate(OneList list)
+        public virtual Order OneListCalculate(OneList list, Statistics stat)
         {
             if (list.Items == null)
                 return new Order();
@@ -78,7 +84,7 @@ namespace LSOmni.BLL.Loyalty
 
             CheckItemSetup(list);
 
-            Order order = BOLoyConnection.BasketCalcToOrder(list);
+            Order order = BOLoyConnection.BasketCalcToOrder(list, stat);
             foreach (OneListItem olditem in list.Items)
             {
                 OrderLine oline = order.OrderLines.Find(l => l.ItemId == olditem.ItemId && l.LineNumber == olditem.LineNumber);
@@ -94,6 +100,11 @@ namespace LSOmni.BLL.Loyalty
                     {
                         oline.UomId = olditem.UnitOfMeasureId;
                     }
+
+                    if (string.IsNullOrEmpty(oline.ItemImageId) && (olditem.Image != null))
+                    {
+                        oline.ItemImageId = olditem.Image.Id;
+                    }
                 }
             }
 
@@ -104,13 +115,13 @@ namespace LSOmni.BLL.Loyalty
 
                 if (string.IsNullOrEmpty(line.VariantId))
                 {
-                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false, stat);
                     if (img != null && img.Count > 0)
                         line.ItemImageId = img[0].Id;
                 }
                 else
                 {
-                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false, stat);
                     if (img != null && img.Count > 0)
                         line.ItemImageId = img[0].Id;
                 }
@@ -118,7 +129,7 @@ namespace LSOmni.BLL.Loyalty
             return order;
         }
 
-        public virtual OrderHosp OneListHospCalculate(OneList list)
+        public virtual OrderHosp OneListHospCalculate(OneList list, Statistics stat)
         {
             if (list.Items == null)
                 return new OrderHosp();
@@ -126,7 +137,7 @@ namespace LSOmni.BLL.Loyalty
             if (list.Items.Count == 0)
                 throw new LSOmniException(StatusCode.NoLinesToPost, "No Lines to calculate");
 
-            OrderHosp order = BOLoyConnection.HospOrderCalculate(list);
+            OrderHosp order = BOLoyConnection.HospOrderCalculate(list, stat);
             foreach (OneListItem olditem in list.Items)
             {
                 OrderHospLine oline = order.OrderLines.Find(l => l.ItemId == olditem.ItemId && l.LineNumber == olditem.LineNumber);
@@ -142,6 +153,11 @@ namespace LSOmni.BLL.Loyalty
                     {
                         oline.UomId = olditem.UnitOfMeasureId;
                     }
+
+                    if (string.IsNullOrEmpty(oline.ItemImageId) && (olditem.Image != null))
+                    {
+                        oline.ItemImageId = olditem.Image.Id;
+                    }
                 }
             }
 
@@ -152,13 +168,13 @@ namespace LSOmni.BLL.Loyalty
 
                 if (string.IsNullOrEmpty(line.VariantId))
                 {
-                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false);
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false, stat);
                     if (img != null && img.Count > 0)
                         line.ItemImageId = img[0].Id;
                 }
                 else
                 {
-                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false);
+                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false, stat);
                     if (img != null && img.Count > 0)
                         line.ItemImageId = img[0].Id;
                 }
@@ -166,15 +182,24 @@ namespace LSOmni.BLL.Loyalty
             return order;
         }
 
-
-        public virtual void OneListDeleteById(string oneListId)
+        public virtual void OneListDeleteById(string oneListId, Statistics stat)
         {
-            iRepository.OneListDeleteById(oneListId);
+            iRepository.OneListDeleteById(oneListId, stat);
         }
 
-        public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate)
+        public virtual void OneListDeleteByCardId(string cardId, Statistics stat)
         {
-            OneList list = iRepository.OneListGetById(onelistId, true);
+            iRepository.OneListRemoveLinking(cardId, stat);
+            List<OneList> list = iRepository.OneListGetByCardId(cardId, false, stat);
+            foreach (OneList oneList in list)
+            {
+                iRepository.OneListDeleteById(oneList.Id, stat);
+            }
+        }
+
+        public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate, Statistics stat)
+        {
+            OneList list = iRepository.OneListGetById(onelistId, true, stat);
 
             bool notfound = true;
             if (remove)
@@ -214,45 +239,50 @@ namespace LSOmni.BLL.Loyalty
                     list.Items.Add(item);
                 }
             }
-            return OneListSave(list, calculate, true);
+            return OneListSave(list, calculate, stat);
         }
 
-        public virtual void OneListLinking(string oneListId, string cardId, string email, LinkStatus status)
+        public virtual void OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status, Statistics stat)
         {
             string name = string.Empty;
             if (status == LinkStatus.Requesting)
             {
                 ContactBLL cBll = new ContactBLL(config, timeoutInSeconds);
-
                 if (string.IsNullOrEmpty(cardId))
                 {
+                    MemberContact member;
                     if (string.IsNullOrEmpty(email))
-                        throw new LSOmniException(StatusCode.EmailMissing);
-
-                    List<MemberContact> members = cBll.ContactSearch(ContactSearchType.Email, email, 0, true);
-                    if (members.Count > 0)
                     {
-                        cardId = members[0].Cards[0].Id;
-                        name = members[0].Name;
+                        if (string.IsNullOrEmpty(phone))
+                            throw new LSOmniException(StatusCode.LookupValuesMissing);
+
+                        member = cBll.ContactGet(ContactSearchType.PhoneNumber, phone, stat);
+                        if (member == null)
+                            throw new LSOmniException(StatusCode.MemberAccountNotFound);
+
+                        cardId = member.Cards[0].Id;
+                        name = member.Name;
                     }
                     else
                     {
-                        // TODO: send EMail to invite to system?
-                        return;
+                        member = cBll.ContactGet(ContactSearchType.Email, email, stat);
+                        if (member == null)
+                            throw new LSOmniException(StatusCode.MemberAccountNotFound);
+
+                        cardId = member.Cards[0].Id;
+                        name = member.Name;
                     }
                 }
                 else
                 {
-                    MemberContact cont = cBll.ContactGetByCardId(cardId, false);
+                    MemberContact cont = cBll.ContactGet(ContactSearchType.CardId, cardId, stat);
                     if (cont == null)
-                        throw new LSOmniException(StatusCode.MemberCardNotFound);
+                        throw new LSOmniException(StatusCode.MemberAccountNotFound);
 
                     name = cont.Name;
                 }
             }
-            iRepository.OneListLinking(oneListId, cardId, name, status);
-
-            // TODO: send push notification to member device
+            iRepository.OneListLinking(oneListId, cardId, name, status, stat);
         }
 
         private void CheckItemSetup(OneList list)
@@ -271,7 +301,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private OneList CalcuateList(OneList list)
+        private OneList CalcuateList(OneList list, Statistics stat)
         {
             if (list.Items.Count == 0)
                 return list;
@@ -281,7 +311,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalNetAmount = 0;
             list.TotalTaxAmount = 0;
 
-            Order calcResp = BOLoyConnection.BasketCalcToOrder(list);
+            Order calcResp = BOLoyConnection.BasketCalcToOrder(list, stat);
 
             list.TotalAmount = calcResp.TotalAmount;
             list.TotalNetAmount = calcResp.TotalNetAmount;
@@ -379,7 +409,7 @@ namespace LSOmni.BLL.Loyalty
             return list;
         }
 
-        private OneList CalcuateHospList(OneList list)
+        private OneList CalcuateHospList(OneList list, Statistics stat)
         {
             if (list.Items.Count == 0)
                 return list;
@@ -389,7 +419,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalNetAmount = 0;
             list.TotalTaxAmount = 0;
 
-            OrderHosp calcResp = BOLoyConnection.HospOrderCalculate(list);
+            OrderHosp calcResp = BOLoyConnection.HospOrderCalculate(list, stat);
 
             list.TotalAmount = calcResp.TotalAmount;
             list.TotalNetAmount = calcResp.TotalNetAmount;

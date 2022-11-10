@@ -554,7 +554,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     else
                     {
                         if (entryType.ToLower().Contains("offer") == false)
-                            logger.Info(LSKey, "NOTE XML PARSE: No menu node item type found for id:{0} - {1}", nodeLine.Id, elMNodeLine.ToString());
+                            logger.Warn(LSKey, "NOTE XML PARSE: No menu node item type found for id:{0} - {1}", nodeLine.Id, elMNodeLine.ToString());
                     }
 
                     mNode.MenuNodeLines.Add(nodeLine);
@@ -634,7 +634,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                         else
                         {
                             if (entryType.ToLower().Contains("offer") == false)
-                                logger.Info(LSKey, "NOTE XML PARSE: No menu node item type found for id:{0} - {1}", mnLine.Id, elMNode.ToString());
+                                logger.Warn(LSKey, "NOTE XML PARSE: No menu node item type found for id:{0} - {1}", mnLine.Id, elMNode.ToString());
                         }
                         //
                         mNode.MenuNodeLines.Add(mnLine);

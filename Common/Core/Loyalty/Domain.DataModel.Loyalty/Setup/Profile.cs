@@ -12,6 +12,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
             Description = string.Empty;
             DataType = ProfileDataType.Boolean;
             DefaultValue = string.Empty;
+            TextValue = string.Empty;
             Mandatory = false;
 
             ContactValue = false;
@@ -44,6 +45,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public bool Mandatory { get; set; }
         [DataMember]
         public bool ContactValue { get; set; }
+        [DataMember]
+        public string TextValue { get; set; }
 
         public Profile ShallowCopy()
         {

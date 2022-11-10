@@ -123,10 +123,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<RetailAttribute> AttributesGetByItemId(string itemId)
+        public List<RetailAttribute> AttributesGetByItemId(string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<RetailAttribute> list = new List<RetailAttribute>();
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -134,7 +134,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Open();
 
                     command.CommandText = "SELECT " + sqlcolumns + ",a.[Description],a.[Value Type],a.[Default Value]" + sqlfrom +
-                        " LEFT OUTER JOIN [" + navCompanyName + "LSC Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id";
+                        " LEFT JOIN [" + navCompanyName + "LSC Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id";
                     command.Parameters.AddWithValue("@id", itemId);
 
                     TraceSqlCommand(command);
@@ -149,6 +149,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 

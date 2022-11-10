@@ -75,8 +75,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         command.CommandText = "SELECT mt.[Code],mt.[Name],mt2.[LSC Web Store Customer No_],cu.[VAT Bus_ Posting Group] " +
                                               "FROM [" + navCompanyName + "Country_Region$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                                              "INNER JOIN [" + navCompanyName + "Country_Region$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[Code]=mt.[Code] " +
-                                              "LEFT OUTER JOIN [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] cu ON cu.[No_]=mt2.[LSC Web Store Customer No_]";
+                                              "JOIN [" + navCompanyName + "Country_Region$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[Code]=mt.[Code] " +
+                                              "LEFT JOIN [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] cu ON cu.[No_]=mt2.[LSC Web Store Customer No_]";
                     }
                     else
                     {

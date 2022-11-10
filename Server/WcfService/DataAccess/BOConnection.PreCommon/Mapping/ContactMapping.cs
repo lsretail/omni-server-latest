@@ -71,11 +71,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 foreach (Profile prof in contact.Profiles)
                 {
-                    attr.Add(new LSCentral.MemberAttributeValue()
+                    LSCentral.MemberAttributeValue val = new LSCentral.MemberAttributeValue()
                     {
                         AttributeCode = prof.Id,
-                        AttributeValue = (prof.ContactValue) ? "Yes" : "No"
-                    });
+                    };
+                    if (prof.DataType == ProfileDataType.Text)
+                        val.AttributeValue = prof.TextValue;
+                    else
+                        val.AttributeValue = (prof.ContactValue) ? "Yes" : "No";
+                    attr.Add(val);
                 }
             }
 
@@ -125,11 +129,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 foreach (Profile prof in contact.Profiles)
                 {
-                    attr.Add(new LSCentral.MemberAttributeValue1()
+                    LSCentral.MemberAttributeValue1 val = new LSCentral.MemberAttributeValue1()
                     {
                         AttributeCode = prof.Id,
-                        AttributeValue = (prof.ContactValue) ? "Yes" : "No"
-                    });
+                    };
+                    if (prof.DataType == ProfileDataType.Text)
+                        val.AttributeValue = prof.TextValue;
+                    else
+                        val.AttributeValue = (prof.ContactValue) ? "Yes" : "No";
+                    attr.Add(val);
                 }
             }
 
@@ -160,6 +168,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
                 Account = new Account(contact.AccountNo)
             };
+
+            if (LSCVersion >= new Version("20.2"))
+            {
+                memberContact.SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail);
+            }
 
             memberContact.Addresses = new List<Address>();
             memberContact.Addresses.Add(new Address()
@@ -235,6 +248,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
             };
 
+            if (LSCVersion >= new Version("20.2"))
+            {
+                memberContact.SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail);
+            }
+
             memberContact.Addresses = new List<Address>();
             memberContact.Addresses.Add(new Address()
             {
@@ -281,16 +299,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 foreach (LSCentral.MemberAttributeList3 attr in root.MemberAttributeList)
                 {
-                    if (attr.Type != "0" || attr.AttributeType != "4")
+                    if (attr.Type != "0" || (attr.AttributeType != "0" && attr.AttributeType != "4"))
                         continue;
 
-                    memberContact.Profiles.Add(new Profile()
+                    Profile pro = new Profile()
                     {
                         Id = attr.Code,
                         Description = attr.Description,
-                        ContactValue = (attr.Value.ToUpper().Equals("YES")),
                         DataType = (ProfileDataType)Convert.ToInt32(attr.AttributeType)
-                    });
+                    };
+                    if (pro.DataType == ProfileDataType.Text)
+                        pro.TextValue = attr.Value;
+                    else
+                        pro.ContactValue = (attr.Value.ToUpper().Equals("YES"));
+
+                    memberContact.Profiles.Add(pro);
                 }
             }
             return memberContact;
@@ -314,6 +337,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
             };
+
+            if (LSCVersion >= new Version("20.2"))
+            {
+                memberContact.SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail);
+            }
 
             memberContact.Addresses = new List<Address>();
             memberContact.Addresses.Add(new Address()
@@ -361,16 +389,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 foreach (LSCentral.MemberAttributeList2 attr in root.MemberAttributeList)
                 {
-                    if (attr.Type != "0" || attr.AttributeType != "4")
+                    if (attr.Type != "0" || (attr.AttributeType != "0" && attr.AttributeType != "4"))
                         continue;
 
-                    memberContact.Profiles.Add(new Profile()
+                    Profile pro = new Profile()
                     {
                         Id = attr.Code,
                         Description = attr.Description,
-                        ContactValue = (attr.Value.ToUpper().Equals("YES")),
                         DataType = (ProfileDataType)Convert.ToInt32(attr.AttributeType)
-                    });
+                    };
+                    if (pro.DataType == ProfileDataType.Text)
+                        pro.TextValue = attr.Value;
+                    else
+                        pro.ContactValue = (attr.Value.ToUpper().Equals("YES"));
+
+                    memberContact.Profiles.Add(pro);
                 }
             }
             return memberContact;

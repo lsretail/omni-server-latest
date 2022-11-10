@@ -10,8 +10,6 @@ namespace LSOmni.BLL.Loyalty
 {
     public class ReplicationBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-
         public ReplicationBLL(BOConfiguration config, int timeoutInSeconds) : base(config, timeoutInSeconds)
         {
         }
@@ -30,7 +28,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Barcodes.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Barcodes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -48,7 +46,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -66,7 +64,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ExtendedVariantValue.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ExtendedVariantValue.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -84,7 +82,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ItemCategories.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ItemCategories.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -102,7 +100,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ProductGroups.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ProductGroups.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -120,7 +118,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Stores.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Stores.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -138,7 +136,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ItemUnitOfMeasures.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ItemUnitOfMeasures.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -156,7 +154,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.UnitOfMeasures.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.UnitOfMeasures.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -174,7 +172,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Collection.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Collection.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -192,7 +190,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Currencies.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Currencies.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -210,7 +208,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.CurrencyExchRates.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.CurrencyExchRates.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -228,7 +226,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ItemVariantRegistrations.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ItemVariantRegistrations.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -246,7 +244,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Prices.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Prices.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -264,7 +262,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Prices.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Prices.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -282,7 +280,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Images.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Images.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -300,7 +298,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ImageLinks.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ImageLinks.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -318,7 +316,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Attributes.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Attributes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -336,7 +334,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Values.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Values.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -354,7 +352,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.OptionValues.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.OptionValues.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -372,7 +370,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Vendors.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Vendors.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -390,7 +388,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Mapping.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Mapping.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -408,7 +406,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Texts.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Texts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -426,7 +424,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Texts.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Texts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -444,7 +442,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -462,7 +460,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -480,7 +478,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -498,7 +496,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.DiscountValidations.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.DiscountValidations.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -516,7 +514,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.StoreTenderTypes.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.StoreTenderTypes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -534,7 +532,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.TaxSetups.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.TaxSetups.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -552,7 +550,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.ShippingAgent.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ShippingAgent.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -570,7 +568,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Customers.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Customers.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -588,7 +586,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Codes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -606,7 +604,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Schedules.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Schedules.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -624,7 +622,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Hierarchies.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Hierarchies.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -642,7 +640,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Nodes.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Nodes.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -660,7 +658,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Leafs.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Leafs.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -678,7 +676,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -696,7 +694,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -714,7 +712,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Items.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -732,7 +730,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", rs.Modifiers.Count, rs.LastKey, rs.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Modifiers.Count, rs.LastKey, rs.RecordsRemaining);
             return rs;
         }
 
@@ -750,7 +748,7 @@ namespace LSOmni.BLL.Loyalty
                 LastKey = lastkey,
                 MaxKey = maxkey
             };
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining);
             return resp;
         }
 
@@ -779,10 +777,10 @@ namespace LSOmni.BLL.Loyalty
                 }
                 else
                 {
-                    resp.Items.Add(BOLoyConnection.ItemGetById(item.Id, replRequest.StoreId, string.Empty, true));
+                    resp.Items.Add(BOLoyConnection.ItemGetById(item.Id, replRequest.StoreId, string.Empty, true, new Statistics()));
                 }
             }
-            logger.Debug(config.LSKey.Key, "Records {0} LastKey {1} RecRemain {2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining);
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", resp.Items.Count, resp.LastKey, resp.RecordsRemaining);
             return resp;
         }
     }

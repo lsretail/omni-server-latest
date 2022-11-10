@@ -5,6 +5,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -13,14 +14,14 @@ namespace LSOmni.DataAccess.Interface.BOConnection
     {
         int TimeoutInSeconds { set; }
 
-        Terminal TerminalGetById(string terminalId);
-        UnitOfMeasure UnitOfMeasureGetById(string id);
-        VariantRegistration VariantRegGetById(string id, string itemId);
-        Currency CurrencyGetById(string id, string culture);
-        List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores);
-        List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation);
-        string ItemDetailsGetById(string itemId);
-        List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode);
+        Terminal TerminalGetById(string terminalId, Statistics stat);
+        UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat);
+        VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat);
+        Currency CurrencyGetById(string id, string culture, Statistics stat);
+        List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat);
+        List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat);
+        string ItemDetailsGetById(string itemId, Statistics stat);
+        List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat);
 
         #region Replication
 

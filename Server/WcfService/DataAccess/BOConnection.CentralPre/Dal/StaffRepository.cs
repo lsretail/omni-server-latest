@@ -44,7 +44,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         " UNION " +
                         GetSQL(fullReplication, 0) + sqlcolumns +
                         " FROM [" + navCompanyName + "LSC STAFF Store Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl" +
-                        " LEFT OUTER JOIN [" + navCompanyName + "LSC Staff$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON sl.[Staff ID]=mt.[ID]" +
+                        " LEFT JOIN [" + navCompanyName + "LSC Staff$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON sl.[Staff ID]=mt.[ID]" +
                         GetWhereStatement(fullReplication, keys, " AND sl.[Store No_]='" + storeId + "'", false);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, 0, ref lastKey, ref recordsRemaining);

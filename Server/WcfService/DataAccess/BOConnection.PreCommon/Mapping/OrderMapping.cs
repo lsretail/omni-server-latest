@@ -282,7 +282,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 foreach (LSCentral.CustomerOrderHeaderV2 header in root.CustomerOrderHeaderV2)
                 {
-                    list.Add(new SalesEntry()
+                    SalesEntry entry = new SalesEntry()
                     {
                         Id = header.DocumentID,
                         StoreId = header.CreatedatStore,
@@ -296,7 +296,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         TotalAmount = header.TotalAmount,
                         LineItemCount = (int)header.TotalQuantity,
                         RequestedDeliveryDate = header.RequestedDeliveryDate
-                    });
+                    };
+
+                    if (LSCVersion >= new Version("20.2"))
+                        entry.ExternalId = header.ExternalID;
+                    
+                    list.Add(entry);
                 }
             }
             return list;
@@ -461,7 +466,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         TaxGroupCode = string.Empty
                     };
 
-                    if (LSCVersion >= new Version("19.6"))
+                    if (LSCVersion >= new Version("19.5"))
                     {
                         pay.EFTCardType = XMLHelper.GetString(line.EFTCardType);
                     }

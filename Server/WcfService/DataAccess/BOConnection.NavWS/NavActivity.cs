@@ -114,7 +114,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<AvailabilityResponse>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityResourceAvailabilityGet(locationNo, activityDate, resourceNo, intervalType, noOfDays);
         }
@@ -122,7 +122,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<AvailabilityResponse> ActivityResourceGroupAvailabilityGet(string locationNo, DateTime activityDate, string groupNo, string intervalType, int noOfDays)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<AvailabilityResponse>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityResourceGroupAvailabilityGet(locationNo, activityDate, groupNo, intervalType, noOfDays);
         }
@@ -164,7 +164,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual ActivityResponse ActivityConfirmGroup(ActivityRequest request)
         {
             if (NAVVersion < new Version("17.5"))
-                return new ActivityResponse();
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityConfirmGroup(request);
         }
@@ -280,7 +280,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<Booking> ActivityGetByResource(string locationNo, string resourceNo, DateTime fromDate, DateTime toDate)
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<Booking>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityGetByResource(locationNo, resourceNo, fromDate, toDate);
         }
@@ -288,7 +288,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ActivityResource> ActivityResourceGet()
         {
             if (NAVVersion < new Version("17.5"))
-                return new List<ActivityResource>();
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityResourceGet();
         }

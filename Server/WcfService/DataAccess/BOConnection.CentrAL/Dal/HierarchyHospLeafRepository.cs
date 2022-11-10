@@ -24,19 +24,23 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public HierarchyHospLeafRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumnsDeal = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type]," +
-                             "mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index],il.[Image Id]";
+                             "mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index]," +
+                             "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                             "WHERE il.[KeyValue]=mt.[No_] AND il.[TableName]='Item' " +
+                             "ORDER BY il.[Display Order]) AS ImageId";
             sqlfromDeal = " FROM [" + navCompanyName + "Hierarchy Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] nl" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                          " INNER JOIN [" + navCompanyName + "Offer Line$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Offer No_]=nl.[No_]" +
-                          " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0 AND il.[TableName]='Item' AND [Image Id]<>''";
+                          " JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " JOIN [" + navCompanyName + "Offer Line$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Offer No_]=nl.[No_]";
 
             sqlcolumnsDealLine = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Deal Modifier Code],mt.[Offer Line No_]," +
                           "mt.[Deal Modifier Line No_],mt.[Item No_],mt.[Description],mt.[Variant Code],mt.[Unit of Measure]," +
-                          "mt.[Min_ Selection],mt.[Max_ Item Selection],mt.[Added Amount],il.[Image Id]";
+                          "mt.[Min_ Selection],mt.[Max_ Item Selection],mt.[Added Amount]," +
+                          "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                          "WHERE il.[KeyValue]=mt.[Item No_] AND il.[TableName]='Item' " +
+                          "ORDER BY il.[Display Order]) AS ImageId";
             sqlfromDealLine = " FROM [" + navCompanyName + "Hierarchy Node Link$5ecfc871-5d82-43f1-9c54-59685e82318d] nl" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                          " INNER JOIN [" + navCompanyName + "Deal Modifier Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Offer No_]=nl.[No_]" +
-                          " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item' AND [Image Id]<>''";
+                          " JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " JOIN [" + navCompanyName + "Deal Modifier Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Offer No_]=nl.[No_]";
         }
 
         public List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -344,9 +348,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type],mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index] " +
+                    command.CommandText = "SELECT mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type],mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index]," +
+                                          "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                                          "WHERE il.[KeyValue]=mt.[No_] AND il.[TableName]='Item' " +
+                                          "ORDER BY il.[Display Order]) AS ImageId " +
                                           "FROM [" + navCompanyName + "Offer Line$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "WHERE mt.[Offer No_]=@id";
+                                          "WHERE mt.[Offer No_]=@id AND mt.[Type]=5";
                     command.Parameters.AddWithValue("@id", offerId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -355,6 +362,35 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         while (reader.Read())
                         {
                             list.Add(ReaderToHierarchyNode(reader, hCode, nCode));
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return list;
+        }
+
+        public List<HierarchyLeaf> HierarchyDealLeafGet(string hCode, string nCode, string offerId)
+        {
+            List<HierarchyLeaf> list = new List<HierarchyLeaf>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type],mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index]," +
+                                          "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                                          "WHERE il.[KeyValue]=mt.[No_] AND il.[TableName]='Item' " +
+                                          "ORDER BY il.[Display Order]) AS ImageId " +
+                                          "FROM [" + navCompanyName + "Offer Line$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "WHERE mt.[Offer No_]=@id AND mt.[Type]=0";
+                    command.Parameters.AddWithValue("@id", offerId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToHierarchyLeaf(reader, hCode, nCode));
                         }
                     }
                     connection.Close();
@@ -373,9 +409,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.CommandText = "SELECT " +
                             "mt.[Offer No_],mt.[Deal Modifier Code],mt.[Offer Line No_]," +
                             "mt.[Deal Modifier Line No_],mt.[Item No_],mt.[Description],mt.[Variant Code],mt.[Unit of Measure]," +
-                            "mt.[Min_ Selection],mt.[Max_ Item Selection],mt.[Added Amount],il.[Image Id]" +
+                            "mt.[Min_ Selection],mt.[Max_ Item Selection],mt.[Added Amount]," +
+                            "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                            "WHERE il.[KeyValue]=mt.[Item No_] AND il.[TableName]='Item' " +
+                            "ORDER BY il.[Display Order]) AS ImageId " +
                             "FROM [" + navCompanyName + "Deal Modifier Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                            "LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item' " +
                             "WHERE mt.[Offer No_]=@ono AND mt.[Deal Modifier Code]=@dno";
 
                     command.Parameters.AddWithValue("@ono", orderNo);
@@ -410,12 +448,40 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
                 AddedAmount = SQLHelper.GetDecimal(reader, "Modifier Added Amount"),
-                DealModSizeGroupIndex = SQLHelper.GetInt32(reader["Deal Mod_ Size Gr_ Index"])
+                DealModSizeGroupIndex = SQLHelper.GetInt32(reader["Deal Mod_ Size Gr_ Index"]),
+                LineNo = SQLHelper.GetInt32(reader["Line No_"]),
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
             node.Leafs = HierarchyDealLineGet(hCode, nCode, node.Id, node.No);
             return node;
         }
 
+        private HierarchyLeaf ReaderToHierarchyLeaf(SqlDataReader reader, string hCode, string nCode)
+        {
+            HierarchyLeaf leaf = new HierarchyLeaf()
+            {
+                HierarchyCode = hCode,
+                ParentNode = nCode,
+                Id = SQLHelper.GetString(reader["Offer No_"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                ItemNo = SQLHelper.GetString(reader["No_"]),
+                Type = HierarchyLeafType.Item,
+                VariantCode = SQLHelper.GetString(reader["Variant Code"]),
+                ItemUOM = SQLHelper.GetString(reader["Unit of Measure"]),
+                MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
+                MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
+                AddedAmount = SQLHelper.GetDecimal(reader, "Modifier Added Amount"),
+                LineNo = SQLHelper.GetInt32(reader["Line No_"]),
+                ImageId = SQLHelper.GetString(reader["ImageId"])
+            };
+
+            ItemModifierRepository mrep = new ItemModifierRepository(config);
+            leaf.Modifiers = mrep.ModifierGetByItemId(leaf.ItemNo);
+
+            ItemRecipeRepository rrep = new ItemRecipeRepository(config);
+            leaf.Recipies = rrep.RecipeGetByItemId(leaf.ItemNo);
+            return leaf;
+        }
 
         private HierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader, string hCode, string nCode)
         {
@@ -434,7 +500,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Item Selection"]),
                 AddedAmount = SQLHelper.GetDecimal(reader, "Added Amount"),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
 
@@ -457,7 +523,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Selection"]),
                 AddedAmount = SQLHelper.GetDecimal(reader, "Modifier Added Amount"),
                 DealModSizeGroupIndex = SQLHelper.GetInt32(reader["Deal Mod_ Size Gr_ Index"]),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
 
@@ -480,7 +546,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 MinSelection = SQLHelper.GetInt32(reader["Min_ Selection"]),
                 MaxSelection = SQLHelper.GetInt32(reader["Max_ Item Selection"]),
                 AddedAmount = SQLHelper.GetDecimal(reader, "Added Amount"),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
     }

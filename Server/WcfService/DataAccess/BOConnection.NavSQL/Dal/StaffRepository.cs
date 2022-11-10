@@ -44,7 +44,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         " UNION " +
                         GetSQL(fullReplication, 0) + sqlcolumns +
                         " FROM [" + navCompanyName + "Staff Store Link] sl" +
-                        " LEFT OUTER JOIN [" + navCompanyName + "Staff] mt ON sl.[Staff ID]=mt.[ID]" +
+                        " LEFT JOIN [" + navCompanyName + "Staff] mt ON sl.[Staff ID]=mt.[ID]" +
                         GetWhereStatement(fullReplication, keys, " AND sl.[Store No_]='" + storeId + "'", false);
 
             List<JscActions> actions = LoadActions(fullReplication, TABLEID, 0, ref lastKey, ref recordsRemaining);

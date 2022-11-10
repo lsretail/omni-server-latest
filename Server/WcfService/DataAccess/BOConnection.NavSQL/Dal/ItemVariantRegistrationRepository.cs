@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -33,18 +34,53 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records remaining
             string sql = string.Empty;
+            List<JscActions> actions = new List<JscActions>();
+
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
+            else
+            {
+                string tmplastkey = lastKey;
+                string mainlastkey = lastKey;
+                recordsRemaining = 0;
 
-            List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplItemVariantRegistration> list = new List<ReplItemVariantRegistration>();
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
+
+                actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
+
+                recordsRemaining += GetRecordCount(10001404, tmplastkey, string.Empty, keys, ref maxKey);
+                List<JscActions> itemact = LoadActions(fullReplication, 10001404, batchSize, ref tmplastkey, ref recordsRemaining);
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                lastKey = mainlastkey;
+
+                foreach (JscActions act in itemact)
+                {
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact = new JscActions()
+                    {
+                        id = act.id,
+                        TableId = act.TableId,
+                        Type = DDStatementType.Insert,
+                        ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
+                    };
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+            }
 
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Item No_]", storeId, true);
 
+            List<ReplItemVariantRegistration> list = new List<ReplItemVariantRegistration>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())

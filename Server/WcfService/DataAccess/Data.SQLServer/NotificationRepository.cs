@@ -23,30 +23,31 @@ namespace LSOmni.DataAccess.Dal
         }
 
         //string sql = ((System.Data.Objects.ObjectQuery)query).ToTraceString();
-        public Notification NotificationGetById(string id)
+        public Notification NotificationGetById(string id, Statistics stat)
         {
             SQLHelper.CheckForSQLInjection(id);
             string where = string.Format("WHERE n.[Id]='{0}'", id);
 
-            List<Notification> list = NotificationsGetList(where);
+            List<Notification> list = NotificationsGetList(where, 0, stat);
             return (list.Count > 0 ? list[0] : null); // return null if nothing found!
         }
 
-        public List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
+        public List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications, Statistics stat)
         {
             SQLHelper.CheckForSQLInjection(cardId);
-            return NotificationsGetList("WHERE [TypeCode]='" + cardId + "'");
+            return NotificationsGetList("WHERE [TypeCode]='" + cardId + "'", 0, stat);
         }
 
-        public List<Notification> NotificationSearch(string cardId, string search, int maxNumberOfLists)
+        public List<Notification> NotificationSearch(string cardId, string search, int maxNumberOfLists, Statistics stat)
         {
             SQLHelper.CheckForSQLInjection(cardId);
             SQLHelper.CheckForSQLInjection(search);
-            return NotificationsGetList(string.Format("WHERE (PrimaryText LIKE '%{0}%' OR SecondaryText LIKE '%{0}%') AND TypeCode = '{1}'", search, cardId), maxNumberOfLists);
+            return NotificationsGetList(string.Format("WHERE (PrimaryText LIKE '%{0}%' OR SecondaryText LIKE '%{0}%') AND TypeCode = '{1}'", search, cardId), maxNumberOfLists, stat);
         }
 
-        public void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notificationStatus)
+        public void NotificationsUpdateStatus(List<string> notificationIds, NotificationStatus notificationStatus, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 connection.Open();
@@ -82,10 +83,12 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public void Save(string cardId, List<Notification> notifications)
+        public void Save(string cardId, List<Notification> notifications, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 connection.Open();
@@ -156,10 +159,12 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public void OrderMessageNotificationSave(string notificationId, string orderId, string cardId, string description, string details, string qrText)
+        public void OrderMessageNotificationSave(string notificationId, string orderId, string cardId, string description, string details, string qrText, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             //for notification table, Type should be = 1 (means contact) and TypeCode = contactId
             int typeOfContact = 1;
             using (SqlConnection db = new SqlConnection(sqlConnectionString))
@@ -210,10 +215,12 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        private List<Notification> NotificationsGetList(string where, int maxNumberOfLists = 0)
+        private List<Notification> NotificationsGetList(string where, int maxNumberOfLists, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<Notification> list = new List<Notification>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
@@ -233,6 +240,7 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -267,7 +275,7 @@ namespace LSOmni.DataAccess.Dal
                 notification.ExpiryDate = notification.ExpiryDate.Value.AddHours(23).AddMinutes(59).AddSeconds(59);
             }
 
-            notification.Images = imageRepository.NotificationImagesById(notification.Id);
+            notification.Images = imageRepository.NotificationImagesById(notification.Id, new Statistics());
 
             return notification;
         }

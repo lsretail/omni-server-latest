@@ -14,7 +14,7 @@ namespace LSOmni.DataAccess.Dal
 {
     public class OneListRepository : BaseRepository, IOneListRepository
     {
-        static object lockOneList = new object();
+        static readonly object lockOneList = new object();
 
         private string sqlcol;
         private string sqlfrom;
@@ -29,8 +29,9 @@ namespace LSOmni.DataAccess.Dal
             sqlfrom = "FROM [OneListLink] oll INNER JOIN [OneList] AS mt ON mt.[Id]=oll.[OneListId] ";
         }
 
-        public List<OneList> OneListGetByCardId(string cardId, bool includeLines)
+        public List<OneList> OneListGetByCardId(string cardId, bool includeLines, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<OneList> oneList = new List<OneList>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
@@ -52,11 +53,13 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return oneList;
         }
 
-        public List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines)
+        public List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<OneList> oneList = new List<OneList>();
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
@@ -79,11 +82,13 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return oneList;
         }
 
-        public OneList OneListGetById(string oneListId, bool includeLines)
+        public OneList OneListGetById(string oneListId, bool includeLines, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             OneList oneList = null;
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
@@ -105,12 +110,14 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return oneList;
         }
 
         //takes the OneListSave and it overrides everything that is in DB
-        public void OneListSave(OneList list, string contactName, bool calculate)
+        public void OneListSave(OneList list, string contactName, bool calculate, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             if (string.IsNullOrEmpty(list.Id))
             {
                 list.Id = GuidHelper.NewGuid().ToString().ToUpper();
@@ -122,13 +129,13 @@ namespace LSOmni.DataAccess.Dal
                 if (list.ListType == ListType.Basket)
                 {
                     // only have one basket per card, delete all other baskets if any
-                    List<OneList> conList = OneListGetByCardId(list.CardId, ListType.Basket, false);
+                    List<OneList> conList = OneListGetByCardId(list.CardId, ListType.Basket, false, stat);
                     foreach (OneList mylist in conList)
                     {
                         if (mylist.Id.Equals(list.Id))
                             continue;
 
-                        OneListDeleteById(mylist.Id);
+                        OneListDeleteById(mylist.Id, stat);
                     }
                 }
             }
@@ -194,10 +201,12 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public void OneListDeleteById(string oneListId)
+        public void OneListDeleteById(string oneListId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 connection.Open();
@@ -260,10 +269,12 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public void OneListLinking(string oneListId, string cardId, string name, LinkStatus status)
+        public void OneListLinking(string oneListId, string cardId, string name, LinkStatus status, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 connection.Open();
@@ -297,10 +308,33 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
         }
 
-        public List<OneList> OneListSearch(string cardId, string search, int maxNumberOfLists, ListType listType, bool includeLines = false)
+        public void OneListRemoveLinking(string cardId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+            {
+                connection.Open();
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    lock (lockOneList)
+                    {
+                        command.CommandText = "DELETE FROM [OneListLink] WHERE [CardId]=@card";
+                        command.Parameters.AddWithValue("@card", cardId);
+                        TraceSqlCommand(command);
+                        command.ExecuteNonQuery();
+                    }
+                }
+                connection.Close();
+            }
+            logger.StatisticEndSub(ref stat, index);
+        }
+
+        public List<OneList> OneListSearch(string cardId, string search, int maxNumberOfLists, ListType listType, bool includeLines, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
             if (string.IsNullOrWhiteSpace(search))
                 search = "";
             if (search.Contains("'"))
@@ -331,6 +365,7 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return oneList;
         }
 

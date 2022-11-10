@@ -630,6 +630,24 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetVariantRegWithStatus">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVariantRegWithStatus_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetVariantReg">
         <complexType>
           <sequence>
@@ -1044,6 +1062,12 @@
   <message name="GetValidationPeriod_Result">
     <part name="parameters" element="tns:GetValidationPeriod_Result" />
   </message>
+  <message name="GetVariantRegWithStatus">
+    <part name="parameters" element="tns:GetVariantRegWithStatus" />
+  </message>
+  <message name="GetVariantRegWithStatus_Result">
+    <part name="parameters" element="tns:GetVariantRegWithStatus_Result" />
+  </message>
   <message name="GetVariantReg">
     <part name="parameters" element="tns:GetVariantReg" />
   </message>
@@ -1254,6 +1278,10 @@
     <operation name="GetValidationPeriod">
       <input name="GetValidationPeriod" message="tns:GetValidationPeriod" />
       <output name="GetValidationPeriod_Result" message="tns:GetValidationPeriod_Result" />
+    </operation>
+    <operation name="GetVariantRegWithStatus">
+      <input name="GetVariantRegWithStatus" message="tns:GetVariantRegWithStatus" />
+      <output name="GetVariantRegWithStatus_Result" message="tns:GetVariantRegWithStatus_Result" />
     </operation>
     <operation name="GetVariantReg">
       <input name="GetVariantReg" message="tns:GetVariantReg" />
@@ -1623,6 +1651,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetValidationPeriod_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetVariantRegWithStatus">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVariantRegWithStatus" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetVariantRegWithStatus">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetVariantRegWithStatus_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

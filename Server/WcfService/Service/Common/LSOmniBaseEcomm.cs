@@ -12,20 +12,6 @@ namespace LSOmni.Service
     /// </summary>
     public partial class LSOmniBase
     {
-        public virtual GiftCard GiftCardGetBalance(string cardNo)
-        {
-            try
-            {
-                CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
-                return bll.GiftCardGetBalance(cardNo);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "CardNo:{0}", cardNo);
-                return new GiftCard(string.Empty);
-            }
-        }
-
         #region Replication
 
         public virtual ReplBarcodeResponse ReplEcommBarcodes(ReplRequest replRequest)

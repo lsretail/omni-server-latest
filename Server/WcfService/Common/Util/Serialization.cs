@@ -65,9 +65,9 @@ namespace LSOmni.Common.Util
 				result = RemoveNode("Password", result);
 			}
 			catch (Exception)
-            {
+			{
 				return "Error Logging data for object: " + value.ToString();
-            }
+			}
 			return result;
 		}
 
@@ -153,35 +153,45 @@ namespace LSOmni.Common.Util
 			}
 		}
 
-        /// <summary>
-        /// Use this function to test Json Serialize if error occurs
-        /// </summary>
-        /// <param name="classname"></param>
-        /// <param name="classdata"></param>
-        /// <example>
-        /// <code>
-        /// TestJsonSerialize(typeof(MobileMenu), mobileMenu);
-        /// </code>
-        /// </example>
-        public static void TestJsonSerialize(Type classname, object classdata)
-        {
-            string json;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                var ser = new DataContractJsonSerializer(classname);
-                ser.WriteObject(ms, classdata);
-                json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
-            }
-        }
+		/// <summary>
+		/// Use this function to test Json Serialize if error occurs
+		/// </summary>
+		/// <param name="classname"></param>
+		/// <param name="classdata"></param>
+		/// <example>
+		/// <code>
+		/// TestJsonSerialize(typeof(MobileMenu), mobileMenu);
+		/// </code>
+		/// </example>
+		public static void TestJsonSerialize(Type classname, object classdata)
+		{
+			string json;
+			using (MemoryStream ms = new MemoryStream())
+			{
+				var ser = new DataContractJsonSerializer(classname);
+				ser.WriteObject(ms, classdata);
+				json = Encoding.UTF8.GetString(ms.GetBuffer(), 0, Convert.ToInt32(ms.Length));
+			}
+		}
 
 		public static T Deserialize<T>(string json)
 		{
 			T obj = Activator.CreateInstance<T>();
-			MemoryStream ms = new MemoryStream(Encoding.Unicode.GetBytes(json));
+			MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(json));
 			DataContractJsonSerializer serializer = new DataContractJsonSerializer(obj.GetType());
 			obj = (T)serializer.ReadObject(ms);
 			ms.Close();
 			return obj;
+		}
+
+		public static string Serialize<T>(object data)
+		{
+			MemoryStream ms = new MemoryStream();
+			DataContractJsonSerializer serializer = new DataContractJsonSerializer(typeof(T));
+			serializer.WriteObject(ms, data);
+			byte[] json = ms.ToArray();
+			ms.Close();
+			return Encoding.UTF8.GetString(json, 0, json.Length);
 		}
 	}
 }

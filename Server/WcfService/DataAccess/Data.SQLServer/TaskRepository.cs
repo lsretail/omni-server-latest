@@ -23,7 +23,7 @@ namespace LSOmni.DataAccess.Dal
             if (task == null)
                 throw new ApplicationException("Save() task can not be null");
 
-            logger.Info(config.LSKey.Key, string.Format("SaveTask: Id:{0}", task.Id));
+            logger.Debug(config.LSKey.Key, string.Format("SaveTask: Id:{0}", task.Id));
             lock (locker)
             {
                 DateTime timenow = DateTime.Now;
@@ -72,7 +72,7 @@ namespace LSOmni.DataAccess.Dal
                                 {
                                     task.CreateTime = timenow;
                                 }
-                                logger.Info(config.LSKey.Key, task.ToString());
+                                logger.Debug(config.LSKey.Key, task.ToString());
 
                                 command.CommandText = "IF EXISTS(SELECT * FROM [Task] WHERE [Id]=@id) " +
                                                       "UPDATE [Task] SET " +
@@ -135,7 +135,7 @@ namespace LSOmni.DataAccess.Dal
                                 foreach (OmniTaskLine line in task.Lines)
                                 {
                                     line.ModifyTime = timenow;
-                                    logger.Info(config.LSKey.Key, line.ToString());
+                                    logger.Debug(config.LSKey.Key, line.ToString());
 
                                     OmniTaskLine oldline = TaskLineGetById(task.Id, line.ItemId, line.VariantId, connection, trans);
                                     if (oldline != null)
@@ -293,7 +293,7 @@ namespace LSOmni.DataAccess.Dal
                         if (maxTasks > 0)
                             sql += " ORDER BY [ModifyTime] DESC";
 
-                        logger.Info(config.LSKey.Key, string.Format("GetTask: Id:{0} Status:{1}",
+                        logger.Debug(config.LSKey.Key, string.Format("GetTask: Id:{0} Status:{1}",
                             filter.Id, filter.Status));
 
                         command.CommandText = sql;
@@ -425,7 +425,7 @@ namespace LSOmni.DataAccess.Dal
                         }
                     }
 
-                    logger.Info(config.LSKey.Key, string.Format("GetTaskLine: Id:{0} TaskId:{1} Status:{2}",
+                    logger.Debug(config.LSKey.Key, string.Format("GetTaskLine: Id:{0} TaskId:{1} Status:{2}",
                         filter.Id, filter.TaskId, filter.Status));
 
                     command.CommandText = sql;

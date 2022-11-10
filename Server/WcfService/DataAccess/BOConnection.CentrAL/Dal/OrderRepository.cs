@@ -79,10 +79,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                           "pln.[Number] AS PCOItem,pln.[Variant Code] AS PCOVar,pln.[Unit of Measure Code] AS PCOUom,pln.[Quantity] AS PCOQty," +
                                           "s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed] " +
                                           "FROM [" + navCompanyName + "CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
+                                          "LEFT JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
+                                          "LEFT JOIN [" + navCompanyName + "Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
+                                          "LEFT JOIN [" + navCompanyName + "CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
+                                          "LEFT JOIN [" + navCompanyName + "CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
                                           "WHERE mt.[Document ID]=@id ORDER BY mt.[Line No_]";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);

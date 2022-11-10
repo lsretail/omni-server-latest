@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -20,10 +20,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         public ItemRecipeRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Parent Item No_],mt2.[LSC Item No_],mt2.[LSC Exclusion],mt2.[LSC Price on Exclusion]," +
-                         "mt.[Description],mt.[Line No_],mt.[Unit of Measure Code],mt.[Quantity per],il.[Image Id]";
+                         "mt.[Description],mt.[Line No_],mt.[Unit of Measure Code],mt.[Quantity per]," +
+                         "(SELECT TOP(1) il.[Image Id] FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il " +
+                         "WHERE il.[KeyValue]=mt2.[LSC Item No_] AND il.[TableName]='Item' " +
+                         "ORDER BY il.[Display Order]) AS ImageId";
             sqlfrom = " FROM [" + navCompanyName + "BOM Component$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2" +
-                      " INNER JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt ON mt.[Parent Item No_]=mt2.[Parent Item No_] AND mt2.[Line No_]=mt.[Line No_]" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON il.KeyValue=mt2.[LSC Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
+                      " JOIN [" + navCompanyName + "BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972] mt ON mt.[Parent Item No_]=mt2.[Parent Item No_] AND mt.[Line No_]=mt2.[Line No_]";
         }
 
         public List<ReplItemRecipe> ReplicateItemRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -38,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
+                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Parent Item No_]", storeId, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
 
@@ -46,7 +48,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             List<ReplItemRecipe> list = new List<ReplItemRecipe>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);
+            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Parent Item No_]", storeId, false);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -122,8 +124,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ItemRecipe> RecipeGetByItemId(string id)
+        public List<ItemRecipe> RecipeGetByItemId(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<ItemRecipe> list = new List<ItemRecipe>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -144,6 +147,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -161,7 +165,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Exclusion = SQLHelper.GetBool(reader["LSC Exclusion"]),
                 ExclusionPrice = SQLHelper.GetDecimal(reader, "LSC Price on Exclusion"),
                 QuantityPer = SQLHelper.GetDecimal(reader, "Quantity per"),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
 
@@ -176,7 +180,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Exclusion = SQLHelper.GetBool(reader["LSC Exclusion"]),
                 ExclusionPrice = SQLHelper.GetDecimal(reader, "LSC Price on Exclusion"),
                 QuantityPer = SQLHelper.GetDecimal(reader, "Quantity per"),
-                ImageId = SQLHelper.GetString(reader["Image Id"])
+                ImageId = SQLHelper.GetString(reader["ImageId"])
             };
         }
     }

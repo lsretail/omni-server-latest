@@ -44,8 +44,10 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        public void SavePushNotification(string contactId, string notificationId)
+        public void SavePushNotification(string contactId, string notificationId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
+
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -62,6 +64,8 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+
+            logger.StatisticEndSub(ref stat, index);
         }
 
         public void Delete(string deviceId)

@@ -4,6 +4,7 @@ using LSOmni.DataAccess.Interface.Repository;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using LSOmni.Common.Util;
 
 namespace LSOmni.BLL
 {
@@ -58,16 +59,16 @@ namespace LSOmni.BLL
             iConfigRepository.PingOmniDB();
         }
 
-        public virtual string PingWs()
+        public virtual string PingWs(out string centralVersion)
         {
             // Nav returns the version number
-            return BOLoyConnection.Ping();
+            return BOLoyConnection.Ping(out centralVersion);
         }
 
         public virtual string PingNavDb()
         {
             BOLoyConnection.TimeoutInSeconds = 4;
-            Scheme ret = BOLoyConnection.SchemeGetById("Ping");
+            Scheme ret = BOLoyConnection.SchemeGetById("Ping", new Statistics());
             return ret.Id;
         }
 

@@ -134,7 +134,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
 
                     command.CommandText = "SELECT " + sqlcolumns + ",a.[Description],a.[Value Type],a.[Default Value]" + sqlfrom +
-                        " LEFT OUTER JOIN [" + navCompanyName + "Attribute] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id";
+                        " LEFT JOIN [" + navCompanyName + "Attribute] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id";
                     command.Parameters.AddWithValue("@id", itemId);
 
                     TraceSqlCommand(command);

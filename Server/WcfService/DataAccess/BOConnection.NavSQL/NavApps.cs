@@ -10,6 +10,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL
 {
@@ -26,37 +27,37 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 
-        public virtual Terminal TerminalGetById(string terminalId)
+        public virtual Terminal TerminalGetById(string terminalId, Statistics stat)
         {
             TerminalRepository rep = new TerminalRepository(config, NAVVersion);
             return rep.TerminalBaseGetById(terminalId);
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id)
+        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
         {
             UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
             return rep.UnitOfMeasureGetById(id);
         }
 
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId)
+        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
             ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
             return rep.VariantRegGetById(id, itemId);
         }
 
-        public virtual Currency CurrencyGetById(string id, string culture)
+        public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
             CurrencyRepository rep = new CurrencyRepository(config, NAVVersion);
             return rep.CurrencyLoyGetById(id, culture);
         }
 
-        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
+        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat)
         {
             if (locationIds.Count == 0)
             {
@@ -74,12 +75,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat)
         {
             return NavWSBase.ItemsInStoreGet(items, storeId, locationId);
         }
 
-        public virtual string ItemDetailsGetById(string itemId)
+        public virtual string ItemDetailsGetById(string itemId, Statistics stat)
         {
             ItemRepository itemRep = new ItemRepository(config, NAVVersion);
             return itemRep.ItemDetailsGetById(itemId);
@@ -251,17 +252,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
 
         public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            // not available in old LS Nav
-            return new List<ReplValidationSchedule>();
+            throw new NotImplementedException();
         }
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplHierarchy>();
-            }
+                throw new NotImplementedException();
 
             HierarchyRepository rep = new HierarchyRepository(config, NAVVersion);
             return rep.ReplicateHierarchy(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -270,10 +267,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<ReplHierarchyNode> ReplicateHierarchyNode(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplHierarchyNode>();
-            }
+                throw new NotImplementedException();
 
             HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NAVVersion);
             return rep.ReplicateHierarchyNode(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -282,10 +276,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<ReplHierarchyLeaf> ReplicateHierarchyLeaf(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplHierarchyLeaf>();
-            }
+                throw new NotImplementedException();
 
             HierarchyNodeRepository rep = new HierarchyNodeRepository(config, NAVVersion);
             return rep.ReplicateHierarchyLeaf(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -294,10 +285,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplHierarchyHospDeal>();
-            }
+                throw new NotImplementedException();
 
             HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
             return rep.ReplicateHierarchyHospDeal(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -306,10 +294,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<ReplHierarchyHospDealLine> ReplicateHierarchyHospDealLine(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplHierarchyHospDealLine>();
-            }
+                throw new NotImplementedException();
 
             HierarchyHospLeafRepository rep = new HierarchyHospLeafRepository(config, NAVVersion);
             return rep.ReplicateHierarchyHospDealLine(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -319,10 +304,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplItemRecipe>();
-            }
+                throw new NotImplementedException();
 
             ItemRecipeRepository rep = new ItemRecipeRepository(config);
             return rep.ReplicateItemRecipe(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -331,10 +313,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion.Major < 10)
-            {
-                logger.Error(config.LSKey.Key, "Only supported in NAV 10.x and later");
-                return new List<ReplItemModifier>();
-            }
+                throw new NotImplementedException();
 
             ItemModifierRepository rep = new ItemModifierRepository(config);
             return rep.ReplicateItemModifier(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);

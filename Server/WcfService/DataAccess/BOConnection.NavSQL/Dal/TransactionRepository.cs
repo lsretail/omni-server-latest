@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlsalelinefrom = " FROM [" + navCompanyName + "Trans_ Sales Entry] ml";
 
             sqltenderecol = "ml.[Store No_],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Line No_],ml.[Tender Type],ml.[Amount Tendered],ml.[Currency Code],ml.[Amount in Currency],t.[Description]";
-            sqltenderfrom = " FROM [" + navCompanyName + "Trans_ Payment Entry] ml LEFT OUTER JOIN [" + navCompanyName + "Tender Type] t ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_]";
+            sqltenderfrom = " FROM [" + navCompanyName + "Trans_ Payment Entry] ml LEFT JOIN [" + navCompanyName + "Tender Type] t ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_]";
         }
 
         public RetailTransaction TransactionGetByReceipt(string receiptNo, string culture, bool includeLines)

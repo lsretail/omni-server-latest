@@ -159,8 +159,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<VariantExt> VariantRegGetByItemId(string itemId)
+        public List<VariantExt> VariantRegGetByItemId(string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<VariantExt> list = new List<VariantExt>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -190,6 +191,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 

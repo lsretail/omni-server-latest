@@ -49,7 +49,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_] " +
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "LEFT JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[" + storefield + "],mt.[Created] AS [Date],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],0 AS [Posted],'' AS [Receipt No_],mt.[Click and Collect Order] AS [CAC]," +
@@ -74,7 +74,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],'' AS [Transaction No_] " +
                         "FROM [" + navCompanyName + "POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "LEFT JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
                         "WHERE mt.[Entry Status]=0" +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " + sqlwhere +
@@ -110,7 +110,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund] " +
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "LEFT JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -130,9 +130,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return entry;
         }
 
-        public List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        public List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo)
         {
-            List<SalesEntry> list = new List<SalesEntry>();
+            List<SalesEntryId> list = new List<SalesEntryId>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -150,9 +150,42 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         while (reader.Read())
                         {
-                            SalesEntry entry = SalesEntryGetById(SQLHelper.GetString(reader["Receipt No_"]));
-                            entry.CustomerOrderNo = SQLHelper.GetString(reader["CONo"]);
-                            list.Add(entry);
+                            list.Add(new SalesEntryId()
+                            {
+                                ReceiptId = SQLHelper.GetString(reader["Receipt No_"]),
+                                OrderId = SQLHelper.GetString(reader["CONo"])
+                            });
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+            return list;
+        }
+
+        public List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId)
+        {
+            List<SalesEntryId> list = new List<SalesEntryId>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Receipt No_] " +
+                                          "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Customer Order ID]=@no";
+                    command.Parameters.AddWithValue("@no", orderId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new SalesEntryId()
+                            {
+                                ReceiptId = SQLHelper.GetString(reader["Receipt No_"]),
+                                OrderId = orderId
+                            });
                         }
                         reader.Close();
                     }
@@ -174,7 +207,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],st.[Name] AS [StName] " +
                         "FROM [" + navCompanyName + "POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "LEFT JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -224,9 +257,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_] " +
                         "FROM [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "INNER JOIN [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
-                        "INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Item No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "JOIN [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
+                        "JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Item No_] " +
+                        "LEFT JOIN [" + navCompanyName + "Posted Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) " +
                         "UNION " +
                         "SELECT DISTINCT mt.[Document ID],mt.[" + storefield + "],mt.[Created] AS [Date],0 AS [RT],'' AS [Refund]," +
@@ -235,7 +268,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_] " +
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                        "INNER JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ol ON ol.[Document ID]=mt.[Document ID] " +
+                        "JOIN [" + navCompanyName + "Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ol ON ol.[Document ID]=mt.[Document ID] " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]= mt.[" + storefield + "] " +
                         "WHERE UPPER(ol.[Item Description]) LIKE UPPER(@search) " +
                         "UNION " +
@@ -254,9 +287,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],'' AS [Transaction No_] " +
                         "FROM [" + navCompanyName + "POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "INNER JOIN [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
-                        "INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Number] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "JOIN [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
+                        "JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Number] " +
+                        "LEFT JOIN [" + navCompanyName + "Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) AND mt.[Entry Status]=0" +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " +
@@ -333,9 +366,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
-                                " INNER JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
+                                " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
+                                " JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
+                                " LEFT JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id ";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -367,8 +400,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Line No_],ml.[Description]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " INNER JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
+                                " JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
+                                " LEFT JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id AND (ml.[Entry Type]=0 OR (ml.[Entry Type]=5 AND ml.[Sales Type]!=''))";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -477,7 +510,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.CommandText = "SELECT " +
                                 "ml.[Line No_],ml.[Number],ml.[Currency Code],ml.[Amount],ml.[CurrencyFactor],mc.[Card Number]" +
                                 " FROM [" + navCompanyName + "POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "POS Card Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Receipt No_]=ml.[Receipt No_] AND mc.[Tender Type]=ml.[Number]" +
+                                " LEFT JOIN [" + navCompanyName + "POS Card Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Receipt No_]=ml.[Receipt No_] AND mc.[Tender Type]=ml.[Number]" +
                                 " WHERE ml.[Receipt No_]=@id AND ml.[Entry Type]=1";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -539,7 +572,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 connection.Close();
             }
 
-            logger.Info(config.LSKey.Key, "Get Point Balance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
+            logger.Debug(config.LSKey.Key, "Get Point Balance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
                 entryId, custId, rewarded, used);
         }
 

@@ -83,5 +83,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public bool CountAsOne { get; set; }
         [DataMember]
         public int Selection { get; set; }
+        [DataMember]
+        public int EComSelection { get; set; }
     }
 }

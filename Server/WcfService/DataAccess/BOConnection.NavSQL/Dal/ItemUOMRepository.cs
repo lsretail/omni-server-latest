@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt.[POS Selection],mt.[Count as 1 on Receipt],mt.[Order],um.[Description]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure] mt INNER JOIN [" + navCompanyName + "Unit of Measure] um ON um.[Code]=mt.[Code]";
+            sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure] mt JOIN [" + navCompanyName + "Unit of Measure] um ON um.[Code]=mt.[Code]";
         }
 
         public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -126,7 +126,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumns + ",it.[Base Unit of Measure]" + sqlfrom +
-                                         " INNER JOIN [" + navCompanyName + "Item] it ON it.[No_]=mt.[Item No_] WHERE mt.[Item No_]=@itemid AND mt.[Code]=@uomid";
+                                         " JOIN [" + navCompanyName + "Item] it ON it.[No_]=mt.[Item No_] WHERE mt.[Item No_]=@itemid AND mt.[Code]=@uomid";
 
                     command.Parameters.AddWithValue("@itemid", itemid);
                     command.Parameters.AddWithValue("@uomid", uomid);

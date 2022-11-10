@@ -37,14 +37,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                          "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect]," +
                          "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup] gs) AS LCYCode";
 
-                sqlfrom = " FROM [" + navCompanyName + "WI Store] mt INNER JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_]";
+                sqlfrom = " FROM [" + navCompanyName + "WI Store] mt JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store No_]";
             }
 
             sqlcolumnsinv = "mt.[Store],st.[Name],st.[Address],st.[Post Code],st.[City],st.[County],st.[Country Code],st.[Latitude],st.[Longitude]," +
                             "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect]," +
                             "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup] gs) AS LCYCode";
 
-            sqlfrominv = " FROM [" + navCompanyName + "Inventory Terminal-Store] mt INNER JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store]";
+            sqlfrominv = " FROM [" + navCompanyName + "Inventory Terminal-Store] mt JOIN [" + navCompanyName + "Store] st ON st.[No_]=mt.[Store]";
         }
 
         public List<ReplStore> ReplicateStores(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -173,7 +173,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             if (foundmystore == false)
             {
-                logger.Info(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
+                logger.Warn(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
 
                 ReplStore st = StoreGetById(storeId);
                 if (st != null)
@@ -330,31 +330,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
             }
             return list;
-        }
-
-        public List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
-        {
-            List<Store> storecheck = StoreLoyGetAll(true);
-
-            Store.Position startpos = new Store.Position()
-            {
-                Latitude = latitude,
-                Longitude = longitude
-            };
-
-            List<Store> stores = new List<Store>();
-            foreach (Store store in storecheck)
-            {
-                Store.Position endpos = new Store.Position()
-                {
-                    Latitude = store.Latitude,
-                    Longitude = store.Longitude
-                };
-
-                if (store.CalculateDistance(startpos, endpos, units) <= maxDistance)
-                    stores.Add(store);
-            }
-            return stores;
         }
 
         public ImageView StoreImageGetById(string storeId)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 
 using LSOmni.Common.Util;
@@ -7,13 +8,11 @@ using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base;
-using System.Drawing;
 
 namespace LSOmni.BLL
 {
     public class ImageBLL : BaseBLL
     {
-        private static LSLogger logger = new LSLogger();
         private IImageCacheRepository iImageCacheRepository;
 
         #region BOConnection
@@ -37,12 +36,12 @@ namespace LSOmni.BLL
             this.iImageCacheRepository = GetDbRepository<IImageCacheRepository>(config);
         }
 
-        public virtual ImageView ImageSizeGetById(string id, ImageSize imageSize)
+        public virtual ImageView ImageSizeGetById(string id, ImageSize imageSize, Statistics stat)
         {
             // when NO caching or image is full size, then don't bother saving anything in database...
             if (config.SettingsIntGetByKey(ConfigKey.Cache_Image_DurationInMinutes) == 0 || (imageSize.Width == 0 && imageSize.Height == 0))
             {
-                return ImageGetById(id, imageSize, true);
+                return ImageGetById(id, imageSize, true, stat);
             }
 
             try
@@ -52,7 +51,7 @@ namespace LSOmni.BLL
                 if (cState != CacheState.Exists)
                 {
                     //get the image from NAV table and put into cache
-                    ImageView iv = ImageGetById(id, imageSize, true);
+                    ImageView iv = ImageGetById(id, imageSize, true, stat);
                     if (iv != null)
                     {
                         iImageCacheRepository.SaveImageCache(config.LSKey.Key, iv, true);
@@ -62,11 +61,11 @@ namespace LSOmni.BLL
                 else
                 {
                     // check if image has changed in NAV
-                    ImageView iv = ImageGetById(id, imageSize, false);
+                    ImageView iv = ImageGetById(id, imageSize, false, stat);
                     if (iv.ModifiedTime > lastModifyTime)
                     {
                         // load with blob and put into cache
-                        iv = ImageGetById(id, imageSize, true);
+                        iv = ImageGetById(id, imageSize, true, stat);
                         if (iv != null)
                         {
                             iImageCacheRepository.SaveImageCache(config.LSKey.Key, iv, true);
@@ -84,7 +83,7 @@ namespace LSOmni.BLL
             ImageView imgSizeView = iImageCacheRepository.ImageCacheGetById(config.LSKey.Key, id, imageSize);
             if (imgSizeView == null)
             {
-                imgSizeView = ImageGetById(id, imageSize, true);
+                imgSizeView = ImageGetById(id, imageSize, true, stat);
                 if (imgSizeView != null)
                 {
                     //save it
@@ -95,10 +94,10 @@ namespace LSOmni.BLL
         }
 
         //All original images are retrieved through this method. Can be from db, UNC or URL
-        private ImageView ImageGetById(string id, ImageSize imgSize, bool includeBlob)
+        private ImageView ImageGetById(string id, ImageSize imgSize, bool includeBlob, Statistics stat)
         {
             //get the original image from Image table
-            ImageView iv = BOLoyConnection.ImageGetById(id, includeBlob);
+            ImageView iv = BOLoyConnection.ImageGetById(id, includeBlob, stat);
             if (iv == null)
                 return null;
 

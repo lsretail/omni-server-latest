@@ -1,7 +1,10 @@
 ﻿using System;
+using System.IO;
+using System.Net;
 using System.ServiceModel;
 using System.ServiceModel.Activation;
 using System.ServiceModel.Web;
+using System.Text;
 
 using LSOmni.BLL;
 using LSOmni.BLL.Loyalty;
@@ -23,7 +26,6 @@ namespace LSOmni.Service
         private const string HEADER_KEY = "LSRETAIL-KEY";
         private const string HEADER_TOKEN = "LSRETAIL-TOKEN";           // used for device security
         private const string LSRETAIL_VERSION = "LSRETAIL-VERSION";
-        private const string LSRETAIL_LANGCODE = "LSRETAIL-LANGCODE";
         private const string LSRETAIL_DEVICEID = "LSRETAIL-DEVICEID";
         private const string LSRETAIL_TIMEOUT = "LSRETAIL-TIMEOUT";     // timeout set by client
 
@@ -32,7 +34,6 @@ namespace LSOmni.Service
         private const System.Net.HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable; //code=416
 
         private string version = string.Empty;
-        private string languageCode = string.Empty;
         private string deviceId = string.Empty;
         private int clientTimeOutInSeconds = 0;
         protected string clientIPAddress = string.Empty;
@@ -49,7 +50,6 @@ namespace LSOmni.Service
             string userAgent = string.Empty;
             string basicAuthHeader = string.Empty;
             this.version = "1.0";
-            this.languageCode = "";
             this.deviceId = "";
             this.clientTimeOutInSeconds = 0; // set to 0, read timeout from configuration file if it is 0
             this.config = new BOConfiguration();
@@ -94,9 +94,6 @@ namespace LSOmni.Service
                 if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_VERSION] != null)
                     version = WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_VERSION];
 
-                if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_LANGCODE] != null)
-                    languageCode = WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_LANGCODE];
-
                 if (WebOperationContext.Current != null && WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_DEVICEID] != null)
                     deviceId = WebOperationContext.Current.IncomingRequest.Headers[LSRETAIL_DEVICEID];
 
@@ -120,17 +117,15 @@ namespace LSOmni.Service
                     config.SecurityToken = "";
 
                 //token should be here except for login
-                logger.Info(config.LSKey.Key, @"{0}=[{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}] ",
-                    HEADER_TOKEN, string.Empty, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
+                logger.Debug(config.LSKey.Key, @"{0}=[{1}] {2} port:{3} - clientIP:[{4}] UserAgent:[{5}] Version:[{6}] ClientVersion:[{7}] deviceId:[{8}] clientTimeOut:[{9}]",
+                    HEADER_TOKEN, config.SecurityToken, serverUri, port, clientIPAddress, userAgent, Version(), version, deviceId, clientTimeOutInSeconds);
 
                 config = GetConfig(config);
-
-                //ValidateConfiguration();
+                CheckToken();
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, "SecurityToken:{0} = [{1}] {2} port:{3} - clientIP:[{4}] UserAgent: [{5}]  - Version: [{6}]  ClientVersion: [{7}] LangCode: [{8}]  deviceId: [{9}] clientTimeOut: [{10}]",
-                    HEADER_TOKEN, string.Empty, serverUri, port, clientIPAddress, userAgent, Version(), version, languageCode, deviceId, clientTimeOutInSeconds.ToString());
+                logger.Error(config.LSKey.Key, "{0} port:{1} - clientIP:[{2}]", serverUri, port, clientIPAddress);
                 HandleExceptions(ex, ex.Message);
             }
         }
@@ -143,10 +138,11 @@ namespace LSOmni.Service
         /// <returns>Text, success or failure</returns>
         public virtual string Ping()
         {
-            string omniDb = "";
-            string navDb = "";
-            string navWs = "";
-            string ver = "";
+            string omniDb = string.Empty;
+            string navDb = string.Empty;
+            string navWs = string.Empty;
+            string ver = string.Empty;
+            string tenVer = string.Empty;
             try
             {
                 logger.Debug(config.LSKey.Key, "Ping");
@@ -162,24 +158,23 @@ namespace LSOmni.Service
             try
             {
                 ConfigBLL bll = new ConfigBLL(config);
-                // Nav returns version number, Ax returns "AX", One returns "LS One"
-                ver = bll.PingWs();
+                // Nav returns version number, Ax returns "AX"
+                ver = bll.PingWs(out string centralVer);
+
+                tenVer = config.SettingsGetByKey(ConfigKey.LSNAV_Version);
+                if (string.IsNullOrEmpty(tenVer))
+                {
+                    logger.Debug(config.LSKey.Key, "Save Retail Version {0} to LSNAV.Version in TenantConfig", centralVer);
+                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSNAV_Version, centralVer, "string", true, "LS Central Version to use");
+                    tenVer = centralVer;
+                }
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("LS One") || (ex.InnerException != null && ex.InnerException.Message.Contains("LS One")))
-                {
-                    // We can basically discard this message since the web service is not applicable when using LS One. If we don't set an empty string
-                    // the app will show a duplicate error string which we don't want. The whitespace is here so we don't get a "Successfully connected to Nav web service" message.
-                    navWs = " ";
-                }
+                if (ex.Message.Contains("401"))
+                    navWs += "[The LS Central WS User name or Password is incorrect]";
                 else
-                {
-                    if (ex.Message.Contains("401"))
-                        navWs += "[The LS Central WS User name or Password is incorrect]";
-                    else
-                        navWs = string.Format("[Failed to Ping LS Central Web Service {0}]", ex.Message);
-                }
+                    navWs = string.Format("[Failed to Ping LS Central Web Service {0}]", ex.Message);
                 logger.Error(config.LSKey.Key, ex, navWs);
             }
 
@@ -190,14 +185,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                if (ex.Message.Contains("LS One") || (ex.InnerException != null && ex.InnerException.Message.Contains("LS One")))
-                {
-                    navDb += $"[Could not connect to LS One. {(ex.InnerException != null ? ex.InnerException.Message : ex.Message)}]";
-                }
-                else
-                {
-                    navDb = string.Format("[Failed to connect to LS Central DB {0}]", ex.Message);
-                }
+                navDb = string.Format("[Failed to connect to LS Central DB {0}]", ex.Message);
                 logger.Error(config.LSKey.Key, ex, navDb);
             }
 
@@ -210,18 +198,10 @@ namespace LSOmni.Service
                 if (omniDb.Length == 0)
                     msg += " [Successfully connected to LS Commerce Service DB]" + omniver;
 
-                if (ver.Contains("One"))
-                {
-                    if (navDb.Length == 0)
-                        msg += " [Successfully connected to LS One DB]";
-                }
-                else
-                {
-                    if (navDb.Length == 0)
-                        msg += " [Successfully connected to LS Central DB]";
-                    if (navWs.Length == 0)
-                        msg += " [Successfully connected to LS Central WS] " + ver;
-                }
+                if (navDb.Length == 0)
+                    msg += " [Successfully connected to LS Central DB]";
+                if (navWs.Length == 0)
+                    msg += " [Successfully connected to LS Central WS] " + tenVer + " (" + ver + ")";
 
                 //collect the failure
                 if (omniDb.Length > 0)
@@ -236,15 +216,7 @@ namespace LSOmni.Service
             }
             else
             {
-                if (ver.Contains("One"))
-                {
-                    msg = "Successfully connected to [LS Commerce Service DB] & [LS One DB] " + omniver;
-                }
-                else
-                {
-                    msg = "Successfully connected to [LS Commerce Service DB] & [LS Central DB] & [LS Central WS] " + ver + omniver;
-                }
-
+                msg = "Successfully connected to [LS Commerce Service DB] & [LS Central DB] & [LS Central WS] " + tenVer + " (" + ver + ")" + omniver;
                 logger.Debug(config.LSKey.Key, "PONG OK {0} ", msg);
                 return string.Format("PONG OK> {0} ", msg);
             }
@@ -261,7 +233,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "EnvironmentGet()");
                 CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
                 OmniEnvironment env = new OmniEnvironment();
-                env.Currency = bll.CurrencyGetLocal();
+                env.Currency = bll.CurrencyGetLocal(new Statistics());
                 env.Version = this.Version();
                 env.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
                 return env;
@@ -270,6 +242,85 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "Failed to get Environment");
                 return null; //never gets here
+            }
+        }
+
+        private string CheckToken()
+        {
+            if (config == null)
+                return string.Empty;
+
+            string protocol = config.SettingsGetByKey(ConfigKey.BOProtocol);
+            if (protocol.ToUpper().Equals("S2S") == false)
+                return string.Empty;
+
+            string token = config.SettingsGetByKey(ConfigKey.Central_Token);
+            if (string.IsNullOrEmpty(token) == false)
+            {
+                DateTime regtime = DateTime.MinValue;
+                string reg = config.SettingsGetByKey(ConfigKey.Central_TokenTime);
+                if (string.IsNullOrEmpty(reg) == false)
+                    regtime = Convert.ToDateTime(reg);
+
+                if (regtime > DateTime.Now)
+                {
+                    return token;
+                }
+            }
+
+            string clientId = config.SettingsGetByKey(ConfigKey.BOUser);
+            string clientSecret = config.SettingsGetByKey(ConfigKey.BOPassword);
+            string tenant = config.SettingsGetByKey(ConfigKey.BOTenant);
+
+            //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
+            if (DecryptConfigValue.IsEncryptedPwd(clientSecret))
+            {
+                clientSecret = DecryptConfigValue.DecryptString(clientSecret);
+            }
+
+            string scope = "https://api.businesscentral.dynamics.com/.default";
+            string authurl = $"https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token";
+            string body = $"grant_type=client_credentials&scope={scope}&client_id={clientId}&client_secret={clientSecret}";
+
+            try
+            {
+                Uri posturl = new Uri(authurl);
+                HttpWebRequest httpWebRequest = (HttpWebRequest)System.Net.WebRequest.Create(posturl);
+                httpWebRequest.Method = "POST";
+
+                logger.Debug(config.LSKey.Key, "Send Token request for LS Central to:{0} Message:{1}", posturl.AbsoluteUri, body);
+                byte[] byteArray = Encoding.UTF8.GetBytes(body); //json
+
+                httpWebRequest.Accept = "application/json";
+                httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                httpWebRequest.ContentLength = byteArray.Length;
+
+                using (Stream streamWriter = httpWebRequest.GetRequestStream())
+                {
+                    streamWriter.Write(byteArray, 0, byteArray.Length);
+                    streamWriter.Flush();
+                }
+
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    string result = streamReader.ReadToEnd();
+                    logger.Debug(config.LSKey.Key, "ECOM Result:[{0}]", result);
+
+                    TokenS2S data = Serialization.Deserialize<TokenS2S>(result);
+                    token = data.token_type + " " + data.access_token;
+
+                    ConfigBLL bll = new ConfigBLL();
+                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.Central_Token, token, "string", true, "Active token");
+                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.Central_TokenTime, DateTime.Now.AddSeconds(data.expires_in - 90).ToString(), "string", true, "Token Reg");
+                    config.SettingsUpdateByKey(ConfigKey.Central_Token, token);
+                }
+                return token;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(config.LSKey.Key, ex);
+                throw new LSOmniServiceException(StatusCode.SecurityTokenInvalid, "Error getting token", ex);
             }
         }
 
@@ -293,7 +344,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "Id: {0}  imageSize: {1}", id, imageSize.ToString());
 
                 ImageBLL bll = new ImageBLL(config);
-                ImageView imgView = bll.ImageSizeGetById(id, imageSize);
+                ImageView imgView = bll.ImageSizeGetById(id, imageSize, new Statistics());
                 if (imgView != null)
                 {
                     // http://localhost/LSOmniService/json.svc/ImageStreamGetById?width=255&height=455&id=66

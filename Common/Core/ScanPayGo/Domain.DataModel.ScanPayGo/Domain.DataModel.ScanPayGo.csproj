@@ -33,7 +33,7 @@
     <Folder Include="Recipe\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2478" />
     <PackageReference Include="Xamarin.Forms.Maps" Version="5.0.0.2196" />
   </ItemGroup>
 </Project>

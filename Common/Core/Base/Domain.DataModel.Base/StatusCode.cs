@@ -369,6 +369,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         SchemeClubInvalid = 1419,
         [EnumMember]
         ReceiptNoMissing = 1420,
+        [EnumMember]
+        LookupValuesMissing = 1421,
 
         #endregion
 
@@ -383,6 +385,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         OrderIdNotFound = 2202,
         [EnumMember]
         PaymentError = 2203,
+        [EnumMember]
+        PaymentAuthError = 2204,
 
         #endregion
 

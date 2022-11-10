@@ -25,27 +25,27 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                          "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt2.[Retail Product Code]," +
                          "mt.[Gross Weight],mt2.[Season Code],mt.[Item Category Code],mt2.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
                          "(SELECT TOP(1) sl.[Block Discount] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
                          "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice, " +
                          "(SELECT TOP(1) sl.[Block Negative Adjustment] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Negative Adjustment]=1) AS BlockNegAdj, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Negative Adjustment]=1) AS BlockNegAdj, " +
                          "(SELECT TOP(1) sl.[Block Positive Adjustment] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Positive Adjustment]=1) AS BlockPosAdj, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Positive Adjustment]=1) AS BlockPosAdj, " +
                          "(SELECT TOP(1) sl.[Block Purchase Return] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
 
             if (navVersion > new Version("16.2.0.0"))
             {
                 sqlcolumns += ",(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                              "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
+                              "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
             }
 
             sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] " +
-                      "LEFT OUTER JOIN [" + navCompanyName + "Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
+                      "JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] " +
+                      "LEFT JOIN [" + navCompanyName + "Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
         }
 
         public List<ReplItem> ReplicateItems(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -132,11 +132,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 }
             }
 
-            List<ReplItem> list = new List<ReplItem>();
-
             // get records
             sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
+            List<ReplItem> list = new List<ReplItem>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -455,7 +454,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
             sqlfrom +
-            " LEFT OUTER JOIN [" + navCompanyName + "Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[Retail Product Code]" +
+            " LEFT JOIN [" + navCompanyName + "Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[Retail Product Code]" +
             " WHERE (1=1)";
 
             if (string.IsNullOrWhiteSpace(itemCategoryId) == false)

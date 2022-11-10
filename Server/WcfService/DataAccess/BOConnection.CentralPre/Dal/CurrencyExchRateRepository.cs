@@ -20,8 +20,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[Currency Code],mt.[Starting Date],mt2.[LSC POS Exchange Rate Amount],mt2.[LSC POS Rel_ Exch_ Rate Amount]," +
                          "mt.[Relational Currency Code],mt.[Relational Exch_ Rate Amount],mt.[Relational Currency Code],mt.[Exchange Rate Amount]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Currency Exchange Rate$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Currency Exchange Rate$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[Currency Code]=mt.[Currency Code] AND mt2.[Starting Date]=mt.[Starting Date]";
+            sqlfrom = " FROM [" + navCompanyName + "Currency Exchange Rate$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
+                      " JOIN [" + navCompanyName + "Currency Exchange Rate$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[Currency Code]=mt.[Currency Code] AND mt2.[Starting Date]=mt.[Starting Date]";
         }
 
         public List<ReplCurrencyExchRate> ReplicateCurrencyExchRate(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

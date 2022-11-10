@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             sqlcolumns = "mt.[Hierarchy Code],mt.[Description],mt.[Type],hd.[Start Date]";
             sqlfrom = " FROM [" + navCompanyName + "Hierarchy$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                      "INNER JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
+                      "JOIN [" + navCompanyName + "Hierarchy Date$5ecfc871-5d82-43f1-9c54-59685e82318d] hd " +
                       "ON hd.[Hierarchy Code]=mt.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()";
         }
 
@@ -144,6 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 HierarchyNodeRepository rep = new HierarchyNodeRepository(config);
                 List<HierarchyNode> nodes = rep.HierarchyNodeGet(root.Id, storeId);
+
                 root.Nodes = nodes.FindAll(x => x.HierarchyCode == root.Id && string.IsNullOrEmpty(x.ParentNode));
                 for (int i = 0; i < root.Nodes.Count; i++)
                 {
@@ -162,7 +163,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Attribute Code],at.[Description] FROM [" + navCompanyName + "Hierarchy Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "INNER JOIN [" + navCompanyName + "Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] at ON at.[Code]=mt.[Attribute Code] WHERE mt.[Hierarchy Code]=@id";
+                                          "JOIN [" + navCompanyName + "Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] at ON at.[Code]=mt.[Attribute Code] WHERE mt.[Hierarchy Code]=@id";
                     command.Parameters.AddWithValue("@id", code);
 
                     TraceSqlCommand(command);
@@ -183,7 +184,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private ReplHierarchy ReaderToHierarchy(SqlDataReader reader, out string timestamp)
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
-
             return new ReplHierarchy()
             {
                 Id = SQLHelper.GetString(reader["Hierarchy Code"]),

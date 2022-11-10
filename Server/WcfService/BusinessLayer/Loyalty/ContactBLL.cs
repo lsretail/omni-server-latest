@@ -16,8 +16,7 @@ namespace LSOmni.BLL.Loyalty
 {
     public class ContactBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-        private IDeviceRepository iDeviceRepository;
+        private readonly IDeviceRepository iDeviceRepository;
 
         public ContactBLL(BOConfiguration config, int timeoutInSeconds) : base(config, timeoutInSeconds)
         {
@@ -30,32 +29,32 @@ namespace LSOmni.BLL.Loyalty
             //TODO: Implement?
         }
 
-        public virtual decimal CardGetPointBalance(string cardId)
+        public virtual decimal CardGetPointBalance(string cardId, Statistics stat)
         {
-            return BOLoyConnection.MemberCardGetPoints(cardId);
+            return BOLoyConnection.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual List<PointEntry> CardGetPointEnties(string cardNo, DateTime dateFrom)
+        public virtual List<PointEntry> CardGetPointEnties(string cardNo, DateTime dateFrom, Statistics stat)
         {
-            return BOLoyConnection.PointEntiesGet(cardNo, dateFrom);
+            return BOLoyConnection.PointEntiesGet(cardNo, dateFrom, stat);
         }
 
-        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
+        public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
-            return BOLoyConnection.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact);
+            return BOLoyConnection.ContactSearch(searchType, search, maxNumberOfRowsReturned, stat);
         }
 
-        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue)
+        public virtual MemberContact ContactGet(ContactSearchType searchType, string searchValue, Statistics stat)
         {
-            return BOLoyConnection.ContactGet(searchType, searchValue);
+            return BOLoyConnection.ContactGet(searchType, searchValue, stat);
         }
 
-        public virtual MemberContact ContactGetByCardId(string cardId, bool includeDetails)
+        public virtual MemberContact ContactGetByCardId(string cardId, bool includeDetails, int numberOfTrans, Statistics stat)
         {
             if(string.IsNullOrWhiteSpace(cardId))
                 throw new LSOmniException(StatusCode.CardIdInvalid, "cardId can not be empty or null");
 
-            MemberContact contact = BOLoyConnection.ContactGetByCardId(cardId, 0, includeDetails);
+            MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.CardId, cardId, stat);
             if (contact == null)
                 throw new LSOmniException(StatusCode.ContactIdNotFound, string.Format("Contact with card {0} Not found", cardId));
 
@@ -64,26 +63,38 @@ namespace LSOmni.BLL.Loyalty
 
             if (includeDetails)
             {
+                long totalPoints = BOLoyConnection.MemberCardGetPoints(cardId, stat);
+                contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
+
+                contact.Profiles = BOLoyConnection.ProfileGetByCardId(cardId, stat);
+                contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(cardId, string.Empty, string.Empty, stat);
+                contact.SalesEntries = BOLoyConnection.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, numberOfTrans, stat);
+
                 NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
-                contact.Notifications = notificationBLL.NotificationsGetByCardId(cardId, 5000);
+                contact.Notifications = notificationBLL.NotificationsGetByCardId(cardId, 5000, stat);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.OneLists = oneListBLL.OneListGet(contact, true);
+                contact.OneLists = oneListBLL.OneListGet(contact, true, stat);
             }
             return contact;
         }
 
-        public virtual List<Profile> ProfilesGetAll()
+        public virtual List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
         {
-            return BOLoyConnection.ProfileGetAll();
+            return base.BOLoyConnection.CustomerSearch(searchType, search, maxNumberOfRowsReturned, stat);
         }
 
-        public virtual List<Profile> ProfilesGetByCardId(string cardId)
+        public virtual List<Profile> ProfilesGetAll(Statistics stat)
         {
-            return BOLoyConnection.ProfileGetByCardId(cardId);
+            return BOLoyConnection.ProfileGetAll(stat);
         }
 
-        public virtual MemberContact ContactCreate(MemberContact contact)
+        public virtual List<Profile> ProfilesGetByCardId(string cardId, Statistics stat)
+        {
+            return BOLoyConnection.ProfileGetByCardId(cardId, stat);
+        }
+
+        public virtual MemberContact ContactCreate(MemberContact contact, Statistics stat)
         {
             //minor validation before going further 
             if (contact == null)
@@ -95,8 +106,6 @@ namespace LSOmni.BLL.Loyalty
             {
                 if (Validation.IsValidUserName(contact.UserName) == false)
                     throw new LSOmniException(StatusCode.UserNameInvalid, "Validation of user name failed");
-                if (BOLoyConnection.ContactGetByUserName(contact.UserName, false) != null)
-                    throw new LSOmniServiceException(StatusCode.UserNameExists, "User name already exists: " + contact.UserName);
                 contact.UserName = contact.UserName.Trim();
                 contact.Password = contact.Password.Trim();
             }
@@ -110,7 +119,7 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.EmailInvalid, "Validation of email failed");
             }
             //check if user exist before calling NAV
-            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && BOLoyConnection.ContactGet(ContactSearchType.Email, contact.Email) != null)
+            if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && BOLoyConnection.ContactGet(ContactSearchType.Email, contact.Email, stat) != null)
             {
                 throw new LSOmniServiceException(StatusCode.EmailExists, "Email already exists: " + contact.UserName);
             }
@@ -138,23 +147,31 @@ namespace LSOmni.BLL.Loyalty
                     contact.LoggedOnToDevice.DeviceFriendlyName = "Web application";
             }
 
-            BOLoyConnection.ContactCreate(contact);
+            BOLoyConnection.ContactCreate(contact, stat);
             MemberContact newcontact;
             if (string.IsNullOrWhiteSpace(contact.Authenticator))
-                newcontact = Login(contact.UserName, contact.Password, true, contact.LoggedOnToDevice.Id); 
+                newcontact = Login(contact.UserName, contact.Password, true, contact.LoggedOnToDevice.Id, stat); 
             else
-                newcontact = SocialLogon(contact.Authenticator, contact.AuthenticationId, contact.LoggedOnToDevice.Id, string.Empty, true);
+                newcontact = SocialLogon(contact.Authenticator, contact.AuthenticationId, contact.LoggedOnToDevice.Id, string.Empty, true, stat);
 
             base.SecurityCheck();
             return newcontact;
         }
 
-        public virtual double ContactAddCard(string contactId, string cardId, string accountId)
+        public virtual double ContactAddCard(string contactId, string cardId, string accountId, Statistics stat)
         {
-            return BOLoyConnection.ContactAddCard(contactId, accountId, cardId);
+            return BOLoyConnection.ContactAddCard(contactId, accountId, cardId, stat);
         }
 
-        public virtual MemberContact ContactUpdate(MemberContact contact)
+        public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
+        {
+            OneListBLL oBll = new OneListBLL(config, timeoutInSeconds);
+            oBll.OneListDeleteByCardId(cardId, stat);
+
+            BOLoyConnection.ConatctBlock(accountId, cardId, stat);
+        }
+
+        public virtual MemberContact ContactUpdate(MemberContact contact, Statistics stat)
         {
             if (contact == null)
             {
@@ -183,24 +200,24 @@ namespace LSOmni.BLL.Loyalty
             }
 
             //get existing contact in db to compare the email and get accountId
-            MemberContact ct = BOLoyConnection.ContactGetByCardId(contact.Cards.FirstOrDefault().Id, 0, false);
+            MemberContact ct = BOLoyConnection.ContactGet(ContactSearchType.CardId, contact.Cards.FirstOrDefault().Id, stat);
             if (ct == null)
                 throw new LSOmniServiceException(StatusCode.ContactIdNotFound, "Contact not found with CardId: " + contact.Cards.FirstOrDefault().Id);
 
             if (config.SettingsBoolGetByKey(ConfigKey.Allow_Dublicate_Email) == false && (ct.Email.Trim().ToLower() != contact.Email.Trim().ToLower()))
             {
                 //if the email has changed, check if the new one exists in db
-                if (BOLoyConnection.ContactGet(ContactSearchType.Email, contact.Email) != null)
+                if (BOLoyConnection.ContactGet(ContactSearchType.Email, contact.Email, stat) != null)
                 {
                     throw new LSOmniServiceException(StatusCode.EmailExists, string.Format("Email {0} already exists", contact.Email));
                 }
             }
 
-            BOLoyConnection.ContactUpdate(contact, ct.Account.Id);
-            return BOLoyConnection.ContactGetByCardId(ct.Cards.FirstOrDefault().Id, 0, false);
+            BOLoyConnection.ContactUpdate(contact, ct.Account.Id, stat);
+            return BOLoyConnection.ContactGet(ContactSearchType.CardId, ct.Cards.FirstOrDefault().Id, stat);
         }
 
-        public virtual MemberContact Login(string userName, string password, bool includeDetails, string deviceId)
+        public virtual MemberContact Login(string userName, string password, bool includeDetails, string deviceId, Statistics stat)
         {
             //some validation
             if (string.IsNullOrWhiteSpace(userName) || string.IsNullOrWhiteSpace(password))
@@ -214,16 +231,16 @@ namespace LSOmni.BLL.Loyalty
                 deviceId = GetDefaultDeviceId(userName.Trim());//logging in via web app
             }
 
-            Device dev = BOLoyConnection.DeviceGetById(deviceId);
+            Device dev = BOLoyConnection.DeviceGetById(deviceId, stat);
             if (dev != null && dev.Status == 3)
             {
                 throw new LSOmniServiceException(StatusCode.DeviceIsBlocked, string.Format("Device has been blocked from usage: {0}", deviceId));
             }
 
-            MemberContact contact = BOLoyConnection.Login(userName, password, deviceId, (dev == null) ? string.Empty : dev.DeviceFriendlyName, includeDetails);
+            MemberContact contact = BOLoyConnection.Login(userName, password, deviceId, (dev == null) ? string.Empty : dev.DeviceFriendlyName, stat);
             if (contact == null)
             {
-                contact = BOLoyConnection.ContactSearch(ContactSearchType.UserName, userName, 0, true).FirstOrDefault();
+                contact = BOLoyConnection.ContactGet(ContactSearchType.UserName, userName, stat);
                 if (contact == null)
                     throw new LSOmniServiceException(StatusCode.UserNameNotFound, "Cannot login user " + userName);
             }
@@ -235,16 +252,18 @@ namespace LSOmni.BLL.Loyalty
 
             if (includeDetails)
             {
+                contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty, stat);
+
                 NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
-                contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
+                contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000, stat);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.OneLists = oneListBLL.OneListGet(contact, true);
+                contact.OneLists = oneListBLL.OneListGet(contact, true, stat);
             }
 
             contact.Environment = new OmniEnvironment();
             CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
-            contact.Environment.Currency = curBLL.CurrencyGetLocal();// CurrencyGetHelper.CurrencyGet();
+            contact.Environment.Currency = curBLL.CurrencyGetLocal(stat);// CurrencyGetHelper.CurrencyGet();
             contact.Environment.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
             contact.Environment.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
@@ -262,7 +281,7 @@ namespace LSOmni.BLL.Loyalty
             return contact;
         }
 
-        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceId, string deviceName, bool includeDetails)
+        public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceId, string deviceName, bool includeDetails, Statistics stat)
         {
             //some validation
             if (string.IsNullOrWhiteSpace(authenticator) || string.IsNullOrWhiteSpace(authenticationId))
@@ -276,13 +295,13 @@ namespace LSOmni.BLL.Loyalty
                 deviceId = GetDefaultDeviceId(authenticator.Trim());//logging in via web app
             }
 
-            Device dev = BOLoyConnection.DeviceGetById(deviceId);
+            Device dev = BOLoyConnection.DeviceGetById(deviceId, stat);
             if (dev != null && dev.Status == 3)
             {
                 throw new LSOmniServiceException(StatusCode.DeviceIsBlocked, string.Format("Device has been blocked from usage: {0}", deviceId));
             }
 
-            MemberContact contact = BOLoyConnection.SocialLogon(authenticator, authenticationId, deviceId, (dev == null) ? string.Empty : dev.DeviceFriendlyName, includeDetails);
+            MemberContact contact = BOLoyConnection.SocialLogon(authenticator, authenticationId, deviceId, (dev == null) ? string.Empty : dev.DeviceFriendlyName, stat);
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.UserNameNotFound, "Cannot login user " + authenticator);
 
@@ -293,16 +312,18 @@ namespace LSOmni.BLL.Loyalty
 
             if (includeDetails)
             {
+                contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty, stat);
+
                 NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
-                contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000);
+                contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000, stat);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.OneLists = oneListBLL.OneListGet(contact, true);
+                contact.OneLists = oneListBLL.OneListGet(contact, true, stat);
             }
 
             contact.Environment = new OmniEnvironment();
             CurrencyBLL curBLL = new CurrencyBLL(config, timeoutInSeconds);
-            contact.Environment.Currency = curBLL.CurrencyGetLocal();// CurrencyGetHelper.CurrencyGet();
+            contact.Environment.Currency = curBLL.CurrencyGetLocal(stat);// CurrencyGetHelper.CurrencyGet();
             contact.Environment.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
             contact.Environment.Version = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).FileVersion;
 
@@ -316,21 +337,10 @@ namespace LSOmni.BLL.Loyalty
             }
             dev.SecurityToken = securityToken;
             contact.LoggedOnToDevice = dev;
-
             return contact;
         }
 
-        public virtual void Logout(string userName, string deviceId = "", string ipAddress = "")
-        {
-            //when deviceId is missing, it defaults to the userName.
-            if (string.IsNullOrWhiteSpace(deviceId))
-            {
-                deviceId = GetDefaultDeviceId(userName.Trim());//logging in via web app
-            }
-            iDeviceRepository.Logout(userName, deviceId);
-        }
-
-        public virtual void ChangePassword(string userName, string newPassword, string oldPassword)
+        public virtual void ChangePassword(string userName, string newPassword, string oldPassword, Statistics stat)
         {
             //minor validation before sending it to NAV web service
             if (Validation.IsValidPassword(newPassword) == false)
@@ -344,15 +354,14 @@ namespace LSOmni.BLL.Loyalty
 
             //CALL NAV web service - it validates the if old pwd is ok or not
             bool oldmethod = false;
-            BOLoyConnection.ChangePassword(userName, string.Empty, newPassword, oldPassword, ref oldmethod); //
-
+            BOLoyConnection.ChangePassword(userName, string.Empty, newPassword, oldPassword, ref oldmethod, stat);
         }
 
         //if anything fails in resetpwd, simply ask the user to go through the forgotpassword again..
         //StatusCode.PasswordInvalid   ask user for better pwd
         //StatusCode.ParameterInvalid, ask user for correct username since it does not match resetcode
         //  all other errors should as the user to go through the forgotPassword flow again
-        public virtual void ResetPassword(string userNameOrEmail, string resetCode, string newPassword)
+        public virtual void ResetPassword(string userNameOrEmail, string resetCode, string newPassword, Statistics stat)
         {
             //minor validation before sending it to NAV web service
             if (Validation.IsValidPassword(newPassword) == false)
@@ -361,9 +370,9 @@ namespace LSOmni.BLL.Loyalty
             }
 
             //get the username from resetCode, if resetCode is not specified
-            MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
+            MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.UserName, userNameOrEmail, stat);
             if (contact == null)
-                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail);
+                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail, stat);
 
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userNameOrEmail);
@@ -398,18 +407,18 @@ namespace LSOmni.BLL.Loyalty
 
             //CALL NAV web service 
             bool oldmethod = true;
-            BOLoyConnection.ResetPassword(userNameOrEmail, string.Empty, newPassword, ref oldmethod);
+            BOLoyConnection.ResetPassword(userNameOrEmail, string.Empty, newPassword, ref oldmethod, stat);
 
             //delete security token and resetpasswordDelete failure is 
             iResetPasswordRepository.ResetPasswordDelete(resetCode);
         }
 
-        public virtual string ForgotPassword(string userNameOrEmail)
+        public virtual string ForgotPassword(string userNameOrEmail, Statistics stat)
         {
             //get the contactId from either UserName of Email addresses
-            MemberContact contact = BOLoyConnection.ContactGetByUserName(userNameOrEmail, false);
+            MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.UserName, userNameOrEmail, stat);
             if (contact == null)
-                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail);
+                contact = BOLoyConnection.ContactGet(ContactSearchType.Email, userNameOrEmail, stat);
 
             if (contact == null)
                 throw new LSOmniServiceException(StatusCode.UserNameNotFound, "userNameOrEmail not found: " + userNameOrEmail);
@@ -438,10 +447,10 @@ namespace LSOmni.BLL.Loyalty
             return resetCode;
         }
 
-        public virtual string PasswordReset(string userName, string email)
+        public virtual string PasswordReset(string userName, string email, Statistics stat)
         {
             bool oldmethod = false;
-            string token = BOLoyConnection.ResetPassword(userName, email, string.Empty, ref oldmethod);
+            string token = BOLoyConnection.ResetPassword(userName, email, string.Empty, ref oldmethod, stat);
 
             if (config.SettingsBoolGetByKey(ConfigKey.forgotpassword_code_encrypted))
             {
@@ -458,9 +467,9 @@ namespace LSOmni.BLL.Loyalty
 
             if (oldmethod)
             {
-                MemberContact contact = BOLoyConnection.ContactGetByUserName(userName, false);
+                MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.UserName, userName, stat);
                 if (contact == null)
-                    contact = BOLoyConnection.ContactGet(ContactSearchType.Email, email);
+                    contact = BOLoyConnection.ContactGet(ContactSearchType.Email, email, stat);
 
                 if (contact == null)
                     throw new LSOmniServiceException(StatusCode.UserNameNotFound, string.Format("User {0} or Email {1} not found", userName, email));
@@ -473,7 +482,7 @@ namespace LSOmni.BLL.Loyalty
             return token;
         }
 
-        public virtual void PasswordChange(string userName, string token, string newPassword, string oldPassword)
+        public virtual void PasswordChange(string userName, string token, string newPassword, string oldPassword, Statistics stat)
         {
             //minor validation before sending it to NAV web service
             if (Validation.IsValidPassword(newPassword) == false)
@@ -495,31 +504,31 @@ namespace LSOmni.BLL.Loyalty
             }
 
             bool oldmethod = false;
-            BOLoyConnection.ChangePassword(userName, token, newPassword, oldPassword, ref oldmethod);
+            BOLoyConnection.ChangePassword(userName, token, newPassword, oldPassword, ref oldmethod, stat);
 
             if (oldmethod)
             {
-                ResetPassword(userName, token, newPassword);
+                ResetPassword(userName, token, newPassword, stat);
             }
         }
 
-        public virtual string SPGPassword(string email, string token, string newPassword)
+        public virtual string SPGPassword(string email, string token, string newPassword, Statistics stat)
         {
-            return BOLoyConnection.SPGPassword(email, token, newPassword);
+            return BOLoyConnection.SPGPassword(email, token, newPassword, stat);
         }
 
-        public virtual void LoginChange(string oldUserName, string newUserName, string password)
+        public virtual void LoginChange(string oldUserName, string newUserName, string password, Statistics stat)
         {
-            BOLoyConnection.LoginChange(oldUserName, newUserName, password);
+            BOLoyConnection.LoginChange(oldUserName, newUserName, password, stat);
         }
 
         #endregion login and accounts
 
         #region private
 
-        public virtual List<Scheme> SchemesGetAll()
+        public virtual List<Scheme> SchemesGetAll(Statistics stat)
         {
-            return BOLoyConnection.SchemeGetAll();
+            return BOLoyConnection.SchemeGetAll(stat);
         }
 
         private string GetDefaultDeviceId(string userName)

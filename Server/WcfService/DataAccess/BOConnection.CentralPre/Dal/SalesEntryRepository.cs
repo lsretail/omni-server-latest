@@ -45,7 +45,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[Created at Store],mt.[Created] AS [Date],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],0 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
@@ -63,14 +63,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "FROM [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] WHERE mt.CancelledOrder=1 " +
                         "UNION " +
-                        "SELECT '' AS [Document ID],mt.[Store No_],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
+                        "SELECT '' AS [Document ID],mt.[Store No_],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
                         "'' AS [External ID],mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
                         "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
                         "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],'' AS [Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],'' AS [Transaction No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
                         "WHERE mt.[Entry Status]=0" +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " + sqlwhere +
@@ -91,8 +91,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public SalesEntry SalesEntryGetById(string entryId)
+        public SalesEntry SalesEntryGetById(string entryId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntry entry = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -106,7 +107,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -116,19 +117,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            entry = TransactionToSalesEntry(reader);
+                            entry = TransactionToSalesEntry(reader, stat);
                         }
                         reader.Close();
                     }
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return entry;
         }
 
-        public List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
+        public List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo)
         {
-            List<SalesEntry> list = new List<SalesEntry>();
+            List<SalesEntryId> list = new List<SalesEntryId>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -146,9 +148,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            SalesEntry entry = SalesEntryGetById(SQLHelper.GetString(reader["Receipt No_"]));
-                            entry.CustomerOrderNo = SQLHelper.GetString(reader["CONo"]);
-                            list.Add(entry);
+                            list.Add(new SalesEntryId()
+                            {
+                                ReceiptId = SQLHelper.GetString(reader["Receipt No_"]),
+                                OrderId = SQLHelper.GetString(reader["CONo"])
+                            });
                         }
                         reader.Close();
                     }
@@ -158,8 +162,40 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public SalesEntry POSTransactionGetById(string entryId)
+        public List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId)
         {
+            List<SalesEntryId> list = new List<SalesEntryId>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Receipt No_] " +
+                                          "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Customer Order ID]=@no";
+                    command.Parameters.AddWithValue("@no", orderId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new SalesEntryId()
+                            {
+                                ReceiptId = SQLHelper.GetString(reader["Receipt No_"]),
+                                OrderId = orderId
+                            });
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+            return list;
+        }
+
+        public SalesEntry POSTransactionGetById(string entryId, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntry entry = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -167,10 +203,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[Receipt No_],mt.[Store No_],mt.[POS Terminal No_],mt.[Staff ID],mt.[Customer No_]," +
                         "mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund],do.[Phone No_],do.[Address],do.[Address 2],do.[City],do.[Name]," +
-                        "(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],st.[Name] AS [StName] " +
+                        "(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],st.[Name] AS [StName] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -180,13 +216,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            entry = POSTransToSalesEntry(reader, true);
+                            entry = POSTransToSalesEntry(reader, true, stat);
                         }
                         reader.Close();
                     }
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return entry;
         }
 
@@ -220,9 +257,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "INNER JOIN [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
-                        "INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Item No_] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "JOIN [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
+                        "JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Item No_] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) " +
                         "UNION " +
                         "SELECT DISTINCT mt.[Document ID],mt.[Store No_],mt.[Created] AS [Date],0 AS [RT],'' AS [Refund]," +
@@ -231,7 +268,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                        "INNER JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ol ON ol.[Document ID]=mt.[Document ID] " +
+                        "JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ol ON ol.[Document ID]=mt.[Document ID] " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]= mt.[Store No_] " +
                         "WHERE UPPER(ol.[Item Description]) LIKE UPPER(@search) " +
                         "UNION " +
@@ -250,9 +287,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],'' AS [Transaction No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
-                        "INNER JOIN [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
-                        "INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Number] " +
-                        "LEFT OUTER JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "JOIN [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
+                        "JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Number] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) AND mt.[Entry Status]=0" +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " +
@@ -317,8 +354,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
         }
 
-        public List<SalesEntryLine> TransSalesEntryLinesGet(string receiptId)
+        public List<SalesEntryLine> TransSalesEntryLinesGet(string receiptId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryLine> list = new List<SalesEntryLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -329,9 +367,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
-                                " INNER JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
+                                " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
+                                " JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
+                                " LEFT JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id ";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -348,11 +386,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<SalesEntryLine> POSTransLinesGet(string receiptId)
+        public List<SalesEntryLine> POSTransLinesGet(string receiptId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryLine> list = new List<SalesEntryLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -363,8 +403,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Line No_],ml.[Description]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " INNER JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
+                                " JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
+                                " LEFT JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id AND (ml.[Entry Type]=0 OR (ml.[Entry Type]=5 AND ml.[Sales Type]!=''))";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -381,11 +421,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<SalesEntryDiscountLine> DiscountLineGet(string receiptNo)
+        public List<SalesEntryDiscountLine> DiscountLineGet(string receiptNo, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryDiscountLine> list = new List<SalesEntryDiscountLine>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -411,11 +453,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<SalesEntryPayment> TransSalesEntryPaymentGet(string receiptNo, string custOrderNo)
+        public List<SalesEntryPayment> TransSalesEntryPaymentGet(string receiptNo, string custOrderNo, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -460,11 +504,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<SalesEntryPayment> POSTransPaymentLinesGet(string receiptId)
+        public List<SalesEntryPayment> POSTransPaymentLinesGet(string receiptId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -473,7 +519,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT " +
                                 "ml.[Line No_],ml.[Number],ml.[Currency Code],ml.[Amount],ml.[CurrencyFactor],mc.[Card Number]" +
                                 " FROM [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
-                                " LEFT OUTER JOIN [" + navCompanyName + "LSC POS Card Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Receipt No_]=ml.[Receipt No_] AND mc.[Tender Type]=ml.[Number]" +
+                                " LEFT JOIN [" + navCompanyName + "LSC POS Card Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mc ON mc.[Receipt No_]=ml.[Receipt No_] AND mc.[Tender Type]=ml.[Number]" +
                                 " WHERE ml.[Receipt No_]=@id AND ml.[Entry Type]=1";
 
                     command.Parameters.AddWithValue("@id", receiptId);
@@ -490,6 +536,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -535,11 +582,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 connection.Close();
             }
 
-            logger.Info(config.LSKey.Key, "Get Point Balance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
+            logger.Debug(config.LSKey.Key, "Get Point Balance: ReceiptNo:{0} CustOrderNo:{1} PointRew:{2} PointUse:{3}", 
                 entryId, custId, rewarded, used);
         }
 
-        private SalesEntry TransactionToSalesEntry(SqlDataReader reader)
+        private SalesEntry TransactionToSalesEntry(SqlDataReader reader, Statistics stat)
         {
             SalesEntry entry = new SalesEntry()
             {
@@ -601,14 +648,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             entry.PointsRewarded = rewarded;
             entry.PointsUsedInOrder = used;
 
-            entry.Lines = TransSalesEntryLinesGet(entry.Id);
-            entry.DiscountLines = DiscountLineGet(entry.Id);
-            entry.Payments = TransSalesEntryPaymentGet(entry.Id, entry.CustomerOrderNo);
+            entry.Lines = TransSalesEntryLinesGet(entry.Id, stat);
+            entry.DiscountLines = DiscountLineGet(entry.Id, stat);
+            entry.Payments = TransSalesEntryPaymentGet(entry.Id, entry.CustomerOrderNo, stat);
             entry.LineCount = entry.LineCount;
             return entry;
         }
 
-        private SalesEntry POSTransToSalesEntry(SqlDataReader reader, bool includeLines)
+        private SalesEntry POSTransToSalesEntry(SqlDataReader reader, bool includeLines, Statistics stat)
         {
             SalesEntry entry = new SalesEntry()
             {
@@ -647,8 +694,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             if (includeLines)
             {
-                entry.Lines = POSTransLinesGet(entry.Id);
-                entry.Payments = POSTransPaymentLinesGet(entry.Id);
+                entry.Lines = POSTransLinesGet(entry.Id, stat);
+                entry.Payments = POSTransPaymentLinesGet(entry.Id, stat);
             }
             return entry;
         }

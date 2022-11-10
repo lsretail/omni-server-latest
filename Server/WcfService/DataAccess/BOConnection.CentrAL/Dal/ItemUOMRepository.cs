@@ -21,9 +21,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt2.[POS Selection],mt2.[Count as 1 on Receipt],mt2.[Order],um.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Item Unit of Measure$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
+                      "JOIN [" + navCompanyName + "Item Unit of Measure$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
                       "ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Code]=mt.[Code] " +
-                      "INNER JOIN [" + navCompanyName + "Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] um " +
+                      "JOIN [" + navCompanyName + "Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] um " +
                       "ON um.[Code]=mt.[Code]";
         }
 
@@ -130,7 +130,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumns + ",it.[Base Unit of Measure]" + sqlfrom +
-                                         " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it ON it.[No_]=mt.[Item No_] WHERE mt.[Item No_]=@itemid AND mt.[Code]=@uomid";
+                                         " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it ON it.[No_]=mt.[Item No_] WHERE mt.[Item No_]=@itemid AND mt.[Code]=@uomid";
 
                     command.Parameters.AddWithValue("@itemid", itemid);
                     command.Parameters.AddWithValue("@uomid", uomid);

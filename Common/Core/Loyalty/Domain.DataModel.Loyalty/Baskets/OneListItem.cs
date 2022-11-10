@@ -51,12 +51,17 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
                 UnitOfMeasureId = item.SelectedUnitOfMeasure?.Id;
                 UnitOfMeasureDescription = item.SelectedUnitOfMeasure?.DisplayString;
             }
-
+            else if (item.SalesUom != null)
+            {
+                UnitOfMeasureId = item.SalesUom.Id;
+                UnitOfMeasureDescription = item.SalesUom.DisplayString;
+            }
             if (item.SelectedVariant != null)
             {
                 VariantId = item.SelectedVariant.Id;
                 VariantDescription = item.SelectedVariant.ToString();
             }
+            
 
             ItemDescription = item.Description;
             Image = item.DefaultImage;
@@ -272,6 +277,39 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
             // Compare UOMs
             if (UnitOfMeasureId != itemToCompare.UnitOfMeasureId)
+                return false;
+
+            return true;
+        }
+
+        public bool HaveTheSameItemAndVariant(LoyItem itemToCompare)
+        {
+            if (itemToCompare == null)
+                return false;
+
+            // Compare item
+            if (ItemId != itemToCompare.Id)
+                return false;
+
+            string uomId = string.Empty;
+            string variantId = string.Empty;
+
+            if (itemToCompare.SelectedUnitOfMeasure != null)
+            {
+                uomId = itemToCompare.SelectedUnitOfMeasure.Id;
+            }
+
+            if (itemToCompare.SelectedVariant != null)
+            {
+                variantId = itemToCompare.SelectedVariant.Id;
+            }
+
+            // Compare variants
+            if (VariantId != variantId)
+                return false;
+
+            // Compare UOMs
+            if (UnitOfMeasureId != uomId)
                 return false;
 
             return true;

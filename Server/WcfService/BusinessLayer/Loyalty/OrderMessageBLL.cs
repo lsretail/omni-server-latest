@@ -18,9 +18,8 @@ namespace LSOmni.BLL.Loyalty
 {
     public class OrderMessageBLL : BaseLoyBLL
     {
-        private static LSLogger logger = new LSLogger();
-        private INotificationRepository iNotificationRepository;
-        private IPushNotificationRepository iPushRepository;
+        private readonly INotificationRepository iNotificationRepository;
+        private readonly IPushNotificationRepository iPushRepository;
 
         public OrderMessageBLL(BOConfiguration config, string deviceId, int timeoutInSeconds)
             : base(config, deviceId, timeoutInSeconds)
@@ -34,17 +33,17 @@ namespace LSOmni.BLL.Loyalty
         {
         }
 
-        public virtual void OrderMessageSave(string orderId, int status, string subject, string message)
+        public virtual void OrderMessageSave(string orderId, int status, string subject, string message, Statistics stat)
         {
             // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
-            CreateNotificationsFromOrderMessage(orderId, status.ToString(), subject, message);
+            CreateNotificationsFromOrderMessage(orderId, status.ToString(), subject, message, stat);
             SendToEcom("orderstatus", new { document_id = orderId, status = status });
         }
 
-        public virtual void OrderMessageStatusUpdate(OrderMessageStatus orderMessage)
+        public virtual void OrderMessageStatusUpdate(OrderMessageStatus orderMessage, Statistics stat)
         {
             // Status: New = 0, InProcess = 1, Failed = 2, Processed = 3,
-            CreateNotificationsFromOrderMessage(orderMessage);
+            CreateNotificationsFromOrderMessage(orderMessage, stat);
             string payloadJson = new JavaScriptSerializer().Serialize(orderMessage);
             SendToEcom("orderstatus", payloadJson);
         }
@@ -290,7 +289,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private void CreateNotificationsFromOrderMessage(string orderId, string orderStatus, string subject, string message)
+        private void CreateNotificationsFromOrderMessage(string orderId, string orderStatus, string subject, string message, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return;     // nothing to save here
@@ -310,7 +309,7 @@ namespace LSOmni.BLL.Loyalty
                 if (string.IsNullOrEmpty(cardId))
                     return;
 
-                MemberContact contact = contactBLL.ContactGetByCardId(cardId, false);
+                MemberContact contact = contactBLL.ContactGet(ContactSearchType.CardId, cardId, stat);
                 if (contact == null)
                 {
                     logger.Error(config.LSKey.Key, "Failed to find contact for cardId:{0}", cardId);
@@ -327,17 +326,19 @@ namespace LSOmni.BLL.Loyalty
                     qrText = qrText.Replace("\r", "").Replace("\n", "");
                 }
 
-                iNotificationRepository.OrderMessageNotificationSave(notificationId, orderId, cardId, subject, detailsAsHtml, qrText);
-                iPushRepository.SavePushNotification(contact.Id, notificationId);
+                iNotificationRepository.OrderMessageNotificationSave(notificationId, orderId, cardId, subject, detailsAsHtml, qrText, stat);
+                iPushRepository.SavePushNotification(contact.Id, notificationId, stat);
 
                 //if status is ready 
                 if (orderStatus.StartsWith("REA"))
                 {
                     //create qr image 
-                    ImageView iv = new ImageView(notificationId);
-                    iv.DisplayOrder = 0;
-                    iv.LocationType = LocationType.Image;
-                    iv.ImgBytes = GenerateQRCode(qrText);
+                    ImageView iv = new ImageView(notificationId)
+                    {
+                        DisplayOrder = 0,
+                        LocationType = LocationType.Image,
+                        ImgBytes = GenerateQRCode(qrText)
+                    };
 
                     IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);
                     imgRepository.SaveImageLink(iv, "Member Notification", "Member Notification: " + notificationId, notificationId, iv.Id, 0);
@@ -353,7 +354,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private void CreateNotificationsFromOrderMessage(OrderMessageStatus orderMsg)
+        private void CreateNotificationsFromOrderMessage(OrderMessageStatus orderMsg, Statistics stat)
         {
             if (orderMsg == null || string.IsNullOrEmpty(orderMsg.MsgDetail))
                 return;     // nothing to save here
@@ -366,24 +367,26 @@ namespace LSOmni.BLL.Loyalty
                     return;
 
                 ContactBLL contactBLL = new ContactBLL(config, timeoutInSeconds);
-                MemberContact contact = contactBLL.ContactGetByCardId(orderMsg.CardId, false);
+                MemberContact contact = contactBLL.ContactGet(ContactSearchType.CardId, orderMsg.CardId, stat);
                 if (contact == null)
                 {
                     logger.Error(config.LSKey.Key, "Failed to find contact for cardId:{0}", orderMsg.CardId);
                     return;
                 }
 
-                iNotificationRepository.OrderMessageNotificationSave(notificationId, orderMsg.OrderId, orderMsg.CardId, orderMsg.MsgSubject, orderMsg.MsgDetail, orderMsg.OrderId);
-                iPushRepository.SavePushNotification(contact.Id, notificationId);
+                iNotificationRepository.OrderMessageNotificationSave(notificationId, orderMsg.OrderId, orderMsg.CardId, orderMsg.MsgSubject, orderMsg.MsgDetail, orderMsg.OrderId, stat);
+                iPushRepository.SavePushNotification(contact.Id, notificationId, stat);
 
                 //if status is ready 
                 if (orderMsg.HeaderStatus.StartsWith("REA"))
                 {
                     //create qr image 
-                    ImageView iv = new ImageView(notificationId);
-                    iv.DisplayOrder = 0;
-                    iv.LocationType = LocationType.Image;
-                    iv.ImgBytes = GenerateQRCode(orderMsg.OrderId);
+                    ImageView iv = new ImageView(notificationId)
+                    {
+                        DisplayOrder = 0,
+                        LocationType = LocationType.Image,
+                        ImgBytes = GenerateQRCode(orderMsg.OrderId)
+                    };
 
                     IImageRepository imgRepository = base.GetDbRepository<IImageRepository>(config);
                     imgRepository.SaveImageLink(iv, "Member Notification", "Member Notification: " + notificationId, notificationId, iv.Id, 0);
@@ -422,32 +425,6 @@ namespace LSOmni.BLL.Loyalty
                 byte[] imageBytes = ms.ToArray();
                 return imageBytes;
             }
-        }
-
-        private string GenerateQRCodeFile(string qrCode, string id, string qrImageFolderName)
-        {
-            int height = 300; //500 was 58 KB
-            int width = 300;
-            ZXing.BarcodeWriter writer = new ZXing.BarcodeWriter
-            {
-                Format = ZXing.BarcodeFormat.QR_CODE,
-                Options = new ZXing.QrCode.QrCodeEncodingOptions
-                {
-                    ErrorCorrection = ZXing.QrCode.Internal.ErrorCorrectionLevel.Q,
-                    Height = height,
-                    Width = width,
-                    Margin = 0,
-                }
-            };
-
-            Bitmap bitmap = writer.Write(qrCode);
-            if (Common.Util.ImageConverter.DirectoryExists(qrImageFolderName) == false)
-                Common.Util.ImageConverter.DirectoryCreate(qrImageFolderName);
-
-            string fileName = string.Format(@"{0}\{1}.jpg", qrImageFolderName, id);//save as id.jpg 
-            bitmap.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
-            //bitmap.Save(@"c:\temp\test2.Jpeg", System.Drawing.Imaging.ImageFormat.Jpeg);
-            return fileName;
         }
 
         #endregion

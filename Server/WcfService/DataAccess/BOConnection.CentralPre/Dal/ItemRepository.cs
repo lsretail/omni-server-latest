@@ -27,31 +27,31 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                          "mt2.[LSC Retail Product Code]," +
                          "mt.[Gross Weight],mt2.[LSC Season Code],mt.[Item Category Code],mt2.[LSC Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
                          "(SELECT TOP(1) sl.[Block Discount] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
                          "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice, " +
                          "(SELECT TOP(1) sl.[Block Negative Adjustment] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Negative Adjustment]=1) AS BlockNegAdj, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Negative Adjustment]=1) AS BlockNegAdj, " +
                          "(SELECT TOP(1) sl.[Block Positive Adjustment] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Positive Adjustment]=1) AS BlockPosAdj, " +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Positive Adjustment]=1) AS BlockPosAdj, " +
                          "(SELECT TOP(1) sl.[Block Purchase Return] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet," +
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet," +
                          "(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
+                         "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
 
-            sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] ";
+            sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
+                      " JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] ";
 
             if (LSCVersion >= new Version("19.2"))
             {
-                sqlfrom += "LEFT OUTER JOIN [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_] AND ih.[Language]=''";
+                sqlfrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_] AND ih.[Language]=''";
                 TABLEHTMLID = 10001410;
             }
             else
             {
-                sqlfrom += "LEFT OUTER JOIN [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
+                sqlfrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
             }
         }
 
@@ -139,11 +139,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             }
 
-            List<ReplItem> list = new List<ReplItem>();
-
             // get records
             sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
+            List<ReplItem> list = new List<ReplItem>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -354,7 +353,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             int cnt = 0;
                             while (reader.Read())
                             {
-                                LoyItem val = ReaderToLoyItem(reader, storeId , string.Empty, true, true, out lastKey);
+                                LoyItem val = ReaderToLoyItem(reader, storeId , string.Empty, true, true, out lastKey, new Statistics());
                                 list.Add(val);
                                 cnt++;
                             }
@@ -387,7 +386,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             {
                                 while (reader.Read())
                                 {
-                                    list.Add(ReaderToLoyItem(reader, storeId, string.Empty, true, true, out string ts));
+                                    list.Add(ReaderToLoyItem(reader, storeId, string.Empty, true, true, out string ts, new Statistics()));
                                 }
                                 reader.Close();
                             }
@@ -414,8 +413,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<LoyItem> ItemsGetByProductGroupId(string productGroupId, string culture, bool includeDetails = true)
+        public List<LoyItem> ItemsGetByProductGroupId(string productGroupId, string culture, bool includeDetails, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<LoyItem> list = new List<LoyItem>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -429,17 +429,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItem(reader, string.Empty, culture, includeDetails, false, out string ts));
+                            list.Add(ReaderToLoyItem(reader, string.Empty, culture, includeDetails, false, out string ts, stat));
                         }
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails = false)
+        public List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
+
             if (pageNumber < 1)
                 pageNumber = 1;
             if (pageSize < 1)
@@ -448,7 +451,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             SQLHelper.CheckForSQLInjection(itemCategoryId);
             SQLHelper.CheckForSQLInjection(productGroupId);
             SQLHelper.CheckForSQLInjection(search);
-
 
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
@@ -462,7 +464,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
             sqlfrom +
-            " LEFT OUTER JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[LSC Retail Product Code]" +
+            " LEFT JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[LSC Retail Product Code]" +
             " WHERE (1=1)";
 
             if (string.IsNullOrWhiteSpace(itemCategoryId) == false)
@@ -492,18 +494,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItem(reader, string.Empty, string.Empty, includeDetails, false, out string ts));
+                            list.Add(ReaderToLoyItem(reader, string.Empty, string.Empty, includeDetails, false, out string ts, stat));
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public LoyItem ItemLoyGetById(string id, string storeId, string culture, bool includeDetails)
+        public LoyItem ItemLoyGetById(string id, string storeId, string culture, bool includeDetails, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             LoyItem item = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -518,23 +522,24 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            item = ReaderToLoyItem(reader, storeId, culture, includeDetails, false, out string ts);
+                            item = ReaderToLoyItem(reader, storeId, culture, includeDetails, false, out string ts, stat);
                         }
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return item;
         }
 
-        public LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture)
+        public LoyItem ItemLoyGetByBarcode(string code, string storeId, string culture, Statistics stat)
         {
             BarcodeRepository brepo = new BarcodeRepository(config);
             Barcode bcode = brepo.BarcodeGetByCode(code);
             if (bcode == null)  // barcode not found
                 return null;
 
-            LoyItem item = ItemLoyGetById(bcode.ItemId, storeId, string.Empty, true);
+            LoyItem item = ItemLoyGetById(bcode.ItemId, storeId, string.Empty, true, stat);
 
             item.Prices.Clear();
             PriceRepository prepo = new PriceRepository(config);
@@ -554,7 +559,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 item.VariantsRegistration.Clear();
                 ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository(config);
-                VariantRegistration variantReg = vreop.VariantRegGetById(bcode.VariantId, item.Id);
+                VariantRegistration variantReg = vreop.VariantRegGetById(bcode.VariantId, item.Id, stat);
                 if (variantReg != null)
                 {
                     item.VariantsRegistration.Add(variantReg);
@@ -598,7 +603,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return detail;
         }
 
-        public List<LoyItem> ItemLoySearch(string search, string storeId, int maxResult, bool includeDetails)
+        public List<LoyItem> ItemLoySearch(string search, string storeId, int maxResult, bool includeDetails, Statistics stat)
         {
             List<LoyItem> list = new List<LoyItem>();
 
@@ -635,7 +640,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItem(reader, string.Empty, string.Empty, includeDetails, false, out string ts));
+                            list.Add(ReaderToLoyItem(reader, string.Empty, string.Empty, includeDetails, false, out string ts, stat));
                         }
                         reader.Close();
                     }
@@ -691,7 +696,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
         }
 
-        private LoyItem ReaderToLoyItem(SqlDataReader reader, string storeId , string culture, bool incldetails, bool hastimestamp, out string timestamp)
+        private LoyItem ReaderToLoyItem(SqlDataReader reader, string storeId , string culture, bool incldetails, bool hastimestamp, out string timestamp, Statistics stat)
         {
             LoyItem item = new LoyItem()
             {
@@ -731,28 +736,28 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 return item;
 
             ItemLocationRepository locrep = new ItemLocationRepository(config);
-            item.Locations = locrep.ItemLocationGetByItemId(item.Id, storeId);
+            item.Locations = locrep.ItemLocationGetByItemId(item.Id, storeId, stat);
 
             PriceRepository pricerep = new PriceRepository(config);
-            item.Prices = pricerep.PricesGetByItemId(item.Id, storeId, culture);
+            item.Prices = pricerep.PricesGetByItemId(item.Id, storeId, culture, stat);
 
             ItemUOMRepository uomrep = new ItemUOMRepository(config);
-            item.UnitOfMeasures = uomrep.ItemUOMGetByItemId(item.Id);
+            item.UnitOfMeasures = uomrep.ItemUOMGetByItemId(item.Id, stat);
 
             ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config);
-            item.VariantsRegistration = varrep.VariantRegGetByItemId(item.Id);
+            item.VariantsRegistration = varrep.VariantRegGetByItemId(item.Id, stat);
 
             ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config);
-            item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id);
+            item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id, stat);
             
             AttributeValueRepository attrrep = new AttributeValueRepository(config);
-            item.ItemAttributes = attrrep.AttributesGetByItemId(item.Id);
+            item.ItemAttributes = attrrep.AttributesGetByItemId(item.Id, stat);
 
             ItemRecipeRepository recrep = new ItemRecipeRepository(config);
-            item.Recipes = recrep.RecipeGetByItemId(item.Id);
+            item.Recipes = recrep.RecipeGetByItemId(item.Id, stat);
 
             ItemModifierRepository modrep = new ItemModifierRepository(config);
-            item.Modifiers = modrep.ModifierGetByItemId(item.Id);
+            item.Modifiers = modrep.ModifierGetByItemId(item.Id, stat);
 
             return item;
         }

@@ -128,7 +128,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.CommandText = "SELECT ml.[Store No_],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Line No_],ml.[Tender Type]," +
                                           "ml.[Amount Tendered],ml.[Currency Code],ml.[Amount in Currency],t.[Description] " +
                                           "FROM [" + navCompanyName + "Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
+                                          "LEFT JOIN [" + navCompanyName + "Tender Type$5ecfc871-5d82-43f1-9c54-59685e82318d] t " +
                                           "ON t.[Code]=ml.[Tender Type] AND t.[Store No_]=ml.[Store No_] " +
                                           "WHERE ml.[Transaction No_]=@id AND ml.[Store No_]=@Sid AND ml.[POS Terminal No_]=@Tid " +
                                           "ORDER BY ml.[Line No_]";

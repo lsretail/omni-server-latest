@@ -161,7 +161,8 @@ namespace LSOmni.Service
         /// Member Contact can have one or more Member Cards and each Card can have one WishList and one Basket
         /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
         /// as LS Commerce Service does not store any information for Anonymous Users.<p/>
-        /// Used OneListGetById to get the OneList back.
+        /// Used OneListGetById to get the OneList back.<p/>
+        /// NOTE: If no Name is provided with Onelist, system will look up contact to pull the name, this can slow the process.
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -177,6 +178,9 @@ namespace LSOmni.Service
         ///            <ns1:CardId>10021</ns1:CardId>
         ///            <ns1:Items>
         ///               <ns1:OneListItem>
+        ///                  <ns1:Image>
+        ///                     <ns:Id>40020</ns:Id>
+        ///                  </ns1:Image>
         ///                  <ns1:ItemDescription>Skirt Linda Professional Wear</ns1:ItemDescription>
         ///                  <ns1:ItemId>40020</ns1:ItemId>
         ///                  <ns1:Quantity>2</ns1:Quantity>
@@ -185,6 +189,7 @@ namespace LSOmni.Service
         ///               </ns1:OneListItem>
         ///            </ns1:Items>
         ///            <ns1:ListType>Basket</ns1:ListType>
+        ///            <ns1:Name>Tom Tomsson</ns1:Name>
         ///            <ns1:StoreId>S0001</ns1:StoreId>
         ///         </ser:oneList>
         ///         <ser:calculate>true</ser:calculate>
@@ -207,7 +212,8 @@ namespace LSOmni.Service
         /// LS Central WS2 : EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
-        /// Contact Info, Payment and then it can be posted for Creation
+        /// Contact Info, Payment and then it can be posted for Creation<p/>
+        /// NOTE: Image Ids are added if not provided with the item or returned from Central, this will result in extra calls, so to speed up things, provide Image object with Image Id only (not including blob)
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -223,6 +229,9 @@ namespace LSOmni.Service
         ///           <ns1:CardId>10021</ns1:CardId>
         ///           <ns1:Items>
         ///               <ns1:OneListItem>
+        ///                  <ns1:Image>
+        ///                     <ns:Id>40020</ns:Id>
+        ///                  </ns1:Image>
         ///                  <ns1:ItemDescription>Skirt Linda Professional Wear</ns1:ItemDescription>
         ///                  <ns1:ItemId>40020</ns1:ItemId>
         ///                  <ns1:Quantity>2</ns1:Quantity>
@@ -255,7 +264,7 @@ namespace LSOmni.Service
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
-        /// Basket with Item and Recipe modification (remove) and Modifier add-on (add item)
+        /// Basket for EasyBurger Restaurant, Cheese Burger Meal, with Jalapeno Popper and Reg Orange Soda
         /// <code language="xml" title="SOAP Sample Request">
         /// <![CDATA[
         /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
@@ -267,85 +276,28 @@ namespace LSOmni.Service
         ///           <ns1:IsHospitality>true</ns1:IsHospitality>
         ///           <ns1:Items>
         ///              <ns1:OneListItem>
-        ///                 <!-- Chicken -->
-        ///                 <ns1:IsADeal>false</ns1:IsADeal>
-        ///                 <ns1:ItemId>R0001</ns1:ItemId>
-        ///                 <ns1:OnelistSubLines>
-        ///                    <ns1:OneListItemSubLine>
-        ///                       <!-- Remove Recipe Item -->
-        ///                       <ns1:ItemId>R0002</ns1:ItemId>
-        ///                       <ns1:Quantity>0</ns1:Quantity>
-        ///                       <ns1:Type>Modifier</ns1:Type>
-        ///                    </ns1:OneListItemSubLine>
-        ///                    <ns1:OneListItemSubLine>
-        ///                       <!-- Add Modifier -->
-        ///                       <ns1:ModifierGroupCode>POT+RICE</ns1:ModifierGroupCode>
-        ///                       <ns1:ModifierSubCode>01</ns1:ModifierSubCode>
-        ///                       <ns1:Quantity>1</ns1:Quantity>
-        ///                       <ns1:Type>Modifier</ns1:Type>
-        ///                    </ns1:OneListItemSubLine>
-        ///                 </ns1:OnelistSubLines>
-        ///                 <ns1:Quantity>1</ns1:Quantity>
-        ///                 <ns1:UnitOfMeasureId></ns1:UnitOfMeasureId>
-        ///              </ns1:OneListItem>
-        ///           </ns1:Items>
-        ///           <ns1:ListType>Basket</ns1:ListType>
-        ///           <ns1:SalesType>DELIVERY</ns1:SalesType>
-        ///           <ns1:StoreId>S0005</ns1:StoreId>
-        ///        </ser:oneList>
-        ///     </ser:OneListHospCalculate>
-        ///    </soapenv:Body>
-        /// </soapenv:Envelope>
-        /// ]]>
-        /// </code>
-        /// Basket to order SetMenu Deal (Burger with Drink and Fries) with burger item recipe changes (remove bacon)
-        /// <code language="xml" title="SOAP Sample Request">
-        /// <![CDATA[
-        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
-        ///   <soapenv:Header/>
-        ///   <soapenv:Body>
-        ///     <ser:OneListHospCalculate>
-        ///        <ser:oneList>
-        ///           <ns1:CardId>10021</ns1:CardId>
-        ///           <ns1:IsHospitality>true</ns1:IsHospitality>
-        ///           <ns1:Items>
-        ///              <ns1:OneListItem>
-        ///                 <!-- Burger Deal SetMenu -->
         ///                 <ns1:IsADeal>true</ns1:IsADeal>
-        ///                 <ns1:ItemId>S10024</ns1:ItemId>
-        ///                 <ns1:LineNumber>1</ns1:LineNumber>
+        ///                 <ns1:ItemId>S10025</ns1:ItemId>
         ///                 <ns1:OnelistSubLines>
         ///                    <ns1:OneListItemSubLine>
-        ///                       <!-- Burger -->
-        ///                       <ns1:DealLineId>1</ns1:DealLineId>
-        ///                       <ns1:LineNumber>1</ns1:LineNumber>
+        ///                       <ns1:DealLineId>10000</ns1:DealLineId>
+        ///                       <ns1:DealModLineId>0</ns1:DealModLineId>
         ///                       <ns1:Quantity>1</ns1:Quantity>
         ///                       <ns1:Type>Deal</ns1:Type>
         ///                    </ns1:OneListItemSubLine>
         ///                    <ns1:OneListItemSubLine>
-        ///                       <!-- Remove Bacon -->
-        ///                       <ns1:DealLineId>1</ns1:DealLineId>
-        ///                       <ns1:ItemId>34420</ns1:ItemId>
-        ///                       <ns1:LineNumber>2</ns1:LineNumber>
-        ///                       <ns1:ParentSubLineId>1</ns1:ParentSubLineId>
-        ///                       <ns1:Quantity>0</ns1:Quantity>
-        ///                       <ns1:Type>Modifier</ns1:Type>
-        ///                    </ns1:OneListItemSubLine>
-        ///                    <ns1:OneListItemSubLine>
-        ///                       <!-- Garlic Bread Sticks -->
-        ///                       <ns1:DealLineId>2</ns1:DealLineId>
-        ///                       <ns1:DealModLineId>2</ns1:DealModLineId>
+        ///                       <ns1:DealLineId>20000</ns1:DealLineId>
+        ///                       <ns1:DealModLineId>70000</ns1:DealModLineId>
         ///                       <ns1:Quantity>1</ns1:Quantity>
         ///                       <ns1:Type>Deal</ns1:Type>
-        ///                       <ns1:Uom>LAR</ns1:Uom>
+        ///                       <ns1:Uom>PORTION</ns1:Uom>
         ///                    </ns1:OneListItemSubLine>
         ///                    <ns1:OneListItemSubLine>
-        ///                       <!-- Cherry Soda -->
-        ///                       <ns1:DealLineId>3</ns1:DealLineId>
-        ///                       <ns1:DealModLineId>2</ns1:DealModLineId>
+        ///                       <ns1:DealLineId>30000</ns1:DealLineId>
+        ///                       <ns1:DealModLineId>70000</ns1:DealModLineId>
         ///                       <ns1:Quantity>1</ns1:Quantity>
         ///                       <ns1:Type>Deal</ns1:Type>
-        ///                       <ns1:Uom>LAR</ns1:Uom>
+        ///                       <ns1:Uom>REG</ns1:Uom>
         ///                    </ns1:OneListItemSubLine>
         ///                 </ns1:OnelistSubLines>
         ///                 <ns1:Quantity>1</ns1:Quantity>
@@ -353,8 +305,8 @@ namespace LSOmni.Service
         ///              </ns1:OneListItem>
         ///           </ns1:Items>
         ///           <ns1:ListType>Basket</ns1:ListType>
-        ///           <ns1:SalesType>DELIVERY</ns1:SalesType>
-        ///           <ns1:StoreId>S0005</ns1:StoreId>
+        ///           <ns1:SalesType>TAKEAWAY</ns1:SalesType>
+        ///           <ns1:StoreId>S0017</ns1:StoreId>
         ///        </ser:oneList>
         ///     </ser:OneListHospCalculate>
         ///    </soapenv:Body>
@@ -384,10 +336,11 @@ namespace LSOmni.Service
         /// <param name="oneListId">OneList Id to link</param>
         /// <param name="cardId">Card Id to link or remove</param>
         /// <param name="email">Email address to look up Card Id when requesting a Linking</param>
+        /// <param name="phone">Phone number to look up Card Id when requesting a Linking</param>
         /// <param name="status">Link action</param>
         /// <returns></returns>
         [OperationContract]
-        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
+        bool OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status);
 
         #endregion
 
@@ -414,7 +367,7 @@ namespace LSOmni.Service
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
         /// Include minimum data needed to be able to process the request
-        /// <code language="xml" title="SOAP Sample Request">
+        /// <code language="xml" title="SOAP Sample Request for Sales Order">
         /// <![CDATA[
         /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
         ///  <soapenv:Header/>
@@ -432,6 +385,7 @@ namespace LSOmni.Service
         ///           <ns1:OrderLines>
         ///              <ns1:OrderLine>
         ///                 <ns1:Amount>160.00</ns1:Amount>
+        ///                 <ns1:ClickAndCollectLine>false</ns1:ClickAndCollectLine>
         ///                 <ns1:DiscountAmount>0</ns1:DiscountAmount>
         ///                 <ns1:DiscountPercent>0</ns1:DiscountPercent>
         ///                 <ns1:ItemId>40020</ns1:ItemId>
@@ -491,6 +445,50 @@ namespace LSOmni.Service
         /// </soapenv:Envelope>
         /// ]]>
         /// </code>
+        /// <code language="xml" title="SOAP Sample Request for Click and Collect Order">
+        /// <![CDATA[
+        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2017">
+        ///  <soapenv:Header/>
+        ///  <soapenv:Body>
+        ///     <ser:OrderCreate>
+        ///        <ser:request>
+        ///           <ns1:CardId>10021</ns1:CardId>
+        ///           <ns1:CollectLocation>S0001</ns1:CollectLocation>
+        ///           <ns1:LineItemCount>1</ns1:LineItemCount>
+        ///           <ns1:OrderDiscountLines>
+        ///           </ns1:OrderDiscountLines>
+        ///           <ns1:OrderLines>
+        ///              <ns1:OrderLine>
+        ///                 <ns1:Amount>320.00</ns1:Amount>
+        ///                 <ns1:ClickAndCollectLine>true</ns1:ClickAndCollectLine>
+        ///                 <ns1:DiscountAmount>0</ns1:DiscountAmount>
+        ///                 <ns1:DiscountPercent>0</ns1:DiscountPercent>
+        ///                 <ns1:ItemId>40020</ns1:ItemId>
+        ///                 <ns1:LineNumber>1</ns1:LineNumber>
+        ///                 <ns1:LineType>Item</ns1:LineType>
+        ///                 <ns1:NetAmount>256.00</ns1:NetAmount>
+        ///                 <ns1:NetPrice>64.00</ns1:NetPrice>
+        ///                 <ns1:Price>80.00</ns1:Price>
+        ///                 <ns1:Quantity>4.00</ns1:Quantity>
+        ///                 <ns1:StoreId>S0001</ns1:StoreId>
+        ///                 <ns1:TaxAmount>64.00</ns1:TaxAmount>
+        ///                 <ns1:UomId/>
+        ///                 <ns1:VariantId>002</ns1:VariantId>
+        ///              </ns1:OrderLine>
+        ///           </ns1:OrderLines>
+        ///           <ns1:OrderType>ClickAndCollect</ns1:OrderType>
+        ///           <ns1:PaymentStatus>PreApproved</ns1:PaymentStatus>
+        ///           <ns1:SourceType>eCommerce</ns1:SourceType>
+        ///           <ns1:StoreId>S0013</ns1:StoreId>
+        ///           <ns1:TotalAmount>160</ns1:TotalAmount>
+        ///           <ns1:TotalDiscount>0</ns1:TotalDiscount>
+        ///           <ns1:TotalNetAmount>128</ns1:TotalNetAmount>
+        ///        </ser:request>
+        ///     </ser:OrderCreate>
+        ///  </soapenv:Body>
+        /// </soapenv:Envelope>
+        /// ]]>
+        /// </code>
         /// </example>
         /// <param name="request"></param>
         /// <returns>SalesEntry object for order if order creation was successful</returns>
@@ -506,290 +504,179 @@ namespace LSOmni.Service
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
         /// Include minimum data needed to be able to process the request, 
-        /// Sample Order with SetMenu (Burger, Fries and Drink) and remove recipe item (bacon)
+        /// Sample Order for EasyBurger Restaurant, Cheese Burger Meal, with Jalapeno Popper and Reg Orange Soda.
+        /// Based on OneListHospCalculate result.
         /// <code language="xml" title="SOAP Sample Request for Delivery order">
         /// <![CDATA[
         /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2020" xmlns:ns2="http://lsretail.com/LSOmniService/Loy/2017">
-        ///    <soapenv:Header/>
-        ///    <soapenv:Body>
-        ///       <ser:OrderHospCreate>
-        ///          <ser:request>
-        ///             <ns1:Address>
-        ///                <ns:Address1>Smaratorg 1</ns:Address1>
-        ///                <ns:CellPhoneNumber>555-1234</ns:CellPhoneNumber>
-        ///                <ns:City>Kopavogur</ns:City>
-        ///                <ns:Country>Iceland</ns:Country>
-        ///                <ns:PostCode>201</ns:PostCode>
-        ///                <ns:StateProvinceRegion/>
-        ///                <ns:Type>Residential</ns:Type>
-        ///             </ns1:Address>
-        ///             <ns1:BillToName>Tom Jonson</ns1:BillToName>
-        ///             <ns1:CardId>10021</ns1:CardId>
-        ///             <ns1:DeliveryType>Home</ns1:DeliveryType>
-        ///             <ns1:Directions>Go to 14th floor</ns1:Directions>
-        ///             <ns1:Email>tom @xxx.com</ns1:Email>
-        ///             <ns1:Name>Tom Jonson</ns1:Name>
-        ///             <ns1:OrderLines>
-        ///                <ns1:OrderHospLine>
-        ///                	<ns1:Amount>7.10</ns1:Amount>
-        ///                	<ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                	<ns1:DiscountLines/>
-        ///                	<ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                	<ns1:IsADeal>true</ns1:IsADeal>
-        ///                	<ns1:ItemDescription>Bacon Burger meal</ns1:ItemDescription>
-        ///                	<ns1:ItemId>S10024</ns1:ItemId>
-        ///                	<ns1:LineNumber>9750</ns1:LineNumber>
-        ///                	<ns1:LineType>Item</ns1:LineType>
-        ///                	<ns1:NetAmount>5.92</ns1:NetAmount>
-        ///                	<ns1:NetPrice>5.92</ns1:NetPrice>
-        ///                	<ns1:Price>7.10</ns1:Price>
-        ///                	<ns1:PriceModified>false</ns1:PriceModified>
-        ///                	<ns1:Quantity>1.00</ns1:Quantity>
-        ///                	<ns1:SubLines>
-        ///                    <ns1:OrderHospSubLine>
-        ///                       <ns1:Amount>4.23</ns1:Amount>
-        ///                       <ns1:DealCode>S10024</ns1:DealCode>
-        ///                       <ns1:DealLineId>10000</ns1:DealLineId>
-        ///                       <ns1:DealModifierLineId>0</ns1:DealModifierLineId>
-        ///                       <ns1:Description>Bacon Burger</ns1:Description>
-        ///                       <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                       <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                       <ns1:ItemId>R0025</ns1:ItemId>
-        ///                       <ns1:LineNumber>10000</ns1:LineNumber>
-        ///                       <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
-        ///                       <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
-        ///                       <ns1:ModifierGroupCode/>
-        ///                       <ns1:ModifierSubCode/>
-        ///                       <ns1:NetAmount>3.38</ns1:NetAmount>
-        ///                       <ns1:NetPrice>3.38</ns1:NetPrice>
-        ///                       <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
-        ///                       <ns1:Price>4.23</ns1:Price>
-        ///                       <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
-        ///                       <ns1:Quantity>1.00</ns1:Quantity>
-        ///                       <ns1:TAXAmount>0.85</ns1:TAXAmount>
-        ///                       <ns1:Type>Deal</ns1:Type>
-        ///                       <ns1:Uom/>
-        ///                       <ns1:VariantDescription/>
-        ///                       <ns1:VariantId/>
-        ///                    </ns1:OrderHospSubLine>
-        ///                    <ns1:OrderHospSubLine>
-        ///                       <ns1:Amount>2.21</ns1:Amount>
-        ///                       <ns1:DealCode>S10024</ns1:DealCode>
-        ///                       <ns1:DealLineId>20000</ns1:DealLineId>
-        ///                       <ns1:DealModifierLineId>20000</ns1:DealModifierLineId>
-        ///                       <ns1:Description>Fries</ns1:Description>
-        ///                       <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                       <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                       <ns1:ItemId>33410</ns1:ItemId>
-        ///                       <ns1:LineNumber>30000</ns1:LineNumber>
-        ///                       <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
-        ///                       <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
-        ///                       <ns1:ModifierGroupCode/>
-        ///                       <ns1:ModifierSubCode/>
-        ///                       <ns1:NetAmount>2.01</ns1:NetAmount>
-        ///                       <ns1:NetPrice>2.01</ns1:NetPrice>
-        ///                       <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
-        ///                       <ns1:Price>2.21</ns1:Price>
-        ///                       <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
-        ///                       <ns1:Quantity>1.00</ns1:Quantity>
-        ///                       <ns1:TAXAmount>0.20</ns1:TAXAmount>
-        ///                       <ns1:Type>Deal</ns1:Type>
-        ///                       <ns1:Uom/>
-        ///                       <ns1:VariantDescription/>
-        ///                       <ns1:VariantId/>
-        ///                    </ns1:OrderHospSubLine>
-        ///                    <ns1:OrderHospSubLine>
-        ///                       <ns1:Amount>0.66</ns1:Amount>
-        ///                       <ns1:DealCode>S10024</ns1:DealCode>
-        ///                       <ns1:DealLineId>30000</ns1:DealLineId>
-        ///                       <ns1:DealModifierLineId>20000</ns1:DealModifierLineId>
-        ///                       <ns1:Description>Cola</ns1:Description>
-        ///                       <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                       <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                       <ns1:ItemId>30500</ns1:ItemId>
-        ///                       <ns1:LineNumber>40000</ns1:LineNumber>
-        ///                       <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
-        ///                       <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
-        ///                       <ns1:ModifierGroupCode/>
-        ///                       <ns1:ModifierSubCode/>
-        ///                       <ns1:NetAmount>0.53</ns1:NetAmount>
-        ///                       <ns1:NetPrice>0.53</ns1:NetPrice>
-        ///                       <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
-        ///                       <ns1:Price>0.66</ns1:Price>
-        ///                       <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
-        ///                       <ns1:Quantity>1.00</ns1:Quantity>
-        ///                       <ns1:TAXAmount>0.13</ns1:TAXAmount>
-        ///                       <ns1:Type>Deal</ns1:Type>
-        ///                       <ns1:Uom/>
-        ///                       <ns1:VariantDescription/>
-        ///                       <ns1:VariantId/>
-        ///                    </ns1:OrderHospSubLine>
-        ///                    <ns1:OrderHospSubLine>
-        ///                       <ns1:Amount>0.00</ns1:Amount>
-        ///                       <ns1:DealCode/>
-        ///                       <ns1:DealLineId>10000</ns1:DealLineId>
-        ///                       <ns1:DealModifierLineId>0</ns1:DealModifierLineId>
-        ///                       <ns1:Description>Bacon</ns1:Description>
-        ///                       <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                       <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                       <ns1:ItemId>34420</ns1:ItemId>
-        ///                       <ns1:LineNumber>20000</ns1:LineNumber>
-        ///                       <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
-        ///                       <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
-        ///                       <ns1:ModifierGroupCode/>
-        ///                       <ns1:ModifierSubCode/>
-        ///                       <ns1:NetAmount>0.00</ns1:NetAmount>
-        ///                       <ns1:NetPrice>0.00</ns1:NetPrice>
-        ///                       <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
-        ///                       <ns1:Price>0.00</ns1:Price>
-        ///                       <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
-        ///                       <ns1:Quantity>0.00</ns1:Quantity>
-        ///                       <ns1:TAXAmount>0.00</ns1:TAXAmount>
-        ///                       <ns1:Type>Modifier</ns1:Type>
-        ///                       <ns1:Uom/>
-        ///                       <ns1:VariantDescription/>
-        ///                       <ns1:VariantId/>
-        ///                    </ns1:OrderHospSubLine>
-        ///                	</ns1:SubLines>
-        ///                	<ns1:TaxAmount>1.18</ns1:TaxAmount>
-        ///                	<ns1:UomId/>
-        ///                	<ns1:VariantDescription/>
-        ///                	<ns1:VariantId/>
-        ///                </ns1:OrderHospLine>
-        ///             </ns1:OrderLines>
-        ///             <ns1:OrderPayments>
-        ///                <ns2:OrderPayment>
-        ///                   <ns2:Amount>7.10</ns2:Amount>
-        ///                   <ns2:AuthorizationCode>123456</ns2:AuthorizationCode>
-        ///                   <ns2:CardNumber>4567xxxx0145</ns2:CardNumber>
-        ///                   <ns2:CardType>VISA</ns2:CardType>
-        ///                   <ns2:CurrencyCode/>
-        ///                   <ns2:CurrencyFactor>1</ns2:CurrencyFactor>
-        ///                   <ns2:ExternalReference/>
-        ///                   <ns2:LineNumber>10000</ns2:LineNumber>
-        ///                   <ns2:PaymentType>Payment</ns2:PaymentType>
-        ///                   <ns2:PreApprovedValidDate>2030-01-01</ns2:PreApprovedValidDate>
-        ///                   <ns2:TenderType>1</ns2:TenderType>
-        ///                   <ns2:TokenNumber/>
-        ///                </ns2:OrderPayment>
-        ///             </ns1:OrderPayments>
-        ///             <ns1:PaymentType>Card</ns1:PaymentType>
-        ///             <ns1:PickupTime>2021-01-18T18:00:00</ns1:PickupTime>
-        ///             <ns1:RestaurantNo>S0005</ns1:RestaurantNo>
-        ///             <ns1:StoreId>S0005</ns1:StoreId>
-        ///             <ns1:TotalAmount>7.10</ns1:TotalAmount>
-        ///             <ns1:TotalDiscount>0.00</ns1:TotalDiscount>
-        ///             <ns1:TotalNetAmount>5.92</ns1:TotalNetAmount>
-        ///          </ser:request>
-        ///       </ser:OrderHospCreate>
-        ///    </soapenv:Body>
-        /// </soapenv:Envelope>
-        /// ]]>
-        /// </code>
-        /// Sample Order with Item and Recipe and Modifier
-        /// <code language="xml" title="SOAP Sample Request for Takeout order">
-        /// <![CDATA[
-        /// <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ser="http://lsretail.com/LSOmniService/EComm/2017/Service" xmlns:ns="http://lsretail.com/LSOmniService/Base/2017" xmlns:ns1="http://lsretail.com/LSOmniService/Loy/2020" xmlns:ns2="http://lsretail.com/LSOmniService/Loy/2017">
-        ///    <soapenv:Header/>
-        ///    <soapenv:Body>
-        ///       <ser:OrderHospCreate>
-        ///          <ser:request>
-        ///             <ns1:Address>
-        ///             </ns1:Address>
-        ///             <ns1:CardId>10021</ns1:CardId>
-        ///             <ns1:DeliveryType>Takeout</ns1:DeliveryType>
-        ///             <ns1:Directions></ns1:Directions>
-        ///             <ns1:Email>tom @xxx.com</ns1:Email>
-        ///             <ns1:Name>Tom Jonson</ns1:Name>
-        ///             <ns1:OrderLines>
-        ///                <ns1:OrderHospLine>
-        ///                   <ns1:Amount>11.00</ns1:Amount>
-        ///                   <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                   <ns1:DiscountLines xmlns:b= "http://lsretail.com/LSOmniService/Loy/2017" />
-        ///                   <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                   <ns1:IsADeal>false</ns1:IsADeal>
-        ///                   <ns1:ItemDescription>Chicken w/brown sauce</ns1:ItemDescription>
-        ///                   <ns1:ItemId>R0001</ns1:ItemId>
-        ///                   <ns1:LineNumber>1</ns1:LineNumber>
-        ///                   <ns1:LineType>Item</ns1:LineType>
-        ///                   <ns1:NetAmount>8.80</ns1:NetAmount>
-        ///                   <ns1:NetPrice>8.80</ns1:NetPrice>
-        ///                   <ns1:Price>11.00</ns1:Price>
-        ///                   <ns1:PriceModified>false</ns1:PriceModified>
-        ///                   <ns1:Quantity>1.00</ns1:Quantity>
-        ///                   <ns1:SubLines>
-        ///                      <ns1:OrderHospSubLine>
-        ///                         <ns1:Amount>0.00</ns1:Amount>
-        ///                         <ns1:DealCode/>
-        ///                         <ns1:DealLineId>0</ns1:DealLineId>
-        ///                         <ns1:DealModifierLineId>0</ns1:DealModifierLineId>
-        ///                         <ns1:Description>Brown Sauce</ns1:Description>
-        ///                         <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                         <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                         <ns1:ItemId>R0002</ns1:ItemId>
-        ///                         <ns1:LineNumber>20000</ns1:LineNumber>
-        ///                         <ns1:ManualDiscountAmount>0.00</ns1:ManualDiscountAmount>
-        ///                         <ns1:ManualDiscountPercent>0.00</ns1:ManualDiscountPercent>
-        ///                         <ns1:ModifierGroupCode/>
-        ///                         <ns1:ModifierSubCode/>
-        ///                         <ns1:NetAmount>0.00</ns1:NetAmount>
-        ///                         <ns1:NetPrice>0.00</ns1:NetPrice>
-        ///                         <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
-        ///                         <ns1:Price>0.00</ns1:Price>
-        ///                         <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
-        ///                         <ns1:Quantity>0.00</ns1:Quantity>
-        ///                         <ns1:TAXAmount>0.00</ns1:TAXAmount>
-        ///                         <ns1:Type>Modifier</ns1:Type>
-        ///                         <ns1:Uom>PORTION</ns1:Uom>
-        ///                         <ns1:VariantDescription/>
-        ///                         <ns1:VariantId/>
-        ///                      </ns1:OrderHospSubLine>
-        ///                      <ns1:OrderHospSubLine>
-        ///                         <ns1:Amount>0.00</ns1:Amount>
-        ///                         <ns1:DealCode/>
-        ///                         <ns1:DealLineId>0</ns1:DealLineId>
-        ///                         <ns1:DealModifierLineId>0</ns1:DealModifierLineId>
-        ///                         <ns1:Description>Baked Potato</ns1:Description>
-        ///                         <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
-        ///                         <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
-        ///                         <ns1:ItemId>33010</ns1:ItemId>
-        ///                         <ns1:LineNumber>30000</ns1:LineNumber>
-        ///                         <ns1:ManualDiscountAmount>0.00</ns1:ManualDiscountAmount>
-        ///                         <ns1:ManualDiscountPercent>0.00</ns1:ManualDiscountPercent>
-        ///                         <ns1:ModifierGroupCode>POT+RICE</ns1:ModifierGroupCode>
-        ///                         <ns1:ModifierSubCode>01</ns1:ModifierSubCode>
-        ///                         <ns1:NetAmount>0.00</ns1:NetAmount>
-        ///                         <ns1:NetPrice>0.00</ns1:NetPrice>
-        ///                         <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
-        ///                         <ns1:Price>0.00</ns1:Price>
-        ///                         <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
-        ///                         <ns1:Quantity>1.00</ns1:Quantity>
-        ///                         <ns1:TAXAmount>0.00</ns1:TAXAmount>
-        ///                         <ns1:Type>Modifier</ns1:Type>
-        ///                         <ns1:Uom/>
-        ///                         <ns1:VariantDescription/>
-        ///                         <ns1:VariantId/>
-        ///                      </ns1:OrderHospSubLine>
-        ///                	</ns1:SubLines>
-        ///                 <ns1:TaxAmount>2.20</ns1:TaxAmount>
-        ///                	<ns1:UomId/>
-        ///                	<ns1:VariantDescription/>
-        ///                	<ns1:VariantId/>
-        ///                </ns1:OrderHospLine>
-        ///             </ns1:OrderLines>
-        ///             <ns1:OrderPayments>
-        ///             </ns1:OrderPayments>
-        ///             <ns1:PaymentType>None</ns1:PaymentType>
-        ///             <ns1:PickupTime>0001-01-01T00:00:00</ns1:PickupTime>
-        ///             <ns1:RestaurantNo>S0005</ns1:RestaurantNo>
-        ///             <ns1:StoreId>S0005</ns1:StoreId>
-        ///             <ns1:TotalAmount>11.00</ns1:TotalAmount>
-        ///             <ns1:TotalDiscount>0.00</ns1:TotalDiscount>
-        ///             <ns1:TotalNetAmount>8.80</ns1:TotalNetAmount>
-        ///          </ser:request>
-        ///       </ser:OrderHospCreate>
-        ///    </soapenv:Body>
-        /// </soapenv:Envelope>
+        ///   <soapenv:Header/>
+        ///   <soapenv:Body>
+        ///     <ser:OrderHospCreate>
+        ///       <ser:request>
+        ///         <ns1:CardId>10021</ns1:CardId>
+        ///         <ns1:DeliveryType>NoChoice</ns1:DeliveryType>
+        ///         <ns1:Directions/>
+        ///         <ns1:Email>tom @xyz.com</ns1:Email>
+        ///         <ns1:LineItemCount>0</ns1:LineItemCount>
+        ///         <ns1:Name>Tom Tomsson</ns1:Name>
+        ///         <ns1:OrderDiscountLines>
+        ///           <ns2:OrderDiscountLine>
+        ///             <ns2:Description>Deal</ns2:Description>
+        ///             <ns2:DiscountAmount>0.00</ns2:DiscountAmount>
+        ///             <ns2:DiscountPercent>0.00</ns2:DiscountPercent>
+        ///             <ns2:DiscountType>Deal</ns2:DiscountType>
+        ///             <ns2:LineNumber>9750</ns2:LineNumber>
+        ///             <ns2:No>{540B4057-A092-4356-B34D-433CCD3EADAE}</ns2:No>
+        ///             <ns2:OfferNumber>S10025</ns2:OfferNumber>
+        ///             <ns2:OrderId/>
+        ///             <ns2:PeriodicDiscGroup/>
+        ///             <ns2:PeriodicDiscType>Unknown</ns2:PeriodicDiscType>
+        ///           </ns2:OrderDiscountLine>
+        ///           <ns2:OrderDiscountLine>
+        ///             <ns2:Description>Deal</ns2:Description>
+        ///             <ns2:DiscountAmount>0.00</ns2:DiscountAmount>
+        ///             <ns2:DiscountPercent>0.00</ns2:DiscountPercent>
+        ///             <ns2:DiscountType>Deal</ns2:DiscountType>
+        ///             <ns2:LineNumber>10000</ns2:LineNumber>
+        ///             <ns2:No>{540B4057-A092-4356-B34D-433CCD3EADAE}</ns2:No>
+        ///             <ns2:OfferNumber>S10025</ns2:OfferNumber>
+        ///             <ns2:OrderId/>
+        ///             <ns2:PeriodicDiscGroup/>
+        ///             <ns2:PeriodicDiscType>Unknown</ns2:PeriodicDiscType>
+        ///           </ns2:OrderDiscountLine>
+        ///           <ns2:OrderDiscountLine>
+        ///             <ns2:Description>Deal</ns2:Description>
+        ///             <ns2:DiscountAmount>0.00</ns2:DiscountAmount>
+        ///             <ns2:DiscountPercent>0.00</ns2:DiscountPercent>
+        ///             <ns2:DiscountType>Deal</ns2:DiscountType>
+        ///             <ns2:LineNumber>20000</ns2:LineNumber>
+        ///             <ns2:No>{540B4057-A092-4356-B34D-433CCD3EADAE}</ns2:No>
+        ///             <ns2:OfferNumber>S10025</ns2:OfferNumber>
+        ///             <ns2:OrderId/>
+        ///             <ns2:PeriodicDiscGroup/>
+        ///             <ns2:PeriodicDiscType>Unknown</ns2:PeriodicDiscType>
+        ///           </ns2:OrderDiscountLine>
+        ///           <ns2:OrderDiscountLine>
+        ///             <ns2:Description>Deal</ns2:Description>
+        ///             <ns2:DiscountAmount>0.00</ns2:DiscountAmount>
+        ///             <ns2:DiscountPercent>0.00</ns2:DiscountPercent>
+        ///             <ns2:DiscountType>Deal</ns2:DiscountType>
+        ///             <ns2:LineNumber>30000</ns2:LineNumber>
+        ///             <ns2:No>{540B4057-A092-4356-B34D-433CCD3EADAE}</ns2:No>
+        ///             <ns2:OfferNumber>S10025</ns2:OfferNumber>
+        ///             <ns2:OrderId/>
+        ///             <ns2:PeriodicDiscGroup/>
+        ///             <ns2:PeriodicDiscType>Unknown</ns2:PeriodicDiscType>
+        ///           </ns2:OrderDiscountLine>
+        ///         </ns1:OrderDiscountLines>
+        ///         <ns1:OrderLines>
+        ///           <ns1:OrderHospLine>
+        ///             <Id>{540B4057-A092-4356-B34D-433CCD3EADAE}</Id>
+        ///             <ns1:Amount>7.50</ns1:Amount>
+        ///             <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
+        ///             <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
+        ///             <ns1:IsADeal>true</ns1:IsADeal>
+        ///             <ns1:ItemDescription>Cheese Burger Meal</ns1:ItemDescription>
+        ///             <ns1:ItemId>S10025</ns1:ItemId>
+        ///             <ns1:LineNumber>9750</ns1:LineNumber>
+        ///             <ns1:LineType>Item</ns1:LineType>
+        ///             <ns1:NetAmount>6.82</ns1:NetAmount>
+        ///             <ns1:NetPrice>6.82</ns1:NetPrice>
+        ///             <ns1:Price>7.50</ns1:Price>
+        ///             <ns1:PriceModified>false</ns1:PriceModified>
+        ///             <ns1:Quantity>1.00</ns1:Quantity>
+        ///             <ns1:SubLines>
+        ///               <ns1:OrderHospSubLine>
+        ///                 <ns1:Amount>5.32</ns1:Amount>
+        ///                 <ns1:DealCode>S10025</ns1:DealCode>
+        ///                 <ns1:DealLineId>10000</ns1:DealLineId>
+        ///                 <ns1:DealModifierLineId>0</ns1:DealModifierLineId>
+        ///                 <ns1:Description>Cheese Burger</ns1:Description>
+        ///                 <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
+        ///                 <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
+        ///                 <ns1:ItemId>R0024</ns1:ItemId>
+        ///                 <ns1:LineNumber>10000</ns1:LineNumber>
+        ///                 <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
+        ///                 <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
+        ///                 <ns1:ModifierGroupCode/>
+        ///                 <ns1:ModifierSubCode/>
+        ///                 <ns1:NetAmount>4.84</ns1:NetAmount>
+        ///                 <ns1:NetPrice>4.84</ns1:NetPrice>
+        ///                 <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
+        ///                 <ns1:Price>5.32</ns1:Price>
+        ///                 <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                 <ns1:Quantity>1.00</ns1:Quantity>
+        ///                 <ns1:TAXAmount>0.48</ns1:TAXAmount>
+        ///                 <ns1:Type>Deal</ns1:Type>
+        ///                 <ns1:Uom>PORTION</ns1:Uom>
+        ///               </ns1:OrderHospSubLine>
+        ///               <ns1:OrderHospSubLine>
+        ///                 <ns1:Amount>1.28</ns1:Amount>
+        ///                 <ns1:DealCode>S10025</ns1:DealCode>
+        ///                 <ns1:DealLineId>20000</ns1:DealLineId>
+        ///                 <ns1:DealModifierLineId>70000</ns1:DealModifierLineId>
+        ///                 <ns1:Description>Jalapeno Popper</ns1:Description>
+        ///                 <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
+        ///                 <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
+        ///                 <ns1:ItemId>33430</ns1:ItemId>
+        ///                 <ns1:LineNumber>20000</ns1:LineNumber>
+        ///                 <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
+        ///                 <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
+        ///                 <ns1:ModifierGroupCode/>
+        ///                 <ns1:ModifierSubCode/>
+        ///                 <ns1:NetAmount>1.16</ns1:NetAmount>
+        ///                 <ns1:NetPrice>1.16</ns1:NetPrice>
+        ///                 <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
+        ///                 <ns1:Price>1.28</ns1:Price>
+        ///                 <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                 <ns1:Quantity>1.00</ns1:Quantity>
+        ///                 <ns1:TAXAmount>0.12</ns1:TAXAmount>
+        ///                 <ns1:Type>Deal</ns1:Type>
+        ///                 <ns1:Uom>PORTION</ns1:Uom>
+        ///               </ns1:OrderHospSubLine>
+        ///               <ns1:OrderHospSubLine>
+        ///                 <ns1:Amount>0.90</ns1:Amount>
+        ///                 <ns1:DealCode>S10025</ns1:DealCode>
+        ///                 <ns1:DealLineId>30000</ns1:DealLineId>
+        ///                 <ns1:DealModifierLineId>70000</ns1:DealModifierLineId>
+        ///                 <ns1:Description>Orange Soda</ns1:Description>
+        ///                 <ns1:DiscountAmount>0.00</ns1:DiscountAmount>
+        ///                 <ns1:DiscountPercent>0.00</ns1:DiscountPercent>
+        ///                 <ns1:ItemId>30520</ns1:ItemId>
+        ///                 <ns1:LineNumber>30000</ns1:LineNumber>
+        ///                 <ns1:ManualDiscountAmount>0.0</ns1:ManualDiscountAmount>
+        ///                 <ns1:ManualDiscountPercent>0.0</ns1:ManualDiscountPercent>
+        ///                 <ns1:ModifierGroupCode/>
+        ///                 <ns1:ModifierSubCode/>
+        ///                 <ns1:NetAmount>0.82</ns1:NetAmount>
+        ///                 <ns1:NetPrice>0.82</ns1:NetPrice>
+        ///                 <ns1:ParentSubLineId>0</ns1:ParentSubLineId>
+        ///                 <ns1:Price>0.90</ns1:Price>
+        ///                 <ns1:PriceReductionOnExclusion>false</ns1:PriceReductionOnExclusion>
+        ///                 <ns1:Quantity>1.00</ns1:Quantity>
+        ///                 <ns1:TAXAmount>0.08</ns1:TAXAmount>
+        ///                 <ns1:Type>Deal</ns1:Type>
+        ///                 <ns1:Uom>REG</ns1:Uom>
+        ///               </ns1:OrderHospSubLine>
+        ///             </ns1:SubLines>
+        ///             <ns1:TaxAmount>0.68</ns1:TaxAmount>
+        ///             <ns1:UomId/>
+        ///             <ns1:VariantDescription/>
+        ///             <ns1:VariantId/>
+        ///           </ns1:OrderHospLine>
+        ///         </ns1:OrderLines>
+        ///         <ns1:OrderPayments/>
+        ///         <ns1:PickupTime>2022-06-10T10:00:00</ns1:PickupTime>
+        ///         <ns1:RestaurantNo>S0017</ns1:RestaurantNo>
+        ///         <ns1:SalesType>TAKEAWAY</ns1:SalesType>
+        ///         <ns1:StoreId>S0017</ns1:StoreId>
+        ///         <ns1:TotalAmount>7.50</ns1:TotalAmount>
+        ///         <ns1:TotalDiscount>0.00</ns1:TotalDiscount>
+        ///         <ns1:TotalNetAmount>6.82</ns1:TotalNetAmount>
+        ///      </ser:request>
+        ///    </ser:OrderHospCreate>
+        ///  </soapenv:Body>
+        ///</soapenv:Envelope>
         /// ]]>
         /// </code>
         /// </example>
@@ -916,12 +803,20 @@ namespace LSOmni.Service
         [OperationContract]
         List<SalesEntry> SalesEntryGetReturnSales(string receiptNo);
 
+        /// <summary>
+        /// Get Transaction and Sales Invoices for Customer order
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<SalesEntry> SalesEntryGetSalesByOrderId(string orderId);
+
         #endregion
 
         #region Contact
 
         /// <summary>
-        /// Create a new contact
+        /// Create new Member Contact
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberContactCreate<p/><p/>
@@ -1015,7 +910,7 @@ namespace LSOmni.Service
         MemberContact ContactCreate(MemberContact contact);
 
         /// <summary>
-        /// Update a contact
+        /// Update Member Contact
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberContactUpdate<p/><p/>
@@ -1098,9 +993,12 @@ namespace LSOmni.Service
         MemberContact ContactUpdate(MemberContact contact);
 
         /// <summary>
-        /// Get contact by contact Id
+        /// Get Member Contact by card Id. This function returns all informations about the Member contact, 
+        /// including Profiles, Offers, Sales history, Onelist baskets and notifications.
+        /// To get basic information, use ContactGet.
         /// </summary>
         /// <param name="cardId">Card Id</param>
+        /// <param name="numberOfTransReturned">Number of Sales History to return, 0 = all</param>
         /// <returns>Contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1122,10 +1020,27 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
-        MemberContact ContactGetByCardId(string cardId);
+        MemberContact ContactGetByCardId(string cardId, int numberOfTransReturned);
 
+        /// <summary>
+        /// Search for list of Member Contacts by different searchType methods, 
+        /// will return any contact that will match the search value.
+        /// </summary>
+        /// <param name="searchType">Field to search by</param>
+        /// <param name="search">Search value</param>
+        /// <param name="maxNumberOfRowsReturned">Max number of record, if set to 1 the exact search will be performed</param>
+        /// <returns></returns>
         [OperationContract]
         List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
+
+        /// <summary>
+        /// Search for Member Contact by different searchType methods.
+        /// </summary>
+        /// <param name="searchType">Field to search by</param>
+        /// <param name="search">Search value</param>
+        /// <returns></returns>
+        [OperationContract]
+        MemberContact ContactGet(ContactSearchType searchType, string search);
 
         /// <summary>
         /// Add new card to existing Member Contact
@@ -1139,6 +1054,15 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         double ContactAddCard(string contactId, string cardId, string accountId);
+
+        /// <summary>
+        /// Block Member Contact and remove information from LS Central and LS Commerce
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ConatctBlock(string accountId, string cardId);
 
         /// <summary>
         /// Get Point balance for Member Card
@@ -1236,7 +1160,7 @@ namespace LSOmni.Service
         string ForgotPassword(string userNameOrEmail);
 
         /// <summary>
-        /// Send in Reset Password request for Member contact
+        /// Send in Reset Password request for Member Contact
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
@@ -1412,6 +1336,16 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         MemberContact LoginWeb(string userName, string password);
+
+        /// <summary>
+        /// Search for Customer
+        /// </summary>
+        /// <param name="searchType"></param>
+        /// <param name="search"></param>
+        /// <param name="maxNumberOfRowsReturned"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned);
 
         #endregion
 
@@ -3052,17 +2986,60 @@ namespace LSOmni.Service
         [OperationContract]
         ClientToken PaymentClientTokenGet(string customerId);
 
+        /// <summary>
+        /// Gets Profile setup for SPG App
+        /// </summary>
+        /// <param name="profileId"></param>
+        /// <param name="storeNo"></param>
+        /// <returns></returns>
         [OperationContract]
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
 
+        /// <summary>
+        /// Check security status of a profile
+        /// </summary>
+        /// <param name="orderNo"></param>
+        /// <param name="storeNo"></param>
+        /// <returns></returns>
         [OperationContract]
         bool SecurityCheckProfile(string orderNo, string storeNo);
 
+        /// <summary>
+        /// Allow app to open Gate when exiting the store
+        /// </summary>
+        /// <param name="qrCode"></param>
+        /// <param name="storeNo"></param>
+        /// <param name="devLocation"></param>
+        /// <param name="memberAccount"></param>
+        /// <param name="exitWithoutShopping"></param>
+        /// <param name="isEntering"></param>
+        /// <returns></returns>
         [OperationContract]
         string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering);
 
+        /// <summary>
+        /// Check Order
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
         [OperationContract]
         OrderCheck ScanPayGoOrderCheck(string documentId);
+
+        /// <summary>
+        /// Add Payment token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool TokenEntrySet(ClientToken token);
+
+        /// <summary>
+        /// Get Payment token
+        /// </summary>
+        /// <param name="cardNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ClientTokenResult TokenEntryGet(string cardNo);
 
         #endregion
 

@@ -38,8 +38,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT mt.[Code],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location],mt.[Last Date Modified]" +
                                           ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                                           " FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
-                                          "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                                          "LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
+                                          "LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                                           "WHERE mt.[Code]=@id";
                     command.Parameters.AddWithValue("@id", id.ToUpper());
                     command.Parameters.AddWithValue("@cmp", navOrgCompanyName);
@@ -102,8 +102,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 string sql = "SELECT " + sqlcnt + "tm.[ID],mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                              sqlimgfrom + " JOIN [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
-                             " LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
-                             " LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]" +
+                             " LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
+                             " LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
                              " ORDER BY il.[Display Order]";
 
@@ -218,8 +218,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sql = GetSQL(fullReplication, batchSize) +
                     "mt.[Code],tm.[ID],mt.[Type],mt.[Image Location],mt.[Description],tm.[Content],tm.[Height],tm.[Width]" +
                     "FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                    "LEFT OUTER JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
-                    "LEFT OUTER JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
+                    "LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
+                    "LEFT JOIN [Tenant Media] tm ON tm.[ID]=tms.[Media ID] " +
                     GetWhereStatement(fullReplication, keys, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))

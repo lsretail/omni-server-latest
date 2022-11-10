@@ -29,13 +29,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
             sqlfrom = " FROM [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]";
+                      " LEFT JOIN [" + navCompanyName + "POS Terminal$5ecfc871-5d82-43f1-9c54-59685e82318d] tr ON tr.[No_]=mt.[Web Store POS Terminal]";
 
             sqlcolumnsinv = "mt.[Store],st.[Name],st.[Address],st.[Post Code],st.[City],st.[County],st.[Country Code],st.[Latitude],st.[Longitude]," +
                             "st.[Phone No_],st.[Currency Code],st.[Functionality Profile],st.[Store VAT Bus_ Post_ Gr_],st.[Click and Collect]," +
                             "(SELECT gs.[LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972] gs) AS LCYCode";
 
-            sqlfrominv = " FROM [" + navCompanyName + "Inventory Terminal-Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt INNER JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store]";
+            sqlfrominv = " FROM [" + navCompanyName + "Inventory Terminal-Store$5ecfc871-5d82-43f1-9c54-59685e82318d] mt JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store]";
         }
 
         public List<ReplStore> ReplicateStores(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -163,7 +163,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             if (foundmystore == false)
             {
-                logger.Info(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
+                logger.Warn(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
 
                 ReplStore st = StoreGetById(storeId);
                 if (st != null)
@@ -298,31 +298,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 }
             }
             return list;
-        }
-
-        public List<Store> StoresLoyGetByCoordinates(double latitude, double longitude, double maxDistance, Store.DistanceType units)
-        {
-            List<Store> storecheck = StoreLoyGetAll(true);
-
-            Store.Position startpos = new Store.Position()
-            {
-                Latitude = latitude,
-                Longitude = longitude
-            };
-
-            List<Store> stores = new List<Store>();
-            foreach (Store store in storecheck)
-            {
-                Store.Position endpos = new Store.Position()
-                {
-                    Latitude = store.Latitude,
-                    Longitude = store.Longitude
-                };
-
-                if (store.CalculateDistance(startpos, endpos, units) <= maxDistance)
-                    stores.Add(store);
-            }
-            return stores;
         }
 
         public ImageView StoreImageGetById(string storeId)

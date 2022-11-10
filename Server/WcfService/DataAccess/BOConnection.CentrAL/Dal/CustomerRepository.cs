@@ -26,7 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlcolumns += (navVersion.Major > 16) ? ",mt.[Mobile Phone No_]" : ",mt2.[Mobile Phone No_]";
 
             sqlfrom = " FROM [" + navCompanyName + "Customer$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Customer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_]";
+                      "JOIN [" + navCompanyName + "Customer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_]";
         }
 
         public List<ReplCustomer> ReplicateCustomer(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

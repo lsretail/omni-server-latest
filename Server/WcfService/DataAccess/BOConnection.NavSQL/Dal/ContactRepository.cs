@@ -26,15 +26,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
-                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[County],ma.[Club Code],ma.[Scheme Code]";
+                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[County]";
 
             if (navVersion > new Version("13.5"))
                 sqlcolumns += ",mt.[Country_Region Code]";
             else
                 sqlcolumns += ",mt.[Country]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Member Contact] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Member Account] ma ON ma.[No_]=mt.[Account No_]";
+            sqlfrom = " FROM [" + navCompanyName + "Member Contact] mt";
         }
 
         public List<ReplCustomer> ReplicateMembers(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -46,6 +45,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             // get records remaining
             string sql = string.Empty;
+            sqlcolumns += ",ma.[Club Code],ma.[Scheme Code]";
+            sqlfrom += " LEFT JOIN [" + navCompanyName + "Member Account] ma ON ma.[No_]=mt.[Account No_]";
+
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatement(true, keys, false);
@@ -132,12 +134,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact)
+        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
             if (maxNumberOfRowsReturned < 1)
                 maxNumberOfRowsReturned = 0;
 
             List<MemberContact> list = new List<MemberContact>();
+            bool exact = maxNumberOfRowsReturned == 1;
             string col = sqlcolumns;
             string from = sqlfrom;
             string where = string.Empty;
@@ -166,17 +169,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     break;
 
                 case ContactSearchType.CardId:
-                    col += ", mc.[Card No_] ";
-                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    col += ",mc.[Card No_] ";
+                    from += " LEFT JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
                     where = "mc.[Card No_]=@value";
                     order = "mc.[Card No_]";
                     exact = true;
                     break;
 
                 case ContactSearchType.UserName:
-                    col += ", mlc.[Login ID]";
-                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] " +
-                            "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]";
+                    col += ",mlc.[Login ID]";
+                    from += " LEFT JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_]" +
+                            " LEFT JOIN[" + navCompanyName + "Member Login Card] mlc on mlc.[Card No_]=mc.[Card No_]";
                     where = string.Format("mlc.[Login ID]{0}@value {1}", like, GetDbCICollation());
                     order = "mlc.[Login ID]";
                     break;
@@ -218,22 +221,37 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             string where = string.Empty;
 
             if (string.IsNullOrEmpty(searchValue))
-                searchValue = string.Empty;
+                return contact;
 
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
-                    where = "mt.[Contact No_]=@id";
+                    where = "mt.[Contact No_]=@value";
                     break;
 
                 case ContactSearchType.Email:
-                    where = "mt.[E-Mail]=@id " + GetDbCICollation();
+                    where = "mt.[E-Mail]=@value " + GetDbCICollation();
+                    break;
+
+                case ContactSearchType.Name:
+                    where = "mt.[Search Name]=@value " + GetDbCICollation();
                     break;
 
                 case ContactSearchType.CardId:
-                    col += ", mc.[Card No_] ";
-                    from += " LEFT OUTER JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_] =mt.[Contact No_] ";
-                    where = "mc.[Card No_]=@id";
+                    col += ",mc.[Card No_] ";
+                    from += " LEFT JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_] ";
+                    where = "mc.[Card No_]=@value";
+                    break;
+
+                case ContactSearchType.PhoneNumber:
+                    where = "(mt.[Phone No_]=@value OR mt.[Mobile Phone No_]=@value)";
+                    break;
+
+                case ContactSearchType.UserName:
+                    col += ",mlc.[Login ID]";
+                    from += " LEFT JOIN [" + navCompanyName + "Membership Card] mc on mc.[Contact No_]=mt.[Contact No_]" +
+                            " LEFT JOIN [" + navCompanyName + "Member Login Card] mlc on mlc.[Card No_]=mc.[Card No_]";
+                    where = "mlc.[Login ID]=@value " + GetDbCICollation();
                     break;
             }
 
@@ -242,7 +260,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + col + from + " WHERE " + where;
-                    command.Parameters.AddWithValue("@id", searchValue);
+                    command.Parameters.AddWithValue("@value", searchValue);
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -250,38 +268,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (reader.Read())
                         {
                             contact = ReaderToContact(reader);
-                        }
-                        reader.Close();
-                    }
-                    connection.Close();
-                }
-            }
-            return contact;
-        }
-
-        public MemberContact ContactGetByUserName(string user)
-        {
-            MemberContact contact = null;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = 
-                        "SELECT " + sqlcolumns + ",ml.[Login ID],ml.[Password]" + sqlfrom +
-                        " LEFT OUTER JOIN["+ navCompanyName +"Membership Card] mc on mc.[Contact No_] = mt.[Contact No_]" +
-                        " LEFT OUTER JOIN["+ navCompanyName +"Member Login Card] mlc on mc.[Card No_] = mlc.[Card No_]" +
-                        " INNER JOIN [" + navCompanyName + "Member Login] ml ON ml.[Login ID]=mlc.[Login ID]" +
-                        " WHERE ml.[Login ID]=@id " + GetDbCICollation();
-
-                    command.Parameters.AddWithValue("@id", user);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            contact = ReaderToContact(reader);
-                            contact.Password = SQLHelper.GetString(reader["Password"]);
                         }
                         reader.Close();
                     }
@@ -360,7 +346,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.CommandText = "SELECT mt.[Card No_],mt.[Contact No_],mt.[Club Code],mt.[Status],mt.[Linked to Account]," +
                                  "mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by],ml.[Login ID] " +
                                  "FROM [" + navCompanyName + "Membership Card] AS mt " +
-                                 "LEFT OUTER JOIN[" + navCompanyName + "Member Login Card] ml on mt.[Card No_] = ml.[Card No_]" +
+                                 "LEFT JOIN [" + navCompanyName + "Member Login Card] ml on mt.[Card No_] = ml.[Card No_]" +
                                  "WHERE mt.[Contact No_]=@id AND mt.[Status] != 3 AND (mt.[Last Valid Date]>GETDATE() OR mt.[Last Valid Date]='1753-01-01')";
 
                     command.Parameters.AddWithValue("@id", contactId);
@@ -464,7 +450,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence],mt.[Next Scheme Benefits]," +
                                           "up.[Min_ Point for Upgrade],up.[Code] AS NextScheme " +
                                           "FROM [" + navCompanyName + "Member Scheme] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "Member Scheme] up " +
+                                          "LEFT JOIN [" + navCompanyName + "Member Scheme] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1";
 
                     connection.Open();
@@ -496,7 +482,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Club Code],mt.[Update Sequence]," +
                                           "up.[Min_ Point for Upgrade], mt.[Next Scheme Benefits], up.[Code] AS NextScheme " +
                                           "FROM [" + navCompanyName + "Member Scheme] mt " +
-                                          "LEFT OUTER JOIN [" + navCompanyName + "Member Scheme] up " +
+                                          "LEFT JOIN [" + navCompanyName + "Member Scheme] up " +
                                           "ON up.[Club Code]=mt.[Club Code] AND up.[Update Sequence]=mt.[Update Sequence]+1" +
                                           "WHERE mt.[Code]=@id";
 
@@ -560,8 +546,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
                                           "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
-                                          "INNER JOIN [" + navCompanyName + "Member Management Setup] mms ON mms.[Mobile Default Club Code]=mt.[Club Code] " +
-                                          "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
+                                          "JOIN [" + navCompanyName + "Member Management Setup] mms ON mms.[Mobile Default Club Code]=mt.[Club Code] " +
+                                          "JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0";
 
                     connection.Open();
@@ -589,9 +575,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT mt.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory],v.[Attribute Value] " +
                                           "FROM [" + navCompanyName + "Member Attribute Setup] mt " +
-                                          "INNER JOIN [" + navCompanyName + "Membership Card] mc ON mc.[Card No_]=@id " +
-                                          "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
-                                          "INNER JOIN [" + navCompanyName + "Member Attribute Value] v ON v.[Attribute Code]=mt.[Code] " +
+                                          "JOIN [" + navCompanyName + "Membership Card] mc ON mc.[Card No_]=@id " +
+                                          "JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=mt.[Code] " +
+                                          "JOIN [" + navCompanyName + "Member Attribute Value] v ON v.[Attribute Code]=mt.[Code] " +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0 AND v.[Contact No_]=mc.[Contact No_]";
 
                     command.Parameters.AddWithValue("@id", id);
@@ -634,9 +620,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     command.CommandText = "SELECT a.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
                                           "FROM [" + navCompanyName + "Member Contact] mc " +
-                                          "INNER JOIN [" + navCompanyName + "Member Attribute Setup] ms ON ms.[Club Code]=mc.[Club Code] " +
-                                          "INNER JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=ms.[Code] " +
-                                          "INNER JOIN[" + navCompanyName + "Membership Card] c on c.[Contact No_] = mc.[Contact No_]" +
+                                          "JOIN [" + navCompanyName + "Member Attribute Setup] ms ON ms.[Club Code]=mc.[Club Code] " +
+                                          "JOIN [" + navCompanyName + "Member Attribute] a ON a.[Code]=ms.[Code] " +
+                                          "JOIN [" + navCompanyName + "Membership Card] c on c.[Contact No_] = mc.[Contact No_]" +
                                           "AND a.[Visible Type]=0 AND a.[Lookup Type]=0" + sqlwhere;
                     command.Parameters.AddWithValue("@id", cardId);
                     TraceSqlCommand(command);
@@ -707,12 +693,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (reader.Read())
                         {
                             card.Balance = SQLHelper.GetDecimal(reader, "Amt");
-                            card.ExpireDate = SQLHelper.GetDateTime(reader["Exp"]);
+                            card.ExpireDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Exp"]), config.IsJson);
                         }
                         else
                         {
                             connection.Close();
-                            throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift Card not found");
+                            throw new LSOmniServiceException(StatusCode.GiftCardNotFound, $"Gift Card {cardId} of type {type} not found");
                         }
                         reader.Close();
                     }
@@ -769,9 +755,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             cont.Cards = CardsGetByContactId(cont.Id, out string username);
             cont.UserName = username;
             cont.Account = AccountGetById(SQLHelper.GetString(reader["Account No_"]));
-            if (cont.Cards.Count > 0)
-                cont.Profiles = ProfileGetByCardId(cont.Cards[0].Id);
 
+            cont.Profiles = new List<Profile>();
             cont.SalesEntries = new List<SalesEntry>();
             cont.OneLists = new List<OneList>();
             cont.Addresses = new List<Address>();
@@ -832,7 +817,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
             if (contactValues)
             {
-                pro.ContactValue = (SQLHelper.GetString(reader["Attribute Value"]).Equals("Yes", StringComparison.InvariantCultureIgnoreCase)) ? true : false;
+                if (pro.DataType == ProfileDataType.Boolean)
+                    pro.ContactValue = (SQLHelper.GetString(reader["Attribute Value"]).Equals("Yes", StringComparison.InvariantCultureIgnoreCase)) ? true : false;
+                else
+                    pro.TextValue = SQLHelper.GetString(reader["Attribute Value"]);
             }
             else
             {

@@ -12,7 +12,6 @@ namespace LSOmni.BLL.Loyalty
 {
     public abstract class BaseLoyBLL : BaseBLL
     {
-        private static LSLogger logger = new LSLogger();
         protected int timeoutInSeconds = 0;
 
         //ALL  security related code is done in base class
@@ -20,7 +19,7 @@ namespace LSOmni.BLL.Loyalty
 
         private string contactId;
         private StatusCode securityTokenStatusCode;
-        private string localCulture = null;
+        private readonly string localCulture = null;
 
         public virtual string SecurityToken { get { return config.SecurityToken; } }
         public virtual string ContactId { get { return contactId; } }
@@ -56,7 +55,6 @@ namespace LSOmni.BLL.Loyalty
 
         public BaseLoyBLL(BOConfiguration config, int timeoutInSeconds) : this(config, "", timeoutInSeconds)
         {
-
         }
 
         public BaseLoyBLL(BOConfiguration config, string deviceId, int timeoutInSeconds) : base(config)
@@ -86,8 +84,7 @@ namespace LSOmni.BLL.Loyalty
             SecurityTokenCheck();
 
             //always validate security token and if device is blocked etc.  Will get deviceId and contactId back
-            string deviceId = "";
-            securityTokenStatusCode = iValidationRepository.ValidateSecurityToken(config.SecurityToken, out deviceId, out this.contactId);
+            securityTokenStatusCode = iValidationRepository.ValidateSecurityToken(config.SecurityToken, out string deviceId, out contactId);
             base.DeviceId = deviceId;
             if (config.SecurityCheck)
             {
@@ -122,13 +119,13 @@ namespace LSOmni.BLL.Loyalty
 
                 if (string.IsNullOrEmpty(ecomUrl))
                 {
-                    logger.Info(config.LSKey.Key, "ECOM Message Error: Missing Ecom.Url in Appsettings");
+                    logger.Error(config.LSKey.Key, "ECOM Message Error: Missing Ecom.Url in Appsettings");
                     return "ERROR: Missing Ecom.Url in Appsettings";
                 }
 
                 if (ecomUrl.ToUpper() == "DEMO")
                 {
-                    logger.Info(config.LSKey.Key, "ECOM Demo mode on, return OK");
+                    logger.Warn(config.LSKey.Key, "ECOM Demo mode on, return OK");
                     return "{ \"success\": true, \"message\": \"Command posted successfully\" }";
                 }
 
@@ -137,7 +134,7 @@ namespace LSOmni.BLL.Loyalty
                 httpWebRequest.ContentType = "application/json";
                 httpWebRequest.Method = "POST";
 
-                logger.Info(config.LSKey.Key, "ECOM Sent to:{0} Message:{1}", url.LocalPath, data);
+                logger.Debug(config.LSKey.Key, "ECOM Sent to:{0} Message:{1}", url.LocalPath, data);
                 using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
                     streamWriter.Write(data);
@@ -152,7 +149,7 @@ namespace LSOmni.BLL.Loyalty
                     ret = streamReader.ReadToEnd();
                 }
 
-                logger.Info(config.LSKey.Key, "ECOM Result:[{0}]", ret);
+                logger.Debug(config.LSKey.Key, "ECOM Result:[{0}]", ret);
                 return ret;
             }
             catch (Exception ex)

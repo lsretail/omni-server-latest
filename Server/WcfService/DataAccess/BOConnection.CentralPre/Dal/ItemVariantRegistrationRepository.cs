@@ -20,7 +20,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         public ItemVariantRegistrationRepository(BOConfiguration config) : base(config)
         {
             sqlcolumns = "mt.[Item No_],mt.[Framework Code],mt.[Variant],mt.[Variant Dimension 1],mt.[Variant Dimension 2]," +
-                         "mt.[Variant Dimension 3],mt.[Variant Dimension 4],mt.[Variant Dimension 5],mt.[Variant Dimension 6]";
+                         "mt.[Variant Dimension 3],mt.[Variant Dimension 4],mt.[Variant Dimension 5],mt.[Variant Dimension 6]," +
+                         "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
+                         "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
+                         "(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
+                         "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
@@ -34,18 +38,53 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             // get records remaining
             string sql = string.Empty;
+            List<JscActions> actions = new List<JscActions>();
+
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
             }
-            recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
+            else
+            {
+                string tmplastkey = lastKey;
+                string mainlastkey = lastKey;
+                recordsRemaining = 0;
 
-            List<JscActions> actions = LoadActions(fullReplication, TABLEID, batchSize, ref lastKey, ref recordsRemaining);
-            List<ReplItemVariantRegistration> list = new List<ReplItemVariantRegistration>();
+                recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
+
+                actions = LoadActions(fullReplication, TABLEID, batchSize, ref mainlastkey, ref recordsRemaining);
+
+                recordsRemaining += GetRecordCount(10001404, tmplastkey, string.Empty, keys, ref maxKey);
+                List<JscActions> itemact = LoadActions(fullReplication, 10001404, batchSize, ref tmplastkey, ref recordsRemaining);
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                lastKey = mainlastkey;
+
+                foreach (JscActions act in itemact)
+                {
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact = new JscActions()
+                    {
+                        id = act.id,
+                        TableId = act.TableId,
+                        Type = DDStatementType.Insert,
+                        ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
+                    };
+
+                    JscActions findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+            }
 
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Item No_]", storeId, true);
 
+            List<ReplItemVariantRegistration> list = new List<ReplItemVariantRegistration>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -125,8 +164,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<VariantRegistration> VariantRegGetByItemId(string itemId)
+        public List<VariantRegistration> VariantRegGetByItemId(string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<VariantRegistration> list = new List<VariantRegistration>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -146,11 +186,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public VariantRegistration VariantRegGetById(string id, string itemId)
+        public VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             VariantRegistration varReg = new VariantRegistration();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -170,6 +212,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return varReg;
         }
 
@@ -187,7 +230,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 VariantDimension3 = SQLHelper.GetString(reader["Variant Dimension 3"]),
                 VariantDimension4 = SQLHelper.GetString(reader["Variant Dimension 4"]),
                 VariantDimension5 = SQLHelper.GetString(reader["Variant Dimension 5"]),
-                VariantDimension6 = SQLHelper.GetString(reader["Variant Dimension 6"])
+                VariantDimension6 = SQLHelper.GetString(reader["Variant Dimension 6"]),
+                BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"]),
+                BlockedOnECom = SQLHelper.GetInt32(reader["BlockEcom"])
             };
         }
 

@@ -411,7 +411,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
                             TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
-                            logger.Info(config.LSKey.Key, "TaskLog Cleanup, removed {0} records", cnt);
+                            logger.Debug(config.LSKey.Key, "TaskLog Cleanup, removed {0} records", cnt);
                         }
                         catch (Exception ex)
                         {
@@ -425,7 +425,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysLog * -1));
                             TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
-                            logger.Info(config.LSKey.Key, "TaskLogLine Cleanup, removed {0} records", cnt);
+                            logger.Debug(config.LSKey.Key, "TaskLogLine Cleanup, removed {0} records", cnt);
                         }
                         catch (Exception ex)
                         {
@@ -442,7 +442,7 @@ namespace LSOmni.DataAccess.Dal
                             command.Parameters.AddWithValue("@f1", DateTime.Now.AddDays(daysNotify * -1));
                             TraceSqlCommand(command);
                             int cnt = command.ExecuteNonQuery();
-                            logger.Info(config.LSKey.Key, "Notification Cleanup, removed {0} records", cnt);
+                            logger.Debug(config.LSKey.Key, "Notification Cleanup, removed {0} records", cnt);
                         }
                         catch (Exception ex)
                         {
@@ -476,9 +476,9 @@ namespace LSOmni.DataAccess.Dal
                             OneListRepository rep = new OneListRepository(config);
                             foreach (OneList list in lists)
                             {
-                                rep.OneListDeleteById(list.Id);
+                                rep.OneListDeleteById(list.Id, new Statistics());
                             }
-                            logger.Info(config.LSKey.Key, "OneList CleanUp, removed {0} records", lists.Count);
+                            logger.Debug(config.LSKey.Key, "OneList CleanUp, removed {0} records", lists.Count);
                         }
                         catch (Exception ex)
                         {

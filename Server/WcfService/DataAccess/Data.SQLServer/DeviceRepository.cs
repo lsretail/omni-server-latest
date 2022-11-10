@@ -36,11 +36,6 @@ namespace LSOmni.DataAccess.Dal
             }
         }
 
-        public void Logout(string userName, string deviceId)
-        {
-            RemoveSecurityToken(deviceId, userName);
-        }
-
         public bool DoesDeviceIdExist(string deviceId)
         {
             //return true if the id exists

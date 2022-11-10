@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
@@ -20,11 +21,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt2.[LSC POS Selection],mt2.[LSC Count as 1 on Receipt],mt2.[LSC Order],um.[Description]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Item Unit of Measure$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
-                      "ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Code]=mt.[Code] " +
-                      "INNER JOIN [" + navCompanyName + "Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] um " +
-                      "ON um.[Code]=mt.[Code]";
+            if (LSCVersion >= new Version("20.3"))
+                sqlcolumns += ",mt2.[LSC Ecom Selection]";
+
+            sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
+                      " JOIN [" + navCompanyName + "Item Unit of Measure$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2" +
+                      " ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Code]=mt.[Code]" +
+                      " JOIN [" + navCompanyName + "Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] um" +
+                      " ON um.[Code]=mt.[Code]";
         }
 
         public List<ReplItemUnitOfMeasure> ReplicateItemUOM(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -130,7 +134,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumns + ",it.[Base Unit of Measure]" + sqlfrom +
-                                         " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it ON it.[No_]=mt.[Item No_] WHERE mt.[Item No_]=@itemid AND mt.[Code]=@uomid";
+                                         " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] it ON it.[No_]=mt.[Item No_] WHERE mt.[Item No_]=@itemid AND mt.[Code]=@uomid";
 
                     command.Parameters.AddWithValue("@itemid", itemid);
                     command.Parameters.AddWithValue("@uomid", uomid);
@@ -153,8 +157,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return uom;
         }
 
-        public List<UnitOfMeasure> ItemUOMGetByItemId(string itemId)
+        public List<UnitOfMeasure> ItemUOMGetByItemId(string itemId, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<UnitOfMeasure> list = new List<UnitOfMeasure>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -174,6 +179,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -181,7 +187,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplItemUnitOfMeasure()
+            ReplItemUnitOfMeasure uom = new ReplItemUnitOfMeasure()
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 Code = SQLHelper.GetString(reader["Code"]),
@@ -192,6 +198,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 CountAsOne = SQLHelper.GetBool(reader["LSC Count as 1 on Receipt"]),
                 Order = SQLHelper.GetInt32(reader["LSC Order"])
             };
+            
+            if (LSCVersion >= new Version("20.3"))
+                uom.EComSelection = SQLHelper.GetInt32(reader["LSC Ecom Selection"]);
+
+            return uom;
         }
 
         private UnitOfMeasure ReaderToLoyUOM(SqlDataReader reader)

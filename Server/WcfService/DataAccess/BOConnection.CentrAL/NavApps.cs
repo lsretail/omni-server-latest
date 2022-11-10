@@ -10,6 +10,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL
 {
@@ -26,37 +27,37 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
+        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config);
             return rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 
-        public virtual Terminal TerminalGetById(string terminalId)
+        public virtual Terminal TerminalGetById(string terminalId, Statistics stat)
         {
             TerminalRepository rep = new TerminalRepository(config, NAVVersion);
             return rep.TerminalBaseGetById(terminalId);
         }
 
-        public virtual UnitOfMeasure UnitOfMeasureGetById(string id)
+        public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
         {
             UnitOfMeasureRepository rep = new UnitOfMeasureRepository(config);
             return rep.UnitOfMeasureGetById(id);
         }
 
-        public virtual VariantRegistration VariantRegGetById(string id, string itemId)
+        public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
             ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, NAVVersion);
             return rep.VariantRegGetById(id, itemId);
         }
 
-        public virtual Currency CurrencyGetById(string id, string culture)
+        public virtual Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
             CurrencyRepository rep = new CurrencyRepository(config, NAVVersion);
             return rep.CurrencyLoyGetById(id, culture);
         }
 
-        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores)
+        public virtual List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat)
         {
             if (locationIds.Count == 0)
             {
@@ -74,12 +75,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ItemInStockGet(itemId, variantId, arrivingInStockInDays, locationIds, skipUnAvailableStores);
         }
 
-        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
+        public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat)
         {
             return NavWSBase.ItemsInStoreGet(items, storeId, locationId);
         }
 
-        public virtual string ItemDetailsGetById(string itemId)
+        public virtual string ItemDetailsGetById(string itemId, Statistics stat)
         {
             ItemRepository itemRep = new ItemRepository(config, NAVVersion);
             return itemRep.ItemDetailsGetById(itemId);

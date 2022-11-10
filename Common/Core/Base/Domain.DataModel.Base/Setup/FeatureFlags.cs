@@ -85,9 +85,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "ALLOWED PAYMENT WITH LOYALTY":
                     flagName = FeatureFlagName.AllowedPaymentWithLoyalty;
                     break;
-                case "CARD PAYMENT TYPE":
-                    flagName = FeatureFlagName.CardPaymentType;
-                    break;
                 case "CHECK STATUS TIMER":
                     flagName = FeatureFlagName.CheckStatusTimer;
                     break;
@@ -134,6 +131,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
                 case "SHOW CUSTOMER QR CODE":
                     flagName = FeatureFlagName.ShowCustomerQrCode;
+                    break;
+                case "SHOW POINT STATUS":
+                    flagName = FeatureFlagName.ShowPointStatus;
+                    break;
+                case "USE SECURITY CHECK":
+                    flagName = FeatureFlagName.UseSecurityCheck;
                     break;
 
                 //AUDKENNI SPG
@@ -297,6 +300,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         ShowCustomerSurvey = 216,
         AddCardBeforeShopping = 217,
         ShowCustomerQrCode = 218,
+        ShowPointStatus = 219,
+        UseSecurityCheck = 220,
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,

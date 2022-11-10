@@ -31,7 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                           "mt.[Loyalty Scheme Code],mt.[Currency Code],mt.[Unit Price],mt.[Offer No_],mt.[Last Modify Date]," +
                           "u.[Qty_ per Unit of Measure]";
             sqlMfrom = " FROM [" + navCompanyName + "WI Price] mt" +
-                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure] u" +
+                       " LEFT JOIN [" + navCompanyName + "Item Unit of Measure] u" +
                        " ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
         }
 

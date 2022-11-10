@@ -31,8 +31,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumns = "mt.[Code],mt.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Category] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + pgtablename + "] pg ON pg.[Item Category Code]=mt.[Code]" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Item] it ON it.[" + pgfieldname + "]=pg.[Code]";
+                      " LEFT JOIN [" + navCompanyName + pgtablename + "] pg ON pg.[Item Category Code]=mt.[Code]" +
+                      " LEFT JOIN [" + navCompanyName + "Item] it ON it.[" + pgfieldname + "]=pg.[Code]";
         }
 
         public List<ReplItemCategory> ReplicateItemCategory(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -140,7 +140,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + 
                             " WHERE EXISTS(" +
                             " SELECT 1 FROM [" + navCompanyName + pgtablename + "] pg " +
-                            " INNER JOIN [" + navCompanyName + "Item] i ON i.[" + pgfieldname + "]=pg.[Code] " +
+                            " JOIN [" + navCompanyName + "Item] i ON i.[" + pgfieldname + "]=pg.[Code] " +
                             " WHERE mt.[Code]=pg.[Item Category Code])" +
                             GetSQLStoreDist("it.[No_]", storeId, true) +
                             " ORDER BY mt.[Description]";

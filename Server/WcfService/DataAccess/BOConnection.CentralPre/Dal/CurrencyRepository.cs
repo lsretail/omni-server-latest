@@ -23,8 +23,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Amount Rounding Precision],mt.[Invoice Rounding Type]," +
                          "mt.[Invoice Rounding Precision],mt2.[LSC POS Currency Symbol],mt2.[LSC Placement Of Curr_ Symbol]";
 
-            sqlfrom = " FROM [" + navCompanyName + "Currency$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Currency$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[Code]=mt.[Code]";
+            sqlfrom = " FROM [" + navCompanyName + "Currency$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
+                      " JOIN [" + navCompanyName + "Currency$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[Code]=mt.[Code]";
         }
 
         public List<ReplCurrency> ReplicateCurrency(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

@@ -26,7 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                          "mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity],mt.[Currency Code],mt.[Unit Price]," +
                          "mt.[Price Includes VAT],mt2.[Unit Price Including VAT],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]";
             sqlfrom = " FROM [" + navCompanyName + "Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "INNER JOIN [" + navCompanyName + "Sales Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
+                      "JOIN [" + navCompanyName + "Sales Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
                       "ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Sales Type]=mt.[Sales Type] AND mt2.[Sales Code]=mt.[Sales Code] " +
                       "AND mt2.[Starting Date]=mt.[Starting Date] AND mt2.[Currency Code]=mt.[Currency Code] " +
                       "AND mt2.[Variant Code]=mt.[Variant Code] AND mt2.[Unit of Measure Code]=mt.[Unit of Measure Code] " +
@@ -36,7 +36,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                           "mt.[Loyalty Scheme Code],mt.[Currency Code],mt.[Unit Price],mt.[Offer No_],mt.[Last Modify Date]," +
                           "u.[Qty_ per Unit of Measure]";
             sqlMfrom = " FROM [" + navCompanyName + "WI Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                       " LEFT OUTER JOIN [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] u " +
+                       " LEFT JOIN [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] u " +
                        " ON mt.[Item No_]=u.[Item No_] AND mt.[Unit of Measure Code]=u.[Code]";
 
             if (version > new Version("17.2.0.0"))

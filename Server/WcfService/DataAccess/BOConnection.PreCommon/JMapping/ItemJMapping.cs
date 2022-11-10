@@ -697,6 +697,77 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             return list;
         }
 
+        public List<ReplItemVariantRegistration> GetReplItemVariantWithStatus(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplItemVariantRegistration> list = new List<ReplItemVariantRegistration>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplItemVariantRegistration line = new ReplItemVariantRegistration();
+                string lcy = string.Empty;
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: line.ItemId = data.FieldValue; break;
+                        case 2: line.FrameworkCode = data.FieldValue; break;
+                        case 3: line.VariantDimension1 = data.FieldValue; break;
+                        case 4: line.VariantDimension2 = data.FieldValue; break;
+                        case 5: line.VariantDimension3 = data.FieldValue; break;
+                        case 6: line.VariantDimension4 = data.FieldValue; break;
+                        case 7: line.VariantDimension5 = data.FieldValue; break;
+                        case 8: line.VariantDimension6 = data.FieldValue; break;
+                        case 9: line.VariantId = data.FieldValue; break;
+                        case 25: line.BlockedOnPos = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 26: line.BlockedOnECom = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                    }
+                }
+                list.Add(line);
+            }
+
+            if (result.DataSet.DataSetDel == null || result.DataSet.DataSetDel.DynDataSet == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetDel.DynDataSet.DataSetRows)
+            {
+                ReplItemVariantRegistration line = new ReplItemVariantRegistration()
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetDel.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: line.ItemId = data.FieldValue; break;
+                        case 3: line.VariantDimension1 = data.FieldValue; break;
+                        case 4: line.VariantDimension2 = data.FieldValue; break;
+                        case 5: line.VariantDimension3 = data.FieldValue; break;
+                        case 6: line.VariantDimension4 = data.FieldValue; break;
+                        case 7: line.VariantDimension5 = data.FieldValue; break;
+                        case 8: line.VariantDimension6 = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
+
         public List<ReplUnitOfMeasure> GetReplUOM(string ret, ref string lastKey, ref int recordsRemaining)
         {
             List<ReplUnitOfMeasure> list = new List<ReplUnitOfMeasure>();
@@ -864,6 +935,85 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         continue;
 
                     switch (fld.FieldNo)
+                    {
+                        case 1: line.ItemId = data.FieldValue; break;
+                        case 2: line.Code = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
+        public List<ReplItemUnitOfMeasure> GetReplItemUOM2(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplItemUnitOfMeasure> list = new List<ReplItemUnitOfMeasure>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplItemUnitOfMeasure line = new ReplItemUnitOfMeasure();
+                string lcy = string.Empty;
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    if (LSCVersion >= new Version("20.3"))
+                    {
+                        switch (fld.FieldIndex)
+                        {
+                            case 1: line.ItemId = data.FieldValue; break;
+                            case 2: line.Code = data.FieldValue; break;
+                            case 3: line.QtyPrUOM = ConvertTo.SafeDecimal(data.FieldValue); break;
+                            case 13: line.CountAsOne = ConvertTo.SafeBoolean(data.FieldValue); break;
+                            case 14: line.Selection = ConvertTo.SafeInt(data.FieldValue); break;
+                            case 15: line.Order = ConvertTo.SafeInt(data.FieldValue); break;
+                            case 16: line.EComSelection = ConvertTo.SafeInt(data.FieldValue); break;
+                            case 22: line.Description = data.FieldValue; break;
+                        }
+                    }
+                    else
+                    {
+                        switch (fld.FieldIndex)
+                        {
+                            case 1: line.ItemId = data.FieldValue; break;
+                            case 2: line.Code = data.FieldValue; break;
+                            case 3: line.QtyPrUOM = ConvertTo.SafeDecimal(data.FieldValue); break;
+                            case 13: line.CountAsOne = ConvertTo.SafeBoolean(data.FieldValue); break;
+                            case 14: line.Selection = ConvertTo.SafeInt(data.FieldValue); break;
+                            case 15: line.Order = ConvertTo.SafeInt(data.FieldValue); break;
+                            case 21: line.Description = data.FieldValue; break;
+                        }
+                    }
+                }
+                line.ShortDescription = line.Code;
+                list.Add(line);
+            }
+
+            if (result.DataSet.DataSetDel == null || result.DataSet.DataSetDel.DynDataSet == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetDel.DynDataSet.DataSetRows)
+            {
+                ReplItemUnitOfMeasure line = new ReplItemUnitOfMeasure()
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetDel.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
                     {
                         case 1: line.ItemId = data.FieldValue; break;
                         case 2: line.Code = data.FieldValue; break;
@@ -1238,7 +1388,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 10: line.ItemId = data.FieldValue; break;
                         case 15: line.VariantId = data.FieldValue; break;
                         case 25: line.StoreId = data.FieldValue; break;
-                        case 120: line.Quantity = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 120: line.Quantity += ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 123: line.Quantity += ConvertTo.SafeDecimal(data.FieldValue); break;
                     }
                 }
                 list.Add(line);

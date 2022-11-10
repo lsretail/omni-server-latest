@@ -26,17 +26,17 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumnsDeal = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Line No_],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Type]," +
                              "mt.[Unit of Measure],mt.[Min_ Selection],mt.[Max_ Selection],mt.[Modifier Added Amount],mt.[Deal Mod_ Size Gr_ Index],il.[Image Id]";
             sqlfromDeal = " FROM [" + navCompanyName + "Hierarchy Node Link] nl" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                          " INNER JOIN [" + navCompanyName + "Offer Line] mt ON mt.[Offer No_]=nl.[No_]" +
-                          " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
+                          " JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " JOIN [" + navCompanyName + "Offer Line] mt ON mt.[Offer No_]=nl.[No_]" +
+                          " LEFT JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
 
             sqlcolumnsDealLine = "nl.[Hierarchy Code],nl.[Node ID],mt.[Offer No_],mt.[Deal Modifier Code],mt.[Offer Line No_]," +
                           "mt.[Deal Modifier Line No_],mt.[Item No_],mt.[Description],mt.[Variant Code],mt.[Unit of Measure]," +
                           "mt.[Min_ Selection],mt.[Max_ Item Selection],mt.[Added Amount],il.[Image Id]";
             sqlfromDealLine = " FROM [" + navCompanyName + "Hierarchy Node Link] nl" +
-                          " INNER JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
-                          " INNER JOIN [" + navCompanyName + "Deal Modifier Item] mt ON mt.[Offer No_]=nl.[No_]" +
-                          " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
+                          " JOIN [" + navCompanyName + "Hierarchy Date] hd ON hd.[Hierarchy Code]=nl.[Hierarchy Code] AND hd.[Start Date]<=GETDATE()" +
+                          " JOIN [" + navCompanyName + "Deal Modifier Item] mt ON mt.[Offer No_]=nl.[No_]" +
+                          " LEFT JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
         }
 
         public List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

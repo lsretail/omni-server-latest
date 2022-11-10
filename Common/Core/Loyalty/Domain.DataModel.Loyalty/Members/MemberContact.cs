@@ -20,6 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         #region Member variables
 
         private List<Notification> notifications;
+        private string email;
 
         #endregion
 
@@ -29,8 +30,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         public string UserName { get; set; }
         [DataMember]
         public string Password { get; set; }
+
         [DataMember]
-        public string Email { get; set; }
+        public string Email
+        {
+            get => email;
+            set
+            {
+                email = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [DataMember]
         public string Authenticator { get; set; }
         [DataMember]
@@ -113,6 +124,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
                         MiddleName += names[i];
                     }
                 }
+
+                NotifyPropertyChanged();
             }
         }
 
@@ -269,13 +282,15 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
             return list;
         }
 
-        public void AddList(string cardId, OneList list, ListType type)
+        public void AddList(OneList list)
         {            
-            OneList mylist = OneLists.Find(t => t.ListType == type && t.CardId == cardId && t.Id == list.Id);
+            OneList mylist = OneLists.Find(t => t.ListType == list.ListType && t.CardId == list.CardId && t.Id == list.Id);
+
             if (mylist != null)
             {
                 OneLists.Remove(mylist);
             }
+
             OneLists.Add(list);
         }
 

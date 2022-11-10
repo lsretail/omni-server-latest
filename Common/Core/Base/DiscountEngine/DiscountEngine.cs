@@ -60,7 +60,7 @@ namespace LSRetail.Omni.DiscountEngine
         {
             DiscountValidation discval = discRepo.GetDiscountValidationByOfferId(offerId);
 
-            bool withinBounds = false;
+            bool withinBounds = true;
             DateTime start = new DateTime();
             DateTime end = new DateTime();
             bool afterMidnight = false;
@@ -126,14 +126,14 @@ namespace LSRetail.Omni.DiscountEngine
                             break;
                         }
                 }
-            }
 
-            if (start == DateTime.MinValue && end == DateTime.MinValue)
-            {
-                withinBounds = discval.TimeWithinBounds;
-                start = discval.StartTime;
-                end = discval.EndTime;
-                afterMidnight = discval.EndAfterMidnight;
+                if (start == DateTime.MinValue && end == DateTime.MinValue)
+                {
+                    withinBounds = discval.TimeWithinBounds;
+                    start = discval.StartTime;
+                    end = discval.EndTime;
+                    afterMidnight = discval.EndAfterMidnight;
+                }
             }
 
             if (start == DateTime.MinValue && end == DateTime.MinValue)

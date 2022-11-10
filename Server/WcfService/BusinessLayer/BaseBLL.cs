@@ -16,7 +16,7 @@ namespace LSOmni.BLL
         private static Assembly boAssembly = null;
         protected BOConfiguration config = null;
 
-        private static LSLogger logger = new LSLogger();
+        protected static LSLogger logger = new LSLogger();
 
         public virtual string DeviceId { get; set; }    //DeviceId is used everywhere...
 

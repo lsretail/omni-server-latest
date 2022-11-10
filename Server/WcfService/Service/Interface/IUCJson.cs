@@ -179,7 +179,8 @@ namespace LSOmni.Service
         /// Member Contact can have one or more Member Cards and each Card can have one WishList and one Basket
         /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
         /// as LS Commerce Service does not store any information for Anonymous Users.<p/>
-        /// Used OneListGetById to get the OneList back.
+        /// Used OneListGetById to get the OneList back.<p/>
+        /// NOTE: If no Name is provided with Onelist, system will look up contact to pull the name, this can slow the process.
         /// </remarks>
         /// <example>
         /// Sample request including minimum data needed to be able to process the request in LS Commerce
@@ -189,6 +190,9 @@ namespace LSOmni.Service
         ///     "oneList": {
         ///         "CardId": "10021",
         ///         "Items": [{
+        ///             "Image": {
+        ///                 "Id": "40020"
+        ///             },
         ///             "ItemDescription": "Skirt Linda Professional Wear",
         ///             "ItemId": "40020",
         ///             "Quantity": 2,
@@ -196,6 +200,7 @@ namespace LSOmni.Service
         ///             "VariantId": "002"
         ///         }],
         ///         "ListType": 0,
+        ///         "Name": "Tom Tomson",
         ///         "StoreId": "S0001"
         ///     },
         ///     "calculate": true
@@ -217,7 +222,8 @@ namespace LSOmni.Service
         /// LS Central WS2 : EcomCalculateBasket<p/><p/>
         /// This function can be used to send in Basket and convert it to Order.<p/>
         /// Basic Order data is then set for finalize it by setting the Order setting,
-        /// Contact Info, Payment and then it can be posted for Creation
+        /// Contact Info, Payment and then it can be posted for Creation<p/>
+        /// NOTE: Image Ids are added if not provided with the item or returned from Central, this will result in extra calls, so to speed up things, provide Image object with Image Id only (not including blob)
         /// </remarks>
         /// <example>
         /// Sample requests including minimum data needed to be able to process the request in LS Commerce<p/>
@@ -228,6 +234,9 @@ namespace LSOmni.Service
         ///     "oneList": {
         /// 		"CardId": "10021",
         ///         "Items": [{
+        ///             "Image": {
+        ///                 "Id": "40020"
+        ///             },
         ///             "ItemDescription": "Skirt Linda Professional Wear",
         ///             "ItemId": "40020",
         ///             "Quantity": 2,
@@ -248,6 +257,9 @@ namespace LSOmni.Service
         /// 	"oneList": {
         /// 		"CardId": "10021",
         ///         "Items": [{
+        ///             "Image": {
+        ///                 "Id": "40020"
+        ///             },
         ///             "ItemDescription": "Skirt Linda Professional Wear",
         ///             "ItemId": "40020",
         ///             "Quantity": 2,
@@ -275,8 +287,58 @@ namespace LSOmni.Service
         /// <summary>
         /// Calculates OneList Basket for Hospitality and returns Hospitality Order Object
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : MobilePosCalculate<p/><p/>
+        /// This function can be used to send in Basket and convert it to Hospitality Order.<p/>
+        /// Basic Hospitality Order data is then set for finalize it by setting the Order setting,
+        /// Contact Info, Payment and then it can be posted for Creation
+        /// </remarks>
+        /// <example>
+        /// Sample requests including minimum data needed to be able to process the request in LS Commerce<p/>
+        /// Basket for EasyBurger Restaurant, Cheese Burger Meal, with Jalapeno Popper and Reg Orange Soda
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///   "oneList": {
+        ///     "CardId": "10021",
+        ///     "ExternalType": 0,
+        ///     "IsHospitality": true,
+        ///     "Items": [{
+        ///         "IsADeal": true,
+        ///         "ItemId": "S10025",
+        ///         "OnelistSubLines": [{
+        ///             "DealLineId": 10000,
+        ///             "DealModLineId": 0,
+        ///             "Quantity": 1,
+        ///             "Type": 1
+        ///           }, {
+        ///             "DealLineId": 20000,
+        ///             "DealModLineId": 70000,
+        ///             "Quantity": 1,
+        ///             "Type": 1,
+        ///             "Uom": "PORTION"
+        ///           }, {
+        ///             "DealLineId": 30000,
+        ///             "DealModLineId": 70000,
+        ///             "Quantity": 1,
+        ///             "Type": 1,
+        ///             "Uom": "REG"
+        ///           }
+        ///         ],
+        ///         "Quantity": 1,
+        ///         "UnitOfMeasureId": null
+        ///       }
+        ///     ],
+        ///     "ListType": 0,
+        ///     "SalesType": "TAKEAWAY",
+        ///     "StoreId": "S0017"
+        ///   }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="oneList"></param>
-        /// <returns></returns>
+        /// <returns>Order Object that can be used to Create Order</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         OrderHosp OneListHospCalculate(OneList oneList);
@@ -318,11 +380,12 @@ namespace LSOmni.Service
         /// <param name="oneListId">OneList Id to link</param>
         /// <param name="cardId">Card Id to link or remove</param>
         /// <param name="email">Email address to look up Card Id when requesting a Linking</param>
+        /// <param name="phone">Phone number to look up Card Id when requesting a Linking</param>
         /// <param name="status">Link action</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status);
+        bool OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status);
 
         #endregion
 
@@ -565,6 +628,7 @@ namespace LSOmni.Service
         /// 		"OrderDiscountLines": [],
         /// 		"OrderLines": [{
         /// 			"Amount": "160.0",
+        /// 			"ClickAndCollectLine": "1",
         /// 			"DiscountAmount": "0",
         /// 			"DiscountPercent": "0",
         /// 			"ItemId": "40020",
@@ -577,6 +641,7 @@ namespace LSOmni.Service
         /// 			"QuantityOutstanding": "0",
         /// 			"QuantityToInvoice": "2.0",
         /// 			"QuantityToShip": "0",
+        /// 			"StoreId": "S0001",
         /// 			"TaxAmount": "32.0",
         /// 			"VariantId": "002"
         ///         }],
@@ -604,6 +669,179 @@ namespace LSOmni.Service
         /// <summary>
         /// Create a Hospitality Order
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : MobilePosPost<p/><p/>
+        /// </remarks>
+        /// <example>
+        /// Sample requests including minimum data needed to be able to process the request in LS Commerce<p/>
+        /// Sample Order for EasyBurger Restaurant, Cheese Burger Meal, with Jalapeno Popper and Reg Orange Soda.
+        /// Based on OneListHospCalculate result.
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///   "request": {
+        ///     "Id": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
+        ///     "BillToName": "",
+        ///     "CardId": "10021",
+        ///     "Comment": "",
+        ///     "DeliveryType": 0,
+        ///     "Directions": "",
+        ///     "Email": "tom@xyz.com",
+        ///     "LineItemCount": 1,
+        ///     "Name": "Tom Tomsson",
+        ///     "OrderDiscountLines": [{
+        ///         "Description": "Deal",
+        ///         "DiscountAmount": 0.00,
+        ///         "DiscountPercent": 0.00,
+        ///         "DiscountType": 6,
+        ///         "LineNumber": 9750,
+        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
+        ///         "OfferNumber": "S10025",
+        ///         "OrderId": "",
+        ///         "PeriodicDiscGroup": "",
+        ///         "PeriodicDiscType": 0
+        ///       }, {
+        ///         "Description": "Deal",
+        ///         "DiscountAmount": 0.00,
+        ///         "DiscountPercent": 0.00,
+        ///         "DiscountType": 6,
+        ///         "LineNumber": 10000,
+        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
+        ///         "OfferNumber": "S10025",
+        ///         "OrderId": "",
+        ///         "PeriodicDiscGroup": "",
+        ///         "PeriodicDiscType": 0
+        ///       }, {
+        ///     "Description": "Deal",
+        ///         "DiscountAmount": 0.00,
+        ///         "DiscountPercent": 0.00,
+        ///         "DiscountType": 6,
+        ///         "LineNumber": 20000,
+        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
+        ///         "OfferNumber": "S10025",
+        ///         "OrderId": "",
+        ///         "PeriodicDiscGroup": "",
+        ///         "PeriodicDiscType": 0
+        ///       }, {
+        ///     "Description": "Deal",
+        ///         "DiscountAmount": 0.00,
+        ///         "DiscountPercent": 0.00,
+        ///         "DiscountType": 6,
+        ///         "LineNumber": 30000,
+        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
+        ///         "OfferNumber": "S10025",
+        ///         "OrderId": "",
+        ///         "PeriodicDiscGroup": "",
+        ///         "PeriodicDiscType": 0
+        ///       }
+        ///     ],
+        ///     "OrderLines": [{
+        ///         "Id": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
+        ///         "Amount": 7.50,
+        ///         "DiscountAmount": 0.00,
+        ///         "DiscountPercent": 0.00,
+        ///         "IsADeal": true,
+        ///         "ItemDescription": "Cheese Burger Meal",
+        ///         "ItemId": "S10025",
+        ///         "ItemImageId": null,
+        ///         "LineNumber": 9750,
+        ///         "LineType": 0,
+        ///         "NetAmount": 6.82,
+        ///         "NetPrice": 6.82,
+        ///         "OrderId": "",
+        ///         "Price": 7.50,
+        ///         "PriceModified": false,
+        ///         "Quantity": 1.00,
+        ///         "SubLines": [{
+        ///             "Amount": 5.32,
+        ///             "DealCode": "S10025",
+        ///             "DealLineId": 10000,
+        ///             "DealModifierLineId": 0,
+        ///             "Description": "Cheese Burger",
+        ///             "DiscountAmount": 0.00,
+        ///             "DiscountPercent": 0.00,
+        ///             "ItemId": "R0024",
+        ///             "LineNumber": 10000,
+        ///             "ManualDiscountAmount": 0.0,
+        ///             "ManualDiscountPercent": 0.0,
+        ///             "ModifierGroupCode": "",
+        ///             "ModifierSubCode": "",
+        ///             "NetAmount": 4.84,
+        ///             "NetPrice": 4.84,
+        ///             "ParentSubLineId": 0,
+        ///             "Price": 5.32,
+        ///             "PriceReductionOnExclusion": false,
+        ///             "Quantity": 1.00,
+        ///             "TAXAmount": 0.48,
+        ///             "Type": 1,
+        ///             "Uom": ""
+        ///           }, {
+        ///             "Amount": 1.28,
+        ///             "DealCode": "S10025",
+        ///             "DealLineId": 20000,
+        ///             "DealModifierLineId": 70000,
+        ///             "Description": "Jalapeno Popper",
+        ///             "DiscountAmount": 0.00,
+        ///             "DiscountPercent": 0.00,
+        ///             "ItemId": "33430",
+        ///             "LineNumber": 20000,
+        ///             "ManualDiscountAmount": 0.0,
+        ///             "ManualDiscountPercent": 0.0,
+        ///             "ModifierGroupCode": "",
+        ///             "ModifierSubCode": "",
+        ///             "NetAmount": 1.16,
+        ///             "NetPrice": 1.16,
+        ///             "ParentSubLineId": 0,
+        ///             "Price": 1.28,
+        ///             "PriceReductionOnExclusion": false,
+        ///             "Quantity": 1.00,
+        ///             "TAXAmount": 0.12,
+        ///             "Type": 1,
+        ///             "Uom": ""
+        ///           }, {
+        ///             "Amount": 0.90,
+        ///             "DealCode": "S10025",
+        ///             "DealLineId": 30000,
+        ///             "DealModifierLineId": 70000,
+        ///             "Description": "Orange Soda",
+        ///             "DiscountAmount": 0.00,
+        ///             "DiscountPercent": 0.00,
+        ///             "ItemId": "30520",
+        ///             "LineNumber": 30000,
+        ///             "ManualDiscountAmount": 0.0,
+        ///             "ManualDiscountPercent": 0.0,
+        ///             "ModifierGroupCode": "",
+        ///             "ModifierSubCode": "",
+        ///             "NetAmount": 0.82,
+        ///             "NetPrice": 0.82,
+        ///             "ParentSubLineId": 0,
+        ///             "Price": 0.90,
+        ///             "PriceReductionOnExclusion": false,
+        ///             "Quantity": 1.00,
+        ///             "TAXAmount": 0.08,
+        ///             "Type": 1,
+        ///             "Uom": ""
+        ///           }
+        ///         ],
+        ///         "TaxAmount": 0.68,
+        ///         "UomId": "",
+        ///         "VariantDescription": "",
+        ///         "VariantId": ""
+        ///       }
+        ///     ],
+        ///     "OrderPayments": [],
+        ///     "PickupTime": "\/Date(1654574400000+0800)\/",
+        ///     "RestaurantNo": "S0017",
+        ///     "SalesType": "TAKEAWAY",
+        ///     "StoreId": "S0017",
+        ///     "TotalAmount": 7.50,
+        ///     "TotalDiscount": 0.00,
+        ///     "TotalNetAmount": 6.82
+        ///   }
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="request"></param>
         /// <returns></returns>
         [OperationContract]
@@ -736,12 +974,21 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<SalesEntry> SalesEntryGetReturnSales(string receiptNo);
 
+        /// <summary>
+        /// Get Transaction and Sales Invoices for Customer order
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<SalesEntry> SalesEntryGetSalesByOrderId(string orderId);
+
         #endregion
 
         #region Contact
 
         /// <summary>
-        /// Create a new contact
+        /// Create new Member Contact
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberContactCreate<p/><p/>
@@ -831,7 +1078,7 @@ namespace LSOmni.Service
         MemberContact ContactCreate(MemberContact contact);
 
         /// <summary>
-        /// Update a contact
+        /// Update Member Contact
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberContactUpdate<p/><p/>
@@ -909,9 +1156,12 @@ namespace LSOmni.Service
         MemberContact ContactUpdate(MemberContact contact);
 
         /// <summary>
-        /// Get contact by contact Id
+        /// Get Member Contact by card Id. This function returns all informations about the Member contact, 
+        /// including Profiles, Offers, Sales history, Onelist baskets and notifications.
+        /// To get basic information, use ContactGet.
         /// </summary>
         /// <param name="cardId">Card Id</param>
+        /// <param name="numberOfTransReturned">Number of Sales History to return, 0 = all</param>
         /// <returns>Contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -934,11 +1184,29 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        MemberContact ContactGetByCardId(string cardId);
+        MemberContact ContactGetByCardId(string cardId, int numberOfTransReturned);
 
+        /// <summary>
+        /// Search for list of Member Contacts by different searchType methods, 
+        /// will return any contact that will match the search value.
+        /// </summary>
+        /// <param name="searchType">Field to search by</param>
+        /// <param name="search">Search value</param>
+        /// <param name="maxNumberOfRowsReturned">Max number of record, if set to 1 the exact search will be performed</param>
+        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned);
+
+        /// <summary>
+        /// Search for Member Contact by different searchType methods.
+        /// </summary>
+        /// <param name="searchType">Field to search by</param>
+        /// <param name="search">Search value</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        MemberContact ContactGet(ContactSearchType searchType, string search);
 
         /// <summary>
         /// Add new card to existing Member Contact
@@ -953,6 +1221,16 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         double ContactAddCard(string contactId, string cardId, string accountId);
+
+        /// <summary>
+        /// Block Member Contact and remove information from LS Central and LS Commerce
+        /// </summary>
+        /// <param name="accountId"></param>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool ConatctBlock(string accountId, string cardId);
 
         /// <summary>
         /// Get Point balance for Member Card
@@ -1056,7 +1334,7 @@ namespace LSOmni.Service
         string ForgotPassword(string userNameOrEmail);
 
         /// <summary>
-        /// Send in Reset Password request for Member contact
+        /// Send in Reset Password request for Member Contact
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
@@ -1240,6 +1518,17 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         MemberContact LoginWeb(string userName, string password);
+
+        /// <summary>
+        /// Search for Customer
+        /// </summary>
+        /// <param name="searchType"></param>
+        /// <param name="search"></param>
+        /// <param name="maxNumberOfRowsReturned"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned);
 
         #endregion
 
@@ -2216,7 +2505,7 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of hierarchy recipe items</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest);
+        ReplItemRecipeResponse ReplEcommItemRecipe(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
@@ -2235,7 +2524,7 @@ namespace LSOmni.Service
         /// <returns>Replication result object with List of hierarchy modifier lines</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        ReplItemRecipeResponse ReplEcommItemRecipe(ReplRequest replRequest);
+        ReplItemModifierResponse ReplEcommItemModifier(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Item with full detailed data (supports Item distribution)<p/>
@@ -2474,7 +2763,7 @@ namespace LSOmni.Service
         /// Confirm Activity Booking
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : ConfirmActivityV5<p/><p/>
+        /// LS Central WS2 : ConfirmActivityV2 or V3<p/><p/>
         /// If property [Paid] is set, then returns details for the retail basket.<p/>
         /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through LS Commerce Service will update the Activities payment status and assign the sales order document as payment document.<p/> 
         /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
@@ -3087,21 +3376,66 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ClientToken PaymentClientTokenGet(string customerId);
 
+        /// <summary>
+        /// Gets Profile setup for SPG App
+        /// </summary>
+        /// <param name="profileId"></param>
+        /// <param name="storeNo"></param>
+        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo);
 
+        /// <summary>
+        /// Check security status of a profile
+        /// </summary>
+        /// <param name="orderNo"></param>
+        /// <param name="storeNo"></param>
+        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool SecurityCheckProfile(string orderNo, string storeNo);
 
+        /// <summary>
+        /// Allow app to open Gate when exiting the store
+        /// </summary>
+        /// <param name="qrCode"></param>
+        /// <param name="storeNo"></param>
+        /// <param name="devLocation"></param>
+        /// <param name="memberAccount"></param>
+        /// <param name="exitWithoutShopping"></param>
+        /// <param name="isEntering"></param>
+        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering);
 
+        /// <summary>
+        /// Check Order
+        /// </summary>
+        /// <param name="documentId"></param>
+        /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         OrderCheck ScanPayGoOrderCheck(string documentId);
+
+        /// <summary>
+        /// Add Payment token
+        /// </summary>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool TokenEntrySet(ClientToken token);
+
+        /// <summary>
+        /// Get Payment token
+        /// </summary>
+        /// <param name="cardNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ClientTokenResult TokenEntryGet(string cardNo);
 
         #endregion
 

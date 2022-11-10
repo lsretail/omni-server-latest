@@ -42,6 +42,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [DataMember]
         public int ChildrenOrder { get; set; }
         [DataMember]
+        public int LineNo { get; set; }
+        [DataMember]
         public List<HierarchyNode> Nodes { get; set; }
         [DataMember]
         public List<HierarchyLeaf> Leafs { get; set; }

@@ -48,7 +48,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
 
             sqlfrom = " FROM [" + navCompanyName + "Item] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Item HTML] ih ON mt.[No_]=ih.[Item No_]";
+                      " LEFT JOIN [" + navCompanyName + "Item HTML] ih ON mt.[No_]=ih.[Item No_]";
         }
 
         public List<ReplItem> ReplicateItems(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -135,11 +135,10 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 }
             }
 
-            List<ReplItem> list = new List<ReplItem>();
-
             // get records
             sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
+            List<ReplItem> list = new List<ReplItem>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -458,7 +457,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "Item Status Link] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
             sqlfrom +
-            " LEFT OUTER JOIN [" + navCompanyName + pgtablename + "] pg ON pg.[Code]=mt.[" + pgfieldname + "]" +
+            " LEFT JOIN [" + navCompanyName + pgtablename + "] pg ON pg.[Code]=mt.[" + pgfieldname + "]" +
             " WHERE (1=1)";
 
             if (string.IsNullOrWhiteSpace(itemCategoryId) == false)

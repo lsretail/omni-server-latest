@@ -68,5 +68,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public string SetGroupReservation { get; set; }
         [DataMember]
         public decimal UnitPrice { get; set; }
+        [DataMember]
+        public bool SetGroupHeaderStatus { get; set; }
     }
 }

@@ -574,43 +574,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             List<LSCentral.MobileReceiptInfo> receiptLines = new List<LSCentral.MobileReceiptInfo>();
             List<LSCentral.MobileTransDiscountLine> discLines = new List<LSCentral.MobileTransDiscountLine>();
 
-            // find highest lineNo count in sub line, if user has set some
-            int LineCounter = 0;
-            int nr = 0;
-            foreach (OneListItem l in request.Items)
-            {
-                nr = l.LineNumber;
-                if (LineCounter < nr)
-                    LineCounter = nr;
-
-                if (l.OnelistSubLines != null)
-                {
-                    foreach (OneListItemSubLine s in l.OnelistSubLines)
-                    {
-                        nr = s.LineNumber;
-                        if (LineCounter < nr)
-                            LineCounter = nr;
-                    }
-                }
-            }
-
             foreach (OneListItem line in request.Items)
             {
-                if (line.LineNumber == 0)
-                    line.LineNumber = ++LineCounter;
-
                 transLines.Add(MobileTransLine(request.Id, line, request.StoreId));
-                subLines.AddRange(MobileTransSubLine(request.Id, line, ref LineCounter));
+                subLines.AddRange(MobileTransSubLine(request.Id, line));
             }
 
             if (request.PublishedOffers != null)
             {
                 foreach (OneListPublishedOffer offer in request.PublishedOffers)
                 {
-                    if (offer.LineNumber == 0)
-                        offer.LineNumber = ++LineCounter;
-
-                    transLines.Add(MobileTransLine(request.Id, offer, ++LineCounter, request.StoreId));
+                    transLines.Add(MobileTransLine(request.Id, offer, offer.LineNumber, request.StoreId));
                 }
             }
 
@@ -1187,7 +1161,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionLine()
             {
                 Id = id,
-                LineNo = XMLHelper.LineNumberToNav(line.LineNumber),
+                LineNo = line.LineNumber,
                 EntryStatus = (int)EntryStatus.Normal,
                 LineType = (int)LineType.Item,
                 Number = line.ItemId,
@@ -1381,7 +1355,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return new LSCentral.MobileTransactionSubLine()
             {
                 Id = id,
-                LineNo = XMLHelper.LineNumberToNav(rq.LineNumber),
+                LineNo = rq.LineNumber,
                 ParentLineNo = XMLHelper.LineNumberToNav((rq.ParentSubLineId > 0) ? rq.ParentSubLineId : parLineNo),
                 EntryStatus = (int)EntryStatus.Normal,
                 ParentLineIsSubline = (rq.ParentSubLineId > 0) ? 1 : 0,
@@ -1492,7 +1466,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return subLines;
         }
 
-        private List<LSCentral.MobileTransactionSubLine> MobileTransSubLine(string id, OneListItem posline, ref int subLineNo)
+        private List<LSCentral.MobileTransactionSubLine> MobileTransSubLine(string id, OneListItem posline)
         {
             if (posline.OnelistSubLines == null)
                 return new List<LSCentral.MobileTransactionSubLine>();
@@ -1500,9 +1474,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             List<LSCentral.MobileTransactionSubLine> subLines = new List<LSCentral.MobileTransactionSubLine>();
             foreach (OneListItemSubLine subLine in posline.OnelistSubLines)
             {
-                if (subLine.LineNumber == 0)
-                    subLine.LineNumber = ++subLineNo;
-
                 switch (subLine.Type)
                 {
                     case SubLineType.Modifier:
@@ -1879,6 +1850,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     DealCode = line.DealId,
                     DealModifierLineId = line.DealModLine,
                     ItemId = line.Number,
+                    Uom = line.UomId,
                     Description = line.Description,
                     NetPrice = line.NetPrice,
                     Price = line.Price,

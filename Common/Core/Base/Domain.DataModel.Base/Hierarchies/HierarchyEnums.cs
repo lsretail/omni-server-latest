@@ -58,7 +58,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
         [EnumMember]
         Modifier,
         [EnumMember]
-        SpecialGroup
+        SpecialGroup,
+        [EnumMember]
+        Deal
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2021")]

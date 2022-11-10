@@ -22,8 +22,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[Code],mt.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Item Category Code]=mt.[Code]" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[LSC Retail Product Code]=pg.[Code]";
+                      " LEFT JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Item Category Code]=mt.[Code]" +
+                      " LEFT JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[LSC Retail Product Code]=pg.[Code]";
         }
 
         public List<ReplItemCategory> ReplicateItemCategory(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -121,8 +121,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ItemCategory> ItemCategoriesGetAll(string storeId, string culture)
+        public List<ItemCategory> ItemCategoriesGetAll(string storeId, string culture, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<ItemCategory> list = new List<ItemCategory>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -141,18 +142,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItemCategory(reader, culture));
+                            list.Add(ReaderToLoyItemCategory(reader, culture, stat));
                         }
                         reader.Close();
                     }
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public ItemCategory ItemCategoryGetById(string id)
+        public ItemCategory ItemCategoryGetById(string id, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ItemCategory cat = new ItemCategory();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -166,22 +169,24 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            cat = ReaderToLoyItemCategory(reader, string.Empty);
+                            cat = ReaderToLoyItemCategory(reader, string.Empty, stat);
                         }
                         reader.Close();
                     }
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return cat;
         }
 
-        public List<ItemCategory> ItemCategorySearch(string search)
+        public List<ItemCategory> ItemCategorySearch(string search, Statistics stat)
         {
             List<ItemCategory> list = new List<ItemCategory>();
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
+            logger.StatisticStartSub(false, ref stat, out int index);
             SQLHelper.CheckForSQLInjection(search);
 
             char[] sep = new char[] { ' ' };
@@ -211,13 +216,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyItemCategory(reader, string.Empty));
+                            list.Add(ReaderToLoyItemCategory(reader, string.Empty, stat));
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
@@ -232,7 +238,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
         }
 
-        private ItemCategory ReaderToLoyItemCategory(SqlDataReader reader, string culture)
+        private ItemCategory ReaderToLoyItemCategory(SqlDataReader reader, string culture, Statistics stat)
         {
             //item table data
             ItemCategory itemcategory = new ItemCategory()
@@ -242,7 +248,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
 
             ProductGroupRepository prdrep = new ProductGroupRepository(config);
-            itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false);
+            itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false, stat);
 
             ImageRepository imgrep = new ImageRepository(config);
             itemcategory.Images = imgrep.ImageGetByKey("Item Category", itemcategory.Id, string.Empty, string.Empty, 0, false);

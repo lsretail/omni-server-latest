@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -22,7 +22,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumns = "mt.[timestamp],mt.[Parent Item No_],mt.[Item No_],mt.Exclusion,mt.[Price on Exclusion]," +
                          "mt.[Description],mt.[Line No_],mt.[Unit of Measure Code],mt.[Quantity per],il.[Image Id]";
             sqlfrom = " FROM [" + navCompanyName + "BOM Component] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
+                      " LEFT JOIN [" + navCompanyName + "Retail Image Link] il ON il.KeyValue=mt.[Item No_] AND il.[Display Order]=0 AND il.[TableName]='Item'";
         }
 
         public List<ReplItemRecipe> ReplicateItemRecipe(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

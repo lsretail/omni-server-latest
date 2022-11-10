@@ -2,9 +2,9 @@
 using System.Runtime.Serialization;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
-namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
+namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ItemModifier : IDisposable
     {
         public ItemModifier()

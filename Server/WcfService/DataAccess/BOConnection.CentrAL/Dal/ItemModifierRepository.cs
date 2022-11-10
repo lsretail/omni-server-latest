@@ -5,7 +5,7 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
@@ -29,7 +29,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                      "WHERE icc.[Code]=mt.[Trigger Code]) AS [MaxSel]";
 
             sqlfrom = " FROM [" + navCompanyName + "Table Specific Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] tsi " +
-                      "INNER JOIN [" + navCompanyName + "Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Code]=tsi.[Infocode Code]";
+                      "JOIN [" + navCompanyName + "Information Subcode$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Code]=tsi.[Infocode Code]";
         }
 
         public List<ReplItemModifier> ReplicateItemModifier(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -53,7 +53,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             // get records
             sql = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom +
-                " LEFT OUTER JOIN [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
+                " LEFT JOIN [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
                 GetWhereStatementWithStoreDist(fullReplication, keys, "tsi.[Value]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -152,7 +152,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
-                        " LEFT OUTER JOIN [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
+                        " LEFT JOIN [" + navCompanyName + "Infocode$5ecfc871-5d82-43f1-9c54-59685e82318d] ic ON ic.[Code]=mt.[Code]" +
                         " WHERE tsi.[Value]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);

@@ -22,8 +22,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlcolumns = "mt.[Code],mt.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Item Category Code]=mt.[Code]" +
-                      " LEFT OUTER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[Retail Product Code]=pg.[Code]";
+                      " LEFT JOIN [" + navCompanyName + "Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Item Category Code]=mt.[Code]" +
+                      " LEFT JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[Retail Product Code]=pg.[Code]";
         }
 
         public List<ReplItemCategory> ReplicateItemCategory(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -131,7 +131,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + 
                             " WHERE EXISTS(" +
                             " SELECT 1 FROM [" + navCompanyName + "Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg " +
-                            " INNER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Retail Product Code]=pg.[Code] " +
+                            " JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] i ON i.[Retail Product Code]=pg.[Code] " +
                             " WHERE mt.[Code]=pg.[Item Category Code])" +
                             GetSQLStoreDist("it.[No_]", storeId, true) +
                             " ORDER BY mt.[Description]";

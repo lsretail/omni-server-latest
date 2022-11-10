@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.NavWebReference {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="RetailWebServices_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/RetailWebServices")]
-    public partial class RetailWebServices : System.Web.Services.Protocols.SoapHttpClientProtocol {
+    public partial class RetailWebServices : MySoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback WebRequestOperationCompleted;
         

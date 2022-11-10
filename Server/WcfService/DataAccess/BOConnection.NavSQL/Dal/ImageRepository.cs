@@ -96,7 +96,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
                 string sql = "SELECT " + sqlcnt + "mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",mt.[Image Blob]" : string.Empty) +
-                             sqlimgfrom + " INNER JOIN [" + navCompanyName + "Retail Image Link] il ON mt.[Code]=il.[Image Id]" +
+                             sqlimgfrom + " JOIN [" + navCompanyName + "Retail Image Link] il ON mt.[Code]=il.[Image Id]" +
                              " WHERE il.[KeyValue]=@key AND il.[TableName]=@table " +
                              " ORDER BY il.[Display Order]";
 

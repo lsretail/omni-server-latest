@@ -33,55 +33,47 @@ namespace LSOmni.Service
     {
         #region Profile
 
-        /// <summary>
-        /// Get all user profiles
-        /// </summary>
-        /// <returns>List of profiles</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>       
         public virtual List<Profile> ProfilesGetAll()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "ProfileGetAll()");
 
                 ContactBLL profileBLL = new ContactBLL(config, clientTimeOutInSeconds); //no security token needed
-                return profileBLL.ProfilesGetAll();
+                return profileBLL.ProfilesGetAll(stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ProfileGetAll()");
+                HandleExceptions(ex, "ProfileGetAll()");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual List<Profile> ProfilesGetByCardId(string cardId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, string.Format("ProfilesGetByContactId() - cardId:{0}", cardId));
 
                 ContactBLL profileBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return profileBLL.ProfilesGetByCardId(cardId);
+                return profileBLL.ProfilesGetByCardId(cardId, stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ProfilesGetByContactId() cardId:{0}", cardId);
+                HandleExceptions(ex, "ProfilesGetByContactId() cardId:{0}", cardId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -91,31 +83,36 @@ namespace LSOmni.Service
 
         public virtual List<Scheme> SchemesGetAll()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "SchemeGetAll()");
 
                 ContactBLL accountBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return accountBLL.SchemesGetAll();
+                return accountBLL.SchemesGetAll(stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: SchemeGetAll()");
+                HandleExceptions(ex, "SchemeGetAll()");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
-        public virtual MemberContact ContactGetByCardId(string cardId)
+        public virtual MemberContact ContactGetByCardId(string cardId, int numberOfTransReturned)
         {
-            if (string.IsNullOrEmpty(cardId))
-                throw new LSOmniServiceException(StatusCode.MemberCardNotFound, "Missing Card Id");
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, "cardId:{0}", cardId);
+                logger.Debug(config.LSKey.Key, $"cardId:{cardId}");
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                MemberContact contact = contactBLL.ContactGetByCardId(cardId, true);
+                MemberContact contact = contactBLL.ContactGetByCardId(cardId, true, numberOfTransReturned, stat);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 if (config.IsJson && logger.IsDebugEnabled)
@@ -124,59 +121,100 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ContactGetById() cardId:{0}", cardId);
+                HandleExceptions(ex, "ContactGetById() cardId:{0}", cardId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "searchType:{0} searchValue:{1} maxRow:{2}", searchType, search, maxNumberOfRowsReturned);
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                return contactBLL.ContactSearch(searchType, search, maxNumberOfRowsReturned, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "ContactSearch() searchType:{0} searchValue:{1}", searchType, search);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual MemberContact ContactGet(ContactSearchType searchType, string search)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "searchType:{0} searchValue:{1}", searchType, search);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return contactBLL.ContactSearch(searchType, search, maxNumberOfRowsReturned, false);
+                return contactBLL.ContactGet(searchType, search, stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ContactSearch() searchType:{0} searchValue:{1}", searchType, search);
+                HandleExceptions(ex, "ContactGet() searchType:{0} searchValue:{1}", searchType, search);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual MemberContact ContactCreate(MemberContact contact)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, LogJson(contact));
+
                 if (contact.Cards == null)
                     contact.Cards = new List<Card>();
 
-                logger.Debug(config.LSKey.Key, LogJson(contact));
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);//not using security token here, so no security checks
-                MemberContact contactOut = contactBLL.ContactCreate(contact);
+                MemberContact contactOut = contactBLL.ContactCreate(contact, stat);
                 contactOut.Environment.Version = this.Version();
                 ContactSetLocation(contactOut);
                 return contactOut;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ContactCreate()");
+                HandleExceptions(ex, "ContactCreate()");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual MemberContact ContactUpdate(MemberContact contact)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, LogJson(contact));
+
                 if (contact.Cards == null)
                     contact.Cards = new List<Card>();
 
-                logger.Debug(config.LSKey.Key, LogJson(contact));
-
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                MemberContact contactOut = contactBLL.ContactUpdate(contact);
+                MemberContact contactOut = contactBLL.ContactUpdate(contact, stat);
                 contactOut.Environment = new OmniEnvironment();
                 contactOut.Environment.Version = this.Version();
                 contactOut.LoggedOnToDevice = contact.LoggedOnToDevice;
@@ -185,18 +223,51 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ContactUpdate()");
+                HandleExceptions(ex, "ContactUpdate()");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual List<Customer> CustomerSearch(CustomerSearchType searchType, string search, int maxNumberOfRowsReturned)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "searchType:{0} search:{1} maxNumberOfRowsReturned:{2}", searchType, search, maxNumberOfRowsReturned);
+
+                //if not passed in then default to 0
+                if (maxNumberOfRowsReturned < 1)
+                    maxNumberOfRowsReturned = 100; //for backward compatibility
+
+                ContactBLL bll = new ContactBLL(config, clientTimeOutInSeconds);
+                return bll.CustomerSearch(searchType, search, maxNumberOfRowsReturned, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "searchType:{0} search:{1} maxNumberOfRowsReturned:{2}", searchType, search, maxNumberOfRowsReturned);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual MemberContact Login(string userName, string password, string deviceId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
+
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here in login, so no security checks
-                MemberContact contact = contactBLL.Login(userName, password, true, deviceId);
+                MemberContact contact = contactBLL.Login(userName, password, true, deviceId, stat);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 if (config.IsJson && logger.IsDebugEnabled)
@@ -205,18 +276,25 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: Login() userName:{0}  deviceId:{1}", userName, deviceId);
+                HandleExceptions(ex, "Login() userName:{0}  deviceId:{1}", userName, deviceId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceId, string deviceName, bool includeDetails)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "authenticator:{0} deviceId:{1}", authenticator, deviceId);
+
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                MemberContact contact = contactBLL.SocialLogon(authenticator, authenticationId, deviceId, deviceName, includeDetails);
+                MemberContact contact = contactBLL.SocialLogon(authenticator, authenticationId, deviceId, deviceName, includeDetails, stat);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 if (config.IsJson && logger.IsDebugEnabled)
@@ -225,75 +303,103 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: Login() authenticator:{0}  deviceId:{1}", authenticator, deviceId);
+                HandleExceptions(ex, "Login() authenticator:{0}  deviceId:{1}", authenticator, deviceId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual MemberContact LoginWeb(string userName, string password)
         {
-            //security token is in card
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0}", userName);
+
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here, so no security checks
-                return contactBLL.Login(userName, password, false, string.Empty);
+                return contactBLL.Login(userName, password, false, string.Empty, stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: Login() userName:{0}", userName);
+                HandleExceptions(ex, "Login() userName:{0}", userName);
                 return null; //never gets here
             }
-        }
-
-        public virtual bool Logout(string userName, string deviceId)
-        {
-            try
+            finally
             {
-                logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
-
-                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                contactBLL.Logout(userName, deviceId, clientIPAddress);
-                return true;
+                logger.StatisticEndMain(stat);
             }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "Failed: Logout() userName:{0} deviceId:{1}", userName, deviceId);
-            }
-            return false;
         }
 
         public virtual bool ChangePassword(string userName, string newPassword, string oldPassword)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0}", userName);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                contactBLL.ChangePassword(userName, newPassword, oldPassword);
+                contactBLL.ChangePassword(userName, newPassword, oldPassword, stat);
+                return true;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ChangePassword() userName:{0}", userName);
+                HandleExceptions(ex, "ChangePassword() userName:{0}", userName);
+                return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual double ContactAddCard(string contactId, string cardId, string accountId)
         {
-            double points = 0;
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "contactId:{0}, cardId:{1}, accountId:{2}", contactId, cardId, accountId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                points = contactBLL.ContactAddCard(contactId, cardId, accountId);
+                return contactBLL.ContactAddCard(contactId, cardId, accountId, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "contactId:{0}, cardId:{1}, accountId:{2}", contactId, cardId, accountId);
+                return 0;
             }
-            return points;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ConatctBlock(string accountId, string cardId)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "accountId:{0} cardId:{1}", accountId, cardId);
+
+                ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
+                contactBLL.ConatctBlock(accountId, cardId, stat);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "ConatctBlock() accountId:{0} cardId:{1}", accountId, cardId);
+                return false;
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual long CardGetPointBalance(string cardId)
@@ -301,17 +407,23 @@ namespace LSOmni.Service
             if (string.IsNullOrEmpty(cardId))
                 return 0;
 
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0}", cardId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return Convert.ToInt64(contactBLL.CardGetPointBalance(cardId));
+                return Convert.ToInt64(contactBLL.CardGetPointBalance(cardId, stat));
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ContactGetPointBalance() cardId:{0}", cardId);
+                HandleExceptions(ex, "ContactGetPointBalance() cardId:{0}", cardId);
                 return 0;  //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -322,148 +434,225 @@ namespace LSOmni.Service
             if (dateFrom == null)
                 dateFrom = DateTime.MinValue;
 
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0} dateFrom:{1}", cardId, dateFrom);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return contactBLL.CardGetPointEnties(cardId, dateFrom);
+                return contactBLL.CardGetPointEnties(cardId, dateFrom, stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: CardGetPointEnties() cardId:{0}", cardId);
+                HandleExceptions(ex, "CardGetPointEnties() cardId:{0}", cardId);
                 return null;  //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual decimal GetPointRate()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "PointRate");
 
                 CurrencyBLL curBLL = new CurrencyBLL(config, clientTimeOutInSeconds);
-                return curBLL.GetPointRate();
+                return curBLL.GetPointRate(stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: GetPointRate()");
+                HandleExceptions(ex, "GetPointRate()");
                 return 0;  //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual GiftCard GiftCardGetBalance(string cardNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"cardNo:{cardNo}");
+                CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
+                return bll.GiftCardGetBalance(cardNo, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "CardNo:{0}", cardNo);
+                return new GiftCard(string.Empty);
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual bool DeviceSave(string deviceId, string deviceFriendlyName, string platform, string osVersion, string manufacturer, string model)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "deviceId:{0}", deviceId);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 contactBLL.DeviceSave(deviceId, deviceFriendlyName, platform, osVersion, manufacturer, model);
+                return true;
             }
             catch (Exception ex)
             {
-
                 HandleExceptions(ex, "deviceId:{0}", deviceId);
-
+                return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool ResetPassword(string userName, string resetCode, string newPassword)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} resetCode:{1}", userName, resetCode);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                contactBLL.ResetPassword(userName, resetCode, newPassword);
+                contactBLL.ResetPassword(userName, resetCode, newPassword, stat);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "userName:{0} resetCode:{1}", userName, resetCode);
+                return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string ForgotPassword(string userNameOrEmail)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userNameOrEmail:{0}", userNameOrEmail);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return contactBLL.ForgotPassword(userNameOrEmail);
+                return contactBLL.ForgotPassword(userNameOrEmail, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "userNameOrEmail:{0}", userNameOrEmail);
+                return string.Empty;
             }
-            return string.Empty;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string PasswordReset(string userName, string email)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} email:{1}", userName, email);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return contactBLL.PasswordReset(userName, email);
+                return contactBLL.PasswordReset(userName, email, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "userName:{0} email:{1}", userName, email);
+                return string.Empty;
             }
-            return string.Empty;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool PasswordChange(string userName, string token, string newPassword, string oldPassword)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} token:{1}", userName, token);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                contactBLL.PasswordChange(userName, token, newPassword, oldPassword);
+                contactBLL.PasswordChange(userName, token, newPassword, oldPassword, stat);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "userName:{0} token:{1}", userName, token);
                 return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string SPGPassword(string email, string token, string newPassword)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, $"email:{email} token:{token}");
+
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                return contactBLL.SPGPassword(email, token, newPassword);
+                return contactBLL.SPGPassword(email, token, newPassword, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "email:{0}", email);
                 return string.Empty;
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool LoginChange(string oldUserName, string newUserName, string password)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "oldUserName:{0} newUserName:{1}", oldUserName, newUserName);
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                contactBLL.LoginChange(oldUserName, newUserName, password);
+                contactBLL.LoginChange(oldUserName, newUserName, password, stat);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "oldUserName:{0} newUserName:{1}", oldUserName, newUserName);
                 return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         #endregion contact and account
@@ -472,12 +661,14 @@ namespace LSOmni.Service
 
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "pubOfferId:{0}", pubOfferId.ToString());
 
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                List<LoyItem> items = bll.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
+                List<LoyItem> items = bll.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems, stat);
                 foreach (LoyItem item in items)
                 {
                     ItemSetLocation(item);
@@ -486,8 +677,12 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ItemsGetByPublishedOfferId() pubOfferId:{0}", pubOfferId);
+                HandleExceptions(ex, "ItemsGetByPublishedOfferId() pubOfferId:{0}", pubOfferId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -498,11 +693,14 @@ namespace LSOmni.Service
             if (itemId == null)
                 itemId = string.Empty;
 
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "itemId:{0} cardId:{1}", itemId, cardId);
+
                 OfferBLL bll = new OfferBLL(config, clientTimeOutInSeconds);
-                List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, string.Empty);
+                List<PublishedOffer> list = bll.PublishedOffersGet(cardId, itemId, string.Empty, stat);
                 foreach (PublishedOffer it in list)
                 {
                     foreach (ImageView iv in it.Images)
@@ -521,37 +719,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "itemId:{0} cardId:{1}", itemId, cardId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get notification by notification Id
-        /// </summary>
-        /// <param name="notificationId">notification Id</param>
-        /// <returns>Notification</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual Notification NotificationGetById(string notificationId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "notificationId:{0}", notificationId);
 
                 NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
-                Notification notification = notificationBLL.NotificationGetById(notificationId);
+                Notification notification = notificationBLL.NotificationGetById(notificationId, stat);
                 NotificationSetLocation(notification);
                 return notification;
             }
@@ -560,41 +743,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "notificationId:{0}", notificationId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get notification by contact Id
-        /// </summary>
-        /// <param name="cardId">Card Id</param>
-        /// <param name="numberOfNotifications">numberOfNotifications</param>
-        /// <returns>List of notifications</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>      
-        /// </list>        
-        /// </exception>
         public virtual List<Notification> NotificationsGetByCardId(string cardId, int numberOfNotifications)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications);
 
                 NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
-                List<Notification> notificationList = notificationBLL.NotificationsGetByCardId(cardId, numberOfNotifications);
+                List<Notification> notificationList = notificationBLL.NotificationsGetByCardId(cardId, numberOfNotifications, stat);
                 foreach (Notification notification in notificationList)
                 {
                     NotificationSetLocation(notification);
@@ -606,6 +770,10 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         /// <summary>
@@ -613,31 +781,46 @@ namespace LSOmni.Service
         /// </summary>
         public virtual bool NotificationsUpdateStatus(string cardId, List<string> notificationIds, NotificationStatus notificationStatus)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
-                //TODO: add cardId functionality
+                logger.Debug(config.LSKey.Key, $"cardId:{cardId}");
+
                 NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
-                notificationBLL.NotificationsUpdateStatus(notificationIds, notificationStatus);
+                notificationBLL.NotificationsUpdateStatus(notificationIds, notificationStatus, stat);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Empty);
+                return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "Store:{0} ItemIds:{1} LoyaltySchemeCode:{2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
+
                 OfferBLL bll = new OfferBLL(config, clientTimeOutInSeconds);
-                return bll.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+                return bll.DiscountsGet(storeId, itemIds, loyaltySchemeCode, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "Store:{0}, ItemIds:{1}, LoyaltySchemeCode:{2}", storeId, string.Join(", ", itemIds), loyaltySchemeCode);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -645,118 +828,65 @@ namespace LSOmni.Service
 
         #region Item, ItemCategory, ProductGroup
 
-        /// <summary>
-        /// Get item by Id
-        /// </summary>
-        /// <param name="itemId">item id</param>
-        /// <param name="storeId"></param>
-        /// <returns></returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>		
-        /// </list>        
-        /// </exception>
         public virtual LoyItem ItemGetById(string itemId, string storeId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "itemId:{0}", itemId);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                LoyItem item = itemBLL.ItemGetById(itemId, storeId);
+                LoyItem item = itemBLL.ItemGetById(itemId, storeId, stat);
                 ItemSetLocation(item);
                 return item;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ItemGetById() itemId:{0}", itemId);
+                HandleExceptions(ex, "ItemGetById() itemId:{0}", itemId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
-        /// <summary>
-        /// Get item by barcode
-        /// </summary>
-        /// <param name="barcode">barcode</param>
-        /// <param name="storeId"></param>
-        /// <returns>Item</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual LoyItem ItemGetByBarcode(string barcode, string storeId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "barcode:{0}", barcode);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                LoyItem item = itemBLL.ItemGetByBarcode(barcode, storeId);
+                LoyItem item = itemBLL.ItemGetByBarcode(barcode, storeId, stat);
                 ItemSetLocation(item);
                 return item;
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed: ItemGetByBarcode() barcode:{0}", barcode);
+                HandleExceptions(ex, "ItemGetByBarcode() barcode:{0}", barcode);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
-        /// <summary>
-        /// Get item by search string
-        /// </summary>
-        /// <param name="search">search string</param>
-        /// <param name="maxNumberOfItems">max number of items returned</param>
-        /// <param name="includeDetails">includeDetails</param>
-        /// <returns>List of items</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual List<LoyItem> ItemsSearch(string search, int maxNumberOfItems, bool includeDetails)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "search:{0} maxNumberOfItems:{1} includeDetails:{2}", search, maxNumberOfItems, includeDetails);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
                 maxNumberOfItems = (maxNumberOfItems > maxNumberReturned ? maxNumberReturned : maxNumberOfItems); //max 1000 should be the limit!
-                List<LoyItem> itemList = itemBLL.ItemsSearch(search, maxNumberOfItems, includeDetails);
+                List<LoyItem> itemList = itemBLL.ItemsSearch(search, maxNumberOfItems, includeDetails, stat);
                 foreach (LoyItem it in itemList)
                 {
                     ItemSetLocation(it);
@@ -768,96 +898,111 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "search:{0} maxNumberOfItems:{1} includeDetails:{2}", search, maxNumberOfItems, includeDetails);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get the inventory levels for an item in stores close to storeId.  
-        /// </summary>
-        /// <param name="storeId">id of store</param>
-        /// <param name="itemId">id of item</param>
-        /// <param name="variantId">Id of variant</param>
-        /// <param name="arrivingInStockInDays">Include items arriving in inventory in next X days</param>
-        /// <returns></returns>
         public virtual List<InventoryResponse> ItemsInStockGet(string storeId, string itemId, string variantId, int arrivingInStockInDays)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} itemId:{1} variantId:{2} arrivingInStockInDays:{3}", storeId, itemId, variantId, arrivingInStockInDays);
+
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                return bll.ItemsInStockGet(storeId, itemId, variantId, arrivingInStockInDays);
+                return bll.ItemsInStockGet(storeId, itemId, variantId, arrivingInStockInDays, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} itemId:{1} variantId:{2} arrivingInStockInDays:{3}", storeId, itemId, variantId, arrivingInStockInDays);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, items.Count);
+
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                return bll.ItemsInStoreGet(items, storeId, string.Empty, false);
+                return bll.ItemsInStoreGet(items, storeId, string.Empty, false, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} itemCnt:{1}", storeId, items.Count);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual List<InventoryResponse> ItemsInStoreGetEx(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, items.Count);
+
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                return bll.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation);
+                return bll.ItemsInStoreGet(items, storeId, locationId, useSourcingLocation, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} itemCnt:{1}", storeId, items.Count);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<HospAvailabilityResponse> CheckAvailability(List<HospAvailabilityRequest> request, string storeId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} itemCnt:{1}", storeId, request.Count);
+
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                return bll.CheckAvailability(request, storeId);
+                return bll.CheckAvailability(request, storeId, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} itemCnt:{1}", storeId, request.Count);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Returns one page of items at a time
-        /// </summary>
-        /// <param name="storeId">Store Id</param>
-        /// <param name="pageSize">Number of items you want returned</param>
-        /// <param name="pageNumber">Start on page number 1, then increment</param>
-        /// <param name="itemCategoryId">ID of item category</param>
-        /// <param name="productGroupId">ID of product group</param>
-        /// <param name="search">item description</param>
-        /// <param name="includeDetails">include Details </param>
-        /// <returns></returns>
         public virtual List<LoyItem> ItemsPage(string storeId, int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, bool includeDetails)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5}",
                     pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                List<LoyItem> itemList = itemBLL.ItemsPage(storeId, pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
+                List<LoyItem> itemList = itemBLL.ItemsPage(storeId, pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails, stat);
                 foreach (LoyItem it in itemList)
                 {
                     ItemSetLocation(it);
@@ -869,52 +1014,44 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "pageSize:{0} pageNumber:{1} itemCategoryId:{2} productGroupId:{3} search:{4} includeDetails:{5}", pageSize, pageNumber, itemCategoryId, productGroupId, search, includeDetails);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<ItemCustomerPrice> ItemCustomerPricesGet(string storeId, string cardId, List<ItemCustomerPrice> items)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} cardId:{1} itemCnt:{2}", storeId, cardId, items.Count);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                return itemBLL.ItemCustomerPricesGet(storeId, cardId, items);
+                return itemBLL.ItemCustomerPricesGet(storeId, cardId, items, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} cardId:{1}", storeId, cardId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get all item categories
-        /// </summary>
-        /// <returns>List of item categories</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual List<ItemCategory> ItemCategoriesGetAll()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "ItemCategoriesGetAll");
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                List<ItemCategory> categories = itemBLL.ItemCategoriesGetAll();
+                List<ItemCategory> categories = itemBLL.ItemCategoriesGetAll(stat);
                 foreach (ItemCategory ic in categories)
                 {
                     ItemCategorySetLocation(ic);
@@ -926,37 +1063,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "ItemCategoriesGetAll");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get item category by Id
-        /// </summary>
-        /// <param name="itemCategoryId">item category Id</param>
-        /// <returns>Item category</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual ItemCategory ItemCategoriesGetById(string itemCategoryId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "itemCategoryId:{0}", itemCategoryId);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                ItemCategory categories = itemBLL.ItemCategoriesGetById(itemCategoryId);
+                ItemCategory categories = itemBLL.ItemCategoriesGetById(itemCategoryId, stat);
                 ItemCategorySetLocation(categories);
                 return categories;
             }
@@ -965,38 +1087,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "itemCategoryId:{0}", itemCategoryId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get product group by Id
-        /// </summary>
-        /// <param name="productGroupId">product group Id</param>
-        /// <param name="includeDetails">include Details</param>
-        /// <returns>Product group</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "productGroupId:{0} includeDetails:{1}", productGroupId, includeDetails);
 
                 ItemBLL itemBLL = new ItemBLL(config, clientTimeOutInSeconds);
-                ProductGroup pg = itemBLL.ProductGroupGetById(productGroupId, includeDetails);
+                ProductGroup pg = itemBLL.ProductGroupGetById(productGroupId, includeDetails, stat);
                 ProductGroupSetLocation(pg);
                 return pg;
             }
@@ -1004,6 +1110,10 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "productGroupId:{0} includeDetails:{1}", productGroupId, includeDetails);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -1013,12 +1123,14 @@ namespace LSOmni.Service
 
         public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0} includeLines:{1} listType:{2}", cardId, includeLines, listType.ToString());
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                List<OneList> lists = listBLL.OneListGetByCardId(cardId, listType, includeLines);
+                List<OneList> lists = listBLL.OneListGetByCardId(cardId, listType, includeLines, stat);
                 OneListSetLocation(lists);
                 return lists;
             }
@@ -1027,16 +1139,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "cardId:{0} includeLines:{1} listType:{2}", cardId, includeLines, listType);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OneList OneListGetById(string oneListId, bool includeLines)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "oneListId:{0} includeLines:{1}", oneListId, includeLines);
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                OneList list = listBLL.OneListGetById(oneListId, includeLines, false);
+                OneList list = listBLL.OneListGetById(oneListId, includeLines, false, stat);
                 OneListSetLocation(list);
                 return list;
             }
@@ -1045,15 +1163,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "oneListId:{0}", oneListId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OneList OneListSave(OneList oneList, bool calculate)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(oneList));
+
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                OneList list = listBLL.OneListSave(oneList, calculate, false);
+                OneList list = listBLL.OneListSave(oneList, calculate, stat);
                 OneListSetLocation(list);
                 return list;
             }
@@ -1062,115 +1187,139 @@ namespace LSOmni.Service
                 HandleExceptions(ex, string.Empty);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual Order OneListCalculate(OneList oneList)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(oneList));
+
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                return listBLL.OneListCalculate(oneList);
+                return listBLL.OneListCalculate(oneList, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, string.Empty);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OrderHosp OneListHospCalculate(OneList oneList)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(oneList));
+
                 OneListBLL hostBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                return hostBLL.OneListHospCalculate(oneList);
+                return hostBLL.OneListHospCalculate(oneList, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "id:{0}", oneList.Id);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool OneListDeleteById(string oneListId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "oneListId:{0}", oneListId);
+
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                listBLL.OneListDeleteById(oneListId);
+                listBLL.OneListDeleteById(oneListId, stat);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "oneListId:{0}", oneListId);
+                return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "OneListItem.Id:{0} OneList.Id", item.Id, item.OneListId);
+
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                return listBLL.OneListItemModify(onelistId, item, remove, calculate);
+                return listBLL.OneListItemModify(onelistId, item, remove, calculate, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "OneListItem.Id:{0} OneListId:{1}", item.Id, item.OneListId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        public virtual bool OneListLinking(string oneListId, string cardId, string email, LinkStatus status)
+        public virtual bool OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
-                logger.Debug(config.LSKey.Key, "oneListId:{0} cardId:{1} email:{2} status:{3}", oneListId, cardId, email, status);
+                logger.Debug(config.LSKey.Key, "oneListId:{0} cardId:{1} email:{2} phone:{3} status:{4}",
+                        oneListId, cardId, email, phone, status);
+
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                listBLL.OneListLinking(oneListId, cardId, email, status);
+                listBLL.OneListLinking(oneListId, cardId, email, phone, status, stat);
+                return true;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "oneListId:{0}", oneListId);
+                return false;
             }
-            return true;
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         #endregion one list
 
         #region stores
 
-        /// <summary>
-        /// Get all stores
-        /// </summary>
-        /// <returns>List of stores</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual List<Store> StoresGetAll()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "StoresGetAll");
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                List<Store> storeList = storeBLL.StoresGetAll(false);
+                List<Store> storeList = storeBLL.StoresGetAll(false, stat);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);
@@ -1182,37 +1331,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "StoresGetAll");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get store by store Id
-        /// </summary>
-        /// <param name="storeId">store Id</param>
-        /// <returns>Store</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual Store StoreGetById(string storeId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0}", storeId);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                Store store = storeBLL.StoreGetById(storeId, true);
+                Store store = storeBLL.StoreGetById(storeId, true, stat);
                 StoreSetLocation(store);
                 return store;
 
@@ -1222,40 +1356,23 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "storeId:{0}", storeId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get stores by coordinates, latitude and longitude
-        /// </summary>
-        /// <param name="latitude">latitude</param>
-        /// <param name="longitude">longitude</param>
-        /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers</param>
-        /// <returns>List of stores within max distance of coordinates</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "latitude:{0} longitude:{1} maxDistance:{2}",
                     latitude, longitude, maxDistance);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance);
+                List<Store> storeList = storeBLL.StoresGetByCoordinates(latitude, longitude, maxDistance, stat);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);
@@ -1267,42 +1384,23 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "latitude:{0} longitude:{1} maxDistance:{2}", latitude, longitude, maxDistance);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Get stores that have items in stock
-        /// </summary>
-        /// <param name="itemId">item Id</param>
-        /// <param name="variantId">variant Id</param>
-        /// <param name="latitude">latitude</param>
-        /// <param name="longitude">longitude</param>
-        /// <param name="maxDistance">max distance of stores from latitude and longitude in kilometers</param>
-        /// <returns>List of stores that have items in stock</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>		
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// </list>        
-        /// </exception>
         public virtual List<Store> StoresGetbyItemInStock(string itemId, string variantId, double latitude, double longitude, double maxDistance)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "itemId:{0}  variantId:{1} latitude:{2} longitude:{3} maxDistance:{4}",
                     itemId, variantId, latitude, longitude, maxDistance);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                List<Store> storeList = storeBLL.StoresGetbyItemInStock(itemId, variantId, latitude, longitude, maxDistance);
+                List<Store> storeList = storeBLL.StoresGetbyItemInStock(itemId, variantId, latitude, longitude, maxDistance, stat);
                 foreach (Store st in storeList)
                 {
                     StoreSetLocation(st);
@@ -1315,20 +1413,32 @@ namespace LSOmni.Service
                             itemId, variantId, latitude, longitude, maxDistance);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, $"storeId:{storeId} storeGroupCode:{storeGroupCode} itemCategory:{itemCategory} productGroup:{productGroup} itemId:{itemId} variantCode:{variantCode} variantDim1:{variantDim1}");
+
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                return storeBLL.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1);
+                return storeBLL.ReturnPolicyGet(storeId, storeGroupCode, itemCategory, productGroup, itemId, variantCode, variantDim1, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} storeGroup:{1} itemCat:{2} prodGroup:{2}", storeId, storeGroupCode, itemCategory, productGroup);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -1336,109 +1446,131 @@ namespace LSOmni.Service
 
         #region transactions
 
-        /// <summary>
-        /// Get Sales history by card Id
-        /// </summary>
-        /// <param name="cardId">Card Id</param>
-        /// <param name="maxNumberOfEntries">max number of transactions returned</param>
-        /// <returns>List of most recent Transactions for a contact</returns>
-        /// <exception cref="LSOmniServiceException">StatusCodes returned:
-        /// <list type="bullet">
-        /// <item>
-        /// <description>StatusCode.Error</description>
-        /// </item>
-        /// <item>
-        /// <description>StatusCode.SecurityTokenInvalid</description>  
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.UserNotLoggedIn</description>  
-        /// </item>	
-        /// <item>
-        /// <description>StatusCode.DeviceIsBlocked</description>
-        /// </item>	 
-        /// <item>
-        /// <description>StatusCode.AccessNotAllowed</description>
-        /// </item>      
-        /// </list>        
-        /// </exception>
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, int maxNumberOfEntries)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
+
                 TransactionBLL transactionBLL = new TransactionBLL(config, clientTimeOutInSeconds);
                 maxNumberOfEntries = (maxNumberOfEntries > maxNumberReturned ? maxNumberReturned : maxNumberOfEntries); //max 1000 should be the limit!
-                return transactionBLL.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, maxNumberOfEntries);
+                List<SalesEntry> data = transactionBLL.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, maxNumberOfEntries, stat);
+                return data;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual List<SalesEntry> SalesEntriesGetByCardIdEx(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
+
                 TransactionBLL transactionBLL = new TransactionBLL(config, clientTimeOutInSeconds);
                 maxNumberOfEntries = (maxNumberOfEntries > maxNumberReturned ? maxNumberReturned : maxNumberOfEntries); //max 1000 should be the limit!
-                return transactionBLL.SalesEntriesGetByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
+                List<SalesEntry> data = transactionBLL.SalesEntriesGetByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries, stat);
+                return data;
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "cardId:{0} maxNumberOfTransactions:{1}", cardId, maxNumberOfEntries);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual SalesEntry SalesEntryGet(string id, DocumentIdType type)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 TransactionBLL bll = new TransactionBLL(config, clientTimeOutInSeconds);
-                return bll.SalesEntryGet(id, type);
+                return bll.SalesEntryGet(id, type, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "SalesEntryGet");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<SalesEntry> SalesEntryGetReturnSales(string receiptNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, $"receiptNo:{receiptNo}");
+
                 TransactionBLL bll = new TransactionBLL(config, clientTimeOutInSeconds);
-                return bll.SalesEntryGetReturnSales(receiptNo);
+                return bll.SalesEntryGetReturnSales(receiptNo, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "SalesEntryGetReturnSales");
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
-        /// <summary>
-        /// Search for text based on searchType
-        /// </summary>
-        /// <param name="cardId">card Id</param>
-        /// <param name="search">search string</param>
-        /// <param name="searchTypes">enum: All, IOtem, ProductGroup, ItemCategory, OneList, Transaction, Store, Profile, Notification, Offer, Coupon</param>
-        /// <returns>SearchRs</returns>
-        public virtual SearchRs Search(string cardId, string search, SearchType searchTypes)
+        public virtual List<SalesEntry> SalesEntryGetSalesByOrderId(string orderId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, $"orderId:{orderId}");
+
+                TransactionBLL bll = new TransactionBLL(config, clientTimeOutInSeconds);
+                return bll.SalesEntryGetSalesByOrderId(orderId, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "SalesEntryGetSalesByOrderId");
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual SearchRs Search(string cardId, string search, SearchType searchTypes)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "cardId:{0} search:{1} searchType:{2}", cardId, search, searchTypes);
+
                 if (cardId == null)
                     cardId = string.Empty;
 
-                logger.Debug(config.LSKey.Key, "cardId:{0} search:{1} searchType:{2}", cardId, search, searchTypes);
-
                 SearchBLL searchBLL = new SearchBLL(config, clientTimeOutInSeconds);
-                SearchRs searchRs = searchBLL.Search(cardId, search, maxNumberReturned, searchTypes);
+                SearchRs searchRs = searchBLL.Search(cardId, search, maxNumberReturned, searchTypes, stat);
                 SearchSetLocation(searchRs);
                 return searchRs;
             }
@@ -1446,6 +1578,10 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "cardId:{0} search:{1} searchTypes:{2}", cardId, search, searchTypes);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -1455,56 +1591,80 @@ namespace LSOmni.Service
 
         public virtual OrderStatusResponse OrderStatusCheck(string orderId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "orderId:{0}", orderId);
+
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                return bll.OrderStatusCheck(orderId);
+                return bll.OrderStatusCheck(orderId, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "orderId:{0}", orderId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "orderId:{0}", orderId);
+
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                bll.OrderCancel(orderId, storeId, userId, lineNo);
+                bll.OrderCancel(orderId, storeId, userId, lineNo, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "orderId:{0}", orderId);
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
             return string.Empty;
         }
 
         public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request, bool shippingOrder)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(request));
+
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                return bll.OrderAvailabilityCheck(request, shippingOrder);
+                return bll.OrderAvailabilityCheck(request, shippingOrder, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "id:{0}", request.Id);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual SalesEntry OrderCreate(Order request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(request));
+
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                SalesEntry data = bll.OrderCreate(request);
+                SalesEntry data = bll.OrderCreate(request, stat);
                 if (config.IsJson && logger.IsDebugEnabled)
                     Serialization.TestJsonSerialize(typeof(SalesEntry), data);
                 return data;
@@ -1513,16 +1673,23 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "id:{0}", request.Id);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual SalesEntry OrderHospCreate(OrderHosp request)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(request));
+
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                SalesEntry data = hostBLL.OrderHospCreate(request);
+                SalesEntry data = hostBLL.OrderHospCreate(request, stat);
                 if (config.IsJson && logger.IsDebugEnabled)
                     Serialization.TestJsonSerialize(typeof(SalesEntry), data);
                 return data;
@@ -1532,15 +1699,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "id:{0}", request.Id);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool HospOrderCancel(string storeId, string orderId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
+
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                hostBLL.HospOrderCancel(storeId, orderId);
+                hostBLL.HospOrderCancel(storeId, orderId, stat);
                 return true;
             }
             catch (Exception ex)
@@ -1548,20 +1722,31 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "storeId:{0} orderId:{1}", storeId, orderId);
                 return false;
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0} orderId:{1}", storeId, orderId);
+
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                return hostBLL.HospOrderStatus(storeId, orderId);
+                return hostBLL.HospOrderStatus(storeId, orderId, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0} orderId:{1}", storeId, orderId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -1578,12 +1763,15 @@ namespace LSOmni.Service
         /// <returns></returns>
         public virtual Stream ImageStreamGetById(string id, int width, int height)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "id:{0} width:{1} height:{1}", id, width, height);
+
                 ImageSize imgSize = new ImageSize(width, height);
                 ImageBLL bll = new ImageBLL(config);
-                ImageView imgView = bll.ImageSizeGetById(id, imgSize);
+                ImageView imgView = bll.ImageSizeGetById(id, imgSize, stat);
                 if (imgView == null)
                     return null;
                 return ImageConverter.StreamFromBase64(imgView.Image);
@@ -1593,30 +1781,44 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "id:{0} width:{1} height:{1}", id, width, height);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<Hierarchy> HierarchyGet(string storeId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "storeId:{0}", storeId);
+
                 ItemBLL bll = new ItemBLL(config, clientTimeOutInSeconds);
-                return bll.HierarchyGet(storeId);
+                return bll.HierarchyGet(storeId, stat);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "storeId:{0}", storeId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual MobileMenu MenuGet(string storeId, string salesType, bool loadDetails, ImageSize imageSize)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "id:{0} storeId:{1}", salesType, storeId);
+
                 MenuBLL bll = new MenuBLL(config, clientTimeOutInSeconds);
-                MobileMenu mobileMenu = bll.MenuGet(storeId, salesType, loadDetails, imageSize);
+                MobileMenu mobileMenu = bll.MenuGet(storeId, salesType, loadDetails, imageSize, stat);
                 MenuSetLocation(mobileMenu);
                 return mobileMenu;
             }
@@ -1624,6 +1826,10 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "id:{0} storeId:{1}", salesType, storeId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -1634,12 +1840,14 @@ namespace LSOmni.Service
         //id = "LOY",  or  "HOSPLOY"  etc.
         public virtual List<Advertisement> AdvertisementsGetById(string id, string contactId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "id:{0} contactId:{1}", id, contactId);
 
                 AdvertisementBLL bll = new AdvertisementBLL(config, clientTimeOutInSeconds);
-                List<Advertisement> ads = bll.AdvertisementsGetById(id, contactId);
+                List<Advertisement> ads = bll.AdvertisementsGetById(id, contactId, stat);
                 foreach (Advertisement ad in ads)
                 {
                     AdvertisementSetLocation(ad);
@@ -1651,6 +1859,10 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "id:{0} : {1}", id, contactId);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         #endregion Ads
@@ -1659,11 +1871,14 @@ namespace LSOmni.Service
 
         public virtual bool OrderMessageStatusUpdate(OrderMessageStatus orderMessage)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(orderMessage));
+
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
-                bll.OrderMessageStatusUpdate(orderMessage);
+                bll.OrderMessageStatusUpdate(orderMessage, stat);
                 return true;
             }
             catch (Exception ex)
@@ -1671,15 +1886,22 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "OrderId:{0}, Line count:{1}", orderMessage.OrderId, orderMessage.Lines.Count);
                 return false;
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool OrderMessageSave(string orderId, int status, string subject, string message)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "OrderId:{0} Status:{1} Subject:{2} Message:{3}", orderId, status, subject, message);
+
                 OrderMessageBLL bll = new OrderMessageBLL(config, this.deviceId, clientTimeOutInSeconds);
-                bll.OrderMessageSave(orderId, status, subject, message);
+                bll.OrderMessageSave(orderId, status, subject, message, stat);
                 return true;
             }
             catch (Exception ex)
@@ -1687,13 +1909,20 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "OrderId:{0} Status:{1} Subject:{2}", orderId, status, subject);
                 return false;
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string OrderMessageRequestPayment(string orderId, int status, decimal amount, string token, string authcode, string reference)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} token:{3}", orderId, status, amount, token);
+
                 OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
                 return bll.OrderMessageRequestPayment(orderId, status, amount, token, authcode, reference);
             }
@@ -1702,13 +1931,20 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "id:{0} status:{1} amount:{2}", orderId, status, amount);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool OrderMessageRequestPaymentEx(string orderId, int status, decimal amount, string curCode, string token, string authcode, string reference, ref string message)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "id:{0} status:{1} amount:{2} cur:{3} token:{4}", orderId, status, amount, curCode, token);
+
                 OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
                 return bll.OrderMessageRequestPaymentEx(orderId, status, amount, curCode, token, authcode, reference, ref message);
             }
@@ -1717,13 +1953,20 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "id:{0} status:{1} amount:{2}", orderId, status, amount);
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool OrderMessagePayment(OrderMessagePayment orderPayment, ref string message)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, LogJson(orderPayment));
+
                 OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
                 return bll.OrderMessagePayment(orderPayment, ref message);
             }
@@ -1732,22 +1975,31 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "OrderMessagePayment");
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OrderMessageShippingResult OrderMessageShipping(OrderMessageShipping orderShipping)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "Request - " + LogJson(orderShipping));
+
                 OrderMessageBLL bll = new OrderMessageBLL(config, clientTimeOutInSeconds);
-                OrderMessageShippingResult result = bll.OrderMessageShipping(orderShipping);
-                logger.Debug(config.LSKey.Key, "Result - " + LogJson(result));
-                return result;
+                return bll.OrderMessageShipping(orderShipping);
             }
             catch (Exception ex)
             {
                 HandleExceptions(ex, "OrderMessageShipping");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
@@ -1757,8 +2009,12 @@ namespace LSOmni.Service
 
         public virtual bool RecommendedActive()
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
+                logger.Debug(config.LSKey.Key, "IsActive");
+
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
                 return true;
             }
@@ -1767,13 +2023,20 @@ namespace LSOmni.Service
                 HandleExceptions(ex, string.Empty);
                 return false; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual List<RecommendedItem> RecommendedItemsGet(List<string> items)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "item cnt:{0}", items.Count);
+
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
                 return bll.RecommendedItemsGet(items);
             }
@@ -1782,13 +2045,20 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "item cnt:{0}", items.Count);
                 return null; //never gets here
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public bool LSRecommendSetting(string lsKey, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
                 logger.Debug(config.LSKey.Key, "batchNo:{0} modelReaderURL:{1}", batchNo, modelReaderURL);
+
                 LSRecommendsBLL bll = new LSRecommendsBLL(config, true);
                 bll.LSRecommendSetting(XMLHelper.GetString(lsKey), batchNo, modelReaderURL, authenticationURL, clientId, clientSecret, userName, password, numberOfDownloadedItems, numberOfDisplayedItems, filterByInventory, minInvStock);
                 return true;
@@ -1798,6 +2068,10 @@ namespace LSOmni.Service
                 HandleExceptions(ex, "LSRecommend Setting Error");
                 return false;
             }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         #endregion LS Recommends
@@ -1806,40 +2080,156 @@ namespace LSOmni.Service
 
         public virtual ClientToken PaymentClientTokenGet(string customerId)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             try
             {
-                // TODO Handle payment Token
-                return new ClientToken();
+                logger.Debug(config.LSKey.Key, $"customerId:{customerId}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.PaymentClientTokenGet(customerId);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, string.Empty);
+                HandleExceptions(ex, "customerId:{0}", customerId);
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo)
         {
-            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
-            return bll.ScanPayGoProfileGet(profileId, storeNo);
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"profileId:{profileId} storeNo:{storeNo}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.ScanPayGoProfileGet(profileId, storeNo, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "profileId:{0}", profileId);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual bool SecurityCheckProfile(string orderNo, string storeNo)
         {
-            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
-            return bll.SecurityCheckProfile(orderNo, storeNo);
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"orderNo:{orderNo} storeNo:{storeNo}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.SecurityCheckProfile(orderNo, storeNo, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "orderNo:{0} storeNo:{1}", orderNo, storeNo);
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
         {
-            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
-            return bll.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering);
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"qrCode:{qrCode} storeNo:{storeNo}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "qrCode:{0} storeNo:{1}", qrCode, storeNo);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         public virtual OrderCheck ScanPayGoOrderCheck(string documentId)
         {
-            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
-            return bll.ScanPayGoOrderCheck(documentId);
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"documentId:{documentId}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.ScanPayGoOrderCheck(documentId, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "documentId:{0}", documentId);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool TokenEntrySet(ClientToken token)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"token:{token}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.TokenEntrySet(token, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "TokenEntrySet");
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual ClientTokenResult TokenEntryGet(string cardNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"cardNo:{cardNo}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.TokenEntryGet(cardNo, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "cardNo:{0}", cardNo);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
         }
 
         #endregion

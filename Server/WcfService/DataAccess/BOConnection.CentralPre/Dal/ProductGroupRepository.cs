@@ -31,7 +31,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             List<JscKey> keys = GetPrimaryKeys("LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d");
             string prevLastKey = lastKey;
-            string sqlfrom2 = sqlfrom + " LEFT OUTER JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[LSC Retail Product Code]=mt.[Code]";
+            string sqlfrom2 = sqlfrom + " LEFT JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] it ON it.[LSC Retail Product Code]=mt.[Code]";
 
             // get records remaining
             string sql = string.Empty;
@@ -125,8 +125,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems)
+        public List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<ProductGroup> list = new List<ProductGroup>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -140,18 +141,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyProductGroups(reader, culture, includeChildren, includeItems));
+                            list.Add(ReaderToLoyProductGroups(reader, culture, includeChildren, includeItems, stat));
                         }
                         reader.Close();
                     }
                 }
                 connection.Close();
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public List<ProductGroup> ProductGroupSearch(string search)
+        public List<ProductGroup> ProductGroupSearch(string search, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             List<ProductGroup> list = new List<ProductGroup>();
             if (string.IsNullOrWhiteSpace(search))
                 return list;
@@ -184,18 +187,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyProductGroups(reader, string.Empty, false, false));
+                            list.Add(ReaderToLoyProductGroups(reader, string.Empty, false, false, stat));
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail)
+        public ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
         {
+            logger.StatisticStartSub(false, ref stat, out int index);
             ProductGroup prgroup = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -209,13 +214,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            prgroup = ReaderToLoyProductGroups(reader, culture, includeItems, includeItemDetail);
+                            prgroup = ReaderToLoyProductGroups(reader, culture, includeItems, includeItemDetail, stat);
                         }
                         reader.Close();
                     }
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return prgroup;
         }
 
@@ -231,7 +237,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
         }
 
-        private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeItems, bool includeItemDetail)
+        private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
         {
             ImageRepository imgrepo = new ImageRepository(config);
 
@@ -247,7 +253,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (includeItems)
             {
                 ItemRepository itrep = new ItemRepository(config, LSCVersion);
-                prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail);
+                prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail, stat);
                 ImageRepository imrep = new ImageRepository(config);
                 prgr.Images = imrep.ImageGetByKey("LSC Retail Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }
