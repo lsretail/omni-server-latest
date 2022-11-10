@@ -162,9 +162,19 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
                 var storeHours = string.Empty;
 
-                foreach (var storeHour in StoreHours)
+                foreach (var storeHourGroup in StoreHours.GroupBy(x => x.DayOfWeek))
                 {
-                    storeHours += $"{storeHour.NameOfDay}" + Environment.NewLine;
+                    var storeOpeningHours = storeHourGroup.FirstOrDefault(x => x.StoreId == Id);
+
+                    if (storeOpeningHours == null)
+                    {
+                        storeOpeningHours = storeHourGroup.FirstOrDefault();
+                    }
+
+                    if (storeOpeningHours != null)
+                    {
+                        storeHours += $"{storeOpeningHours.NameOfDay} "+ Environment.NewLine;
+                    }
                 }
 
                 return storeHours.TrimEnd(Environment.NewLine.ToCharArray());
@@ -182,10 +192,26 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
                 var storeHours = string.Empty;
 
-                foreach (var storeHour in StoreHours)
+                foreach (var storeHourGroup in StoreHours.GroupBy(x => x.DayOfWeek))
+                {
+                    var storeOpeningHours = storeHourGroup.FirstOrDefault(x => x.StoreId == Id);
+
+                    if (storeOpeningHours == null)
+                    {
+                        storeOpeningHours = storeHourGroup.FirstOrDefault();
+                    }
+
+                    if (storeOpeningHours != null)
+                    {
+                        storeHours += $"{storeOpeningHours.OpenFrom:t} - {storeOpeningHours.OpenTo:t}" + Environment.NewLine;
+                    }
+                }
+                //var storeHours = string.Empty;
+
+                /*foreach (var storeHour in StoreHours)
                 {
                     storeHours += $"{storeHour.OpenFrom:t} - {storeHour.OpenTo:t}" + Environment.NewLine;
-                }
+                }*/
 
                 return storeHours.TrimEnd(Environment.NewLine.ToCharArray());
             }

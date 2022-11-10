@@ -309,7 +309,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ShippingAgentCode = SQLHelper.GetString(reader["Shipping Agent Code"]),
                 ShippingAgentServiceCode = SQLHelper.GetString(reader["Shipping Agent Service Code"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
-                RequestedDeliveryDate = SQLHelper.GetDateTime(reader["Requested Delivery Date"]),
+                RequestedDeliveryDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Requested Delivery Date"]), config.IsJson),
 
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 CustomerId = SQLHelper.GetString(reader["Customer No_"]),

@@ -40,7 +40,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SqlClient, Version=4.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Data.SqlClient.4.5.1\lib\net461\System.Data.SqlClient.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <Private>True</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
@@ -61,6 +64,7 @@
     <Compile Include="Dal\AttributeOptionValueRepository.cs" />
     <Compile Include="Dal\AttributeRepository.cs" />
     <Compile Include="Dal\AttributeValueRepository.cs" />
+    <Compile Include="Dal\BarcodeGS1Repository.cs" />
     <Compile Include="Dal\BarcodeMaskRepository.cs" />
     <Compile Include="Dal\BarcodeMaskSegmentRepository.cs" />
     <Compile Include="Dal\BarcodeRepository.cs" />
@@ -82,6 +86,7 @@
     <Compile Include="Dal\ItemModifierRepository.cs" />
     <Compile Include="Dal\ItemRecipeRepository.cs" />
     <Compile Include="Dal\ItemRepository.cs" />
+    <Compile Include="Dal\ItemTrackingCodeRepository.cs" />
     <Compile Include="Dal\ItemUOMRepository.cs" />
     <Compile Include="Dal\ItemVariantRegistrationRepository.cs" />
     <Compile Include="Dal\MyCustomRepository.cs" />

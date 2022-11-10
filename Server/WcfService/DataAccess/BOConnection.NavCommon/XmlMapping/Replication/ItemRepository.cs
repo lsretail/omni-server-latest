@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
@@ -9,6 +10,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
 {
     public class ItemRepository : BaseRepository
     {
+        public ItemRepository(BOConfiguration config) : base(config)
+        {
+        }
+
         public List<UnitOfMeasure> GetUnitOfMeasure(XMLTableData table)
         {
             List<UnitOfMeasure> list = new List<UnitOfMeasure>();

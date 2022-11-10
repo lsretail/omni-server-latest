@@ -68,6 +68,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public string CustomerOrderNo { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        public DateTime CreateTime { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DocumentRegTime { get; set; }
         [DataMember]
         public string StoreId { get; set; }

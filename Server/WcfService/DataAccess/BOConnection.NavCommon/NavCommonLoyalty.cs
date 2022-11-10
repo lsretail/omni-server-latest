@@ -42,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             LoyItem item = rep.ItemGet(table);
 
             xmlRequest = xml.GetGeneralWebRequestXML("Item Unit of Measure", "Item No.", item.Id);
@@ -259,7 +259,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<HospAvailabilityResponse> list = rep.CurrentAvail(table);
             return list;
         }
@@ -296,7 +296,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemsGet(table);
         }
 
@@ -316,7 +316,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             }
 
             List<LoyItem> items = new List<LoyItem>();
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             foreach (string no in itemno)
             {
                 items.Add(ItemGetById(no));
@@ -336,7 +336,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<VariantRegistration> list = rep.GetVariantRegistrations(table);
             return (list.Count == 0) ? null : list[0];
         }
@@ -349,7 +349,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<ProductGroup> list = rep.ProductGroupGet(table);
             return (list.Count == 0) ? null : list[0];
         }
@@ -362,7 +362,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ProductGroupGet(table);
         }
 
@@ -374,7 +374,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             List<ItemCategory> list = rep.ItemCategoryGet(table);
             return (list.Count == 0) ? null : list[0];
         }
@@ -387,7 +387,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemCategoryGet(table);
         }
 
@@ -398,7 +398,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string xmlResponse = RunOperation(xmlRequest, true, false);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.GetImage(table);
         }
 
@@ -417,7 +417,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             List<ImageView> list = rep.GetImageLinks(table);
 
             foreach (ImageView link in list)
@@ -463,7 +463,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             string xmlRequest;
             string xmlResponse;
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
 
             foreach (string id in itemIds)
             {
@@ -846,7 +846,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.CustomerGet(table);
         }
 
@@ -916,7 +916,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             List<Scheme> list = rep.SchemeGetAll(table);
 
             foreach (Scheme sc in list)
@@ -1104,6 +1104,82 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             };
         }
 
+        public decimal GetPointRate()
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            SetupRepository rep = new SetupRepository(config);
+            return rep.GetPointRate(table);
+        }
+
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        {
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ContactRepository rep = new ContactRepository(config);
+            return rep.PointEntryGet(table);
+        }
+
+        public List<Notification> NotificationsGetByCardId(string cardId)
+        {
+            List<Notification> pol = new List<Notification>();
+            if (string.IsNullOrWhiteSpace(cardId))
+                return pol;
+
+            if (navWS == null)
+            {
+                PublishedOfferXml xml = new PublishedOfferXml();
+                string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, string.Empty, string.Empty);
+                string xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                return xml.NotificationMemberResponseXML(xmlResponse);
+            }
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", cardId);
+            navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
+
+            ContactMapping map = new ContactMapping(config.IsJson);
+            return map.MapFromRootToNotifications(root);
+        }
+
+        public List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
+        {
+            if (navWS == null)
+            {
+                //the name of the Nav requestID changed between 9.00.04 and 9.00.05 
+                //TODO need to get the Notifications for this WS call too
+                PublishedOfferXml xml = new PublishedOfferXml();
+                string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, itemId, storeId);
+                string xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                return xml.PublishedOfferMemberResponseXML(xmlResponse);
+            }
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            ContactMapping map = new ContactMapping(config.IsJson);
+            NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
+
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
+            navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, storeId, ref root);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
+            return map.MapFromRootToPublishedOffers(root);
+        }
+
         #endregion
 
         #region Searches
@@ -1134,7 +1210,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.ContactGet(table);
         }
 
@@ -1148,7 +1224,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemsGet(table);
         }
 
@@ -1162,7 +1238,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ItemCategoryGet(table);
         }
 
@@ -1176,7 +1252,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ItemRepository rep = new ItemRepository();
+            ItemRepository rep = new ItemRepository(config);
             return rep.ProductGroupGet(table);
         }
 
@@ -1190,7 +1266,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.ProfileGet(table);
         }
 
@@ -1204,7 +1280,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.StoresGet(table);
         }
 
@@ -1717,7 +1793,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.SalesEntryList(table);
         }
 
@@ -1765,7 +1841,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
             if (list.Count == 0)
                 return null;
@@ -1827,7 +1903,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
             if (details == false)
                 return list;
@@ -1923,7 +1999,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            ContactRepository rep = new ContactRepository();
+            ContactRepository rep = new ContactRepository(config);
             return rep.DeviceGetById(table);
         }
 
@@ -1940,7 +2016,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             Terminal ter = rep.GetTerminalData(table);
 
             if (ter.InventoryMainMenuId == null)
@@ -1985,6 +2061,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         #endregion
 
+        #region Misc Functions
+
         public Currency CurrencyGetById(string id, string culture)
         {
             NAVWebXml xml = new NAVWebXml();
@@ -1993,7 +2071,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.GetCurrency(table, culture);
         }
 
@@ -2005,59 +2083,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            SetupRepository rep = new SetupRepository();
+            SetupRepository rep = new SetupRepository(config);
             return rep.GetShippingAgentServices(table);
-        }
-
-        public decimal GetPointRate()
-        {
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-            SetupRepository rep = new SetupRepository();
-            return rep.GetPointRate(table);
-        }
-
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
-        {
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-            ContactRepository rep = new ContactRepository();
-            return rep.PointEntryGet(table);
-        }
-
-        public List<Notification> NotificationsGetByCardId(string cardId)
-        {
-            List<Notification> pol = new List<Notification>();
-            if (string.IsNullOrWhiteSpace(cardId))
-                return pol;
-
-            if (navWS == null)
-            {
-                PublishedOfferXml xml = new PublishedOfferXml();
-                string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, string.Empty, string.Empty);
-                string xmlResponse = RunOperation(xmlRequest);
-                HandleResponseCode(ref xmlResponse);
-                return xml.NotificationMemberResponseXML(xmlResponse);
-            }
-
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", cardId);
-            navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
-
-            ContactMapping map = new ContactMapping(config.IsJson);
-            return map.MapFromRootToNotifications(root);
         }
 
         public List<Hierarchy> HierarchyGet(string storeId)
@@ -2160,31 +2187,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return list;
         }
 
-        public List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId)
-        {
-            if (navWS == null)
-            {
-                //the name of the Nav requestID changed between 9.00.04 and 9.00.05 
-                //TODO need to get the Notifications for this WS call too
-                PublishedOfferXml xml = new PublishedOfferXml();
-                string xmlRequest = xml.PublishedOfferMemberRequestXML(cardId, itemId, storeId);
-                string xmlResponse = RunOperation(xmlRequest);
-                HandleResponseCode(ref xmlResponse);
-                return xml.PublishedOfferMemberResponseXML(xmlResponse);
-            }
-
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            ContactMapping map = new ContactMapping(config.IsJson);
-            NavWS.RootGetDirectMarketingInfo root = new NavWS.RootGetDirectMarketingInfo();
-
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
-            navWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, itemId, storeId, ref root);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText);
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
-            return map.MapFromRootToPublishedOffers(root);
-        }
-
         public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1)
         {
             string respCode = string.Empty;
@@ -2224,5 +2226,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleResponseCode(ref xmlResponse);
             return menuxml.MenuGetAllResponseXML(xmlResponse, currency);
         }
+
+        #endregion
     }
 }

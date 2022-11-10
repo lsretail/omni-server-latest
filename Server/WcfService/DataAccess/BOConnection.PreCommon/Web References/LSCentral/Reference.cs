@@ -27,8 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="OmniWrapper_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper")]
-    public partial class OmniWrapper : MySoapHttpClientProtocol
-    {
+    public partial class OmniWrapper : MySoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback BlockMemberAccountOperationCompleted;
         
@@ -61,6 +60,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback CustomerOrderStatusV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback CustomerOrderStatusOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback DeleteMemberCardTokenOperationCompleted;
         
         private System.Threading.SendOrPostCallback EcomCalculateBasketOperationCompleted;
         
@@ -109,6 +110,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback GetItemWithBarcodeOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetKotStatusOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetMemberCardTokenOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetMemberCardOperationCompleted;
         
@@ -200,7 +203,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback MobilelPosGetLastReceiptNoOperationCompleted;
         
+        private System.Threading.SendOrPostCallback SPGLogSecurityCheckResponseOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SPGOpenGateOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SPGOrderCheckV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback SPGOrderCheckOperationCompleted;
         
@@ -219,6 +226,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private System.Threading.SendOrPostCallback SendTransactionHeaderOperationCompleted;
         
         private System.Threading.SendOrPostCallback SendTransactionOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SetMemberCardTokenOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetTokenEntryOperationCompleted;
         
@@ -319,6 +328,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event CustomerOrderStatusCompletedEventHandler CustomerOrderStatusCompleted;
         
         /// <remarks/>
+        public event DeleteMemberCardTokenCompletedEventHandler DeleteMemberCardTokenCompleted;
+        
+        /// <remarks/>
         public event EcomCalculateBasketCompletedEventHandler EcomCalculateBasketCompleted;
         
         /// <remarks/>
@@ -389,6 +401,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event GetKotStatusCompletedEventHandler GetKotStatusCompleted;
+        
+        /// <remarks/>
+        public event GetMemberCardTokenCompletedEventHandler GetMemberCardTokenCompleted;
         
         /// <remarks/>
         public event GetMemberCardCompletedEventHandler GetMemberCardCompleted;
@@ -526,7 +541,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event MobilelPosGetLastReceiptNoCompletedEventHandler MobilelPosGetLastReceiptNoCompleted;
         
         /// <remarks/>
+        public event SPGLogSecurityCheckResponseCompletedEventHandler SPGLogSecurityCheckResponseCompleted;
+        
+        /// <remarks/>
         public event SPGOpenGateCompletedEventHandler SPGOpenGateCompleted;
+        
+        /// <remarks/>
+        public event SPGOrderCheckV2CompletedEventHandler SPGOrderCheckV2Completed;
         
         /// <remarks/>
         public event SPGOrderCheckCompletedEventHandler SPGOrderCheckCompleted;
@@ -554,6 +575,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         /// <remarks/>
         public event SendTransactionCompletedEventHandler SendTransactionCompleted;
+        
+        /// <remarks/>
+        public event SetMemberCardTokenCompletedEventHandler SetMemberCardTokenCompleted;
         
         /// <remarks/>
         public event SetTokenEntryCompletedEventHandler SetTokenEntryCompleted;
@@ -1166,6 +1190,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.CustomerOrderStatusCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CustomerOrderStatusCompleted(this, new CustomerOrderStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:DeleteMemberCardToken", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="DeleteMemberCardToken_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void DeleteMemberCardToken(ref string responseCode, ref string errorText, string memberCardNo, string token) {
+            object[] results = this.Invoke("DeleteMemberCardToken", new object[] {
+                        responseCode,
+                        errorText,
+                        memberCardNo,
+                        token});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+        }
+        
+        /// <remarks/>
+        public void DeleteMemberCardTokenAsync(string responseCode, string errorText, string memberCardNo, string token) {
+            this.DeleteMemberCardTokenAsync(responseCode, errorText, memberCardNo, token, null);
+        }
+        
+        /// <remarks/>
+        public void DeleteMemberCardTokenAsync(string responseCode, string errorText, string memberCardNo, string token, object userState) {
+            if ((this.DeleteMemberCardTokenOperationCompleted == null)) {
+                this.DeleteMemberCardTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnDeleteMemberCardTokenOperationCompleted);
+            }
+            this.InvokeAsync("DeleteMemberCardToken", new object[] {
+                        responseCode,
+                        errorText,
+                        memberCardNo,
+                        token}, this.DeleteMemberCardTokenOperationCompleted, userState);
+        }
+        
+        private void OnDeleteMemberCardTokenOperationCompleted(object arg) {
+            if ((this.DeleteMemberCardTokenCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.DeleteMemberCardTokenCompleted(this, new DeleteMemberCardTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2170,6 +2230,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.GetKotStatusCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetKotStatusCompleted(this, new GetKotStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:GetMemberCardToken", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="GetMemberCardToken_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetMemberCardToken(string memberCardNo, ref RootGetTokenEntryXML getTokenEntryXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("GetMemberCardToken", new object[] {
+                        memberCardNo,
+                        getTokenEntryXML,
+                        responseCode,
+                        errorText});
+            getTokenEntryXML = ((RootGetTokenEntryXML)(results[0]));
+            responseCode = ((string)(results[1]));
+            errorText = ((string)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void GetMemberCardTokenAsync(string memberCardNo, RootGetTokenEntryXML getTokenEntryXML, string responseCode, string errorText) {
+            this.GetMemberCardTokenAsync(memberCardNo, getTokenEntryXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void GetMemberCardTokenAsync(string memberCardNo, RootGetTokenEntryXML getTokenEntryXML, string responseCode, string errorText, object userState) {
+            if ((this.GetMemberCardTokenOperationCompleted == null)) {
+                this.GetMemberCardTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemberCardTokenOperationCompleted);
+            }
+            this.InvokeAsync("GetMemberCardToken", new object[] {
+                        memberCardNo,
+                        getTokenEntryXML,
+                        responseCode,
+                        errorText}, this.GetMemberCardTokenOperationCompleted, userState);
+        }
+        
+        private void OnGetMemberCardTokenOperationCompleted(object arg) {
+            if ((this.GetMemberCardTokenCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetMemberCardTokenCompleted(this, new GetMemberCardTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -4002,6 +4099,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGLogSecurityCheckResponse", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGLogSecurityCheckResponse_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SPGLogSecurityCheckResponse(ref string orderId, ref bool validationSuccessful, string validationError, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SPGLogSecurityCheckResponse", new object[] {
+                        orderId,
+                        validationSuccessful,
+                        validationError,
+                        responseCode,
+                        errorText});
+            orderId = ((string)(results[0]));
+            validationSuccessful = ((bool)(results[1]));
+            responseCode = ((string)(results[2]));
+            errorText = ((string)(results[3]));
+        }
+        
+        /// <remarks/>
+        public void SPGLogSecurityCheckResponseAsync(string orderId, bool validationSuccessful, string validationError, string responseCode, string errorText) {
+            this.SPGLogSecurityCheckResponseAsync(orderId, validationSuccessful, validationError, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SPGLogSecurityCheckResponseAsync(string orderId, bool validationSuccessful, string validationError, string responseCode, string errorText, object userState) {
+            if ((this.SPGLogSecurityCheckResponseOperationCompleted == null)) {
+                this.SPGLogSecurityCheckResponseOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGLogSecurityCheckResponseOperationCompleted);
+            }
+            this.InvokeAsync("SPGLogSecurityCheckResponse", new object[] {
+                        orderId,
+                        validationSuccessful,
+                        validationError,
+                        responseCode,
+                        errorText}, this.SPGLogSecurityCheckResponseOperationCompleted, userState);
+        }
+        
+        private void OnSPGLogSecurityCheckResponseOperationCompleted(object arg) {
+            if ((this.SPGLogSecurityCheckResponseCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SPGLogSecurityCheckResponseCompleted(this, new SPGLogSecurityCheckResponseCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOpenGate", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGOpenGate_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void SPGOpenGate(string qRCode, ref string storeNo, ref string deviceLocation, ref string memberAccountNo, ref bool exitWithoutShopping, ref bool isEntering, ref bool returnValue, ref string responseCode, ref string errorText) {
             object[] results = this.Invoke("SPGOpenGate", new object[] {
@@ -4054,8 +4191,54 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOrderCheckV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGOrderCheckV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SPGOrderCheckV2(string documentID, ref bool orderPaid, ref bool doCheck, ref int numberOfItemsToCheck, ref RootSPGOrderCheck sPGOrderCheckV2XML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SPGOrderCheckV2", new object[] {
+                        documentID,
+                        orderPaid,
+                        doCheck,
+                        numberOfItemsToCheck,
+                        sPGOrderCheckV2XML,
+                        responseCode,
+                        errorText});
+            orderPaid = ((bool)(results[0]));
+            doCheck = ((bool)(results[1]));
+            numberOfItemsToCheck = ((int)(results[2]));
+            sPGOrderCheckV2XML = ((RootSPGOrderCheck)(results[3]));
+            responseCode = ((string)(results[4]));
+            errorText = ((string)(results[5]));
+        }
+        
+        /// <remarks/>
+        public void SPGOrderCheckV2Async(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck sPGOrderCheckV2XML, string responseCode, string errorText) {
+            this.SPGOrderCheckV2Async(documentID, orderPaid, doCheck, numberOfItemsToCheck, sPGOrderCheckV2XML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SPGOrderCheckV2Async(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck sPGOrderCheckV2XML, string responseCode, string errorText, object userState) {
+            if ((this.SPGOrderCheckV2OperationCompleted == null)) {
+                this.SPGOrderCheckV2OperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGOrderCheckV2OperationCompleted);
+            }
+            this.InvokeAsync("SPGOrderCheckV2", new object[] {
+                        documentID,
+                        orderPaid,
+                        doCheck,
+                        numberOfItemsToCheck,
+                        sPGOrderCheckV2XML,
+                        responseCode,
+                        errorText}, this.SPGOrderCheckV2OperationCompleted, userState);
+        }
+        
+        private void OnSPGOrderCheckV2OperationCompleted(object arg) {
+            if ((this.SPGOrderCheckV2Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SPGOrderCheckV2Completed(this, new SPGOrderCheckV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SPGOrderCheck", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SPGOrderCheck_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void SPGOrderCheck(string documentID, ref bool orderPaid, ref bool doCheck, ref int numberOfItemsToCheck, ref RootSPGOrderCheck sPGOrderCheckXML, ref string responseCode, ref string errorText) {
+        public void SPGOrderCheck(string documentID, ref bool orderPaid, ref bool doCheck, ref int numberOfItemsToCheck, ref RootSPGOrderCheck1 sPGOrderCheckXML, ref string responseCode, ref string errorText) {
             object[] results = this.Invoke("SPGOrderCheck", new object[] {
                         documentID,
                         orderPaid,
@@ -4067,18 +4250,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             orderPaid = ((bool)(results[0]));
             doCheck = ((bool)(results[1]));
             numberOfItemsToCheck = ((int)(results[2]));
-            sPGOrderCheckXML = ((RootSPGOrderCheck)(results[3]));
+            sPGOrderCheckXML = ((RootSPGOrderCheck1)(results[3]));
             responseCode = ((string)(results[4]));
             errorText = ((string)(results[5]));
         }
         
         /// <remarks/>
-        public void SPGOrderCheckAsync(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck sPGOrderCheckXML, string responseCode, string errorText) {
+        public void SPGOrderCheckAsync(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck1 sPGOrderCheckXML, string responseCode, string errorText) {
             this.SPGOrderCheckAsync(documentID, orderPaid, doCheck, numberOfItemsToCheck, sPGOrderCheckXML, responseCode, errorText, null);
         }
         
         /// <remarks/>
-        public void SPGOrderCheckAsync(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck sPGOrderCheckXML, string responseCode, string errorText, object userState) {
+        public void SPGOrderCheckAsync(string documentID, bool orderPaid, bool doCheck, int numberOfItemsToCheck, RootSPGOrderCheck1 sPGOrderCheckXML, string responseCode, string errorText, object userState) {
             if ((this.SPGOrderCheckOperationCompleted == null)) {
                 this.SPGOrderCheckOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSPGOrderCheckOperationCompleted);
             }
@@ -4415,6 +4598,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.SendTransactionCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SendTransactionCompleted(this, new SendTransactionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:SetMemberCardToken", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="SetMemberCardToken_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void SetMemberCardToken(string memberCardNo, RootSetTokenEntry setTokenEntryXML, ref string responseCode, ref string errorText) {
+            object[] results = this.Invoke("SetMemberCardToken", new object[] {
+                        memberCardNo,
+                        setTokenEntryXML,
+                        responseCode,
+                        errorText});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+        }
+        
+        /// <remarks/>
+        public void SetMemberCardTokenAsync(string memberCardNo, RootSetTokenEntry setTokenEntryXML, string responseCode, string errorText) {
+            this.SetMemberCardTokenAsync(memberCardNo, setTokenEntryXML, responseCode, errorText, null);
+        }
+        
+        /// <remarks/>
+        public void SetMemberCardTokenAsync(string memberCardNo, RootSetTokenEntry setTokenEntryXML, string responseCode, string errorText, object userState) {
+            if ((this.SetMemberCardTokenOperationCompleted == null)) {
+                this.SetMemberCardTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetMemberCardTokenOperationCompleted);
+            }
+            this.InvokeAsync("SetMemberCardToken", new object[] {
+                        memberCardNo,
+                        setTokenEntryXML,
+                        responseCode,
+                        errorText}, this.SetMemberCardTokenOperationCompleted, userState);
+        }
+        
+        private void OnSetMemberCardTokenOperationCompleted(object arg) {
+            if ((this.SetMemberCardTokenCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetMemberCardTokenCompleted(this, new SetMemberCardTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -5503,14 +5722,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009616")]
-    public partial class Token {
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="Token", Namespace="urn:microsoft-dynamics-nav/xmlports/x99009616")]
+    public partial class Token1 {
         
         private int entryNoField;
         
         private string tokenIdField;
         
-        private string token1Field;
+        private string tokenField;
         
         private string tokenTypeField;
         
@@ -5526,10 +5745,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool defaultTokenField;
         
-        public Token() {
+        private System.DateTime expiryDateField;
+        
+        public Token1() {
             this.entryNoField = 0;
             this.createdField = new System.DateTime(0);
             this.defaultTokenField = false;
+            this.expiryDateField = new System.DateTime(0);
         }
         
         /// <remarks/>
@@ -5553,13 +5775,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("Token")]
-        public string Token1 {
+        public string Token {
             get {
-                return this.token1Field;
+                return this.tokenField;
             }
             set {
-                this.token1Field = value;
+                this.tokenField = value;
             }
         }
         
@@ -5632,6 +5853,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.defaultTokenField = value;
             }
         }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ExpiryDate {
+            get {
+                return this.expiryDateField;
+            }
+            set {
+                this.expiryDateField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -5642,13 +5875,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x99009616")]
     public partial class RootSetTokenEntry {
         
-        private Token[] tokenField;
+        private Token1[] tokenField;
         
         private string[] textField;
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("Token")]
-        public Token[] Token {
+        public Token1[] Token {
             get {
                 return this.tokenField;
             }
@@ -21708,8 +21941,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016680")]
-    public partial class SPGOrderCheckCOLine {
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="SPGOrderCheckCOLine", Namespace="urn:microsoft-dynamics-nav/xmlports/x10016680")]
+    public partial class SPGOrderCheckCOLine1 {
         
         private string documentIDField;
         
@@ -21731,7 +21964,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal amountField;
         
-        public SPGOrderCheckCOLine() {
+        public SPGOrderCheckCOLine1() {
             this.lineNoField = 0;
             this.quantityField = ((decimal)(0m));
             this.amountField = ((decimal)(0m));
@@ -21843,12 +22076,308 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10016680")]
+    [System.Xml.Serialization.XmlTypeAttribute(TypeName="RootSPGOrderCheck", Namespace="urn:microsoft-dynamics-nav/xmlports/x10016680")]
+    public partial class RootSPGOrderCheck1 {
+        
+        private SPGOrderCheckCOLine1[] sPGOrderCheckCOLineField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGOrderCheckCOLine")]
+        public SPGOrderCheckCOLine1[] SPGOrderCheckCOLine {
+            get {
+                return this.sPGOrderCheckCOLineField;
+            }
+            set {
+                this.sPGOrderCheckCOLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033006")]
+    public partial class SPGOrderCheckCOPayment {
+        
+        private string cardTypeField;
+        
+        private string externalRefField;
+        
+        private decimal paymentAmountField;
+        
+        private string autorizationCodeField;
+        
+        public SPGOrderCheckCOPayment() {
+            this.paymentAmountField = ((decimal)(0m));
+        }
+        
+        /// <remarks/>
+        public string CardType {
+            get {
+                return this.cardTypeField;
+            }
+            set {
+                this.cardTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalRef {
+            get {
+                return this.externalRefField;
+            }
+            set {
+                this.externalRefField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal PaymentAmount {
+            get {
+                return this.paymentAmountField;
+            }
+            set {
+                this.paymentAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string AutorizationCode {
+            get {
+                return this.autorizationCodeField;
+            }
+            set {
+                this.autorizationCodeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033006")]
+    public partial class SPGOrderCheckCOLine {
+        
+        private string documentIDField;
+        
+        private int lineNoField;
+        
+        private string numberField;
+        
+        private string itemDescriptionField;
+        
+        private string variantCodeField;
+        
+        private string variantDescriptionField;
+        
+        private string unitofMeasureCodeField;
+        
+        private string uoMDescriptionField;
+        
+        private decimal quantityField;
+        
+        private decimal amountField;
+        
+        private bool alwaysCheckField;
+        
+        public SPGOrderCheckCOLine() {
+            this.lineNoField = 0;
+            this.quantityField = ((decimal)(0m));
+            this.amountField = ((decimal)(0m));
+            this.alwaysCheckField = false;
+        }
+        
+        /// <remarks/>
+        public string DocumentID {
+            get {
+                return this.documentIDField;
+            }
+            set {
+                this.documentIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int LineNo {
+            get {
+                return this.lineNoField;
+            }
+            set {
+                this.lineNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string Number {
+            get {
+                return this.numberField;
+            }
+            set {
+                this.numberField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ItemDescription {
+            get {
+                return this.itemDescriptionField;
+            }
+            set {
+                this.itemDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantCode {
+            get {
+                return this.variantCodeField;
+            }
+            set {
+                this.variantCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VariantDescription {
+            get {
+                return this.variantDescriptionField;
+            }
+            set {
+                this.variantDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UnitofMeasureCode {
+            get {
+                return this.unitofMeasureCodeField;
+            }
+            set {
+                this.unitofMeasureCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string UoMDescription {
+            get {
+                return this.uoMDescriptionField;
+            }
+            set {
+                this.uoMDescriptionField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Quantity {
+            get {
+                return this.quantityField;
+            }
+            set {
+                this.quantityField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal Amount {
+            get {
+                return this.amountField;
+            }
+            set {
+                this.amountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool AlwaysCheck {
+            get {
+                return this.alwaysCheckField;
+            }
+            set {
+                this.alwaysCheckField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033006")]
+    public partial class SPGOrderCheckCOHeader {
+        
+        private string statusField;
+        
+        private System.DateTime statusDateTimeField;
+        
+        public SPGOrderCheckCOHeader() {
+            this.statusDateTimeField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string Status {
+            get {
+                return this.statusField;
+            }
+            set {
+                this.statusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public System.DateTime StatusDateTime {
+            get {
+                return this.statusDateTimeField;
+            }
+            set {
+                this.statusDateTimeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033006")]
     public partial class RootSPGOrderCheck {
+        
+        private SPGOrderCheckCOHeader[] sPGOrderCheckCOHeaderField;
         
         private SPGOrderCheckCOLine[] sPGOrderCheckCOLineField;
         
+        private SPGOrderCheckCOPayment[] sPGOrderCheckCOPaymentField;
+        
         private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGOrderCheckCOHeader")]
+        public SPGOrderCheckCOHeader[] SPGOrderCheckCOHeader {
+            get {
+                return this.sPGOrderCheckCOHeaderField;
+            }
+            set {
+                this.sPGOrderCheckCOHeaderField = value;
+            }
+        }
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("SPGOrderCheckCOLine")]
@@ -21858,6 +22387,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.sPGOrderCheckCOLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("SPGOrderCheckCOPayment")]
+        public SPGOrderCheckCOPayment[] SPGOrderCheckCOPayment {
+            get {
+                return this.sPGOrderCheckCOPaymentField;
+            }
+            set {
+                this.sPGOrderCheckCOPaymentField = value;
             }
         }
         
@@ -41887,6 +42427,168 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
+    public partial class Token {
+        
+        private string accountNoField;
+        
+        private string tokenIdField;
+        
+        private string tokenValueField;
+        
+        private string tokenTypeField;
+        
+        private string pSPIDField;
+        
+        private string cardMaskField;
+        
+        private System.DateTime expiryDateField;
+        
+        private bool defaultTokenField;
+        
+        private System.DateTime createdDateTimeField;
+        
+        public Token() {
+            this.expiryDateField = new System.DateTime(0);
+            this.defaultTokenField = false;
+            this.createdDateTimeField = new System.DateTime(0);
+        }
+        
+        /// <remarks/>
+        public string AccountNo {
+            get {
+                return this.accountNoField;
+            }
+            set {
+                this.accountNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenId {
+            get {
+                return this.tokenIdField;
+            }
+            set {
+                this.tokenIdField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenValue {
+            get {
+                return this.tokenValueField;
+            }
+            set {
+                this.tokenValueField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TokenType {
+            get {
+                return this.tokenTypeField;
+            }
+            set {
+                this.tokenTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PSPID {
+            get {
+                return this.pSPIDField;
+            }
+            set {
+                this.pSPIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CardMask {
+            get {
+                return this.cardMaskField;
+            }
+            set {
+                this.cardMaskField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01")]
+        public System.DateTime ExpiryDate {
+            get {
+                return this.expiryDateField;
+            }
+            set {
+                this.expiryDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool DefaultToken {
+            get {
+                return this.defaultTokenField;
+            }
+            set {
+                this.defaultTokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
+        public System.DateTime CreatedDateTime {
+            get {
+                return this.createdDateTimeField;
+            }
+            set {
+                this.createdDateTimeField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10032996")]
+    public partial class RootGetTokenEntryXML {
+        
+        private Token[] tokenField;
+        
+        private string[] textField;
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("Token")]
+        public Token[] Token {
+            get {
+                return this.tokenField;
+            }
+            set {
+                this.tokenField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlTextAttribute()]
+        public string[] Text {
+            get {
+                return this.textField;
+            }
+            set {
+                this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.4084.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033081")]
     public partial class KotStatus {
         
@@ -49418,6 +50120,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool shipLineField;
         
+        private bool serviceItemField;
+        
         public CustomerOrderGetCOLineV3() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -49437,6 +50141,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.clickAndCollectLineField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
             this.shipLineField = false;
+            this.serviceItemField = false;
         }
         
         /// <remarks/>
@@ -49850,6 +50555,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.shipLineField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ServiceItem {
+            get {
+                return this.serviceItemField;
+            }
+            set {
+                this.serviceItemField = value;
             }
         }
     }
@@ -51178,6 +51894,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private bool validateTaxParameterField;
         
+        private bool serviceItemField;
+        
         public CustomerOrderCreateCOLineV5() {
             this.lineNoField = 0;
             this.netPriceField = ((decimal)(0m));
@@ -51197,6 +51915,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
             this.validateTaxParameterField = false;
+            this.serviceItemField = false;
         }
         
         /// <remarks/>
@@ -51561,6 +52280,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.validateTaxParameterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(Order=33)]
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool ServiceItem {
+            get {
+                return this.serviceItemField;
+            }
+            set {
+                this.serviceItemField = value;
             }
         }
     }
@@ -57126,6 +57857,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void DeleteMemberCardTokenCompletedEventHandler(object sender, DeleteMemberCardTokenCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class DeleteMemberCardTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal DeleteMemberCardTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void EcomCalculateBasketCompletedEventHandler(object sender, EcomCalculateBasketCompletedEventArgs e);
     
     /// <remarks/>
@@ -58136,6 +58901,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootKotStatus)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void GetMemberCardTokenCompletedEventHandler(object sender, GetMemberCardTokenCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetMemberCardTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetMemberCardTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public RootGetTokenEntryXML getTokenEntryXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootGetTokenEntryXML)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
             }
         }
     }
@@ -60136,6 +60943,56 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void SPGLogSecurityCheckResponseCompletedEventHandler(object sender, SPGLogSecurityCheckResponseCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SPGLogSecurityCheckResponseCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SPGLogSecurityCheckResponseCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string orderId {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public bool validationSuccessful {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void SPGOpenGateCompletedEventHandler(object sender, SPGOpenGateCompletedEventArgs e);
     
     /// <remarks/>
@@ -60218,6 +61075,72 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void SPGOrderCheckV2CompletedEventHandler(object sender, SPGOrderCheckV2CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SPGOrderCheckV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SPGOrderCheckV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool orderPaid {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public bool doCheck {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public int numberOfItemsToCheck {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootSPGOrderCheck sPGOrderCheckV2XML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootSPGOrderCheck)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[5]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void SPGOrderCheckCompletedEventHandler(object sender, SPGOrderCheckCompletedEventArgs e);
     
     /// <remarks/>
@@ -60258,10 +61181,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         }
         
         /// <remarks/>
-        public RootSPGOrderCheck sPGOrderCheckXML {
+        public RootSPGOrderCheck1 sPGOrderCheckXML {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((RootSPGOrderCheck)(this.results[3]));
+                return ((RootSPGOrderCheck1)(this.results[3]));
             }
         }
         
@@ -60622,6 +61545,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootSendTransaction)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void SetMemberCardTokenCompletedEventHandler(object sender, SetMemberCardTokenCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetMemberCardTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SetMemberCardTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
             }
         }
     }

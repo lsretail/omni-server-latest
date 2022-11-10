@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using LSOmni.Common.Util;
 using LSRetail.Omni.DiscountEngine.DataModels;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
@@ -12,6 +13,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
 {
     public class SetupRepository : BaseRepository
     {
+        public SetupRepository(BOConfiguration config) : base(config)
+        {
+        }
+
         public Currency GetCurrency(XMLTableData table, string culture)
         {
             if (table == null || table.NumberOfValues == 0)
@@ -283,8 +288,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Transaction No.": entry.Id = field.Values[i]; break;
                         case "POS Terminal No.": entry.TerminalId = field.Values[i]; break;
                         case "Store No.": entry.StoreId = field.Values[i]; break;
-                        case "Date": date = XMLHelper.GetWebDateTime(field.Values[i]); break;
-                        case "Time": time = XMLHelper.GetWebDateTime(field.Values[i]); break;
+                        case "Date": date = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Time": time = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                     }
                 }
                 entry.DocumentRegTime = ConvertTo.NavJoinDateAndTime(date, time);

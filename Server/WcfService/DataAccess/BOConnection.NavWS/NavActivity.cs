@@ -130,17 +130,15 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual bool ActivityCheckAccess(string searchReference, string locationNo, string gateNo, bool registerAccessEntry, int checkType, out string messageString)
         {
             if (NAVVersion < new Version("17.5"))
-            {
-                messageString = "Not Supported";
-                return false;
-            }
+                throw new NotImplementedException();
+
             return LSCWSBase.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
         }
 
         public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
         {
             if (NAVVersion < new Version("17.5"))
-                return "Not Supported";
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
         }
@@ -148,15 +146,15 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual string ActivityInsertGroupReservation(Reservation request)
         {
             if (NAVVersion < new Version("17.5"))
-                return "Not Supported";
-            
+                throw new NotImplementedException();
+
             return LSCWSBase.ActivityInsertGroupReservation(request);
         }
 
         public virtual string ActivityUpdateGroupReservation(Reservation request)
         {
             if (NAVVersion < new Version("17.5"))
-                return "Not Supported";
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityUpdateGroupReservation(request);
         }
@@ -172,9 +170,25 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual bool ActivityDeleteGroup(string groupNo, int lineNo)
         {
             if (NAVVersion < new Version("17.5"))
-                return false;
+                throw new NotImplementedException();
 
             return LSCWSBase.ActivityDeleteGroup(groupNo, lineNo);
+        }
+
+        public virtual string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityUpdateGroupHeaderStatus(groupNo, statusCode);
+        }
+
+        public virtual ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityPreSellProduct(locationNo, productNo, promoCode, contactNo, quantity);
         }
 
         #endregion

@@ -487,7 +487,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrEmpty(ret) == false)
                 return new List<XMLTableData>();
 
-            return xml.SyncResponseXML(xmlResponse, out restorePoint);
+            return xml.SyncResponseXML(xmlResponse, out _);
         }
 
         private XMLTableData GetTableData(NAVWebXml xml, List<XMLTableData> tablist, int tableidtoget, out bool endoftable, out int totalrecs, out int restorePoint)

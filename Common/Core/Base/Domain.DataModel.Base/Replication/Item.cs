@@ -67,6 +67,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             SeasonCode = string.Empty;
             ItemCategoryCode = string.Empty;
             ItemFamilyCode = string.Empty;
+            ItemTrackingCode = string.Empty;
             MustKeyInComment = 0;
         }
 
@@ -171,6 +172,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string VendorId { get; set; }
         [DataMember]
         public string VendorItemId { get; set; }
+        [DataMember]
+        public string CountryOfOrigin { get; set; }
 
         [DataMember]
         public decimal GrossWeight { get; set; }
@@ -180,6 +183,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string ItemCategoryCode { get; set; }
         [DataMember]
         public string ItemFamilyCode { get; set; }
+        [DataMember]
+        public string ItemTrackingCode { get; set; }
         [DataMember]
         public decimal UnitsPerParcel { get; set; }
         [DataMember]

@@ -230,6 +230,24 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplItemVariantResponse ReplEcommItemVariants(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
+
+            ReplItemVariantResponse rs = new ReplItemVariantResponse()
+            {
+                ItemVariants = BOAppConnection.ReplicateItemVariant(replRequest.AppId, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.ItemVariants.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
         public virtual ReplPriceResponse ReplEcommPrices(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;
@@ -599,7 +617,7 @@ namespace LSOmni.BLL.Loyalty
 
             ReplValidationScheduleResponse rs = new ReplValidationScheduleResponse()
             {
-                Schedules = BOAppConnection.ReplicateValidationSchedule(replRequest.AppId, string.Empty, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                Schedules = BOAppConnection.ReplicateValidationSchedule(replRequest.AppId, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
                 RecordsRemaining = recordsRemaining,
                 LastKey = lastkey,
                 MaxKey = maxkey

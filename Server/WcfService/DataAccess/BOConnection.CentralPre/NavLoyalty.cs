@@ -59,6 +59,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
+        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        {
+            return LSCentralWSBase.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
+        }
+
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
             return LSCentralWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering, stat);
@@ -69,14 +74,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ScanPayGoOrderCheck(documentId, stat);
         }
 
-        public virtual bool TokenEntrySet(ClientToken token, Statistics stat)
+        public virtual bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat)
         {
-            return LSCentralWSBase.TokenEntrySet(token, stat);
+            return LSCentralWSBase.TokenEntrySet(token, deleteToken, stat);
         }
 
-        public virtual ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        public virtual List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat)
         {
-            return LSCentralWSBase.TokenEntryGet(cardNo, stat);
+            return LSCentralWSBase.TokenEntryGet(accountNo, hotelToken, stat);
         }
 
         #endregion

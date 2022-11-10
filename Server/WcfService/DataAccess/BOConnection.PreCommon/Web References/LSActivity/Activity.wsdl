@@ -1215,6 +1215,32 @@
           </sequence>
         </complexType>
       </element>
+      <element name="PreSellActivityProduct">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="locationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="promoCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="productNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="quantity" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="returnItemNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnUnitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorMsg" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PreSellActivityProduct_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="returnItemNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnUnitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorMsg" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="SellMembershipV2">
         <complexType>
           <sequence>
@@ -1333,6 +1359,23 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="attributeSequence" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="UpdateGroupHeaderStatus">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="groupNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="setStatusCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="UpdateGroupHeaderStatus_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
           </sequence>
         </complexType>
@@ -1811,6 +1854,12 @@
   <message name="InsertReservation_Result">
     <part name="parameters" element="tns:InsertReservation_Result" />
   </message>
+  <message name="PreSellActivityProduct">
+    <part name="parameters" element="tns:PreSellActivityProduct" />
+  </message>
+  <message name="PreSellActivityProduct_Result">
+    <part name="parameters" element="tns:PreSellActivityProduct_Result" />
+  </message>
   <message name="SellMembershipV2">
     <part name="parameters" element="tns:SellMembershipV2" />
   </message>
@@ -1840,6 +1889,12 @@
   </message>
   <message name="SetAttribute_Result">
     <part name="parameters" element="tns:SetAttribute_Result" />
+  </message>
+  <message name="UpdateGroupHeaderStatus">
+    <part name="parameters" element="tns:UpdateGroupHeaderStatus" />
+  </message>
+  <message name="UpdateGroupHeaderStatus_Result">
+    <part name="parameters" element="tns:UpdateGroupHeaderStatus_Result" />
   </message>
   <message name="UpdateGroupReservation">
     <part name="parameters" element="tns:UpdateGroupReservation" />
@@ -2062,6 +2117,10 @@
       <input name="InsertReservation" message="tns:InsertReservation" />
       <output name="InsertReservation_Result" message="tns:InsertReservation_Result" />
     </operation>
+    <operation name="PreSellActivityProduct">
+      <input name="PreSellActivityProduct" message="tns:PreSellActivityProduct" />
+      <output name="PreSellActivityProduct_Result" message="tns:PreSellActivityProduct_Result" />
+    </operation>
     <operation name="SellMembershipV2">
       <input name="SellMembershipV2" message="tns:SellMembershipV2" />
       <output name="SellMembershipV2_Result" message="tns:SellMembershipV2_Result" />
@@ -2081,6 +2140,10 @@
     <operation name="SetAttribute">
       <input name="SetAttribute" message="tns:SetAttribute" />
       <output name="SetAttribute_Result" message="tns:SetAttribute_Result" />
+    </operation>
+    <operation name="UpdateGroupHeaderStatus">
+      <input name="UpdateGroupHeaderStatus" message="tns:UpdateGroupHeaderStatus" />
+      <output name="UpdateGroupHeaderStatus_Result" message="tns:UpdateGroupHeaderStatus_Result" />
     </operation>
     <operation name="UpdateGroupReservation">
       <input name="UpdateGroupReservation" message="tns:UpdateGroupReservation" />
@@ -2409,6 +2472,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="PreSellActivityProduct">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:PreSellActivityProduct" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="PreSellActivityProduct">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="PreSellActivityProduct_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="SellMembershipV2">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembershipV2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="SellMembershipV2">
@@ -2451,6 +2523,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="SetAttribute_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="UpdateGroupHeaderStatus">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:UpdateGroupHeaderStatus" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="UpdateGroupHeaderStatus">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="UpdateGroupHeaderStatus_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

@@ -69,6 +69,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
+        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return false;
+
+            return LSCWSBase.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
+        }
+
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
@@ -87,20 +95,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ScanPayGoOrderCheck(documentId, stat);
         }
 
-        public virtual bool TokenEntrySet(ClientToken token, Statistics stat)
+        public virtual bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 throw new NotImplementedException();
 
-            return LSCWSBase.TokenEntrySet(token, stat);
+            return LSCWSBase.TokenEntrySet(token, deleteToken, stat);
         }
 
-        public virtual ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        public virtual List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 throw new NotImplementedException();
 
-            return LSCWSBase.TokenEntryGet(cardNo, stat);
+            return LSCWSBase.TokenEntryGet(accountNo, hotelToken, stat);
         }
 
         #endregion
@@ -901,7 +909,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplLoyVendorItemMapping> ReplEcommVendorItemMapping(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            throw new NotImplementedException();
+            if (NAVVersion < new Version("17.5"))
+                return NavWSBase.ReplicateVendorItems(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+
+            return LSCWSBase.ReplicateVendorItems(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslation> ReplEcommDataTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -914,7 +925,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            throw new NotImplementedException();
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ReplicateHtmlTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -946,7 +960,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommCountryCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateCountryCode(appId, string.Empty, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateCountryCode(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplInvStatus> ReplEcommInventoryStatus(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

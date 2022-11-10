@@ -64,10 +64,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private bool useFixedSizeGrid;
         private int fixedSizeGridRows;
         private int fixedSizeGridColumns;
+        private int fontSize;
 
         private bool showHardwareOverlay;
         private bool openDevTools;
-
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";
@@ -82,6 +82,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         public const string ShowHardwareOverlayKey = "ShowHardwareOverlayKey";
         public const string OpenDevToolsKey = "OpenDevToolsKey";
+        public const string FontSizeKey = "FontSizeKey";
 
         [System.Xml.Serialization.XmlElementAttribute("AutoUpdate")]
         public bool AutoUpdate
@@ -90,6 +91,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 autoUpdate = value;
+
+                if (autoUpdate)
+                {
+                    AutoUpdatePath = string.Empty;
+                }
+
                 NotifyPropertyChanged();
             }
         }
@@ -171,6 +178,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("FontSize")]
+        public int FontSize
+        {
+            get => fontSize;
+            set
+            {
+                fontSize = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [System.Xml.Serialization.XmlElementAttribute("FixedSizeGridColumns")]
         public int FixedSizeGridColumns
         {
@@ -227,6 +245,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     {
         private string description;
         private string folderId;
+        private string backupId;
         private string url;
         private int timeout;
         private string lsKey;
@@ -288,6 +307,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         {
             this.description = config.description;
             this.folderId = config.folderId;
+            this.backupId = config.backupId;
             this.url = config.url;
             this.timeout = config.timeout;
             this.lsKey = config.lsKey;
@@ -361,6 +381,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         {
             Description = "";
             folderId = "";
+            backupId = "";
             UserName = "";
             Password = "";
             Url = string.Empty;
@@ -455,6 +476,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 folderId = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("BackupId")]
+        public string BackupId
+        {
+            get => backupId;
+            set
+            {
+                backupId = value;
                 NotifyPropertyChanged();
             }
         }

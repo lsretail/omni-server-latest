@@ -476,15 +476,15 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, $"cardNo:{cardNo}");
+                logger.Debug(config.LSKey.Key, $"cardNo:{cardNo} entryType:{entryType}");
                 CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
-                return bll.GiftCardGetBalance(cardNo, stat);
+                return bll.GiftCardGetBalance(cardNo, entryType, stat);
             }
             catch (Exception ex)
             {
@@ -2144,6 +2144,28 @@ namespace LSOmni.Service
             }
         }
 
+        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"orderNo:{orderNo} validationError:{validationError}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "orderNo:{0} validationError:{1}", orderNo, validationError);
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
@@ -2188,7 +2210,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual bool TokenEntrySet(ClientToken token)
+        public virtual bool TokenEntrySet(ClientToken token, bool deleteToken)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -2197,7 +2219,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, $"token:{token}");
 
                 ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
-                return bll.TokenEntrySet(token, stat);
+                return bll.TokenEntrySet(token, deleteToken, stat);
             }
             catch (Exception ex)
             {
@@ -2210,20 +2232,20 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual ClientTokenResult TokenEntryGet(string cardNo)
+        public virtual List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, $"cardNo:{cardNo}");
+                logger.Debug(config.LSKey.Key, $"accountNo:{accountNo}");
 
                 ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
-                return bll.TokenEntryGet(cardNo, stat);
+                return bll.TokenEntryGet(accountNo, hotelToken, stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "cardNo:{0}", cardNo);
+                HandleExceptions(ex, "accountNo:{0}", accountNo);
                 return null; //never gets here
             }
             finally

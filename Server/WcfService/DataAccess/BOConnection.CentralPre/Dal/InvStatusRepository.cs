@@ -17,16 +17,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public virtual List<ReplInvStatus> ReplicateInventoryStatus(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            string sqlcolumns = "mt.[timestamp],mt.[Item No_],mt.[Variant Code],mt.[Store No_],mt.[Net Inventory],mt.[Replication Counter]";
-            string sqlfrom = " FROM [" + navCompanyName + "LSC Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
-            string sqlwhere = " WHERE " + ((fullReplication) ? "mt.[timestamp]>@cnt" : "mt.[Replication Counter]>@cnt");
-            sqlwhere += string.IsNullOrEmpty(storeId) ? string.Empty : " AND mt.[Store No_]=@sid";
-
+            string sqlcolumns = "mt.[Item No_],mt.[Variant Code],mt.[Store No_],mt.[Net Inventory],mt.[Replication Counter]";
             if (LSCVersion >= new Version("18.4"))
-            {
                 sqlcolumns += ",mt.[Sourcing Location Inventory]";
-            }
 
+            string sqlfrom = " FROM [" + navCompanyName + "LSC Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+
+            SQLHelper.CheckForSQLInjection(storeId);
+            string sqlwhere = string.IsNullOrEmpty(storeId) ? string.Empty : $" AND mt.[Store No_]='{storeId}'";
+
+            List<JscKey> keys = GetPrimaryKeys("LSC Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d");
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
@@ -37,37 +37,35 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     connection.Open();
 
-                    // get records remaining
-                    command.CommandText = "SELECT COUNT(*)" + sqlfrom + sqlwhere;
-                    command.Parameters.AddWithValue("@sid", storeId);
-                    if (fullReplication)
-                    {
-                        SqlParameter par = new SqlParameter("@cnt", SqlDbType.Timestamp);
-                        if (lastKey == "0")
-                            par.Value = new byte[] { 0 };
-                        else
-                            par.Value = StringToByteArray(lastKey);
-                        command.Parameters.Add(par);
-                    }
-                    else
-                    {
-                        command.Parameters.AddWithValue("@cnt", lastKey);
-                    }
-                    TraceSqlCommand(command);
-                    recordsRemaining = (int)command.ExecuteScalar();
-
                     if (string.IsNullOrEmpty(maxKey) || maxKey == "0")
                     {
                         // get max value
-                        command.CommandText = "SELECT MAX([Replication Counter])" + sqlfrom + sqlwhere;
+                        command.CommandText = "SELECT MAX([Replication Counter])" + sqlfrom;
                         var ret = command.ExecuteScalar();
                         maxKey = (ret == DBNull.Value) ? "0" : ret.ToString();
                     }
 
-                    // get data
-                    command.CommandText = "SELECT " + ((batchSize > 0) ? "TOP(" + batchSize.ToString() + ") " : string.Empty) + sqlcolumns + sqlfrom + sqlwhere + " ORDER BY " +
-                        ((fullReplication) ? "mt.[timestamp]" : "mt.[Replication Counter]");
+                    // get records remaining
+                    if (fullReplication)
+                    {
+                        string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, sqlwhere, "mt.[Item No_]", storeId, false);
+                        recordsRemaining = GetRecordCount(0, lastKey, sql, keys, ref maxKey);
 
+                        command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(true, keys, sqlwhere, "mt.[Item No_]", storeId, true);
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                    }
+                    else
+                    {
+                        command.CommandText = "SELECT COUNT(*)" + sqlfrom + " WHERE mt.[Replication Counter]>@cnt" + sqlwhere;
+                        command.Parameters.AddWithValue("@cnt", lastKey);
+                        TraceSqlCommand(command);
+                        recordsRemaining = (int)command.ExecuteScalar();
+
+                        command.CommandText = GetSQL(false, batchSize) + sqlcolumns + sqlfrom + " WHERE mt.[Replication Counter]>@cnt" + sqlwhere + " ORDER BY mt.[Replication Counter]";
+                    }
+
+                    // get data
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         int cnt = 0;

@@ -25,6 +25,12 @@ namespace LSOmni.Common.Util
             return Guid.NewGuid().ToString().ToUpper();
         }
 
+        public static string NewGuidWithoutDashes()
+        {
+            return NewGuidString().Replace("-", "");
+        }
+
+
         public static string GuidWithDash(string theGuid)
         {
             //theGuid may not have a dash in it, so return a string with dash

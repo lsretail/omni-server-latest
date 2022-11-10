@@ -7,7 +7,7 @@ using System.Net;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4161.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public class MySoapHttpClientProtocol : System.Web.Services.Protocols.SoapHttpClientProtocol
@@ -17,7 +17,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         protected override WebRequest GetWebRequest(Uri uri)
         {
             var req = base.GetWebRequest(uri);
-            req.Headers.Add("Authorization", AuthToken);
+            if (string.IsNullOrEmpty(AuthToken) == false)
+                req.Headers.Add("Authorization", AuthToken);
             return req;
         }
     }

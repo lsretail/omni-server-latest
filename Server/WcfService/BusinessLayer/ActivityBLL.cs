@@ -127,6 +127,16 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityDeleteGroup(groupNo, lineNo);
         }
 
+        public virtual string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode)
+        {
+            return BOActConnection.ActivityUpdateGroupHeaderStatus(groupNo, statusCode);
+        }
+
+        public virtual ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity)
+        {
+            return BOActConnection.ActivityPreSellProduct(locationNo, productNo, promoCode, contactNo, quantity);
+        }
+
         #region Data Get (Replication)
 
         public virtual List<ActivityProduct> ActivityProductsGet()

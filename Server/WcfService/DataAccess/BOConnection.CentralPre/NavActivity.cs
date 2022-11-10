@@ -116,6 +116,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityDeleteGroup(groupNo, lineNo); 
         }
 
+        public virtual string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode)
+        {
+            return LSCentralWSBase.ActivityUpdateGroupHeaderStatus(groupNo, statusCode);
+        }
+
+        public virtual ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity)
+        {
+            return LSCentralWSBase.ActivityPreSellProduct(locationNo, productNo, promoCode, contactNo, quantity);
+        }
+
         #endregion
 
         #region Data Get (Replication)

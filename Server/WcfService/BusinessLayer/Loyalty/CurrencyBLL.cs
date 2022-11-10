@@ -24,9 +24,10 @@ namespace LSOmni.BLL.Loyalty
             return this.BOLoyConnection.GetPointRate(stat);
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, Statistics stat)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
         {
-            return BOLoyConnection.GiftCardGetBalance(cardNo, config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType), stat);
+            string etype = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
+            return BOLoyConnection.GiftCardGetBalance(cardNo, etype, stat);
         }
     }
 }

@@ -252,19 +252,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 1: line.TenderTypeId = data.FieldValue; break;
                         case 5: line.Name = data.FieldValue; break;
                         case 10: line.TenderFunction = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 11: line.ValidOnMobilePOS = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 11: line.ValidOnMobilePOS = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 25: line.ChangeTenderId = data.FieldValue; break;
                         case 26: line.AboveMinimumTenderId = data.FieldValue; break;
                         case 30: line.MinimumChangeAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case 35: line.RoundingMethode = ConvertTo.SafeInt(data.FieldValue); break;
                         case 40: line.Rounding = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 110: line.AllowOverTender = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 110: line.AllowOverTender = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 111: line.MaximumOverTenderAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 115: line.AllowUnderTender = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 120: line.ReturnAllowed = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 125: line.OpenDrawer = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 225: line.ForeignCurrency = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 305: line.CountingRequired = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 115: line.AllowUnderTender = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 120: line.ReturnAllowed = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 125: line.OpenDrawer = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 225: line.ForeignCurrency = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 305: line.CountingRequired = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 390: line.StoreID = data.FieldValue; break;
                     }
                 }
@@ -358,6 +358,95 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             return list;
         }
 
+        public List<ReplDiscountValidation> GetPeriod(string ret, string tenderMap, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplDiscountValidation> list = new List<ReplDiscountValidation>();
+            ReplOTableData result = JsonToTableData(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.TableData.TableDataUpd.RecRefJson.Records)
+            {
+                ReplDiscountValidation line = new ReplDiscountValidation(IsJson);
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldNo)
+                    {
+                        case 1: line.Id = data.FieldValue; break;
+                        case 2: line.Description = data.FieldValue; break;
+                        case 10: line.StartDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
+                        case 11: line.EndDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
+                        case 12: line.StartTime = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 13: line.EndTime = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 14: line.TimeWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+
+                        case 15: line.MondayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 16: line.MondayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 17: line.MondayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 18: line.TuesdayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 19: line.TuesdayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 20: line.TuesdayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 21: line.WednesdayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 22: line.WednesdayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 23: line.WednesdayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 24: line.ThursdayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 25: line.ThursdayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 26: line.ThursdayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 27: line.FridayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 28: line.FridayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 29: line.FridayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 30: line.SaturdayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 31: line.SaturdayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 32: line.SaturdayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 33: line.SundayStart = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 34: line.SundayEnd = ConvertTo.SafeJsonTime(ConvertTo.SafeTime(data.FieldValue), IsJson); break;
+                        case 35: line.SundayWithinBounds = ConvertTo.SafeBoolean(data.FieldValue); break;
+
+                        case 40: line.EndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 41: line.MondayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 42: line.TuesdayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 43: line.WednesdayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 44: line.ThursdayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 45: line.FridayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 46: line.SaturdayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case 47: line.SundayEndAfterMidnight = ConvertTo.SafeBoolean(data.FieldValue); break;
+                    }
+                }
+                list.Add(line);
+            }
+
+            if (result.TableData.TableDataDel == null || result.TableData.TableDataDel.RecRefJson == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.TableData.TableDataDel.RecRefJson.Records)
+            {
+                ReplDiscountValidation line = new ReplDiscountValidation(IsJson)
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldNo)
+                    {
+                        case 1: line.Id = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
         public List<ReplStaff> GetReplStaff(string ret, ref string lastKey, ref int recordsRemaining)
         {
             List<ReplStaff> list = new List<ReplStaff>();
@@ -379,12 +468,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     {
                         case 1: line.Id = data.FieldValue; break;
                         case 5: line.Password = data.FieldValue; break;
-                        case 6: line.ChangePassword = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 6: line.ChangePassword = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 7: line.StoreID = data.FieldValue; break;
                         case 35: line.FirstName = data.FieldValue; break;
                         case 36: line.LastName = data.FieldValue; break;
                         case 90: line.NameOnReceipt = data.FieldValue; break;
-                        case 111: line.Blocked = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 111: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 112: line.BlockingDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
                         case 1100: line.InventoryActive = ConvertTo.SafeBoolean(data.FieldValue); break;
                         case 1101: line.InventoryMainMenu = data.FieldValue; break;
@@ -616,6 +705,63 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             return list;
         }
 
+        public List<ReplCountryCode> GetReplCountry(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplCountryCode> list = new List<ReplCountryCode>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplCountryCode line = new ReplCountryCode();
+                string lcy = string.Empty;
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: line.Code = data.FieldValue; break;
+                        case 2: line.Name = data.FieldValue; break;
+                        case 13: line.CustomerNo = data.FieldValue; break;
+                        case 19: line.TaxPostGroup = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+
+            if (result.DataSet.DataSetDel == null || result.DataSet.DataSetDel.DynDataSet == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetDel.DynDataSet.DataSetRows)
+            {
+                ReplCountryCode line = new ReplCountryCode()
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetDel.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: line.Code = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
         public List<ReplHierarchy> GetReplHierarchy(string ret, ref string lastKey, ref int recordsRemaining)
         {
             List<ReplHierarchy> list = new List<ReplHierarchy>();
@@ -638,7 +784,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 1: line.Id = data.FieldValue; break;
                         case 2: line.Description = data.FieldValue; break;
                         case 3: line.Type = (HierarchyType)ConvertTo.SafeInt(data.FieldValue); break;
-                        case 4: line.StartDate = ConvertTo.SafeDateTime(data.FieldValue); break;
+                        case 4: line.StartDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
                         case 5: line.Priority = ConvertTo.SafeInt(data.FieldValue); break;
                         case 6: line.SalesType = data.FieldValue; break;
                         case 7: line.ValidationScheduleId = data.FieldValue; break;
@@ -1171,7 +1317,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 10: line.ValueType = ConvertTo.SafeInt(data.FieldValue); break;
                         case 100: line.Value = data.FieldValue; break;
                         case 101: line.ValueDec = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 102: line.ValueDate = ConvertTo.SafeDateTime(data.FieldValue); break;
+                        case 102: line.ValueDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
                     }
                 }
                 list.Add(line);
@@ -1231,8 +1377,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 9: line.PhoneLocal = data.FieldValue; break;
                         case 22: line.Currency = data.FieldValue; break;
                         case 35: line.Country = data.FieldValue; break;
-                        case 39: line.Blocked = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 82: line.IncludeTax = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 39: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 82: line.IncludeTax = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 91: line.ZipCode = data.FieldValue; break;
                         case 92: line.County = data.FieldValue; break;
                         case 102: line.Email = data.FieldValue; break;
@@ -1305,7 +1451,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 23: line.State = data.FieldValue; break;
                         case 26: line.County = data.FieldValue; break;
                         case 27: line.Country = data.FieldValue; break;
-                        case 100: line.Blocked = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 100: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 5054: line.FirstName = data.FieldValue; break;
                         case 5055: line.MiddleName = data.FieldValue; break;
                         case 5056: line.LastName = data.FieldValue; break;
@@ -1370,7 +1516,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 1: line.Id = data.FieldValue; break;
                         case 2: line.Name = data.FieldValue; break;
                         case 39: line.Blocked = ConvertTo.SafeBoolean(data.FieldValue); break;
-                        case 54: line.UpdatedOnUtc = ConvertTo.SafeDateTime(data.FieldValue); break;
+                        case 54: line.UpdatedOnUtc = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
                     }
                 }
                 
@@ -1404,6 +1550,63 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     switch (fld.FieldNo)
                     {
                         case 1: line.Id = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
+        public List<ReplCollection> GetReplCollection(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplCollection> list = new List<ReplCollection>();
+            ReplOTableData result = JsonToTableData(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.TableData.TableDataUpd.RecRefJson.Records)
+            {
+                ReplCollection line = new ReplCollection();
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldNo)
+                    {
+                        case 1: line.UnitOfMeasureId = data.FieldValue; break;
+                        case 2: line.ItemId = data.FieldValue; break;
+                        case 3: line.VariantId = data.FieldValue; break;
+                        case 4: line.Quantity = ConvertTo.SafeDecimal(data.FieldValue); break;
+                    }
+                }
+                list.Add(line);
+            }
+
+            if (result.TableData.TableDataDel == null || result.TableData.TableDataDel.RecRefJson == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.TableData.TableDataDel.RecRefJson.Records)
+            {
+                ReplCollection line = new ReplCollection()
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldNo)
+                    {
+                        case 1: line.UnitOfMeasureId = data.FieldValue; break;
+                        case 2: line.ItemId = data.FieldValue; break;
+                        case 3: line.VariantId = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

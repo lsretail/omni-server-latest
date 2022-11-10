@@ -47,22 +47,22 @@ begin
 end;
 
 // enable/disable user/pass text boxes depending on selected auth type. A user/pass is only required for SQL Auth
-procedure  NavSQLAuthOnChange (Sender: TObject);
+procedure NavSQLAuthOnChange(Sender: TObject);
 begin
   Log('NavSQLAuthOnChange called');
   if NavSQLPage_chkWindowsAuth.Checked then
   begin
-    NavSQLPage_lblUser.Enabled := false;
-    NavSQLPage_lblPassword.Enabled := false;
-    NavSQLPage_txtUsername.Enabled := false;
-    NavSQLPage_txtPassword.Enabled := false;
+    NavSQLPage_lblUser.Enabled := False;
+    NavSQLPage_lblPassword.Enabled := False;
+    NavSQLPage_txtUsername.Enabled := False;
+    NavSQLPage_txtPassword.Enabled := False;
   end
   Else
   begin
-    NavSQLPage_lblUser.Enabled := true;
-    NavSQLPage_lblPassword.Enabled := true;
-    NavSQLPage_txtUsername.Enabled := true;
-    NavSQLPage_txtPassword.Enabled := true;
+    NavSQLPage_lblUser.Enabled := True;
+    NavSQLPage_lblPassword.Enabled := True;
+    NavSQLPage_txtUsername.Enabled := True;
+    NavSQLPage_txtPassword.Enabled := True;
   end
 end;
 
@@ -109,7 +109,7 @@ begin
     MsgBox(GetExceptionMessage, mbError, MB_OK);
   end;
 
-  Result := true;
+  Result := True;
 end;
 
 procedure NavSQLPageTestConnectionClick(Sender: TObject);
@@ -251,6 +251,7 @@ begin
     Width := ScaleX(225);
     Height := ScaleY(18);
     ShowHint := True;
+    TabOrder := 4;
     Hint := 'Select the LS Central version range that is currently being used.';
     Style := csDropDownList;
     Items.Add('LS Nav 14 & earlier');
@@ -282,7 +283,7 @@ begin
     Width := ScaleX(177);
     Height := ScaleY(17);
     Checked := False;
-    TabOrder := 4;
+    TabOrder := 5;
     TabStop := True;
     OnClick := @NavSQLAuthOnChange;
     Enabled := True;
@@ -299,7 +300,7 @@ begin
     Width := ScaleX(185);
     Height := ScaleY(17);
     Checked := True;
-    TabOrder := 5;
+    TabOrder := 6;
     OnClick := @NavSQLAuthOnChange;
     Enabled := True;
   end;
@@ -326,7 +327,7 @@ begin
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
-    TabOrder := 6;
+    TabOrder := 7;
   end;
 
   { lblPassword }
@@ -351,7 +352,7 @@ begin
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := True;
-    TabOrder := 7;
+    TabOrder := 8;
   end;
 
   { NavSQLPage_ConnectButton }
@@ -364,7 +365,7 @@ begin
       Width := ScaleX(141);
       Height := ScaleY(21);
       Enabled := False;
-      TabOrder := 8;
+      TabOrder := 9;
       Caption := 'Test SQL Connection';
       OnClick := @NavSQLPageTestConnectionClick;
       ShowHint := True;

@@ -13,9 +13,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
     {
         // Key: Item No.,Variant Dimension 1,Variant Dimension 2,Variant Dimension 3,Variant Dimension 4,Variant Dimension 5,Variant Dimension 6
         const int TABLEID = 10001414;
+        const int TABLEORGID = 5401;
 
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
+        private string sqlorgcolumns = string.Empty;
+        private string sqlorgfrom = string.Empty;
 
         public ItemVariantRegistrationRepository(BOConfiguration config) : base(config)
         {
@@ -27,6 +30,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                          "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+
+            sqlorgcolumns = "mt.[Item No_],mt.[Code],mt.[Description],mt.[Description 2]";
+
+            sqlorgfrom = " FROM [" + navCompanyName + "Item Variant$437dbf0e-84ff-417a-965d-ed2bb9650972] mt";
         }
 
         public List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -164,6 +171,101 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
+        public List<ReplItemVariant> ReplicateItemVariant(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
+
+            List<JscKey> keys = GetPrimaryKeys("Item Variant$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            // get records remaining
+            string sql = string.Empty;
+            if (fullReplication)
+            {
+                sql = "SELECT COUNT(*)" + sqlorgfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Item No_]", storeId, false);
+            }
+            recordsRemaining = GetRecordCount(TABLEORGID, lastKey, sql, keys, ref maxKey);
+
+            List<JscActions> actions = LoadActions(fullReplication, TABLEORGID, batchSize, ref lastKey, ref recordsRemaining);
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) + sqlorgcolumns + sqlorgfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[Item No_]", storeId, true);
+
+            List<ReplItemVariant> list = new List<ReplItemVariant>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    if (fullReplication)
+                    {
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int cnt = 0;
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToItemVariant(reader, out lastKey));
+                                cnt++;
+                            }
+                            reader.Close();
+                            recordsRemaining -= cnt;
+                        }
+                        if (recordsRemaining <= 0)
+                            lastKey = maxKey;   // this should be the highest PreAction id;
+                    }
+                    else
+                    {
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                string[] par = act.ParamValue.Split(';');
+                                if (par.Length < 2 || par.Length != keys.Count)
+                                    continue;
+
+                                list.Add(new ReplItemVariant()
+                                {
+                                    ItemId = par[0],
+                                    VariantId = par[1],
+                                    IsDeleted = true
+                                });
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToItemVariant(reader, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                        if (string.IsNullOrEmpty(maxKey))
+                            maxKey = lastKey;
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            return list;
+        }
+
         public List<VariantRegistration> VariantRegGetByItemId(string itemId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
@@ -233,6 +335,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 VariantDimension6 = SQLHelper.GetString(reader["Variant Dimension 6"]),
                 BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"]),
                 BlockedOnECom = SQLHelper.GetInt32(reader["BlockEcom"])
+            };
+        }
+
+        private ReplItemVariant ReaderToItemVariant(SqlDataReader reader, out string timestamp)
+        {
+            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+
+            return new ReplItemVariant()
+            {
+                ItemId = SQLHelper.GetString(reader["Item No_"]),
+                VariantId = SQLHelper.GetString(reader["Code"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                Description2 = SQLHelper.GetString(reader["Description 2"])
             };
         }
 

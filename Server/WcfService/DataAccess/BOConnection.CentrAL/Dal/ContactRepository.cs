@@ -661,15 +661,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public GiftCard GetGiftCartBalance(string cardId, string type)
         {
             GiftCard card = new GiftCard(cardId);
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Expiring Date] AS Exp, (SELECT SUM([Amount]) " +
-                                          "FROM [" + navCompanyName + "Voucher Entries$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
-                                          "WHERE [Voucher No_]=mt.[Entry Code] AND [Voucher Type]=mt.[Entry Type]) AS Amt " +
+                    command.CommandText = "SELECT mt.[Expiring Date] AS Exp,li.[Trans_ Currency] AS Cur1," +
+                                          "(SELECT SUM([Amount]) FROM [" + navCompanyName + "Voucher Entries$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Voucher No_]=mt.[Entry Code] AND [Voucher Type]=mt.[Entry Type]) AS Amt," +
+                                          "(SELECT [LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972]) AS Cur2 " +
                                           "FROM [" + navCompanyName + "POS Data Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                          "JOIN [" + navCompanyName + "Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] li ON li.[Receipt No_]=mt.[Created by Receipt No_] " +
                                           "WHERE mt.[Entry Type]=@type AND mt.[Entry Code]=@id";
 
                     command.Parameters.AddWithValue("@id", cardId);
@@ -680,8 +681,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         if (reader.Read())
                         {
+                            card.EntryType = type;
                             card.Balance = SQLHelper.GetDecimal(reader, "Amt");
                             card.ExpireDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Exp"]), config.IsJson);
+                            card.CurrencyCode = SQLHelper.GetString(reader["Cur1"]);
+                            if (string.IsNullOrEmpty(card.CurrencyCode))
+                                card.CurrencyCode = SQLHelper.GetString(reader["Cur2"]);
                         }
                         else
                         {

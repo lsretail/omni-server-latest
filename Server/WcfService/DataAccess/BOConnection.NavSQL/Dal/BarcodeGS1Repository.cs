@@ -5,7 +5,6 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Inventory.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
@@ -138,7 +137,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Decimals = SQLHelper.GetDecimal(reader, "Decimals"),
                 ValueType = SQLHelper.GetInt32(reader["Value Type"]),
                 Value = SQLHelper.GetString(reader["Value"]),
-                ValueDate = SQLHelper.GetDateTime(reader["Value (Date)"]),
+                ValueDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Value (Date)"]), config.IsJson),
                 ValueDec = SQLHelper.GetDecimal(reader, "Value (Dec)")
             };
         }

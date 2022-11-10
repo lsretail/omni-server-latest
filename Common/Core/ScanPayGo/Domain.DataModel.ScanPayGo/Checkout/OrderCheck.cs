@@ -85,5 +85,33 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout
         public decimal Quantity { get; set; }
         [DataMember]
         public decimal Amount { get; set; }
+        [IgnoreDataMember]
+        public bool QuantityCounted { get; set; }
+        public bool AlwaysCheck { get; set; }
+
+        public static bool operator ==(OrderCheckLines checkLine1, OrderCheckLines checkLine2)
+        {
+            if (ReferenceEquals(checkLine1, checkLine2))
+            {
+                return true;
+            }
+
+            if (checkLine1?.ItemId == checkLine2?.ItemId && checkLine1?.VariantCode == checkLine2?.VariantCode && checkLine1?.UnitofMeasureCode == checkLine2?.UnitofMeasureCode && checkLine1?.QuantityCounted == checkLine2?.QuantityCounted)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public static bool operator !=(OrderCheckLines checkLine1, OrderCheckLines checkLine2)
+        {
+            return !(checkLine1 == checkLine2);
+        }
+
+        public OrderCheckLines Clone()
+        {
+            return (OrderCheckLines) MemberwiseClone();
+        }
     }
 }

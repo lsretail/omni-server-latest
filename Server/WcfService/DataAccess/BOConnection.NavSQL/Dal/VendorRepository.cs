@@ -131,7 +131,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 Id = SQLHelper.GetString(reader["No_"]),
                 Name = SQLHelper.GetString(reader["Name"]),
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
-                UpdatedOnUtc = SQLHelper.GetDateTime(reader["Last Date Modified"]),
+                UpdatedOnUtc = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Date Modified"]), config.IsJson),
 
                 // fixed values
                 AllowCustomersToSelectPageSize = false,

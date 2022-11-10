@@ -189,13 +189,13 @@ function GetCommandlineParamBoolean(inParam: String; inDefault : Boolean): Boole
 var
   res : String;
 begin
-  Result := false;
+  Result := False;
   res := GetCommandlineParamString(inParam, '');
   
   if (res = '') then
     Result := inDefault
   else if (res = 'true') then
-    Result := true;
+    Result := True;
 end;
 
 function GetCommandlineParamInteger(inParam: String; inDefault : Integer): Integer;

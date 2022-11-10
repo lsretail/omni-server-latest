@@ -51,19 +51,19 @@ begin
   Log('SQLAuthOnChange called');
   if SQLPage_chkWindowsAuth.Checked then
   begin
-    SQLPage_lblUser.Enabled := false;
-    SQLPage_lblPassword.Enabled := false;
-    SQLPage_txtUsername.Enabled := false;
-    SQLPage_txtPassword.Enabled := false;
-	SQLPage_xCreateUser.Checked := false;
+    SQLPage_lblUser.Enabled := False;
+    SQLPage_lblPassword.Enabled := False;
+    SQLPage_txtUsername.Enabled := False;
+    SQLPage_txtPassword.Enabled := False;
+	  SQLPage_xCreateUser.Checked := False;
   end
   else
   begin
-    SQLPage_lblUser.Enabled := true;
-    SQLPage_lblPassword.Enabled := true;
-    SQLPage_txtUsername.Enabled := true;
-    SQLPage_txtPassword.Enabled := true;
-	SQLPage_xCreateUser.Checked := true;
+    SQLPage_lblUser.Enabled := True;
+    SQLPage_lblPassword.Enabled := True;
+    SQLPage_txtUsername.Enabled := True;
+    SQLPage_txtPassword.Enabled := True;
+	  SQLPage_xCreateUser.Checked := True;
   end
 end;
 
@@ -206,7 +206,7 @@ begin
     Height := ScaleY(21);
     Caption := 'Create and use LSCommerceUser to connect to LSCommerce Database';
     Checked := True;
-    TabOrder := 7;
+    TabOrder := 3;
     ShowHint := True;
     Hint := 'Create LSCommerceUser on SQL Server and use it when connecting to the Database. If not checked, the SQL Credentials will be used to connect.';
   end;
@@ -235,7 +235,7 @@ begin
     Width := ScaleX(177);
     Height := ScaleY(17);
     Checked := True;
-    TabOrder := 3;
+    TabOrder := 4;
     TabStop := True;
     OnClick := @SQLAuthOnChange;
     Enabled := True;
@@ -252,7 +252,7 @@ begin
     Width := ScaleX(185);
     Height := ScaleY(17);
     Checked := False;
-    TabOrder := 4;
+    TabOrder := 5;
     OnClick := @SQLAuthOnChange;
     Enabled := True;
   end;
@@ -279,7 +279,7 @@ begin
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := False;
-    TabOrder := 5;
+    TabOrder := 6;
   end;
 
   { lblPassword }
@@ -304,7 +304,7 @@ begin
     Width := ScaleX(225);
     Height := ScaleY(21);
     Enabled := False;
-    TabOrder := 6;
+    TabOrder := 7;
   end;
 
   { SQLPage_ConnectButton }

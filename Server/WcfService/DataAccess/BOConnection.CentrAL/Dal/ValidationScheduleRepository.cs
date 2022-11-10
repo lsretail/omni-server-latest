@@ -263,11 +263,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         while (reader.Read())
                         {
-                            lines.Add(new VSTimeScheduleLine()
+                            lines.Add(new VSTimeScheduleLine(config.IsJson)
                             {
                                 Period = SQLHelper.GetString(reader["Period"]),
-                                TimeFrom = SQLHelper.GetDateTime(reader["Time From"]),
-                                TimeTo = SQLHelper.GetDateTime(reader["Time To"]),
+                                TimeFrom = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Time From"]), config.IsJson),
+                                TimeTo = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Time To"]), config.IsJson),
                                 TimeToIsPastMidnight = SQLHelper.GetBool(reader["Time To Is Past Midnight"]),
                                 DiningDurationCode = SQLHelper.GetString(reader["Dining Duration Code"]),
                                 SelectedByDefault = SQLHelper.GetBool(reader["Selected by Default"]),

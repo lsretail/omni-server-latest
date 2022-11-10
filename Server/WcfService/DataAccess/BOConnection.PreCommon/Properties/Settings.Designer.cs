@@ -48,8 +48,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSC-20790/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWra" +
-            "pper")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/O" +
+            "mniWrapper")]
         public string LSOmni_DataAccess_BOConnection_PreCommon_NavWS_OmniWrapper {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_NavWS_OmniWrapper"]));

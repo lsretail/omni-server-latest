@@ -83,6 +83,68 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             }
         }
 
+        public List<ReplItemTrackingCode> ReplicateItemTrackingCode(XMLTableData table)
+        {
+            List<ReplItemTrackingCode> list = new List<ReplItemTrackingCode>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ReplItemTrackingCode rec = new ReplItemTrackingCode();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Code": rec.Code = field.Values[i]; break;
+                        case "Description": rec.Description = field.Values[i]; break;
+                        case "Warranty Date Formula": rec.WarrantyDateFormula = field.Values[i]; break;
+                        case "Man. Warranty Date Entry Reqd.": rec.ManWarrantyDateEntryReqired = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Man. Expir. Date Entry Reqd.": rec.ManExpirationDateEntryReqired = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Strict Expiration Posting": rec.StrictExpirationPosting = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Use Expiration Dates": rec.UseExpirationDates = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Create SN Info on Posting": rec.CreateSNInfoOnPosting = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Specific Tracking": rec.SNSpecificTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Info_ Inbound Must Exist": rec.SNInfoInboundMustExist = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Info_ Outbound Must Exist": rec.SNInfoOutboundMustExist = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Warehouse Tracking": rec.SNWarehouseTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Purchase Inbound Tracking": rec.SNPurchaseInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Purchase Outbound Tracking": rec.SNPurchaseOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Sales Inbound Tracking": rec.SNSalesInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Sales Outbound Tracking": rec.SNSalesOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Pos_ Adjmt_ Inb_ Tracking": rec.SNPosAdjmtInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Pos_ Adjmt_ Outb_ Tracking": rec.SNPosAdjmtOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Neg_ Adjmt_ Inb_ Tracking": rec.SNNegAdjmtInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Neg_ Adjmt_ Outb_ Tracking": rec.SNNegAdjmtOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Transfer Tracking": rec.SNTransferTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Manuf_ Inbound Tracking": rec.SNManufInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Manuf_ Outbound Tracking": rec.SNManufOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Assembly Inbound Tracking": rec.SNAssemblyInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "SN Assembly Outbound Tracking": rec.SNAssemblyOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Specific Tracking": rec.LotSpecificTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Info. Inbound Must Exist": rec.LotInfoInboundMustExist = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Info. Outbound Must Exist": rec.LotInfoOutboundMustExist = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Warehouse Tracking": rec.LotWarehouseTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Purchase Inbound Tracking": rec.LotPurchaseInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Purchase Outbound Tracking": rec.LotPurchaseOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Sales Inbound Tracking": rec.LotSalesInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Sales Outbound Tracking": rec.LotSalesOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Pos. Adjmt. Inb. Tracking": rec.LotPosAdjmtInbboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Pos. Adjmt. Outb. Tracking": rec.LotPosAdjmtOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Neg. Adjmt. Inb. Tracking": rec.LotNegAdjmtInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Neg. Adjmt. Outb. Tracking": rec.LotNegAdjmtOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Transfer Tracking": rec.LotTransferTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Manuf. Inbound Tracking": rec.LotManufacturingInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Manuf. Outbound Tracking": rec.LotManufacturingOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Assembly Inbound Tracking": rec.LotAssemblyInboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Lot Assembly Outbound Tracking": rec.LotAssemblyOutboundTracking = ConvertTo.SafeBoolean(field.Values[i]); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
         public List<ReplBarcode> ReplicateBarcodes(XMLTableData table)
         {
             List<ReplBarcode> list = new List<ReplBarcode>();
@@ -262,6 +324,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
+        public List<ReplItemVariant> ReplicateItemVariant(XMLTableData table)
+        {
+            List<ReplItemVariant> list = new List<ReplItemVariant>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                ReplItemVariant rec = new ReplItemVariant();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Item No.": rec.ItemId = field.Values[i]; break;
+                        case "Code": rec.VariantId = field.Values[i]; break;
+                        case "Description": rec.Description = field.Values[i]; break;
+                        case "Description 2": rec.Description2 = field.Values[i]; break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
+        }
+
         public List<ReplItemUnitOfMeasure> ReplicateItemUnitOfMeasure(XMLTableData table)
         {
             List<ReplItemUnitOfMeasure> list = new List<ReplItemUnitOfMeasure>();
@@ -352,7 +438,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
 
             for (int i = 0; i < table.NumberOfValues; i++)
             {
-                ReplDiscount rec = new ReplDiscount();
+                ReplDiscount rec = new ReplDiscount(config.IsJson);
                 foreach (XMLFieldData field in table.FieldList)
                 {
                     switch (field.FieldName)
@@ -1088,47 +1174,47 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
 
             for (int i = 0; i < table.NumberOfValues; i++)
             {
-                ReplDiscountValidation rec = new ReplDiscountValidation();
+                ReplDiscountValidation rec = new ReplDiscountValidation(config.IsJson);
                 foreach (XMLFieldData field in table.FieldList)
                 {
                     switch (field.FieldName)
                     {
                         case "ID": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "StartingDate": rec.StartDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "EndingDate": rec.EndDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "StartingTime": rec.StartTime = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "EndingTime": rec.EndTime = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "MondayStartingTime": rec.MondayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "MondayEndingTime": rec.MondayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "TuesdayStartingTime": rec.TuesdayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "TuesdayEndingTime": rec.TuesdayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "WednesdayStartingTime": rec.WednesdayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "WednesdayEndingTime": rec.WednesdayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "ThursdayStartingTime": rec.ThursdayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "ThursdayEndingTime": rec.ThursdayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "FridayStartingTime": rec.FridayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "FridayEndingTime": rec.FridayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "SaturdayStartingTime": rec.SaturdayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "SaturdayEndingTime": rec.SaturdayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "SundayStartingTime": rec.SundayStart = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "SundayEndingTime": rec.SundayEnd = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "TimewithinBounds": rec.TimeWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "EndingTimeAfterMidnight": rec.EndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Mon_TimewithinBounds": rec.MondayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Mon_End_TimeAfterMidnight": rec.MondayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Tue_TimewithinBounds": rec.TuesdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Tue_End_TimeAfterMidnight": rec.TuesdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Wed_TimewithinBounds": rec.WednesdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Wed_End_TimeAfterMidnight": rec.WednesdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Thu_TimewithinBounds": rec.ThursdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Thu_End_TimeAfterMidnight": rec.ThursdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Fri_TimewithinBounds": rec.FridayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Fri_End_TimeAfterMidnight": rec.FridayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Sat_TimewithinBounds": rec.SaturdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Sat_End_TimeAfterMidnight": rec.SaturdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Sun_TimewithinBounds": rec.SundayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Sun_End_TimeAfterMidnight": rec.SundayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Starting Date": rec.StartDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Ending Date": rec.EndDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Starting Time": rec.StartTime = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Ending Time": rec.EndTime = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Monday Starting Time": rec.MondayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Monday Ending Time": rec.MondayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Tuesday Starting Time": rec.TuesdayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Tuesday Ending Time": rec.TuesdayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Wednesday Starting Time": rec.WednesdayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Wednesday Ending Time": rec.WednesdayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Thursday Starting Time": rec.ThursdayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Thursday Ending Time": rec.ThursdayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Friday Starting Time": rec.FridayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Friday Ending Time": rec.FridayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Saturday Starting Time": rec.SaturdayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Saturday Ending Time": rec.SaturdayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Sunday Starting Time": rec.SundayStart = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Sunday Ending Time": rec.SundayEnd = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Time within Bounds": rec.TimeWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Ending Time After Midnight": rec.EndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Mon. Time within Bounds": rec.MondayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Mon. End. Time After Midnight": rec.MondayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Tue. Time within Bounds": rec.TuesdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Tue. End. Time After Midnight": rec.TuesdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Wed. Time within Bounds": rec.WednesdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Wed. End. Time After Midnight": rec.WednesdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Thu. Time within Bounds": rec.ThursdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Thu. End. Time After Midnight": rec.ThursdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Fri. Time within Bounds": rec.FridayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Fri. End. Time After Midnight": rec.FridayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sat. Time within Bounds": rec.SaturdayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sat. End. Time After Midnight": rec.SaturdayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sun. Time within Bounds": rec.SundayWithinBounds = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Sun. End. Time After Midnight": rec.SundayEndAfterMidnight = ConvertTo.SafeBoolean(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

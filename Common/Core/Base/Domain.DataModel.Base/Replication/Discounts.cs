@@ -79,7 +79,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplDiscount : IDisposable
     {
-        public ReplDiscount()
+        public ReplDiscount(bool isJson)
         {
             IsDeleted = false;
             PriorityNo = 0;
@@ -87,8 +87,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             VariantId = string.Empty;
             CustomerDiscountGroup = string.Empty;
             LoyaltySchemeCode = string.Empty;
-            FromDate = new DateTime(1900, 1, 1);
-            ToDate = new DateTime(1900, 1, 1);
+            FromDate = new DateTime((isJson) ? 1970 : 1900, 1, 1);
+            ToDate = new DateTime((isJson) ? 1970 : 1900, 1, 1);
             ModifyDate = DateTime.Now;
             UnitOfMeasureId = string.Empty;
             MinimumQuantity = 0M;
@@ -195,28 +195,30 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ReplDiscountValidation : IDisposable
     {
-        public ReplDiscountValidation()
+        public ReplDiscountValidation(bool isJson)
         {
+            int year = (isJson) ? 1970 : 1900;
+
             Id = string.Empty;
             Description = string.Empty;
-            StartDate = new DateTime(1900, 1, 1);
-            EndDate = new DateTime(1900, 1, 1);
-            StartTime = new DateTime(1900, 1, 1);
-            EndTime = new DateTime(1900, 1, 1);
-            MondayStart = new DateTime(1900, 1, 1);
-            MondayEnd = new DateTime(1900, 1, 1);
-            TuesdayStart = new DateTime(1900, 1, 1);
-            TuesdayEnd = new DateTime(1900, 1, 1);
-            WednesdayStart = new DateTime(1900, 1, 1);
-            WednesdayEnd = new DateTime(1900, 1, 1);
-            ThursdayStart = new DateTime(1900, 1, 1);
-            ThursdayEnd = new DateTime(1900, 1, 1);
-            FridayStart = new DateTime(1900, 1, 1);
-            FridayEnd = new DateTime(1900, 1, 1);
-            SaturdayStart = new DateTime(1900, 1, 1);
-            SaturdayEnd = new DateTime(1900, 1, 1);
-            SundayStart = new DateTime(1900, 1, 1);
-            SundayEnd = new DateTime(1900, 1, 1);
+            StartDate = new DateTime(year, 1, 1);
+            EndDate = new DateTime(year, 1, 1);
+            StartTime = new DateTime(year, 1, 1);
+            EndTime = new DateTime(year, 1, 1);
+            MondayStart = new DateTime(year, 1, 1);
+            MondayEnd = new DateTime(year, 1, 1);
+            TuesdayStart = new DateTime(year, 1, 1);
+            TuesdayEnd = new DateTime(year, 1, 1);
+            WednesdayStart = new DateTime(year, 1, 1);
+            WednesdayEnd = new DateTime(year, 1, 1);
+            ThursdayStart = new DateTime(year, 1, 1);
+            ThursdayEnd = new DateTime(year, 1, 1);
+            FridayStart = new DateTime(year, 1, 1);
+            FridayEnd = new DateTime(year, 1, 1);
+            SaturdayStart = new DateTime(year, 1, 1);
+            SaturdayEnd = new DateTime(year, 1, 1);
+            SundayStart = new DateTime(year, 1, 1);
+            SundayEnd = new DateTime(year, 1, 1);
             TimeWithinBounds = false;
             EndAfterMidnight = false;
             MondayWithinBounds = false;

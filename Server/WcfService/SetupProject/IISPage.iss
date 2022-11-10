@@ -1,26 +1,30 @@
 [Code]
 
 var
-  IISPage_lblComment: TLabel;
-  IISPage_lblComment1: TLabel;
   IISPage_lblComment2: TLabel;
   IISPage_lblNavUser: TLabel;
   IISPage_lblNavPwd: TLabel;
+  IISPage_lblNavTen: TLabel;
   IISPage_lblNavUrl: TLabel;
+  IISPage_lblEComUrl: TLabel;
   IISPage_lblWcfServiceName: TLabel;
   IISPage_lblNavAuthentication : TLabel;
   IISPage_lblWcfSiteName: TLabel;
   IISPage_txtNavUser: TEdit;
   IISPage_txtNavPwd: TPasswordEdit;
+  IISPage_txtNavTen: TEdit;
   IISPage_txtNavUrl: TEdit;
+  IISPage_txtEComUrl: TEdit;
   IISPage_txtWcfServiceName: TEdit;
   IISPage_txtWcfSiteName : TEdit;
+  IISPage_xS2S: TCheckBox; 
 
  var
   IISPage: TWizardPage;
 
-Procedure IISOnChange (Sender: TObject);
+Procedure IISOnChange(Sender: TObject);
 begin                            
+  Log('IISOnChange called');
   WizardForm.NextButton.Enabled := False;
   if (Length(IISPage_txtWcfSiteName.Text) > 0) 
       and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
@@ -29,7 +33,27 @@ begin
     WizardForm.NextButton.Enabled := True;
   end;
 end;
-              
+
+procedure S2SOnChange(Sender: TObject);
+begin
+  Log('S2SOnChange called');
+  if IISPage_xS2S.Checked then
+  begin
+    IISPage_lblNavTen.Visible := True;
+    IISPage_txtNavTen.Visible := True;
+    IISPage_lblNavUser.Caption := 'Client Id:';
+    IISPage_lblNavPwd.Caption := 'Client Secret:';
+  end
+  Else
+  begin
+    IISPage_lblNavTen.Visible := False;
+    IISPage_txtNavTen.Visible := False;
+    IISPage_txtNavTen.Text := '';
+    IISPage_lblNavUser.Caption := 'User name:';
+    IISPage_lblNavPwd.Caption := 'Password/WebKey:';
+  end
+end;
+
 procedure IISCustomForm_Activate(Page: TWizardPage) ;
 begin
   WizardForm.NextButton.Enabled := False;
@@ -50,19 +74,6 @@ begin
     'Please enter Web Service Configuration values for IIS and LS Central'
   );
  
-  { IISPage_lblComment }
-  IISPage_lblComment := TLabel.Create(IISPage);
-  with IISPage_lblComment do
-  begin
-    Parent := IISPage.Surface;
-    Caption :=  'Recommend leaving the web service name as LSCommerceService';
-    Left := ScaleX(15);
-    Top := ScaleY(1);
-    Width := ScaleX(350);
-    Height := ScaleY(13);
-    Enabled := True;
-  end;
-
   { IISPage_lblWcfSiteName }
   IISPage_lblWcfSiteName := TLabel.Create(IISPage);
   with IISPage_lblWcfSiteName do
@@ -70,7 +81,7 @@ begin
     Parent := IISPage.Surface;
     Caption :=  'Web Site name:';
     Left := ScaleX(15);
-    Top := IISPage_lblComment.Top + IISPage_lblComment.Height + 7;
+    Top := ScaleY(4);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -81,13 +92,13 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(120);
-    Top := IISPage_lblComment.Top + IISPage_lblComment.Height + 4;
+    Top := ScaleY(1);
     Width := ScaleX(220);
     Height := ScaleY(21);
     TabOrder := 1;
     Enabled := True;
     ShowHint := True;
-    Hint := 'IIS Web Site where LS Commerce Service will be added under. Use -Default Web Site-. A new Web Site does not get created';
+    Hint := 'IIS Web Site where LS Commerce Service will be added under. Use -Default Web Site-. A new Web Site does not get created. Recommend leaving the web service name as LSCommerceService.';
   end;
 
   { IISPage_lblWcfServiceName }
@@ -97,7 +108,7 @@ begin
     Parent := IISPage.Surface;
     Caption :=  'Web Service name:';
     Left := ScaleX(15);
-    Top := IISPage_txtWcfSiteName.Top + IISPage_txtWcfSiteName.Height + 5;
+    Top := ScaleY(29);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -108,7 +119,7 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(120);
-    Top := IISPage_txtWcfSiteName.Top + IISPage_txtWcfSiteName.Height + 2;
+    Top := ScaleY(26);
     Width := ScaleX(220);
     Height := ScaleY(21);
     TabOrder := 2;
@@ -117,27 +128,42 @@ begin
     Hint := 'Name used to Create IIS entry. If running more than 1 instance of LS Commerce Service, give each instance a different Name.';
   end;
 
-  { IISPage_lblComment1 }
-  IISPage_lblComment1 := TLabel.Create(IISPage);
-  with IISPage_lblComment1 do
+  { IISPage_lblEComUrl }
+  IISPage_lblEComUrl := TLabel.Create(IISPage);
+  with IISPage_lblEComUrl do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'LS Nav/LS Central Web Service configuration values';
+    Caption :=  'ECom webhook URL:';
     Left := ScaleX(15);
-    Top := IISPage_txtWcfServiceName.Top + IISPage_txtWcfServiceName.Height + 8;
-    Width := ScaleX(450);
+    Top := ScaleY(56);
+    Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
   end;
+  { IISPage_txtEComUrl }
+  IISPage_txtEComUrl := TEdit.Create(IISPage);
+  with IISPage_txtEComUrl do
+  begin
+    Parent := IISPage.Surface;
+    Left := ScaleX(120);
+    Top := ScaleY(53);
+    Width := ScaleX(280);
+    Height := ScaleY(21);
+    TabOrder := 3;
+    Enabled := True;
+    OnChange := @IISOnChange;
+    ShowHint := True;
+    Hint := 'Magento WebHook URL to send Order status updates back to Magento from LS Central. Demo in URI field will always return back to LS Central if there is no Magento running.';
+  end; 
 
   { IISPage_lblNavUrl }
   IISPage_lblNavUrl := TLabel.Create(IISPage);
   with IISPage_lblNavUrl do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'Web Service URL:';
+    Caption :=  'LSCentral WS URL:';
     Left := ScaleX(15);
-    Top :=IISPage_lblComment1.Top + IISPage_lblComment1.Height + 7;
+    Top := ScaleY(81);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -148,7 +174,7 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(120);
-    Top := IISPage_lblComment1.Top + IISPage_lblComment1.Height + 4;
+    Top := ScaleY(78);
     Width := ScaleX(280);
     Height := ScaleY(21);
     TabOrder := 4;
@@ -163,12 +189,28 @@ begin
   with IISPage_lblNavAuthentication do
   begin
     Parent := IISPage.Surface;
-    Caption :=  'LS Nav/LS Central Web Services Authentication. Uses Windows Credential type.';
+    Caption :=  'LS Central Web Services Authentication.';
     Left := ScaleX(15);
-    Top :=  IISPage_txtNavUrl.Top + IISPage_txtNavUrl.Height + 8;
-    Width := ScaleX(450);
+    Top := ScaleY(107);
+    Width := ScaleX(230);
     Height := ScaleY(13);
     Enabled := True;
+  end;
+  { IISPage_xS2S }
+  IISPage_xS2S := TCheckBox.Create(SQLPage);
+  with IISPage_xS2S do
+  begin
+    Parent := IISPage.Surface;
+    Left := ScaleX(250);
+    Top := ScaleY(104);
+    Width := ScaleX(380);
+    Height := ScaleY(21);
+    Caption := 'Use S2S oAuth';
+    Checked := False;
+    TabOrder := 5;
+    ShowHint := True;
+    OnClick := @S2SOnChange;
+    Hint := 'Use oAuth S2S to log into LS Central in SaaS.';
   end;
 
   { IISPage_lblNavUser }
@@ -177,8 +219,8 @@ begin
   begin
     Parent := IISPage.Surface;
     Caption :=  'User name:';
-    Left := ScaleX(30);
-    Top := IISPage_lblNavAuthentication.Top + IISPage_lblNavAuthentication.Height + 7;
+    Left := ScaleX(15);
+    Top := ScaleY(132);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -188,11 +230,11 @@ begin
   with IISPage_txtNavUser do
   begin
     Parent := IISPage.Surface;
-    Left := ScaleX(135);
-    Top := IISPage_lblNavAuthentication.Top + IISPage_lblNavAuthentication.Height + 4;
+    Left := ScaleX(120);
+    Top := ScaleY(129);
     Width := ScaleX(220);
     Height := ScaleY(21);
-    TabOrder := 5;
+    TabOrder := 6;
     Enabled := True;
     OnChange := @IISOnChange;
     ShowHint := True;
@@ -205,8 +247,8 @@ begin
   begin
     Parent := IISPage.Surface;
     Caption :=  'Password/WebKey:';
-    Left := ScaleX(30);
-    Top := IISPage_txtNavUser.Top + IISPage_txtNavUser.Height + 5;
+    Left := ScaleX(15);
+    Top := ScaleY(157);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -216,15 +258,42 @@ begin
   with IISPage_txtNavPwd do
   begin
     Parent := IISPage.Surface;
-    Left := ScaleX(135);
-    Top := IISPage_txtNavUser.Top + IISPage_txtNavUser.Height + 2;
+    Left := ScaleX(120);
+    Top := ScaleY(154);
     Width := ScaleX(220);
     Height := ScaleY(21);
-    TabOrder := 6;
+    TabOrder := 7;
     Enabled := True;
     OnChange := @IISOnChange;
     ShowHint := True;
     Hint := 'Password for the User to access LS Central Web Service. For LS Central in SaaS use Webkey here.';
+  end;  
+
+  { IISPage_lblNavTen }
+  IISPage_lblNavTen := TLabel.Create(IISPage);
+  with IISPage_lblNavTen do
+  begin
+    Parent := IISPage.Surface;
+    Caption :=  'Tenant Id:';
+    Left := ScaleX(15);
+    Top := ScaleY(182);
+    Width := ScaleX(108);
+    Height := ScaleY(13);
+    Enabled := True;
+  end;
+  { IISPage_txtNavTen }
+  IISPage_txtNavTen := TEdit.Create(IISPage);
+  with IISPage_txtNavTen do
+  begin
+    Parent := IISPage.Surface;
+    Left := ScaleX(120);
+    Top := ScaleY(179);
+    Width := ScaleX(220);
+    Height := ScaleY(21);
+    TabOrder := 8;
+    Enabled := True;
+    ShowHint := True;
+    Hint := 'LS Central Tenant Id.';
   end;  
 
   IISPage_lblComment2 := TLabel.Create(IISPage);
@@ -233,7 +302,7 @@ begin
     Parent := IISPage.Surface;
     Caption := 'All the configuration values will be stored in AppSettings.Config file';
     Left := ScaleX(15);
-    Top := IISPage_txtNavPwd.Top + IISPage_txtNavPwd.Height + 8;
+    Top := ScaleY(217);
     Width := ScaleX(330);
     Height := ScaleY(200);
     Enabled := True;

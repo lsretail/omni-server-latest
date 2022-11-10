@@ -46,6 +46,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ReplValidationSchedule()
         {
+            Id = string.Empty;
             Description = string.Empty;
         }
 
@@ -79,6 +80,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public ValidationScheduleLine()
         {
+            Description = string.Empty;
+            Comment = string.Empty;
         }
 
         public void Dispose()
@@ -113,6 +116,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public VSDateSchedule()
         {
+            Id = string.Empty;
+            Description = string.Empty;
         }
 
         public void Dispose()
@@ -159,6 +164,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public VSDateScheduleLine()
         {
+            StartingDate = new DateTime(1970, 1, 1);
+            EndingDate = new DateTime(1970, 1, 1);
         }
 
         public void Dispose()
@@ -189,6 +196,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     {
         public VSTimeSchedule()
         {
+            Id = string.Empty;
+            Description = string.Empty;
         }
 
         public void Dispose()
@@ -219,8 +228,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2021")]
     public class VSTimeScheduleLine : IDisposable
     {
-        public VSTimeScheduleLine()
+        public VSTimeScheduleLine(bool isJson)
         {
+            Period = string.Empty;
+            DiningDurationCode = string.Empty;
+            TimeFrom = new DateTime((isJson) ? 1970 : 1900, 1, 1);
+            TimeTo = new DateTime((isJson) ? 1970 : 1900, 1, 1);
         }
 
         public void Dispose()

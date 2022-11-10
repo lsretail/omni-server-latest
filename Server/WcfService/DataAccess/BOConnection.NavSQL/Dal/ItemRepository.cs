@@ -32,7 +32,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[Keying in Price],mt.[Keying in Quantity],mt.[No Discount Allowed]," +
                          "mt.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Zero Price Valid]," +
                          "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price]," +
-                         "mt.[" + pgfieldname + "]," +
+                         "mt.[" + pgfieldname + "],mt.[Item Tracking Code]," +
                          "mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
@@ -444,10 +444,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             SQLHelper.CheckForSQLInjection(productGroupId);
             SQLHelper.CheckForSQLInjection(search);
 
-
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
-            "mt.[" + pgfieldname + "],mt.[Scale Item]," +
+            "mt.[" + pgfieldname + "],mt.[Scale Item],mt.[Item Tracking Code]," +
             "mt.[Blocked],mt.[Gross Weight],mt.[Season Code],mt.[Item Category Code],mt.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link] sl " +
@@ -469,7 +468,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
-            sql += "[" + pgfieldname + "],[Scale Item],";
+            sql += "[" + pgfieldname + "],[Scale Item],[Item Tracking Code],";
             sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -672,6 +671,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 SeasonCode = SQLHelper.GetString(reader["Season Code"]),
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
+                ItemTrackingCode = SQLHelper.GetString(reader["Item Tracking Code"]),
 
                 GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
                 UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
@@ -698,6 +698,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 SeasonCode = SQLHelper.GetString(reader["Season Code"]),
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
+                ItemTrackingCode = SQLHelper.GetString(reader["Item Tracking Code"]),
                 GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
                 UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
                 UnitVolume = SQLHelper.GetDecimal(reader, "Unit Volume"),

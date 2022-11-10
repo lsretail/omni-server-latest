@@ -26,8 +26,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         }
 
         [DataMember]
+        public string EntryType { get; set; }
+        [DataMember]
         public decimal Balance { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime ExpireDate { get; set; }
+        [DataMember]
+        public string CurrencyCode { get; set; }
     }
 }

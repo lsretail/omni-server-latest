@@ -376,6 +376,9 @@
     <None Include="Web References\LSCentral\RootGetStoreOpeningHours1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\LSCentral\RootGetTokenEntryXML.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\LSCentral\RootGetTransaction.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -467,6 +470,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral\RootSPGOrderCheck.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootSPGOrderCheck1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral\RootSPGProfileFlags.datasource">

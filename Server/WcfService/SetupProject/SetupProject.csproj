@@ -74,6 +74,6 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"C:\Program Files (x86)\Inno Setup 5\iscc.exe"  "$(ProjectDir)Main_Setup.iss"</PostBuildEvent>
+    <PostBuildEvent>"C:\Program Files (x86)\Inno Setup 6\iscc.exe"  "$(ProjectDir)Main_Setup.iss"</PostBuildEvent>
   </PropertyGroup>
 </Project>

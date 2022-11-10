@@ -364,7 +364,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
                 UnitPriceInclVat = SQLHelper.GetDecimal(reader, "Unit Price"),
                 PriceInclVat = true,
-                ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
+                ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 QtyPerUnitOfMeasure = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure")
             };
         }

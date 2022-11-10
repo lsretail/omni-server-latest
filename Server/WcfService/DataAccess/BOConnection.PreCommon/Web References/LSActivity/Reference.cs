@@ -27,8 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="Activity_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/Activity")]
-    public partial class Activity : MySoapHttpClientProtocol
-    {
+    public partial class Activity : MySoapHttpClientProtocol {
         
         private System.Threading.SendOrPostCallback CancelActivityOperationCompleted;
         
@@ -86,6 +85,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback InsertReservationOperationCompleted;
         
+        private System.Threading.SendOrPostCallback PreSellActivityProductOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SellMembershipV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback SellMembershipOperationCompleted;
@@ -95,6 +96,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback SetAdditionalChargesOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetAttributeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UpdateGroupHeaderStatusOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateGroupReservationOperationCompleted;
         
@@ -255,6 +258,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event InsertReservationCompletedEventHandler InsertReservationCompleted;
         
         /// <remarks/>
+        public event PreSellActivityProductCompletedEventHandler PreSellActivityProductCompleted;
+        
+        /// <remarks/>
         public event SellMembershipV2CompletedEventHandler SellMembershipV2Completed;
         
         /// <remarks/>
@@ -268,6 +274,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event SetAttributeCompletedEventHandler SetAttributeCompleted;
+        
+        /// <remarks/>
+        public event UpdateGroupHeaderStatusCompletedEventHandler UpdateGroupHeaderStatusCompleted;
         
         /// <remarks/>
         public event UpdateGroupReservationCompletedEventHandler UpdateGroupReservationCompleted;
@@ -2431,6 +2440,56 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:PreSellActivityProduct", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="PreSellActivityProduct_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool PreSellActivityProduct(string locationNo, string promoCode, string clientNo, string productNo, int quantity, ref string returnItemNo, ref decimal returnUnitPrice, ref string returnBookingRef, ref string errorMsg) {
+            object[] results = this.Invoke("PreSellActivityProduct", new object[] {
+                        locationNo,
+                        promoCode,
+                        clientNo,
+                        productNo,
+                        quantity,
+                        returnItemNo,
+                        returnUnitPrice,
+                        returnBookingRef,
+                        errorMsg});
+            returnItemNo = ((string)(results[1]));
+            returnUnitPrice = ((decimal)(results[2]));
+            returnBookingRef = ((string)(results[3]));
+            errorMsg = ((string)(results[4]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void PreSellActivityProductAsync(string locationNo, string promoCode, string clientNo, string productNo, int quantity, string returnItemNo, decimal returnUnitPrice, string returnBookingRef, string errorMsg) {
+            this.PreSellActivityProductAsync(locationNo, promoCode, clientNo, productNo, quantity, returnItemNo, returnUnitPrice, returnBookingRef, errorMsg, null);
+        }
+        
+        /// <remarks/>
+        public void PreSellActivityProductAsync(string locationNo, string promoCode, string clientNo, string productNo, int quantity, string returnItemNo, decimal returnUnitPrice, string returnBookingRef, string errorMsg, object userState) {
+            if ((this.PreSellActivityProductOperationCompleted == null)) {
+                this.PreSellActivityProductOperationCompleted = new System.Threading.SendOrPostCallback(this.OnPreSellActivityProductOperationCompleted);
+            }
+            this.InvokeAsync("PreSellActivityProduct", new object[] {
+                        locationNo,
+                        promoCode,
+                        clientNo,
+                        productNo,
+                        quantity,
+                        returnItemNo,
+                        returnUnitPrice,
+                        returnBookingRef,
+                        errorMsg}, this.PreSellActivityProductOperationCompleted, userState);
+        }
+        
+        private void OnPreSellActivityProductOperationCompleted(object arg) {
+            if ((this.PreSellActivityProductCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.PreSellActivityProductCompleted(this, new PreSellActivityProductCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembershipV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SellMembershipV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool SellMembershipV2(string clientNo, string membershipType, ref string returnMembershipNo, ref string returnItemNo, ref decimal returnPrice, ref decimal returnQty, ref decimal returnDiscount, ref string returnBookingRef, ref string errorString) {
@@ -2664,6 +2723,41 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.SetAttributeCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetAttributeCompleted(this, new SetAttributeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UpdateGroupHeaderStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UpdateGroupHeaderStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool UpdateGroupHeaderStatus(string groupNo, string setStatusCode, ref string errorString) {
+            object[] results = this.Invoke("UpdateGroupHeaderStatus", new object[] {
+                        groupNo,
+                        setStatusCode,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UpdateGroupHeaderStatusAsync(string groupNo, string setStatusCode, string errorString) {
+            this.UpdateGroupHeaderStatusAsync(groupNo, setStatusCode, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void UpdateGroupHeaderStatusAsync(string groupNo, string setStatusCode, string errorString, object userState) {
+            if ((this.UpdateGroupHeaderStatusOperationCompleted == null)) {
+                this.UpdateGroupHeaderStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateGroupHeaderStatusOperationCompleted);
+            }
+            this.InvokeAsync("UpdateGroupHeaderStatus", new object[] {
+                        groupNo,
+                        setStatusCode,
+                        errorString}, this.UpdateGroupHeaderStatusOperationCompleted, userState);
+        }
+        
+        private void OnUpdateGroupHeaderStatusOperationCompleted(object arg) {
+            if ((this.UpdateGroupHeaderStatusCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateGroupHeaderStatusCompleted(this, new UpdateGroupHeaderStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -8759,6 +8853,64 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void PreSellActivityProductCompletedEventHandler(object sender, PreSellActivityProductCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class PreSellActivityProductCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal PreSellActivityProductCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnItemNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnUnitPrice {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnBookingRef {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorMsg {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[4]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
     public delegate void SellMembershipV2CompletedEventHandler(object sender, SellMembershipV2CompletedEventArgs e);
     
     /// <remarks/>
@@ -9019,6 +9171,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    public delegate void UpdateGroupHeaderStatusCompletedEventHandler(object sender, UpdateGroupHeaderStatusCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.4084.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdateGroupHeaderStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UpdateGroupHeaderStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
             }
         }
     }

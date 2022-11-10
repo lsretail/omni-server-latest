@@ -21,11 +21,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public ItemRepository(BOConfiguration config, Version version) : base(config, version)
         {
-            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt2.[LSC Keying in Price],mt2.[LSC Keying in Quantity],mt2.[LSC No Discount Allowed]," +
-                         "mt2.[LSC Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt2.[LSC Zero Price Valid]," +
-                         "mt.[Sales Unit of Measure],mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price]," +
-                         "mt2.[LSC Retail Product Code]," +
-                         "mt.[Gross Weight],mt2.[LSC Season Code],mt.[Item Category Code],mt2.[LSC Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
+            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Sales Unit of Measure]," +
+                         "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt.[Gross Weight],mt.[Country_Region of Origin Code]," +
+                         "mt.[Item Tracking Code],mt.[Item Category Code],mt.[Units per Parcel],mt.[Unit Volume]," +
+                         "mt2.[LSC Zero Price Valid],mt2.[LSC Scale Item],mt2.[LSC Retail Product Code],mt2.[LSC Keying in Price],mt2.[LSC Keying in Quantity]," +
+                         "mt2.[LSC No Discount Allowed],mt2.[LSC Season Code],mt2.[LSC Item Family Code],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
                          "(SELECT TOP(1) sl.[Block Discount] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
@@ -454,7 +454,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
-            "mt2.[LSC Retail Product Code],mt2.[LSC Scale Item]," +
+            "mt2.[LSC Retail Product Code],mt2.[LSC Scale Item],mt.[Item Tracking Code]," +
             "mt.[Blocked],mt.[Gross Weight],mt2.[LSC Season Code],mt.[Item Category Code],mt2.[LSC Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
@@ -476,7 +476,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
-            sql += "[LSC Retail Product Code],[LSC Scale Item],";
+            sql += "[LSC Retail Product Code],[LSC Scale Item],[Item Tracking Code],";
             sql += "[Blocked],[Gross Weight],[LSC Season Code],[Item Category Code],[LSC Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -683,10 +683,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 SalseUnitOfMeasure = SQLHelper.GetString(reader["Sales Unit of Measure"]),
                 VendorId = SQLHelper.GetString(reader["Vendor No_"]),
                 VendorItemId = SQLHelper.GetString(reader["Vendor Item No_"]),
+                CountryOfOrigin = SQLHelper.GetString(reader["Country_Region of Origin Code"]),
 
                 SeasonCode = SQLHelper.GetString(reader["LSC Season Code"]),
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["LSC Item Family Code"]),
+                ItemTrackingCode = SQLHelper.GetString(reader["Item Tracking Code"]),
 
                 GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
                 UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
@@ -713,6 +715,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 SeasonCode = SQLHelper.GetString(reader["LSC Season Code"]),
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["LSC Item Family Code"]),
+                ItemTrackingCode = SQLHelper.GetString(reader["Item Tracking Code"]),
                 GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
                 UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
                 UnitVolume = SQLHelper.GetDecimal(reader, "Unit Volume"),

@@ -25,6 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         App = 0,
         [EnumMember]
         ExternalAccessory = 1,
+        [EnumMember]
+        Pos = 2,
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

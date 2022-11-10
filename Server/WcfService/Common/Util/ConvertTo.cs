@@ -153,6 +153,21 @@ namespace LSOmni.Common.Util
             return date;
         }
 
+        public static DateTime SafeJsonTime(DateTime date, bool json)
+        {
+            if ((date.Year == 1753 && date.Month == 1 && date.Day == 1 && date.Hour == 0 && date.Minute == 0 && date.Second == 0) || (date == DateTime.MinValue))
+            {
+                if (json)
+                    return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc); // 1970 is a safe json year
+
+                return DateTime.MinValue;   // SOAP date
+            }
+            if (json)
+                return new DateTime(1970, 1, 1, date.Hour, date.Minute, date.Second);
+
+            return new DateTime(1900, 1, 1, date.Hour, date.Minute, date.Second);
+        }
+
         public static DateTime SafeDateTime(string value)
         {
             try

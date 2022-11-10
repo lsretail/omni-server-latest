@@ -31,7 +31,7 @@ namespace LSOmni.Service
 
         private const int maxNumberReturned = 1000;
         private static LSLogger logger = new LSLogger();
-        private const System.Net.HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable; //code=416
+        private const HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable; //code=416
 
         private string version = string.Empty;
         private string deviceId = string.Empty;
@@ -39,16 +39,15 @@ namespace LSOmni.Service
         protected string clientIPAddress = string.Empty;
         protected BOConfiguration config = null;
 
-        private string serverUri = string.Empty; //absoluteUri
-        private string port = string.Empty;
-        private string baseUriOrignalString = string.Empty;
+        private readonly string serverUri = string.Empty; //absoluteUri
+        private readonly string port = string.Empty;
+        private readonly string baseUriOrignalString = string.Empty;
 
         public LSOmniBase()
         {
             this.baseUriOrignalString = string.Empty;
             this.port = string.Empty;
             string userAgent = string.Empty;
-            string basicAuthHeader = string.Empty;
             this.version = "1.0";
             this.deviceId = "";
             this.clientTimeOutInSeconds = 0; // set to 0, read timeout from configuration file if it is 0
@@ -232,11 +231,12 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "EnvironmentGet()");
                 CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
-                OmniEnvironment env = new OmniEnvironment();
-                env.Currency = bll.CurrencyGetLocal(new Statistics());
-                env.Version = this.Version();
-                env.PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy);
-                return env;
+                return new OmniEnvironment()
+                {
+                    Currency = bll.CurrencyGetLocal(new Statistics()),
+                    Version = this.Version(),
+                    PasswordPolicy = config.SettingsGetByKey(ConfigKey.Password_Policy)
+                };
             }
             catch (Exception ex)
             {

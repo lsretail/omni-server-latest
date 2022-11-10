@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using LSOmni.Common.Util;
@@ -36,6 +37,11 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
+        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        {
+            return BOLoyConnection.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
+        }
+
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
             return BOLoyConnection.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering, stat);
@@ -46,14 +52,14 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ScanPayGoOrderCheck(documentId, stat);
         }
 
-        public virtual bool TokenEntrySet(ClientToken token, Statistics stat)
+        public virtual bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat)
         {
-            return BOLoyConnection.TokenEntrySet(token, stat);
+            return BOLoyConnection.TokenEntrySet(token, deleteToken, stat);
         }
 
-        public virtual ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        public virtual List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat)
         {
-            return BOLoyConnection.TokenEntryGet(cardNo, stat);
+            return BOLoyConnection.TokenEntryGet(accountNo, hotelToken, stat);
         }
 
         public virtual async Task<bool> GetAuthPaymentCodeAsync(string authorizationCode, Statistics stat)

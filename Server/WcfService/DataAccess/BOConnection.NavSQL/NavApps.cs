@@ -130,6 +130,12 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateItemVariantRegistration(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplItemVariant> ReplicateItemVariant(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
+            return rep.ReplicateItemVariant(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplStaff> ReplicateStaff(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             StaffRepository rep = new StaffRepository(config);
@@ -250,7 +256,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateStoreTenderType(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             throw new NotImplementedException();
         }

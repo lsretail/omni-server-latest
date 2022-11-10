@@ -526,7 +526,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
                 TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
                 TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
-                DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
@@ -619,7 +619,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     Id = SQLHelper.GetString(reader["Document ID"]),
                     StoreId = SQLHelper.GetString(reader["Store No_"]),
-                    DocumentRegTime = SQLHelper.GetDateTime(reader["Date"]),
+                    DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                     IdType = DocumentIdType.Order,
                     CardId = SQLHelper.GetString(reader["Member Card No_"]),
                     Status = SalesEntryStatus.Created,

@@ -32,10 +32,11 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat);
         bool SecurityCheckProfile(string orderNo, string storeNo, Statistics stat);
+        bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat);
         string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat);
         OrderCheck ScanPayGoOrderCheck(string documentId, Statistics stat);
-        bool TokenEntrySet(ClientToken token, Statistics stat);
-        ClientTokenResult TokenEntryGet(string cardNo, Statistics stat);
+        bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat);
+        List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat);
 
         #endregion
 

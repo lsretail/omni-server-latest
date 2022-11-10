@@ -63,6 +63,11 @@ Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSCommerceServiceDbPermissions.
 [Icons]
 Name: "{group}\{cm:ProgramOnTheWeb,LSCommerceService}"; Filename: "http://www.lsretail.com/"
 
+[Registry]
+Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Services\EventLog\Application\LSCommerce"; ValueType: string; ValueName: "EventMessageFile"; ValueData: "C:\Windows\Microsoft.NET\Framework\v2.0.50727\EventLogMessages.dll"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "Software\LS Retail\Omni"; ValueType: string; ValueName: "Path"; ValueData: "{app}\{code:WcfDir}";
+
+
 [Code]
 //tried to have code in other files
 #include "Library.iss"
@@ -97,30 +102,30 @@ begin
   IISCustomPage := IISCustomForm_CreatePage(NavSqlCustomPage.ID); 
 
   //should only set any texts here..
-  CmdMode := GetCommandLineParamBoolean('-Cmd', false);
+  CmdMode := GetCommandLineParamBoolean('-Cmd', False);
 
-  CheckPage_NavSQLCheckBox.Checked := GetCommandLineParamBoolean('-NavX', true);
+  CheckPage_NavSQLCheckBox.Checked := GetCommandLineParamBoolean('-NavX', True);
   NavSQLPage_txtServer.Text := GetCommandLineParamString('-NavSrv', 'localhost');
   NavSQLPage_txtDBname.Text := GetCommandLineParamString('-NavDb', 'LSCentral');
   NavSQLPage_txtNavCompany.Text := GetCommandLineParamString('-NavComp', 'CRONUS - LS Central');
   NavSQLPage_txtUsername.Text := GetCommandLineParamString('-NavUsr', 'LSCommerceUser');
   NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', 'LSCommerceUser');
-  NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', false);
+  NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', False);
   NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 2);
 
-  CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', true);
-  CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', false);
+  CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', True);
+  CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', False);
   SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'LSCommerce');
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
   SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', 'LSCommerceUser');
   SQLPage_txtPassword.Text := GetCommandLineParamString('-SqlPwd', 'LSCommerceUser');
-  SQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-SqlWau', true);
-  SQLPage_xCreateUser.Checked := GetCommandLineParamBoolean('-SqlCrUsr', true);
+  SQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-SqlWau', True);
+  SQLPage_xCreateUser.Checked := GetCommandLineParamBoolean('-SqlCrUsr', True);
 
-  CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', true);
+  CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', True);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSCommerceService');
-  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC180/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
+  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC190/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 end;
@@ -166,12 +171,12 @@ begin
       end;
     end ;
 
-    // Check if trying to create tables in the NAV database
+    // Check if trying to create tables in the Central database
     if (Result and ADOCheckIsNavDB()) then
     begin
       msg := 'You are trying to create the LS Commerce Service SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
-      msg := msg + 'This database is a LS Nav/Central database and you are not allowed to create the LS Commerce Service Database objects'#13
-      msg := msg + 'in the LS Nav/Central Database'#13
+      msg := msg + 'This database is a LS Central database and you are not allowed to create the LS Commerce Service Database objects'#13
+      msg := msg + 'in the LS Central Database'#13
       msg := msg + 'See LS Commerce Service Installation doc'#13
       if (not CmdMode) then
         MsgBox(msg, mbConfirmation, MB_OK);
@@ -216,26 +221,29 @@ begin
   StringChangeEx(navCompany, '.', '_', True);
   Result := True;
   try
-    // NAV Web Service
+    // Central Web Service
     if CheckPage_IISCheckBox.Checked then
     begin
-  	  Log('Update File IIS Settings');
-      UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
-      UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
-      UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        Log('Update File IIS Settings');
+        UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        UpdateAppSettingsConfig('BOConnection.Nav.Tenant', Trim(IISPage_txtNavTen.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        if IISPage_xS2S.Checked then
+          UpdateAppSettingsConfig('BOConnection.Nav.Protocol', 'S2S', ExpandConstant('{app}\{code:WcfDir}'));
     end;
 
-    // NAV connection string
+    // Central connection string
     if CheckPage_NavSQLCheckBox.Checked then
     begin
-      Log('Update NAV SQL Settings');
+      Log('Update Central SQL Settings');
 
       navStr := 'Data Source=' + Trim(NavSQLPage_txtServer.Text);
       navStr := navStr + ';Initial Catalog=' + Trim(NavSQLPage_txtDBname.Text);
 
       if NavSQLPage_chkWindowsAuth.Checked then
       begin
-        navStr := navStr + ';Integrated Security=true';
+        navStr := navStr + ';Integrated Security=True';
       end
       else
       begin
@@ -262,6 +270,8 @@ begin
     if CheckPage_WSCheckBox.Checked then
     begin
       UpdateAppSettingsConfig('BOConnection.Nav.Protocol','Tls12', ExpandConstant('{app}\{code:WcfDir}'));
+      if IISPage_xS2S.Checked then
+        UpdateAppSettingsConfig('BOConnection.Nav.Protocol', 'S2S', ExpandConstant('{app}\{code:WcfDir}'));
       UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavWS.dll', ExpandConstant('{app}\{code:WcfDir}'));
     end
     else
@@ -286,7 +296,7 @@ begin
     begin
       if SQLPage_chkWindowsAuth.Checked then
       begin
-        omniStr := omniStr + ';Integrated Security=true';
+        omniStr := omniStr + ';Integrated Security=True';
       end
       else
       begin
@@ -307,6 +317,8 @@ begin
     
     omniStr := omniStr + ';Persist Security Info=True;MultipleActiveResultSets=True;Connection Timeout=10;';
     UpdateAppSettingsConfig('SQLConnectionString.LSOmni', omniStr, ExpandConstant('{app}\{code:WcfDir}'));
+
+    UpdateAppSettingsConfig('ECom.Url', Trim(IISPage_txtEComUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
   except
     ErrorMsg('AppSettingsChangeScript. Check the values in the AppSettings.Config file.', CmdMode);
     Result := False;
@@ -388,22 +400,22 @@ var
 begin
   I := SqlCustomPage.ID;
   Result := True
-  UpdateAppSettings := true;
+  UpdateAppSettings := True;
   if CurPageID = wpSelectDir then
   begin
-    CopyAppSettingsFile := true;
+    CopyAppSettingsFile := True;
     if FileExists(ExpandConstant('{app}\{code:WcfDir}\AppSettings.config')) then
     begin
-      CopyAppSettingsFile := false;
+      CopyAppSettingsFile := False;
       if CheckPage_IISCheckBox.Checked or CheckPage_NavSQLCheckBox.Checked or CheckPage_SQLCheckBox.Checked then
       begin
         if not CmdMode and (MsgBox('AppSettings.config exists in this folder.  Do you want to update it with new values?', mbConfirmation, MB_YESNO) = idNo) then
         begin
-          UpdateAppSettings := false;
+          UpdateAppSettings := False;
         end;
       end
       else
-        UpdateAppSettings := false;
+        UpdateAppSettings := False;
     end;
   end; 
 end;
@@ -499,9 +511,29 @@ end;
 
 function InitializeUninstall(): Boolean;
 begin
+  Log('Init Uninstall');
   Result := True;
   if (not CmdMode) then
     MsgBox('Only files will be removed.' #13#13 'No SQL object or data removed' #13#13 'IIS Web application must be removed with the IIS Manager', mbInformation, MB_OK) 
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+var
+  ResultStr: String;
+begin
+  Log('Uninstall process');
+  if CurUninstallStep = usPostUninstall then
+  begin
+    if RegQueryStringValue(HKLM, 'Software\LS Retail\Omni', 'Path', ResultStr) then
+    begin
+      Log('Program Dir: ' + ResultStr);
+      if not DirExists(ResultStr) then
+	    exit;
+	
+      Log('Delete Program Dir');
+      DelTree(ResultStr, True, True, True);
+    end;
+  end;
 end;
 
 // CurPageID values for predefined wizard pages

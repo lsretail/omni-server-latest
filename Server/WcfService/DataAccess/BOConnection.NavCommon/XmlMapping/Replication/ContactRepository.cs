@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
@@ -10,6 +11,10 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
 {
     public class ContactRepository : BaseRepository
     {
+        public ContactRepository(BOConfiguration config) : base(config)
+        {
+        }
+
         public List<Scheme> SchemeGetAll(XMLTableData table)
         {
             List<Scheme> list = new List<Scheme>();
@@ -107,7 +112,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Club Code": rec.ClubId = field.Values[i]; break;
                         case "Status": rec.Status = (CardStatus)ConvertTo.SafeInt(field.Values[i]); break;
                         case "Reason Blocked": rec.BlockedReason = field.Values[i]; break;
-                        case "Date Blocked": rec.DateBlocked = XMLHelper.GetWebDateTime(field.Values[i]); break;
+                        case "Date Blocked": rec.DateBlocked = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                         case "Blocked by": rec.BlockedBy = field.Values[i]; break;
                     }
                 }
@@ -213,8 +218,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Replication
                         case "Document No.": rec.DocumentNo = field.Values[i]; break;
                         case "Store No.": rec.StoreNo = field.Values[i]; break;
                         case "Name": rec.StoreName = field.Values[i]; break;
-                        case "Date": rec.Date = XMLHelper.GetWebDateTime(field.Values[i]); break;
-                        case "Expiration Date": rec.ExpirationDate = XMLHelper.GetWebDateTime(field.Values[i]); break;
+                        case "Date": rec.Date = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
+                        case "Expiration Date": rec.ExpirationDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
                         case "Source Type": rec.SourceType = (MemberPointSourceType)Convert.ToInt32(field.Values[i]); break;
                         case "Entry Type": rec.EntryType = (MemberPointEntryType)Convert.ToInt32(field.Values[i]); break;
                         case "Point Type": rec.PointType = (MemberPointType)Convert.ToInt32(field.Values[i]); break;

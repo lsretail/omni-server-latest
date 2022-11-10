@@ -59,6 +59,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             throw new NotImplementedException();
         }
 
+        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        {
+            throw new NotImplementedException();
+        }
+
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
             return "Not Supported";
@@ -69,12 +74,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             throw new NotImplementedException();
         }
 
-        public virtual bool TokenEntrySet(ClientToken token, Statistics stat)
+        public virtual bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat)
         {
             throw new NotImplementedException();
         }
 
-        public virtual ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        public virtual List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat)
         {
             throw new NotImplementedException();
         }

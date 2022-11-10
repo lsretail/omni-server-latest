@@ -149,7 +149,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
                 Location = SQLHelper.GetString(reader["Image Location"]),
                 LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
-                ModifiedTime = SQLHelper.GetDateTime(reader["Last Date Modified"])
+                ModifiedTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Date Modified"]), config.IsJson)
             };
 
             if (includeblob)
@@ -177,7 +177,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
                 Location = SQLHelper.GetString(reader["Image Location"]),
                 LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
-                ModifiedTime = SQLHelper.GetDateTime(reader["Last Date Modified"]),
+                ModifiedTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Date Modified"]), config.IsJson)
             };
 
             if (includeblob)

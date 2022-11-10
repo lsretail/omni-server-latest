@@ -20,9 +20,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public ItemRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt2.[Keying in Price],mt2.[Keying in Quantity],mt2.[No Discount Allowed]," +
+            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt2.[Keying in Price],mt2.[Keying in Quantity],mt2.[No Discount Allowed],mt.[Item Tracking Code]," +
                          "mt2.[Scale Item],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt2.[Zero Price Valid],mt.[Sales Unit of Measure]," +
-                         "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt2.[Retail Product Code]," +
+                         "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt2.[Retail Product Code],mt.[Country_Region of Origin Code]," +
                          "mt.[Gross Weight],mt2.[Season Code],mt.[Item Category Code],mt2.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
@@ -441,10 +441,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             SQLHelper.CheckForSQLInjection(productGroupId);
             SQLHelper.CheckForSQLInjection(search);
 
-
             string sql =
             "WITH o AS (SELECT TOP(" + pageSize * pageNumber + ") mt.[No_],mt.[Description],mt.[Sales Unit of Measure]," +
-            "mt2.[Retail Product Code],mt2.[Scale Item]," +
+            "mt2.[Retail Product Code],mt2.[Scale Item],mt.[Item Tracking Code]," +
             "mt.[Blocked],mt.[Gross Weight],mt2.[Season Code],mt.[Item Category Code],mt2.[Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
@@ -466,7 +465,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
-            sql += "[Retail Product Code],[Scale Item],";
+            sql += "[Retail Product Code],[Scale Item],[Item Tracking Code],";
             sql += "[Blocked],[Gross Weight],[Season Code],[Item Category Code],[Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -665,10 +664,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 SalseUnitOfMeasure = SQLHelper.GetString(reader["Sales Unit of Measure"]),
                 VendorId = SQLHelper.GetString(reader["Vendor No_"]),
                 VendorItemId = SQLHelper.GetString(reader["Vendor Item No_"]),
+                CountryOfOrigin = SQLHelper.GetString(reader["Country_Region of Origin Code"]),
 
                 SeasonCode = SQLHelper.GetString(reader["Season Code"]),
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
+                ItemTrackingCode = SQLHelper.GetString(reader["Item Tracking Code"]),
 
                 GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
                 UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
@@ -702,6 +703,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 SeasonCode = SQLHelper.GetString(reader["Season Code"]),
                 ItemCategoryCode = SQLHelper.GetString(reader["Item Category Code"]),
                 ItemFamilyCode = SQLHelper.GetString(reader["Item Family Code"]),
+                ItemTrackingCode = SQLHelper.GetString(reader["Item Tracking Code"]),
                 GrossWeight = SQLHelper.GetDecimal(reader, "Gross Weight"),
                 UnitsPerParcel = SQLHelper.GetDecimal(reader, "Units per Parcel"),
                 UnitVolume = SQLHelper.GetDecimal(reader, "Unit Volume"),

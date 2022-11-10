@@ -211,8 +211,8 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             StoreRepository strep = new StoreRepository(config, NavVersion);
             trans.Terminal.Store = strep.StoreLoyGetById(SQLHelper.GetString(reader["Store No_"]), false);
 
-            DateTime navdate = SQLHelper.GetDateTime(reader["Date"]);
-            DateTime navtime = SQLHelper.GetDateTime(reader["Time"]);
+            DateTime navdate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson);
+            DateTime navtime = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Time"]), config.IsJson);
             trans.BeginDateTime = new DateTime(navdate.Year, navdate.Month, navdate.Day, navtime.Hour, navtime.Minute, navtime.Second);
 
             if (includeLines)

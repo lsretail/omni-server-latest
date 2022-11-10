@@ -277,7 +277,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 {
                     ret = odataWS.GetVariantReg(storeId, batchSize, fullRepl, lastKey, lastEntry);
                     logger.Trace(config.LSKey.Key, ret);
-                    return map.GetReplItemVariant(ret, ref lastKey, ref recordsRemaining);
+                    return map.GetReplItemVariantReg(ret, ref lastKey, ref recordsRemaining);
                 }
             }
 
@@ -285,6 +285,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateItemVariantRegistration(table);
+        }
+
+        public virtual List<ReplItemVariant> ReplicateItemVariant(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
+        {
+            if (LSCVersion >= new Version("21.0"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetItemVariant(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplItemVariant(ret, ref lastKey, ref recordsRemaining);
+            }
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Item Variant");
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ReplicateRepository rep = new ReplicateRepository(config);
+            return rep.ReplicateItemVariant(table);
         }
 
         public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
@@ -303,6 +325,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateVendor(table);
+        }
+
+        public virtual List<ReplLoyVendorItemMapping> ReplicateVendorItems(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
+        {
+            if (LSCVersion >= new Version("21.0"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetVendorItem(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplVendorItem(ret, ref lastKey, ref recordsRemaining);
+            }
+
+            List<ReplLoyVendorItemMapping> list = new List<ReplLoyVendorItemMapping>();
+            List<ReplItem> items = ReplicateItems(appId, string.Empty, storeId, batchSize, fullRepl, ref lastKey, ref recordsRemaining);
+            foreach (ReplItem item in items)
+            {
+                if (string.IsNullOrEmpty(item.VendorId))
+                    continue;
+
+                list.Add(new ReplLoyVendorItemMapping()
+                {
+                    NavManufacturerId = item.VendorId,
+                    NavManufacturerItemId = item.VendorItemId,
+                    NavProductId = item.Id,
+                    Deleted = false,
+                    DisplayOrder = 1,
+                    IsFeaturedProduct = true
+                });
+            }
+            return list;
         }
 
         public virtual List<ReplCurrency> ReplicateCurrency(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
@@ -352,7 +406,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplItemCatagory(ret, ref lastKey, ref recordsRemaining);
             }
-            
+
             XMLTableData table = DoReplication(5722, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository(config);
@@ -383,7 +437,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 // TODO update
                 if (fullRepl == false)
+                {
+                    if (lastKey.Contains(';') == false)
+                        lastKey = "0";
                     fullRepl = true;
+                }
 
                 ItemJMapping map = new ItemJMapping(config.IsJson);
 
@@ -466,6 +524,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
+        public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
+        {
+            if (LSCVersion >= new Version("20.4"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetSalesPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplBasePrice(ret, storeId, ref lastKey, ref recordsRemaining);
+            }
+
+            throw new NotImplementedException();
+        }
+
         public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             if (LSCVersion >= new Version("19.3"))
@@ -486,20 +559,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public virtual List<ReplStore> ReplicateStores(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
-            if (string.IsNullOrEmpty(appId))
+            NAVWebXml xml = null;
+            if (LSCVersion < new Version("20.4"))
             {
-                appId = ecomAppId;
-            }
-            if (string.IsNullOrEmpty(appType))
-            {
-                appType = ecomAppType;
-            }
+                if (string.IsNullOrEmpty(appId))
+                {
+                    appId = ecomAppId;
+                }
+                if (string.IsNullOrEmpty(appType))
+                {
+                    appType = ecomAppType;
+                }
 
-            NAVWebXml xml = new NAVWebXml(storeId, appId, appType);
-            if (ResetReplication(fullRepl, lastKey))
-            {
-                int i = 0;
-                StartWebReplication(xml, 0, ref i);
+                xml = new NAVWebXml(storeId, appId, appType);
+                if (ResetReplication(fullRepl, lastKey))
+                {
+                    int i = 0;
+                    StartWebReplication(xml, 0, ref i);
+                }
             }
 
             if (LSCVersion >= new Version("19.3"))
@@ -559,20 +636,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 appType = ecomAppType;
             }
 
+            //Get all storeIds linked to this terminal
             NAVWebXml xml = new NAVWebXml(storeId, appId, appType);
-            if (ResetReplication(fullReplication, lastKey))
-            {
-                int i = 0;
-                StartWebReplication(xml, 0, ref i);
-            }
-
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Inventory Terminal-Store");
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
             ReplicateRepository rep = new ReplicateRepository(config);
-            //Get all storeIds linked to this terminal
             List<ReplStore> list = rep.ReplicateInvStores(table, terminalId);
+
             //Get all stores
             List<ReplStore> allStores = ReplicateStores(appId, appType, storeId, 0, fullReplication, ref lastKey, ref recordsRemaining);
 
@@ -614,8 +686,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateUnitOfMeasure(table);
         }
 
-        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref int recordsRemaining)
+        public virtual List<ReplCollection> ReplicateCollection(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
+            if (LSCVersion >= new Version("20.4"))
+            {
+                SetupJMapping map = new SetupJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetCollection(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplCollection(ret, ref lastKey, ref recordsRemaining);
+            }
+
             XMLTableData table = DoReplication(10001430, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository(config);
@@ -628,7 +710,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 // TODO update
                 if (fullRepl == false)
+                {
+                    if (lastKey.Contains(';') == false)
+                        lastKey = "0";
                     fullRepl = true;
+                }
 
                 ItemJMapping map = new ItemJMapping(config.IsJson);
 
@@ -681,7 +767,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
                 bool hasdata = false;
                 decimal amt = 0;
-                it = new ReplDiscount();
+                it = new ReplDiscount(config.IsJson);
                 extlist.Add(it);
                 foreach (XMLFieldData field in table.FieldList)
                 {
@@ -750,7 +836,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 // TODO update
                 if (fullRepl == false)
+                {
+                    if (lastKey.Contains(';') == false)
+                        lastKey = "0";
                     fullRepl = true;
+                }
 
                 ItemJMapping map = new ItemJMapping(config.IsJson);
 
@@ -846,8 +936,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
+        public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
+            if (LSCVersion >= new Version("20.4"))
+            {
+                SetupJMapping map = new SetupJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetValidationPeriod(batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+
+                string tenderMap = config.SettingsGetByKey(ConfigKey.TenderType_Mapping);
+                return map.GetPeriod(ret, tenderMap, ref lastKey, ref recordsRemaining);
+            }
+
             XMLTableData table = DoReplication(99001481, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository(config);
@@ -896,29 +998,34 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateStoreTenderTypeCurrency(table);
         }
 
-        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
-        {
-            throw new NotImplementedException();
-        }
-
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
-            ItemJMapping map = new ItemJMapping(config.IsJson);
+            if (LSCVersion >= new Version("19.3"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson);
 
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetWIItemModifier(storeId, batchSize, fullRepl, lastKey, lastEntry);
-            logger.Trace(config.LSKey.Key, ret);
-            return map.GetReplModifier(ret, ref lastKey, ref recordsRemaining);
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetWIItemModifier(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplModifier(ret, ref lastKey, ref recordsRemaining);
+            }
+
+            throw new NotImplementedException();
         }
 
         public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
-            ItemJMapping map = new ItemJMapping(config.IsJson);
+            if (LSCVersion >= new Version("19.3"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson);
 
-            map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-            string ret = odataWS.GetWIItemRecipeBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
-            logger.Trace(config.LSKey.Key, ret);
-            return map.GetReplRecipe(ret, ref lastKey, ref recordsRemaining);
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetWIItemRecipeBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplRecipe(ret, ref lastKey, ref recordsRemaining);
+            }
+
+            throw new NotImplementedException();
         }
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
@@ -1214,9 +1321,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateDataTranslation(table);
         }
 
+        public virtual List<ReplDataTranslation> ReplicateHtmlTranslation(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
+        {
+            if (LSCVersion >= new Version("20.4"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetItemHTML(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplHtml(ret, ref lastKey, ref recordsRemaining);
+            }
+
+            throw new NotImplementedException();
+        }
+
         public virtual List<ReplDataTranslationLangCode> ReplicateDataTranslationLangCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
-            XMLTableData table = DoReplication(10000972, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Data Translation Language");
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ReplicateRepository rep = new ReplicateRepository(config);
             return rep.ReplicateDataTranslationLangCode(table);
@@ -1224,7 +1350,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public virtual List<ReplShippingAgent> ReplicateShippingAgent(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
         {
-            XMLTableData table = DoReplication(291, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Shipping Agent");
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             ReplicateRepository rep = new ReplicateRepository(config);
             List<ReplShippingAgent> list = rep.ReplicateShippingAgent(table);
@@ -1343,8 +1473,59 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateTerminals(table);
         }
 
-        public virtual List<ReplCountryCode> ReplicateCountryCode(string appId, string appType, string storeId, int batchSize, ref string lastKey, ref int recordsRemaining)
+        public virtual List<ReplCountryCode> ReplicateCountryCode(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
+            if (LSCVersion >= new Version("20.4"))
+            {
+                SetupJMapping map = new SetupJMapping(config.IsJson);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetCountryCode(batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                List<ReplCountryCode> list = map.GetReplCountry(ret, ref lastKey, ref recordsRemaining);
+
+                List<XMLFieldData> filter = new List<XMLFieldData>();
+                NAVWebXml xml = new NAVWebXml();
+                foreach (ReplCountryCode country in list)
+                {
+                    country.TaxItemGroups = new List<TaxItemGroup>();
+                    if (string.IsNullOrEmpty(country.TaxPostGroup))
+                        continue;
+
+                    filter.Clear();
+                    filter.Add(new XMLFieldData()
+                    {
+                        FieldName = "VAT Bus. Posting Group",
+                        Values = new List<string>() { country.TaxPostGroup }
+                    });
+
+                    try
+                    {
+                        string xmlRequest = xml.GetBatchWebRequestXML("VAT Posting Setup", null, filter, string.Empty);
+                        string xmlResponse = RunOperation(xmlRequest, true);
+                        HandleResponseCode(ref xmlResponse);
+                        XMLTableData tab = xml.GetGeneralWebResponseXML(xmlResponse);
+                        if (tab != null && tab.NumberOfValues > 0)
+                        {
+                            for (int i = 0; i < tab.NumberOfValues; i++)
+                            {
+                                TaxItemGroup tax = new TaxItemGroup();
+                                XMLFieldData field = tab.FieldList.Find(f => f.FieldName.Equals("VAT Prod. Posting Group"));
+                                tax.Code = field.Values[0];
+                                field = tab.FieldList.Find(f => f.FieldName.Equals("VAT %"));
+                                tax.TaxPercent = ConvertTo.SafeDecimal(field.Values[0]);
+                                country.TaxItemGroups.Add(tax);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn(ex, "Failed to get Tax Item Groups");
+                    }
+                }
+                return list;
+            }
+
             XMLTableData table = DoReplication(9, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
 
             ReplicateRepository rep = new ReplicateRepository(config);

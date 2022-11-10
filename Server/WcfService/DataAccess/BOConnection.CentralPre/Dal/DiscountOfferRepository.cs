@@ -128,7 +128,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         {
                             if (a.Type == DDStatementType.Delete)
                             {
-                                list.Add(new ReplDiscount()
+                                list.Add(new ReplDiscount(config.IsJson)
                                 {
                                     OfferNo = a.ParamValue,
                                     IsDeleted = true
@@ -144,7 +144,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 string no = (string)command2.ExecuteScalar();
                                 if (no != null)
                                 {
-                                    list.Add(new ReplDiscount()
+                                    list.Add(new ReplDiscount(config.IsJson)
                                     {
                                         OfferNo = no,
                                         IsDeleted = true
@@ -240,7 +240,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         {
                             if (a.Type == DDStatementType.Delete)
                             {
-                                list.Add(new ReplDiscount()
+                                list.Add(new ReplDiscount(config.IsJson)
                                 {
                                     OfferNo = a.ParamValue,
                                     IsDeleted = true
@@ -256,7 +256,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 string no = (string)command2.ExecuteScalar();
                                 if (no != null)
                                 {
-                                    list.Add(new ReplDiscount()
+                                    list.Add(new ReplDiscount(config.IsJson)
                                     {
                                         OfferNo = no,
                                         IsDeleted = true
@@ -330,7 +330,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         {
                             if (act.Type == DDStatementType.Delete)
                             {
-                                list.Add(new ReplDiscountValidation()
+                                list.Add(new ReplDiscountValidation(config.IsJson)
                                 {
                                     Id = act.ParamValue,
                                     IsDeleted = true
@@ -402,7 +402,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            ReplDiscount disc = new ReplDiscount()
+            ReplDiscount disc = new ReplDiscount(config.IsJson)
             {
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
@@ -417,7 +417,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ToDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["To Date"]), config.IsJson),
                 MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
                 OfferNo = SQLHelper.GetString(reader["Offer No_"]),
-                ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
+                ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
@@ -445,7 +445,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            ReplDiscount disc = new ReplDiscount()
+            ReplDiscount disc = new ReplDiscount(config.IsJson)
             {
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
@@ -456,7 +456,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 FromDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["From Date"]), config.IsJson),
                 ToDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["To Date"]), config.IsJson),
                 OfferNo = SQLHelper.GetString(reader["Offer No_"]),
-                ModifyDate = SQLHelper.GetDateTime(reader["Last Modify Date"]),
+                ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 Type = (ReplDiscountType)(SQLHelper.GetInt32(reader["Type"])),
                 Description = SQLHelper.GetString(reader["Description"]),
                 ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
@@ -478,28 +478,28 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplDiscountValidation()
+            return new ReplDiscountValidation(config.IsJson)
             {
                 Id = SQLHelper.GetString(reader["ID"]),
                 Description = SQLHelper.GetString(reader["Description"]),
                 StartDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson),
                 EndDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Date"]), config.IsJson),
-                StartTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Time"]), config.IsJson),
-                EndTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Time"]), config.IsJson),
-                MondayStart = SQLHelper.GetDateTime(reader["Monday Starting Time"]),
-                MondayEnd = SQLHelper.GetDateTime(reader["Monday Ending Time"]),
-                TuesdayStart = SQLHelper.GetDateTime(reader["Tuesday Starting Time"]),
-                TuesdayEnd = SQLHelper.GetDateTime(reader["Tuesday Ending Time"]),
-                WednesdayStart = SQLHelper.GetDateTime(reader["Wednesday Starting Time"]),
-                WednesdayEnd = SQLHelper.GetDateTime(reader["Wednesday Ending Time"]),
-                ThursdayStart = SQLHelper.GetDateTime(reader["Thursday Starting Time"]),
-                ThursdayEnd = SQLHelper.GetDateTime(reader["Thursday Ending Time"]),
-                FridayStart = SQLHelper.GetDateTime(reader["Friday Starting Time"]),
-                FridayEnd = SQLHelper.GetDateTime(reader["Friday Ending Time"]),
-                SaturdayStart = SQLHelper.GetDateTime(reader["Saturday Starting Time"]),
-                SaturdayEnd = SQLHelper.GetDateTime(reader["Saturday Ending Time"]),
-                SundayStart = SQLHelper.GetDateTime(reader["Sunday Starting Time"]),
-                SundayEnd = SQLHelper.GetDateTime(reader["Sunday Ending Time"]),
+                StartTime = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Starting Time"]), config.IsJson),
+                EndTime = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Ending Time"]), config.IsJson),
+                MondayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Monday Starting Time"]), config.IsJson),
+                MondayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Monday Ending Time"]), config.IsJson),
+                TuesdayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Tuesday Starting Time"]), config.IsJson),
+                TuesdayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Tuesday Ending Time"]), config.IsJson),
+                WednesdayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Wednesday Starting Time"]), config.IsJson),
+                WednesdayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Wednesday Ending Time"]), config.IsJson),
+                ThursdayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Thursday Starting Time"]), config.IsJson),
+                ThursdayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Thursday Ending Time"]), config.IsJson),
+                FridayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Friday Starting Time"]), config.IsJson),
+                FridayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Friday Ending Time"]), config.IsJson),
+                SaturdayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Saturday Starting Time"]), config.IsJson),
+                SaturdayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Saturday Ending Time"]), config.IsJson),
+                SundayStart = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Sunday Starting Time"]), config.IsJson),
+                SundayEnd = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Sunday Ending Time"]), config.IsJson),
                 TimeWithinBounds = SQLHelper.GetBool(reader["Time within Bounds"]),
                 EndAfterMidnight = SQLHelper.GetBool(reader["Ending Time After Midnight"]),
                 MondayWithinBounds = SQLHelper.GetBool(reader["Mon_ Time within Bounds"]),

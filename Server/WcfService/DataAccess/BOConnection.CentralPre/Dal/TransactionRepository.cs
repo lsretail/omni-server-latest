@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
         }
 
-        public RetailTransaction TransactionGetByReceipt(string receiptNo, string culture, bool includeLines, Statistics stat)
+        public RetailTransaction TransactionGetByReceipt(string receiptNo, bool includeLines, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             RetailTransaction trans = null;
@@ -43,7 +43,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            trans = ReaderToLoyTransHeader(reader, culture, includeLines, stat);
+                            trans = ReaderToLoyTransHeader(reader, includeLines, stat);
                         }
                         reader.Close();
                     }
@@ -124,7 +124,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<PaymentLine> LoyTenderLineGet(string transId, string storeId, string terminalId, string culture, Statistics stat)
+        public List<PaymentLine> LoyTenderLineGet(string transId, string storeId, string terminalId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<PaymentLine> list = new List<PaymentLine>();
@@ -149,7 +149,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         int lineno = 1;
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyTender(reader, lineno++, culture));
+                            list.Add(ReaderToLoyTender(reader, lineno++));
                         }
                         reader.Close();
                     }
@@ -188,7 +188,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        private RetailTransaction ReaderToLoyTransHeader(SqlDataReader reader, string culture, bool includeLines, Statistics stat)
+        private RetailTransaction ReaderToLoyTransHeader(SqlDataReader reader, bool includeLines, Statistics stat)
         {
             Currency cur = new Currency(SQLHelper.GetString(reader["Trans_ Currency"]));
 
@@ -209,14 +209,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             StoreRepository strep = new StoreRepository(config, LSCVersion);
             trans.Terminal.Store = strep.StoreLoyGetById(SQLHelper.GetString(reader["Store No_"]), false);
 
-            DateTime navdate = SQLHelper.GetDateTime(reader["Date"]);
-            DateTime navtime = SQLHelper.GetDateTime(reader["Time"]);
+            DateTime navdate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson);
+            DateTime navtime = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Time"]), config.IsJson);
             trans.BeginDateTime = new DateTime(navdate.Year, navdate.Month, navdate.Day, navtime.Hour, navtime.Minute, navtime.Second);
 
             if (includeLines)
             {
                 trans.SaleLines = SalesLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, cur, stat);
-                trans.TenderLines = LoyTenderLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, culture, stat);
+                trans.TenderLines = LoyTenderLineGet(trans.Id, trans.Terminal.Store.Id, trans.Terminal.Id, stat);
             }
             else
             {
@@ -288,7 +288,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
         }
 
-        private PaymentLine ReaderToLoyTender(SqlDataReader reader, int lineno, string currency)
+        private PaymentLine ReaderToLoyTender(SqlDataReader reader, int lineno)
         {
             Payment pay = new Payment()
             {
@@ -300,25 +300,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
             pay.ReceiptInfo = ReceiptGet(pay.TransactionId);
             return new PaymentLine(lineno, pay);
-        }
-
-        private ReceiptInfo ReaderToReceiptInfo(SqlDataReader reader)
-        {
-            //[Line No_],[Key],[Value],[Transaction No_],[Type],[LargeValue]
-            ReceiptInfo info = new ReceiptInfo()
-            {
-                Key = SQLHelper.GetString(reader["Key"]),
-                ValueAsText = ConvertTo.Base64Decode(SQLHelper.GetString(reader["LargeValue"])),
-                Type = SQLHelper.GetString(reader["Type"]),
-                IsLargeValue = true
-            };
-
-            if (string.IsNullOrEmpty(info.ValueAsText))
-            {
-                info.IsLargeValue = false;
-                info.ValueAsText = SQLHelper.GetString(reader["Value"]);
-            }
-            return info;
         }
     }
 }

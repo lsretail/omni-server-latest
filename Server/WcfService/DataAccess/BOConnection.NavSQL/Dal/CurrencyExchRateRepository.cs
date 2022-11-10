@@ -174,7 +174,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 CurrencyFactor = exchrate,
-                StartingDate = SQLHelper.GetDateTime(reader["Starting Date"])
+                StartingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson)
             };
 
             if (getTS)

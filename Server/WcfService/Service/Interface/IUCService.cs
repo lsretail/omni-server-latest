@@ -90,9 +90,10 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetDataEntryBalance<p/><p/>
         /// </remarks>
         /// <param name="cardNo">Gift card number</param>
+        /// <param name="entryType">Gift card Entry type. If empty, GiftCard_DataEntryType from TenantConfig is used</param>
         /// <returns></returns>
         [OperationContract]
-        GiftCard GiftCardGetBalance(string cardNo);
+        GiftCard GiftCardGetBalance(string cardNo, string entryType);
 
         [OperationContract]
         List<Advertisement> AdvertisementsGetById(string id, string contactId);
@@ -1845,6 +1846,25 @@ namespace LSOmni.Service
         ReplItemVariantRegistrationResponse ReplEcommItemVariantRegistrations(ReplRequest replRequest);
 
         /// <summary>
+        /// Replicate Item Variant (supports Item distribution)
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 5401 - Item Variant
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to LS Commerce Service, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of variant</returns>
+        [OperationContract]
+        ReplItemVariantResponse ReplEcommItemVariants(ReplRequest replRequest);
+
+        /// <summary>
         /// Replicate Best Prices for Items from WI Price table in LS Central (supports Item distribution)<p/>
         /// </summary>
         /// <remarks>
@@ -2810,6 +2830,27 @@ namespace LSOmni.Service
         [OperationContract]
         bool ActivityDeleteGroup(string groupNo, int lineNo);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="groupNo"></param>
+        /// <param name="statusCode"></param>
+        /// <returns></returns>
+        [OperationContract]
+        string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="locationNo"></param>
+        /// <param name="productNo"></param>
+        /// <param name="promoCode"></param>
+        /// <param name="contactNo"></param>
+        /// <param name="quantity"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity);
+
         #endregion
 
         #region Activity Data Get (Replication)
@@ -3029,17 +3070,19 @@ namespace LSOmni.Service
         /// Add Payment token
         /// </summary>
         /// <param name="token"></param>
+        /// <param name="deleteToken">Delete token, Send token with token and cardId to delete</param>
         /// <returns></returns>
         [OperationContract]
-        bool TokenEntrySet(ClientToken token);
+        bool TokenEntrySet(ClientToken token, bool deleteToken);
 
         /// <summary>
         /// Get Payment token
         /// </summary>
-        /// <param name="cardNo"></param>
+        /// <param name="accountNo"></param>
+        /// <param name="hotelToken">Get token for LS Hotels</param>
         /// <returns></returns>
         [OperationContract]
-        ClientTokenResult TokenEntryGet(string cardNo);
+        List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken);
 
         #endregion
 

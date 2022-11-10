@@ -413,6 +413,46 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityUpdateGroupHeaderStatus(groupNo, statusCode);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityUpdateGroupHeaderStatus");
+                return string.Empty; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityPreSellProduct(locationNo, productNo, productNo, contactNo, quantity);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityPreSellProduct");
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         #endregion
 
         #region Data Get (Replication)

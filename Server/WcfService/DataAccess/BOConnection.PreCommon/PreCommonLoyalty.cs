@@ -28,6 +28,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -989,13 +990,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootMobileGetProfiles root = new LSCentral.RootMobileGetProfiles();
 
             centralWS.MobileGetProfiles(ref respCode, ref errorText, string.Empty, string.Empty, ref root);
-            if (respCode == "1000") // not found
-            {
-                logger.StatisticEndSub(ref stat, index);
-                return new List<Profile>();
-            }
-
-            HandleWS2ResponseCode("MobileGetProfiles", respCode, errorText, ref stat, index);
+            HandleWS2ResponseCode("MobileGetProfiles", respCode, errorText, ref stat, index, new string[] { "1000" });
             logger.Debug(config.LSKey.Key, "MobileGetProfiles Response - " + Serialization.ToXml(root, true));
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             List<Profile> list = map.MapFromRootToProfiles(root);
@@ -1208,6 +1203,78 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 Balance = root.POSDataEntry.First().Balance,
                 ExpireDate = root.POSDataEntry.First().ExpiryDate
             };
+        }
+
+        public decimal GetPointRate(Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            SetupRepository rep = new SetupRepository(config);
+            decimal data = rep.GetPointRate(table);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
+        }
+
+        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
+            string xmlResponse = RunOperation(xmlRequest);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+            ContactRepository rep = new ContactRepository(config);
+            List<PointEntry> list = rep.PointEntryGet(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public List<Notification> NotificationsGetByCardId(string cardId, Statistics stat)
+        {
+            List<Notification> pol = new List<Notification>();
+            if (string.IsNullOrWhiteSpace(cardId))
+                return pol;
+
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", cardId);
+            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
+
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
+            List<Notification> list = map.MapFromRootToNotifications(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
+            LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
+
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
+            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, XMLHelper.GetString(cardId), XMLHelper.GetString(itemId), XMLHelper.GetString(storeId), ref root);
+            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
+            List<PublishedOffer> data = map.MapFromRootToPublishedOffers(root);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
         }
 
         #endregion
@@ -1780,7 +1847,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             orderId = string.Empty;
             if (string.IsNullOrWhiteSpace(request.Id))
-                request.Id = GuidHelper.NewGuidString();
+                request.Id = GuidHelper.NewGuidWithoutDashes();
 
             // need to map the TenderType enum coming from devices to TenderTypeId that NAV knows
             if (request.OrderPayments == null)
@@ -2207,31 +2274,64 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             bool orderPayed = false;
             bool doCheck = false;
             int numOfItem = 0;
-            LSCentral.RootSPGOrderCheck root = new LSCentral.RootSPGOrderCheck();
-
-            logger.Debug(config.LSKey.Key, $"SPGOrderCheck Request - docId:{documentId}");
-            centralWS.SPGOrderCheck(documentId, ref orderPayed, ref doCheck, ref numOfItem, ref root, ref respCode, ref errorText);
-            HandleWS2ResponseCode("SPGOrderCheck", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, "SPGOrderCheck Response - " + Serialization.ToXml(root, true));
 
             List<OrderCheckLines> lines = new List<OrderCheckLines>();
-            if (root.SPGOrderCheckCOLine != null)
+
+            if (LSCVersion >= new Version("20.5"))
             {
-                foreach (LSCentral.SPGOrderCheckCOLine line in root.SPGOrderCheckCOLine)
+                logger.Debug(config.LSKey.Key, $"SPGOrderCheckV2 Request - docId:{documentId}");
+                LSCentral.RootSPGOrderCheck root2 = new LSCentral.RootSPGOrderCheck();
+                centralWS.SPGOrderCheckV2(documentId, ref orderPayed, ref doCheck, ref numOfItem, ref root2, ref respCode, ref errorText);
+                HandleWS2ResponseCode("SPGOrderCheckV2", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, "SPGOrderCheckV2 Response - " + Serialization.ToXml(root2, true));
+
+                if (root2.SPGOrderCheckCOLine != null)
                 {
-                    lines.Add(new OrderCheckLines()
+                    foreach (LSCentral.SPGOrderCheckCOLine line in root2.SPGOrderCheckCOLine)
                     {
-                        DocumentID = line.DocumentID,
-                        ItemId = line.Number,
-                        ItemDescription = line.ItemDescription,
-                        VariantCode = line.VariantCode,
-                        VariantDescription = line.VariantDescription,
-                        UnitofMeasureCode = line.UnitofMeasureCode,
-                        UOMDescription = line.UoMDescription,
-                        Amount = line.Amount,
-                        LineNo = line.LineNo,
-                        Quantity = line.Quantity
-                    });
+                        lines.Add(new OrderCheckLines()
+                        {
+                            DocumentID = line.DocumentID,
+                            ItemId = line.Number,
+                            ItemDescription = line.ItemDescription,
+                            VariantCode = line.VariantCode,
+                            VariantDescription = line.VariantDescription,
+                            UnitofMeasureCode = line.UnitofMeasureCode,
+                            UOMDescription = line.UoMDescription,
+                            Amount = line.Amount,
+                            LineNo = line.LineNo,
+                            Quantity = line.Quantity,
+                            AlwaysCheck = line.AlwaysCheck
+                        });
+                    }
+                }
+            }
+            else
+            {
+                logger.Debug(config.LSKey.Key, $"SPGOrderCheck Request - docId:{documentId}");
+                LSCentral.RootSPGOrderCheck1 root = new LSCentral.RootSPGOrderCheck1();
+                centralWS.SPGOrderCheck(documentId, ref orderPayed, ref doCheck, ref numOfItem, ref root, ref respCode, ref errorText);
+                HandleWS2ResponseCode("SPGOrderCheck", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, "SPGOrderCheck Response - " + Serialization.ToXml(root, true));
+
+                if (root.SPGOrderCheckCOLine != null)
+                {
+                    foreach (LSCentral.SPGOrderCheckCOLine1 line in root.SPGOrderCheckCOLine)
+                    {
+                        lines.Add(new OrderCheckLines()
+                        {
+                            DocumentID = line.DocumentID,
+                            ItemId = line.Number,
+                            ItemDescription = line.ItemDescription,
+                            VariantCode = line.VariantCode,
+                            VariantDescription = line.VariantDescription,
+                            UnitofMeasureCode = line.UnitofMeasureCode,
+                            UOMDescription = line.UoMDescription,
+                            Amount = line.Amount,
+                            LineNo = line.LineNo,
+                            Quantity = line.Quantity
+                        });
+                    }
                 }
             }
 
@@ -2261,6 +2361,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return exist;
         }
 
+        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            logger.Debug(config.LSKey.Key, $"SPGLogSecurityCheckResponse Request - OrderNo:{orderNo} validationError:{validationError} validationSuccessful:{validationSuccessful}");
+            centralWS.SPGLogSecurityCheckResponse(ref orderNo, ref validationSuccessful, XMLHelper.GetString(validationError), ref respCode, ref errorText);
+            HandleWS2ResponseCode("SPGLogSecurityCheckResponse", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
+            return true;
+        }
+
         public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
@@ -2279,66 +2392,119 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return string.Empty;
         }
 
-        public bool TokenEntrySet(ClientToken token, Statistics stat)
+        public bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
-            bool retValue = false;
             string errorText = string.Empty;
+            bool retValue = true;
 
-            List<LSCentral.Token> tokens = new List<LSCentral.Token>()
+            if (deleteToken)
             {
-                new LSCentral.Token()
+                logger.Debug(config.LSKey.Key, $"DeleteMemberCardToken Request - token:{Serialization.ToXml(token, true)}");
+                centralWS.DeleteMemberCardToken(ref respCode, ref errorText, token.CardNo, token.Token);
+                HandleWS2ResponseCode("DeleteMemberCardToken", respCode, errorText, ref stat, index);
+            }
+            else
+            {
+                List<LSCentral.Token1> tokens = new List<LSCentral.Token1>()
                 {
-                    AccountNo = token.AccountNo,
-                    CardMask = token.CardMask,
-                    ContactNo = token.ContactNo,
-                    Created = token.Created,
-                    DefaultToken = token.DefaultToken,
-                    EntryNo = token.EntryNo,
-                    PSPID = token.pSPID,
-                    Token1 = token.Token1,
-                    TokenId = token.Token,
-                    TokenType = token.Type
+                    new LSCentral.Token1()
+                    {
+                        AccountNo = XMLHelper.GetString(token.AccountNo),
+                        CardMask = XMLHelper.GetString(token.CardMask),
+                        ContactNo = XMLHelper.GetString(token.ContactNo),
+                        Created = token.Created,
+                        ExpiryDate = token.ExpiryDate,
+                        DefaultToken = token.DefaultToken,
+                        EntryNo = token.EntryNo,
+                        PSPID = XMLHelper.GetString(token.pSPID),
+                        Token = XMLHelper.GetString(token.Token),
+                        TokenId = XMLHelper.GetString(token.TokenId),
+                        TokenType = XMLHelper.GetString(token.Type),
+                    }
+                };
+
+                LSCentral.RootSetTokenEntry entry = new LSCentral.RootSetTokenEntry();
+                entry.Token = tokens.ToArray();
+
+                if (token.HotelToken)
+                {
+                    logger.Debug(config.LSKey.Key, $"SetTokenEntry Request - token:{Serialization.ToXml(token, true)}");
+                    centralWS.SetTokenEntry(token.ContactNo, token.CardNo, entry, ref retValue, ref respCode, ref errorText);
+                    HandleWS2ResponseCode("SetTokenEntry", respCode, errorText, ref stat, index);
                 }
-            };
-
-            LSCentral.RootSetTokenEntry entry = new LSCentral.RootSetTokenEntry();
-            entry.Token = tokens.ToArray();
-
-            logger.Debug(config.LSKey.Key, $"SetTokenEntry Request - token:{Serialization.ToXml(token, true)}");
-            centralWS.SetTokenEntry(token.ContactNo, token.CardNo, entry, ref retValue, ref respCode, ref errorText);
-            HandleWS2ResponseCode("SetTokenEntry", respCode, errorText, ref stat, index);
+                else
+                {
+                    logger.Debug(config.LSKey.Key, $"SetMemberCardToken Request - token:{Serialization.ToXml(token, true)}");
+                    centralWS.SetMemberCardToken(token.CardNo, entry, ref respCode, ref errorText);
+                    HandleWS2ResponseCode("SetMemberCardToken", respCode, errorText, ref stat, index);
+                }
+            }
             logger.StatisticEndSub(ref stat, index);
             return retValue;
         }
 
-        public ClientTokenResult TokenEntryGet(string cardNo, Statistics stat)
+        public List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
+            List<ClientToken> tokens = new List<ClientToken>();
 
-            string result = string.Empty;
-            string token = string.Empty;
-            DateTime exp = DateTime.MinValue;
-
-            logger.Debug(config.LSKey.Key, $"GetTokenEntry Request - cardNo:{cardNo}");
-            centralWS.GetTokenEntry(string.Empty, cardNo, ref token, ref exp, ref result, ref respCode, ref errorText);
-            HandleWS2ResponseCode("GetTokenEntry", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, $"GetTokenEntry Response - token:{token} ExpD:{exp} Result:{result}");
-            logger.StatisticEndSub(ref stat, index);
-            return new ClientTokenResult()
+            if (hotelToken)
             {
-                Token = token,
-                ExpireDate = exp,
-                Result = result
-            };
+                string result = string.Empty;
+                string token = string.Empty;
+                DateTime exp = DateTime.MinValue;
+
+                logger.Debug(config.LSKey.Key, $"GetTokenEntry Request - accountNo:{accountNo}");
+                centralWS.GetTokenEntry(string.Empty, accountNo, ref token, ref exp, ref result, ref respCode, ref errorText);
+                HandleWS2ResponseCode("GetTokenEntry", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, $"GetTokenEntry Response - token:{token} ExpD:{exp} Result:{result}");
+                tokens.Add(new ClientToken()
+                {
+                    HotelToken = true,
+                    Token = token,
+                    ExpiryDate = exp,
+                    Result = result
+                });
+            }
+            else
+            {
+                LSCentral.RootGetTokenEntryXML root = new LSCentral.RootGetTokenEntryXML();
+                logger.Debug(config.LSKey.Key, $"GetMemberCardToken Request - accountNo:{accountNo}");
+                centralWS.GetMemberCardToken(accountNo, ref root, ref respCode, ref errorText);
+                HandleWS2ResponseCode("GetMemberCardToken", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, $"GetMemberCardToken Response: {Serialization.ToXml(root, true)}");
+                if (root.Token != null)
+                {
+                    foreach (LSCentral.Token token in root.Token)
+                    {
+                        tokens.Add(new ClientToken()
+                        {
+                            Token = token.TokenValue,
+                            TokenId = token.TokenId,
+                            Type = token.TokenType,
+                            AccountNo = token.AccountNo,
+                            pSPID = token.PSPID,
+                            CardMask = token.CardMask,
+                            Created = token.CreatedDateTime,
+                            ExpiryDate = token.ExpiryDate,
+                            DefaultToken = token.DefaultToken
+                        });
+                    }
+                }
+            }
+            logger.StatisticEndSub(ref stat, index);
+            return tokens;
         }
 
         #endregion
+
+        #region Misc functions
 
         public Currency CurrencyGetById(string id, string culture, Statistics stat)
         {
@@ -2368,60 +2534,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             SetupRepository rep = new SetupRepository(config);
             List<ShippingAgentService> list = rep.GetShippingAgentServices(table);
-            logger.StatisticEndSub(ref stat, index);
-            return list;
-        }
-
-        public decimal GetPointRate(Statistics stat)
-        {
-            logger.StatisticStartSub(true, ref stat, out int index);
-
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-            SetupRepository rep = new SetupRepository(config);
-            decimal data = rep.GetPointRate(table);
-            logger.StatisticEndSub(ref stat, index);
-            return data;
-        }
-
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
-        {
-            logger.StatisticStartSub(true, ref stat, out int index);
-
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
-            string xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-            ContactRepository rep = new ContactRepository(config);
-            List<PointEntry> list = rep.PointEntryGet(table);
-            logger.StatisticEndSub(ref stat, index);
-            return list;
-        }
-
-        public List<Notification> NotificationsGetByCardId(string cardId, Statistics stat)
-        {
-            List<Notification> pol = new List<Notification>();
-            if (string.IsNullOrWhiteSpace(cardId))
-                return pol;
-
-            logger.StatisticStartSub(true, ref stat, out int index);
-
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", cardId);
-            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, cardId, string.Empty, string.Empty, ref root);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
-
-            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
-            List<Notification> list = map.MapFromRootToNotifications(root);
             logger.StatisticEndSub(ref stat, index);
             return list;
         }
@@ -2513,22 +2625,158 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
+        public List<ReplValidationSchedule> ValidationScheduleGet(string storeId)
         {
-            logger.StatisticStartSub(true, ref stat, out int index);
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Hierar. Date", "Store Code", storeId);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table == null || table.NumberOfValues == 0)
+                return null;
 
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
-            LSCentral.RootGetDirectMarketingInfo root = new LSCentral.RootGetDirectMarketingInfo();
+            List<ReplValidationSchedule> list = new List<ReplValidationSchedule>();
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Validation Schedule ID"));
 
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}, ItemId: {1}", cardId, itemId);
-            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, XMLHelper.GetString(cardId), XMLHelper.GetString(itemId), XMLHelper.GetString(storeId), ref root);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo Response - " + Serialization.ToXml(root, true));
-            List<PublishedOffer> data = map.MapFromRootToPublishedOffers(root);
-            logger.StatisticEndSub(ref stat, index);
-            return data;
+                ReplValidationSchedule sch = new ReplValidationSchedule();
+                sch.Id = field.Values[i];
+
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Validation Schedule", "ID", sch.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                field = table.FieldList.Find(f => f.FieldName.Equals("Description"));
+                sch.Description = field.Values[0];
+
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Validation Schedule Line", "Validation Schedule ID", sch.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                sch.Lines = new List<ValidationScheduleLine>();
+                for (int x = 0; x < table.NumberOfValues; x++)
+                {
+                    ValidationScheduleLine line = new ValidationScheduleLine();
+                    string dateid = string.Empty;
+                    string timeid = string.Empty;
+                    foreach (XMLFieldData fld in table.FieldList)
+                    {
+                        switch (fld.FieldName)
+                        {
+                            case "Line No.": line.LineNo = ConvertTo.SafeInt(fld.Values[x]); break;
+                            case "Description": line.Description = fld.Values[x]; break;
+                            case "Comment": line.Comment = fld.Values[x]; break;
+                            case "Priority": line.Priority = ConvertTo.SafeInt(fld.Values[x]); break;
+                            case "Date Schedule ID": dateid = fld.Values[x]; break;
+                            case "Time Schedule ID": timeid = fld.Values[x]; break;
+                        }
+                    }
+
+                    xmlRequest = xml.GetGeneralWebRequestXML("LSC Date Schedule", "ID", dateid);
+                    xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    XMLTableData table2 = xml.GetGeneralWebResponseXML(xmlResponse);
+                    if (table2 != null && table2.NumberOfValues > 0)
+                    {
+                        line.DateSchedule = new VSDateSchedule();
+                        line.DateSchedule.Id = dateid;
+                        foreach (XMLFieldData fld in table2.FieldList)
+                        {
+                            switch (fld.FieldName)
+                            {
+                                case "Description": line.DateSchedule.Description = fld.Values[0]; break;
+                                case "Mondays": line.DateSchedule.Mondays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Tuesdays": line.DateSchedule.Tuesdays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Wednesdays": line.DateSchedule.Wednesdays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Thursdays": line.DateSchedule.Thursdays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Fridays": line.DateSchedule.Fridays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Saturdays": line.DateSchedule.Saturdays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Sundays": line.DateSchedule.Sundays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                                case "Valid All Weekdays": line.DateSchedule.ValidAllWeekdays = ConvertTo.SafeBoolean(fld.Values[0]); break;
+                            }
+                        }
+
+                        xmlRequest = xml.GetGeneralWebRequestXML("LSC Date Schedule Line", "Date Schedule ID", dateid);
+                        xmlResponse = RunOperation(xmlRequest, true);
+                        HandleResponseCode(ref xmlResponse);
+                        table2 = xml.GetGeneralWebResponseXML(xmlResponse);
+                        if (table2 != null && table2.NumberOfValues > 0)
+                        {
+                            line.DateSchedule.Lines = new List<VSDateScheduleLine>();
+                            for (int y = 0; y < table2.NumberOfValues; y++)
+                            {
+                                VSDateScheduleLine dline = new VSDateScheduleLine();
+                                foreach (XMLFieldData fld in table2.FieldList)
+                                {
+                                    switch (fld.FieldName)
+                                    {
+                                        case "Line No.": dline.LineNo = ConvertTo.SafeInt(fld.Values[y]); break;
+                                        case "Starting Date": dline.StartingDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(fld.Values[y]), config.IsJson); break;
+                                        case "Ending Date": dline.StartingDate = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(fld.Values[y]), config.IsJson); break;
+                                        case "Exclude": dline.Exclude = ConvertTo.SafeBoolean(fld.Values[y]); break;
+                                    }
+                                }
+                                line.DateSchedule.Lines.Add(dline);
+                            }
+                        }
+                    }
+
+                    xmlRequest = xml.GetGeneralWebRequestXML("LSC Time Schedule", "ID", timeid);
+                    xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table2 = xml.GetGeneralWebResponseXML(xmlResponse);
+                    if (table2 != null && table2.NumberOfValues > 0)
+                    {
+                        line.TimeSchedule = new VSTimeSchedule();
+                        line.TimeSchedule.Id = timeid;
+                        foreach (XMLFieldData fld in table2.FieldList)
+                        {
+                            switch (fld.FieldName)
+                            {
+                                case "Description": line.TimeSchedule.Description = fld.Values[0]; break;
+                                case "Schedule Type": line.TimeSchedule.Type = (VSTimeScheduleType)ConvertTo.SafeInt(fld.Values[0]); break;
+                            }
+                        }
+
+                        xmlRequest = xml.GetGeneralWebRequestXML("LSC Time Schedule Line", "Time Schedule ID", timeid);
+                        xmlResponse = RunOperation(xmlRequest, true);
+                        HandleResponseCode(ref xmlResponse);
+                        table2 = xml.GetGeneralWebResponseXML(xmlResponse);
+                        if (table2 != null && table2.NumberOfValues > 0)
+                        {
+                            line.TimeSchedule.Lines = new List<VSTimeScheduleLine>();
+                            for (int y = 0; y < table2.NumberOfValues; y++)
+                            {
+                                VSTimeScheduleLine tline = new VSTimeScheduleLine(config.IsJson);
+                                foreach (XMLFieldData fld in table2.FieldList)
+                                {
+                                    switch (fld.FieldName)
+                                    {
+                                        case "Period": tline.Period = fld.Values[y]; break;
+                                        case "Time From": tline.TimeFrom = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(fld.Values[y]), config.IsJson); break;
+                                        case "Time To": tline.TimeTo = ConvertTo.SafeJsonTime(XMLHelper.GetWebDateTime(fld.Values[y]), config.IsJson); break;
+                                        case "Time To Is Past Midnight": tline.TimeToIsPastMidnight = ConvertTo.SafeBoolean(fld.Values[y]); break;
+                                        case "Dining Duration Code": tline.DiningDurationCode = fld.Values[y]; break;
+                                        case "Selected by Default": tline.SelectedByDefault = ConvertTo.SafeBoolean(fld.Values[y]); break;
+                                        case "Reservation Interval (Min.)": tline.ReservationInterval = ConvertTo.SafeInt(fld.Values[y]); break;
+                                    }
+                                }
+                                line.TimeSchedule.Lines.Add(tline);
+                            }
+                        }
+                    }
+                    sch.Lines.Add(line);
+                }
+                list.Add(sch);
+            }
+            return list;
         }
 
         public List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat)
@@ -2543,13 +2791,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.Debug(config.LSKey.Key, "GetReturnPolicy - storeId:{0}, storeGroup:{1} itemCat:{2} prodGroup:{3}", storeId, storeGroupCode, itemCategory, productGroup);
             centralWS.GetReturnPolicy(ref respCode, ref errorText, XMLHelper.GetString(storeId), XMLHelper.GetString(storeGroupCode), XMLHelper.GetString(itemCategory), XMLHelper.GetString(productGroup), XMLHelper.GetString(itemId), XMLHelper.GetString(variantCode), XMLHelper.GetString(variantDim1), ref root);
-            string ret = HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, ref stat, index, new string[] { "1000" });
-            if (ret == "1000")
-            {
-                logger.StatisticEndSub(ref stat, index);
-                return new List<ReturnPolicy>();
-            }
-
+            HandleWS2ResponseCode("GetReturnPolicy", respCode, errorText, ref stat, index, new string[] { "1000" });
             logger.Debug(config.LSKey.Key, "GetReturnPolicy Response - " + Serialization.ToXml(root, true));
             List<ReturnPolicy> list = map.MapFromRootToReturnPolicy(root);
             logger.StatisticEndSub(ref stat, index);
@@ -2576,5 +2818,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

@@ -43,6 +43,7 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.Serialization" />
@@ -63,6 +64,7 @@
     <Compile Include="Dal\AttributeOptionValueRepository.cs" />
     <Compile Include="Dal\AttributeRepository.cs" />
     <Compile Include="Dal\AttributeValueRepository.cs" />
+    <Compile Include="Dal\BarcodeGS1Repository.cs" />
     <Compile Include="Dal\BarcodeMaskRepository.cs" />
     <Compile Include="Dal\BarcodeMaskSegmentRepository.cs" />
     <Compile Include="Dal\BarcodeRepository.cs" />
@@ -81,6 +83,7 @@
     <Compile Include="Dal\InvStatusRepository.cs" />
     <Compile Include="Dal\ItemLocationRepository.cs" />
     <Compile Include="Dal\ItemCategoryRepository.cs" />
+    <Compile Include="Dal\ItemTrackingCodeRepository.cs" />
     <Compile Include="Dal\ItemRecipeRepository.cs" />
     <Compile Include="Dal\ItemModifierRepository.cs" />
     <Compile Include="Dal\ItemRepository.cs" />

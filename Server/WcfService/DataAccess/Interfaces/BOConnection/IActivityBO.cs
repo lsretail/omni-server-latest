@@ -29,6 +29,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         string ActivityUpdateGroupReservation(Reservation request);
         ActivityResponse ActivityConfirmGroup(ActivityRequest request);
         bool ActivityDeleteGroup(string groupNo, int lineNo);
+        string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode);
+        ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity);
 
         #endregion
 

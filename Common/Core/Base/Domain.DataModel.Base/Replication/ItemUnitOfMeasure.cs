@@ -81,8 +81,14 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public decimal QtyPrUOM { get; set; }
         [DataMember]
         public bool CountAsOne { get; set; }
+        /// <summary>
+        /// 0=Allowed, 1=Not Allowed, 2=Only if specific UOM Price
+        /// </summary>
         [DataMember]
         public int Selection { get; set; }
+        /// <summary>
+        /// 0=Allowed, 1=Not Allowed, 2=Only if specific UOM Price
+        /// </summary>
         [DataMember]
         public int EComSelection { get; set; }
     }

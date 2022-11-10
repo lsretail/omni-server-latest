@@ -18,7 +18,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
         private const string MenuGetAllRequestId = "GET_DYNAMIC_CONTENT"; //"GET_DYN_CONT_HMP_MENUS";
         private XDocument doc = null;
         private XElement elBody = null;
-        private string LSKey = string.Empty;
+        private readonly string LSKey = string.Empty;
 
         public MenuXml(string lsKey)
         {

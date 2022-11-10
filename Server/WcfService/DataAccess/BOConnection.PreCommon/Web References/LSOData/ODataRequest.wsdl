@@ -122,6 +122,24 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetCollection">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCollection_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetContact">
         <complexType>
           <sequence>
@@ -133,6 +151,23 @@
         </complexType>
       </element>
       <element name="GetContact_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCountryCode">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetCountryCode_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
@@ -421,6 +456,41 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetItemHTML">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemHTML_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemTracking">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemTracking_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetItemUnitOfMeasure">
         <complexType>
           <sequence>
@@ -433,6 +503,24 @@
         </complexType>
       </element>
       <element name="GetItemUnitOfMeasure_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemVariant">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetItemVariant_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
@@ -485,6 +573,24 @@
         </complexType>
       </element>
       <element name="GetProductGroup_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetSalesPrice">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetSalesPrice_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
@@ -660,6 +766,24 @@
         </complexType>
       </element>
       <element name="GetVariantReg_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVendorItem">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetVendorItem_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
@@ -888,11 +1012,23 @@
   <message name="GetBarcode_Result">
     <part name="parameters" element="tns:GetBarcode_Result" />
   </message>
+  <message name="GetCollection">
+    <part name="parameters" element="tns:GetCollection" />
+  </message>
+  <message name="GetCollection_Result">
+    <part name="parameters" element="tns:GetCollection_Result" />
+  </message>
   <message name="GetContact">
     <part name="parameters" element="tns:GetContact" />
   </message>
   <message name="GetContact_Result">
     <part name="parameters" element="tns:GetContact_Result" />
+  </message>
+  <message name="GetCountryCode">
+    <part name="parameters" element="tns:GetCountryCode" />
+  </message>
+  <message name="GetCountryCode_Result">
+    <part name="parameters" element="tns:GetCountryCode_Result" />
   </message>
   <message name="GetCurrencyExchRate">
     <part name="parameters" element="tns:GetCurrencyExchRate" />
@@ -990,11 +1126,29 @@
   <message name="GetItemCategory_Result">
     <part name="parameters" element="tns:GetItemCategory_Result" />
   </message>
+  <message name="GetItemHTML">
+    <part name="parameters" element="tns:GetItemHTML" />
+  </message>
+  <message name="GetItemHTML_Result">
+    <part name="parameters" element="tns:GetItemHTML_Result" />
+  </message>
+  <message name="GetItemTracking">
+    <part name="parameters" element="tns:GetItemTracking" />
+  </message>
+  <message name="GetItemTracking_Result">
+    <part name="parameters" element="tns:GetItemTracking_Result" />
+  </message>
   <message name="GetItemUnitOfMeasure">
     <part name="parameters" element="tns:GetItemUnitOfMeasure" />
   </message>
   <message name="GetItemUnitOfMeasure_Result">
     <part name="parameters" element="tns:GetItemUnitOfMeasure_Result" />
+  </message>
+  <message name="GetItemVariant">
+    <part name="parameters" element="tns:GetItemVariant" />
+  </message>
+  <message name="GetItemVariant_Result">
+    <part name="parameters" element="tns:GetItemVariant_Result" />
   </message>
   <message name="GetPOSTerminal">
     <part name="parameters" element="tns:GetPOSTerminal" />
@@ -1013,6 +1167,12 @@
   </message>
   <message name="GetProductGroup_Result">
     <part name="parameters" element="tns:GetProductGroup_Result" />
+  </message>
+  <message name="GetSalesPrice">
+    <part name="parameters" element="tns:GetSalesPrice" />
+  </message>
+  <message name="GetSalesPrice_Result">
+    <part name="parameters" element="tns:GetSalesPrice_Result" />
   </message>
   <message name="GetStaff">
     <part name="parameters" element="tns:GetStaff" />
@@ -1073,6 +1233,12 @@
   </message>
   <message name="GetVariantReg_Result">
     <part name="parameters" element="tns:GetVariantReg_Result" />
+  </message>
+  <message name="GetVendorItem">
+    <part name="parameters" element="tns:GetVendorItem" />
+  </message>
+  <message name="GetVendorItem_Result">
+    <part name="parameters" element="tns:GetVendorItem_Result" />
   </message>
   <message name="GetVendor">
     <part name="parameters" element="tns:GetVendor" />
@@ -1163,9 +1329,17 @@
       <input name="GetBarcode" message="tns:GetBarcode" />
       <output name="GetBarcode_Result" message="tns:GetBarcode_Result" />
     </operation>
+    <operation name="GetCollection">
+      <input name="GetCollection" message="tns:GetCollection" />
+      <output name="GetCollection_Result" message="tns:GetCollection_Result" />
+    </operation>
     <operation name="GetContact">
       <input name="GetContact" message="tns:GetContact" />
       <output name="GetContact_Result" message="tns:GetContact_Result" />
+    </operation>
+    <operation name="GetCountryCode">
+      <input name="GetCountryCode" message="tns:GetCountryCode" />
+      <output name="GetCountryCode_Result" message="tns:GetCountryCode_Result" />
     </operation>
     <operation name="GetCurrencyExchRate">
       <input name="GetCurrencyExchRate" message="tns:GetCurrencyExchRate" />
@@ -1231,9 +1405,21 @@
       <input name="GetItemCategory" message="tns:GetItemCategory" />
       <output name="GetItemCategory_Result" message="tns:GetItemCategory_Result" />
     </operation>
+    <operation name="GetItemHTML">
+      <input name="GetItemHTML" message="tns:GetItemHTML" />
+      <output name="GetItemHTML_Result" message="tns:GetItemHTML_Result" />
+    </operation>
+    <operation name="GetItemTracking">
+      <input name="GetItemTracking" message="tns:GetItemTracking" />
+      <output name="GetItemTracking_Result" message="tns:GetItemTracking_Result" />
+    </operation>
     <operation name="GetItemUnitOfMeasure">
       <input name="GetItemUnitOfMeasure" message="tns:GetItemUnitOfMeasure" />
       <output name="GetItemUnitOfMeasure_Result" message="tns:GetItemUnitOfMeasure_Result" />
+    </operation>
+    <operation name="GetItemVariant">
+      <input name="GetItemVariant" message="tns:GetItemVariant" />
+      <output name="GetItemVariant_Result" message="tns:GetItemVariant_Result" />
     </operation>
     <operation name="GetPOSTerminal">
       <input name="GetPOSTerminal" message="tns:GetPOSTerminal" />
@@ -1246,6 +1432,10 @@
     <operation name="GetProductGroup">
       <input name="GetProductGroup" message="tns:GetProductGroup" />
       <output name="GetProductGroup_Result" message="tns:GetProductGroup_Result" />
+    </operation>
+    <operation name="GetSalesPrice">
+      <input name="GetSalesPrice" message="tns:GetSalesPrice" />
+      <output name="GetSalesPrice_Result" message="tns:GetSalesPrice_Result" />
     </operation>
     <operation name="GetStaff">
       <input name="GetStaff" message="tns:GetStaff" />
@@ -1286,6 +1476,10 @@
     <operation name="GetVariantReg">
       <input name="GetVariantReg" message="tns:GetVariantReg" />
       <output name="GetVariantReg_Result" message="tns:GetVariantReg_Result" />
+    </operation>
+    <operation name="GetVendorItem">
+      <input name="GetVendorItem" message="tns:GetVendorItem" />
+      <output name="GetVendorItem_Result" message="tns:GetVendorItem_Result" />
     </operation>
     <operation name="GetVendor">
       <input name="GetVendor" message="tns:GetVendor" />
@@ -1393,12 +1587,30 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="GetCollection">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCollection" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetCollection">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetCollection_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="GetContact">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="GetContact">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetContact_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetCountryCode">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetCountryCode" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetCountryCode">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetCountryCode_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -1546,12 +1758,39 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="GetItemHTML">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemHTML" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetItemHTML">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetItemHTML_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetItemTracking">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemTracking" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetItemTracking">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetItemTracking_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="GetItemUnitOfMeasure">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemUnitOfMeasure" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="GetItemUnitOfMeasure">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetItemUnitOfMeasure_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetItemVariant">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetItemVariant" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetItemVariant">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetItemVariant_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -1579,6 +1818,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetProductGroup_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetSalesPrice">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetSalesPrice" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetSalesPrice">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetSalesPrice_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -1669,6 +1917,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetVariantReg_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetVendorItem">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetVendorItem" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetVendorItem">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetVendorItem_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

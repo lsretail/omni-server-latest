@@ -154,6 +154,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ReplicateItemVariantRegistration(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplItemVariant> ReplicateItemVariant(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ReplicateItemVariant(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplStaff> ReplicateStaff(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
@@ -164,7 +172,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplStaffPermission> ReplicateStaffPermission(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            throw new NotImplementedException();
+            return new List<ReplStaffPermission>();
         }
 
         public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -225,7 +233,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            throw new NotImplementedException();
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ReplicateBasePrice(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -289,7 +300,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplicateDiscountValidations(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateDiscountValidations(appId, appType, storeId, batchSize, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateDiscountValidations(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public List<ReplStoreTenderType> ReplicateStoreTenderType(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -308,12 +319,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ReplicateTaxSetup(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplValidationSchedule> ReplicateValidationSchedule(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplicateValidationSchedule(appId, appType, batchSize, ref lastKey, ref recordsRemaining);
 
-            return LSCWSBase.ReplicateValidationSchedule(appId, appType, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ValidationScheduleGet(storeId);
         }
 
         public virtual List<ReplHierarchy> ReplicateHierarchy(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

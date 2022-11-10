@@ -116,6 +116,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             throw new NotImplementedException("Only available in Central Pre");
         }
 
+        public virtual string ActivityUpdateGroupHeaderStatus(string groupNo, string statusCode)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual ActivityResponse ActivityPreSellProduct(string locationNo, string productNo, string promoCode, string contactNo, int quantity)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
         #endregion
 
         #region Data Get (Replication)

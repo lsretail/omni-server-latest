@@ -647,6 +647,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 9, 1);
             AddField(body, 9, 2);
 
+            // Validation Period
+            AddTable(body, 99001481, false);
+            AddField(body, 99001481, 1);
+            AddField(body, 99001481, 2);
+            AddField(body, 99001481, 10);
+            AddField(body, 99001481, 11);
+            AddField(body, 99001481, 12);
+            AddField(body, 99001481, 13);
+            AddField(body, 99001481, 14);
+            AddField(body, 99001481, 15);
+            AddField(body, 99001481, 16);
+            AddField(body, 99001481, 17);
+            AddField(body, 99001481, 18);
+            AddField(body, 99001481, 19);
+            AddField(body, 99001481, 20);
+            AddField(body, 99001481, 21);
+            AddField(body, 99001481, 22);
+            AddField(body, 99001481, 23);
+            AddField(body, 99001481, 24);
+            AddField(body, 99001481, 25);
+            AddField(body, 99001481, 26);
+            AddField(body, 99001481, 27);
+            AddField(body, 99001481, 28);
+            AddField(body, 99001481, 29);
+            AddField(body, 99001481, 30);
+            AddField(body, 99001481, 31);
+            AddField(body, 99001481, 32);
+            AddField(body, 99001481, 33);
+            AddField(body, 99001481, 34);
+            AddField(body, 99001481, 35);
+            AddField(body, 99001481, 40);
+            AddField(body, 99001481, 41);
+            AddField(body, 99001481, 42);
+            AddField(body, 99001481, 43);
+            AddField(body, 99001481, 44);
+            AddField(body, 99001481, 45);
+            AddField(body, 99001481, 46);
+            AddField(body, 99001481, 47);
+            AddField(body, 99001481, 81);
+
             if (navVer >= new Version("19.3"))
                 return;
 
@@ -789,46 +829,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             AddField(body, 10012863, 12);
             AddField(body, 10012863, 13);
             AddField(body, 10012863, 20);
-
-            // Validation Period
-            AddTable(body, 99001481, false);
-            AddField(body, 99001481, 1);
-            AddField(body, 99001481, 2);
-            AddField(body, 99001481, 10);
-            AddField(body, 99001481, 11);
-            AddField(body, 99001481, 12);
-            AddField(body, 99001481, 13);
-            AddField(body, 99001481, 14);
-            AddField(body, 99001481, 15);
-            AddField(body, 99001481, 16);
-            AddField(body, 99001481, 17);
-            AddField(body, 99001481, 18);
-            AddField(body, 99001481, 19);
-            AddField(body, 99001481, 20);
-            AddField(body, 99001481, 21);
-            AddField(body, 99001481, 22);
-            AddField(body, 99001481, 23);
-            AddField(body, 99001481, 24);
-            AddField(body, 99001481, 25);
-            AddField(body, 99001481, 26);
-            AddField(body, 99001481, 27);
-            AddField(body, 99001481, 28);
-            AddField(body, 99001481, 29);
-            AddField(body, 99001481, 30);
-            AddField(body, 99001481, 31);
-            AddField(body, 99001481, 32);
-            AddField(body, 99001481, 33);
-            AddField(body, 99001481, 34);
-            AddField(body, 99001481, 35);
-            AddField(body, 99001481, 40);
-            AddField(body, 99001481, 41);
-            AddField(body, 99001481, 42);
-            AddField(body, 99001481, 43);
-            AddField(body, 99001481, 44);
-            AddField(body, 99001481, 45);
-            AddField(body, 99001481, 46);
-            AddField(body, 99001481, 47);
-            AddField(body, 99001481, 81);
 
             // Barcodes
             AddTable(body, 99001451, false);
