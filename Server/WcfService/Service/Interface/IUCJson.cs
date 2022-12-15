@@ -26,6 +26,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
+using LSRetail.Omni.Domain.DataModel.Hagar;
 
 namespace LSOmni.Service
 {
@@ -3476,8 +3477,16 @@ namespace LSOmni.Service
 
         #endregion
 
+        #region Hagar
+
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string MyCustomFunction(string data);
+        ReplHagarItemWebExtResponse ReplEcommItemWebExtendedInfo(ReplRequest replRequest);
+        
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool CheckCreditLimit(string cardId, decimal amount, out decimal availAmount, out string message);
+
+        #endregion
     }
 }

@@ -253,3 +253,4 @@ obj/
 Resource.Designer.cs
 Components/
 Help
+AppSettings.config

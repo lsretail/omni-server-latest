@@ -38,6 +38,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     activityWS.Timeout = (value - 2) * 1000;
                 if (odataWS != null)
                     odataWS.Timeout = (value - 2) * 1000;
+                if (hagarWS != null)
+                    hagarWS.Timeout = (value - 2) * 1000;
+                if (skCreditWS != null)
+                    skCreditWS.Timeout = (value - 2) * 1000;
             }
         }
 
@@ -49,6 +53,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public LSCentral.OmniWrapper centralQryWS = null;
         public LSActivity.Activity activityWS = null;
         public LSOData.ODataRequest odataWS = null;
+        public HagarWS.AXInventory hagarWS = null;
+        public SKCredit.CustomerCreditCheck skCreditWS = null;
         private int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
         private static readonly object Locker = new object();
 
@@ -152,6 +158,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             centralQryWS = new LSCentral.OmniWrapper();
             activityWS = new LSActivity.Activity();
             odataWS = new LSOData.ODataRequest();
+            hagarWS = new HagarWS.AXInventory();
+            skCreditWS = new SKCredit.CustomerCreditCheck();
 
             centralWS.Url = url.Replace("RetailWebServices", "OmniWrapper");
             centralWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
@@ -173,6 +181,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             odataWS.PreAuthenticate = true;
             odataWS.AllowAutoRedirect = true;
 
+            hagarWS.Url = url.Replace("RetailWebServices", "AXInventory");
+            hagarWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+            hagarWS.PreAuthenticate = true;
+            hagarWS.AllowAutoRedirect = true;
+
+            skCreditWS.Url = url.Replace("RetailWebServices", "CustomerCreditCheck");
+            skCreditWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+            skCreditWS.PreAuthenticate = true;
+            skCreditWS.AllowAutoRedirect = true;
+
             string token = config.SettingsGetByKey(ConfigKey.Central_Token);
             if (protocol.ToUpper().Equals("S2S") && string.IsNullOrEmpty(token) == false)
             {
@@ -183,6 +201,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 centralQryWS.GetType().GetProperty("AuthToken").SetValue(centralQryWS, token);
                 activityWS.GetType().GetProperty("AuthToken").SetValue(activityWS, token);
                 odataWS.GetType().GetProperty("AuthToken").SetValue(odataWS, token);
+                hagarWS.GetType().GetProperty("AuthToken").SetValue(hagarWS, token);
+                skCreditWS.GetType().GetProperty("AuthToken").SetValue(skCreditWS, token);
             }
             else
             {
@@ -196,6 +216,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     centralQryWS.Credentials = credentials;
                     activityWS.Credentials = credentials;
                     odataWS.Credentials = credentials;
+                    hagarWS.Credentials = credentials;
+                    skCreditWS.Credentials = credentials;
                 }
             }
 
@@ -208,6 +230,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 centralQryWS.Proxy = GetWebProxy();
                 activityWS.Proxy = GetWebProxy();
                 odataWS.Proxy = GetWebProxy();
+                hagarWS.Proxy = GetWebProxy();
+                skCreditWS.Proxy = GetWebProxy();
             }
             NavVersionToUse(false, out string cVer);
         }

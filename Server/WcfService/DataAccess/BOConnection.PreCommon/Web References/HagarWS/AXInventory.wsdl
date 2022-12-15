@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/AXInventory" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/AXInventory" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033052" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033052" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="InventoryBufferIn">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="Number" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Variant" type="string" />
+        </sequence>
+      </complexType>
+      <complexType name="RootGetInventoryMultipleIn" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="InventoryBufferIn" type="tns:InventoryBufferIn" />
+        </sequence>
+      </complexType>
+      <element name="RootGetInventoryMultipleIn" type="tns:RootGetInventoryMultipleIn" />
+    </schema>
+    <schema xmlns:tns="urn:microsoft-dynamics-nav/xmlports/x10033053" elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-nav/xmlports/x10033053" xmlns="http://www.w3.org/2001/XMLSchema">
+      <complexType name="InventoryBufferOut">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="Number" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Variant" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Store" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="Location" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="Inventory" type="decimal" />
+        </sequence>
+      </complexType>
+      <complexType name="RootGetInventoryMultipleOut" mixed="true">
+        <sequence>
+          <element minOccurs="0" maxOccurs="unbounded" name="InventoryBufferOut" type="tns:InventoryBufferOut" />
+        </sequence>
+      </complexType>
+      <element name="RootGetInventoryMultipleOut" type="tns:RootGetInventoryMultipleOut" />
+    </schema>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/AXInventory" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="GetInventoryMultiple">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="locationCode" type="string" />
+            <element xmlns:q1="urn:microsoft-dynamics-nav/xmlports/x10033052" minOccurs="1" maxOccurs="1" name="getInventoryMultipleInXML" type="q1:RootGetInventoryMultipleIn" />
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q2="urn:microsoft-dynamics-nav/xmlports/x10033053" minOccurs="1" maxOccurs="1" name="getInventoryMultipleOutXML" type="q2:RootGetInventoryMultipleOut" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetInventoryMultiple_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+            <element xmlns:q3="urn:microsoft-dynamics-nav/xmlports/x10033053" minOccurs="1" maxOccurs="1" name="getInventoryMultipleOutXML" type="q3:RootGetInventoryMultipleOut" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="GetInventoryMultiple">
+    <part name="parameters" element="tns:GetInventoryMultiple" />
+  </message>
+  <message name="GetInventoryMultiple_Result">
+    <part name="parameters" element="tns:GetInventoryMultiple_Result" />
+  </message>
+  <portType name="AXInventory_Port">
+    <operation name="GetInventoryMultiple">
+      <input name="GetInventoryMultiple" message="tns:GetInventoryMultiple" />
+      <output name="GetInventoryMultiple_Result" message="tns:GetInventoryMultiple_Result" />
+    </operation>
+  </portType>
+  <binding name="AXInventory_Binding" type="tns:AXInventory_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="GetInventoryMultiple">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/AXInventory:GetInventoryMultiple" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetInventoryMultiple">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetInventoryMultiple_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="AXInventory">
+    <port name="AXInventory_Port" binding="tns:AXInventory_Binding">
+      <address location="https://hag-test-app1.pasta.local:9047/HAGBC/WS/Hagkaup%20-%20TEST/Codeunit/AXInventory" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

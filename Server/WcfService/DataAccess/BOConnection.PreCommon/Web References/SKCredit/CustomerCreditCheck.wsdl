@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:tns="urn:microsoft-dynamics-schemas/codeunit/CustomerCreditCheck" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/CustomerCreditCheck" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <schema elementFormDefault="qualified" targetNamespace="urn:microsoft-dynamics-schemas/codeunit/CustomerCreditCheck" xmlns="http://www.w3.org/2001/XMLSchema">
+      <element name="CustomerCreditCheck">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="memberCardNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="salesAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="saleIsApproved" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="availableAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CustomerCreditCheck_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="saleIsApproved" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="availableAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="responseCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorText" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+    </schema>
+  </types>
+  <message name="CustomerCreditCheck">
+    <part name="parameters" element="tns:CustomerCreditCheck" />
+  </message>
+  <message name="CustomerCreditCheck_Result">
+    <part name="parameters" element="tns:CustomerCreditCheck_Result" />
+  </message>
+  <portType name="CustomerCreditCheck_Port">
+    <operation name="CustomerCreditCheck">
+      <input name="CustomerCreditCheck" message="tns:CustomerCreditCheck" />
+      <output name="CustomerCreditCheck_Result" message="tns:CustomerCreditCheck_Result" />
+    </operation>
+  </portType>
+  <binding name="CustomerCreditCheck_Binding" type="tns:CustomerCreditCheck_Port">
+    <binding transport="http://schemas.xmlsoap.org/soap/http" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    <operation name="CustomerCreditCheck">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/CustomerCreditCheck:CustomerCreditCheck" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CustomerCreditCheck">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CustomerCreditCheck_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+  </binding>
+  <service name="CustomerCreditCheck">
+    <port name="CustomerCreditCheck_Port" binding="tns:CustomerCreditCheck_Binding">
+      <address location="https://ehf-uat-app1.pasta.local:19047/adf-bc-uat/WS/St%C3%B3rkaup_UAT/Codeunit/CustomerCreditCheck" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+    </port>
+  </service>
+</definitions>

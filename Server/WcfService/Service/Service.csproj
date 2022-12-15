@@ -102,6 +102,7 @@
     <Compile Include="Common\LSOmniBaseCustom.cs" />
     <Compile Include="Common\LSOmniBaseAct.cs" />
     <Compile Include="Common\LSOmniBaseEcomm.cs" />
+    <Compile Include="Common\LSOmniBaseHagar.cs" />
     <Compile Include="Common\LSOmniBaseLoy.cs" />
     <Compile Include="Common\LSOmniBasePrivate.cs" />
     <Compile Include="Common\ServiceFaultBehavior.cs" />
@@ -165,6 +166,10 @@
     <ProjectReference Include="..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Common\Core\Base\Domain.DataModel.Hagar\Domain.DataModel.Hagar.csproj">
+      <Project>{80f2f879-3a48-41ac-9a54-f0de21097ea9}</Project>
+      <Name>Domain.DataModel.Hagar</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>

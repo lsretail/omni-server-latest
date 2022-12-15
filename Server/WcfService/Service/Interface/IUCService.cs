@@ -23,6 +23,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Activity.Activities;
 using LSRetail.Omni.Domain.DataModel.Activity.Client;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
+using LSRetail.Omni.Domain.DataModel.Hagar;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
@@ -3086,7 +3087,14 @@ namespace LSOmni.Service
 
         #endregion
 
+        #region Hagar
+
         [OperationContract]
-        string MyCustomFunction(string data);
+        ReplHagarItemWebExtResponse ReplEcommItemWebExtendedInfo(ReplRequest replRequest);
+
+        [OperationContract]
+        bool CheckCreditLimit(string cardId, decimal amount, out decimal availAmount, out string message);
+
+        #endregion
     }
 }
