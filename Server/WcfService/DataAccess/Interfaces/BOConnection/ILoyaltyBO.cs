@@ -76,6 +76,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         long MemberCardGetPoints(string cardId, Statistics stat);
         decimal GetPointRate(Statistics stat);
         GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat);
+        List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat);
         List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat);
 
         #endregion

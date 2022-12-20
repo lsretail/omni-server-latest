@@ -8,6 +8,7 @@ using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
@@ -32,6 +33,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 StoreId = header.StoreId,
                 CardId = header.MemberCardNo,
                 CustomerId = header.CustomerId,
+                Currency = header.CurrencyCode,
                 TotalAmount = header.GrossAmount,
                 TotalNetAmount = header.NetAmount,
                 TotalDiscount = header.LineDiscount,
@@ -146,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             SalesEntry order = new SalesEntry()
             {
                 Id = header.DocumentID,
-                StoreId = header.CreatedatStore,
+                CreateAtStoreId = header.CreatedatStore,
                 CustomerOrderNo = header.DocumentID,
                 ExternalId = header.ExternalID,
                 ClickAndCollectOrder = header.ClickandCollectOrder,
@@ -218,6 +220,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             }
 
             //now loop through the lines
+            bool missingtotals = order.TotalAmount == 0;
+
             order.Lines = new List<SalesEntryLine>();
             if (root.CustomerOrderGetCOLineV3!= null)
             {
@@ -227,8 +231,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     if (lineType == LineType.PerDiscount || lineType == LineType.Coupon)
                         continue;
 
+                    if (string.IsNullOrEmpty(order.StoreId))
+                        order.StoreId = oline.StoreNo;
+
                     if (oline.ClickAndCollectLine && order.ClickAndCollectOrder == false)
                         order.ClickAndCollectOrder = true;
+
+                    if (missingtotals)
+                    {
+                        order.TotalAmount += oline.Amount;
+                        order.TotalDiscount += oline.DiscountAmount;
+                        order.TotalNetAmount += oline.NetAmount;
+                    }
 
                     order.Lines.Add(new SalesEntryLine()
                     {
@@ -786,6 +800,54 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             rootin.CustomerOrderHeader = header.ToArray();
             rootin.CustomerOrderLine = lines.ToArray();
             return rootin;
+        }
+
+        public OrderCheck RootToOrderCheck(LSCentral.RootSPGOrderCheck root)
+        {
+            OrderCheck order = new OrderCheck();
+            if (root.SPGOrderCheckCOHeader == null || root.SPGOrderCheckCOHeader.Count() == 0)
+                return order;
+
+            order.StatusDate = root.SPGOrderCheckCOHeader[0].StatusDateTime;
+            order.Status = root.SPGOrderCheckCOHeader[0].Status;
+
+            if (root.SPGOrderCheckCOLine != null)
+            {
+                order.Lines = new List<OrderCheckLines>();
+                foreach (LSCentral.SPGOrderCheckCOLine line in root.SPGOrderCheckCOLine)
+                {
+                    order.Lines.Add(new OrderCheckLines()
+                    {
+                        DocumentID = line.DocumentID,
+                        ItemId = line.Number,
+                        ItemDescription = line.ItemDescription,
+                        VariantCode = line.VariantCode,
+                        VariantDescription = line.VariantDescription,
+                        UnitofMeasureCode = line.UnitofMeasureCode,
+                        UOMDescription = line.UoMDescription,
+                        Amount = line.Amount,
+                        LineNo = line.LineNo,
+                        Quantity = line.Quantity,
+                        AlwaysCheck = line.AlwaysCheck
+                    });
+                }
+            }
+
+            if (root.SPGOrderCheckCOPayment != null)
+            {
+                order.Payments = new List<OrderCheckPayment>();
+                foreach (LSCentral.SPGOrderCheckCOPayment pay in root.SPGOrderCheckCOPayment)
+                {
+                    order.Payments.Add(new OrderCheckPayment()
+                    {
+                        CardType = pay.CardType,
+                        AutorizationCode = pay.AutorizationCode,
+                        ExternalRef = pay.ExternalRef,
+                        PaymentAmount = pay.PaymentAmount
+                    });
+                }
+            }
+            return order;
         }
     }
 }

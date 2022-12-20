@@ -10,9 +10,26 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
 {
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class Order : Entity, IDisposable
-    { 
+    {
         public Order(string id) : base(id)
         {
+            StoreId = string.Empty;
+            Currency = string.Empty;
+            CardId = string.Empty;
+            CustomerId = string.Empty;
+            ReceiptNo = string.Empty;
+            CollectLocation = string.Empty;
+            ContactId = string.Empty;
+            ContactName = string.Empty;
+            Email = string.Empty;
+            DayPhoneNumber = string.Empty;
+            ShipToName = string.Empty;
+            ShipToEmail = string.Empty;
+            ShippingAgentCode = string.Empty;
+            ShippingAgentServiceCode = string.Empty;
+            TransId = string.Empty;
+            TransTerminal = string.Empty;
+
             ShippingStatus = ShippingStatus.ShippigNotRequired;
 
             OrderLines = new List<OrderLine>();
@@ -59,6 +76,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public string ReceiptNo { get; set; }
+        [DataMember]
+        public string Currency { get; set; }
 
         [DataMember]
         public ShippingStatus ShippingStatus { get; set; }

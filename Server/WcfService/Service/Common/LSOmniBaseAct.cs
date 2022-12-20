@@ -132,7 +132,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 

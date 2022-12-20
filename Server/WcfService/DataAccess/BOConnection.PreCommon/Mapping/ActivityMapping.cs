@@ -433,21 +433,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             };
         }
 
-        public AttributeResponse MapRootToAttributeResponse(LSActivity.ActivityAttributeRespond root)
+        public List<AttributeResponse> MapRootToAttributeResponse(LSActivity.ActivityAttributeRespond root)
         {
+            List<AttributeResponse> list = new List<AttributeResponse>();
             if (root.AttributeLines == null || root.AttributeLines.Length == 0)
-                return new AttributeResponse();
+                return list;
 
-            LSActivity.AttributeLines rec = root.AttributeLines[0];
-
-            return new AttributeResponse()
+            foreach (LSActivity.AttributeLines rec in root.AttributeLines)
             {
-                LinkField = rec.LinkField,
-                AttributeCode = rec.AttributeCode,
-                AttributeValue = rec.AttributeValue,
-                AttributeValueType = rec.AttributeValueType,
-                Sequence = rec.Sequence
-            };
+                list.Add(new AttributeResponse()
+                {
+                    LinkField = rec.LinkField,
+                    AttributeCode = rec.AttributeCode,
+                    AttributeValue = rec.AttributeValue,
+                    AttributeValueType = rec.AttributeValueType,
+                    Sequence = rec.Sequence
+                });
+            }
+            return list;
         }
 
         public List<ActivityResource> MapRootToResource(LSActivity.ActivityUploadResources root)

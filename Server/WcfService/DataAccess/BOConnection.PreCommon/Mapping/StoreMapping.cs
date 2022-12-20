@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
@@ -62,6 +63,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     Message1 = line.Message_1,
                     Message2 = line.Message_2,
                     ReturnPolicyHTML = line.Return_Policy_HTML
+                });
+            }
+            return list;
+        }
+
+        public List<GiftCardEntry> MapFromRootToGiftCardEntry(LSCentral.RootGetVoucherEntries root)
+        {
+            List<GiftCardEntry> list = new List<GiftCardEntry>();
+            if (root.VoucherEntries == null)
+                return list;
+
+            foreach (LSCentral.VoucherEntries line in root.VoucherEntries)
+            {
+                list.Add(new GiftCardEntry()
+                {
+                    VoucherNo = line.VoucherNo,
+                    LineNo = line.LineNo,
+                    EntryType = line.EntryType,
+                    VoucherType = line.VoucherType,
+                    ReceiptNumber = line.Receipt_Number,
+                    TransactionNo = line.TransactionNo,
+                    RegTime = ConvertTo.NavJoinDateAndTime(line.Date, line.Time),
+                    StoreNo = line.StoreNo,
+                    TerminalNo = line.POSTerminalNo,
+                    Amount = line.Amount,
+                    CurrencyCode = line.CurrencyCode,
+                    CurrencyFactor = line.CurrencyFactor,
+                    StoreCurrencyCode = line.StoreCurrencyCode,
+                    AmountInStoreCurrency = line.AmountInStoreCurrency,
+                    RemainingAmountNow = line.RemainingAmountNow,
+                    Voided = line.Voided
                 });
             }
             return list;

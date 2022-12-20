@@ -282,6 +282,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             //return NavWSBase.GiftCardGetBalance(cardNo, entryType);
         }
 
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Notification

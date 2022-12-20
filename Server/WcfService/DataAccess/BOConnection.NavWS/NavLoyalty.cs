@@ -22,6 +22,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using System.Reflection;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -426,6 +427,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.GiftCardGetBalance(cardNo, entryType, stat);
         }
 
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.GiftCardGetHistory(cardNo, entryType, stat);
+        }
+
         #endregion
 
         #region Notification
@@ -447,7 +456,15 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemGetByBarcode(code);
 
-            return LSCWSBase.ItemGetByBarcode(code, stat);
+            LoyItem item = LSCWSBase.ItemGetByBarcode(code, stat);
+            if (item != null)
+                return item;
+
+            LoyItem bitem = LSCWSBase.ItemFindByBarcode(code, storeId, config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal), stat);
+            item = ItemGetById(bitem.Id, storeId, string.Empty, true, stat);
+            item.GrossWeight = bitem.GrossWeight;
+            item.Price = bitem.Price;
+            return item;
         }
 
         public virtual LoyItem ItemGetById(string id, string storeId, string culture, bool includeDetails, Statistics stat)
@@ -611,7 +628,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
         {
-            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type, true, stat);
+            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type, false, stat);
         }
 
         public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
@@ -798,7 +815,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ImagesGetByLink(tableName, key1, key2, key3);
 
-            return LSCWSBase.ImagesGetByLink(tableName, key1, key2, key3, stat);
+            return LSCWSBase.ImagesGetByLink(tableName, key1, key2, key3, true, stat);
         }
 
         #endregion

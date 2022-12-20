@@ -131,6 +131,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string SalesType { get; set; }
         [DataMember]
         public string ShipToCountryCode { get; set; }
+        [DataMember]
+        public string Currency { get; set; }
 
         [DataMember]
         public ObservableCollection<OneListItem> Items

@@ -24,10 +24,13 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "Id can not be empty");
 
             SalesEntry entry = BOLoyConnection.SalesEntryGet(entryId, type, stat);
+            if (entry == null)
+                return null;
+
             List<SalesEntryLine> lines = new List<SalesEntryLine>();
             foreach (SalesEntryLine line in entry.Lines)
             {
-                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId);
+                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType);
                 if (linefound == null)
                 {
                     lines.Add(line);
@@ -53,7 +56,9 @@ namespace LSOmni.BLL.Loyalty
             List<SalesEntryId> list = BOLoyConnection.SalesEntryGetReturnSales(receiptNo, stat);
             foreach (SalesEntryId line in list)
             {
-                result.Add(SalesEntryGet(line.ReceiptId, DocumentIdType.Receipt, stat));
+                SalesEntry en = SalesEntryGet(line.ReceiptId, DocumentIdType.Receipt, stat);
+                en.CustomerOrderNo = line.OrderId;
+                result.Add(en);
             }
             return result;
         }

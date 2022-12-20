@@ -126,12 +126,6 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         }
 
         public bool EnablePlatformPayment { get; set; }
-        public string PlatformPaymentCountryCode { get; set; }
-        public string PlatformPaymentCurrencyCode { get; set; }
-        public string GooglePayGatewayJson { get; set; }
-        public string GooglePayAllowedAuthMethodsJson { get; set; }
-        public string GooglePayAllowedCardNetworksJson { get; set; }
-        public string GooglePayMerchantName { get; set; }
         public bool AllowAnonymousUser { get; set; }
         public string AllowShopHome { get; set; }
         public string ApplePayMerchantName { get; set; }
@@ -147,5 +141,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public bool ShowCustomerQrCode { get; set; }
         public bool ShowPointStatus { get; set; }
         public bool UseSecurityCheck { get; set; }
+        public string ApplePayConnectionId { get; set; }
+        public string GooglePayConnectionId { get; set; }
     }
 }

@@ -277,9 +277,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
             return rep.GetGiftCartBalance(cardNo, entryType);
+        }
 
-            //NAV WS does not work as for now
-            //return NavWSBase.GiftCardGetBalance(cardNo, entryType);
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

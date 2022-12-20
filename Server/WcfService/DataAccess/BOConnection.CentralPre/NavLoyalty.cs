@@ -313,11 +313,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
         {
+            if (LSCVersion >= new Version("21.1"))
+                return LSCentralWSBase.GiftCardGetBalance(cardNo, entryType, stat);
+
             logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
             GiftCard data = rep.GetGiftCartBalance(cardNo, entryType);
             logger.StatisticEndSub(ref stat, index);
             return data;
+        }
+
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        {
+            return LSCentralWSBase.GiftCardGetHistory(cardNo, entryType, stat);
         }
 
         #endregion

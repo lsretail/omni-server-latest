@@ -15,27 +15,17 @@ namespace LSOmni.Common.Util
             return true;
         }
 
-        public static Guid NewGuid()
-        {
-            return Guid.NewGuid();
-        }
-
         public static string NewGuidString()
         {
             return Guid.NewGuid().ToString().ToUpper();
         }
 
-        public static string NewGuidWithoutDashes()
+        public static string NewGuidWithoutDashes(int maxlen)
         {
-            return NewGuidString().Replace("-", "");
-        }
-
-
-        public static string GuidWithDash(string theGuid)
-        {
-            //theGuid may not have a dash in it, so return a string with dash
-            Guid aG = new Guid(theGuid);
-            return aG.ToString();
+            string s = NewGuidString().Replace("-", "");
+            if (maxlen > 0)
+                s = s.Substring(0, maxlen);
+            return s;
         }
     }
 }

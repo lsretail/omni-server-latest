@@ -2,6 +2,8 @@
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using System.Collections.Generic;
+using System;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -28,6 +30,12 @@ namespace LSOmni.BLL.Loyalty
         {
             string etype = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
             return BOLoyConnection.GiftCardGetBalance(cardNo, etype, stat);
+        }
+
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        {
+            string etype = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
+            return BOLoyConnection.GiftCardGetHistory(cardNo, etype, stat);
         }
     }
 }

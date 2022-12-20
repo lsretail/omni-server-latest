@@ -35,7 +35,13 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout
         [DataMember]
         public int NumberOfItemsToCheck { get; set; }
         [DataMember]
+        public DateTime StatusDate { get; set; }
+        [DataMember]
+        public string Status { get; set; }
+        [DataMember]
         public List<OrderCheckLines> Lines { get; set; }
+        [DataMember]
+        public List<OrderCheckPayment> Payments { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Spg/2021")]
@@ -85,9 +91,10 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout
         public decimal Quantity { get; set; }
         [DataMember]
         public decimal Amount { get; set; }
+        [DataMember]
+        public bool AlwaysCheck { get; set; }
         [IgnoreDataMember]
         public bool QuantityCounted { get; set; }
-        public bool AlwaysCheck { get; set; }
 
         public static bool operator ==(OrderCheckLines checkLine1, OrderCheckLines checkLine2)
         {
@@ -113,5 +120,38 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout
         {
             return (OrderCheckLines) MemberwiseClone();
         }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Spg/2021")]
+    public class OrderCheckPayment : IDisposable
+    {
+        public OrderCheckPayment()
+        {
+            CardType = string.Empty;
+            ExternalRef = string.Empty;
+            AutorizationCode = string.Empty;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        [DataMember]
+        public string CardType;
+        [DataMember]
+        public string ExternalRef { get; set; }
+        [DataMember]
+        public decimal PaymentAmount { get; set; }
+        [DataMember]
+        public string AutorizationCode { get; set; }
     }
 }

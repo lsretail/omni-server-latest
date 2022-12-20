@@ -57,6 +57,7 @@ end;
 procedure IISCustomForm_Activate(Page: TWizardPage) ;
 begin
   WizardForm.NextButton.Enabled := False;
+  IISPage_xS2S.Checked := False;
   if (Length(IISPage_txtWcfSiteName.Text) > 0) 
       and (Length(IISPage_txtWcfServiceName.Text) > 0) and (Length(IISPage_txtNavUrl.Text) > 0)  
       and (Length(IISPage_txtNavUser.Text) > 0) and (Length(IISPage_txtNavPwd.Text) > 0) then

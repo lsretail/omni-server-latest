@@ -24,7 +24,7 @@ namespace LSOmni.DataAccess.Dal
         {
             sqlcol = "mt.[Id],mt.[ExternalType],mt.[Description],mt.[StoreId],mt.[ListType],mt.[SalesType],mt.[IsHospitality]," +
                      "mt.[TotalAmount],mt.[TotalNetAmount],mt.[TotalTaxAmount],mt.[TotalDiscAmount]," +
-                     "mt.[ShippingAmount],mt.[CreateDate] ";
+                     "mt.[ShippingAmount],mt.[CreateDate],mt.[Currency] ";
 
             sqlfrom = "FROM [OneListLink] oll INNER JOIN [OneList] AS mt ON mt.[Id]=oll.[OneListId] ";
         }
@@ -120,7 +120,7 @@ namespace LSOmni.DataAccess.Dal
             logger.StatisticStartSub(false, ref stat, out int index);
             if (string.IsNullOrEmpty(list.Id))
             {
-                list.Id = GuidHelper.NewGuid().ToString().ToUpper();
+                list.Id = GuidHelper.NewGuidString();
             }
 
             string description = (string.IsNullOrWhiteSpace(list.Description) ? list.ListType.ToString() + ": " + list.CardId : list.Description);
@@ -157,13 +157,13 @@ namespace LSOmni.DataAccess.Dal
                                 command.CommandText = "IF EXISTS(SELECT * FROM [OneList] WHERE [Id]=@id) " +
                                                       "UPDATE [OneList] SET " +
                                                       "[ExternalType]=@f1,[Description]=@f2,[SalesType]=@f3,[IsHospitality]=@f5,[TotalAmount]=@f6," +
-                                                      "[TotalNetAmount]=@f7,[TotalTaxAmount]=@f8,[TotalDiscAmount]=@f9,[ShippingAmount]=@f10,[PointAmount]=@f11,[LastAccessed]=@f13,[StoreId]=@f14 " +
+                                                      "[TotalNetAmount]=@f7,[TotalTaxAmount]=@f8,[TotalDiscAmount]=@f9,[ShippingAmount]=@f10,[PointAmount]=@f11,[LastAccessed]=@f13,[StoreId]=@f14,[Currency]=@f15 " +
                                                       "WHERE [Id]=@id" +
                                                       " ELSE " +
                                                       "INSERT INTO [OneList] (" +
                                                       "[Id],[ExternalType],[Description],[ListType],[SalesType],[IsHospitality],[TotalAmount]," +
-                                                      "[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[PointAmount],[CreateDate],[LastAccessed],[StoreId]" +
-                                                      ") VALUES (@id,@f1,@f2,@type,@f3,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14)";
+                                                      "[TotalNetAmount],[TotalTaxAmount],[TotalDiscAmount],[ShippingAmount],[PointAmount],[CreateDate],[LastAccessed],[StoreId],[Currency]" +
+                                                      ") VALUES (@id,@f1,@f2,@type,@f3,@f5,@f6,@f7,@f8,@f9,@f10,@f11,@f12,@f13,@f14,@f15)";
 
                                 command.Parameters.AddWithValue("@id", list.Id);
                                 command.Parameters.AddWithValue("@f1", list.ExternalType);
@@ -180,6 +180,7 @@ namespace LSOmni.DataAccess.Dal
                                 command.Parameters.AddWithValue("@f12", DateTime.Now);
                                 command.Parameters.AddWithValue("@f13", DateTime.Now);
                                 command.Parameters.AddWithValue("@f14", NullToString(list.StoreId, 50));
+                                command.Parameters.AddWithValue("@f15", NullToString(list.Currency, 5));
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                             }
@@ -671,7 +672,7 @@ namespace LSOmni.DataAccess.Dal
                     if (line == null)
                         continue;
 
-                    line.Id = GuidHelper.NewGuid().ToString().ToUpper();
+                    line.Id = GuidHelper.NewGuidString();
 
                     command.Parameters["@f0"].Value = line.Id;
                     command.Parameters["@f1"].Value = oneListId;
@@ -727,7 +728,7 @@ namespace LSOmni.DataAccess.Dal
 
                             foreach (OneListItemDiscount dline in line.OnelistItemDiscounts)
                             {
-                                command2.Parameters["@f0"].Value = GuidHelper.NewGuid().ToString().ToUpper();
+                                command2.Parameters["@f0"].Value = GuidHelper.NewGuidString();
                                 command2.Parameters["@f1"].Value = oneListId;
                                 command2.Parameters["@f2"].Value = line.Id;
                                 command2.Parameters["@f3"].Value = dline.No;
@@ -776,7 +777,7 @@ namespace LSOmni.DataAccess.Dal
 
                             foreach (OneListItemSubLine sline in line.OnelistSubLines)
                             {
-                                command3.Parameters["@f0"].Value = GuidHelper.NewGuid().ToString().ToUpper();
+                                command3.Parameters["@f0"].Value = GuidHelper.NewGuidString();
                                 command3.Parameters["@f1"].Value = oneListId;
                                 command3.Parameters["@f2"].Value = line.Id;
                                 command3.Parameters["@f3"].Value = (int)sline.Type;
@@ -879,6 +880,7 @@ namespace LSOmni.DataAccess.Dal
                 StoreId = SQLHelper.GetString(reader["StoreId"]),
                 ListType = (ListType)SQLHelper.GetInt32(reader["ListType"]),
                 SalesType = SQLHelper.GetString(reader["SalesType"]),
+                Currency = SQLHelper.GetString(reader["Currency"]),
                 IsHospitality = SQLHelper.GetBool(reader["IsHospitality"]),
                 TotalAmount = SQLHelper.GetDecimal(reader, "TotalAmount"),
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "TotalNetAmount"),

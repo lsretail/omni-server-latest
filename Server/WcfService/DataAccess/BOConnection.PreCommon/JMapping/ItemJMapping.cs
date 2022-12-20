@@ -9,9 +9,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 {
     public class ItemJMapping : BaseJMapping
     {
-        public ItemJMapping(bool json)
+        public ItemJMapping(bool json, Version version)
         {
             IsJson = json;
+            LSCVersion = version;
         }
 
         public List<ReplItem> GetReplItems(string ret, ref string lastKey, ref int recordsRemaining)
@@ -1564,6 +1565,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             foreach (ReplODataRecord rec in result.TableData.TableDataUpd.RecRefJson.Records)
             {
                 ReplDataTranslation line = new ReplDataTranslation();
+                line.TranslationId = "T0010001410-F0000000020";
+
                 foreach (ReplODataField data in rec.Fields)
                 {
                     ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
@@ -1573,7 +1576,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     switch (fld.FieldNo)
                     {
                         case 1: line.Key = data.FieldValue; break;
-                        case 20: line.Text = data.FieldValue; break;
+                        case 20: line.Text = ConvertTo.Base64Decode(data.FieldValue); break;
                         case 30: line.LanguageCode = data.FieldValue; break;
                     }
                 }
@@ -1588,7 +1591,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             {
                 ReplDataTranslation line = new ReplDataTranslation()
                 {
-                    IsDeleted = true
+                    IsDeleted = true,
+                    TranslationId = "T0010001410-F0000000020"
                 };
 
                 foreach (ReplODataField data in rec.Fields)

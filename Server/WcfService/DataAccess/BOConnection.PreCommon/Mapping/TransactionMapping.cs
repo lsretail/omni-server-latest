@@ -141,6 +141,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TotalAmount = header.GrossAmount,
                 TotalNetAmount = header.NetAmount,
                 TotalDiscount = header.LineDiscount,
+                Currency = header.CurrencyCode,
                 CardId = header.MemberCardNo,
                 StoreId = header.StoreId,
                 SalesType = header.SalesType
@@ -265,6 +266,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TotalNetAmount = header.NetAmount * -1,
                 TotalDiscount = header.DiscountAmount * -1,
                 LineItemCount = (int)header.NoofItems,
+                StoreCurrency = header.TransCurrency,
                 IdType = DocumentIdType.Receipt,
                 Status = SalesEntryStatus.Complete,
                 Posted = true
@@ -297,14 +299,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         ItemId = mobileTransLine.ItemNo,
                         UomId = mobileTransLine.UnitofMeasure,
                         VariantId = mobileTransLine.VariantCode,
-                        Amount = mobileTransLine.NetAmount + mobileTransLine.VATAmount,
-                        NetAmount = mobileTransLine.NetAmount,
-                        TaxAmount = mobileTransLine.VATAmount,
+                        Amount = (mobileTransLine.NetAmount + mobileTransLine.VATAmount) * -1,
+                        NetAmount = mobileTransLine.NetAmount * -1,
+                        TaxAmount = mobileTransLine.VATAmount * -1,
                         DiscountAmount = mobileTransLine.DiscountAmount,
-                        Quantity = mobileTransLine.Quantity,
+                        Quantity = mobileTransLine.Quantity * -1,
                         Price = mobileTransLine.Price,
                         NetPrice = mobileTransLine.NetPrice,
-                        LineNumber = mobileTransLine.LineNo
+                        LineNumber = mobileTransLine.LineNo,
+                        StoreId = mobileTransLine.StoreNo
                     });
                 }
             }
@@ -426,6 +429,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 VATBusPostingGroup = string.Empty
             });
             root.HospTransaction = trans.ToArray();
+
+            /*
+            if (LSCVersion >= new Version("21.1"))
+            {
+                List<LSCentral.FABOrder> faborder = new List<LSCentral.FABOrder>();
+                LSCentral.FABOrder fab = new LSCentral.FABOrder()
+                {
+                    ClientAddress = XMLHelper.GetString(order.Address?.Address1),
+                    ClientPhoneNo = XMLHelper.GetString(order.Address?.PhoneNumber),
+                    ClientName = XMLHelper.GetString(order.Name),
+                    ClientEmail = XMLHelper.GetString(order.Email),
+                    ExternalID = XMLHelper.GetString(order.ExternalId),
+                    PickupDate = ConvertTo.NavGetDate(order.OrderDate, true),
+                    PickupTime = ConvertTo.NavGetTime(order.OrderDate, true),
+                    PickupDateTime = order.PickupTime,
+                    SalesType = order.SalesType,
+                    StoreNo = order.RestaurantNo,
+
+                    ContactCommentIcon = string.Empty,
+                    CreatedOnPOSTermnial = string.Empty,
+                    QueueCounter = string.Empty,
+                    KitchenStatus = string.Empty,
+                    OrderNo = string.Empty,
+                    POSTerminalNo = string.Empty,
+                    StaffID = string.Empty,
+                    OrderStatus = string.Empty
+                };
+                faborder.Add(fab);
+                root.FABOrder = faborder.ToArray();
+            }
+            */
 
             List<LSCentral.WebDeliveryOrder> delivery = new List<LSCentral.WebDeliveryOrder>();
             LSCentral.WebDeliveryOrder devord = new LSCentral.WebDeliveryOrder()
@@ -600,7 +634,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             LSCentral.RootMobileTransaction root = new LSCentral.RootMobileTransaction();
 
             if (string.IsNullOrEmpty(order.Id))
-                order.Id = Guid.NewGuid().ToString();
+                order.Id = GuidHelper.NewGuidString();
 
             //MobileTrans
             List<LSCentral.MobileTransaction> trans = new List<LSCentral.MobileTransaction>();

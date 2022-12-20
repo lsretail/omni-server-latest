@@ -46,7 +46,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityAdditionalChargesSet(request);
         }
 
-        public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             return LSCentralWSBase.ActivityAttributesGet(type, linkNo);
         }

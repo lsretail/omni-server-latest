@@ -497,6 +497,27 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"cardNo:{cardNo} entryType:{entryType}");
+                CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
+                return bll.GiftCardGetHistory(cardNo, entryType, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "CardNo:{0}", cardNo);
+                return null;
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         public virtual bool DeviceSave(string deviceId, string deviceFriendlyName, string platform, string osVersion, string manufacturer, string model)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
@@ -1611,7 +1632,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual string OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
+        public virtual bool OrderCancel(string orderId, string storeId, string userId, List<int> lineNo)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -1625,12 +1646,13 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, "orderId:{0}", orderId);
+                return false;
             }
             finally
             {
                 logger.StatisticEndMain(stat);
             }
-            return string.Empty;
+            return true;
         }
 
         public virtual OrderAvailabilityResponse OrderCheckAvailability(OneList request, bool shippingOrder)
@@ -1715,7 +1737,6 @@ namespace LSOmni.Service
 
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
                 hostBLL.HospOrderCancel(storeId, orderId, stat);
-                return true;
             }
             catch (Exception ex)
             {
@@ -1726,6 +1747,7 @@ namespace LSOmni.Service
             {
                 logger.StatisticEndMain(stat);
             }
+            return true;
         }
 
         public virtual OrderHospStatus HospOrderStatus(string storeId, string orderId)
@@ -2009,69 +2031,18 @@ namespace LSOmni.Service
 
         public virtual bool RecommendedActive()
         {
-            Statistics stat = logger.StatisticStartMain(config, serverUri);
-
-            try
-            {
-                logger.Debug(config.LSKey.Key, "IsActive");
-
-                LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, string.Empty);
-                return false; //never gets here
-            }
-            finally
-            {
-                logger.StatisticEndMain(stat);
-            }
+            // not supported anymore
+            return false;
         }
 
         public virtual List<RecommendedItem> RecommendedItemsGet(List<string> items)
         {
-            Statistics stat = logger.StatisticStartMain(config, serverUri);
-
-            try
-            {
-                logger.Debug(config.LSKey.Key, "item cnt:{0}", items.Count);
-
-                LSRecommendsBLL bll = new LSRecommendsBLL(config, false);
-                return bll.RecommendedItemsGet(items);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "item cnt:{0}", items.Count);
-                return null; //never gets here
-            }
-            finally
-            {
-                logger.StatisticEndMain(stat);
-            }
+            return null;
         }
 
         public bool LSRecommendSetting(string lsKey, string batchNo, string modelReaderURL, string authenticationURL, string clientId, string clientSecret, string userName, string password, int numberOfDownloadedItems, int numberOfDisplayedItems, bool filterByInventory, decimal minInvStock)
         {
-            Statistics stat = logger.StatisticStartMain(config, serverUri);
-
-            try
-            {
-                logger.Debug(config.LSKey.Key, "batchNo:{0} modelReaderURL:{1}", batchNo, modelReaderURL);
-
-                LSRecommendsBLL bll = new LSRecommendsBLL(config, true);
-                bll.LSRecommendSetting(XMLHelper.GetString(lsKey), batchNo, modelReaderURL, authenticationURL, clientId, clientSecret, userName, password, numberOfDownloadedItems, numberOfDisplayedItems, filterByInventory, minInvStock);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "LSRecommend Setting Error");
-                return false;
-            }
-            finally
-            {
-                logger.StatisticEndMain(stat);
-            }
+            return false;
         }
 
         #endregion LS Recommends

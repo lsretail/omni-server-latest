@@ -68,6 +68,10 @@ namespace LSOmni.BLL
         public virtual string PingNavDb()
         {
             BOLoyConnection.TimeoutInSeconds = 4;
+            string asm = GetBOAssemblyName();
+            if (asm.ToLower().Contains("navws.dll"))
+                return "SaaS";
+
             Scheme ret = BOLoyConnection.SchemeGetById("Ping", new Statistics());
             return ret.Id;
         }

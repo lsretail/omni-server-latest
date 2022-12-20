@@ -29,7 +29,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 {
                     command.Parameters.Clear();
                     command.CommandText = "SELECT * FROM (" +
-                        "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
+                        "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],st.[Currency Code],mt.[External ID],mt.[Created] AS [Date],mt.[Source Type]," +
                         "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS [Name],mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
@@ -39,7 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "FROM [" + navCompanyName + "Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[" + storeId + "] " +
                         "UNION " +
-                        "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],mt.[External ID],mt.[Created] AS Date,mt.[Source Type]," +
+                        "SELECT mt.[Document ID],mt.[" + storeId + "],st.[Name] AS [StName],st.[Currency Code],mt.[External ID],mt.[Created] AS [Date],mt.[Source Type]," +
                         "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS [Name],mt.[Address],mt.[Address 2]," +
                         "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
@@ -295,6 +295,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Id = SQLHelper.GetString(reader["Document ID"]),
                 StoreId = SQLHelper.GetString(reader[storeId]),
                 StoreName = SQLHelper.GetString(reader["StName"]),
+                StoreCurrency = SQLHelper.GetString(reader["Currency Code"]),
                 DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 IdType = DocumentIdType.Order,
                 Status = SalesEntryStatus.Created,

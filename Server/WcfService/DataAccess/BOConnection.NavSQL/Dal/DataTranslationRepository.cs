@@ -27,7 +27,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            List<JscKey> keys = GetPrimaryKeys("DataTranslate");
+            List<JscKey> keys = GetPrimaryKeys("Data Translation");
 
             // get records remaining
             string sql = string.Empty;
