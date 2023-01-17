@@ -52,7 +52,7 @@
   </binding>
   <service name="CustomerCreditCheck">
     <port name="CustomerCreditCheck_Port" binding="tns:CustomerCreditCheck_Binding">
-      <address location="https://ehf-uat-app1.pasta.local:19047/adf-bc-uat/WS/St%C3%B3rkaup_UAT/Codeunit/CustomerCreditCheck" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://david-laptop:9047/BC191/WS/CRONUS%20-%20LS%20Central/Codeunit/CustomerCreditCheck" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

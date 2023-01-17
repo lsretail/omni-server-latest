@@ -20,5 +20,11 @@
     <Setting Name="LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest" Type="(Web Service URL)" Scope="Application">
       <Value Profile="(Default)">http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest</Value>
     </Setting>
+    <Setting Name="LSOmni_DataAccess_BOConnection_PreCommon_HagarWS_AXInventory" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://david-laptop:9047/BC202/WS/CRONUS%20-%20LS%20Central/Codeunit/AXInventory</Value>
+    </Setting>
+    <Setting Name="LSOmni_DataAccess_BOConnection_PreCommon_SKCredit_CustomerCreditCheck" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://david-laptop:9047/BC191/WS/CRONUS%20-%20LS%20Central/Codeunit/CustomerCreditCheck</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

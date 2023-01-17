@@ -82,6 +82,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Web References\HagarWS\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
     <Compile Include="Web References\LSActivity\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -94,6 +99,11 @@
     </Compile>
     <Compile Include="Web References\NavWebReference\Reference.cs" />
     <Compile Include="Web References\LSCentral\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.map</DependentUpon>
+    </Compile>
+    <Compile Include="Web References\SKCredit\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -116,6 +126,14 @@
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\HagarWS\AXInventory.wsdl" />
+    <None Include="Web References\HagarWS\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+    <None Include="Web References\HagarWS\RootGetInventoryMultipleOut.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSActivity\Activity.wsdl" />
     <None Include="Web References\LSActivity\ActivityAdmissionEntries1.datasource">
@@ -503,6 +521,11 @@
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
+    <None Include="Web References\SKCredit\CustomerCreditCheck.wsdl" />
+    <None Include="Web References\SKCredit\Reference.map">
+      <Generator>MSDiscoCodeGenerator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
@@ -551,6 +574,28 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
+    <WebReferenceUrl Include="http://david-laptop:9047/BC191/WS/CRONUS%2520-%2520LS%2520Central/Codeunit/CustomerCreditCheck">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\SKCredit\</RelPath>
+      <UpdateFromURL>http://david-laptop:9047/BC191/WS/CRONUS%2520-%2520LS%2520Central/Codeunit/CustomerCreditCheck</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_PreCommon_SKCredit_CustomerCreditCheck</CachedSettingsPropName>
+    </WebReferenceUrl>
+    <WebReferenceUrl Include="http://david-laptop:9047/BC202/WS/CRONUS%2520-%2520LS%2520Central/Codeunit/AXInventory">
+      <UrlBehavior>Dynamic</UrlBehavior>
+      <RelPath>Web References\HagarWS\</RelPath>
+      <UpdateFromURL>http://david-laptop:9047/BC202/WS/CRONUS%2520-%2520LS%2520Central/Codeunit/AXInventory</UpdateFromURL>
+      <ServiceLocationURL>
+      </ServiceLocationURL>
+      <CachedDynamicPropName>
+      </CachedDynamicPropName>
+      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
+      <CachedSettingsPropName>LSOmni_DataAccess_BOConnection_PreCommon_HagarWS_AXInventory</CachedSettingsPropName>
+    </WebReferenceUrl>
     <WebReferenceUrl Include="http://dhqsrvomni001:9047/LSCentralMaster/WS/Codeunit/ODataRequest">
       <UrlBehavior>Dynamic</UrlBehavior>
       <RelPath>Web References\LSOData\</RelPath>

@@ -12,7 +12,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.2.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.3.0.0")]
     internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
         
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
@@ -86,6 +86,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Properties {
         public string LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest {
             get {
                 return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_LSOData_ODataRequest"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://david-laptop:9047/BC202/WS/CRONUS%20-%20LS%20Central/Codeunit/AXInventory")]
+        public string LSOmni_DataAccess_BOConnection_PreCommon_HagarWS_AXInventory {
+            get {
+                return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_HagarWS_AXInventory"]));
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.WebServiceUrl)]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://david-laptop:9047/BC191/WS/CRONUS%20-%20LS%20Central/Codeunit/CustomerCred" +
+            "itCheck")]
+        public string LSOmni_DataAccess_BOConnection_PreCommon_SKCredit_CustomerCreditCheck {
+            get {
+                return ((string)(this["LSOmni_DataAccess_BOConnection_PreCommon_SKCredit_CustomerCreditCheck"]));
             }
         }
     }

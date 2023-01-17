@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<DiscoveryClientResultsFile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<DiscoveryClientResultsFile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Results>
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="https://hag-test-app1.pasta.local:9047/HAGBC/WS/Hagkaup - TEST/Codeunit/AXInventory" filename="AXInventory.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://david-laptop:9047/BC202/WS/CRONUS - LS Central/Codeunit/AXInventory" filename="AXInventory.wsdl" />
   </Results>
 </DiscoveryClientResultsFile>

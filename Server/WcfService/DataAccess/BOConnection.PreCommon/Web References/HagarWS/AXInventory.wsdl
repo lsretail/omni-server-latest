@@ -82,7 +82,7 @@
   </binding>
   <service name="AXInventory">
     <port name="AXInventory_Port" binding="tns:AXInventory_Binding">
-      <address location="https://hag-test-app1.pasta.local:9047/HAGBC/WS/Hagkaup%20-%20TEST/Codeunit/AXInventory" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://david-laptop:9047/BC202/WS/CRONUS%20-%20LS%20Central/Codeunit/AXInventory" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>
