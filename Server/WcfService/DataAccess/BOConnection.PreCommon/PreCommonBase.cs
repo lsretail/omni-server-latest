@@ -80,18 +80,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             ecomAppId = config.SettingsGetByKey(ConfigKey.NavAppId);
             ecomAppType = config.SettingsGetByKey(ConfigKey.NavAppType);
 
-            // string rpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dat");
-            // ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{(string.IsNullOrEmpty(configuration.AppId) ? ecomAppId : configuration.AppId)}.txt");
-            // if (Directory.Exists(rpath) == false)
-            // {
-            //     Directory.CreateDirectory(rpath);
-            // }
-            // if (File.Exists(ecomAppRestoreFileName) == false)
-            // {
-            //     File.WriteAllText(ecomAppRestoreFileName, true.ToString());
-            // }
-            // string restoredata = File.ReadAllText(ecomAppRestoreFileName);
-            // ecomAppRestore = Convert.ToBoolean(restoredata);
+            string rpath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Dat");
+            ecomAppRestoreFileName = Path.Combine(rpath, $"restore-{(string.IsNullOrEmpty(configuration.AppId) ? ecomAppId : configuration.AppId)}.txt");
+            if (Directory.Exists(rpath) == false)
+            {
+                Directory.CreateDirectory(rpath);
+            }
+            if (File.Exists(ecomAppRestoreFileName) == false)
+            {
+                File.WriteAllText(ecomAppRestoreFileName, true.ToString());
+            }
+            string restoredata = File.ReadAllText(ecomAppRestoreFileName);
+            ecomAppRestore = Convert.ToBoolean(restoredata);
 
             string url = config.SettingsGetByKey(ConfigKey.BOUrl);
             int sp = url.ToLower().IndexOf("/ws/");
