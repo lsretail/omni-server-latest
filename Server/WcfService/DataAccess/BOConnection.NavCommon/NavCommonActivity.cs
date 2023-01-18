@@ -154,7 +154,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return true;
         }
 
-        public AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAttributesGet: type:{0}, linkNo:{1}", type, linkNo));
 

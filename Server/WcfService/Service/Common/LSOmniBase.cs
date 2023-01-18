@@ -142,6 +142,8 @@ namespace LSOmni.Service
             string navWs = string.Empty;
             string ver = string.Empty;
             string tenVer = string.Empty;
+            string navDBRet = string.Empty;
+
             try
             {
                 logger.Debug(config.LSKey.Key, "Ping");
@@ -180,7 +182,7 @@ namespace LSOmni.Service
             try
             {
                 ConfigBLL bll = new ConfigBLL(config);
-                bll.PingNavDb();
+                navDBRet = bll.PingNavDb();
             }
             catch (Exception ex)
             {
@@ -198,7 +200,7 @@ namespace LSOmni.Service
                     msg += " [Successfully connected to LS Commerce Service DB]" + omniver;
 
                 if (navDb.Length == 0)
-                    msg += " [Successfully connected to LS Central DB]";
+                    msg += navDBRet.Equals("SaaS") ? " [SaaS Mode]" : " [Successfully connected to LS Central DB]";
                 if (navWs.Length == 0)
                     msg += " [Successfully connected to LS Central WS] " + tenVer + " (" + ver + ")";
 
@@ -215,7 +217,7 @@ namespace LSOmni.Service
             }
             else
             {
-                msg = "Successfully connected to [LS Commerce Service DB] & [LS Central DB] & [LS Central WS] " + tenVer + " (" + ver + ")" + omniver;
+                msg = "Successfully connected to [LS Commerce Service DB] & " + (navDBRet.Equals("SaaS") ? "[LS SaaS]" : "[LS Central DB]") + " & [LS Central WS] " + tenVer + " (" + ver + ")" + omniver;
                 logger.Debug(config.LSKey.Key, "PONG OK {0} ", msg);
                 return string.Format("PONG OK> {0} ", msg);
             }

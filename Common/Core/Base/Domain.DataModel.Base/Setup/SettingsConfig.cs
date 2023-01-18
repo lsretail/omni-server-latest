@@ -68,6 +68,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         private bool showHardwareOverlay;
         private bool openDevTools;
+        private bool toggleFullScreen;
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";
@@ -79,6 +80,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public const string UseFixedSizeGridKey = "UseFixedSizeGridKey";
         public const string FixedSizeGridRowsKey = "FixedSizeGridRowsKey";
         public const string FixedSizeGridColumnsKey = "FixedSizeGridColumnsKey";
+        public const string IsFullScreen = "IsFullScreen";
+        public const string AllowToggleFullScreen = "AllowToggleFullScreen";
+
 
         public const string ShowHardwareOverlayKey = "ShowHardwareOverlayKey";
         public const string OpenDevToolsKey = "OpenDevToolsKey";
@@ -130,6 +134,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 windowFullScreen = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public bool ToggleFullScreen
+        {
+            get => toggleFullScreen;
+            set
+            {
+                toggleFullScreen = value;
                 NotifyPropertyChanged();
             }
         }

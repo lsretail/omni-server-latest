@@ -6,7 +6,7 @@ using System.Reflection;
  
 [assembly: AssemblyProduct("LS Commerce Service")] 
 [assembly: AssemblyCompany("LS Retail")]
-[assembly: AssemblyCopyright("Copyright 2022 LS Retail")]
+[assembly: AssemblyCopyright("Copyright 2023 LS Retail")]
 [assembly: AssemblyTrademark("LS Retail")]
 [assembly: AssemblyCulture("")]
 
@@ -17,7 +17,7 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2022.10.0")]
-[assembly: AssemblyFileVersion("2022.10.0")]
-[assembly: AssemblyInformationalVersion("LS Commerce Service 2022.10")]
+[assembly: AssemblyVersion("2022.12.0")]
+[assembly: AssemblyFileVersion("2022.12.0")]
+[assembly: AssemblyInformationalVersion("LS Commerce Service 2022.12")]
  

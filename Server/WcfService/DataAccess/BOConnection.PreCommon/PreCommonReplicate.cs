@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIItemBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -98,7 +98,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetBarcode(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -152,7 +152,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetExtdVariantValues(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -217,11 +217,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret;
-                if (LSCVersion >= new Version("20.2"))
+                if (LSCVersion >= new Version("20.3"))
                 {
                     ret = odataWS.GetItemUnitOfMeasure(storeId, batchSize, fullRepl, lastKey, lastEntry);
                     logger.Trace(config.LSKey.Key, ret);
@@ -263,7 +263,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret;
@@ -291,7 +291,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("21.0"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetItemVariant(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -331,7 +331,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("21.0"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetVendorItem(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -399,7 +399,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetItemCategory(batchSize, fullRepl, lastKey, lastEntry);
@@ -417,7 +417,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIItemLocationBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -443,7 +443,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     fullRepl = true;
                 }
 
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -528,7 +528,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("20.4"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetSalesPrice(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -543,7 +543,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetProductGroup(batchSize, fullRepl, lastKey, lastEntry);
@@ -672,7 +672,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetUnitOfMeasure(batchSize, fullRepl, lastKey, lastEntry);
@@ -716,7 +716,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     fullRepl = true;
                 }
 
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIDiscounts(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -842,7 +842,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     fullRepl = true;
                 }
 
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIMixMatch(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -1002,7 +1002,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIItemModifier(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -1017,7 +1017,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIItemRecipeBuffer(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -1217,7 +1217,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetImageLink(batchSize, fullRepl, lastKey, lastEntry);
@@ -1235,7 +1235,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetWIImageBuffer(batchSize, fullRepl, lastKey, lastEntry);
@@ -1253,7 +1253,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetAttribute(batchSize, fullRepl, lastKey, lastEntry);
@@ -1271,7 +1271,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetAttributeValues(batchSize, fullRepl, lastKey, lastEntry);
@@ -1289,7 +1289,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetAttributeOptionValues(batchSize, fullRepl, lastKey, lastEntry);
@@ -1325,7 +1325,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("20.4"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetItemHTML(storeId, batchSize, fullRepl, lastKey, lastEntry);
@@ -1550,7 +1550,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             foreach (ReplPlu plu in list)
             {
-                List<ImageView> imgs = ImagesGetByLink("Item", plu.ItemId, string.Empty, string.Empty, new Statistics());
+                List<ImageView> imgs = ImagesGetByLink("Item", plu.ItemId, string.Empty, string.Empty, true, new Statistics());
                 if (imgs.Count > 0)
                 {
                     plu.ImageId = imgs[0].Id;
@@ -1565,7 +1565,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             if (LSCVersion >= new Version("19.3"))
             {
-                ItemJMapping map = new ItemJMapping(config.IsJson);
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetInventoryStatus(storeId, batchSize, fullRepl, lastKey, lastEntry);

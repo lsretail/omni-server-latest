@@ -261,7 +261,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                         case "Longitude": rec.Longitude = (double)ConvertTo.SafeDecimal(field.Values[i]); break;
                         case "Phone No.": rec.Phone = field.Values[i]; break;
                         case "Click and Collect": rec.IsClickAndCollect = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Currency": rec.Currency = new Currency(field.Values[i]); break;
+                        case "Currency Code": rec.Currency = new Currency(field.Values[i]); break;
                         case "Web Store": rec.IsWebStore = ConvertTo.SafeBoolean(field.Values[i]); break;
                         case "Loyalty": rec.IsLoyalty = ConvertTo.SafeBoolean(field.Values[i]); break;
                         case "Web Store POS Terminal": rec.WebOmniTerminal = field.Values[i]; break;

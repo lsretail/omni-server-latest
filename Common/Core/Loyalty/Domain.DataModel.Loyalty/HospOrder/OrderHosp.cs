@@ -21,6 +21,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
             Directions = string.Empty;
             ReceiptNo = string.Empty;
             RestaurantNo = string.Empty;
+            Currency = string.Empty;
 
             OrderLines = new List<OrderHospLine>();
             OrderPayments = new List<OrderPayment>();
@@ -52,6 +53,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         /// </summary>
         [DataMember]
         public string DocumentId { get; set; }
+        [DataMember]
+        public string ExternalId { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DocumentRegTime { get; set; }
         [DataMember(IsRequired = true)]
@@ -91,6 +94,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         /// </summary>
         [DataMember]
         public string ReceiptNo { get; set; }
+        [DataMember]
+        public string Currency { get; set; }
 
         [DataMember]
         public decimal TotalNetAmount { get; set; }

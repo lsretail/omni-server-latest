@@ -317,6 +317,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalNetAmount = calcResp.TotalNetAmount;
             list.TotalTaxAmount = calcResp.TotalAmount - calcResp.TotalNetAmount;
             list.TotalDiscAmount = calcResp.TotalDiscount;
+            list.Currency = calcResp.Currency;
 
             ObservableCollection<OneListItem> newitems = new ObservableCollection<OneListItem>();
             foreach (OrderLine line in calcResp.OrderLines)
@@ -425,6 +426,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalNetAmount = calcResp.TotalNetAmount;
             list.TotalTaxAmount = calcResp.TotalAmount - calcResp.TotalNetAmount;
             list.TotalDiscAmount = calcResp.TotalDiscount;
+            list.Currency = calcResp.Currency;
 
             ObservableCollection<OneListItem> newitems = new ObservableCollection<OneListItem>();
             foreach (OrderHospLine line in calcResp.OrderLines)

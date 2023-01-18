@@ -63,7 +63,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityAdditionalChargesSet(request);
         }
 
-        public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ActivityAttributesGet(type, linkNo);

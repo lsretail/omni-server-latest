@@ -57,7 +57,7 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityAdditionalChargesSet(request);
         }
 
-        public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             return BOActConnection.ActivityAttributesGet(type, linkNo);
         }

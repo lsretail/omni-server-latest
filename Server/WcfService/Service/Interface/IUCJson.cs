@@ -106,6 +106,16 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         GiftCard GiftCardGetBalance(string cardNo, string entryType);
 
+        /// <summary>
+        /// Get activity history for Gift Card
+        /// </summary>
+        /// <param name="cardNo">Gift card number</param>
+        /// <param name="entryType">Gift card Entry type. If empty, GiftCard_DataEntryType from TenantConfig is used</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType);
+
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Advertisement> AdvertisementsGetById(string id, string contactId);
@@ -894,7 +904,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string OrderCancel(string orderId, string storeId, string userId, List<int> lineNo);
+        bool OrderCancel(string orderId, string storeId, string userId, List<int> lineNo);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -2942,7 +2952,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo);
+        List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo);
 
         /// <summary>
         /// Action to set an attribute value on a given reservation or activity.  If attribute does not exist on the entry then its inserted otherwise updated

@@ -13,20 +13,21 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
     {
         public SalesEntry(string id) : base(id)
         {
-            StoreId = String.Empty;
-            StoreName = String.Empty;
-            CreateAtStoreId = String.Empty;
-            ExternalId = String.Empty;
-            CustomerId = String.Empty;
-            CustomerOrderNo = String.Empty;
-            ContactDayTimePhoneNo = String.Empty;
-            ContactEmail = String.Empty;
-            ContactName = String.Empty;
-            CardId = String.Empty;
-            ShippingAgentCode = String.Empty;
-            ShippingAgentServiceCode = String.Empty;
-            ShipToEmail = String.Empty;
-            ShipToName = String.Empty;
+            StoreId = string.Empty;
+            StoreName = string.Empty;
+            CreateAtStoreId = string.Empty;
+            ExternalId = string.Empty;
+            CustomerId = string.Empty;
+            CustomerOrderNo = string.Empty;
+            ContactDayTimePhoneNo = string.Empty;
+            ContactEmail = string.Empty;
+            ContactName = string.Empty;
+            CardId = string.Empty;
+            ShippingAgentCode = string.Empty;
+            ShippingAgentServiceCode = string.Empty;
+            ShipToEmail = string.Empty;
+            ShipToName = string.Empty;
+            StoreCurrency = string.Empty;
 
             IdType = DocumentIdType.Order;
             Status = SalesEntryStatus.Pending;
@@ -77,6 +78,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string CreateAtStoreId { get; set; }
         [DataMember]
         public string StoreName { get; set; }
+        [DataMember]
+        public string StoreCurrency { get; set; }
         [DataMember]
         public string TerminalId { get; set; }
 

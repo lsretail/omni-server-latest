@@ -33,7 +33,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            List<JscKey> keys = GetPrimaryKeys("LSC DataTranslate$5ecfc871-5d82-43f1-9c54-59685e82318d");
+            List<JscKey> keys = GetPrimaryKeys("LSC Data Translation$5ecfc871-5d82-43f1-9c54-59685e82318d");
 
             // get records remaining
             string sql = string.Empty;

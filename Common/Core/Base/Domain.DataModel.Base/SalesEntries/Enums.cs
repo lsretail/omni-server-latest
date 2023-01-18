@@ -23,6 +23,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [EnumMember]
         Shipping = 7,
         [EnumMember]
+        Deal = 8,
+        [EnumMember]
         Unknown = 99,
     }
 

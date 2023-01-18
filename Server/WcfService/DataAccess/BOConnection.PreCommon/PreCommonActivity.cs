@@ -194,7 +194,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return true;
         }
 
-        public AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             logger.Debug(config.LSKey.Key, "GetAttributes: type:{0}, linkNo:{1}", type, linkNo);
 

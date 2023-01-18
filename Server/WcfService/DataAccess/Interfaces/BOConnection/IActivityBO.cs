@@ -15,7 +15,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         AdditionalCharge ActivityAdditionalChargesGet(string activityNo);
         AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking);
         bool ActivityAdditionalChargesSet(AdditionalCharge request);
-        AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo);
+        List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo);
         int ActivityAttributeSet(AttributeType type, string linkNo, string attributeCode, string attributeValue);
         string ActivityReservationInsert(Reservation request);
         string ActivityReservationUpdate(Reservation request);

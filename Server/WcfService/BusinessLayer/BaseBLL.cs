@@ -142,7 +142,7 @@ namespace LSOmni.BLL
             }
         }
 
-        private string GetBOAssemblyName()
+        public string GetBOAssemblyName()
         {
             string key = "BOConnection.AssemblyName"; //key in app.settings
             if (ConfigSetting.KeyExists(key))

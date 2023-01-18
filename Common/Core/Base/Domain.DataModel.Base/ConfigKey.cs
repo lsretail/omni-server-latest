@@ -69,19 +69,5 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         Cache_Image_DurationInMinutes = 1200,
 
         TenderType_Mapping = 1280,
-
-        LSRecommend_Token = 1320,
-        LSRecommend_Time = 1321,
-        LSRecommend_BatchNo = 1322,
-        LSRecommend_ModelUrl = 1323,
-        LSRecommend_AuthUrl = 1324,
-        LSRecommend_ClientId = 1325,
-        LSRecommend_ClientSecret = 1326,
-        LSRecommend_UserName = 1327,
-        LSRecommend_Password = 1328,
-        LSRecommend_NoOfDownloadedItems = 1329,
-        LSRecommend_NoOfDisplayedItems = 1330,
-        LSRecommend_FilterByInv = 1331,
-        LSRecommend_MinStock = 1332,
     }
 } 

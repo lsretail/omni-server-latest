@@ -518,7 +518,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return img;
         }
 
-        public List<ImageView> ImagesGetByLink(string tableName, string key1, string key2, string key3, Statistics stat)
+        public List<ImageView> ImagesGetByLink(string tableName, string key1, string key2, string key3, bool includeBlob, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -537,17 +537,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             SetupRepository rep = new SetupRepository(config);
             List<ImageView> list = rep.GetImageLinks(table);
 
-            foreach (ImageView link in list)
+            if (includeBlob)
             {
-                using (ImageView img = ImageGetById(link.Id, stat))
+                foreach (ImageView link in list)
                 {
-                    if (img != null)
+                    using (ImageView img = ImageGetById(link.Id, stat))
                     {
-                        link.Location = img.Location;
-                        link.LocationType = img.LocationType;
-                        link.Image = img.Image;
-                        link.ImgBytes = img.ImgBytes;
-                        link.MediaId = img.MediaId;
+                        if (img != null)
+                        {
+                            link.Location = img.Location;
+                            link.LocationType = img.LocationType;
+                            link.Image = img.Image;
+                            link.ImgBytes = img.ImgBytes;
+                            link.MediaId = img.MediaId;
+                        }
                     }
                 }
             }
@@ -1191,18 +1194,39 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootGetDataEntryBalance root = new LSCentral.RootGetDataEntryBalance();
             logger.Debug(config.LSKey.Key, "GetDataEntryBalance - GiftCardNo: {0}", cardNo);
             centralWS.GetDataEntryBalance(ref respCode, ref errorText, XMLHelper.GetString(entryType), cardNo, ref root);
+            HandleWS2ResponseCode("GetDataEntryBalance", respCode, errorText, ref stat, index);
             if (root.POSDataEntry == null)
             {
                 throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift card not found");
             }
 
-            logger.Debug(config.LSKey.Key, "GetDataEntryBalance response - Balance:{0} Expire:{1}", root.POSDataEntry.First().Balance, root.POSDataEntry.First().ExpiryDate);
+            LSCentral.POSDataEntry entry = root.POSDataEntry.First();
+            logger.Debug(config.LSKey.Key, "GetDataEntryBalance response - Balance:{0} Expire:{1}", entry.Balance, entry.ExpiryDate);
             logger.StatisticEndSub(ref stat, index);
             return new GiftCard(cardNo)
             {
-                Balance = root.POSDataEntry.First().Balance,
-                ExpireDate = root.POSDataEntry.First().ExpiryDate
+                EntryType = entryType,
+                Balance = entry.Balance,
+                ExpireDate = entry.ExpiryDate,
+                CurrencyCode = entry.CurrencyCode
             };
+        }
+
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            LSCentral.RootGetVoucherEntries root = new LSCentral.RootGetVoucherEntries();
+            logger.Debug(config.LSKey.Key, "GetVoucherEntries - GiftCardNo: {0}", cardNo);
+            centralWS.GetVoucherEntries(ref respCode, ref errorText, cardNo, ref root);
+            HandleWS2ResponseCode("GetVoucherEntries", respCode, errorText, ref stat, index);
+            logger.Debug(config.LSKey.Key, "GetVoucherEntries Response - " + Serialization.ToXml(root, true));
+            StoreMapping map = new StoreMapping();
+            List<GiftCardEntry> list = map.MapFromRootToGiftCardEntry(root);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
         }
 
         public decimal GetPointRate(Statistics stat)
@@ -1737,6 +1761,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             Store store = StoreGetById(order.StoreId, getimages, stat);
             order.StoreName = store.Description;
+            order.StoreCurrency = store.Currency.Id;
 
             List<SalesEntryLine> list = new List<SalesEntryLine>();
             foreach (SalesEntryLine line in order.Lines)
@@ -1744,20 +1769,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
                 if (exline == null)
                 {
-                    if (getimages)
+                    if (string.IsNullOrEmpty(line.VariantId))
                     {
-                        if (string.IsNullOrEmpty(line.VariantId))
-                        {
-                            List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty, stat);
-                            if (img != null && img.Count > 0)
-                                line.ItemImageId = img[0].Id;
-                        }
-                        else
-                        {
-                            List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, stat);
-                            if (img != null && img.Count > 0)
-                                line.ItemImageId = img[0].Id;
-                        }
+                        List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty, getimages, stat);
+                        if (img != null && img.Count > 0)
+                            line.ItemImageId = img[0].Id;
+                    }
+                    else
+                    {
+                        List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, getimages, stat);
+                        if (img != null && img.Count > 0)
+                            line.ItemImageId = img[0].Id;
                     }
 
                     list.Add(line);
@@ -1847,7 +1869,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             orderId = string.Empty;
             if (string.IsNullOrWhiteSpace(request.Id))
-                request.Id = GuidHelper.NewGuidWithoutDashes();
+                request.Id = GuidHelper.NewGuidWithoutDashes(20);
 
             // need to map the TenderType enum coming from devices to TenderTypeId that NAV knows
             if (request.OrderPayments == null)
@@ -1946,6 +1968,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             Store store = StoreGetById(entry.StoreId, getimages, stat);
             entry.StoreName = store.Description;
+            if (string.IsNullOrEmpty(entry.StoreCurrency))
+                entry.StoreCurrency = store.Currency.Id;
 
             if (string.IsNullOrEmpty(entry.CustomerOrderNo) == false)
             {
@@ -1960,6 +1984,35 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 entry.ContactEmail = order.ContactEmail;
                 entry.ContactName = order.ContactName;
                 entry.ExternalId = order.ExternalId;
+            }
+
+            foreach (SalesEntryLine line in entry.Lines)
+            {
+                LoyItem item = ItemGetById(line.ItemId, stat);
+                line.ItemDescription = item.Description;
+
+                if (item.VariantsRegistration.Count > 0)
+                {
+                    VariantRegistration vreg = item.VariantsRegistration.Find(v => v.Id == line.VariantId);
+                    line.VariantDescription = vreg.Dimension1;
+                    if (string.IsNullOrEmpty(vreg.Dimension2) == false)
+                        line.VariantDescription += "/" + vreg.Dimension2;
+                    if (string.IsNullOrEmpty(vreg.Dimension3) == false)
+                        line.VariantDescription += "/" + vreg.Dimension3;
+                    if (string.IsNullOrEmpty(vreg.Dimension4) == false)
+                        line.VariantDescription += "/" + vreg.Dimension4;
+                    if (string.IsNullOrEmpty(vreg.Dimension5) == false)
+                        line.VariantDescription += "/" + vreg.Dimension5;
+
+                    item.Images = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, false, stat);
+                }
+                else
+                {
+                    item.Images = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty, false, stat);
+                }
+
+                if (item.Images.Count > 0)
+                    line.ItemImageId = item.Images[0].Id;
             }
             logger.StatisticEndSub(ref stat, index);
             return entry;
@@ -2027,8 +2080,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
 
-            if (getimages)
-                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, stat);
+            store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, getimages, stat);
 
             logger.StatisticEndSub(ref stat, index);
             return store;
@@ -2057,19 +2109,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 return list;
             }
 
+            string localCur = string.Empty;
+            xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
+            xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table != null && table.NumberOfValues > 0)
+            {
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
+                localCur = field.Values[0];
+            }
+
             foreach (Store store in list)
             {
                 if (store.Currency == null || string.IsNullOrEmpty(store.Currency.Id))
                 {
-                    xmlRequest = xml.GetGeneralWebRequestXML("General Ledger Setup");
-                    xmlResponse = RunOperation(xmlRequest, true);
-                    HandleResponseCode(ref xmlResponse);
-                    table = xml.GetGeneralWebResponseXML(xmlResponse);
-                    if (table != null && table.NumberOfValues > 0)
-                    {
-                        XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("LCY Code"));
-                        store.Currency = new Currency(field.Values[0]);
-                    }
+                    store.Currency = new Currency(localCur);
                 }
 
                 xmlRequest = xml.GetGeneralWebRequestXML("LSC POS Terminal", "No.", store.WebOmniTerminal);
@@ -2098,7 +2153,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     }
                 }
 
-                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, stat);
+                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, false, stat);
             }
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -2275,8 +2330,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             bool doCheck = false;
             int numOfItem = 0;
 
-            List<OrderCheckLines> lines = new List<OrderCheckLines>();
-
             if (LSCVersion >= new Version("20.5"))
             {
                 logger.Debug(config.LSKey.Key, $"SPGOrderCheckV2 Request - docId:{documentId}");
@@ -2284,27 +2337,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 centralWS.SPGOrderCheckV2(documentId, ref orderPayed, ref doCheck, ref numOfItem, ref root2, ref respCode, ref errorText);
                 HandleWS2ResponseCode("SPGOrderCheckV2", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "SPGOrderCheckV2 Response - " + Serialization.ToXml(root2, true));
-
-                if (root2.SPGOrderCheckCOLine != null)
-                {
-                    foreach (LSCentral.SPGOrderCheckCOLine line in root2.SPGOrderCheckCOLine)
-                    {
-                        lines.Add(new OrderCheckLines()
-                        {
-                            DocumentID = line.DocumentID,
-                            ItemId = line.Number,
-                            ItemDescription = line.ItemDescription,
-                            VariantCode = line.VariantCode,
-                            VariantDescription = line.VariantDescription,
-                            UnitofMeasureCode = line.UnitofMeasureCode,
-                            UOMDescription = line.UoMDescription,
-                            Amount = line.Amount,
-                            LineNo = line.LineNo,
-                            Quantity = line.Quantity,
-                            AlwaysCheck = line.AlwaysCheck
-                        });
-                    }
-                }
+                OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+                OrderCheck order = map.RootToOrderCheck(root2);
+                order.DoCheck = doCheck;
+                order.OrderPayed = orderPayed;
+                order.NumberOfItemsToCheck = numOfItem;
+                logger.StatisticEndSub(ref stat, index);
+                return order;
             }
             else
             {
@@ -2314,6 +2353,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 HandleWS2ResponseCode("SPGOrderCheck", respCode, errorText, ref stat, index);
                 logger.Debug(config.LSKey.Key, "SPGOrderCheck Response - " + Serialization.ToXml(root, true));
 
+                List<OrderCheckLines> lines = new List<OrderCheckLines>();
                 if (root.SPGOrderCheckCOLine != null)
                 {
                     foreach (LSCentral.SPGOrderCheckCOLine1 line in root.SPGOrderCheckCOLine)
@@ -2333,17 +2373,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         });
                     }
                 }
+                OrderCheck orderCheck = new OrderCheck()
+                {
+                    OrderPayed = orderPayed,
+                    DoCheck = doCheck,
+                    NumberOfItemsToCheck = numOfItem,
+                    Lines = lines
+                };
+                logger.StatisticEndSub(ref stat, index);
+                return orderCheck;
             }
-
-            OrderCheck orderCheck = new OrderCheck()
-            {
-                OrderPayed = orderPayed,
-                DoCheck = doCheck,
-                NumberOfItemsToCheck = numOfItem,
-                Lines = lines
-            };
-            logger.StatisticEndSub(ref stat, index);
-            return orderCheck;
         }
 
         public bool SecurityCheckProfile(string orderNo, string storeNo, Statistics stat)

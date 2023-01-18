@@ -46,7 +46,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ActivityAdditionalChargesSet(request);
         }
 
-        public virtual AttributeResponse ActivityAttributesGet(AttributeType type, string linkNo)
+        public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             return NavWSBase.ActivityAttributesGet(type, linkNo);
         }

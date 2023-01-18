@@ -1,13 +1,13 @@
 ;THIS IS THE MAIN setup script !
 
 #define VersionFile '..\Service\bin\LSOmni.Service.dll'
-#define ApplicationVersion GetFileVersion(VersionFile)
+#define ApplicationVersion GetVersionNumbersString(VersionFile)
 
 #define Major
 #define Minor
 #define Rev
 #define Build
-#expr ParseVersion(VersionFile, Major, Minor, Rev, Build)
+#expr GetVersionComponents(VersionFile, Major, Minor, Rev, Build)
 #define VersionNo Str(Major)+(Minor > 9 ? "." : ".")+Str(Minor)+(Rev > 9 ? "." : ".")+Str(Rev)
 
 [Setup]
@@ -445,6 +445,8 @@ begin
     begin
       with IISPage do
       begin
+        IISPage_lblNavTen.Visible := False;
+        IISPage_txtNavTen.Visible := False;
         OnActivate := @IISCustomForm_Activate;
       end;
     end;

@@ -103,27 +103,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "ENABLE PLATFORM PAYMENT":
                     flagName = FeatureFlagName.EnablePlatformPayment;
                     break;
-                case "PLATFORM PAYMENT CURRENCY CODE":
-                    flagName = FeatureFlagName.PlatformPaymentCurrencyCode;
-                    break;
-                case "PLATFORM PAYMENT COUNTRY CODE":
-                    flagName = FeatureFlagName.PlatformPaymentCountryCode;
-                    break;
-                case "GOOGLE PAY GATEWAYJSON":
-                    flagName = FeatureFlagName.GooglePayGatewayJson;
-                    break;
-                case "GOOGLE PAY ALLOWED AUTH METHODSJSON":
-                    flagName = FeatureFlagName.GooglePayAllowedAuthMethodsJson;
-                    break;
-                case "GOOGLE PAY ALLOWED CARD NETWORKJSON":
-                    flagName = FeatureFlagName.GooglePayAllowedCardNetworksJson;
-                    break;
-                case "GOOGLE PAY MERCHANT NAME":
-                    flagName = FeatureFlagName.GooglePayMerchantName;
-                    break;
-                case "APPLE PAY MERCHANT NAME":
-                    flagName = FeatureFlagName.GooglePayMerchantName;
-                    break;
 
                 case "ADD CARD BEFORE SHOPPING":
                     flagName = FeatureFlagName.AddCardBeforeShopping;
@@ -192,6 +171,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                     break;
                 case "LS PAY PLUGIN ID":
                     flagName = FeatureFlagName.LsPayPluginId;
+                    break;
+                case "LS PAY APPLEPAY PLUGIN ID":
+                    flagName = FeatureFlagName.LsPayApplePluginId;
+                    break;
+                case "LS PAY GOOGLE PLUGIN ID":
+                    flagName = FeatureFlagName.LsPayGooglePluginId;
                     break;
             }
 
@@ -305,16 +290,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,
-        PlatformPaymentCurrencyCode = 301,
-        PlatformPaymentCountryCode = 302,
-        GooglePayGatewayJson = 303,
-        GooglePayAllowedAuthMethodsJson = 304,
-        GooglePayAllowedCardNetworksJson = 305,
-        GooglePayMerchantName = 306,
         CardPaymentMethod = 307,
         LsPayServiceIpAddress = 308,
         LsPayServicePort = 309,
         LsPayPluginId = 310,
+        LsPayApplePluginId = 311,
+        LsPayGooglePluginId = 312,
 
         //Alternate Logins
         //AudkenniFlags

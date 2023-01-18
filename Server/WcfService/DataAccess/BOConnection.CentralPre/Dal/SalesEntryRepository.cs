@@ -28,7 +28,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     string sqlwhere = string.Empty;
                     if (string.IsNullOrEmpty(storeId) == false)
                     {
-                        sqlwhere += "AND [Store No_]=@sid ";
+                        sqlwhere += "AND [Store]=@sid ";
                         command.Parameters.AddWithValue("@sid", storeId);
                     }
                     if (date > DateTime.MinValue)
@@ -38,36 +38,36 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     }
 
                     command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : string.Empty) + "* FROM (" +
-                        "SELECT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
+                        "SELECT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
-                        "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
+                        "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency] AS [StCur],mt.[POS Terminal No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "UNION " +
-                        "SELECT mt.[Document ID],mt.[Created at Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
+                        "SELECT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Created at Store] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],0 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
                         "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
+                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] " +
                         "UNION " +
-                        "SELECT mt.[Document ID],mt.[Created at Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
+                        "SELECT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Created at Store] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],3 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
                         "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
+                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] WHERE mt.CancelledOrder=1 " +
                         "UNION " +
-                        "SELECT mt.[Queue Counter] AS [Document ID],mt.[Store No_],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
+                        "SELECT mt.[Queue Counter] AS [Document ID],mt.[Store No_] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
                         "'' AS [External ID],mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
                         "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
                         "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],'' AS [Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],'' AS [Transaction No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
+                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
@@ -100,7 +100,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
-                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_]," +
+                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
                         "co.[External ID] AS [External ID],co.[Created at Store]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
@@ -203,7 +203,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[Receipt No_],mt.[Queue Counter],mt.[Store No_],mt.[POS Terminal No_],mt.[Staff ID],mt.[Customer No_]," +
                         "mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund],do.[Phone No_],do.[Address],do.[Address 2],do.[City],do.[Name]," +
-                        "(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],st.[Name] AS [StName] " +
+                        "(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],st.[Name] AS [StName],mt.[Trans_ Currency Code] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
@@ -250,11 +250,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " + ((maxNumberOfTransactions > 0) ? "TOP " + maxNumberOfTransactions : string.Empty) + "* FROM (" +
-                        "SELECT DISTINCT mt.[Customer Order ID] AS [Document ID],mt.[Store No_],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
+                        "SELECT DISTINCT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
-                        "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],mt.[Transaction No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
+                        "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency] AS [StCur],mt.[POS Terminal No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "JOIN [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
@@ -262,29 +262,29 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) " +
                         "UNION " +
-                        "SELECT DISTINCT mt.[Document ID],mt.[Store No_],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
+                        "SELECT DISTINCT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],0 AS Posted,'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
                         "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
+                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ol ON ol.[Document ID]=mt.[Document ID] " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]= mt.[Store No_] " +
                         "WHERE UPPER(ol.[Item Description]) LIKE UPPER(@search) " +
                         "UNION " +
-                        "SELECT mt.[Document ID],mt.[Created at Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
+                        "SELECT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Created at Store] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],3 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
                         "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],'' AS [POS Terminal No_],'' AS [Transaction No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
+                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] WHERE mt.CancelledOrder=1 " +
                         "UNION " +
-                        "SELECT DISTINCT '' AS [Document ID],mt.[Store No_],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
+                        "SELECT DISTINCT '' AS [Document ID],mt.[Store No_] AS [StCreate],mt.[Store No_] AS [Store],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
                         "'' AS [External ID],mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
                         "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
                         "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],'' AS [Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[POS Terminal No_],'' AS [Transaction No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
+                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "JOIN [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
@@ -363,7 +363,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Transaction No_],ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
+                                "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
@@ -401,7 +401,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT " +
                                 "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Number],ml.[Parent Line],ml.[Variant Code],ml.[Unit of Measure]," +
                                 "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Line No_],ml.[Description]," +
-                                "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
+                                "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]," +
+                                "ml.[Promotion No_],ml.[Entry Type]" +
                                 " FROM [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
                                 " JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
                                 " LEFT JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Number] AND v.[Variant]=ml.[Variant Code]" +
@@ -605,6 +606,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Posted = true,
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 StoreName = SQLHelper.GetString(reader["StName"]),
+                StoreCurrency = SQLHelper.GetString(reader["Trans_ Currency"]),
                 CustomerOrderNo = SQLHelper.GetString(reader["Document ID"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
                 ReturnSale = SQLHelper.GetBool(reader["RT"]),
@@ -669,6 +671,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Posted = false,
                 TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]),
                 StoreName = SQLHelper.GetString(reader["StName"]),
+                StoreCurrency = SQLHelper.GetString(reader["Trans_ Currency Code"]),
                 ReturnSale = SQLHelper.GetBool(reader["RT"]),
                 HasReturnSale = SQLHelper.GetString(reader["Refund"]) != string.Empty,
 
@@ -705,11 +708,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             SalesEntry entry = new SalesEntry
             {
-                StoreId = SQLHelper.GetString(reader["Store No_"]),
+                StoreId = SQLHelper.GetString(reader["Store"]),
+                CreateAtStoreId = SQLHelper.GetString(reader["StCreate"]),
                 CreateTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["CrDate"]), config.IsJson),
                 DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 CardId = SQLHelper.GetString(reader["Member Card No_"]),
                 StoreName = SQLHelper.GetString(reader["StName"]),
+                StoreCurrency = SQLHelper.GetString(reader["StCur"]),
                 ExternalId = SQLHelper.GetString(reader["External ID"]),
                 ClickAndCollectOrder = SQLHelper.GetBool(reader["CAC"]),
                 ReturnSale = SQLHelper.GetBool(reader["RT"]),
@@ -881,7 +886,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure"]),
                 Quantity = SQLHelper.GetDecimal(reader, "Quantity", false),
-                LineType = LineType.Item,
+                LineType = (SQLHelper.GetInt32(reader["Entry Type"]) == 5) ? LineType.Deal :  LineType.Item,
                 ItemId = SQLHelper.GetString(reader["Number"]),
                 NetPrice = SQLHelper.GetDecimal(reader, "Net Price"),
                 Price = SQLHelper.GetDecimal(reader, "Price"),
@@ -892,6 +897,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 StoreName = SQLHelper.GetString(reader["Name"])
             };
+
+            if (line.LineType == LineType.Deal)
+                line.ItemId = SQLHelper.GetString(reader["Promotion No_"]);
 
             if (string.IsNullOrEmpty(line.VariantId) == false)
             {
