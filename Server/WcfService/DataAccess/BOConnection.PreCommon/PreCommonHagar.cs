@@ -68,11 +68,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             availAmount = 0;
 
             logger.StatisticStartSub(true, ref stat, out int index);
-            logger.Debug(config.LSKey.Key, "Hagar.CheckCreditLimit Request - cardId:{0} amt:{1]", cardId, amount);
+            logger.Debug(config.LSKey.Key, "Hagar.CheckCreditLimit Request - cardId:{0} amt:{1}", cardId, amount);
             skCreditWS.CallCustomerCreditCheck(cardId, amount, ref saleIsApproved, ref availAmount, ref respCode, ref errorText);
             message = errorText;
             HandleWS2ResponseCode("Hagar.CheckCreditLimit", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, "Hagar.CheckCreditLimit Response - ");
+            logger.Debug(config.LSKey.Key, "Hagar.CheckCreditLimit Response - saleIsApproved:{0}  availAmt:{1} errorText:{2}", saleIsApproved, availAmount, errorText);
             logger.StatisticEndSub(ref stat, index);
             return saleIsApproved;
         }
