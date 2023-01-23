@@ -1,5 +1,9 @@
 ﻿using LSOmni.Common.Util;
+using LSOmni.DataAccess.BOConnection.PreCommon.Mapping;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using System;
 using System.Collections.Generic;
 

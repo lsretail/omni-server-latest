@@ -26,7 +26,11 @@
     <Compile Include="..\Domain.DataModel.Base\Properties\Version.cs" Link="Properties\Version.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj" />
+    <ProjectReference Include="..\Domain.DataModel.Base\Domain.DataModel.Base.csproj" />
   </ItemGroup>
 
   <ItemGroup>

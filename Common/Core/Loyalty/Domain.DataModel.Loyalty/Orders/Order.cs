@@ -183,6 +183,19 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             return string.Format("Id:{0} StoreId:{1} CardId:{2} ContactId:{3} OrderLineCreateRequests:{4} OrderDiscountLineCreateRequests:{5}",
                 Id, StoreId, CardId, ContactId, req, osldreq);
         }
+
+        /* hagar customizing */
+        
+        [DataMember]
+        public string Comment { get; set; }
+        [DataMember]
+        public string CustomField1 { get; set; }
+        [DataMember]
+        public string CustomField2 { get; set; }
+        [DataMember]
+        public string CustomField3 { get; set; }
+
+        /* hagar customizing */
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

@@ -359,7 +359,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 CreatedAtStore = order.StoreId,
                 RequestedDeliveryDate = order.RequestedDeliveryDate,
                 ScanPaygo = (order.OrderType == OrderType.ScanPayGo),
-                TerritoryCode = string.Empty
+                TerritoryCode = string.Empty,
+
+                /* Hagar custom */
+                Comment = XMLHelper.GetString(order.Comment),
+                Custom1 = XMLHelper.GetString(order.CustomField1),
+                Custom2 = XMLHelper.GetString(order.CustomField2),
+                Custom3 = XMLHelper.GetString(order.CustomField3),
+                /* Hagar custom */
             };
 
             if (LSCVersion >= new Version("19.0"))

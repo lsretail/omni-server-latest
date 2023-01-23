@@ -53933,6 +53933,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string salesPersonCodeField;
         
+        /* Hagar custom */
+        private string CommentField;
+        private string CustomField1;
+        private string CustomField2;
+        private string CustomField3;
+        /* Hagar custom */
         public CustomerOrderCreateCOHeaderV5() {
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
@@ -54304,8 +54310,54 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.salesPersonCodeField = value;
             }
         }
+
+        /* Hagar Custom */
+        public string Comment {
+            get {
+                return this.CommentField;
+            }
+            set
+            {
+                this.CommentField = value;
+            }
+        }
+        public string Custom1
+        {
+            get
+            {
+                return this.CustomField1;
+            }
+            set
+            {
+                this.CustomField1 = value;
+            }
+        }
+        public string Custom2
+        {
+            get
+            {
+                return this.CustomField2;
+            }
+            set
+            {
+                this.CustomField2 = value;
+            }
+        }
+        public string Custom3
+        {
+            get
+            {
+                return this.CustomField3;
+            }
+            set
+            {
+                this.CustomField3 = value;
+            }
+        }
+
+        /* Hagar Custom */
     }
-    
+
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
     [System.SerializableAttribute()]
