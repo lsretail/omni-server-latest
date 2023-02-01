@@ -120,6 +120,38 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout
         {
             return (OrderCheckLines) MemberwiseClone();
         }
+        protected bool Equals(OrderCheckLines other)
+        {
+            return DocumentID == other.DocumentID && LineNo == other.LineNo && ItemId == other.ItemId && ItemDescription == other.ItemDescription && VariantCode == other.VariantCode && VariantDescription == other.VariantDescription && UnitofMeasureCode == other.UnitofMeasureCode && UOMDescription == other.UOMDescription && Quantity == other.Quantity && Amount == other.Amount && AlwaysCheck == other.AlwaysCheck && QuantityCounted == other.QuantityCounted;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((OrderCheckLines)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = (DocumentID != null ? DocumentID.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ LineNo;
+                hashCode = (hashCode * 397) ^ (ItemId != null ? ItemId.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (ItemDescription != null ? ItemDescription.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (VariantCode != null ? VariantCode.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (VariantDescription != null ? VariantDescription.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (UnitofMeasureCode != null ? UnitofMeasureCode.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (UOMDescription != null ? UOMDescription.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Quantity.GetHashCode();
+                hashCode = (hashCode * 397) ^ Amount.GetHashCode();
+                hashCode = (hashCode * 397) ^ AlwaysCheck.GetHashCode();
+                hashCode = (hashCode * 397) ^ QuantityCounted.GetHashCode();
+                return hashCode;
+            }
+        }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Spg/2021")]

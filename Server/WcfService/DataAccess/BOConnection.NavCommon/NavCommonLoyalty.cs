@@ -611,7 +611,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
         #region Contact
 
-        public string ContactCreate(MemberContact contact)
+        public MemberContact ContactCreate(MemberContact contact)
         {
             if (contact == null)
                 throw new LSOmniException(StatusCode.ContactIdNotFound, "Contact can not be null");
@@ -659,7 +659,21 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             HandleWS2ResponseCode("MemberContactCreate", respCode, errorText);
             logger.Debug(config.LSKey.Key, "MemberContactCreate Response - ClubId: {0}, SchemeId: {1}, AccountId: {2}, ContactId: {3}, CardId: {4}, PointsRemaining: {5}",
                 clubId, schmId, acctId, contId, cardId, point);
-            return cardId;
+
+            MemberContact cont = new MemberContact(contId);
+            cont.Cards = new List<Card>();
+            cont.Cards.Add(new Card(cardId)
+            {
+                ClubId = clubId,
+            });
+            cont.Account = new Account(acctId)
+            {
+                Scheme = new Scheme(schmId)
+                {
+                    Club = new Club(clubId)
+                },
+            };
+            return cont;
         }
 
         public void ContactUpdate(MemberContact contact, string accountId)
@@ -2023,6 +2037,22 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                 ter.InventoryMainMenuId = string.Empty;
 
             return ter;
+        }
+
+        public string TerminalGetLicense(string termId, string appId)
+        {
+            string licence = string.Empty;
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("MobileLicenseRegistration", "Terminal ID", termId, "App ID", appId);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table == null || table.NumberOfValues == 0)
+                return licence;
+
+            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Device License Key"));
+            licence = field.Values[0];
+            return licence;
         }
 
         #endregion

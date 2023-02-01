@@ -6,12 +6,13 @@ using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
     public class SalesEntryRepository : BaseRepository
     {
-        public SalesEntryRepository(BOConfiguration config) : base(config)
+        public SalesEntryRepository(BOConfiguration config, Version version) : base(config, version)
         {
         }
 
@@ -101,13 +102,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
                         "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
-                        "co.[External ID] AS [External ID],co.[Created at Store]," +
+                        "co.[External ID] AS [COExtId],co.[Created at Store]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
-                        "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund] " +
+                        "fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address]," +
+                        "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]" +
+                        ((LSCVersion >= new Version("21.2")) ? ",fab.[External ID] " : " ") +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -203,10 +207,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[Receipt No_],mt.[Queue Counter],mt.[Store No_],mt.[POS Terminal No_],mt.[Staff ID],mt.[Customer No_]," +
                         "mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund],do.[Phone No_],do.[Address],do.[Address 2],do.[City],do.[Name]," +
-                        "(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],st.[Name] AS [StName],mt.[Trans_ Currency Code] " +
+                        "fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address]," +
+                        "(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],st.[Name] AS [StName],mt.[Trans_ Currency Code]" +
+                        ((LSCVersion >= new Version("21.2")) ? ",fab.[External ID] " : " ") +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -363,14 +370,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
-                                "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description]," +
+                                "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure],ml.[Deal Modifier Line No_],ml.[Deal Header Line No_]," +
+                                "ml.[Quantity],ml.[UOM Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description],ml.[Parent Line No_]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
                                 " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
                                 " JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
                                 " LEFT JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id ";
+
+                    int transNo = 0;
+                    string termNo = string.Empty;
 
                     command.Parameters.AddWithValue("@id", receiptId);
                     TraceSqlCommand(command);
@@ -379,9 +389,41 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(TransToSalesEntryLine(reader));
+                            list.Add(ReaderToSalesEntryLine(reader, out int trans, out string term));
+                            if (trans > 0)
+                            {
+                                transNo = trans;
+                                termNo = term;
+                            }
                         }
                         reader.Close();
+                    }
+
+                    if (transNo > 0)
+                    {
+                        command.CommandText = "SELECT " +
+                                    "ml.[Line No_],ml.[Deal No_],ml.[Deal Header Line No_],ml.[Quantity],ml.[Amount],ml.[Price],ml.[Line Discount Amt_],o.[Description]" +
+                                    " FROM [" + navCompanyName + "LSC Trans_ Deal Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
+                                    " JOIN [" + navCompanyName + "LSC Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=ml.[Deal No_]" +
+                                    " WHERE ml.[Store No_]=@sid AND ml.[POS Terminal No_]=@pid AND ml.[Transaction No_]=@tid";
+
+                        SalesEntryLine firstline = list.First();
+
+                        command.Parameters.AddWithValue("@sid", firstline.StoreId);
+                        command.Parameters.AddWithValue("@pid", termNo);
+                        command.Parameters.AddWithValue("@tid", transNo);
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                SalesEntryLine l = ReaderToSalesDealLine(reader);
+                                l.StoreId = firstline.StoreId;
+                                l.StoreName = firstline.StoreName;
+                                list.Add(l);
+                            }
+                            reader.Close();
+                        }
                     }
                     connection.Close();
                 }
@@ -592,6 +634,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             SalesEntry entry = new SalesEntry()
             {
                 Id = SQLHelper.GetString(reader["Receipt No_"]),
+                ExternalId = SQLHelper.GetString(reader["COExtId"]),
                 IdType = DocumentIdType.Receipt,
                 LineItemCount = (int)SQLHelper.GetDecimal(reader, "Quantity", false),
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
@@ -608,7 +651,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 StoreName = SQLHelper.GetString(reader["StName"]),
                 StoreCurrency = SQLHelper.GetString(reader["Trans_ Currency"]),
                 CustomerOrderNo = SQLHelper.GetString(reader["Document ID"]),
-                ExternalId = SQLHelper.GetString(reader["External ID"]),
                 ReturnSale = SQLHelper.GetBool(reader["RT"]),
                 HasReturnSale = SQLHelper.GetString(reader["Refund"]) != string.Empty,
 
@@ -643,6 +685,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
                 }
             };
+
+            string n = SQLHelper.GetString(reader["Client Name"]);
+            if (string.IsNullOrEmpty(n) == false)
+            {
+                entry.ContactName = n;
+                entry.ContactEmail = SQLHelper.GetString(reader["Client E-mail"]);
+                entry.ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Client Address"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Client Phone No_"])
+                };
+                if (LSCVersion >= new Version("21.2"))
+                    entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
+            }
 
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
 
@@ -687,6 +743,22 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"])
                 }
             };
+
+            if (LSCVersion >= new Version("21.2"))
+                entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
+
+            string n = SQLHelper.GetString(reader["Client Name"]);
+            if (string.IsNullOrEmpty(n) == false)
+            {
+                entry.ContactName = n;
+                entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
+                entry.ContactEmail = SQLHelper.GetString(reader["Client E-mail"]);
+                entry.ContactAddress = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Client Address"]),
+                    PhoneNumber = SQLHelper.GetString(reader["Client Phone No_"])
+                };
+            }
 
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
             POSTransLinesGetTotals(entry.Id, out int cnt, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
@@ -822,11 +894,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return entry;
         }
 
-        private SalesEntryLine TransToSalesEntryLine(SqlDataReader reader)
+        private SalesEntryLine ReaderToSalesEntryLine(SqlDataReader reader, out int transNo, out string termNo)
         {
+            transNo = 0;
+            termNo = string.Empty;
+            decimal uomqty = 0;
+
             SalesEntryLine line = new SalesEntryLine()
             {
-                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                ParentLine = SQLHelper.GetInt32(reader["Parent Line No_"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure"]),
                 Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
@@ -841,6 +918,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 StoreName = SQLHelper.GetString(reader["Name"])
             };
+
+            uomqty = SQLHelper.GetDecimal(reader["UOM Quantity"], true);
+            if (uomqty != 0)
+                line.Quantity = uomqty;
+
+            line.Amount = line.NetAmount + line.TaxAmount;
+            if (line.ParentLine == 0)
+                line.ParentLine = SQLHelper.GetInt32(reader["Deal Header Line No_"]);
 
             if (string.IsNullOrEmpty(line.VariantId) == false)
             {
@@ -873,16 +958,35 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     line.ItemImageId = img[0].Id;
             }
 
-            line.Amount = line.NetAmount + line.TaxAmount;
+            if (SQLHelper.GetInt32(reader["Deal Modifier Line No_"]) > 0)
+            {
+                transNo = SQLHelper.GetInt32(reader["Transaction No_"]);
+                termNo = SQLHelper.GetString(reader["POS Terminal No_"]);
+            }
             return line;
+        }
+
+        private SalesEntryLine ReaderToSalesDealLine(SqlDataReader reader)
+        {
+            return (new SalesEntryLine()
+            {
+                LineNumber = SQLHelper.GetInt32(reader["Deal Header Line No_"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
+                LineType = LineType.Deal,
+                ItemId = SQLHelper.GetString(reader["Deal No_"]),
+                Price = SQLHelper.GetDecimal(reader, "Price"),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Line Discount Amt_", false),
+                Amount = SQLHelper.GetDecimal(reader, "Amount", true),
+                ItemDescription = SQLHelper.GetString(reader["Description"]),
+            });
         }
 
         private SalesEntryLine POSTransToSalesEntryLine(SqlDataReader reader)
         {
             SalesEntryLine line = new SalesEntryLine()
             {
-                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
-                ParentLine = Convert.ToInt32(SQLHelper.GetInt32(reader["Parent Line"])),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                ParentLine = SQLHelper.GetInt32(reader["Parent Line"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure"]),
                 Quantity = SQLHelper.GetDecimal(reader, "Quantity", false),
@@ -940,7 +1044,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             return new SalesEntryPayment()
             {
-                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 Amount = SQLHelper.GetDecimal(reader, "Amount", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "CurrencyFactor", false),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),

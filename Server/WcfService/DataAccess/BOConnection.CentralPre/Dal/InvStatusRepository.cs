@@ -6,6 +6,7 @@ using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -158,6 +159,36 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             }
             return list;
+        }
+
+        public virtual ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
+        {
+            ScanPayGoSecurityLog log = new ScanPayGoSecurityLog();
+            logger.StatisticStartSub(false, ref stat, out int index);
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Source],[Check] FROM [" + navCompanyName + "LSC SPG Security Check Log$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                                          "WHERE [Customer Order ID]=@id ORDER BY [Entry No_] DESC";
+
+                    connection.Open();
+                    command.Parameters.AddWithValue("@id", orderNo);
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            log.Source = SQLHelper.GetBool(reader["Source"]);
+                            log.Check = SQLHelper.GetBool(reader["Check"]);
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            logger.StatisticEndSub(ref stat, index);
+            return log;
         }
 
         private ReplInvStatus ReaderToStatus(SqlDataReader reader, bool fullRepl, ref string lastKey)

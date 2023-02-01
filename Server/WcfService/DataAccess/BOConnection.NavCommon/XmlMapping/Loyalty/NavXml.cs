@@ -103,7 +103,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             return balance;
         }
 
-        public string ContactCreateResponseXML(string responseXml)
+        public MemberContact ContactCreateResponseXML(string responseXml)
         {
             /*
 			<?xml version="1.0" standalone="no"?>
@@ -125,10 +125,49 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
             XmlDocument document = new XmlDocument();
             document.LoadXml(responseXml);
 
+            string clubId = string.Empty;
+            string cardId = string.Empty;
+            string contId = string.Empty;
+            string acctId = string.Empty;
+            string schmId = string.Empty;
+
             XmlNode node = document.SelectSingleNode("//CardID");
             if (node == null)
                 throw new XmlException("CardID node not found in response XML");
-            return node.InnerText;
+            cardId = node.InnerText;
+
+            node = document.SelectSingleNode("//ContactID");
+            if (node == null)
+                throw new XmlException("ContactID node not found in response XML");
+            contId = node.InnerText;
+
+            node = document.SelectSingleNode("//SchemeID");
+            if (node == null)
+                throw new XmlException("SchemeID node not found in response XML");
+            schmId = node.InnerText;
+
+            node = document.SelectSingleNode("//AccountID");
+            if (node == null)
+                throw new XmlException("AccountID node not found in response XML");
+            acctId = node.InnerText;
+
+            node = document.SelectSingleNode("//ClubID");
+            if (node == null)
+                throw new XmlException("ClubID node not found in response XML");
+            clubId = node.InnerText;
+
+            MemberContact cont = new MemberContact(contId);
+            cont.Cards = new List<Card>();
+            cont.Cards.Add(new Card(cardId)
+            {
+                ClubId = clubId,
+            });
+            cont.Account = new Account(acctId)
+            {
+                Scheme = new Scheme(schmId)
+            };
+
+            return cont;
         }
 
         public string ContactUpdateRequestXML(MemberContact contact, string accountId)

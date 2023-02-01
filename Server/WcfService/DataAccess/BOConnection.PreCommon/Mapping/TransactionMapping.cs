@@ -430,8 +430,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             });
             root.HospTransaction = trans.ToArray();
 
-            /*
-            if (LSCVersion >= new Version("21.1"))
+            if (LSCVersion >= new Version("21.2"))
             {
                 List<LSCentral.FABOrder> faborder = new List<LSCentral.FABOrder>();
                 LSCentral.FABOrder fab = new LSCentral.FABOrder()
@@ -441,11 +440,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     ClientName = XMLHelper.GetString(order.Name),
                     ClientEmail = XMLHelper.GetString(order.Email),
                     ExternalID = XMLHelper.GetString(order.ExternalId),
-                    PickupDate = ConvertTo.NavGetDate(order.OrderDate, true),
-                    PickupTime = ConvertTo.NavGetTime(order.OrderDate, true),
+                    PickupDate = ConvertTo.NavGetDate(order.PickupTime, true),
+                    PickupTime = ConvertTo.NavGetTime(order.PickupTime, true),
                     PickupDateTime = order.PickupTime,
-                    SalesType = order.SalesType,
-                    StoreNo = order.RestaurantNo,
+                    SalesType = XMLHelper.GetString(order.SalesType),
+                    StoreNo = XMLHelper.GetString(order.RestaurantNo),
+                    QRMessage = XMLHelper.GetString(order.QRData),
 
                     ContactCommentIcon = string.Empty,
                     CreatedOnPOSTermnial = string.Empty,
@@ -459,7 +459,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 faborder.Add(fab);
                 root.FABOrder = faborder.ToArray();
             }
-            */
 
             List<LSCentral.WebDeliveryOrder> delivery = new List<LSCentral.WebDeliveryOrder>();
             LSCentral.WebDeliveryOrder devord = new LSCentral.WebDeliveryOrder()

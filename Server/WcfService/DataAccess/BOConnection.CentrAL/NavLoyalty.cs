@@ -59,7 +59,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             throw new NotImplementedException();
         }
 
-        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        public virtual bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
         {
             throw new NotImplementedException();
         }
@@ -88,7 +93,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         #region Contact
 
-        public virtual string ContactCreate(MemberContact contact, Statistics stat)
+        public virtual MemberContact ContactCreate(MemberContact contact, Statistics stat)
         {
             return NavWSBase.ContactCreate(contact);
         }

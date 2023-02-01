@@ -436,6 +436,34 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalAmount" type="decimal" />
         </sequence>
       </complexType>
+      <complexType name="FABOrder">
+        <sequence>
+          <element minOccurs="1" maxOccurs="1" name="OrderNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ClientEmail" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ClientPhoneNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ClientAddress" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="ClientName" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="StoreNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="POSTerminalNo" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="CreatedOnPOSTermnial" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="StaffID" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0001-01-01" name="PickupDate" type="date" />
+          <element minOccurs="1" maxOccurs="1" default="00:00:00" name="PickupTime" type="time" />
+          <element minOccurs="1" maxOccurs="1" name="KitchenStatus" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="OrderStatus" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="GrossAmount" type="decimal" />
+          <element minOccurs="1" maxOccurs="1" name="SalesType" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0001-01-01T00:00:00" name="PickupDateTime" type="dateTime" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="ContactComment" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" name="ContactCommentIcon" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="OrderProductionTimeInMin" type="int" />
+          <element minOccurs="1" maxOccurs="1" default="false" name="PreOrder" type="boolean" />
+          <element minOccurs="1" maxOccurs="1" name="QueueCounter" type="string" />
+          <element minOccurs="1" maxOccurs="1" default="0" name="QRID" type="int" />
+          <element minOccurs="0" maxOccurs="1" name="ExternalID" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="QRMessage" type="string" />
+        </sequence>
+      </complexType>
       <complexType name="RootHospTransaction" mixed="true">
         <sequence>
           <element minOccurs="0" maxOccurs="unbounded" name="HospTransaction" type="tns:HospTransaction" />
@@ -444,6 +472,7 @@
           <element minOccurs="0" maxOccurs="unbounded" name="HospReceiptInfo" type="tns:HospReceiptInfo" />
           <element minOccurs="0" maxOccurs="unbounded" name="HospTransactionSubLine" type="tns:HospTransactionSubLine" />
           <element minOccurs="0" maxOccurs="unbounded" name="WebDeliveryOrder" type="tns:WebDeliveryOrder" />
+          <element minOccurs="0" maxOccurs="unbounded" name="FABOrder" type="tns:FABOrder" />
         </sequence>
       </complexType>
       <element name="RootHospTransaction" type="tns:RootHospTransaction" />

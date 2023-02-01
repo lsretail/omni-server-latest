@@ -37,9 +37,14 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
-        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        public virtual bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
         {
             return BOLoyConnection.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
+        }
+
+        public virtual ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
+        {
+            return BOLoyConnection.SecurityCheckLog(orderNo, stat);
         }
 
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)

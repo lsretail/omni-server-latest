@@ -174,7 +174,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual MemberContact ContactCreate(MemberContact contact)
+        public virtual MemberContact ContactCreate(MemberContact contact, bool doLogin)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -186,7 +186,7 @@ namespace LSOmni.Service
                     contact.Cards = new List<Card>();
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);//not using security token here, so no security checks
-                MemberContact contactOut = contactBLL.ContactCreate(contact, stat);
+                MemberContact contactOut = contactBLL.ContactCreate(contact, doLogin, stat);
                 contactOut.Environment.Version = this.Version();
                 ContactSetLocation(contactOut);
                 return contactOut;
@@ -202,7 +202,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual MemberContact ContactUpdate(MemberContact contact)
+        public virtual MemberContact ContactUpdate(MemberContact contact, bool getContact)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -214,7 +214,7 @@ namespace LSOmni.Service
                     contact.Cards = new List<Card>();
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                MemberContact contactOut = contactBLL.ContactUpdate(contact, stat);
+                MemberContact contactOut = contactBLL.ContactUpdate(contact, getContact, stat);
                 contactOut.Environment = new OmniEnvironment();
                 contactOut.Environment.Version = this.Version();
                 contactOut.LoggedOnToDevice = contact.LoggedOnToDevice;
@@ -2130,6 +2130,28 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "orderNo:{0} validationError:{1}", orderNo, validationError);
                 return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual ScanPayGoSecurityLog SecurityCheckLog(string orderNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"orderNo:{orderNo}");
+
+                ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+                return bll.SecurityCheckLog(orderNo, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "orderNo:{0}", orderNo);
+                return null; //never gets here
             }
             finally
             {

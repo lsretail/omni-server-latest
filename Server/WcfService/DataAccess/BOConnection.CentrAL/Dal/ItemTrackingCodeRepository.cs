@@ -25,7 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                          "mt.[SN Sales Inbound Tracking],mt.[SN Sales Outbound Tracking],mt.[SN Pos_ Adjmt_ Inb_ Tracking]," +
                          "mt.[SN Pos_ Adjmt_ Outb_ Tracking],mt.[SN Neg_ Adjmt_ Inb_ Tracking],mt.[SN Neg_ Adjmt_ Outb_ Tracking]," +
                          "mt.[SN Transfer Tracking],mt.[SN Manuf_ Inbound Tracking],mt.[SN Manuf_ Outbound Tracking]," +
-                         "mt.[SN Assembly Inbound Tracking],mt.[SN Assembly Outbound Tracking],mt.[Create SN Info on Posting]," +
+                         "mt.[SN Assembly Inbound Tracking],mt.[SN Assembly Outbound Tracking]," +
                          "mt.[Lot Specific Tracking],mt.[Lot Info_ Inbound Must Exist],mt.[Lot Info_ Outbound Must Exist]," +
                          "mt.[Lot Warehouse Tracking],mt.[Lot Purchase Inbound Tracking],mt.[Lot Purchase Outbound Tracking]," +
                          "mt.[Lot Sales Inbound Tracking],mt.[Lot Sales Outbound Tracking],mt.[Lot Pos_ Adjmt_ Inb_ Tracking]," +
@@ -139,7 +139,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ManExpirationDateEntryReqired = SQLHelper.GetBool(reader["Man_ Expir_ Date Entry Reqd_"]),
                 StrictExpirationPosting = SQLHelper.GetBool(reader["Strict Expiration Posting"]),
                 UseExpirationDates = SQLHelper.GetBool(reader["Use Expiration Dates"]),
-                CreateSNInfoOnPosting = SQLHelper.GetBool(reader["Create SN Info on Posting"]),
                 SNSpecificTracking = SQLHelper.GetBool(reader["SN Specific Tracking"]),
                 SNInfoInboundMustExist = SQLHelper.GetBool(reader["SN Info_ Inbound Must Exist"]),
                 SNInfoOutboundMustExist = SQLHelper.GetBool(reader["SN Info_ Outbound Must Exist"]),

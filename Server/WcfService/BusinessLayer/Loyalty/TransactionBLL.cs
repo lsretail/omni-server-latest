@@ -30,7 +30,10 @@ namespace LSOmni.BLL.Loyalty
             List<SalesEntryLine> lines = new List<SalesEntryLine>();
             foreach (SalesEntryLine line in entry.Lines)
             {
-                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType);
+                if (line.LineNumber == line.ParentLine)
+                    line.ParentLine = 0;
+
+                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType && l.ParentLine == line.ParentLine);
                 if (linefound == null)
                 {
                     lines.Add(line);

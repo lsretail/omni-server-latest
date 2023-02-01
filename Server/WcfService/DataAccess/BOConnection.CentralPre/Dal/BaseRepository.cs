@@ -28,7 +28,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private static readonly Object myLock = new Object();
 
-        public static Version LSCVersion = new Version("19.0");
+        public static Version LSCVersion = new Version("21.0");
 
         public BaseRepository(BOConfiguration config, Version navVersion) : this(config)
         {

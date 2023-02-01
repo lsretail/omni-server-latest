@@ -64,6 +64,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
         }
 
+        public ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
+        {
+            InvStatusRepository rep = new InvStatusRepository(config, LSCVersion);
+            return rep.SecurityCheckLog(orderNo, stat);
+        }
+
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
         {
             return LSCentralWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering, stat);
@@ -88,7 +94,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         #region Contact
 
-        public virtual string ContactCreate(MemberContact contact, Statistics stat)
+        public virtual MemberContact ContactCreate(MemberContact contact, Statistics stat)
         {
             return LSCentralWSBase.ContactCreate(contact, stat);
         }
@@ -266,7 +272,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            SalesEntryRepository rep = new SalesEntryRepository(config);
+            SalesEntryRepository rep = new SalesEntryRepository(config, LSCVersion);
             List<SalesEntry> list = rep.SalesEntrySearch(search, cardId, maxNumberOfTransactions);
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -446,7 +452,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual string FormatAmount(decimal amount, string culture)
         {
-            SalesEntryRepository rep = new SalesEntryRepository(config);
+            SalesEntryRepository rep = new SalesEntryRepository(config, LSCVersion);
             return rep.FormatAmountToString(amount, culture);
         }
 
@@ -531,12 +537,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             SalesEntry entry;
             if (type == DocumentIdType.Receipt)
             {
-                SalesEntryRepository trepo = new SalesEntryRepository(config);
+                SalesEntryRepository trepo = new SalesEntryRepository(config, LSCVersion);
                 entry = trepo.SalesEntryGetById(entryId, stat);
             }
             else if (type == DocumentIdType.HospOrder)
             {
-                SalesEntryRepository trepo = new SalesEntryRepository(config);
+                SalesEntryRepository trepo = new SalesEntryRepository(config, LSCVersion);
                 entry = trepo.POSTransactionGetById(entryId, stat);
                 if (entry == null)
                     entry = trepo.SalesEntryGetById(entryId, stat);
@@ -562,7 +568,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            SalesEntryRepository repo = new SalesEntryRepository(config);
+            SalesEntryRepository repo = new SalesEntryRepository(config, LSCVersion);
             List<SalesEntryId> list = repo.SalesEntryGetReturnSales(receiptNo);
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -571,7 +577,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            SalesEntryRepository repo = new SalesEntryRepository(config);
+            SalesEntryRepository repo = new SalesEntryRepository(config, LSCVersion);
             List<SalesEntryId> list = repo.SalesEntryGetSalesByOrderId(orderId);
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -580,7 +586,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            SalesEntryRepository repo = new SalesEntryRepository(config);
+            SalesEntryRepository repo = new SalesEntryRepository(config, LSCVersion);
             List<SalesEntry> data = repo.SalesEntriesByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
             logger.StatisticEndSub(ref stat, index);
             return data;

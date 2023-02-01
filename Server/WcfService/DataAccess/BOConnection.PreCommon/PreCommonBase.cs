@@ -281,7 +281,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse(bool force, out string centralVersion)
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("18.0");
+                LSCVersion = new Version("21.0");
 
             centralVersion = LSCVersion.ToString();
             if (centralWS == null)

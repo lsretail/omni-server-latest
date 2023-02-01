@@ -13,6 +13,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
     { 
         public OrderHosp(string id) : base(id)
         {
+            DocumentId = string.Empty;
             StoreId = string.Empty;
             CardId = string.Empty;
             Name = string.Empty;
@@ -22,6 +23,10 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
             ReceiptNo = string.Empty;
             RestaurantNo = string.Empty;
             Currency = string.Empty;
+            ExternalId = string.Empty;
+            Comment = string.Empty;
+            QRData = string.Empty;
+            SalesType = string.Empty;
 
             OrderLines = new List<OrderHospLine>();
             OrderPayments = new List<OrderPayment>();
@@ -77,6 +82,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         public string Directions { get; set; }
         [DataMember]
         public string Comment { get; set; }
+        [DataMember]
+        public string QRData { get; set; }
 
         [DataMember]
         public string RestaurantNo { get; set; }

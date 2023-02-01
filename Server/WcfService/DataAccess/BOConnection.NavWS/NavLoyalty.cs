@@ -70,12 +70,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.SecurityCheckProfile(orderNo, storeNo, stat);
         }
 
-        public bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
+        public virtual bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return false;
 
             return LSCWSBase.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
+        }
+
+        public virtual ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+                return new ScanPayGoSecurityLog();
+
+            return LSCWSBase.SecurityCheckLog(orderNo, stat);
         }
 
         public virtual string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)
@@ -116,7 +124,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #region Contact
 
-        public virtual string ContactCreate(MemberContact contact, Statistics stat)
+        public virtual MemberContact ContactCreate(MemberContact contact, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ContactCreate(contact);

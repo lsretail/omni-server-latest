@@ -94,7 +94,7 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ProfileGetByCardId(cardId, stat);
         }
 
-        public virtual MemberContact ContactCreate(MemberContact contact, Statistics stat)
+        public virtual MemberContact ContactCreate(MemberContact contact, bool doLogin, Statistics stat)
         {
             //minor validation before going further 
             if (contact == null)
@@ -146,14 +146,15 @@ namespace LSOmni.BLL.Loyalty
                 if (string.IsNullOrWhiteSpace(contact.LoggedOnToDevice.DeviceFriendlyName))
                     contact.LoggedOnToDevice.DeviceFriendlyName = "Web application";
             }
-
-            BOLoyConnection.ContactCreate(contact, stat);
-            MemberContact newcontact;
-            if (string.IsNullOrWhiteSpace(contact.Authenticator))
-                newcontact = Login(contact.UserName, contact.Password, true, contact.LoggedOnToDevice.Id, stat); 
-            else
-                newcontact = SocialLogon(contact.Authenticator, contact.AuthenticationId, contact.LoggedOnToDevice.Id, string.Empty, true, stat);
-
+            
+            MemberContact newcontact = BOLoyConnection.ContactCreate(contact, stat);
+            if (doLogin)
+            {
+                if (string.IsNullOrWhiteSpace(contact.Authenticator))
+                    newcontact = Login(contact.UserName, contact.Password, true, contact.LoggedOnToDevice.Id, stat);
+                else
+                    newcontact = SocialLogon(contact.Authenticator, contact.AuthenticationId, contact.LoggedOnToDevice.Id, string.Empty, true, stat);
+            }
             base.SecurityCheck();
             return newcontact;
         }
@@ -171,7 +172,7 @@ namespace LSOmni.BLL.Loyalty
             BOLoyConnection.ConatctBlock(accountId, cardId, stat);
         }
 
-        public virtual MemberContact ContactUpdate(MemberContact contact, Statistics stat)
+        public virtual MemberContact ContactUpdate(MemberContact contact, bool getContact, Statistics stat)
         {
             if (contact == null)
             {
@@ -214,7 +215,10 @@ namespace LSOmni.BLL.Loyalty
             }
 
             BOLoyConnection.ContactUpdate(contact, ct.Account.Id, stat);
-            return BOLoyConnection.ContactGet(ContactSearchType.CardId, ct.Cards.FirstOrDefault().Id, stat);
+            if (getContact)
+                return BOLoyConnection.ContactGet(ContactSearchType.CardId, ct.Cards.FirstOrDefault().Id, stat);
+
+            return new MemberContact();
         }
 
         public virtual MemberContact Login(string userName, string password, bool includeDetails, string deviceId, Statistics stat)

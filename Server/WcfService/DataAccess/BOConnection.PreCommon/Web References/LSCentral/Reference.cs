@@ -54541,6 +54541,316 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033080")]
+    public partial class FABOrder {
+        
+        private string orderNoField;
+        
+        private string clientEmailField;
+        
+        private string clientPhoneNoField;
+        
+        private string clientAddressField;
+        
+        private string clientNameField;
+        
+        private string storeNoField;
+        
+        private string pOSTerminalNoField;
+        
+        private string createdOnPOSTermnialField;
+        
+        private string staffIDField;
+        
+        private System.DateTime pickupDateField;
+        
+        private System.DateTime pickupTimeField;
+        
+        private string kitchenStatusField;
+        
+        private string orderStatusField;
+        
+        private decimal grossAmountField;
+        
+        private string salesTypeField;
+        
+        private System.DateTime pickupDateTimeField;
+        
+        private bool contactCommentField;
+        
+        private string contactCommentIconField;
+        
+        private int orderProductionTimeInMinField;
+        
+        private bool preOrderField;
+        
+        private string queueCounterField;
+        
+        private int qRIDField;
+        
+        private string externalIDField;
+        
+        private string qRMessageField;
+        
+        public FABOrder() {
+            this.pickupDateField = new System.DateTime(0);
+            this.pickupTimeField = new System.DateTime(0);
+            this.grossAmountField = ((decimal)(0m));
+            this.pickupDateTimeField = new System.DateTime(0);
+            this.contactCommentField = false;
+            this.orderProductionTimeInMinField = 0;
+            this.preOrderField = false;
+            this.qRIDField = 0;
+        }
+        
+        /// <remarks/>
+        public string OrderNo {
+            get {
+                return this.orderNoField;
+            }
+            set {
+                this.orderNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClientEmail {
+            get {
+                return this.clientEmailField;
+            }
+            set {
+                this.clientEmailField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClientPhoneNo {
+            get {
+                return this.clientPhoneNoField;
+            }
+            set {
+                this.clientPhoneNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClientAddress {
+            get {
+                return this.clientAddressField;
+            }
+            set {
+                this.clientAddressField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ClientName {
+            get {
+                return this.clientNameField;
+            }
+            set {
+                this.clientNameField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StoreNo {
+            get {
+                return this.storeNoField;
+            }
+            set {
+                this.storeNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string POSTerminalNo {
+            get {
+                return this.pOSTerminalNoField;
+            }
+            set {
+                this.pOSTerminalNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string CreatedOnPOSTermnial {
+            get {
+                return this.createdOnPOSTermnialField;
+            }
+            set {
+                this.createdOnPOSTermnialField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string StaffID {
+            get {
+                return this.staffIDField;
+            }
+            set {
+                this.staffIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="date")]
+        public System.DateTime PickupDate {
+            get {
+                return this.pickupDateField;
+            }
+            set {
+                this.pickupDateField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        public System.DateTime PickupTime {
+            get {
+                return this.pickupTimeField;
+            }
+            set {
+                this.pickupTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string KitchenStatus {
+            get {
+                return this.kitchenStatusField;
+            }
+            set {
+                this.kitchenStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string OrderStatus {
+            get {
+                return this.orderStatusField;
+            }
+            set {
+                this.orderStatusField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public decimal GrossAmount {
+            get {
+                return this.grossAmountField;
+            }
+            set {
+                this.grossAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string SalesType {
+            get {
+                return this.salesTypeField;
+            }
+            set {
+                this.salesTypeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public System.DateTime PickupDateTime {
+            get {
+                return this.pickupDateTimeField;
+            }
+            set {
+                this.pickupDateTimeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool ContactComment {
+            get {
+                return this.contactCommentField;
+            }
+            set {
+                this.contactCommentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ContactCommentIcon {
+            get {
+                return this.contactCommentIconField;
+            }
+            set {
+                this.contactCommentIconField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int OrderProductionTimeInMin {
+            get {
+                return this.orderProductionTimeInMinField;
+            }
+            set {
+                this.orderProductionTimeInMinField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public bool PreOrder {
+            get {
+                return this.preOrderField;
+            }
+            set {
+                this.preOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string QueueCounter {
+            get {
+                return this.queueCounterField;
+            }
+            set {
+                this.queueCounterField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public int QRID {
+            get {
+                return this.qRIDField;
+            }
+            set {
+                this.qRIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ExternalID {
+            get {
+                return this.externalIDField;
+            }
+            set {
+                this.externalIDField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string QRMessage {
+            get {
+                return this.qRMessageField;
+            }
+            set {
+                this.qRMessageField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.SerializableAttribute()]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    [System.Xml.Serialization.XmlTypeAttribute(Namespace="urn:microsoft-dynamics-nav/xmlports/x10033080")]
     public partial class WebDeliveryOrder {
         
         private string orderNoField;
@@ -57116,6 +57426,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private WebDeliveryOrder[] webDeliveryOrderField;
         
+        private FABOrder[] fABOrderField;
+        
         private string[] textField;
         
         /// <remarks/>
@@ -57181,6 +57493,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.webDeliveryOrderField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.Xml.Serialization.XmlElementAttribute("FABOrder")]
+        public FABOrder[] FABOrder {
+            get {
+                return this.fABOrderField;
+            }
+            set {
+                this.fABOrderField = value;
             }
         }
         

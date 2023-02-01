@@ -29,6 +29,9 @@ using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using System.Runtime.ConstrainedExecution;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -742,7 +745,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Contact
 
-        public string ContactCreate(MemberContact contact, Statistics stat)
+        public MemberContact ContactCreate(MemberContact contact, Statistics stat)
         {
             if (contact == null)
                 throw new LSOmniException(StatusCode.ContactIdNotFound, "Contact can not be null");
@@ -785,7 +788,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 clubId, schmId, acctId, contId, cardId, point);
 
             logger.StatisticEndSub(ref stat, index);
-            return cardId;
+            MemberContact cont = new MemberContact(contId);
+            cont.Cards = new List<Card>();
+            cont.Cards.Add(new Card(cardId)
+            {
+                ClubId = clubId,
+            });
+            cont.Account = new Account(acctId)
+            {
+                Scheme = new Scheme(schmId)
+                {
+                    Club = new Club(clubId)
+                },
+            };
+            return cont;
         }
 
         public void ContactUpdate(MemberContact contact, string accountId, Statistics stat)
@@ -863,36 +879,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
 
-            decimal remainingPoints = 0;
-            contact.Profiles = ProfileGet(mcard.Id, ref remainingPoints, stat);
-            contact.Account.PointBalance = (remainingPoints == 0) ? contact.Account.PointBalance : Convert.ToInt64(Math.Floor(remainingPoints));
-
-            if (includeDetails == false)
-            {
-                logger.StatisticEndSub(ref stat, index);
-                return contact;
-            }
-
-            xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Login", "Login ID", contact.UserName.ToLower(), 1);
-            xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            table = xml.GetGeneralWebResponseXML(xmlResponse);
-            if (table != null && table.NumberOfValues > 0)
-            {
-                field = table.FieldList.Find(f => f.FieldName.Equals("Password"));
-                contact.Password = field.Values[0];
-            }
-
-            LSCentral.RootGetDirectMarketingInfo rootMarket = new LSCentral.RootGetDirectMarketingInfo();
-            logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", mcard.Id);
-            centralWS.GetDirectMarketingInfo(ref respCode, ref errorText, mcard.Id, string.Empty, string.Empty, ref rootMarket);
-            HandleWS2ResponseCode("GetDirectMarketingInfo", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, "GetDirectMarketing Response - " + Serialization.ToXml(rootMarket, true));
-
-            contact.PublishedOffers = map.MapFromRootToPublishedOffers(rootMarket);
-
-            contact.SalesEntries = new List<SalesEntry>();
-            contact.OneLists = new List<OneList>();
             logger.StatisticEndSub(ref stat, index);
             return contact;
         }
@@ -2247,6 +2233,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return ter;
         }
 
+        public string TerminalGetLicense(string termId, string appId, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string licence = string.Empty;
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC MobileLicenseRegistration", "Terminal ID", termId, "App ID", appId);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table == null || table.NumberOfValues == 0)
+                return licence;
+
+            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Device License Key"));
+            licence = field.Values[0];
+
+            logger.StatisticEndSub(ref stat, index);
+            return licence;
+        }
+
         #endregion
 
         #region ScanPayGo
@@ -2411,6 +2417,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             HandleWS2ResponseCode("SPGLogSecurityCheckResponse", respCode, errorText, ref stat, index);
             logger.StatisticEndSub(ref stat, index);
             return true;
+        }
+
+        public ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC SPG Security Check Log", "Customer Order ID", orderNo);
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            ScanPayGoSecurityLog log = new ScanPayGoSecurityLog();
+            if (table == null || table.NumberOfValues == 0)
+                return log;
+
+            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Source"));
+            log.Source = ConvertTo.SafeBoolean(field.Values[table.NumberOfValues - 1]);
+            field = table.FieldList.Find(f => f.FieldName.Equals("Check"));
+            log.Check = ConvertTo.SafeBoolean(field.Values[table.NumberOfValues - 1]);
+            logger.StatisticEndSub(ref stat, index);
+            return log;
         }
 
         public string OpenGate(string qrCode, string storeNo, string devLocation, string memberAccount, bool exitWithoutShopping, bool isEntering, Statistics stat)

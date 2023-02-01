@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -362,14 +363,17 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure]," +
-                                "ml.[Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description]," +
+                                "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure],ml.[Deal Modifier Line No_],ml.[Deal Header Line No_]," +
+                                "ml.[Quantity],ml.[UOM Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description],ml.[Parent Line No_]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
                                 " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
                                 " JOIN [" + navCompanyName + "Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
                                 " LEFT JOIN [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
                                 " WHERE ml.[Receipt No_]=@id ";
+
+                    int transNo = 0;
+                    string termNo = string.Empty;
 
                     command.Parameters.AddWithValue("@id", receiptId);
                     TraceSqlCommand(command);
@@ -378,9 +382,41 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(TransToSalesEntryLine(reader));
+                            list.Add(ReaderToSalesEntryLine(reader, out int trans, out string term));
+                            if (trans > 0)
+                            {
+                                transNo = trans;
+                                termNo = term;
+                            }
                         }
                         reader.Close();
+                    }
+
+                    if (transNo > 0)
+                    {
+                        command.CommandText = "SELECT " +
+                                    "ml.[Line No_],ml.[Deal No_],ml.[Deal Header Line No_],ml.[Quantity],ml.[Amount],ml.[Price],ml.[Line Discount Amt_],o.[Description]" +
+                                    " FROM [" + navCompanyName + "Trans_ Deal Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
+                                    " JOIN [" + navCompanyName + "Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=ml.[Deal No_]" +
+                                    " WHERE ml.[Store No_]=@sid AND ml.[POS Terminal No_]=@pid AND ml.[Transaction No_]=@tid";
+
+                        SalesEntryLine firstline = list.First();
+
+                        command.Parameters.AddWithValue("@sid", firstline.StoreId);
+                        command.Parameters.AddWithValue("@pid", termNo);
+                        command.Parameters.AddWithValue("@tid", transNo);
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            while (reader.Read())
+                            {
+                                SalesEntryLine l = ReaderToSalesDealLine(reader);
+                                l.StoreId = firstline.StoreId;
+                                l.StoreName = firstline.StoreName;
+                                list.Add(l);
+                            }
+                            reader.Close();
+                        }
                     }
                     connection.Close();
                 }
@@ -808,11 +844,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return entry;
         }
 
-        private SalesEntryLine TransToSalesEntryLine(SqlDataReader reader)
+        private SalesEntryLine ReaderToSalesEntryLine(SqlDataReader reader, out int transNo, out string termNo)
         {
+            transNo = 0;
+            termNo = string.Empty;
+            decimal uomqty = 0;
+
             SalesEntryLine line = new SalesEntryLine()
             {
-                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                ParentLine = SQLHelper.GetInt32(reader["Parent Line No_"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure"]),
                 Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
@@ -827,6 +868,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 StoreName = SQLHelper.GetString(reader["Name"])
             };
+
+            uomqty = SQLHelper.GetDecimal(reader["UOM Quantity"], true);
+            if (uomqty != 0)
+                line.Quantity = uomqty;
+
+            line.Amount = line.NetAmount + line.TaxAmount;
+            if (line.ParentLine == 0)
+                line.ParentLine = SQLHelper.GetInt32(reader["Deal Header Line No_"]);
 
             if (string.IsNullOrEmpty(line.VariantId) == false)
             {
@@ -859,16 +908,35 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     line.ItemImageId = img[0].Id;
             }
 
-            line.Amount = line.NetAmount + line.TaxAmount;
+            if (SQLHelper.GetInt32(reader["Deal Modifier Line No_"]) > 0)
+            {
+                transNo = SQLHelper.GetInt32(reader["Transaction No_"]);
+                termNo = SQLHelper.GetString(reader["POS Terminal No_"]);
+            }
             return line;
+        }
+
+        private SalesEntryLine ReaderToSalesDealLine(SqlDataReader reader)
+        {
+            return (new SalesEntryLine()
+            {
+                LineNumber = SQLHelper.GetInt32(reader["Deal Header Line No_"]),
+                Quantity = SQLHelper.GetDecimal(reader, "Quantity", true),
+                LineType = LineType.Deal,
+                ItemId = SQLHelper.GetString(reader["Deal No_"]),
+                Price = SQLHelper.GetDecimal(reader, "Price"),
+                DiscountAmount = SQLHelper.GetDecimal(reader, "Line Discount Amt_", false),
+                Amount = SQLHelper.GetDecimal(reader, "Amount", true),
+                ItemDescription = SQLHelper.GetString(reader["Description"]),
+            });
         }
 
         private SalesEntryLine POSTransToSalesEntryLine(SqlDataReader reader)
         {
             SalesEntryLine line = new SalesEntryLine()
             {
-                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
-                ParentLine = Convert.ToInt32(SQLHelper.GetInt32(reader["Parent Line"])),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                ParentLine = SQLHelper.GetInt32(reader["Parent Line"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UomId = SQLHelper.GetString(reader["Unit of Measure"]),
                 Quantity = SQLHelper.GetDecimal(reader, "Quantity", false),
@@ -926,7 +994,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             return new SalesEntryPayment()
             {
-                LineNumber = Convert.ToInt32(SQLHelper.GetInt32(reader["Line No_"])),
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 Amount = SQLHelper.GetDecimal(reader, "Amount", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "CurrencyFactor", false),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),

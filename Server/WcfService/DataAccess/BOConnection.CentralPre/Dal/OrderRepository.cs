@@ -364,7 +364,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (entry.Posted)
             {
                 entry.Status = (SQLHelper.GetBool(reader["Cancelled"])) ? SalesEntryStatus.Canceled : SalesEntryStatus.Complete;
-                SalesEntryRepository srepo = new SalesEntryRepository(config);
+                SalesEntryRepository srepo = new SalesEntryRepository(config, LSCVersion);
                 srepo.SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                 entry.PointsRewarded = rewarded;
                 entry.PointsUsedInOrder = used;

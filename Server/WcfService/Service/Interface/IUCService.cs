@@ -884,6 +884,7 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="contact">contact</param>
+        /// <param name="doLogin">Perform Login after Create, this will return full Contact object with all information. If false, only contact, card, account ids are returned.</param>
         /// <returns>Contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -917,7 +918,7 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
-        MemberContact ContactCreate(MemberContact contact);
+        MemberContact ContactCreate(MemberContact contact, bool doLogin);
 
         /// <summary>
         /// Update Member Contact
@@ -970,6 +971,7 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="contact">contact</param>
+        /// <param name="getContact">Return conatact object filled out after Update</param>
         /// <returns>Contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1000,7 +1002,7 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
-        MemberContact ContactUpdate(MemberContact contact);
+        MemberContact ContactUpdate(MemberContact contact, bool getContact);
 
         /// <summary>
         /// Get Member Contact by card Id. This function returns all informations about the Member contact, 
@@ -3053,6 +3055,14 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         bool SecurityCheckProfile(string orderNo, string storeNo);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        ScanPayGoSecurityLog SecurityCheckLog(string orderNo);
 
         /// <summary>
         /// Allow app to open Gate when exiting the store

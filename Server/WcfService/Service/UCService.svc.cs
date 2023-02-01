@@ -10,7 +10,7 @@ namespace LSOmni.Service
     // NOTE: In order to launch WCF Test Client for testing this service, please select UC.svc or UC.svc.cs at the Solution Explorer and start debugging.
     public class UCService : LSOmniBase, IUCService
     {
-        private static LSLogger logger = new LSLogger();
+        private static readonly LSLogger logger = new LSLogger();
 
         #region protected members
 

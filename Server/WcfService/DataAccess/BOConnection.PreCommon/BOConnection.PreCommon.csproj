@@ -370,6 +370,9 @@
     <None Include="Web References\LSCentral\RootGetReturnPolicy1.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
+    <None Include="Web References\LSCentral\RootGetStaffV2.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
     <None Include="Web References\LSCentral\RootGetStoreOpeningHours.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
@@ -383,6 +386,9 @@
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral\RootGetTransaction1.datasource">
+      <DependentUpon>Reference.map</DependentUpon>
+    </None>
+    <None Include="Web References\LSCentral\RootGetVoucherEntries.datasource">
       <DependentUpon>Reference.map</DependentUpon>
     </None>
     <None Include="Web References\LSCentral\RootHospTransaction.datasource">
