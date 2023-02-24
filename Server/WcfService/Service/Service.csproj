@@ -103,19 +103,28 @@
     <Compile Include="Common\LSOmniBaseAct.cs" />
     <Compile Include="Common\LSOmniBaseEcomm.cs" />
     <Compile Include="Common\LSOmniBaseLoy.cs" />
+    <Compile Include="Common\LSOmniBasePortal.cs" />
     <Compile Include="Common\LSOmniBasePrivate.cs" />
     <Compile Include="Common\ServiceFaultBehavior.cs" />
+    <Compile Include="Interface\IPortalJson.cs" />
+    <Compile Include="Interface\IPortalService.cs" />
+    <Compile Include="PortalJson.svc.cs">
+      <DependentUpon>PortalJson.svc</DependentUpon>
+    </Compile>
+    <Compile Include="UCJson.svc.cs">
+      <DependentUpon>UCJson.svc</DependentUpon>
+    </Compile>
+    <Compile Include="PortalService.svc.cs">
+      <DependentUpon>PortalService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="UCService.svc.cs">
+      <DependentUpon>UCService.svc</DependentUpon>
+    </Compile>
     <Compile Include="Interface\IBOJson.cs" />
     <Compile Include="Interface\IBOService.cs" />
     <Compile Include="Interface\IUCJson.cs" />
     <Compile Include="Interface\IUCService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UCJson.svc.cs">
-      <DependentUpon>UCJson.svc</DependentUpon>
-    </Compile>
-    <Compile Include="UCService.svc.cs">
-      <DependentUpon>UCService.svc</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -123,6 +132,9 @@
   <ItemGroup>
     <Content Include="BOJson.svc" />
     <Content Include="BOService.svc" />
+    <Content Include="UCJson.svc" />
+    <Content Include="PortalService.svc" />
+    <Content Include="UCService.svc" />
     <Content Include="Images\Item-10000.jpg" />
     <Content Include="Images\Item-40020.jpg" />
     <Content Include="Images\na.jpg" />
@@ -136,6 +148,7 @@
     <Content Include="AppSettings.config" />
     <Content Include="LSIcon.ico" />
     <Content Include="NLog.config" />
+    <Content Include="Log.config" />
     <None Include="packages.config" />
     <Content Include="UCJson.svc" />
     <Content Include="UCService.svc" />

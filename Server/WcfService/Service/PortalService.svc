@@ -1,0 +1,1 @@
+﻿<%@ ServiceHost Language="C#" Debug="true" Service="LSOmni.Service.PortalService" CodeBehind="PortalService.svc.cs" %>

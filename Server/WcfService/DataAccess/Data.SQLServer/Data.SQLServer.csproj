@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="BaseRepository.cs" />
     <Compile Include="DeviceRepository.cs" />
+    <Compile Include="UserRepository.cs" />
     <Compile Include="ConfigRepository.cs" />
     <Compile Include="ImageCacheRepository..cs" />
     <Compile Include="ImageRepository.cs" />

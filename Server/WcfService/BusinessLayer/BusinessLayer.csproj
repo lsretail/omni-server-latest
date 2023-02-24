@@ -208,6 +208,7 @@
     <Compile Include="Loyalty\SearchBLL.cs" />
     <Compile Include="Loyalty\StoreBLL.cs" />
     <Compile Include="Loyalty\TransactionBLL.cs" />
+    <Compile Include="PortalBLL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
