@@ -6,6 +6,7 @@ var
   IISPage_lblNavPwd: TLabel;
   IISPage_lblNavTen: TLabel;
   IISPage_lblNavUrl: TLabel;
+  IISPage_lblODataUrl: TLabel;
   IISPage_lblEComUrl: TLabel;
   IISPage_lblWcfServiceName: TLabel;
   IISPage_lblNavAuthentication : TLabel;
@@ -14,6 +15,7 @@ var
   IISPage_txtNavPwd: TPasswordEdit;
   IISPage_txtNavTen: TEdit;
   IISPage_txtNavUrl: TEdit;
+  IISPage_txtODataUrl: TEdit;
   IISPage_txtEComUrl: TEdit;
   IISPage_txtWcfServiceName: TEdit;
   IISPage_txtWcfSiteName : TEdit;
@@ -41,6 +43,7 @@ begin
   begin
     IISPage_lblNavTen.Visible := True;
     IISPage_txtNavTen.Visible := True;
+	  IISPage_lblComment2.Visible := False;
     IISPage_lblNavUser.Caption := 'Client Id:';
     IISPage_lblNavPwd.Caption := 'Client Secret:';
   end
@@ -48,6 +51,7 @@ begin
   begin
     IISPage_lblNavTen.Visible := False;
     IISPage_txtNavTen.Visible := False;
+	  IISPage_lblComment2.Visible := True;
     IISPage_txtNavTen.Text := '';
     IISPage_lblNavUser.Caption := 'User name:';
     IISPage_lblNavPwd.Caption := 'Password/WebKey:';
@@ -185,6 +189,34 @@ begin
     Hint := 'LS Central URI to RetailWebServices Web Service. Can be found under Web Services in LS Central.';
   end; 
 
+  { IISPage_lblODataUrl }
+  IISPage_lblODataUrl := TLabel.Create(IISPage);
+  with IISPage_lblODataUrl do
+  begin
+    Parent := IISPage.Surface;
+    Caption :=  'LSCentral OData URL:';
+    Left := ScaleX(15);
+    Top := ScaleY(107);
+    Width := ScaleX(108);
+    Height := ScaleY(13);
+    Enabled := True;
+  end;
+  { IISPage_txtODataUrl }
+  IISPage_txtODataUrl := TEdit.Create(IISPage);
+  with IISPage_txtODataUrl do
+  begin
+    Parent := IISPage.Surface;
+    Left := ScaleX(120);
+    Top := ScaleY(104);
+    Width := ScaleX(280);
+    Height := ScaleY(21);
+    TabOrder := 5;
+    Enabled := True;
+    OnChange := @IISOnChange;
+    ShowHint := True;
+    Hint := 'LS Central URI to OData Web Service. Can be found under Web Services - Action - Show OData v4 Uri in LS Central.';
+  end; 
+
   { IISPage_lblNavAuthentication }
   IISPage_lblNavAuthentication := TLabel.Create(IISPage);
   with IISPage_lblNavAuthentication do
@@ -192,7 +224,7 @@ begin
     Parent := IISPage.Surface;
     Caption :=  'LS Central Web Services Authentication.';
     Left := ScaleX(15);
-    Top := ScaleY(107);
+    Top := ScaleY(132);
     Width := ScaleX(230);
     Height := ScaleY(13);
     Enabled := True;
@@ -203,12 +235,12 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(250);
-    Top := ScaleY(104);
+    Top := ScaleY(129);
     Width := ScaleX(380);
     Height := ScaleY(21);
     Caption := 'Use S2S oAuth';
     Checked := False;
-    TabOrder := 5;
+    TabOrder := 6;
     ShowHint := True;
     OnClick := @S2SOnChange;
     Hint := 'Use oAuth S2S to log into LS Central in SaaS.';
@@ -221,7 +253,7 @@ begin
     Parent := IISPage.Surface;
     Caption :=  'User name:';
     Left := ScaleX(15);
-    Top := ScaleY(132);
+    Top := ScaleY(157);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -232,10 +264,10 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(120);
-    Top := ScaleY(129);
+    Top := ScaleY(154);
     Width := ScaleX(220);
     Height := ScaleY(21);
-    TabOrder := 6;
+    TabOrder := 7;
     Enabled := True;
     OnChange := @IISOnChange;
     ShowHint := True;
@@ -249,7 +281,7 @@ begin
     Parent := IISPage.Surface;
     Caption :=  'Password/WebKey:';
     Left := ScaleX(15);
-    Top := ScaleY(157);
+    Top := ScaleY(182);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -260,10 +292,10 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(120);
-    Top := ScaleY(154);
+    Top := ScaleY(179);
     Width := ScaleX(220);
     Height := ScaleY(21);
-    TabOrder := 7;
+    TabOrder := 8;
     Enabled := True;
     OnChange := @IISOnChange;
     ShowHint := True;
@@ -277,7 +309,7 @@ begin
     Parent := IISPage.Surface;
     Caption :=  'Tenant Id:';
     Left := ScaleX(15);
-    Top := ScaleY(182);
+    Top := ScaleY(207);
     Width := ScaleX(108);
     Height := ScaleY(13);
     Enabled := True;
@@ -288,10 +320,10 @@ begin
   begin
     Parent := IISPage.Surface;
     Left := ScaleX(120);
-    Top := ScaleY(179);
+    Top := ScaleY(204);
     Width := ScaleX(220);
     Height := ScaleY(21);
-    TabOrder := 8;
+    TabOrder := 9;
     Enabled := True;
     ShowHint := True;
     Hint := 'LS Central Tenant Id.';

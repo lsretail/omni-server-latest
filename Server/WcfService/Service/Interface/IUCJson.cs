@@ -25,7 +25,6 @@ using LSRetail.Omni.Domain.DataModel.Activity.Client;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
-using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 
 namespace LSOmni.Service
 {
@@ -348,7 +347,7 @@ namespace LSOmni.Service
         /// ]]>
         /// </code>
         /// </example>
-        /// <param name="oneList"></param>
+        /// <param name="oneList">OneList Object</param>
         /// <returns>Order Object that can be used to Create Order</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -1173,6 +1172,10 @@ namespace LSOmni.Service
         /// including Profiles, Offers, Sales history, Onelist baskets and notifications.
         /// To get basic information, use ContactGet.
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetMemberContact2<p/><p/>
+        /// LS Central WS4 : GetMemberContactInfo<p/><p/>
+        /// </remarks>
         /// <param name="cardId">Card Id</param>
         /// <param name="numberOfTransReturned">Number of Sales History to return, 0 = all</param>
         /// <returns>Contact</returns>
@@ -1203,6 +1206,10 @@ namespace LSOmni.Service
         /// Search for list of Member Contacts by different searchType methods, 
         /// will return any contact that will match the search value.
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetMemberContact2<p/><p/>
+        /// LS Central WS4 : GetMemberContactInfo<p/><p/>
+        /// </remarks>
         /// <param name="searchType">Field to search by</param>
         /// <param name="search">Search value</param>
         /// <param name="maxNumberOfRowsReturned">Max number of record, if set to 1 the exact search will be performed</param>
@@ -1214,6 +1221,10 @@ namespace LSOmni.Service
         /// <summary>
         /// Search for Member Contact by different searchType methods.
         /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetMemberContact2<p/><p/>
+        /// LS Central WS4 : GetMemberContactInfo<p/><p/>
+        /// </remarks>
         /// <param name="searchType">Field to search by</param>
         /// <param name="search">Search value</param>
         /// <returns></returns>
@@ -1782,6 +1793,7 @@ namespace LSOmni.Service
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
         /// <param name="storeId">store Id</param>
+        /// <param name="includeImages">Include Image blobs</param>
         /// <returns>Store</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1801,7 +1813,37 @@ namespace LSOmni.Service
         /// </exception>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        Store StoreGetById(string storeId);
+        Store StoreGetById(string storeId, bool includeImages);
+
+        /// <summary>
+        /// Get List of stores
+        /// </summary>
+        /// <param name="storeType">Type of stores to get</param>
+        /// <param name="includeDetails">Include detail data, like store hours</param>
+        /// <param name="includeImages">Include Image Blobs for stores</param>
+        /// <remarks>
+        /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
+        /// </remarks>
+        /// <returns>List of stores</returns>
+        /// <exception cref="LSOmniServiceException">StatusCodes returned:
+        /// <list type="bullet">
+        /// <item>
+        /// <description>StatusCode.Error</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.SecurityTokenInvalid</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.UserNotLoggedIn</description>
+        /// </item>
+        /// <item>
+        /// <description>StatusCode.DeviceIsBlocked</description>
+        /// </item>
+        /// </list>
+        /// </exception>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        List<Store> StoresGet(StoreGetType storeType, bool includeDetails, bool includeImages);
 
         /// <summary>
         /// Get all stores
@@ -1827,7 +1869,6 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Store> StoresGetAll();
 
         /// <summary>
@@ -1910,6 +1951,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001451 - LSC Barcodes
+        /// LS Central WS4 : GetBarcode
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.  
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -1930,6 +1972,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 4 - Currency
+        /// LS Central WS4 : GetCurrency
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1949,6 +1992,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 330 - Currency Exchange Rate
+        /// LS Central WS4 : GetCurrencyExchRate
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -1968,6 +2012,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001413 - LSC Extd. Variant Values
+        /// LS Central WS4 : GetExtdVariantValues
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -1988,6 +2033,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99009064 - LSC Retail Image Link
+        /// LS Central WS4 : GetImageLink
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2007,6 +2053,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99009063 - LSC Retail Image
+        /// LS Central WS4 : GetWIImageBuffer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2026,6 +2073,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 5722 - Item Category
+        /// LS Central WS4 : GetItemCategory
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2046,6 +2094,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 27 - Item
+        /// LS Central WS4 : GetWIItemBuffer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2068,6 +2117,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 5404 - Item Unit of Measure
+        /// LS Central WS4 : GetItemUnitOfMeasure
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2088,6 +2138,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001414 - LSC Item Variant Registration
+        /// LS Central WS4 : GetVariantRegWithStatus
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2108,6 +2159,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 5401 - Item Variant
+        /// LS Central WS4 : GetItemVariant
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2128,6 +2180,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10012861 - LSC WI Price
+        /// LS Central WS4 : GetWIPrice
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs.  
         /// This will generate the Best price for product based on date and offers available at the time.<p/><p/>
@@ -2150,6 +2203,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 7002 - Sales Price
+        /// LS Central WS4 : GetSalesPrice
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2170,6 +2224,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000705 - LSC Retail Product Group
+        /// LS Central WS4 : GetProductGroup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2190,6 +2245,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001470 - LSC Store
+        /// LS Central WS4 : GetStoreBuffer
         /// <p/><p/>
         /// Only store with Loyalty or Mobile Checked will be replicated
         /// <p/><p/>
@@ -2211,6 +2267,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 204 - Unit of Measure
+        /// LS Central WS4 : GetUnitOfMeasure
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2230,6 +2287,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001430 - LSC Collection Framework
+        /// LS Central WS4 : GetCollection
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2249,6 +2307,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 23 - Vendor
+        /// LS Central WS4 : GetVendor
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2268,6 +2327,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 27 - Item (Lookup by [Vendor No_])
+        /// LS Central WS4 : GetVendorItem
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2288,6 +2348,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000784 - LSC Attribute
+        /// LS Central WS4 : GetAttribute
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2324,6 +2385,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000786 - LSC Attribute Value
+        /// LS Central WS4 : GetAttributeValues
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2343,6 +2405,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000785 - LSC Attribute Option Value
+        /// LS Central WS4 : GetAttributeOptionValues
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2362,6 +2425,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000971 - LSC Data Translation
+        /// LS Central WS4 : GetDataTranslation
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2381,6 +2445,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10001410 - LSC Item HTML ML
+        /// LS Central WS4 : GetItemHTML
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2431,6 +2496,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000920 - LSC Hierarchy
+        /// LS Central WS4 : GetHierarchy
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2450,6 +2516,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000921 - LSC Hierar. Nodes
+        /// LS Central WS4 : GetHierarchyNodes
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2469,6 +2536,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000922 - LSC Hierar. Node Link
+        /// LS Central WS4 : GetHierarchyLeaf
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2488,6 +2556,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001503 - LSC Offer Line
+        /// LS Central WS4 : GetHierarchyDeal
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2507,6 +2576,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001651 - LSC Deal Modifier Item
+        /// LS Central WS4 : GetHierarchyDealLine
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2526,6 +2596,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 90 - BOM Component
+        /// LS Central WS4 : GetWIItemRecipeBuffer
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2545,6 +2616,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001483 - LSC Information Subcode
+        /// LS Central WS4 : GetWIItemModifier
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2590,6 +2662,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10012862 - LSC WI Discounts
+        /// LS Central WS4 : GetWIDiscounts
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2610,6 +2683,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10012863 - LSC WI Mix and Match Offer
+        /// LS Central WS4 : GetWIMixMatch
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Item distribution is based on StoreId, and pulls all record related to Item include for distribution to that store.
@@ -2630,6 +2704,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001481 - LSC Validation Period
+        /// LS Central WS4 : GetValidationPeriod
         /// <p/><p/>
         /// Data for this function needs to be generated in LS Central by running either COMMERCE_XXXX Scheduler Jobs<p/><p/>
         /// Most ReplEcommXX web methods work the same way.
@@ -2670,6 +2745,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99009002 - LSC Member Contact (with valid Membership Card)
+        /// LS Central WS4 : GetContact
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2689,6 +2765,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 9 - Country/Region
+        /// LS Central WS4 : GetCountryCode
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// This function always performs full replication
@@ -2705,6 +2782,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001466 - LSC Tender Type Setup
+        /// LS Central WS4 : GetTenderType
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2724,6 +2802,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 325 - VAT Posting Setup
+        /// LS Central WS4 : GetVATPostingSetup
         /// <p/><p/>
         /// Most ReplEcommXX web methods work the same way.
         /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
@@ -2743,6 +2822,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001608 - LSC Inventory Lookup Table
+        /// LS Central WS4 : GetInventoryStatus
         /// <p/><p/>
         /// Net Inventory field in Inventory Lookup Table must be updated before the replication can be done.  
         /// In Retail Product Group card, set up which products to check status for by click on Update POS Inventory Lookup button. Set store to be Web Store.

@@ -127,8 +127,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Store
 
         List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat);
-        Store StoreGetById(string id, bool details, Statistics stat);
-        List<Store> StoresGetAll(bool clickAndCollectOnly, Statistics stat);
+        Store StoreGetById(string id, Statistics stat);
+        List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, Statistics stat);
         List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat);
 
         #endregion

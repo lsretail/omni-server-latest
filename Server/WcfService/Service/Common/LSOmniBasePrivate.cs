@@ -170,6 +170,8 @@ namespace LSOmni.Service
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Url");
                 if (ConfigSetting.KeyExists("BOConnection.Nav.QryUrl"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOQryUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.QryUrl");
+                if (ConfigSetting.KeyExists("BOConnection.Nav.ODataUrl"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOODataUrl.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.ODataUrl");
 
                 if (ConfigSetting.KeyExists("BOConnection.Nav.Protocol"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOProtocol.ToString()).Value = ConfigSetting.GetString("BOConnection.Nav.Protocol");

@@ -49,6 +49,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public Club Club { get; set; }
 
         public int UpdateSequence { get; set; }
+        public string NextSchemeCode { get; set; }
+        public string ClubCode { get; set; }
     }
 }
  

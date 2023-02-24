@@ -508,6 +508,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 
                     switch (fld.FieldNo)
                     {
+                        case 1:
+                            string[] recid = data.FieldValue.Split(':');
+                            line.TableName = recid[0].Trim();
+                            line.KeyValue = recid[1].Trim();
+                            break;
                         case 10: line.ImageId = data.FieldValue; break;
                     }
                 }

@@ -487,6 +487,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         //New NAV WS added
         [EnumMember]
         NavWSError = 8000,
+        [EnumMember]
+        NavWSQryError = 8001,
+        [EnumMember]
+        NavODataError = 8002,
 
         //Inventory App codes
         [EnumMember]

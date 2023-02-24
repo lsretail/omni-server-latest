@@ -125,7 +125,8 @@ begin
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', True);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
   IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSCommerceService');
-  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC190/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
+  IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC210/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
+  IISPage_txtODataUrl.Text := GetCommandLineParamString('-IisOData', 'http://localhost:7048/BC210/ODataV4');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
   IISPage_txtNavPwd.Text := GetCommandLineParamString('-IisPwd', '');
 end;
@@ -226,6 +227,7 @@ begin
     begin
         Log('Update File IIS Settings');
         UpdateAppSettingsConfig('BOConnection.Nav.Url', Trim(IISPage_txtNavUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
+        UpdateAppSettingsConfig('BOConnection.Nav.ODataUrl', Trim(IISPage_txtODataUrl.Text), ExpandConstant('{app}\{code:WcfDir}'));
         UpdateAppSettingsConfig('BOConnection.Nav.UserName', Trim(IISPage_txtNavUser.Text), ExpandConstant('{app}\{code:WcfDir}'));
         UpdateAppSettingsConfig('BOConnection.Nav.Password', Trim(IISPage_txtNavPwd.Text), ExpandConstant('{app}\{code:WcfDir}'));
         UpdateAppSettingsConfig('BOConnection.Nav.Tenant', Trim(IISPage_txtNavTen.Text), ExpandConstant('{app}\{code:WcfDir}'));

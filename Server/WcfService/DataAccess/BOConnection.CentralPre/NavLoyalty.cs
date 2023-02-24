@@ -638,26 +638,29 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.StoreHoursGetByStoreId(storeId, offset, stat);
         }
 
-        public virtual Store StoreGetById(string id, bool details, Statistics stat)
+        public virtual Store StoreGetById(string id, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
-            Store store = rep.StoreLoyGetById(id, details);
+            Store store = rep.StoreLoyGetById(id, true);
             if (store != null)
                 store.StoreHours = StoreHoursGetByStoreId(id, stat);
             logger.StatisticEndSub(ref stat, index);
             return store;
         }
 
-        public virtual List<Store> StoresGetAll(bool clickAndCollectOnly, Statistics stat)
+        public virtual List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
-            List<Store> stores = rep.StoreLoyGetAll(clickAndCollectOnly);
-            foreach (Store store in stores)
+            List<Store> stores = rep.StoreLoyGetAll(storeType, inclDetails);
+            if (inclDetails)
             {
-                store.StoreHours = StoreHoursGetByStoreId(store.Id, stat);
-                store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
+                foreach (Store store in stores)
+                {
+                    store.StoreHours = StoreHoursGetByStoreId(store.Id, stat);
+                    store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
+                }
             }
             logger.StatisticEndSub(ref stat, index);
             return stores;

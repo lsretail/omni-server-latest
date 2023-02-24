@@ -80,6 +80,16 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public decimal QtyPrUOM { get; set; }
         [DataMember]
+        public decimal Length { get; set; }
+        [DataMember]
+        public decimal Width { get; set; }
+        [DataMember]
+        public decimal Height { get; set; }
+        [DataMember]
+        public decimal Cubage { get; set; }
+        [DataMember]
+        public decimal Weight { get; set; }
+        [DataMember]
         public bool CountAsOne { get; set; }
         /// <summary>
         /// 0=Allowed, 1=Not Allowed, 2=Only if specific UOM Price

@@ -48,6 +48,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         [DataMember]
         public string TextValue { get; set; }
 
+        public string AccountNo { get; set; }
+        public string ContactNo { get; set; }
+
         public Profile ShallowCopy()
         {
             return (Profile)MemberwiseClone();

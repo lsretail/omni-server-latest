@@ -1899,19 +1899,25 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                     }
                 }
             }
-
-            store.Images = ImagesGetByLink("Store", store.Id, string.Empty, string.Empty);
             return store;
         }
 
-        public List<Store> StoresGet(bool clickAndCollectOnly, bool details)
+        public List<Store> StoresGet(StoreGetType storeType, bool details)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest;
-            if (clickAndCollectOnly)
-                xmlRequest = xml.GetGeneralWebRequestXML("Store", "Click and Collect", "1");
-            else
-                xmlRequest = xml.GetGeneralWebRequestXML("Store");
+            switch (storeType)
+            {
+                case StoreGetType.ClickAndCollect:
+                    xmlRequest = xml.GetGeneralWebRequestXML("Store", "Click and Collect", "1");
+                    break;
+                case StoreGetType.WebStore:
+                    xmlRequest = xml.GetGeneralWebRequestXML("Store", "Web Store", "1");
+                    break;
+                default:
+                    xmlRequest = xml.GetGeneralWebRequestXML("Store");
+                    break;
+            }
 
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
@@ -1962,8 +1968,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
                         }
                     }
                 }
-
-                store.Images = ImagesGetByLink("Store", store.Id, string.Empty, string.Empty);
             }
             return list;
         }

@@ -29,9 +29,7 @@ using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using System.Runtime.ConstrainedExecution;
+using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -788,7 +786,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 clubId, schmId, acctId, contId, cardId, point);
 
             logger.StatisticEndSub(ref stat, index);
-            MemberContact cont = new MemberContact(contId);
+            MemberContact cont = new MemberContact(contId)
+            {
+                FirstName = contact.FirstName,
+                LastName = contact.LastName,
+                MiddleName = contact.MiddleName,
+                Name = contact.Name
+            };
             cont.Cards = new List<Card>();
             cont.Cards.Add(new Card(cardId)
             {
@@ -827,7 +831,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.StatisticEndSub(ref stat, index);
         }
 
-        public MemberContact ContactGet(string contactId, string accountId, string card, string loginId, string email, bool includeDetails, Statistics stat)
+        public MemberContact ContactGet(string contactId, string accountId, string card, string loginId, string email, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -840,6 +844,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             NAVWebXml xml = new NAVWebXml();
             ContactMapping map = new ContactMapping(config.IsJson, LSCVersion);
             MemberContact contact = null;
+
+            if (LSCVersion >= new Version("21.3"))
+            {
+                int searchType = 0;
+                string searchValue = card;
+
+                if (string.IsNullOrEmpty(contactId) == false)
+                {
+                    searchType = 2;
+                    searchValue = contactId;
+                }
+                else if (string.IsNullOrEmpty(email) == false)
+                {
+                    searchType = 3;
+                    searchValue = email;
+                }
+                else if (string.IsNullOrEmpty(loginId) == false)
+                {
+                    searchType = 5;
+                    searchValue = loginId;
+                }
+
+                string data = "{ \"contactSearchType\": \"" + searchType + "\"," +
+                                "\"searchText\": \"" + searchValue + "\"," +
+                                "\"searchMethod\": \"0\",\"maxResultContacts\": 0 }";
+
+                string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data);
+                ContactJMapping cmap = new ContactJMapping(config.IsJson);
+                var mm = cmap.GetMemberContact(ret);
+                return mm.FirstOrDefault();
+            }
 
             LSCentral.RootGetMemberContact rootContact = new LSCentral.RootGetMemberContact();
             logger.Debug(config.LSKey.Key, "GetMemberContact2 - CardId: {0}", card);
@@ -881,31 +916,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             logger.StatisticEndSub(ref stat, index);
             return contact;
-        }
-
-        public MemberContact ContactGetByEmail(string email, bool includeDetails, Statistics stat)
-        {
-            logger.StatisticStartSub(true, ref stat, out int index);
-
-            NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Contact", "Search E-Mail", email, 1);
-            string xmlResponse = RunOperation(xmlRequest, true);
-            HandleResponseCode(ref xmlResponse);
-            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-            if (table == null || table.NumberOfValues == 0)
-            {
-                logger.StatisticEndSub(ref stat, index);
-                return null;
-            }
-
-            XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Contact No."));
-            string contactId = field.Values[0];
-            field = table.FieldList.Find(f => f.FieldName.Equals("Account No."));
-            string accountId = field.Values[0];
-
-            MemberContact data = ContactGet(contactId, accountId, string.Empty, string.Empty, string.Empty, includeDetails, stat);
-            logger.StatisticEndSub(ref stat, index);
-            return data;
         }
 
         public double ContactAddCard(string contactId, string accountId, string cardId, Statistics stat)
@@ -1291,9 +1301,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Searches
 
-        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
+        public List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, bool exact, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
+
+            if (LSCVersion >= new Version("21.3"))
+            {
+                string data = "{ \"contactSearchType\": \"" + ((int)searchType).ToString() + "\"," +
+                                "\"searchText\": \"" + search + "\"," +
+                                "\"searchMethod\": \"" + ((exact) ? "0" : "1") + "\"," +
+                                "\"maxResultContacts\": " + maxNumberOfRowsReturned.ToString() + 
+                                " }";
+
+                string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data);
+                ContactJMapping cmap = new ContactJMapping(config.IsJson);
+                return cmap.GetMemberContact(ret);
+            }
 
             string fldname = "Search Name";
             switch (searchType)
@@ -1427,16 +1450,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 list.Id = GuidHelper.NewGuidString();
 
             // find highest lineNo count in sub line, if user has set some
-            int lineno = 1;
-            int sublineno = 1;
+            int lineno = list.Items.Max(i => i.LineNumber);
+            if (lineno == 0)
+                lineno = 1;
+
+            if (lineno >= 10000)
+                lineno = lineno / 10000;
+
+            int sublineno = 0;
             foreach (OneListItem item in list.Items)
             {
-                item.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+                if (item.OnelistSubLines.Count == 0)
+                    continue;
+
+                int x = item.OnelistSubLines.Max(i => i.LineNumber);
+                if (x >= 10000)
+                    x = x / 10000;
+                if (x > sublineno)
+                    sublineno = x;
+            }
+            sublineno++;
+
+            foreach (OneListItem item in list.Items)
+            {
+                if (item.LineNumber == 0)
+                    item.LineNumber = XMLHelper.LineNumberToNav(lineno++);
+
                 if (item.OnelistSubLines != null)
                 {
                     foreach (OneListItemSubLine sub in item.OnelistSubLines)
                     {
-                        sub.LineNumber = XMLHelper.LineNumberToNav(sublineno++);
+                        if (sub.LineNumber == 0)
+                            sub.LineNumber = XMLHelper.LineNumberToNav(sublineno++);
                     }
                 }
             }
@@ -1725,7 +1770,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.StatisticEndSub(ref stat, index);
         }
 
-        public SalesEntry OrderGet(string id, bool getimages, Statistics stat)
+        public SalesEntry OrderGet(string id, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -1745,7 +1790,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             order.PointsRewarded = pointEarned;
             order.PointsUsedInOrder = pointUsed;
 
-            Store store = StoreGetById(order.StoreId, getimages, stat);
+            Store store = StoreGetById(order.StoreId, stat);
             order.StoreName = store.Description;
             order.StoreCurrency = store.Currency.Id;
 
@@ -1757,13 +1802,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 {
                     if (string.IsNullOrEmpty(line.VariantId))
                     {
-                        List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty, getimages, stat);
+                        List<ImageView> img = ImagesGetByLink("Item", line.ItemId, string.Empty, string.Empty, false, stat);
                         if (img != null && img.Count > 0)
                             line.ItemImageId = img[0].Id;
                     }
                     else
                     {
-                        List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, getimages, stat);
+                        List<ImageView> img = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, false, stat);
                         if (img != null && img.Count > 0)
                             line.ItemImageId = img[0].Id;
                     }
@@ -1938,7 +1983,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId, bool getimages, Statistics stat)
+        public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -1952,14 +1997,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             SalesEntry entry = map.MapFromRootToRetailTransaction(root);
 
-            Store store = StoreGetById(entry.StoreId, getimages, stat);
+            Store store = StoreGetById(entry.StoreId, stat);
             entry.StoreName = store.Description;
             if (string.IsNullOrEmpty(entry.StoreCurrency))
                 entry.StoreCurrency = store.Currency.Id;
 
             if (string.IsNullOrEmpty(entry.CustomerOrderNo) == false)
             {
-                SalesEntry order = OrderGet(entry.CustomerOrderNo, getimages, stat);
+                SalesEntry order = OrderGet(entry.CustomerOrderNo, stat);
                 entry.ShipToEmail = order.ShipToEmail;
                 entry.ShipToName = order.ShipToName;
                 entry.ShipToAddress = order.ShipToAddress;
@@ -1980,17 +2025,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 if (item.VariantsRegistration.Count > 0)
                 {
                     VariantRegistration vreg = item.VariantsRegistration.Find(v => v.Id == line.VariantId);
-                    line.VariantDescription = vreg.Dimension1;
-                    if (string.IsNullOrEmpty(vreg.Dimension2) == false)
-                        line.VariantDescription += "/" + vreg.Dimension2;
-                    if (string.IsNullOrEmpty(vreg.Dimension3) == false)
-                        line.VariantDescription += "/" + vreg.Dimension3;
-                    if (string.IsNullOrEmpty(vreg.Dimension4) == false)
-                        line.VariantDescription += "/" + vreg.Dimension4;
-                    if (string.IsNullOrEmpty(vreg.Dimension5) == false)
-                        line.VariantDescription += "/" + vreg.Dimension5;
-
-                    item.Images = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, false, stat);
+                    if (vreg != null)
+                    {
+                        line.VariantDescription = vreg.Dimension1;
+                        if (string.IsNullOrEmpty(vreg.Dimension2) == false)
+                            line.VariantDescription += "/" + vreg.Dimension2;
+                        if (string.IsNullOrEmpty(vreg.Dimension3) == false)
+                            line.VariantDescription += "/" + vreg.Dimension3;
+                        if (string.IsNullOrEmpty(vreg.Dimension4) == false)
+                            line.VariantDescription += "/" + vreg.Dimension4;
+                        if (string.IsNullOrEmpty(vreg.Dimension5) == false)
+                            line.VariantDescription += "/" + vreg.Dimension5;
+                        item.Images = ImagesGetByLink("Item Variant", line.ItemId, line.VariantId, string.Empty, false, stat);
+                    }
                 }
                 else
                 {
@@ -2008,7 +2055,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Store
 
-        public Store StoreGetById(string id, bool getimages, Statistics stat)
+        public Store StoreGetById(string id, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -2066,22 +2113,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
             }
 
-            store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, getimages, stat);
-
             logger.StatisticEndSub(ref stat, index);
             return store;
         }
 
-        public List<Store> StoresGet(bool clickAndCollectOnly, bool details, Statistics stat)
+        public List<Store> StoresGet(StoreGetType storeType, bool inclDetails, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest;
-            if (clickAndCollectOnly)
-                xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "Click and Collect", "1");
-            else
-                xmlRequest = xml.GetGeneralWebRequestXML("LSC Store");
+            switch (storeType)
+            {
+                case StoreGetType.ClickAndCollect:
+                    xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "Click and Collect", "1");
+                    break;
+                case StoreGetType.WebStore:
+                    xmlRequest = xml.GetGeneralWebRequestXML("LSC Store", "Web Store", "1");
+                    break;
+                default:
+                    xmlRequest = xml.GetGeneralWebRequestXML("LSC Store");
+                    break;
+            }
 
             string xmlResponse = RunOperation(xmlRequest, true);
             HandleResponseCode(ref xmlResponse);
@@ -2089,7 +2142,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             SetupRepository rep = new SetupRepository(config);
             List<Store> list = rep.StoresGet(table);
-            if (details == false)
+            if (inclDetails == false)
             {
                 logger.StatisticEndSub(ref stat, index);
                 return list;
@@ -2138,8 +2191,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         }
                     }
                 }
-
-                store.Images = ImagesGetByLink("LSC Store", store.Id, string.Empty, string.Empty, false, stat);
             }
             logger.StatisticEndSub(ref stat, index);
             return list;

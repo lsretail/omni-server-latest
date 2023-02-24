@@ -775,7 +775,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             {
                 DocumentID = string.Empty,
                 CreatedAtStore = list.StoreId,
-                MemberCardNo = list.CardId ?? string.Empty,
+                MemberCardNo = XMLHelper.GetString(list.CardId),
                 ShipOrder = shipOrder
             });
 

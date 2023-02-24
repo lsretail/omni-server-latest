@@ -208,7 +208,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return store;
         }
 
-        public Store StoreLoyGetById(string storeId, bool includeDetails)
+        public Store StoreLoyGetById(string storeId)
         {
             Store store = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -224,7 +224,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         if (reader.Read())
                         {
-                            store = ReaderToLoyStore(reader, includeDetails);
+                            store = ReaderToLoyStore(reader);
                         }
                         reader.Close();
                     }
@@ -234,7 +234,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return store;
         }
 
-        public List<Store> StoreLoyGetAll(bool clickAndCollectOnly)
+        public List<Store> StoreLoyGetAll(StoreGetType storeType)
         {
             List<Store> stores = new List<Store>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -243,13 +243,31 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 {
                     if (NavVersion.Major > 10)
                     {
-                        string where = (clickAndCollectOnly) ? "WHERE mt.[Click and Collect]=1" : string.Empty;
-                        command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Store] mt " + where + " ORDER BY mt.[Name]";
+                        string type = string.Empty;
+                        switch (storeType)
+                        {
+                            case StoreGetType.ClickAndCollect:
+                                type = "WHERE mt.[Click and Collect]=1";
+                                break;
+                            case StoreGetType.WebStore:
+                                type = "WHERE mt.[Web Store]=1";
+                                break;
+                        }
+                        command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Store] mt " + type + " ORDER BY mt.[Name]";
                     }
                     else
                     {
-                        string where = (clickAndCollectOnly) ? "WHERE st.[Click and Collect]=1" : string.Empty;
-                        command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Store] st " + where + " ORDER BY st.[Name]";
+                        string type = string.Empty;
+                        switch (storeType)
+                        {
+                            case StoreGetType.ClickAndCollect:
+                                type = " WHERE st.[Click and Collect]=1";
+                                break;
+                            case StoreGetType.WebStore:
+                                type = " WHERE st.[Web Store]=1";
+                                break;
+                        }
+                        command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Store] st " + type + " ORDER BY st.[Name]";
                     }
                     TraceSqlCommand(command);
                     connection.Open();
@@ -257,7 +275,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            stores.Add(ReaderToLoyStore(reader, true));
+                            stores.Add(ReaderToLoyStore(reader));
                         }
                         reader.Close();
                     }
@@ -322,7 +340,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToLoyStore(reader, false));
+                            list.Add(ReaderToLoyStore(reader));
                         }
                         reader.Close();
                     }
@@ -520,7 +538,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return store;
         }
 
-        private Store ReaderToLoyStore(SqlDataReader reader, bool includeDetails)
+        private Store ReaderToLoyStore(SqlDataReader reader)
         {
             Store store = new Store()
             {
@@ -556,9 +574,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 store.WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]);
                 store.WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]);
             }
-
-            ImageRepository imgrepo = new ImageRepository(config);
-            store.Images = imgrepo.ImageGetByKey("Store", store.Id, string.Empty, string.Empty, 0, includeDetails);
             return store;
         }
     }

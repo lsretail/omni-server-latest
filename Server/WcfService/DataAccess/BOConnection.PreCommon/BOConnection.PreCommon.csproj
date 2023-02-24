@@ -59,6 +59,7 @@
     <Compile Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Properties\Version.cs">
       <Link>Properties\Version.cs</Link>
     </Compile>
+    <Compile Include="JMapping\ContactJMapping.cs" />
     <Compile Include="MySoapHttpClientProtocol.cs" />
     <Compile Include="JMapping\BaseJMapping.cs" />
     <Compile Include="JMapping\ItemJMapping.cs" />

@@ -58,7 +58,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
 
         private StaffPermission GetPermission(PermissionEntry entry)
         {
-            return Permissions.FirstOrDefault(x => x.Entry == entry);
+            return Permissions?.FirstOrDefault(x => x.Entry == entry);
         }
 
         public bool IsManager()

@@ -19,7 +19,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public ItemUOMRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt2.[LSC POS Selection],mt2.[LSC Count as 1 on Receipt],mt2.[LSC Order],um.[Description]";
+            sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt.[Length],mt.[Width],mt.[Height],mt.[Cubage],mt.[Weight]," +
+                         "mt2.[LSC POS Selection],mt2.[LSC Count as 1 on Receipt],mt2.[LSC Order],um.[Description]";
 
             if (LSCVersion >= new Version("20.3"))
                 sqlcolumns += ",mt2.[LSC Ecom Selection]";
@@ -194,6 +195,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 ShortDescription = SQLHelper.GetString(reader["Code"]),
                 QtyPrUOM = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure"),
+                Length = SQLHelper.GetDecimal(reader, "Length"),
+                Width = SQLHelper.GetDecimal(reader, "Width"),
+                Height = SQLHelper.GetDecimal(reader, "Height"),
+                Cubage = SQLHelper.GetDecimal(reader, "Cubage"),
+                Weight = SQLHelper.GetDecimal(reader, "Weight"),
                 Selection = SQLHelper.GetInt32(reader["LSC POS Selection"]),
                 CountAsOne = SQLHelper.GetBool(reader["LSC Count as 1 on Receipt"]),
                 Order = SQLHelper.GetInt32(reader["LSC Order"])

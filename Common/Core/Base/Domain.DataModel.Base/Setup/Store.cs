@@ -381,6 +381,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum StoreGetType
+    {
+        [EnumMember]
+        All,
+        [EnumMember]
+        ClickAndCollect,
+        [EnumMember]
+        WebStore
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class SourcingLocation : Entity
     {
         [DataMember]

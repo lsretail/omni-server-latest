@@ -143,7 +143,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             // get records
             string sql = GetSQL(true, 0) + sqlcolumnsinv + sqlfrominv + string.Format(" WHERE mt.[Terminal No_]='{0}'", terminalId);
             bool foundmystore = false;
-            string lastKey;
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -156,7 +155,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            ReplStore store = ReaderToStore(reader, true, out lastKey);
+                            ReplStore store = ReaderToStore(reader, true, out string lastKey);
                             list.Add(store);
                             if (store.Id.Equals(storeId))
                                 foundmystore = true;
@@ -169,7 +168,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             if (foundmystore == false)
             {
-                logger.Debug(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
+                logger.Warn(config.LSKey.Key, "My store not found in setup, try to load data for " + storeId);
 
                 ReplStore st = StoreGetById(storeId);
                 if (st != null)
@@ -204,7 +203,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return store;
         }
 
-        public Store StoreLoyGetById(string storeId, bool includeDetails)
+        public Store StoreLoyGetById(string storeId, bool inclDetails)
         {
             Store store = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -221,7 +220,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            store = ReaderToLoyStore(reader, includeDetails);
+                            store = ReaderToLoyStore(reader, inclDetails);
                         }
                         reader.Close();
                     }
@@ -231,15 +230,25 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return store;
         }
 
-        public List<Store> StoreLoyGetAll(bool clickAndCollectOnly)
+        public List<Store> StoreLoyGetAll(StoreGetType storeType, bool inclDetails)
         {
             List<Store> stores = new List<Store>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
-                                          ((clickAndCollectOnly) ? " WHERE mt.[Click and Collect]=1" : string.Empty) + 
+                    string type = string.Empty;
+                    switch (storeType)
+                    {
+                        case StoreGetType.ClickAndCollect:
+                            type = " WHERE mt.[Click and Collect]=1";
+                            break;
+                        case StoreGetType.WebStore:
+                            type = " WHERE mt.[Web Store]=1";
+                            break;
+                    }
+
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + type +
                                           " ORDER BY mt.[Name]";
                     TraceSqlCommand(command);
                     connection.Open();
@@ -247,7 +256,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            stores.Add(ReaderToLoyStore(reader, true));
+                            stores.Add(ReaderToLoyStore(reader, inclDetails));
                         }
                         reader.Close();
                     }
@@ -540,7 +549,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 WebOmniTerminal = SQLHelper.GetString(reader["Web Store POS Terminal"]),
                 WebOmniStaff = SQLHelper.GetString(reader["Web Store Staff ID"]),
                 HospSalesTypes = GetSalesTypes(SQLHelper.GetString(reader["Sales Type Filter"])),
-                SourcingLocations = GetSourcingLocation(SQLHelper.GetString(reader["No_"])),
 
                 Address = new Address()
                 {
@@ -565,8 +573,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 store.UseSourcingLocation = SQLHelper.GetBool(reader["Calc Inv for Sourcing Location"]);
             }
 
-            ImageRepository imgrepo = new ImageRepository(config);
-            store.Images = imgrepo.ImageGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, includeDetails);
+            if (includeDetails)
+            {
+                store.SourcingLocations = GetSourcingLocation(SQLHelper.GetString(reader["No_"]));
+            }
             return store;
         }
     }

@@ -35,7 +35,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Code],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location],mt.[Last Date Modified]" +
+                    command.CommandText = "SELECT mt.[Code] AS [ImgID],tm.[ID],0 as [Display Order],mt.[Type],mt.[Image Location],mt.[Last Date Modified]" +
                                           ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                                           " FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                                           "LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]=@cmp " +
@@ -49,7 +49,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         if (reader.Read())
                         {
-                            view = ReaderToMediaImage(reader, includeBlob);
+                            view = ReaderToImage(reader, includeBlob);
                         }
                         reader.Close();
                     }
@@ -99,7 +99,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 if (imgCount > 0)
                     sqlcnt = " TOP(" + imgCount.ToString() + ") ";
 
-                string sql = "SELECT " + sqlcnt + "tm.[ID],mt.[Type],mt.[Image Location],il.[Image Id],il.[Display Order],mt.[Last Date Modified]" +
+                string sql = "SELECT " + sqlcnt + "il.[Image Id] AS [ImgID],tm.[ID],il.[Display Order],mt.[Type],mt.[Image Location],mt.[Last Date Modified]" +
                             ((includeBlob) ? ",tm.[Content],tm.[Height],tm.[Width]" : string.Empty) +
                              sqlimgfrom + " JOIN [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] il ON mt.[Code]=il.[Image Id]" +
                              " LEFT JOIN [Tenant Media Set] tms ON tms.[ID]=mt.[Image Mediaset] AND tms.[Company Name]='" + navOrgCompanyName + "'" +
@@ -126,7 +126,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         {
                             while (reader.Read())
                             {
-                                list.Add(ReaderToImage(reader, includeBlob, true));
+                                list.Add(ReaderToImage(reader, includeBlob));
                             }
                             reader.Close();
                         }
@@ -141,38 +141,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
         }
 
-        private ImageView ReaderToImage(SqlDataReader reader, bool includeblob, bool media)
+        private ImageView ReaderToImage(SqlDataReader reader, bool includeblob)
         {
             ImageView view = new ImageView()
             {
-                Id = SQLHelper.GetString(reader["Image Id"]),
-                DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
-                Location = SQLHelper.GetString(reader["Image Location"]),
-                LocationType = (LocationType)SQLHelper.GetInt32(reader["Type"]),
-                ModifiedTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Date Modified"]), config.IsJson)
-            };
-
-            if (includeblob)
-            {
-                if (media)
-                {
-                    view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Content"] as byte[]);
-                    view.ImgSize = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
-                    view.MediaId = SQLHelper.GetGuid(reader["ID"]);
-                }
-                else
-                {
-                    view.ImgBytes = ImageConverter.NAVUnCompressImage(reader["Image Blob"] as byte[]);
-                }
-            }
-            return view;
-        }
-
-        private ImageView ReaderToMediaImage(SqlDataReader reader, bool includeblob)
-        {
-            ImageView view = new ImageView()
-            {
-                Id = SQLHelper.GetString(reader["Code"]),
+                Id = SQLHelper.GetString(reader["ImgID"]),
                 MediaId = SQLHelper.GetGuid(reader["ID"]),
                 DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
                 Location = SQLHelper.GetString(reader["Image Location"]),

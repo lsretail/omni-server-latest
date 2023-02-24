@@ -560,23 +560,26 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return NavWSBase.StoreHoursGetByStoreId(storeId, offset);
         }
 
-        public virtual Store StoreGetById(string id, bool details, Statistics stat)
+        public virtual Store StoreGetById(string id, Statistics stat)
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
-            Store store = rep.StoreLoyGetById(id, details);
+            Store store = rep.StoreLoyGetById(id);
             if (store != null)
                 store.StoreHours = StoreHoursGetByStoreId(id);
             return store;
         }
 
-        public virtual List<Store> StoresGetAll(bool clickAndCollectOnly, Statistics stat)
+        public virtual List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, Statistics stat)
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
-            List<Store> stores = rep.StoreLoyGetAll(clickAndCollectOnly);
-            foreach (Store store in stores)
+            List<Store> stores = rep.StoreLoyGetAll(storeType);
+            if (inclDetails)
             {
-                store.StoreHours = StoreHoursGetByStoreId(store.Id);
-                store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
+                foreach (Store store in stores)
+                {
+                    store.StoreHours = StoreHoursGetByStoreId(store.Id);
+                    store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
+                }
             }
             return stores;
         }

@@ -147,7 +147,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     NoOfPersons = rec.NoPersons,
                     Comment = rec.Comment,
                     EMail = rec.Email,
-                    Balance = string.Concat(rec.Balance),
+                    Balance = (rec.Balance != null) ? string.Concat(rec.Balance) : string.Empty,
                     CustomerAccount = rec.CustomerAccount,
                     DepositsBalance = rec.DepositsBalance,
                     GroupNo = rec.GroupNo,

@@ -682,7 +682,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                           "WHERE [Voucher No_]=mt.[Entry Code] AND [Voucher Type]=mt.[Entry Type]) AS Amt," +
                                           "(SELECT [LCY Code] FROM [" + navCompanyName + "General Ledger Setup]) AS Cur2 " +
                                           "FROM [" + navCompanyName + "POS Data Entry] mt " +
-                                          "JOIN [" + navCompanyName + "Transaction Header] li ON li.[Receipt No_]=mt.[Created by Receipt No_] " +
+                                          "LEFT JOIN [" + navCompanyName + "Transaction Header] li ON li.[Receipt No_]=mt.[Created by Receipt No_] " +
                                           "WHERE mt.[Entry Type]=@type AND mt.[Entry Code]=@id";
 
                     command.Parameters.AddWithValue("@id", cardId);

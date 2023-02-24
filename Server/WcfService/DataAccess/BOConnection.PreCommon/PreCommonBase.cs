@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using System.Linq;
+using System.Web;
 using System.Xml;
 using System.Xml.Linq;
 using System.Net.Security;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
 using LSRetail.Omni.Domain.DataModel.Base;
-using System.Web;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -212,6 +212,76 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             NavVersionToUse(false, out string cVer);
         }
 
+        public string SendToOData(string command, string data)
+        {
+            try
+            {
+                Uri url = new Uri(string.Format("{0}/{1}?company={2}", config.SettingsGetByKey(ConfigKey.BOODataUrl), command, NavCompany));
+                HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+                httpWebRequest.ContentType = "application/json";
+                httpWebRequest.Method = "POST";
+                httpWebRequest.PreAuthenticate = true;
+                httpWebRequest.AllowAutoRedirect = true;
+
+                string token = config.SettingsGetByKey(ConfigKey.Central_Token);
+                string protocol = config.SettingsGetByKey(ConfigKey.BOProtocol);
+                if (protocol.ToUpper().Equals("S2S") && string.IsNullOrEmpty(token) == false)
+                {
+                    httpWebRequest.Headers.Add("Authorization", token);
+                }
+                else
+                {
+                    //check if domain is part of the user name
+                    string username = config.SettingsGetByKey(ConfigKey.BOUser);
+                    string password = config.SettingsGetByKey(ConfigKey.BOPassword);
+
+                    //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
+                    if (DecryptConfigValue.IsEncryptedPwd(password))
+                    {
+                        password = DecryptConfigValue.DecryptString(password);
+                    }
+
+                    //check if domain is part of the config.UserName
+                    string domain = String.Empty;
+                    if (username.Contains("/") || username.Contains(@"\"))
+                    {
+                        username = username.Replace(@"/", @"\");
+                        string[] splitter = username.Split('\\');
+                        domain = splitter[0];
+                        username = splitter[1];
+                    }
+
+                    if (string.IsNullOrWhiteSpace(username) == false && string.IsNullOrWhiteSpace(password) == false)
+                    {
+                        httpWebRequest.Credentials = new NetworkCredential(username, password, domain);
+                    }
+                }
+
+                logger.Debug(config.LSKey.Key, "OData Req Sent to:{0} ReqData:{1}", url.LocalPath, data);
+                using (StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+                {
+                    streamWriter.Write(data);
+                    streamWriter.Flush();
+                    streamWriter.Close();
+                }
+
+                string ret = string.Empty;
+                HttpWebResponse httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
+                {
+                    ret = streamReader.ReadToEnd();
+                }
+
+                logger.Debug(config.LSKey.Key, "OData Result:[{0}]", ret);
+                return ret;
+            }
+            catch (Exception ex)
+            {
+                logger.Error(config.LSKey.Key, ex);
+                return "ERROR:" + ex.Message;
+            }
+        }
+
         public bool ResetReplication(bool fullreplication, string lastkey)
         {
             if (fullreplication && (string.IsNullOrEmpty(lastkey) || lastkey == "0"))
@@ -346,6 +416,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     string vv1 = retailVersion.Substring(st + 1, ed - st - 1);
                     LSCVersion = new Version(vv1);
                     navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
+                }
+
+                string asm = ConfigSetting.GetString("BOConnection.AssemblyName").ToLower();
+                if (asm.Contains("navws") && LSCVersion >= new Version("21.3"))
+                {
+                    if (config.SettingsKeyExists(ConfigKey.BOODataUrl) == false)
+                        throw new LSOmniServiceException(StatusCode.NavODataError, "9001", "BOConnection.Nav.ODataUrl is missing from Appsettings file");
+
+                    string ourl = config.SettingsGetByKey(ConfigKey.BOODataUrl);
+                    if (string.IsNullOrEmpty(ourl))
+                        throw new LSOmniServiceException(StatusCode.NavODataError, "9002", "BOConnection.Nav.ODataUrl is empty in Appsettings file");
+
+                    string ret = SendToOData("GetMemberContactInfo_GetRequestDef", "{ }");
+                    logger.Debug(config.LSKey.Key, "Central OData Response > " + ret);
+                    if (ret.StartsWith("ERROR:"))
+                        throw new LSOmniServiceException(StatusCode.NavODataError, "9003", ret);
                 }
 
                 logger.Debug(config.LSKey.Key, "appVer:{0} appBuild:{1} retailVer:{2} retailCopyright:{3} NavVersionToUse:{4}",

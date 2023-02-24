@@ -49,7 +49,7 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ContactGet(searchType, searchValue, stat);
         }
 
-        public virtual MemberContact ContactGetByCardId(string cardId, bool includeDetails, int numberOfTrans, Statistics stat)
+        public virtual MemberContact ContactGetByCardId(string cardId, int numberOfTrans, Statistics stat)
         {
             if(string.IsNullOrWhiteSpace(cardId))
                 throw new LSOmniException(StatusCode.CardIdInvalid, "cardId can not be empty or null");
@@ -61,21 +61,18 @@ namespace LSOmni.BLL.Loyalty
             contact.LoggedOnToDevice = new Device();
             contact.LoggedOnToDevice.SecurityToken = config.SecurityToken;
 
-            if (includeDetails)
-            {
-                long totalPoints = BOLoyConnection.MemberCardGetPoints(cardId, stat);
-                contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
+            long totalPoints = BOLoyConnection.MemberCardGetPoints(cardId, stat);
+            contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
 
-                contact.Profiles = BOLoyConnection.ProfileGetByCardId(cardId, stat);
-                contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(cardId, string.Empty, string.Empty, stat);
-                contact.SalesEntries = BOLoyConnection.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, numberOfTrans, stat);
+            contact.Profiles = BOLoyConnection.ProfileGetByCardId(cardId, stat);
+            contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(cardId, string.Empty, string.Empty, stat);
+            contact.SalesEntries = BOLoyConnection.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, numberOfTrans, stat);
 
-                NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
-                contact.Notifications = notificationBLL.NotificationsGetByCardId(cardId, 5000, stat);
+            NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
+            contact.Notifications = notificationBLL.NotificationsGetByCardId(cardId, 5000, stat);
 
-                OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
-                contact.OneLists = oneListBLL.OneListGet(contact, true, stat);
-            }
+            OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
+            contact.OneLists = oneListBLL.OneListGet(contact, true, stat);
             return contact;
         }
 

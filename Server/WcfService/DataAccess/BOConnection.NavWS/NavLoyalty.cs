@@ -163,13 +163,13 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             switch (searchType)
             {
                 case ContactSearchType.Email:
-                    return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, string.Empty, searchValue, false, stat);
+                    return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, string.Empty, searchValue, stat);
                 case ContactSearchType.CardId:
-                    return LSCWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, false, stat);
+                    return LSCWSBase.ContactGet(string.Empty, string.Empty, searchValue, string.Empty, string.Empty, stat);
                 case ContactSearchType.UserName:
-                    return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, false, stat);
+                    return LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, searchValue, string.Empty, stat);
                 case ContactSearchType.ContactNumber:
-                    return LSCWSBase.ContactSearch(ContactSearchType.ContactNumber, searchValue, 1, stat).FirstOrDefault();
+                    return LSCWSBase.ContactSearch(ContactSearchType.ContactNumber, searchValue, 1, true, stat).FirstOrDefault();
             }
             return null;
         }
@@ -306,7 +306,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     if (NAVVersion < new Version("17.5"))
                         cont = NavWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, false);
                     else
-                        cont = LSCWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, false, stat);
+                        cont = LSCWSBase.ContactGet(string.Empty, string.Empty, search, string.Empty, string.Empty, stat);
 
                     if (cont != null)
                         list.Add(cont);
@@ -315,14 +315,17 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     if (NAVVersion < new Version("17.5"))
                         cont = NavWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, false);
                     else
-                        cont = LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, false, stat);
+                        cont = LSCWSBase.ContactGet(string.Empty, string.Empty, string.Empty, search, string.Empty, stat);
 
                     if (cont != null)
                         list.Add(cont);
                     break;
                 default:
-                    if (exact == false)
-                        search = "*" + search + "*";
+                    if (NAVVersion < new Version("21.3"))
+                    {
+                        if (exact == false)
+                            search = "*" + search + "*";
+                    }
 
                     if (NAVVersion < new Version("17.5"))
                     {
@@ -336,13 +339,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     }
                     else
                     {
-                        List<MemberContact> tmplist = LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned, stat);
-                        foreach (MemberContact c in tmplist)
+                        List<MemberContact> tmplist = LSCWSBase.ContactSearch(searchType, search, maxNumberOfRowsReturned, exact, stat);
+                        if (NAVVersion < new Version("21.3"))
                         {
-                            cont = LSCWSBase.ContactGet(c.Id, c.Account.Id, string.Empty, string.Empty, string.Empty, false, stat);
-                            if (cont != null)
-                                list.Add(cont);
+                            foreach (MemberContact c in tmplist)
+                            {
+                                cont = LSCWSBase.ContactGet(c.Id, c.Account.Id, string.Empty, string.Empty, string.Empty, stat);
+                                if (cont != null)
+                                    list.Add(cont);
+                            }
                         }
+                        else
+                        {
+                            list = tmplist;
+                        }    
                     }
                     break;
             }
@@ -617,11 +627,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 SalesEntry e;
                 if (entry.IdType == DocumentIdType.Receipt)
                 {
-                    e = SalesEntryGet(string.Empty, Convert.ToInt32(entry.Id), entry.StoreId, entry.TerminalId, entry.IdType, false, stat);
+                    e = SalesEntryGet(string.Empty, Convert.ToInt32(entry.Id), entry.StoreId, entry.TerminalId, entry.IdType, stat);
                 }
                 else
                 {
-                    e = SalesEntryGet(entry.Id, 0, string.Empty, string.Empty, entry.IdType, false, stat);
+                    e = SalesEntryGet(entry.Id, 0, string.Empty, string.Empty, entry.IdType, stat);
                 }
                 e.Lines.Clear();
                 e.DiscountLines.Clear();
@@ -636,7 +646,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
         {
-            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type, false, stat);
+            return SalesEntryGet(entryId, 0, string.Empty, string.Empty, type, stat);
         }
 
         public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
@@ -649,7 +659,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             throw new NotImplementedException();
         }
 
-        public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type, bool getimages, Statistics stat)
+        public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
             {
@@ -659,10 +669,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
 
             SalesEntry entry;
-            if (type == DocumentIdType.Receipt)
-                entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId, getimages, stat);
+            if (type == DocumentIdType.Receipt || type == DocumentIdType.HospOrder)
+                entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId, stat);
             else
-                entry = LSCWSBase.OrderGet(docId, getimages, stat);
+                entry = LSCWSBase.OrderGet(docId, stat);
 
             if (entry.Payments != null)
             {
@@ -823,14 +833,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ImagesGetByLink(tableName, key1, key2, key3);
 
-            return LSCWSBase.ImagesGetByLink(tableName, key1, key2, key3, true, stat);
+            return LSCWSBase.ImagesGetByLink(tableName, key1, key2, key3, includeBlob, stat);
         }
 
         #endregion
 
         #region Store
 
-        public virtual Store StoreGetById(string id, bool details, Statistics stat)
+        public virtual Store StoreGetById(string id, Statistics stat)
         {
             int offset = config.SettingsIntGetByKey(ConfigKey.Timezone_HoursOffset);
             
@@ -842,31 +852,37 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
             else
             {
-                store = LSCWSBase.StoreGetById(id, details, stat);
+                store = LSCWSBase.StoreGetById(id, stat);
                 store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(id, offset, stat);
             }
             return store;
         }
 
-        public virtual List<Store> StoresGetAll(bool clickAndCollectOnly, Statistics stat)
+        public virtual List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, Statistics stat)
         {
             int offset = config.SettingsIntGetByKey(ConfigKey.Timezone_HoursOffset);
 
             List<Store> stores;
             if (NAVVersion < new Version("17.5"))
             {
-                stores = NavWSBase.StoresGet(clickAndCollectOnly, true);
-                foreach (Store store in stores)
+                stores = NavWSBase.StoresGet(storeType, inclDetails);
+                if (inclDetails)
                 {
-                    store.StoreHours = NavWSBase.StoreHoursGetByStoreId(store.Id, offset);
+                    foreach (Store store in stores)
+                    {
+                        store.StoreHours = NavWSBase.StoreHoursGetByStoreId(store.Id, offset);
+                    }
                 }
             }
             else
             {
-                stores = LSCWSBase.StoresGet(clickAndCollectOnly, true, stat);
-                foreach (Store store in stores)
+                stores = LSCWSBase.StoresGet(storeType, inclDetails, stat);
+                if (inclDetails)
                 {
-                    store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(store.Id, offset, stat);
+                    foreach (Store store in stores)
+                    {
+                        store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(store.Id, offset, stat);
+                    }
                 }
             }
             return stores;

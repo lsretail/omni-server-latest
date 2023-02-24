@@ -50,6 +50,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         public string CustomerId { get; set; }
         [DataMember]
         public Scheme Scheme { get; set; } //Member scheme
+
+        public string SchemeCode { get; set; }
+        public string ClubCode { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

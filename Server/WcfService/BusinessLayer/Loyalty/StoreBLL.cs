@@ -14,19 +14,31 @@ namespace LSOmni.BLL.Loyalty
         {
         }
 
-        public virtual List<Store> StoresGetAll(bool clickAndCollectOnly, Statistics stat)
+        public virtual List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, bool inclImages, Statistics stat)
         {
-            return BOLoyConnection.StoresGetAll(clickAndCollectOnly, stat);
+            List<Store> stores = BOLoyConnection.StoresGetAll(storeType, inclDetails, stat);
+            if (inclImages || inclDetails)
+            {
+                ImageBLL imgBLL = new ImageBLL(config);
+                foreach (Store store in stores)
+                {
+                    store.Images = imgBLL.ImagesGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, inclImages, stat);
+                }
+            }
+            return stores;
         }
 
-        public virtual Store StoreGetById(string id, bool details, Statistics stat)
+        public virtual Store StoreGetById(string id, bool inclImages, Statistics stat)
         {
-            return BOLoyConnection.StoreGetById(id, details, stat);
+            Store store = BOLoyConnection.StoreGetById(id, stat);
+            ImageBLL imgBLL = new ImageBLL(config);
+            store.Images = imgBLL.ImagesGetByKey("LSC Store", store.Id, string.Empty, string.Empty, 0, inclImages, stat);
+            return store;
         }
 
         public virtual List<Store> StoresGetByCoordinates(double latitude, double longitude, double maxDistance, Statistics stat)
         {
-            List<Store> list = BOLoyConnection.StoresGetAll(true, stat);
+            List<Store> list = BOLoyConnection.StoresGetAll(StoreGetType.ClickAndCollect, true, stat);
             Store.Position startpos = new Store.Position()
             {
                 Latitude = latitude,

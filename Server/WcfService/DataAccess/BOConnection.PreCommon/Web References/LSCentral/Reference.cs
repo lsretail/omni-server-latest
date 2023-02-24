@@ -44478,6 +44478,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal qtyLeftField;
         
+        private string vendorTrustLevelField;
+        
         public POSTransInvHeader1() {
             this.expectedDateField = new System.DateTime(0);
             this.noofItemsField = ((decimal)(0m));
@@ -44597,6 +44599,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.qtyLeftField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VendorTrustLevel {
+            get {
+                return this.vendorTrustLevelField;
+            }
+            set {
+                this.vendorTrustLevelField = value;
             }
         }
     }
@@ -46129,6 +46141,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private decimal quickdefaultQuantityField;
         
+        private string vendorTrustLevelField;
+        
         public GetDocumentPOSTransInvHeader() {
             this.totalQtyField = ((decimal)(0m));
             this.qtyLeftField = ((decimal)(0m));
@@ -46291,6 +46305,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.quickdefaultQuantityField = value;
             }
         }
+        
+        /// <remarks/>
+        public string VendorTrustLevel {
+            get {
+                return this.vendorTrustLevelField;
+            }
+            set {
+                this.vendorTrustLevelField = value;
+            }
+        }
     }
     
     /// <remarks/>
@@ -46370,6 +46394,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private decimal totalQtyField;
         
         private decimal qtyLeftField;
+        
+        private string vendorTrustLevelField;
         
         public POSTransInvHeader() {
             this.expectedDateField = new System.DateTime(0);
@@ -46490,6 +46516,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.qtyLeftField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string VendorTrustLevel {
+            get {
+                return this.vendorTrustLevelField;
+            }
+            set {
+                this.vendorTrustLevelField = value;
             }
         }
     }

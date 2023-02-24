@@ -8,6 +8,7 @@ using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base;
+using System.Collections.Generic;
 
 namespace LSOmni.BLL
 {
@@ -91,6 +92,38 @@ namespace LSOmni.BLL
                 }
             }
             return imgSizeView;
+        }
+
+        public List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
+        {
+            //get the original image from Image table
+            List<ImageView> images = BOLoyConnection.ImagesGetByKey(tableName, key1, key2, key3, imgCount, includeBlob, stat);
+            if (images == null || images.Count == 0)
+                return new List<ImageView>();
+
+            if (includeBlob == false)
+                return images;
+
+            foreach (ImageView iv in images)
+            {
+                ImageFormat imgFormat = Common.Util.ImageConverter.DefaultImgFormat;
+                iv.Format = imgFormat.ToString();
+                iv.Image = base.Base64GetFromByte(iv.ImgBytes, iv.ImgSize, imgFormat);
+                if (string.IsNullOrEmpty(iv.Image) == false)
+                {
+                    var bytes = Convert.FromBase64String(iv.Image);
+                    Image img = Common.Util.ImageConverter.ByteToImage(bytes);
+                    try
+                    {
+                        iv.AvgColor = Common.Util.ImageConverter.CalculateAverageColor(img);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Warn(config.LSKey.Key, "Failed to get AvgColor > " + ex.Message);
+                    }
+                }
+            }
+            return images;
         }
 
         //All original images are retrieved through this method. Can be from db, UNC or URL

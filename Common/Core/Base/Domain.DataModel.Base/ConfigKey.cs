@@ -13,6 +13,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         BOQryUrl = 5,
         BOProtocol = 6,
         BOTenant = 7,
+        BOODataUrl = 8,
 
         forgotpassword_code_encrypted = 10,
 

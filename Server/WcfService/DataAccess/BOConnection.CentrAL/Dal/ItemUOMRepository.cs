@@ -18,7 +18,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public ItemUOMRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt2.[POS Selection],mt2.[Count as 1 on Receipt],mt2.[Order],um.[Description]";
+            sqlcolumns = "mt.[Item No_],mt.[Code],mt.[Qty_ per Unit of Measure],mt.[Length],mt.[Width],mt.[Height],mt.[Cubage],mt.[Weight]," +
+                         "mt2.[POS Selection],mt2.[Count as 1 on Receipt],mt2.[Order],um.[Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Unit of Measure$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
                       "JOIN [" + navCompanyName + "Item Unit of Measure$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
@@ -188,6 +189,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Description = SQLHelper.GetString(reader["Description"]),
                 ShortDescription = SQLHelper.GetString(reader["Code"]),
                 QtyPrUOM = SQLHelper.GetDecimal(reader, "Qty_ per Unit of Measure"),
+                Length = SQLHelper.GetDecimal(reader, "Length"),
+                Width = SQLHelper.GetDecimal(reader, "Width"),
+                Height = SQLHelper.GetDecimal(reader, "Height"),
+                Cubage = SQLHelper.GetDecimal(reader, "Cubage"),
+                Weight = SQLHelper.GetDecimal(reader, "Weight"),
                 Selection = SQLHelper.GetInt32(reader["POS Selection"]),
                 CountAsOne = SQLHelper.GetBool(reader["Count as 1 on Receipt"]),
                 Order = SQLHelper.GetInt32(reader["Order"])

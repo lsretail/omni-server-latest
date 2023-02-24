@@ -688,7 +688,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                           "WHERE [Voucher No_]=mt.[Entry Code] AND [Voucher Type]=mt.[Entry Type]) AS Amt," +
                                           "(SELECT [LCY Code] FROM [" + navCompanyName + "General Ledger Setup$437dbf0e-84ff-417a-965d-ed2bb9650972]) AS Cur2 " +
                                           "FROM [" + navCompanyName + "LSC POS Data Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "JOIN [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] li ON li.[Receipt No_]=mt.[Created by Receipt No_] " +
+                                          "LEFT JOIN [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] li ON li.[Receipt No_]=mt.[Created by Receipt No_] " +
                                           "WHERE mt.[Entry Type]=@type AND mt.[Entry Code]=@id";
 
                     command.Parameters.AddWithValue("@id", cardId);

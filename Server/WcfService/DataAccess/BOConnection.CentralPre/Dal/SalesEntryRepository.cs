@@ -65,13 +65,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] WHERE mt.CancelledOrder=1 " +
                         "UNION " +
                         "SELECT mt.[Queue Counter] AS [Document ID],mt.[Store No_] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
-                        "'' AS [External ID],mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
+                        ((LSCVersion >= new Version("21.2")) ? "fab.[External ID]" : "'' AS [External ID]") + ",mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
                         "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
-                        "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],'' AS [Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
+                        ((LSCVersion >= new Version("21.2")) ? "fab.[Client Name] AS [Ship-to Name],fab.[Client Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],fab.[Client Phone No_] AS [Ship-to Phone No_],fab.[Client E-mail] AS [Ship-to Email]," :
+                        "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],") +
+                        "'' AS [Ship-to House_Apartment No_],0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        ((LSCVersion >= new Version("21.2")) ? "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " : " ") +
                         "WHERE mt.[Entry Status]=0" +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " + sqlwhere +
@@ -105,13 +107,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "co.[External ID] AS [COExtId],co.[Created at Store]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
-                        "fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address]," +
                         "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]" +
-                        ((LSCVersion >= new Version("21.2")) ? ",fab.[External ID] " : " ") +
+                        ((LSCVersion >= new Version("21.2")) ? ",fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address],fab.[External ID] " : " ") +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
-                        "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " +
+                        ((LSCVersion >= new Version("21.2")) ? "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " : " ") +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -207,13 +208,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[Receipt No_],mt.[Queue Counter],mt.[Store No_],mt.[POS Terminal No_],mt.[Staff ID],mt.[Customer No_]," +
                         "mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund],do.[Phone No_],do.[Address],do.[Address 2],do.[City],do.[Name]," +
-                        "fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address]," +
                         "(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],st.[Name] AS [StName],mt.[Trans_ Currency Code]" +
-                        ((LSCVersion >= new Version("21.2")) ? ",fab.[External ID] " : " ") +
+                        ((LSCVersion >= new Version("21.2")) ? ",fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address],fab.[External ID] " : " ") +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
-                        "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " +
+                        ((LSCVersion >= new Version("21.2")) ? "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " : " ") +
                         "WHERE mt.[Receipt No_]=@id";
 
                     command.Parameters.AddWithValue("@id", entryId);
@@ -288,15 +288,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Created at Store] WHERE mt.CancelledOrder=1 " +
                         "UNION " +
                         "SELECT DISTINCT '' AS [Document ID],mt.[Store No_] AS [StCreate],mt.[Store No_] AS [Store],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
-                        "'' AS [External ID],mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
+                        ((LSCVersion >= new Version("21.2")) ? "fab.[External ID]" : "'' AS [External ID]") + ",mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
                         "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
-                        "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],'' AS [Ship-to House_Apartment No_]," +
-                        "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
+                        ((LSCVersion >= new Version("21.2")) ? "fab.[Client Name] AS [Ship-to Name],fab.[Client Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],fab.[Client Phone No_] AS [Ship-to Phone No_],fab.[Client E-mail] AS [Ship-to Email]," :
+                        "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],") +
+                        "'' AS [Ship-to House_Apartment No_],0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC POS Transaction$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "JOIN [" + navCompanyName + "LSC POS Trans_ Line$5ecfc871-5d82-43f1-9c54-59685e82318d] tl ON tl.[Receipt No_]=mt.[Receipt No_] " +
                         "JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=tl.[Number] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Delivery Order$5ecfc871-5d82-43f1-9c54-59685e82318d] do ON do.[Order No_]=mt.[Receipt No_] " +
+                        ((LSCVersion >= new Version("21.2")) ? "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " : " ") +
                         "WHERE UPPER(i.[Description]) LIKE UPPER(@search) AND mt.[Entry Status]=0" +
                         ") AS SalesEntries " +
                         "WHERE [Member Card No_]=@id " +
@@ -686,18 +688,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             };
 
-            string n = SQLHelper.GetString(reader["Client Name"]);
-            if (string.IsNullOrEmpty(n) == false)
+            if (LSCVersion >= new Version("21.2"))
             {
-                entry.ContactName = n;
+                entry.ContactName = SQLHelper.GetString(reader["Client Name"]);
                 entry.ContactEmail = SQLHelper.GetString(reader["Client E-mail"]);
+                entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
                 entry.ContactAddress = new Address()
                 {
                     Address1 = SQLHelper.GetString(reader["Client Address"]),
                     PhoneNumber = SQLHelper.GetString(reader["Client Phone No_"])
                 };
-                if (LSCVersion >= new Version("21.2"))
-                    entry.ExternalId = SQLHelper.GetString(reader["External ID"]);
             }
 
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);

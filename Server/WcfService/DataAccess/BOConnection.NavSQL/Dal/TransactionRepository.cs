@@ -209,7 +209,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             trans.Terminal.Staff = new Staff(SQLHelper.GetString(reader["Staff ID"]));
 
             StoreRepository strep = new StoreRepository(config, NavVersion);
-            trans.Terminal.Store = strep.StoreLoyGetById(SQLHelper.GetString(reader["Store No_"]), false);
+            trans.Terminal.Store = strep.StoreLoyGetById(SQLHelper.GetString(reader["Store No_"]));
 
             DateTime navdate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson);
             DateTime navtime = ConvertTo.SafeJsonTime(SQLHelper.GetDateTime(reader["Time"]), config.IsJson);

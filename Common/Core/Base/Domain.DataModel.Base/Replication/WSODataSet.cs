@@ -172,4 +172,71 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string FieldName { get; set; }
     }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public class WSODataCollection : IDisposable
+    {
+        /// <summary>
+        /// Vendor or Manufacturer
+        /// </summary>
+        public WSODataCollection()
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (DataCollection != null)
+                    DataCollection.Clear();
+            }
+        }
+
+        public ReplODataSetRecRef GetDataSet(int setId)
+        {
+            ReplODataSetTableData data = DataCollection.Find(s => s.DynDataSet.DataSetID == setId);
+            if (data == null)
+                return null;
+            return data.DynDataSet;
+        }
+
+        [DataMember]
+        public List<ReplODataSetTableData> DataCollection { get; set; }
+    }
+
+    public class WSODataFlowField : IDisposable
+    {
+        /// <summary>
+        /// Vendor or Manufacturer
+        /// </summary>
+        public WSODataFlowField()
+        {
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        public int TableNo { get; set; }
+        public string Key { get; set; }
+        public int FieldNo { get; set; }
+        public string FieldName { get; set; }
+        public decimal DecimalValue { get; set; }
+    }
+
 }

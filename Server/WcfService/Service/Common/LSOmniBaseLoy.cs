@@ -112,7 +112,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, $"cardId:{cardId}");
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
-                MemberContact contact = contactBLL.ContactGetByCardId(cardId, true, numberOfTransReturned, stat);
+                MemberContact contact = contactBLL.ContactGetByCardId(cardId, numberOfTransReturned, stat);
                 contact.Environment.Version = this.Version();
                 ContactSetLocation(contact);
                 if (config.IsJson && logger.IsDebugEnabled)
@@ -1333,17 +1333,26 @@ namespace LSOmni.Service
 
         public virtual List<Store> StoresGetAll()
         {
+            logger.Debug(config.LSKey.Key, "StoresGetAll");
+            return StoresGet(StoreGetType.All, false, false);
+        }
+
+        public virtual List<Store> StoresGet(StoreGetType storeType, bool includeDetails, bool includeImages)
+        {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, "StoresGetAll");
+                logger.Debug(config.LSKey.Key, "StoresGet Type:{0} Det:{1} Img:{2}", storeType, includeDetails, includeImages);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                List<Store> storeList = storeBLL.StoresGetAll(false, stat);
-                foreach (Store st in storeList)
+                List<Store> storeList = storeBLL.StoresGetAll(storeType, includeDetails, includeImages, stat);
+                if (includeDetails)
                 {
-                    StoreSetLocation(st);
+                    foreach (Store st in storeList)
+                    {
+                        StoreSetLocation(st);
+                    }
                 }
                 return storeList;
             }
@@ -1358,7 +1367,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual Store StoreGetById(string storeId)
+        public virtual Store StoreGetById(string storeId, bool includeImages)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -1367,7 +1376,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "storeId:{0}", storeId);
 
                 StoreBLL storeBLL = new StoreBLL(config, clientTimeOutInSeconds);
-                Store store = storeBLL.StoreGetById(storeId, true, stat);
+                Store store = storeBLL.StoreGetById(storeId, includeImages, stat);
                 StoreSetLocation(store);
                 return store;
 

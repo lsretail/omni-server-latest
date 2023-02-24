@@ -944,7 +944,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 transDate = transaction.BeginDateTime.Value; //in xml 2013-04-24T17:02:20.197Z
 
             string transNumber = (string.IsNullOrWhiteSpace(transaction.TransactionNumber) ? "0" : transaction.TransactionNumber);
-            string receiptNumber = transaction.ReceiptNumber ?? string.Empty;
 
             string cardId = string.Empty;
             if (transaction.LoyaltyContact != null)
@@ -974,25 +973,25 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 StaffId = transaction.Terminal.Staff.Id.ToUpper(),
                 TransactionType = 2,
                 EntryStatus = (transaction.Voided) ? (int)EntryStatus.Voided : (int)EntryStatus.Normal,
-                ReceiptNo = receiptNumber,
+                ReceiptNo = XMLHelper.GetString(transaction.ReceiptNumber),
                 TransactionNo = ConvertTo.SafeInt(transNumber),
                 TransDate = transDate,
-                CurrencyCode = transaction.Terminal.Store.Currency.Id,
+                CurrencyCode = XMLHelper.GetString(transaction.Terminal.Store.Currency.Id),
                 CurrencyFactor = 1,
-                BusinessTAXCode = transaction.Terminal.Store.TaxGroupId ?? string.Empty,
-                CustomerId = (transaction.Customer == null) ? string.Empty : transaction.Customer.Id,
-                CustDiscGroup = (transaction.Customer == null) ? string.Empty : transaction.Customer.TaxGroup,
-                MemberCardNo = cardId,
+                BusinessTAXCode = XMLHelper.GetString(transaction.Terminal.Store.TaxGroupId),
+                CustomerId = (transaction.Customer == null) ? string.Empty : XMLHelper.GetString(transaction.Customer.Id),
+                CustDiscGroup = (transaction.Customer == null) ? string.Empty : XMLHelper.GetString(transaction.Customer.TaxGroup),
+                MemberCardNo = XMLHelper.GetString(cardId),
                 ManualTotalDiscAmount = manualTotalDisAmount,
                 ManualTotalDiscPercent = manualTotalDiscPercent,
                 NetAmount = transaction.NetAmount.Value,
                 GrossAmount = transaction.GrossAmount.Value,
                 LineDiscount = transaction.TotalDiscount.Value,
                 Payment = transaction.PaymentAmount.Value,
-                RefundedFromStoreNo = transaction.RefundedFromStoreNo ?? string.Empty,
-                RefundedFromPOSTermNo = transaction.RefundedFromTerminalNo ?? string.Empty,
+                RefundedFromStoreNo = XMLHelper.GetString(transaction.RefundedFromStoreNo),
+                RefundedFromPOSTermNo = XMLHelper.GetString(transaction.RefundedFromTerminalNo),
                 RefundedFromTransNo = ConvertTo.SafeInt(transaction.RefundedFromTransNo),
-                RefundedReceiptNo = transaction.RefundedReceiptNo ?? string.Empty,
+                RefundedReceiptNo = XMLHelper.GetString(transaction.RefundedReceiptNo),
                 SaleIsReturnSale = transaction.IsRefundByReceiptTransaction,
 
                 PriceGroupCode = string.Empty,
@@ -1094,7 +1093,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 EntryStatus = (int)entryStatus,
                 LineType = (int)lineType,
                 Number = itemId,
-                Barcode = barcode ?? string.Empty,
+                Barcode = XMLHelper.GetString(barcode),
                 CurrencyCode = currency.Id,
                 CurrencyFactor = 1,
                 VariantCode = XMLHelper.GetString(variantId),
@@ -1115,8 +1114,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 RecommendedItem = fromRecommend,
                 OrigTransLineNo = lineOrgNumber,
                 OrigTransNo = ConvertTo.SafeInt(orgTransNo),
-                OrigTransPos = orgTerminal ?? string.Empty,
-                OrigTransStore = orgStore ?? string.Empty,
+                OrigTransPos = XMLHelper.GetString(orgTerminal),
+                OrigTransStore = XMLHelper.GetString(orgStore),
 
                 CardOrCustNo = string.Empty,
                 TAXBusinessCode = string.Empty,
@@ -1589,7 +1588,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 EFTAuthCode = eftAuthCode,
                 EFTMessage = eftMessage,
                 EFTVerificationMethod = (int)verificationMethod,
-                EFTTransactionNo = eftTransactionId ?? string.Empty,
+                EFTTransactionNo = XMLHelper.GetString(eftTransactionId),
                 EFTAuthStatus = (int)eftAuthStatus,
                 EFTTransType = (int)paymentTransactionType,
 

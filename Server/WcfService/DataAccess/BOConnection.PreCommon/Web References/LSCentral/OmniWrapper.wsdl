@@ -1307,6 +1307,7 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="No.ofItems" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalQty" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="QtyLeft" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" name="VendorTrustLevel" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootGetDocumentList" mixed="true">
@@ -1334,6 +1335,7 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="No.OfCheckedRounds" type="int" />
           <element minOccurs="1" maxOccurs="1" name="QuantityMethod" type="string" />
           <element minOccurs="1" maxOccurs="1" default="0" name="QuickdefaultQuantity" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" name="VendorTrustLevel" type="string" />
         </sequence>
       </complexType>
       <complexType name="POSTrans.Inv.Lines">
@@ -1556,6 +1558,7 @@
           <element minOccurs="1" maxOccurs="1" default="0" name="No.ofItems" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="TotalQty" type="decimal" />
           <element minOccurs="1" maxOccurs="1" default="0" name="QtyLeft" type="decimal" />
+          <element minOccurs="0" maxOccurs="1" name="VendorTrustLevel" type="string" />
         </sequence>
       </complexType>
       <complexType name="RootGetItemDocument" mixed="true">
