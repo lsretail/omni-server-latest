@@ -3577,6 +3577,19 @@ namespace LSOmni.Service
 
         #endregion
 
+        #region PassCreator
+
+        /// <summary>
+        /// Create Wallet pass if it doesnt exist and return url to all to wallet
+        /// </summary>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        string CreateWalletPass(string cardId);
+
+        #endregion
+
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string MyCustomFunction(string data);
