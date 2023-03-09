@@ -70,5 +70,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         Cache_Image_DurationInMinutes = 1200,
 
         TenderType_Mapping = 1280,
+
+        //PassCreator
+        PassCreator_TemplateUid = 2001,
+        PassCreator_AuthorizationKey = 2002,
     }
 } 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-
+using System.Net;
 using LSOmni.BLL;
 using LSOmni.BLL.Loyalty;
 using LSOmni.Common.Util;
@@ -23,6 +23,9 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace LSOmni.Service
 {
@@ -2248,6 +2251,70 @@ namespace LSOmni.Service
             catch (Exception ex)
             {
                 HandleExceptions(ex, "accountNo:{0}", accountNo);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        #endregion
+
+        #region PassCreator
+
+        public virtual string CreateWalletPass(string cardId)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            string authorizationKey = config.SettingsGetByKey(ConfigKey.PassCreator_AuthorizationKey);
+            string templateId = config.SettingsGetByKey(ConfigKey.PassCreator_TemplateUid);
+            
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"CreateWalletPass cardId:{cardId}");
+
+                string passUrl = string.Empty;
+                var contact = ContactGetByCardId(cardId, 0);
+
+                //verify contact exists and get extra data
+                if (contact != null)
+                {
+                    //get existing pass
+                    var retrievePassClient = new RestClient($"https://app.passcreator.com/api/pass/{cardId}");
+
+                    var retrievePassRequest = new RestRequest(string.Empty, Method.GET);
+                    retrievePassRequest.AddOrUpdateHeader("Authorization", authorizationKey);
+                    retrievePassRequest.AddOrUpdateHeader("Content-Type", "application/json");
+
+                    var retrievePassResponse = retrievePassClient.Get(retrievePassRequest);
+
+                    if (retrievePassResponse.StatusCode == HttpStatusCode.OK && !string.IsNullOrEmpty(retrievePassResponse.Content))
+                    {
+                        var retrievePassDynamicObject = JsonConvert.DeserializeObject<dynamic>(retrievePassResponse.Content);
+                        return retrievePassDynamicObject.linkToPassPage;
+                    }
+
+                    //create pass
+                    var createPassClient = new RestClient($"https://app.passcreator.com/api/pass?passtemplate={templateId}&zapierStyle=true");
+
+                    var request = new RestRequest(Method.POST);
+                    request.AddOrUpdateHeader("Authorization", authorizationKey);
+                    request.AddOrUpdateHeader("Content-Type", "application/json");
+                    request.RequestFormat = DataFormat.Json;
+                    request.AddBody(new { userProvidedId = cardId, barcodeValue = cardId });
+
+                    var createPassResponse = createPassClient.Post(request); 
+                    
+                    var createPassDynamicResponse = JsonConvert.DeserializeObject<dynamic>(createPassResponse.Content);
+                    return createPassDynamicResponse.linkToPassPage;
+                }
+                
+                return passUrl;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, $"CreateWalletPass cardId:{cardId}");
                 return null; //never gets here
             }
             finally
