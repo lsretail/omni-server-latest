@@ -70,13 +70,13 @@
     <Compile Include="Util\XMLHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

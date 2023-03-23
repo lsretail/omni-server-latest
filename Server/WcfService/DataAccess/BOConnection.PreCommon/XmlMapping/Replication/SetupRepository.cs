@@ -172,15 +172,36 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
         {
             if (table == null || table.NumberOfValues == 0)
                 return 0;
-            
+
+            decimal posextamt = 0;
+            decimal posrelamt = 0;
+            decimal extamt = 0;
+            decimal relamt = 0;
+
             foreach (XMLFieldData field in table.FieldList)
             {
                 switch (field.FieldName)
                 {
-                    case "Relational Exch. Rate Amount": return ConvertTo.SafeDecimal(field.Values[0]);
+                    case "POS Exchange Rate Amount": posextamt = ConvertTo.SafeDecimal(field.Values[0]); break;
+                    case "POS Rel. Exch. Rate Amount": posrelamt = ConvertTo.SafeDecimal(field.Values[0]); break;
+                    case "Exchange Rate Amount": extamt = ConvertTo.SafeDecimal(field.Values[0]); break;
+                    case "Relational Exch. Rate Amount": relamt = ConvertTo.SafeDecimal(field.Values[0]); break;
                 }
             }
-            return 0;
+
+            decimal rate = 0;
+            if (posextamt != 0)
+            {
+                rate = ((1 / posextamt) * posrelamt);
+            }
+            else
+            {
+                if (extamt != 0)
+                {
+                    rate = ((1 / extamt) * relamt);
+                }
+            }
+            return rate;
         }
 
         public List<ShippingAgentService> GetShippingAgentServices(XMLTableData table)

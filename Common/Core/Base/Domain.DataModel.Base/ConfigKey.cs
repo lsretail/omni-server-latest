@@ -52,6 +52,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         Currency_Code = 1021,
         Currency_Culture = 1022,
+        Currency_LoyCode = 1023,
 
         LSNAV_Version = 1100,  //used to change LS Central version and fast load so no need to check every time
         Demo_Print_Enabled = 1110,

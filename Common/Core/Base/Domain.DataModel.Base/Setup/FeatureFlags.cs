@@ -117,6 +117,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "USE SECURITY CHECK":
                     flagName = FeatureFlagName.UseSecurityCheck;
                     break;
+                case "HIDE PRICE OF ITEM":
+                    flagName = FeatureFlagName.HidePriceOfItem;
+                    break;
+                case "HIDE ADD CREDIT CARD":
+                    flagName = FeatureFlagName.HideAddCreditCard;
+                    break;
+                case "HIDE SHOPPING SCREEN":
+                    flagName = FeatureFlagName.HideShoppingScreen;
+                    break;
 
                 //AUDKENNI SPG
                 case "AUDKENNI BASE URL":
@@ -287,6 +296,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         ShowCustomerQrCode = 218,
         ShowPointStatus = 219,
         UseSecurityCheck = 220,
+        HidePriceOfItem = 221,
+        HideAddCreditCard = 222,
+        HideShoppingScreen = 223,
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,

@@ -296,16 +296,28 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual decimal GetPointRate(Statistics stat)
+        public virtual decimal GetPointRate(string currency, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
+
             CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
-            ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById("LOY");
-            logger.StatisticEndSub(ref stat, index);
+            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+            if (string.IsNullOrEmpty(loyCur))
+                loyCur = "LOY";
+
+            ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById(loyCur);
             if (exchrate == null)
                 return 0;
 
-            return exchrate.CurrencyFactor;
+            decimal rate = exchrate.CurrencyFactor;
+            if (string.IsNullOrEmpty(currency) == false)
+            {
+                ReplCurrencyExchRate baseExchrate = rep.CurrencyExchRateGetById(currency);
+                if (baseExchrate != null)
+                    rate = exchrate.CurrencyFactor * baseExchrate.CurrencyFactor;
+            }
+            logger.StatisticEndSub(ref stat, index);
+            return rate;
         }
 
         public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)

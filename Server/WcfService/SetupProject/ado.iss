@@ -149,7 +149,7 @@ begin
   try
     sqlStr := 'IF EXISTS(SELECT * FROM sysobjects WHERE name = N''User Metadata'' and xtype=''U'')' +
        ' Begin;  '  +
-       ' RAISERROR (''You are trying to create the LS Commerce Service objects in the LS Central database!!'',  '  +
+       ' RAISERROR (''You are trying to create the Commerce Service for LS Central objects in the LS Central database!!'',  '  +
        '  16, 1 ); End ';
 
     //switch out the database name for permission scripts 

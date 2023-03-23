@@ -91,7 +91,7 @@ namespace LSOmni.Common.Util
                     return tenderType;
                 }
 
-                // first one is LS Commerce Service TenderType, 2nd one is the NAV id
+                // first one is Commerce Service for LS Central TenderType, 2nd one is the NAV id
                 //tenderMapping: "1=1,2=2,3=3,4=4,6=6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
                 //or can be : "1  =  1  ,2=2,3= 3, 4=4,6 =6,7=7,8=8,9=9,10=10,11=11,15=15,19=19"
 

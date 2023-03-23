@@ -66,6 +66,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityUpdateReservation(request);
         }
 
+        public virtual bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode)
+        {
+            return LSCentralWSBase.ActivityUpdateReservationStatus(reservationNo, setStatusCode);
+        }
+
+        public virtual bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode)
+        {
+            return LSCentralWSBase.ActivityUpdateActivityStatus(activityNo, setStatusCode);
+        }
+
         public virtual MembershipResponse ActivityMembershipSell(string contactNo, string membersShipType)
         {
             return LSCentralWSBase.ActivityMembershipSell(contactNo, membersShipType);

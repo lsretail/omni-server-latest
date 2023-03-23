@@ -1,45 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+		<Nullable>disable</Nullable>
 	</PropertyGroup>
-
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <RootNamespace>LSRetail.Omni.Domain.DataModel.Base</RootNamespace>
-    <AssemblyName>LSRetail.Omni.Domain.DataModel.Base</AssemblyName>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;WCFSERVER;DEBUG;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>bin\Debug\LSRetail.Omni.Domain.DataModel.Base.XML</DocumentationFile>
-    <NoWarn>1701;1702;1705;1591</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;WCFSERVER;NETSTANDARD2_0;NETSTANDARD2_0</DefineConstants>
-    <DocumentationFile></DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-
-  </ItemGroup>
-
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<RootNamespace>LSRetail.Omni.Domain.DataModel.Base</RootNamespace>
+		<AssemblyName>LSRetail.Omni.Domain.DataModel.Base</AssemblyName>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;WCFSERVER;DEBUG;NETSTANDARD2_0</DefineConstants>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+		<NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;WCFSERVER;NETSTANDARD2_0;NETSTANDARD2_0</DefineConstants>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+		<NoWarn>1701;1702</NoWarn>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
+		<WarningLevel>6</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
+		<WarningLevel>6</WarningLevel>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+	</ItemGroup>
 </Project>

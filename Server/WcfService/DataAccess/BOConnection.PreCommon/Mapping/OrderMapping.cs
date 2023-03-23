@@ -321,7 +321,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return list;
         }
 
-        public LSCentral.RootCustomerOrderCreateV5 MapFromOrderV5ToRoot(Order order)
+        public LSCentral.RootCustomerOrderCreateV5 MapFromOrderV5ToRoot(Order order, string loyCur)
         {
             LSCentral.RootCustomerOrderCreateV5 root = new LSCentral.RootCustomerOrderCreateV5();
 
@@ -454,7 +454,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 foreach (OrderPayment line in order.OrderPayments)
                 {
                     string curcode = XMLHelper.GetString(line.CurrencyCode);
-                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals("LOY", StringComparison.InvariantCultureIgnoreCase);
+                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals(loyCur, StringComparison.InvariantCultureIgnoreCase);
 
                     LSCentral.CustomerOrderCreateCOPaymentV5 pay = new LSCentral.CustomerOrderCreateCOPaymentV5()
                     {

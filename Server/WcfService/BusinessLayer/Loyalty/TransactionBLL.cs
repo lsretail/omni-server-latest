@@ -33,7 +33,8 @@ namespace LSOmni.BLL.Loyalty
                 if (line.LineNumber == line.ParentLine)
                     line.ParentLine = 0;
 
-                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType && (line.ParentLine > 0 && l.ParentLine == line.ParentLine));
+                List<SalesEntryLine> sublines = lines.FindAll(s => s.ParentLine == line.LineNumber);
+                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType && ((line.ParentLine > 0 && l.ParentLine == line.ParentLine) || (line.ParentLine == 0 && sublines.Count == 0)));
                 if (linefound == null)
                 {
                     lines.Add(line);

@@ -87,6 +87,22 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityInsertReservation(request);
         }
 
+        public virtual bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityUpdateReservationStatus(reservationNo, setStatusCode);
+        }
+
+        public virtual bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityUpdateActivityStatus(activityNo, setStatusCode);
+        }
+
         public virtual string ActivityReservationUpdate(Reservation request)
         {
             if (NAVVersion < new Version("17.5"))

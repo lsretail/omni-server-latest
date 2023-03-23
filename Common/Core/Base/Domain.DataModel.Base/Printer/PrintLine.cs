@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
-using Infrastructure.Devices.Printer.Base.Utils;
 
 namespace LSRetail.Omni.Domain.DataModel.Base.Printer
 {

@@ -143,7 +143,7 @@
       <Name>Domain.DataModel.Pos</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\ScanPayGo\Domain.DataModel.ScanPayGo\Domain.DataModel.ScanPayGo.csproj">
-      <Project>{6A6D7EFF-5FB2-4A4A-91E2-4BE6D4F08AC3}</Project>
+      <Project>{6a6d7eff-5fb2-4a4a-91e2-4be6d4f08ac3}</Project>
       <Name>Domain.DataModel.ScanPayGo</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Common\Common.csproj">

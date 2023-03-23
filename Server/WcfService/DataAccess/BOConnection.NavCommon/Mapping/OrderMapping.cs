@@ -627,7 +627,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootCustomerOrderCreateV4 MapFromOrderV4ToRoot(Order order)
+        public NavWS.RootCustomerOrderCreateV4 MapFromOrderV4ToRoot(Order order, string loyCur)
         {
             NavWS.RootCustomerOrderCreateV4 root = new NavWS.RootCustomerOrderCreateV4();
 
@@ -743,7 +743,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 foreach (OrderPayment line in order.OrderPayments)
                 {
                     string curcode = XMLHelper.GetString(line.CurrencyCode);
-                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals("LOY", StringComparison.InvariantCultureIgnoreCase);
+                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals(loyCur, StringComparison.InvariantCultureIgnoreCase);
 
                     payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV4()
                     {
@@ -771,7 +771,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return root;
         }
 
-        public NavWS.RootCustomerOrderCreateV5 MapFromOrderV5ToRoot(Order order)
+        public NavWS.RootCustomerOrderCreateV5 MapFromOrderV5ToRoot(Order order, string loyCur)
         {
             NavWS.RootCustomerOrderCreateV5 root = new NavWS.RootCustomerOrderCreateV5();
 
@@ -890,7 +890,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                 foreach (OrderPayment line in order.OrderPayments)
                 {
                     string curcode = XMLHelper.GetString(line.CurrencyCode);
-                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals("LOY", StringComparison.InvariantCultureIgnoreCase);
+                    bool loypayment = (string.IsNullOrEmpty(curcode)) ? false : curcode.Equals(loyCur, StringComparison.InvariantCultureIgnoreCase);
 
                     payLines.Add(new NavWS.CustomerOrderCreateCOPaymentV5()
                     {

@@ -262,14 +262,25 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.MemberCardGetPoints(cardId);
         }
 
-        public virtual decimal GetPointRate(Statistics stat)
+        public virtual decimal GetPointRate(string currency, Statistics stat)
         {
             CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
-            ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById("LOY");
+            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+            if (string.IsNullOrEmpty(loyCur))
+                loyCur = "LOY";
+
+            ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById(loyCur);
             if (exchrate == null)
                 return 0;
 
-            return exchrate.CurrencyFactor;
+            decimal rate = exchrate.CurrencyFactor;
+            if (string.IsNullOrEmpty(currency) == false)
+            {
+                ReplCurrencyExchRate baseExchrate = rep.CurrencyExchRateGetById(currency);
+                if (baseExchrate != null)
+                    rate = exchrate.CurrencyFactor * baseExchrate.CurrencyFactor;
+            }
+            return rate;
         }
 
         public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)

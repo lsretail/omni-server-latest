@@ -103,7 +103,7 @@ begin
     TabOrder := 1;
     Enabled := True;
     ShowHint := True;
-    Hint := 'IIS Web Site where LS Commerce Service will be added under. Use -Default Web Site-. A new Web Site does not get created. Recommend leaving the web service name as LSCommerceService.';
+    Hint := 'IIS Web Site where Commerce Service for LS Central will be added under. Use -Default Web Site-. A new Web Site does not get created. Recommend leaving the web service name as CommerceService.';
   end;
 
   { IISPage_lblWcfServiceName }
@@ -130,7 +130,7 @@ begin
     TabOrder := 2;
     Enabled := True;
     ShowHint := True;
-    Hint := 'Name used to Create IIS entry. If running more than 1 instance of LS Commerce Service, give each instance a different Name.';
+    Hint := 'Name used to Create IIS entry. If running more than 1 instance of Commerce Service for LS Central, give each instance a different Name.';
   end;
 
   { IISPage_lblEComUrl }

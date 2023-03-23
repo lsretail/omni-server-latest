@@ -126,8 +126,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT TOP(1) " + sqlcolumns + sqlfrom + " WHERE mt.[Currency Code]=@id";
-                    command.Parameters.AddWithValue("@id", code);
+                    command.CommandText = "SELECT TOP(1) " + sqlcolumns + sqlfrom + " WHERE mt.[Currency Code]=@id ORDER BY mt.[Starting Date] DESC";
+                    command.Parameters.AddWithValue("@id", code.ToUpper());
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

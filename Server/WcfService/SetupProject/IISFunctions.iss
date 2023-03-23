@@ -27,7 +27,7 @@ var
 begin
   Result := True;
   webAppExists := False;
-  //webAppName is the POSService,  physicalPath is c:\LS Retail\LSCommerce  ..
+  //webAppName is the POSService,  physicalPath is c:\LS Retail\Commerce  ..
   webAppName := Trim(webAppName);
   webSiteName := Trim(webSiteName);
   physicalPath := Trim(physicalPath + '\' + webAppName);

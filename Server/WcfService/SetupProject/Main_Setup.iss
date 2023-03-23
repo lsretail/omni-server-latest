@@ -15,24 +15,24 @@
 ; Do not use the same AppId value in installers for other applications.
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{07C464D2-8863-4A44-B30C-A4EBDAE8D246}
-AppName="LS Commerce Service Version {#VersionNo}"
+AppName="Commerce Service for LS Central Version {#VersionNo}"
 AppVersion={#ApplicationVersion}
-AppVerName="LS Commerce Service {#ApplicationVersion}"
+AppVerName="Commerce Service for LS Central {#ApplicationVersion}"
 AppPublisher=LS Retail Inc.
 AppPublisherURL=http://www.lsretail.com/
 AppSupportURL=http://www.lsretail.com/
 AppUpdatesURL=http://www.lsretail.com/
-AppComments=LS Commerce Service
+AppComments=Commerce Service for LS Central
 AppCopyright=Copyright (C) 2021 LS Retail
 ;file version
 VersionInfoVersion={#ApplicationVersion}
 ;when changing the DefaultDirName I had to change the AppId !!
-DefaultDirName=C:\LS Retail\LSCommerce
+DefaultDirName=C:\LS Retail\Commerce
 DefaultGroupName=notused
 DisableProgramGroupPage=yes
 DisableDirPage=no
 DirExistsWarning=yes
-OutputBaseFilename="LSCommerce.Service.Central.Setup.{#VersionNo}"
+OutputBaseFilename="CommerceServiceForLSCentral.Setup.{#VersionNo}"
 SetupIconFile=LSIcon.ico
 UninstallDisplayIcon={app}\{code:WcfDir}\bin\LSIcon.ico
 Compression=lzma             
@@ -61,10 +61,10 @@ Source: "..\DataAccess\Data.SQLServer\SQLScripts\LSCommerceServiceDbPermissions.
 #include "FilesInclude.iss"
 
 [Icons]
-Name: "{group}\{cm:ProgramOnTheWeb,LSCommerceService}"; Filename: "http://www.lsretail.com/"
+Name: "{group}\{cm:ProgramOnTheWeb,CommerceService}"; Filename: "http://www.lsretail.com/"
 
 [Registry]
-Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Services\EventLog\Application\LSCommerce"; ValueType: string; ValueName: "EventMessageFile"; ValueData: "C:\Windows\Microsoft.NET\Framework\v2.0.50727\EventLogMessages.dll"; Flags: uninsdeletekey
+Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Services\EventLog\Application\Commerce"; ValueType: string; ValueName: "EventMessageFile"; ValueData: "C:\Windows\Microsoft.NET\Framework\v2.0.50727\EventLogMessages.dll"; Flags: uninsdeletekey
 Root: HKLM; Subkey: "Software\LS Retail\Omni"; ValueType: string; ValueName: "Path"; ValueData: "{app}\{code:WcfDir}";
 
 
@@ -108,23 +108,23 @@ begin
   NavSQLPage_txtServer.Text := GetCommandLineParamString('-NavSrv', 'localhost');
   NavSQLPage_txtDBname.Text := GetCommandLineParamString('-NavDb', 'LSCentral');
   NavSQLPage_txtNavCompany.Text := GetCommandLineParamString('-NavComp', 'CRONUS - LS Central');
-  NavSQLPage_txtUsername.Text := GetCommandLineParamString('-NavUsr', 'LSCommerceUser');
-  NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', 'LSCommerceUser');
+  NavSQLPage_txtUsername.Text := GetCommandLineParamString('-NavUsr', 'CommerceUser');
+  NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', 'CommerceUser');
   NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', False);
   NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 2);
 
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', True);
   CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', False);
-  SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'LSCommerce');
+  SQLPage_txtDBname.Text := GetCommandLineParamString('-SqlDb', 'Commerce');
   SQLPage_txtServer.Text := GetCommandLineParamString('-SqlSrv', 'localhost');
-  SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', 'LSCommerceUser');
-  SQLPage_txtPassword.Text := GetCommandLineParamString('-SqlPwd', 'LSCommerceUser');
+  SQLPage_txtUsername.Text := GetCommandLineParamString('-SqlUsr', 'CommerceUser');
+  SQLPage_txtPassword.Text := GetCommandLineParamString('-SqlPwd', 'CommerceUser');
   SQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-SqlWau', True);
   SQLPage_xCreateUser.Checked := GetCommandLineParamBoolean('-SqlCrUsr', True);
 
   CheckPage_IISCheckBox.Checked := GetCommandLineParamBoolean('-IisX', True);
   IISPage_txtWcfSiteName.Text := GetCommandLineParamString('-IisSite', 'Default Web Site');
-  IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'LSCommerceService');
+  IISPage_txtWcfServiceName.Text := GetCommandLineParamString('-IisSrv', 'CommerceService');
   IISPage_txtNavUrl.Text := GetCommandLineParamString('-IisUrl', 'http://localhost:7047/BC210/WS/CRONUS - LS Central/Codeunit/RetailWebServices');
   IISPage_txtODataUrl.Text := GetCommandLineParamString('-IisOData', 'http://localhost:7048/BC210/ODataV4');
   IISPage_txtNavUser.Text := GetCommandLineParamString('-IisUsr', '');
@@ -164,7 +164,7 @@ begin
       msg := 'SQL Server mixed authentication mode is not enabled on ' + SQLPage_txtServer.Text + ' '#13
       msg := msg + 'You need this to continue the easy way. You can use Windows Authentication only but '#13
       msg := msg + 'then you need to change the config files manually.'#13
-      msg := msg + 'See LS Commerce Service Installation doc'#13
+      msg := msg + 'See Commerce Service for LS Central Installation doc'#13
       msg := msg + 'Quit the setup?'
       if (not CmdMode) and (MsgBox(msg, mbConfirmation, MB_YESNO) = idYes ) then
       begin
@@ -175,10 +175,10 @@ begin
     // Check if trying to create tables in the Central database
     if (Result and ADOCheckIsNavDB()) then
     begin
-      msg := 'You are trying to create the LS Commerce Service SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
-      msg := msg + 'This database is a LS Central database and you are not allowed to create the LS Commerce Service Database objects'#13
+      msg := 'You are trying to create the Commerce Service for LS Central SQL Server objects in db: ' + SQLPage_txtDBname.Text + '  on ' + SQLPage_txtServer.Text + ' '#13
+      msg := msg + 'This database is a LS Central database and you are not allowed to create the Commerce Service for LS Central Database objects'#13
       msg := msg + 'in the LS Central Database'#13
-      msg := msg + 'See LS Commerce Service Installation doc'#13
+      msg := msg + 'See Commerce Service for LS Central Installation doc'#13
       if (not CmdMode) then
         MsgBox(msg, mbConfirmation, MB_OK);
       
@@ -217,7 +217,7 @@ begin
     ErrorWarningMsg('Failed to update AppSettings.config file'#13'AppSettings.Config file will not get updated'#13'with values entered', CmdMode);
   end;
 
-  //standardize on the LSCommerceUser
+  //standardize on the CommerceUser
   navCompany := Trim(NavSQLPage_txtNavCompany.Text); //no dont add + '$'; 
   StringChangeEx(navCompany, '.', '_', True);
   Result := True;
@@ -252,12 +252,12 @@ begin
         if (Length(NavSQLPage_txtUsername.Text) > 0) then
           user := NavSQLPage_txtUsername.Text
         else
-          user := 'LSCommerceUser';
+          user := 'CommerceUser';
   
         if (Length(NavSQLPage_txtPassword.Text) > 0) then
           pwd := NavSQLPage_txtPassword.Text
         else
-          pwd := 'LSCommerceUser';
+          pwd := 'CommerceUser';
 
         navStr := navStr + ';User ID=' + Trim(user);
         navStr := navStr + ';Password=' + Trim(pwd);
@@ -285,14 +285,14 @@ begin
       end;
     end;
 
-    Log('Update LS Commerce Service SQL Settings');
+    Log('Update Commerce Service for LS Central SQL Settings');
     omniStr := 'Data Source=' + Trim(SQLPage_txtServer.Text);
     omniStr := omniStr + ';Initial Catalog=' + Trim(SQLPage_txtDBname.Text);
 
     if SQLPage_xCreateUser.Checked then
     begin
-      omniStr := omniStr + ';User ID=LSCommerceUser';
-      omniStr := omniStr + ';Password=LSCommerceUser';
+      omniStr := omniStr + ';User ID=CommerceUser';
+      omniStr := omniStr + ';Password=CommerceUser';
     end
     else
     begin
@@ -305,12 +305,12 @@ begin
         if (Length(SQLPage_txtUsername.Text) > 0) then
           user := SQLPage_txtUsername.Text
         else
-          user := 'LSCommerceUser';
+          user := 'CommerceUser';
 
         if (Length(SQLPage_txtPassword.Text) > 0) then
           pwd := SQLPage_txtPassword.Text
         else
-          pwd := 'LSCommerceUser';
+          pwd := 'CommerceUser';
 
         omniStr := omniStr + ';User ID=' + Trim(user);
         omniStr := omniStr + ';Password=' + Trim(pwd);

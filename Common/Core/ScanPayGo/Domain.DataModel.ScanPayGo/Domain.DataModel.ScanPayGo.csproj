@@ -1,35 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <TargetFrameworks>netstandard2.0;net7.0</TargetFrameworks>
+    <Nullable>disable</Nullable>
+	</PropertyGroup>
+	<PropertyGroup>
+		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+		<AssemblyName>LSRetail.Omni.Domain.DataModel.ScanPayGo</AssemblyName>
+		<RootNamespace>LSRetail.Omni.Domain.DataModel.ScanPayGo</RootNamespace>
 	</PropertyGroup>
 
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <AssemblyName>LSRetail.Omni.Domain.DataModel.ScanPayGo</AssemblyName>
-    <RootNamespace>LSRetail.Omni.Domain.DataModel.ScanPayGo</RootNamespace>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DefineConstants>TRACE;DEBUG;NETSTANDARD2_0,WCFSERVER</DefineConstants>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG;NETSTANDARD2_0,WCFSERVER</DefineConstants>
-    <OutputPath>bin\Debug\</OutputPath>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DefineConstants>TRACE;NETSTANDARD2_0,WCFSERVER;NETSTANDARD2_0</DefineConstants>
+		<TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;NETSTANDARD2_0,WCFSERVER;NETSTANDARD2_0</DefineConstants>
-    <OutputPath>bin\Release\</OutputPath>
-  </PropertyGroup>
+	<ItemGroup>
+		<Compile Include="..\..\Base\Domain.DataModel.Base\Properties\Version.cs" Link="Properties\Version.cs" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Include="..\..\Base\Domain.DataModel.Base\Properties\Version.cs" Link="Properties\Version.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Recipe\" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\..\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Recipe\" />
+	</ItemGroup>
 </Project>

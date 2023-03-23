@@ -4,7 +4,7 @@ using System.Reflection;
 // the next time this code is regenerated.
 // 
  
-[assembly: AssemblyProduct("LS Commerce Service")] 
+[assembly: AssemblyProduct("Commerce Service for LS Central")] 
 [assembly: AssemblyCompany("LS Retail")]
 [assembly: AssemblyCopyright("Copyright 2023 LS Retail")]
 [assembly: AssemblyTrademark("LS Retail")]
@@ -17,7 +17,7 @@ using System.Reflection;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2023.02.0")]
-[assembly: AssemblyFileVersion("2023.02.0")]
-[assembly: AssemblyInformationalVersion("LS Commerce Service 2023.02")]
+[assembly: AssemblyVersion("2023.03.0")]
+[assembly: AssemblyFileVersion("2023.03.0")]
+[assembly: AssemblyInformationalVersion("Commerce Service for LS Central 2023.03")]
  

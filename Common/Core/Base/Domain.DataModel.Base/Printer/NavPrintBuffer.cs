@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace Infrastructure.Devices.Printer.Base.Utils
+namespace LSRetail.Omni.Domain.DataModel.Base.Printer
 {
     public enum NavLineType
     {

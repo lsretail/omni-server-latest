@@ -72,6 +72,16 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityReservationInsert(request);
         }
 
+        public virtual bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode)
+        {
+            return BOActConnection.ActivityUpdateReservationStatus(reservationNo, setStatusCode);
+        }
+
+        public virtual bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode)
+        {
+            return BOActConnection.ActivityUpdateActivityStatus(activityNo, setStatusCode);
+        }
+
         public virtual string ActivityReservationUpdate(Reservation request)
         {
             return BOActConnection.ActivityReservationUpdate(request);

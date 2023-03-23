@@ -46,6 +46,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         [DataMember]
         public string ActivityNo { get; set; }
         [DataMember]
+        public string ReservationNo { get; set; }
+        [DataMember]
         public string ItemNo { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]
         public DateTime DateFrom { get; set; }
@@ -89,5 +91,11 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
         public string CancelPolicyDescription { get; set; }
         [DataMember]
         public decimal CancelAmount { get; set; }
+        [DataMember]
+        public string PromoCode { get; set; }
+        [DataMember]
+        public string MainResource { get; set;}
+        [DataMember]
+        public string MainResourceName { get; set; }
     }
 }

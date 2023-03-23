@@ -205,6 +205,13 @@ namespace LSOmni.Common.Util
             }
         }
 
+        public static string SafeString(string[] value)
+        {
+            if (value == null || value.Length == 0)
+                return string.Empty;
+            return string.Concat(value);
+        }
+
         public static string Base64Encode(string plainText)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);

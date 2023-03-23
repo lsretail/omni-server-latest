@@ -217,6 +217,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             PriceRepository rep = new PriceRepository(config);
+            if (LSCVersion >= new Version("21.3"))
+                return rep.ReplicatePriceLines(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+
             return rep.ReplicateAllPrice(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

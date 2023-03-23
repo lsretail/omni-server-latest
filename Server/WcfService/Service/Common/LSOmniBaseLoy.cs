@@ -454,16 +454,19 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual decimal GetPointRate()
+        public virtual decimal GetPointRate(string currency)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, "PointRate");
+                if (string.IsNullOrEmpty(currency))
+                    currency = string.Empty;
+
+                logger.Debug(config.LSKey.Key, "PointRate: Base Cur:" + currency);
 
                 CurrencyBLL curBLL = new CurrencyBLL(config, clientTimeOutInSeconds);
-                return curBLL.GetPointRate(stat);
+                return curBLL.GetPointRate(currency, stat);
             }
             catch (Exception ex)
             {

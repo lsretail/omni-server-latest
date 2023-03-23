@@ -421,12 +421,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual decimal GetPointRate(Statistics stat)
+        public virtual decimal GetPointRate(string currency, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.GetPointRate();
 
-            return LSCWSBase.GetPointRate(stat);
+            return LSCWSBase.GetPointRate(currency, stat);
         }
 
         public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
@@ -610,6 +610,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             {
                 list = NavWSBase.SalesHistory(cardId);
                 list.AddRange(NavWSBase.OrderHistoryGet(cardId));
+            }
+            else if (NAVVersion >= new Version("21.3"))
+            {
+                list = LSCWSBase.SalesEntryGetByCardId(cardId, maxNumberOfEntries, stat);
+                return list;
             }
             else
             {

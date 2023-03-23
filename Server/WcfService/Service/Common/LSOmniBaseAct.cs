@@ -183,8 +183,48 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityInsertReservation");
+                HandleExceptions(ex, "Failed to get ActivityReservationInsert");
                 return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityUpdateReservationStatus(reservationNo, setStatusCode);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityUpdateReservationStatus");
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityUpdateActivityStatus(activityNo, setStatusCode);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityUpdateActivityStatus");
+                return false; //never gets here
             }
             finally
             {
@@ -263,7 +303,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityResourceAvailabilityGet");
                 return null; //never gets here
             }
             finally
@@ -283,7 +323,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityResourceGroupAvailabilityGet");
                 return null; //never gets here
             }
             finally
@@ -303,7 +343,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityCheckAccess");
                 messageString = "Error";
                 return false; //never gets here
             }
@@ -324,7 +364,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityGetAvailabilityToken");
                 return string.Empty; //never gets here
             }
             finally
@@ -344,7 +384,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityInsertGroupReservation");
                 return string.Empty; //never gets here
             }
             finally
@@ -364,7 +404,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityUpdateGroupReservation");
                 return string.Empty; //never gets here
             }
             finally
@@ -384,7 +424,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityConfirmGroup");
                 return null;
             }
             finally
@@ -404,7 +444,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipCancel");
+                HandleExceptions(ex, "Failed to get ActivityDeleteGroup");
                 return false; //never gets here
             }
             finally
@@ -668,7 +708,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivitySubscriptionChargesGet");
+                HandleExceptions(ex, "Failed to get ActivityAdmissionEntriesGet");
                 return null; //never gets here
             }
             finally
@@ -708,7 +748,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
+                HandleExceptions(ex, "Failed to get ActivityGetByResource");
                 return null; //never gets here
             }
             finally
@@ -728,7 +768,7 @@ namespace LSOmni.Service
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "Failed to get ActivityMembershipsGet");
+                HandleExceptions(ex, "Failed to get ActivityResourceGet");
                 return null; //never gets here
             }
             finally

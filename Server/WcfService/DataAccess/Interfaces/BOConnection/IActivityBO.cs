@@ -19,6 +19,8 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         int ActivityAttributeSet(AttributeType type, string linkNo, string attributeCode, string attributeValue);
         string ActivityReservationInsert(Reservation request);
         string ActivityReservationUpdate(Reservation request);
+        bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode);
+        bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode);
         MembershipResponse ActivityMembershipSell(string contactNo, string membersShipType);
         bool ActivityMembershipCancel(string contactNo, string memberShipNo, string comment);
         List<AvailabilityResponse> ActivityResourceAvailabilityGet(string locationNo, DateTime activityDate, string resourceNo, string intervalType, int noOfDays);

@@ -127,7 +127,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (string.IsNullOrEmpty(error) == false)
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAvailabilityResponse(root);
         }
 
@@ -139,7 +139,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.GetAdditionalCharges(activityNo, ref root);
 
             logger.Debug(config.LSKey.Key, "AdditionalChargeResponse - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAdditionalCharge(root);
         }
 
@@ -151,7 +151,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.GetProductChargesV2(productNo, locationNo, dateOfBooking, ref root);
 
             logger.Debug(config.LSKey.Key, "AdditionalChargeResponse - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAdditionalCharge(root);
         }
 
@@ -202,7 +202,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.GetAttributes((int)type, linkNo, ref root);
 
             logger.Debug(config.LSKey.Key, "AttributeResponse - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAttributeResponse(root);
         }
 
@@ -261,6 +261,28 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return resNo;
         }
 
+        public bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode)
+        {
+            string error = string.Empty;
+            logger.Debug(config.LSKey.Key, "UpdateReservationStatus - ResNo:{0} Stat:{1}", reservationNo, setStatusCode);
+            bool ret = activityWS.UpdateReservationStatus(reservationNo, setStatusCode, ref error);
+            logger.Debug(config.LSKey.Key, "UpdateReservationStatus - " + error);
+            if (string.IsNullOrEmpty(error) == false)
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
+            return ret;
+        }
+
+        public bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode)
+        {
+            string error = string.Empty;
+            logger.Debug(config.LSKey.Key, "UpdateReservationStatus - ResNo:{0} Stat:{1}", activityNo, setStatusCode);
+            bool ret = activityWS.UpdateActivityStatus(activityNo, setStatusCode, ref error);
+            logger.Debug(config.LSKey.Key, "UpdateReservationStatus - " + error);
+            if (string.IsNullOrEmpty(error) == false)
+                throw new LSOmniServiceException(StatusCode.NavWSError, error);
+            return ret;
+        }
+
         public MembershipResponse ActivityMembershipSell(string contactNo, string type)
         {
             string error = string.Empty;
@@ -316,7 +338,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             logger.Debug(config.LSKey.Key, "GetResourceAvailability - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAvailabilityResponse(root);
         }
 
@@ -334,7 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 throw new LSOmniServiceException(StatusCode.NavWSError, error);
 
             logger.Debug(config.LSKey.Key, "GetResourceGroupAvailability - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAvailabilityResponse(root);
         }
 
@@ -494,7 +516,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadActivityProducts(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityProducts Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToActivityProducts(root);
         }
 
@@ -504,7 +526,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadActivityTypes(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityTypes Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToActivityType(root);
         }
 
@@ -514,7 +536,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadActivityLocations(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadActivityLocations Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToActivityLocation(root);
         }
 
@@ -526,7 +548,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.GetActReservations(reservationNo, locationNo, reservationType, status, fromDate, ref root);
 
             logger.Debug(config.LSKey.Key, "GetActReservations Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToResHeader(root);
         }
 
@@ -546,7 +568,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 logger.Debug(config.LSKey.Key, "UploadReservationActivities Response - " + Serialization.ToXml(root, true));
             }
 
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToReservations(root);
         }
 
@@ -556,7 +578,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadPromotions(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadPromotions Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToPromotions(root);
         }
 
@@ -568,7 +590,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadPurchasedAllowances(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadPurchasedAllowances Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAllowances(root);
         }
 
@@ -580,7 +602,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadCustomerEntries(contactNo, customerNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadCustomerEntries Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToCustomerEntry(root);
         }
 
@@ -590,7 +612,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadMembershipProducts(ref root);
 
             logger.Debug(config.LSKey.Key, "UploadMembershipProducts Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToMemberProduct(root);
         }
 
@@ -602,7 +624,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadMembershipSubscriptionCharges(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadMembershipSubscriptionCharges Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToSubscriptionEntry(root);
         }
 
@@ -614,7 +636,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             activityWS.UploadAdmissionEntries(contactNo, ref root);
 
             logger.Debug(config.LSKey.Key, "UploadAdmissionEntries Response - " + Serialization.ToXml(root, true));
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             return map.MapRootToAdmissionEntry(root);
         }
 
@@ -622,7 +644,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, "UploadMembershipEntries: contactNo:{0}", contactNo);
 
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             LSActivity.ActivityUploadMemberships root = new LSActivity.ActivityUploadMemberships();
             activityWS.UploadMembershipEntries(contactNo, ref root);
 
@@ -635,7 +657,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             logger.Debug(config.LSKey.Key, "UploadResourceActivities: locNo:{0}, resNo:{1}, fromDate:{2}, toDate:{3}", 
                 locationNo, resourceNo, fromDate, toDate);
 
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             LSActivity.ActivityUploadReservations root = new LSActivity.ActivityUploadReservations();
             activityWS.UploadResourceActivities(locationNo, resourceNo, fromDate, toDate, ref root);
 
@@ -647,7 +669,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.Debug(config.LSKey.Key, "UploadActivityResources");
 
-            ActivityMapping map = new ActivityMapping(config.IsJson);
+            ActivityMapping map = new ActivityMapping(LSCVersion, config.IsJson);
             LSActivity.ActivityUploadResources root = new LSActivity.ActivityUploadResources();
             activityWS.UploadActivityResources(ref root);
 

@@ -140,6 +140,9 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public bool AddCardBeforeShopping { get; set; }
         public bool ShowCustomerQrCode { get; set; }
         public bool ShowPointStatus { get; set; }
+        public bool HidePriceOfItem { get; set; }
+        public bool HideAddCreditCard { get; set; }
+        public bool HideShoppingScreen { get; set; }
         public bool UseSecurityCheck { get; set; }
         public string ApplePayConnectionId { get; set; }
         public string GooglePayConnectionId { get; set; }

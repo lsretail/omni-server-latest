@@ -55,7 +55,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Net" />
@@ -132,6 +132,7 @@
   <ItemGroup>
     <Content Include="BOJson.svc" />
     <Content Include="BOService.svc" />
+    <Content Include="PortalJson.svc" />
     <Content Include="UCJson.svc" />
     <Content Include="PortalService.svc" />
     <Content Include="UCService.svc" />
@@ -184,18 +185,18 @@
       <Name>Domain.DataModel.Loyalty</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Core\ScanPayGo\Domain.DataModel.ScanPayGo\Domain.DataModel.ScanPayGo.csproj">
-      <Project>{7BD60081-D892-4C1E-8693-647770A06863}</Project>
+      <Project>{6a6d7eff-5fb2-4a4a-91e2-4be6d4f08ac3}</Project>
       <Name>Domain.DataModel.ScanPayGo</Name>
     </ProjectReference>
     <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
       <Project>{8f8b6425-ca65-4afa-8d97-83b81e059770}</Project>
       <Name>BusinessLayer</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{8aa4327b-1018-46b1-9c47-882494dd8435}</Project>
       <Name>Common</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

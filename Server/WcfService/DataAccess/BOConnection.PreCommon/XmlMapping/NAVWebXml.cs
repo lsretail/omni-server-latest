@@ -383,7 +383,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
             return doc.ToString();
         }
 
-        public string GetGeneralWebRequestXML(string tablename, string field, string value, int maxrows = 0)
+        public string GetGeneralWebRequestXML(string tablename, string field, string value, int maxrows = 0, bool reverse = false)
         {
             #region xml
             /*
@@ -408,7 +408,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping
                         new XElement("Request_ID", "GET_TABLE_DATA"),
                         new XElement("Request_Body",
                             new XElement("Table_Name", tablename),
-                            new XElement("Read_Direction", "Forward"),
+                            new XElement("Read_Direction", (reverse) ? "Backward" : "Forward"),
                             new XElement("Max_Number_Of_Records", maxrows),
                             new XElement("Ignore_Extra_Fields", 1),
                             new XElement("WS_Table_Filter_Buffer",

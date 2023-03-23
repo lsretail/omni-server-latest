@@ -143,8 +143,8 @@ function NavSQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   NavSQLPage := CreateCustomPage(
     PreviousPageId,
-    'LS Nav/LS Central SQL Server Database',
-    'Configure SQL connection parameters and permissions to access LS Nav/LS Central Database'
+    'LS Central SQL Server Database',
+    'Configure SQL connection parameters and permissions to access LS Central Database'
   );
  
   { lblServer }
@@ -369,7 +369,7 @@ begin
       Caption := 'Test SQL Connection';
       OnClick := @NavSQLPageTestConnectionClick;
       ShowHint := True;
-      Hint := 'Test Connection to LS Central database. NOTE: LSCommerceUser does not exist at this moment so Test Connection may not work until after Install.';
+      Hint := 'Test Connection to LS Central database. NOTE: CommerceUser does not exist at this moment so Test Connection may not work until after Install.';
     end;
 
   //does not work except from main form

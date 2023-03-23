@@ -97,9 +97,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback SetAttributeOperationCompleted;
         
+        private System.Threading.SendOrPostCallback UpdateActivityStatusOperationCompleted;
+        
         private System.Threading.SendOrPostCallback UpdateGroupHeaderStatusOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateGroupReservationOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UpdateReservationStatusOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateReservationOperationCompleted;
         
@@ -276,10 +280,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event SetAttributeCompletedEventHandler SetAttributeCompleted;
         
         /// <remarks/>
+        public event UpdateActivityStatusCompletedEventHandler UpdateActivityStatusCompleted;
+        
+        /// <remarks/>
         public event UpdateGroupHeaderStatusCompletedEventHandler UpdateGroupHeaderStatusCompleted;
         
         /// <remarks/>
         public event UpdateGroupReservationCompletedEventHandler UpdateGroupReservationCompleted;
+        
+        /// <remarks/>
+        public event UpdateReservationStatusCompletedEventHandler UpdateReservationStatusCompleted;
         
         /// <remarks/>
         public event UpdateReservationCompletedEventHandler UpdateReservationCompleted;
@@ -2727,6 +2737,41 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UpdateActivityStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UpdateActivityStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool UpdateActivityStatus(string activityNo, string setStatusCode, ref string errorString) {
+            object[] results = this.Invoke("UpdateActivityStatus", new object[] {
+                        activityNo,
+                        setStatusCode,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UpdateActivityStatusAsync(string activityNo, string setStatusCode, string errorString) {
+            this.UpdateActivityStatusAsync(activityNo, setStatusCode, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void UpdateActivityStatusAsync(string activityNo, string setStatusCode, string errorString, object userState) {
+            if ((this.UpdateActivityStatusOperationCompleted == null)) {
+                this.UpdateActivityStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateActivityStatusOperationCompleted);
+            }
+            this.InvokeAsync("UpdateActivityStatus", new object[] {
+                        activityNo,
+                        setStatusCode,
+                        errorString}, this.UpdateActivityStatusOperationCompleted, userState);
+        }
+        
+        private void OnUpdateActivityStatusOperationCompleted(object arg) {
+            if ((this.UpdateActivityStatusCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateActivityStatusCompleted(this, new UpdateActivityStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UpdateGroupHeaderStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UpdateGroupHeaderStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool UpdateGroupHeaderStatus(string groupNo, string setStatusCode, ref string errorString) {
@@ -2883,6 +2928,41 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.UpdateGroupReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateGroupReservationCompleted(this, new UpdateGroupReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UpdateReservationStatus", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UpdateReservationStatus_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool UpdateReservationStatus(string reservationNo, string setStatusCode, ref string errorString) {
+            object[] results = this.Invoke("UpdateReservationStatus", new object[] {
+                        reservationNo,
+                        setStatusCode,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UpdateReservationStatusAsync(string reservationNo, string setStatusCode, string errorString) {
+            this.UpdateReservationStatusAsync(reservationNo, setStatusCode, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void UpdateReservationStatusAsync(string reservationNo, string setStatusCode, string errorString, object userState) {
+            if ((this.UpdateReservationStatusOperationCompleted == null)) {
+                this.UpdateReservationStatusOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateReservationStatusOperationCompleted);
+            }
+            this.InvokeAsync("UpdateReservationStatus", new object[] {
+                        reservationNo,
+                        setStatusCode,
+                        errorString}, this.UpdateReservationStatusOperationCompleted, userState);
+        }
+        
+        private void OnUpdateReservationStatusOperationCompleted(object arg) {
+            if ((this.UpdateReservationStatusCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateReservationStatusCompleted(this, new UpdateReservationStatusCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -3597,7 +3677,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private string[] balanceField;
         
-        private string commentField;
+        private string[] commentLineField;
         
         private string emailField;
         
@@ -3808,12 +3888,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
-        public string Comment {
+        [System.Xml.Serialization.XmlElementAttribute("CommentLine")]
+        public string[] CommentLine {
             get {
-                return this.commentField;
+                return this.commentLineField;
             }
             set {
-                this.commentField = value;
+                this.commentLineField = value;
             }
         }
         
@@ -5790,7 +5871,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private decimal lineDiscountAmountField;
         
-        private string commentField;
+        private string[] commentField;
         
         private string allowanceNoField;
         
@@ -5801,6 +5882,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private string[] cancelPolicyDescriptionField;
         
         private decimal cancelAmountField;
+        
+        private string reservationNoField;
+        
+        private string promoCodeField;
+        
+        private string mainResourceField;
+        
+        private string mainResourceNameField;
         
         public Activities() {
             this.dateFromField = new System.DateTime(0);
@@ -6003,7 +6092,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
-        public string Comment {
+        [System.Xml.Serialization.XmlElementAttribute("Comment")]
+        public string[] Comment {
             get {
                 return this.commentField;
             }
@@ -6061,6 +6151,46 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             }
             set {
                 this.cancelAmountField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string ReservationNo {
+            get {
+                return this.reservationNoField;
+            }
+            set {
+                this.reservationNoField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string PromoCode {
+            get {
+                return this.promoCodeField;
+            }
+            set {
+                this.promoCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainResource {
+            get {
+                return this.mainResourceField;
+            }
+            set {
+                this.mainResourceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string MainResourceName {
+            get {
+                return this.mainResourceNameField;
+            }
+            set {
+                this.mainResourceNameField = value;
             }
         }
     }
@@ -9177,6 +9307,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void UpdateActivityStatusCompletedEventHandler(object sender, UpdateActivityStatusCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdateActivityStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UpdateActivityStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void UpdateGroupHeaderStatusCompletedEventHandler(object sender, UpdateGroupHeaderStatusCompletedEventArgs e);
     
     /// <remarks/>
@@ -9222,6 +9386,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal UpdateGroupReservationCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void UpdateReservationStatusCompletedEventHandler(object sender, UpdateReservationStatusCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdateReservationStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UpdateReservationStatusCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

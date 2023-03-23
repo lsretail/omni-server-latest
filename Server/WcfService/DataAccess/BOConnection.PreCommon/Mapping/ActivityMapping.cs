@@ -8,9 +8,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 {
     public class ActivityMapping : BaseMapping
     {
-        public ActivityMapping(bool json)
+        public ActivityMapping(Version lscVersion, bool json)
         {
             IsJson = json;
+            LSCVersion = lscVersion;
         }
 
         public List<ActivityProduct> MapRootToActivityProducts(LSActivity.ActivityUploadProducts root)
@@ -30,17 +31,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     DefaultQty = rec.DefaultQty,
                     PricedPerPerson = rec.PricedPerPerson,
                     AllowQuantityChange = rec.AllowQuantityChange,
-                    QuantityCaption = string.Concat(rec.QuantityCaption),
+                    QuantityCaption = ConvertTo.SafeString(rec.QuantityCaption),
                     AllowNoOfPersonChange = rec.AllowNoOfPersonChange,
                     MinQty = rec.MinQty,
                     MaxQty = rec.MaxQty,
                     MinPersons = rec.MinPersons,
                     MaxPersons = rec.MaxPersons,
-                    PaymentRequired = string.Concat(rec.PaymentRequired),
+                    PaymentRequired = ConvertTo.SafeString(rec.PaymentRequired),
                     DefaultUnitPrice = rec.DefaultUnitPrice,
-                    PriceCurrency = string.Concat(rec.PriceCurrency),
+                    PriceCurrency = ConvertTo.SafeString(rec.PriceCurrency),
                     CancelPolicy = rec.CancelPolicy,
-                    CancelPolicyDescription = string.Concat(rec.CancelPolicyDescription),
+                    CancelPolicyDescription = ConvertTo.SafeString(rec.CancelPolicyDescription),
                     ProductType = rec.ProductType,
                     FixedLocation = rec.FixedLocation
                 });
@@ -91,7 +92,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             foreach (LSActivity.Activities rec in root.Activities)
             {
-                list.Add(new Booking()
+                Booking book = new Booking()
                 {
                     ActivityNo = rec.ActivityNo,
                     ItemNo = rec.ProductNo,
@@ -111,13 +112,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     ClientNo = rec.ClientNo,
                     ClientName = rec.ClientName,
                     NoOfPersons = rec.NoOfPersons,
-                    Comment = rec.Comment,
+                    Comment = ConvertTo.SafeString(rec.Comment),
                     AllowanceNo = rec.AllowanceNo,
-                    PriceCurrency = string.Concat(rec.PriceCurrency),
+                    PriceCurrency = ConvertTo.SafeString(rec.PriceCurrency),
                     CancelPolicy = rec.CancelPolicy,
-                    CancelPolicyDescription = string.Concat(rec.CancelPolicyDescription),
+                    CancelPolicyDescription = ConvertTo.SafeString(rec.CancelPolicyDescription),
                     CancelAmount = rec.CancelAmount
-                });
+                };
+
+                if (LSCVersion >= new Version("21.4"))
+                {
+                    book.ReservationNo = rec.ReservationNo;
+                    book.MainResource = rec.MainResource;
+                    book.MainResourceName = rec.MainResourceName;
+                    book.PromoCode = rec.PromoCode;
+                }
+                list.Add(book);
             }
             return list;
         }
@@ -145,9 +155,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     InternalStatus = rec.InternalStatus,
                     Location = rec.Location,
                     NoOfPersons = rec.NoPersons,
-                    Comment = rec.Comment,
+                    Comment = ConvertTo.SafeString(rec.CommentLine),
                     EMail = rec.Email,
-                    Balance = (rec.Balance != null) ? string.Concat(rec.Balance) : string.Empty,
+                    Balance = ConvertTo.SafeString(rec.Balance),
                     CustomerAccount = rec.CustomerAccount,
                     DepositsBalance = rec.DepositsBalance,
                     GroupNo = rec.GroupNo,
@@ -186,7 +196,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     PriceDescription = rec.PriceDescription,
                     Location = rec.Location,
                     ProductName = rec.ProductName,
-                    PriceCurrency = string.Concat(rec.PriceCurrency)
+                    PriceCurrency = ConvertTo.SafeString(rec.PriceCurrency)
                 });
             }
             return list;
@@ -360,7 +370,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     UnitPrice = rec.UnitPrice,
                     Discount = rec.Discount,
                     Amount = rec.Amount,
-                    DiscountReasonCode = rec.DiscountReasonCode, 
+                    DiscountReasonCode = rec.DiscountReasonCode,
                     AccessID = rec.AccessID,
                     SalesPersonCode = rec.SalesPersonCode,
                     EntryType = rec.EntryType,
@@ -400,9 +410,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     TimeCaption = rec.TimeCaption,
                     Location = rec.Location,
                     Price = rec.Price,
-                    OptionalResourceName = string.Concat(rec.OptionalResourceName),
+                    OptionalResourceName = ConvertTo.SafeString(rec.OptionalResourceName),
                     OptionalResourceNo = rec.OptionalResourceNo,
-                    PriceCurrency = string.Concat(rec.PriceCurrency),
+                    PriceCurrency = ConvertTo.SafeString(rec.PriceCurrency),
                     Comment = rec.Comment
                 });
             }
@@ -418,7 +428,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             return new AdditionalCharge()
             {
-                ActivityNo = string.Concat(rec.ActivityNo),
+                ActivityNo = ConvertTo.SafeString(rec.ActivityNo),
                 LineNo = rec.LineNo,
                 ItemNo = rec.ItemNo,
                 Description = rec.Description,
@@ -428,7 +438,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 TotalAmount = rec.Total,
                 Optional = rec.Optional,
                 UnitOfMeasure = rec.Uom,
-                InvoiceReference = string.Concat(rec.InvoiceReference),
+                InvoiceReference = ConvertTo.SafeString(rec.InvoiceReference),
                 ProductType = (rec.ProductType.Equals("Item")) ? ProductChargeType.Item : ProductChargeType.Deal
             };
         }

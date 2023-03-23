@@ -13,26 +13,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
     {
         // Key: Item No., Sales Type, Sales Code, Starting Date, Currency Code, Variant Code, Unit of Measure Code, Minimum Quantity
         const int TABLEID = 7002;
+        // Key: Price List Code, Line No.
+        const int TABLELINEID = 7001;
         // Key: StoreId, ItemId, VariantId, UomId, CustomerDiscountGroup, LoyaltySchemeCode
         const int TABLEMOBILEID = 10012861;
 
-        private string sqlcolumns = string.Empty;
-        private string sqlfrom = string.Empty;
         private string sqlMcolumns = string.Empty;
         private string sqlMfrom = string.Empty;
 
         public PriceRepository(BOConfiguration config) : base(config)
         {
-            sqlcolumns = "mt.[Item No_],mt.[Sales Type],mt.[Sales Code],mt.[Starting Date],mt.[Ending Date],mt.[Currency Code]," +
-                         "mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity],mt.[Currency Code],mt.[Unit Price]," +
-                         "mt.[Price Includes VAT],mt2.[LSC Unit Price Including VAT],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]";
-            sqlfrom = " FROM [" + navCompanyName + "Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
-                      "JOIN [" + navCompanyName + "Sales Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
-                      "ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Sales Type]=mt.[Sales Type] AND mt2.[Sales Code]=mt.[Sales Code] " +
-                      "AND mt2.[Starting Date]=mt.[Starting Date] AND mt2.[Currency Code]=mt.[Currency Code] " +
-                      "AND mt2.[Variant Code]=mt.[Variant Code] AND mt2.[Unit of Measure Code]=mt.[Unit of Measure Code] " +
-                      "AND mt2.[Minimum Quantity]=mt.[Minimum Quantity]";
-
             sqlMcolumns = "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Customer Disc_ Group]," +
                           "mt.[Loyalty Scheme Code],mt.[Currency Code],mt.[Unit Price],mt.[Net Unit Price],mt.[Offer No_],mt.[Last Modify Date]," +
                           "u.[Qty_ per Unit of Measure]";
@@ -154,12 +144,20 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             List<JscKey> keys = GetPrimaryKeys("Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972");
 
-            // get records remaining
+            // get records
             string sql = string.Empty;
+            string sqlfrom = " FROM [" + navCompanyName + "Sales Price$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
+                      "JOIN [" + navCompanyName + "Sales Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
+                      "ON mt2.[Item No_]=mt.[Item No_] AND mt2.[Sales Type]=mt.[Sales Type] AND mt2.[Sales Code]=mt.[Sales Code] " +
+                      "AND mt2.[Starting Date]=mt.[Starting Date] AND mt2.[Currency Code]=mt.[Currency Code] " +
+                      "AND mt2.[Variant Code]=mt.[Variant Code] AND mt2.[Unit of Measure Code]=mt.[Unit of Measure Code] " +
+                      "AND mt2.[Minimum Quantity]=mt.[Minimum Quantity]" + 
+                      ",[" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg";
             string where = " AND spg.[Store] = '" + storeId + "' AND mt.[Sales Code]=spg.[Price Group Code]";
+
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + ",[" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg" + 
+                sql = "SELECT COUNT(*)" + sqlfrom + 
                     GetWhereStatementWithStoreDist(true, keys, where, "mt.[Item No_]", storeId, false);
             }
             recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
@@ -168,8 +166,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             List<ReplPrice> list = new List<ReplPrice>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqlcolumns + ",spg.[Priority]" + 
-                sqlfrom + ",[" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg" + GetWhereStatementWithStoreDist(fullReplication, keys, where, "mt.[Item No_]", storeId, true);
+            sql = GetSQL(fullReplication, batchSize) + 
+                  "mt.[Item No_],mt.[Sales Type],mt.[Sales Code],mt.[Starting Date],mt.[Ending Date],mt.[Currency Code]," +
+                  "mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity],mt.[Unit Price]," +
+                  "mt.[Price Includes VAT],mt2.[LSC Unit Price Including VAT],mt.[VAT Bus_ Posting Gr_ (Price)],spg.[Priority]" + 
+                  sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, where, "mt.[Item No_]", storeId, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -232,6 +233,122 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 while (reader.Read())
                                 {
                                     list.Add(ReaderToPrice(reader, storeId, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                        if (string.IsNullOrEmpty(maxKey))
+                            maxKey = lastKey;
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            return list;
+        }
+
+        public List<ReplPrice> ReplicatePriceLines(string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
+
+            List<JscKey> keys = GetPrimaryKeys("Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972");
+
+            // get records remaining
+            string sql = string.Empty;
+            string sqlfrom = " FROM [" + navCompanyName + "Price List Line$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
+                             "JOIN [" + navCompanyName + "Price List Line$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 " +
+                             "ON mt2.[Price List Code]=mt.[Price List Code] AND mt2.[Line No_]=mt.[Line No_] " +
+                             "JOIN [" + navCompanyName + "LSC Store Price Group$5ecfc871-5d82-43f1-9c54-59685e82318d] spg " +
+                             "ON spg.[Store] = '" + storeId + "' AND spg.[Price Group Code]=mt.[Source No_]";
+            string where = " AND mt.[Asset Type]=10";
+            if (fullReplication)
+            {
+                sql = "SELECT COUNT(*)" + sqlfrom +
+                    GetWhereStatementWithStoreDist(true, keys, where, "mt.[Asset No_]", storeId, false);
+            }
+            recordsRemaining = GetRecordCount(TABLELINEID, lastKey, sql, keys, ref maxKey);
+
+            List<JscActions> actions = LoadActions(fullReplication, TABLELINEID, batchSize, ref lastKey, ref recordsRemaining);
+            List<ReplPrice> list = new List<ReplPrice>();
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) + 
+                "mt.[Asset No_],mt.[Source Type],mt.[Source No_],mt.[Starting Date],mt.[Ending Date]," +
+                "mt.[Currency Code],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Minimum Quantity]," +
+                "mt.[Unit Price],mt.[Price Includes VAT],mt.[VAT Bus_ Posting Gr_ (Price)]," +
+                "mt2.[LSC Unit Price Including VAT],spg.[Priority]" +
+                sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, where, "mt.[Asset No_]", storeId, true);
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    if (fullReplication)
+                    {
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int cnt = 0;
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToPriceLine(reader, storeId, out lastKey));
+                                cnt++;
+                            }
+                            reader.Close();
+                            recordsRemaining -= cnt;
+                        }
+                        if (recordsRemaining <= 0)
+                            lastKey = maxKey;   // this should be the highest PreAction id;
+                    }
+                    else
+                    {
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                /* we dont know the item id from delete action
+                                
+                                string[] par = act.ParamValue.Split(';');
+                                if (par.Length < 8 || par.Length != keys.Count)
+                                    continue;
+
+                                list.Add(new ReplPrice()
+                                {
+                                    ItemId = par[0],
+                                    SaleType = Convert.ToInt32(par[1]),
+                                    SaleCode = par[2],
+                                    StartingDate = GetDateTimeFromNav(par[3]),
+                                    CurrencyCode = par[4],
+                                    VariantId = par[5],
+                                    UnitOfMeasure = par[6],
+                                    MinimumQuantity = Convert.ToDecimal(par[7]),
+                                    IsDeleted = true
+                                });
+                                */
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToPriceLine(reader, storeId, out string ts));
                                 }
                                 reader.Close();
                             }
@@ -336,6 +453,33 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 SaleType = SQLHelper.GetInt32(reader["Sales Type"]),
                 SaleCode = SQLHelper.GetString(reader["Sales Code"]),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
+                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
+                UnitPrice = SQLHelper.GetDecimal(reader, "Unit Price"),
+                UnitPriceInclVat = SQLHelper.GetDecimal(reader, "LSC Unit Price Including VAT"),
+                PriceInclVat = SQLHelper.GetBool(reader["Price Includes VAT"]),
+                MinimumQuantity = SQLHelper.GetDecimal(reader, "Minimum Quantity"),
+                StartingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Starting Date"]), config.IsJson),
+                EndingDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Ending Date"]), config.IsJson),
+                VATPostGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Gr_ (Price)"]),
+                Priority = SQLHelper.GetInt32(reader["Priority"])
+            };
+
+            if (string.IsNullOrWhiteSpace(storeid) == false)
+                price.StoreId = storeid;
+
+            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            return price;
+        }
+
+        private ReplPrice ReaderToPriceLine(SqlDataReader reader, string storeid, out string timestamp)
+        {
+            ReplPrice price = new ReplPrice()
+            {
+                ItemId = SQLHelper.GetString(reader["Asset No_"]),
+                SaleType = SQLHelper.GetInt32(reader["Source Type"]),
+                SaleCode = SQLHelper.GetString(reader["Source No_"]),
                 VariantId = SQLHelper.GetString(reader["Variant Code"]),
                 UnitOfMeasure = SQLHelper.GetString(reader["Unit of Measure Code"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),

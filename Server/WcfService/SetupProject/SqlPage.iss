@@ -124,7 +124,7 @@ function SQLCustomForm_CreatePage(PreviousPageId: Integer): TWizardPage;
 begin
   SQLPage := CreateCustomPage(
     PreviousPageId,
-    'SQL Sever database for LS Commerce Service',
+    'SQL Sever database for Commerce Service for LS Central',
     'Creates LS Commerce objects in a new or existing SQL database'
   );
  
@@ -204,11 +204,11 @@ begin
     Top := ScaleY(70);
     Width := ScaleX(380);
     Height := ScaleY(21);
-    Caption := 'Create and use LSCommerceUser to connect to LSCommerce Database';
+    Caption := 'Create and use CommerceUser to connect to Commerce Database';
     Checked := True;
     TabOrder := 3;
     ShowHint := True;
-    Hint := 'Create LSCommerceUser on SQL Server and use it when connecting to the Database. If not checked, the SQL Credentials will be used to connect.';
+    Hint := 'Create CommerceUser on SQL Server and use it when connecting to the Database. If not checked, the SQL Credentials will be used to connect.';
   end;
 
   { lblAuthType }

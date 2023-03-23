@@ -8,6 +8,7 @@ using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Loyalty;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
 using LSOmni.DataAccess.BOConnection.PreCommon.Mapping;
+using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
 
 using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
@@ -18,6 +19,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
+using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
@@ -28,8 +30,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
-using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -866,14 +866,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     searchValue = loginId;
                 }
 
+                // GetMemberContactInfo(ContactSearchType: Enum "LSC Member Contact Search Type"; SearchText: text; SearchMethod: Enum "LSC Search Method"; MaxResultContacts: Integer): Text
                 string data = "{ \"contactSearchType\": \"" + searchType + "\"," +
                                 "\"searchText\": \"" + searchValue + "\"," +
                                 "\"searchMethod\": \"0\",\"maxResultContacts\": 0 }";
 
                 string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data);
                 ContactJMapping cmap = new ContactJMapping(config.IsJson);
-                var mm = cmap.GetMemberContact(ret);
-                return mm.FirstOrDefault();
+                List<MemberContact> list = cmap.GetMemberContact(ret);
+                logger.StatisticEndSub(ref stat, index);
+                return list.FirstOrDefault();
             }
 
             LSCentral.RootGetMemberContact rootContact = new LSCentral.RootGetMemberContact();
@@ -1225,20 +1227,35 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public decimal GetPointRate(Statistics stat)
+        public decimal GetPointRate(string currency, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY");
+            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY", 1, true);
             string xmlResponse = RunOperation(xmlRequest);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
             SetupRepository rep = new SetupRepository(config);
-            decimal data = rep.GetPointRate(table);
+            decimal rate = rep.GetPointRate(table);
+
+            if (string.IsNullOrEmpty(currency) == false)
+            {
+                xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", currency.ToUpper(), 1, true);
+                xmlResponse = RunOperation(xmlRequest);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                decimal baserate = rep.GetPointRate(table);
+                if (baserate > 0)
+                {
+                    rate = rate * baserate;
+                }
+            }
+
             logger.StatisticEndSub(ref stat, index);
-            return data;
+            return rate;
         }
 
         public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
@@ -1307,6 +1324,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             if (LSCVersion >= new Version("21.3"))
             {
+                // GetMemberContactInfo(ContactSearchType: Enum "LSC Member Contact Search Type"; SearchText: text; SearchMethod: Enum "LSC Search Method"; MaxResultContacts: Integer): Text
                 string data = "{ \"contactSearchType\": \"" + ((int)searchType).ToString() + "\"," +
                                 "\"searchText\": \"" + search + "\"," +
                                 "\"searchMethod\": \"" + ((exact) ? "0" : "1") + "\"," +
@@ -1940,9 +1958,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
+            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+            if (string.IsNullOrEmpty(loyCur))
+                loyCur = "LOY";
 
-            LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request);
-            logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
+            LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request, loyCur);
             centralWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
             HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index);
             logger.StatisticEndSub(ref stat, index);
@@ -1979,6 +1999,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             SetupRepository rep = new SetupRepository(config);
             List<SalesEntry> list = rep.SalesEntryList(table);
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public List<SalesEntry> SalesEntryGetByCardId(string cardId, int maxRecs, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            // GetMemberContactSalesHistory(MemberCardNo: Text[100]; MaxResultContacts: Integer): Text
+            string data = "{ \"memberCardNo\": \"" + cardId + "\"," +
+                            "\"maxResultContacts\": " + maxRecs.ToString() + " }";
+
+            string ret = SendToOData("GetMemberContSalesHistory_GetMemberContactSalesHistory", data);
+            OrderJMapping omap = new OrderJMapping(config.IsJson);
+            List<SalesEntry> list = omap.GetSalesEntry(ret);
             logger.StatisticEndSub(ref stat, index);
             return list;
         }

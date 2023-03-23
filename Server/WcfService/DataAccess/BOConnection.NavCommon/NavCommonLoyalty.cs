@@ -1752,16 +1752,19 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             OrderMapping map = new OrderMapping(NAVVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
+            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+            if (string.IsNullOrEmpty(loyCur))
+                loyCur = "LOY";
 
             if (NAVVersion > new Version("16.2.0.0"))
             {
-                NavWS.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request);
+                NavWS.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request, loyCur);
                 logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
             }
             else if (NAVVersion > new Version("14.2"))
             {
-                NavWS.RootCustomerOrderCreateV4 root = map.MapFromOrderV4ToRoot(request);
+                NavWS.RootCustomerOrderCreateV4 root = map.MapFromOrderV4ToRoot(request, loyCur);
                 logger.Debug(config.LSKey.Key, "CustomerOrderCreateV4 Request - " + Serialization.ToXml(root, true));
                 navWS.CustomerOrderCreateV4(ref respCode, ref errorText, root, ref orderId);
             }

@@ -53,7 +53,7 @@ begin
   CheckPage := CreateCustomPage(
     PreviousPageId,
     'Installation options.',
-    'NOTE: All installation parts must be completed for'#13'a full setup of LS Commerce Service.'
+    'NOTE: All installation parts must be completed for'#13'a full setup of Commerce Service for LS Central.'
   );
  
   { CheckPage_lblComment }
@@ -88,7 +88,7 @@ begin
   begin
     Width := CheckPage.SurfaceWidth;
     Height := ScaleY(22);
-    Caption := 'Create LS Commerce Service Database';
+    Caption := 'Create Commerce Service for LS Central Database';
     Hint := 'Create LS Commerce Database and set the Connection setting to access the Database. Needs SysAdmin right to be able to create the Database.';
     ShowHint := True;
     Checked := True;
@@ -104,7 +104,7 @@ begin
     Width := CheckPage.SurfaceWidth;
     Height := ScaleY(18);
     Caption := 'Use WS Mode for LS Central in SaaS';
-    Hint := 'Used with SaaS environment. LS Commerce service will use Web Services to communicate with LS Central in SaaS. No Direct database access to LS Central.';
+    Hint := 'Used with SaaS environment. Commerce Service for LS Central will use Web Services to communicate with LS Central in SaaS. No Direct database access to LS Central.';
     ShowHint := True;
     Checked := False;
     Parent := CheckPage.Surface;
@@ -119,7 +119,7 @@ begin
   begin
     Width := CheckPage.SurfaceWidth;
     Height := ScaleY(30);
-    Caption := 'Configure LS Nav/LS Central SQL parameters';
+    Caption := 'Configure LS Central SQL parameters';
     Hint := 'Used with OnPremeses environment. Set the Connection setting to access the LS Central Database.';
     ShowHint := True;
     Checked := True;
@@ -133,8 +133,8 @@ begin
   begin
     Width := CheckPage.SurfaceWidth;
     Height := ScaleY(30);
-    Caption := 'Create LSCommerceService under IIS';
-    Hint := 'Add LS Commerce Service to IIS and set the Connection setting to access the LS Central Web Services.';
+    Caption := 'Create CommerceService under IIS';
+    Hint := 'Add Commerce Service for LS Central to IIS and set the Connection setting to access the LS Central Web Services.';
     ShowHint := True;
     Checked := True;
     Parent := CheckPage.Surface;
@@ -146,7 +146,7 @@ begin
   with CheckPage_lblComment2 do
   begin
     Parent := CheckPage.Surface;
-    Caption :=  'The LSCommerceService is created as a Web Application.'#13'You must have administration rights (sysadmin for SQL server).'#13
+    Caption :=  'The CommerceService is created as a Web Application.'#13'You must have administration rights (sysadmin for SQL server).'#13
          '-->IIS version: ' + GetIISVersionString + ' detected'#13 
          '-->log: ' + expandconstant('{log}') ;
     Left := ScaleX(10);

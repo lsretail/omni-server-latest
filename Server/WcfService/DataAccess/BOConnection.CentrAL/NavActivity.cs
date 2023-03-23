@@ -61,6 +61,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ActivityInsertReservation(request);
         }
 
+        public virtual bool ActivityUpdateReservationStatus(string reservationNo, string setStatusCode)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityUpdateActivityStatus(string activityNo, string setStatusCode)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
         public virtual string ActivityReservationUpdate(Reservation request)
         {
             return NavWSBase.ActivityUpdateReservation(request);
