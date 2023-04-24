@@ -10,8 +10,6 @@ using LSOmni.BLL;
 using LSOmni.BLL.Loyalty;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
-
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Utils;
 
 namespace LSOmni.Service
@@ -327,59 +325,5 @@ namespace LSOmni.Service
         }
 
         #endregion
-
-        #region images
-
-        /// <summary>
-        /// Get image based on id
-        /// </summary>
-        /// <param name="id">id of image</param>
-        /// <param name="imageSize">size of image 100x100</param>
-        /// <returns>List of ImageViews</returns>
-        public virtual ImageView ImageGetById(string id, ImageSize imageSize)
-        {
-            if (imageSize == null)
-                imageSize = new ImageSize();
-
-            try
-            {
-                logger.Debug(config.LSKey.Key, "Id: {0}  imageSize: {1}", id, imageSize.ToString());
-
-                ImageBLL bll = new ImageBLL(config);
-                ImageView imgView = bll.ImageSizeGetById(id, imageSize, new Statistics());
-                if (imgView != null)
-                {
-                    // http://localhost/LSOmniService/json.svc/ImageStreamGetById?width=255&height=455&id=66
-                    imgView.StreamURL = GetImageStreamUrl(imgView);
-                }
-                return imgView;
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "Failed: ImageGetById() id:{0} imageSize:{1}", id, imageSize);
-                return null; // never gets here
-            }
-        }
-
-        #endregion images
-
-        #region PushNotification
-
-        public virtual bool PushNotificationSave(PushNotificationRequest pushNotificationRequest)
-        {
-            try
-            {
-                logger.Debug(config.LSKey.Key, LogJson(pushNotificationRequest));
-                PushNotificationBLL bll = new PushNotificationBLL(config, this.deviceId, clientTimeOutInSeconds); //no security token needed
-                return bll.PushNotificationSave(pushNotificationRequest);
-            }
-            catch (Exception ex)
-            {
-                HandleExceptions(ex, "pushNotificationRequest:{0}", LogJson(pushNotificationRequest));
-                return false; //never gets here
-            }
-        }
-
-        #endregion PushNotification
     }
 }

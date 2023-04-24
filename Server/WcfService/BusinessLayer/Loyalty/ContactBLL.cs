@@ -61,14 +61,14 @@ namespace LSOmni.BLL.Loyalty
             contact.LoggedOnToDevice = new Device();
             contact.LoggedOnToDevice.SecurityToken = config.SecurityToken;
 
-            long totalPoints = BOLoyConnection.MemberCardGetPoints(cardId, stat);
-            contact.Account.PointBalance = (totalPoints == 0) ? contact.Account.PointBalance : totalPoints;
+            if (contact.Account.PointBalance == 0)
+                contact.Account.PointBalance = BOLoyConnection.MemberCardGetPoints(cardId, stat);
 
             contact.Profiles = BOLoyConnection.ProfileGetByCardId(cardId, stat);
             contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(cardId, string.Empty, string.Empty, stat);
             contact.SalesEntries = BOLoyConnection.SalesEntriesGetByCardId(cardId, string.Empty, DateTime.MinValue, false, numberOfTrans, stat);
 
-            NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
+            PushNotificationBLL notificationBLL = new PushNotificationBLL(config, timeoutInSeconds);
             contact.Notifications = notificationBLL.NotificationsGetByCardId(cardId, 5000, stat);
 
             OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
@@ -255,7 +255,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty, stat);
 
-                NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
+                PushNotificationBLL notificationBLL = new PushNotificationBLL(config, timeoutInSeconds);
                 contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000, stat);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);
@@ -315,7 +315,7 @@ namespace LSOmni.BLL.Loyalty
             {
                 contact.PublishedOffers = BOLoyConnection.PublishedOffersGet(contact.Cards.FirstOrDefault().Id, string.Empty, string.Empty, stat);
 
-                NotificationBLL notificationBLL = new NotificationBLL(config, timeoutInSeconds);
+                PushNotificationBLL notificationBLL = new PushNotificationBLL(config, timeoutInSeconds);
                 contact.Notifications = notificationBLL.NotificationsGetByCardId(contact.Cards[0].Id, 5000, stat);
 
                 OneListBLL oneListBLL = new OneListBLL(config, timeoutInSeconds);

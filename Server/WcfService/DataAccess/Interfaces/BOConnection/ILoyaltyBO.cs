@@ -120,6 +120,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Image
 
         ImageView ImageGetById(string imageId, bool includeBlob, Statistics stat);
+        ImageView ImageGetByMediaId(string mediaId, Statistics stat);
         List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat);
 
         #endregion

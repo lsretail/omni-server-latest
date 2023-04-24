@@ -94,6 +94,14 @@ namespace LSOmni.BLL
             return imgSizeView;
         }
 
+        public virtual ImageView ImageGetByMediaId(string mediaId, ImageSize imageSize, Statistics stat)
+        {
+            ImageView imgView = BOLoyConnection.ImageGetByMediaId(mediaId, stat);
+            if (imgView != null && string.IsNullOrWhiteSpace(imgView.Image))
+                imgView.Image = base.Base64GetFromByte(imgView.ImgBytes, imageSize, ImageFormat.Jpeg);
+            return imgView;
+        }
+
         public List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
         {
             //get the original image from Image table
@@ -106,7 +114,7 @@ namespace LSOmni.BLL
 
             foreach (ImageView iv in images)
             {
-                ImageFormat imgFormat = Common.Util.ImageConverter.DefaultImgFormat;
+                ImageFormat imgFormat = ImageFormat.Jpeg;
                 iv.Format = imgFormat.ToString();
                 iv.Image = base.Base64GetFromByte(iv.ImgBytes, iv.ImgSize, imgFormat);
                 if (string.IsNullOrEmpty(iv.Image) == false)
@@ -146,7 +154,7 @@ namespace LSOmni.BLL
             if (imgSize.Height != 0 || imgSize.Width != 0)
                 iv.ImgSize = imgSize;
 
-            ImageFormat imgFormat = Common.Util.ImageConverter.DefaultImgFormat;
+            ImageFormat imgFormat = ImageFormat.Jpeg;
             iv.Format = imgFormat.ToString();
             iv.Image = base.Base64GetFromByte(iv.ImgBytes, imgSize, imgFormat);
             if (string.IsNullOrEmpty(iv.Image) == false)

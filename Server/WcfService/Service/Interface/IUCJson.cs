@@ -2862,6 +2862,7 @@ namespace LSOmni.Service
         /// Checks if LS Recommend is active in Commerce Service for LS Central
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Not available anymore")]
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool RecommendedActive();
@@ -2871,6 +2872,7 @@ namespace LSOmni.Service
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
+        [Obsolete("Not available anymore")]
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<RecommendedItem> RecommendedItemsGet(List<string> items);

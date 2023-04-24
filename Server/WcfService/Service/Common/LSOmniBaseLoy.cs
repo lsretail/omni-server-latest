@@ -109,7 +109,7 @@ namespace LSOmni.Service
 
             try
             {
-                logger.Debug(config.LSKey.Key, $"cardId:{cardId}");
+                logger.Debug(config.LSKey.Key, $"cardId:{cardId} NoOfTrans:{numberOfTransReturned}");
 
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 MemberContact contact = contactBLL.ContactGetByCardId(cardId, numberOfTransReturned, stat);
@@ -130,6 +130,11 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<MemberContact> MemberContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
+        {
+            return ContactSearch(searchType, search, maxNumberOfRowsReturned);
+        }
+        
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
@@ -180,7 +185,7 @@ namespace LSOmni.Service
 
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(contact));
+                logger.Debug(config.LSKey.Key, $"DoLogin:{doLogin} > " + LogJson(contact));
 
                 if (contact.Cards == null)
                     contact.Cards = new List<Card>();
@@ -208,7 +213,7 @@ namespace LSOmni.Service
 
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(contact));
+                logger.Debug(config.LSKey.Key, $"getContact:{getContact} > " + LogJson(contact));
 
                 if (contact.Cards == null)
                     contact.Cards = new List<Card>();
@@ -710,6 +715,11 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<PublishedOffer> POSPublishedOffersGetByCardId(string cardId, string itemId)
+        {
+            return PublishedOffersGetByCardId(cardId, itemId);
+        }
+
         public virtual List<PublishedOffer> PublishedOffersGetByCardId(string cardId, string itemId)
         {
             if (cardId == null)
@@ -757,7 +767,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "notificationId:{0}", notificationId);
 
-                NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
+                PushNotificationBLL notificationBLL = new PushNotificationBLL(config, clientTimeOutInSeconds);
                 Notification notification = notificationBLL.NotificationGetById(notificationId, stat);
                 NotificationSetLocation(notification);
                 return notification;
@@ -781,7 +791,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "cardId:{0} numberOfNotifications:{1}", cardId, numberOfNotifications);
 
-                NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
+                PushNotificationBLL notificationBLL = new PushNotificationBLL(config, clientTimeOutInSeconds);
                 List<Notification> notificationList = notificationBLL.NotificationsGetByCardId(cardId, numberOfNotifications, stat);
                 foreach (Notification notification in notificationList)
                 {
@@ -811,7 +821,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, $"cardId:{cardId}");
 
-                NotificationBLL notificationBLL = new NotificationBLL(config, clientTimeOutInSeconds);
+                PushNotificationBLL notificationBLL = new PushNotificationBLL(config, clientTimeOutInSeconds);
                 notificationBLL.NotificationsUpdateStatus(notificationIds, notificationStatus, stat);
                 return true;
             }
@@ -823,6 +833,21 @@ namespace LSOmni.Service
             finally
             {
                 logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool PushNotificationSave(PushNotificationRequest pushNotificationRequest)
+        {
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(pushNotificationRequest));
+                PushNotificationBLL bll = new PushNotificationBLL(config, this.deviceId, clientTimeOutInSeconds); //no security token needed
+                return bll.PushNotificationSave(pushNotificationRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "pushNotificationRequest:{0}", LogJson(pushNotificationRequest));
+                return false; //never gets here
             }
         }
 
@@ -1786,7 +1811,64 @@ namespace LSOmni.Service
 
         #endregion Basket 
 
-        #region Hierarchy, Menu & Image
+        #region Image
+
+        /// <summary>
+        /// Get image based on id
+        /// </summary>
+        /// <param name="id">id of image</param>
+        /// <param name="imageSize">size of image 100x100</param>
+        /// <returns>List of ImageViews</returns>
+        public virtual ImageView ImageGetById(string id, ImageSize imageSize)
+        {
+            if (imageSize == null)
+                imageSize = new ImageSize();
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "Id: {0}  imageSize: {1}", id, imageSize.ToString());
+
+                ImageBLL bll = new ImageBLL(config);
+                ImageView imgView = bll.ImageSizeGetById(id, imageSize, new Statistics());
+                if (imgView != null)
+                {
+                    // http://localhost/LSOmniService/json.svc/ImageStreamGetById?width=255&height=455&id=66
+                    imgView.StreamURL = GetImageStreamUrl(imgView);
+                }
+                return imgView;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed: ImageGetById() id:{0} imageSize:{1}", id, imageSize);
+                return null; // never gets here
+            }
+        }
+
+        public virtual ImageView ImageGetByMediaId(string mediaId, ImageSize imageSize)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, "mediaId: {0}  imageSize: {1}", mediaId, imageSize);
+
+                //No caching used here.
+                ImageBLL bll = new ImageBLL(config);
+                ImageView imgView = bll.ImageGetByMediaId(mediaId, imageSize, stat);
+                if (imgView != null)
+                    imgView.StreamURL = GetImageStreamUrl(imgView);
+                return imgView;
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed: ImageGetByMediaId() mediaId:{0} imageSize:{1}", mediaId, imageSize);
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
 
         /// <summary>
         /// To Get images via URL
@@ -1820,6 +1902,10 @@ namespace LSOmni.Service
                 logger.StatisticEndMain(stat);
             }
         }
+
+        #endregion
+
+        #region Hierarchy & Menu
 
         public virtual List<Hierarchy> HierarchyGet(string storeId)
         {

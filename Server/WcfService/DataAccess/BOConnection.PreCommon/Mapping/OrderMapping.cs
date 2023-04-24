@@ -175,7 +175,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     City = header.City,
                     Country = header.CountryRegionCode,
                     PostCode = header.PostCode,
-                    StateProvinceRegion = header.County,
+                    County = header.County,
+                    StateProvinceRegion = header.TerritoryCode,
                     PhoneNumber = header.PhoneNo,
                     CellPhoneNumber = header.MobilePhoneNo
                 },
@@ -192,7 +193,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     City = header.ShiptoCity,
                     Country = header.ShiptoCountryRegionCode,
                     PostCode = header.ShiptoPostCode,
-                    StateProvinceRegion = header.ShiptoCounty,
+                    StateProvinceRegion = header.TerritoryCode,
+                    County = header.County,
                     PhoneNumber = header.ShiptoPhoneNo
                 }
             };
@@ -338,7 +340,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Address2 = XMLHelper.GetString(order.ContactAddress.Address2),
                 HouseApartmentNo = XMLHelper.GetString(order.ContactAddress.HouseNo),
                 City = XMLHelper.GetString(order.ContactAddress.City),
-                County = XMLHelper.GetString(order.ContactAddress.StateProvinceRegion),
+                County = XMLHelper.GetString(order.ContactAddress.County),
                 PostCode = XMLHelper.GetString(order.ContactAddress.PostCode),
                 CountryRegionCode = XMLHelper.GetString(order.ContactAddress.Country),
                 PhoneNo = XMLHelper.GetString(order.ContactAddress.PhoneNumber),
@@ -350,7 +352,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 ShipToAddress2 = XMLHelper.GetString(order.ShipToAddress.Address2),
                 ShipToHouseApartmentNo = XMLHelper.GetString(order.ShipToAddress.HouseNo),
                 ShipToCity = XMLHelper.GetString(order.ShipToAddress.City),
-                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.StateProvinceRegion),
+                ShipToCounty = XMLHelper.GetString(order.ShipToAddress.County),
                 ShipToPostCode = XMLHelper.GetString(order.ShipToAddress.PostCode),
                 ShipToCountryRegionCode = XMLHelper.GetString(order.ShipToAddress.Country),
                 ShipToPhoneNo = XMLHelper.GetString(order.ShipToAddress.PhoneNumber),

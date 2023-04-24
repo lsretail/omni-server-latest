@@ -16,6 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         // Key: Store No., Priority No., Item No., Variant Code, Customer Disc. Group, Loyalty Scheme Code, From Date, To Date, Minimum Quantity
         const int DTABLEID = 10012862;
         const int MTABLEID = 10012863;
+        const int MTABLEIDEXT = 10012876;
         const int VTABLEID = 99001481;
 
         private string sqlcolumns = string.Empty;
@@ -25,7 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlVcolumns = string.Empty;
         private string sqlVfrom = string.Empty;
 
-        public DiscountOfferRepository(BOConfiguration config) : base(config)
+        public DiscountOfferRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Store No_],mt.[Priority No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[From Date]," +
                          "mt.[To Date],mt.[Minimum Quantity],mt.[Discount _],mt.[Unit of Measure Code],mt.[Offer No_],mt.[Last Modify Date]," +
@@ -38,8 +39,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                            "mt.[To Date],mt.[Offer No_],mt.[Last Modify Date]," +
                            "p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Pop-up Line 3],p.[Validation Period ID]";
 
-            sqlMMfrom = " FROM [" + navCompanyName + "LSC WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                        " JOIN [" + navCompanyName + "LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
+            if (LSCVersion >= new Version("21.5"))
+                sqlMMfrom = " FROM [" + navCompanyName + "LSC WI Mix & Match Offer Ext$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                            " JOIN [" + navCompanyName + "LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
+            else
+                sqlMMfrom = " FROM [" + navCompanyName + "LSC WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                            " JOIN [" + navCompanyName + "LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
 
             sqlVcolumns = "mt.[ID],mt.[Description],mt.[Starting Date],mt.[Ending Date],mt.[Starting Time],mt.[Ending Time],mt.[Time within Bounds],mt.[Monday Starting Time],mt.[Monday Ending Time] " +
                         ",mt.[Mon_ Time within Bounds],mt.[Tuesday Starting Time],mt.[Tuesday Ending Time],mt.[Tue_ Time within Bounds],mt.[Wednesday Starting Time],mt.[Wednesday Ending Time] " +
@@ -193,8 +198,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             // get records remaining
             string where = (string.IsNullOrEmpty(storeId)) ? string.Empty : string.Format(" AND mt.[Store No_]='{0}'", storeId);
 
+            int tbid = MTABLEID;
+            if (LSCVersion >= new Version("21.4"))
+                tbid = MTABLEIDEXT;
+
             string sql = "SELECT COUNT(*)" + sqlMMfrom + GetWhereStatement(true, keys, where, false);
-            recordsRemaining = GetRecordCount(MTABLEID, lastKey, sql, keys, ref maxKey);
+            recordsRemaining = GetRecordCount(tbid, lastKey, sql, keys, ref maxKey);
 
             int rr = 0;
             List<JscActions> actions = LoadActions(fullReplication, 99001453, 0, ref maxKey, ref rr);
@@ -394,7 +403,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
         {
-            DiscountEngine engine = new DiscountEngine(new PreFixRepository(navConnectionString));
+            DiscountEngine engine = new DiscountEngine(new PreFixRepository(navConnectionString, LSCVersion));
             return engine.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
         }
 

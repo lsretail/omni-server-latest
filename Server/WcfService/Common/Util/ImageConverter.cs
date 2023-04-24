@@ -13,8 +13,6 @@ namespace LSOmni.Common.Util
 {
     public static class ImageConverter
     {
-        public static ImageFormat DefaultImgFormat = ImageFormat.Jpeg;
-
         public static string CalculateAverageColor(Image image)
         {
             //this gives same results as website http://www.wisegeek.com/how-can-i-find-the-average-color-in-a-photograph.htm

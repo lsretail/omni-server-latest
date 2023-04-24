@@ -189,5 +189,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public decimal UnitsPerParcel { get; set; }
         [DataMember]
         public decimal UnitVolume { get; set; }
+        [DataMember]
+        public ItemType Type { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum ItemType
+    {
+        [EnumMember]
+        Inventory = 0,
+        [EnumMember]
+        Service = 1,
+        [EnumMember]
+        NonInventory = 2
     }
 }

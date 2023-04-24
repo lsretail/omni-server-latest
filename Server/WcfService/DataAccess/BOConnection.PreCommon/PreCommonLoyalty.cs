@@ -590,6 +590,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
+            string tbname = (LSCVersion >= new Version("21.5")) ? "LSC WI Mix & Match Offer Ext" : "LSC WI Mix & Match Offer";
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest;
             string xmlResponse;
@@ -604,7 +605,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
                 list.AddRange(rep.GetDiscount(table));
 
-                xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Mix & Match Offer", "Store No.", storeId, "Item No.", id);
+                xmlRequest = xml.GetGeneralWebRequestXML(tbname, "Store No.", storeId, "Item No.", id);
                 xmlResponse = RunOperation(xmlRequest, true);
                 HandleResponseCode(ref xmlResponse);
                 table = xml.GetGeneralWebResponseXML(xmlResponse);
@@ -661,7 +662,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
                     try
                     {
-                        xmlRequest = xml.GetBatchWebRequestXML("LSC WI Mix & Match Offer", fields, filter, string.Empty);
+                        xmlRequest = xml.GetBatchWebRequestXML(tbname, fields, filter, string.Empty);
                         xmlResponse = RunOperation(xmlRequest, true);
                         HandleResponseCode(ref xmlResponse);
                         table = xml.GetGeneralWebResponseXML(xmlResponse);

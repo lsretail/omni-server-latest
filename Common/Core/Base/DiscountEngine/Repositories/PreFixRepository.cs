@@ -13,10 +13,11 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
     /// </summary>
     public class PreFixRepository : IDiscountRepository
     {
-        private string connectionString = string.Empty;
-        private string navCompanyName = string.Empty;
+        private readonly string connectionString = string.Empty;
+        private readonly string navCompanyName = string.Empty;
+        private readonly string mmTableName = null;
 
-        public PreFixRepository(string SqlConnectionString)
+        public PreFixRepository(string SqlConnectionString, Version version)
         {
             connectionString = SqlConnectionString;
 
@@ -34,6 +35,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
 
             builder.Remove("NAVCompanyName");
             connectionString = builder.ConnectionString;
+            mmTableName = (version >= new Version("21.5")) ? "LSC WI Mix & Match Offer Ext$5ecfc871-5d82-43f1-9c54-59685e82318d]" : "LSC WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d]";
         }
 
         public List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId)
@@ -48,11 +50,10 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
                                   "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code], 0 AS [Minimum Quantity]," +
                                   "'' AS [Unit of Measure Code]";
 
-            string sqlMMfrom = " FROM [" + navCompanyName + "LSC WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+            string sqlMMfrom = " FROM [" + navCompanyName + mmTableName + " mt" +
                                " INNER JOIN [" + navCompanyName + "LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
-
+            
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -118,7 +119,7 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + "LSC WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + mmTableName + 
                                           "WHERE [Offer No_]=@id AND [Store No_]=@sid AND ([Loyalty Scheme Code]=@sc OR [Loyalty Scheme Code]='')";
                     command.Parameters.AddWithValue("@id", offerId);
                     command.Parameters.AddWithValue("@sid", storeId);

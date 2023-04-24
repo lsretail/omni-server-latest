@@ -30,7 +30,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            DiscountOfferRepository rep = new DiscountOfferRepository(config);
+            DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
             List<ProactiveDiscount> list = rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -255,19 +255,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository(config);
+            DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
             return rep.ReplicateDiscounts(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDiscount> ReplicateMixAndMatch(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository(config);
+            DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
             return rep.ReplicateMixAndMatch(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository(config);
+            DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
             return rep.ReplicateDiscountValidations(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public ItemRepository(BOConfiguration config, Version version) : base(config, version)
         {
-            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Sales Unit of Measure]," +
+            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Sales Unit of Measure],mt.[Type]," +
                          "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt.[Gross Weight],mt.[Country_Region of Origin Code]," +
                          "mt.[Item Tracking Code],mt.[Item Category Code],mt.[Units per Parcel],mt.[Unit Volume]," +
                          "mt2.[LSC Zero Price Valid],mt2.[LSC Scale Item],mt2.[LSC Retail Product Code],mt2.[LSC Keying in Price],mt2.[LSC Keying in Quantity]," +
@@ -667,6 +667,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 TaxItemGroupId = SQLHelper.GetString(reader["VAT Prod_ Posting Group"]),
                 BaseUnitOfMeasure = SQLHelper.GetString(reader["Base Unit of Measure"]),
                 ZeroPriceValId = SQLHelper.GetInt32(reader["LSC Zero Price Valid"]),
+                Type = (ItemType)SQLHelper.GetInt32(reader["Type"]),
 
                 Blocked = SQLHelper.GetInt32(reader["Blocked"]),
                 BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"]),

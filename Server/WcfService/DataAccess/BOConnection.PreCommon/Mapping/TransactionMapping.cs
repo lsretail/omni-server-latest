@@ -464,8 +464,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             LSCentral.WebDeliveryOrder devord = new LSCentral.WebDeliveryOrder()
             {
                 StreetName = XMLHelper.GetString(order.Address?.Address1),
-                StreetNo = XMLHelper.GetString(order.Address?.HouseNo),
                 Address2 = XMLHelper.GetString(order.Address?.Address2),
+                StreetNo = XMLHelper.GetString(order.Address?.HouseNo),
                 PostCode = XMLHelper.GetString(order.Address?.PostCode),
                 City = XMLHelper.GetString(order.Address?.City),
                 PhoneNo = XMLHelper.GetString(order.Address?.PhoneNumber),

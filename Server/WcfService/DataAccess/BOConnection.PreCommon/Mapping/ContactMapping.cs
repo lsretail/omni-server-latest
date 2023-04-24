@@ -40,10 +40,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
                 Address1 = XMLHelper.GetString(addr.Address1),
                 Address2 = XMLHelper.GetString(addr.Address2),
+                HouseApartmentNo = XMLHelper.GetString(addr.HouseNo),
                 City = XMLHelper.GetString(addr.City),
                 Country = XMLHelper.GetString(addr.Country),
                 PostCode = XMLHelper.GetString(addr.PostCode),
-                StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
+                TerritoryCode = XMLHelper.GetString(addr.StateProvinceRegion),
+                StateProvinceRegion = XMLHelper.GetString(addr.County),
+
                 Phone = XMLHelper.GetString(addr.PhoneNumber),
                 MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
@@ -109,10 +112,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
                 Address1 = XMLHelper.GetString(addr.Address1),
                 Address2 = XMLHelper.GetString(addr.Address2),
+                HouseApartmentNo = XMLHelper.GetString(addr.HouseNo),
                 City = XMLHelper.GetString(addr.City),
                 Country = XMLHelper.GetString(addr.Country),
                 PostCode = XMLHelper.GetString(addr.PostCode),
-                StateProvinceRegion = XMLHelper.GetString(addr.StateProvinceRegion),
+                TerritoryCode = XMLHelper.GetString(addr.StateProvinceRegion),
+                StateProvinceRegion = XMLHelper.GetString(addr.County),
+
                 Phone = XMLHelper.GetString(addr.PhoneNumber),
                 MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
@@ -180,9 +186,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Type = AddressType.Residential,
                 Address1 = contact.Address,
                 Address2 = contact.Address2,
+                HouseNo = contact.HouseApartmentNo,
                 City = contact.City,
                 PostCode = contact.PostCode,
                 StateProvinceRegion = contact.TerritoryCode,
+                County = contact.County,
                 Country = contact.Country,
                 PhoneNumber = contact.PhoneNo,
                 CellPhoneNumber = contact.MobilePhoneNo
@@ -253,19 +261,23 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 memberContact.SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail);
             }
 
-            memberContact.Addresses = new List<Address>();
-            memberContact.Addresses.Add(new Address()
+            memberContact.Addresses = new List<Address>()
             {
-                Type = AddressType.Residential,
-                Address1 = contact.Address,
-                Address2 = contact.Address2,
-                City = contact.City,
-                PostCode = contact.PostCode,
-                StateProvinceRegion = contact.TerritoryCode,
-                Country = contact.Country,
-                PhoneNumber = contact.PhoneNo,
-                CellPhoneNumber = contact.MobilePhoneNo
-            });
+                new Address()
+                {
+                    Type = AddressType.Residential,
+                    Address1 = contact.Address,
+                    Address2 = contact.Address2,
+                    HouseNo = contact.HouseApartmentNo,
+                    City = contact.City,
+                    PostCode = contact.PostCode,
+                    StateProvinceRegion = contact.TerritoryCode,
+                    County = contact.County,
+                    Country = contact.Country,
+                    PhoneNumber = contact.PhoneNo,
+                    CellPhoneNumber = contact.MobilePhoneNo
+                }
+            };
 
             memberContact.Account = new Account(contact.AccountNo);
             memberContact.Account.PointBalance = (long)pointBalance;
@@ -349,9 +361,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Type = AddressType.Residential,
                 Address1 = contact.Address,
                 Address2 = contact.Address2,
+                HouseNo = contact.HouseApartmentNo,
                 City = contact.City,
                 PostCode = contact.PostCode,
                 StateProvinceRegion = contact.TerritoryCode,
+                County = contact.County,
                 Country = contact.Country,
                 PhoneNumber = contact.PhoneNo,
                 CellPhoneNumber = contact.MobilePhoneNo

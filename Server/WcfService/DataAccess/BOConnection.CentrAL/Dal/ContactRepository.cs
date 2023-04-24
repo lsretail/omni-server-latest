@@ -25,8 +25,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public ContactRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
-                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page],mt.[County]," +
-                         "mt.[Address],mt.[Address 2],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[Country_Region Code]";
+                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
+                         "mt.[Address],mt.[Address 2],mt.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[County],mt.[Country_Region Code]";
 
             sqlfrom = " FROM [" + navCompanyName + "Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
@@ -135,6 +135,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 maxNumberOfRowsReturned = 0;
 
             List<MemberContact> list = new List<MemberContact>();
+            if (string.IsNullOrEmpty(search))
+                return list;
             bool exact = maxNumberOfRowsReturned == 1;
             string col = sqlcolumns;
             string from = sqlfrom;
@@ -211,12 +213,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public MemberContact ContactGet(ContactSearchType searchType, string searchValue)
         {
             MemberContact contact = null;
+            if (string.IsNullOrEmpty(searchValue))
+                return contact;
+
             string col = sqlcolumns;
             string from = sqlfrom;
             string where = string.Empty;
-
-            if (string.IsNullOrEmpty(searchValue))
-                return contact;
 
             switch (searchType)
             {
@@ -763,9 +765,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 {
                     Address1 = SQLHelper.GetString(reader["Address"]),
                     Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["City"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
+                    County = SQLHelper.GetString(reader["County"]),
                     StateProvinceRegion = SQLHelper.GetString(reader["Territory Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
                     CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"])

@@ -146,5 +146,6 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public bool UseSecurityCheck { get; set; }
         public string ApplePayConnectionId { get; set; }
         public string GooglePayConnectionId { get; set; }
+        public bool UseOnlineSearch { get; set; } = default;
     }
 }

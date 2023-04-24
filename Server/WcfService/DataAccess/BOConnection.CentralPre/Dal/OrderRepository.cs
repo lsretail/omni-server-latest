@@ -29,7 +29,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT * FROM (" +
                         "SELECT mt.[Document ID],mt.[Created at Store],st.[Currency Code],mt.[External ID],mt.[Created] AS [Date],mt.[Source Type]," +
                         "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS [Name],mt.[Address],mt.[Address 2]," +
-                        "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
+                        "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Territory Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
@@ -39,7 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[Created at Store],st.[Currency Code],mt.[External ID],mt.[Created] AS [Date],mt.[Source Type]," +
                         "mt.[Member Card No_],mt.[Customer No_],mt.[Name] AS [Name],mt.[Address],mt.[Address 2]," +
-                        "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
+                        "mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Territory Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_]," +
                         "mt.[Mobile Phone No_],mt.[Daytime Phone No_],mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2]," +
                         "mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_]," +
                         "mt.[Ship-to Email],mt.[Ship-to House_Apartment No_],mt.[Click and Collect Order], mt.[Shipping Agent Code]," +
@@ -328,7 +328,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Address2 = SQLHelper.GetString(reader["Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    County = SQLHelper.GetString(reader["County"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Territory Code"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),

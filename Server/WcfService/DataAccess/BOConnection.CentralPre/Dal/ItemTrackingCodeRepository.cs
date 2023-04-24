@@ -16,7 +16,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private readonly string sqlcolumns = string.Empty;
         private readonly string sqlfrom = string.Empty;
 
-        public ItemTrackingCodeRepository(BOConfiguration config) : base(config)
+        public ItemTrackingCodeRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Warranty Date Formula],mt.[Man_ Warranty Date Entry Reqd_]," +
                          "mt.[Man_ Expir_ Date Entry Reqd_],mt.[Strict Expiration Posting],mt.[Use Expiration Dates]," +
@@ -25,13 +25,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                          "mt.[SN Sales Inbound Tracking],mt.[SN Sales Outbound Tracking],mt.[SN Pos_ Adjmt_ Inb_ Tracking]," +
                          "mt.[SN Pos_ Adjmt_ Outb_ Tracking],mt.[SN Neg_ Adjmt_ Inb_ Tracking],mt.[SN Neg_ Adjmt_ Outb_ Tracking]," +
                          "mt.[SN Transfer Tracking],mt.[SN Manuf_ Inbound Tracking],mt.[SN Manuf_ Outbound Tracking]," +
-                         "mt.[SN Assembly Inbound Tracking],mt.[SN Assembly Outbound Tracking],mt.[Create SN Info on Posting]," +
+                         "mt.[SN Assembly Inbound Tracking],mt.[SN Assembly Outbound Tracking]," +
                          "mt.[Lot Specific Tracking],mt.[Lot Info_ Inbound Must Exist],mt.[Lot Info_ Outbound Must Exist]," +
                          "mt.[Lot Warehouse Tracking],mt.[Lot Purchase Inbound Tracking],mt.[Lot Purchase Outbound Tracking]," +
                          "mt.[Lot Sales Inbound Tracking],mt.[Lot Sales Outbound Tracking],mt.[Lot Pos_ Adjmt_ Inb_ Tracking]," +
                          "mt.[Lot Pos_ Adjmt_ Outb_ Tracking],mt.[Lot Neg_ Adjmt_ Inb_ Tracking],mt.[Lot Neg_ Adjmt_ Outb_ Tracking]," +
                          "mt.[Lot Transfer Tracking],mt.[Lot Manuf_ Inbound Tracking],mt.[Lot Manuf_ Outbound Tracking]," +
                          "mt.[Lot Assembly Inbound Tracking],mt.[Lot Assembly Outbound Tracking]";
+
+            if (LSCVersion >= new Version("18.0"))
+                sqlcolumns += ",mt.[Create SN Info on Posting]";
 
             sqlfrom = " FROM [" + navCompanyName + "Item Tracking Code$437dbf0e-84ff-417a-965d-ed2bb9650972] mt";
         }
@@ -130,7 +133,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplItemTrackingCode()
+            ReplItemTrackingCode code = new ReplItemTrackingCode()
             {
                 Code = SQLHelper.GetString(reader["Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
@@ -139,7 +142,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ManExpirationDateEntryReqired = SQLHelper.GetBool(reader["Man_ Expir_ Date Entry Reqd_"]),
                 StrictExpirationPosting = SQLHelper.GetBool(reader["Strict Expiration Posting"]),
                 UseExpirationDates = SQLHelper.GetBool(reader["Use Expiration Dates"]),
-                CreateSNInfoOnPosting = SQLHelper.GetBool(reader["Create SN Info on Posting"]),
                 SNSpecificTracking = SQLHelper.GetBool(reader["SN Specific Tracking"]),
                 SNInfoInboundMustExist = SQLHelper.GetBool(reader["SN Info_ Inbound Must Exist"]),
                 SNInfoOutboundMustExist = SQLHelper.GetBool(reader["SN Info_ Outbound Must Exist"]),
@@ -175,6 +177,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 LotAssemblyInboundTracking = SQLHelper.GetBool(reader["Lot Assembly Inbound Tracking"]),
                 LotAssemblyOutboundTracking = SQLHelper.GetBool(reader["Lot Assembly Outbound Tracking"])
             };
+
+            if (LSCVersion >= new Version("18.0"))
+                code.CreateSNInfoOnPosting = SQLHelper.GetBool(reader["Create SN Info on Posting"]);
+
+            return code;
         }
     }
 }

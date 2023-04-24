@@ -34,6 +34,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             HouseNo = string.Empty;
             StateProvinceRegion = string.Empty;
             Country = string.Empty;
+            County = string.Empty;
             CellPhoneNumber = string.Empty;
             PhoneNumber = string.Empty;
         }
@@ -85,6 +86,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         /// </summary>
         [DataMember]
         public string Country { get; set; }
+        [DataMember]
+        public string County { get; set; }
         [DataMember]
         public string CellPhoneNumber { get; set; }
         [DataMember]

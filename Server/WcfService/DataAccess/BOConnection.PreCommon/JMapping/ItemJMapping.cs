@@ -37,6 +37,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 1: line.Id = data.FieldValue; break;
                         case 3: line.Description = data.FieldValue; break;
                         case 8: line.BaseUnitOfMeasure = data.FieldValue; break;
+                        case 10: line.Type = (ItemType)ConvertTo.SafeInt(data.FieldValue); break;
                         case 18: line.UnitPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case 31: line.VendorId = data.FieldValue; break;
                         case 32: line.VendorItemId = data.FieldValue; break;

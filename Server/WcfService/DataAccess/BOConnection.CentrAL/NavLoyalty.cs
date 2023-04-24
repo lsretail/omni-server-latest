@@ -552,6 +552,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.ImageGetById(imageId, includeBlob);
         }
 
+        public virtual ImageView ImageGetByMediaId(string mediaId, Statistics stat)
+        {
+            ImageRepository rep = new ImageRepository(config, NAVVersion);
+            return rep.ImageMediaGetById(mediaId);
+        }
+
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
         {
             ImageRepository rep = new ImageRepository(config, NAVVersion);

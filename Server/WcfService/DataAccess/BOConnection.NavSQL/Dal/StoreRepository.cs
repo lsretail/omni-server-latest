@@ -263,9 +263,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                             case StoreGetType.ClickAndCollect:
                                 type = " WHERE st.[Click and Collect]=1";
                                 break;
-                            case StoreGetType.WebStore:
-                                type = " WHERE st.[Web Store]=1";
-                                break;
                         }
                         command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Store] st " + type + " ORDER BY st.[Name]";
                     }

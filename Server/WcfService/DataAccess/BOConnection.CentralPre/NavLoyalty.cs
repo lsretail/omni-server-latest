@@ -631,6 +631,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return img;
         }
 
+        public virtual ImageView ImageGetByMediaId(string mediaId, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
+            ImageRepository rep = new ImageRepository(config);
+            ImageView data = rep.ImageMediaGetById(mediaId);
+            logger.StatisticEndSub(ref stat, index);
+            return data;
+        }
+
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);

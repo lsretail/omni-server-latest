@@ -833,6 +833,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ImageGetById(imageId, stat);
         }
 
+        public virtual ImageView ImageGetByMediaId(string mediaId, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ImageGetByMediaId(mediaId, stat);
+        }
+
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))

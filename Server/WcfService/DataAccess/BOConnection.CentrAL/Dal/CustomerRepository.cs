@@ -20,8 +20,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         public CustomerRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
-            sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[E-Mail],mt.[Home Page]," +
-                         "mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
+            sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt2.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[Territory Code]," +
+                         "mt.[E-Mail],mt.[Home Page],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
 
             sqlcolumns += (navVersion.Major > 16) ? ",mt.[Mobile Phone No_]" : ",mt2.[Mobile Phone No_]";
 
@@ -132,6 +132,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ZipCode = SQLHelper.GetString(reader["Post Code"]),
                 Country = SQLHelper.GetString(reader["Country_Region Code"]),
                 County = SQLHelper.GetString(reader["County"]),
+                State = SQLHelper.GetString(reader["Territory Code"]),
                 URL = SQLHelper.GetString(reader["Home Page"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
                 CellularPhone = SQLHelper.GetString(reader["Mobile Phone No_"]),
@@ -160,10 +161,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Address = new Address()
                 {
                     Address1 = SQLHelper.GetString(reader["Address"]),
+                    Address2 = SQLHelper.GetString(reader["Address 2"]),
+                    HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["City"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    County = SQLHelper.GetString(reader["County"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Territory Code"]),
                     CellPhoneNumber = SQLHelper.GetString(reader["Mobile Phone No_"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"])
                 }

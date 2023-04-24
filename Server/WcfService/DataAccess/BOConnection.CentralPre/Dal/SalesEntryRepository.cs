@@ -41,7 +41,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : string.Empty) + "* FROM (" +
                         "SELECT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
-                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
+                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
                         "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency] AS [StCur],mt.[POS Terminal No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
@@ -50,7 +50,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Created at Store] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],0 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
-                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
+                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Territory Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
@@ -58,7 +58,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Created at Store] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],3 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
-                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
+                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Territory Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
@@ -66,7 +66,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT mt.[Queue Counter] AS [Document ID],mt.[Store No_] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [Date],(mt.[Trans_ Date]+CAST((CONVERT(time,mt.[Trans Time])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
                         ((LSCVersion >= new Version("21.2")) ? "fab.[External ID]" : "'' AS [External ID]") + ",mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
-                        "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
+                        "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],'' AS [Territory Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
                         ((LSCVersion >= new Version("21.2")) ? "fab.[Client Name] AS [Ship-to Name],fab.[Client Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],fab.[Client Phone No_] AS [Ship-to Phone No_],fab.[Client E-mail] AS [Ship-to Email]," :
                         "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],") +
                         "'' AS [Ship-to House_Apartment No_],0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
@@ -105,7 +105,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
                         "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
                         "co.[External ID] AS [COExtId],co.[Created at Store]," +
-                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
+                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
                         "mt.[Receipt No_],mt.[Customer Order ID] AS [Document ID],mt.[Customer Order] AS [CAC],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]" +
                         ((LSCVersion >= new Version("21.2")) ? ",fab.[Client Name],fab.[Client E-mail],fab.[Client Phone No_],fab.[Client Address],fab.[External ID] " : " ") +
@@ -259,7 +259,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     command.CommandText = "SELECT " + ((maxNumberOfTransactions > 0) ? "TOP " + maxNumberOfTransactions : string.Empty) + "* FROM (" +
                         "SELECT DISTINCT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
-                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
+                        "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
                         "mt.[No_ of Items] AS [Quantity],mt.[No_ of Item Lines] AS [Lines],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency] AS [StCur],mt.[POS Terminal No_],mt.[Source Type] AS [SType],NULL AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
@@ -271,7 +271,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT DISTINCT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],0 AS Posted,'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
-                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
+                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Territory Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Customer Order Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
@@ -281,7 +281,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT mt.[Document ID],mt.[Created at Store] AS [StCreate],mt.[Created at Store] AS [Store],mt.[Created] AS [Date],mt.[Created] AS [CrDate],0 AS [RT],'' AS [Refund]," +
                         "mt.[External ID],mt.[Member Card No_],mt.[Customer No_],3 AS [Posted],'' AS [Receipt No_],(SELECT MAX([Click and Collect Line]) FROM [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Document ID]=mt.[Document ID]) AS [CAC]," +
-                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
+                        "mt.[Name],mt.[Address],mt.[Address 2],mt.[City],mt.[County],mt.[Post Code],mt.[Country_Region Code],mt.[Territory Code],mt.[Phone No_],mt.[Email],mt.[House_Apartment No_],mt.[Mobile Phone No_],mt.[Daytime Phone No_]," +
                         "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to County],mt.[Ship-to Post Code],mt.[Ship-to Country_Region Code],mt.[Ship-to Phone No_],mt.[Ship-to Email],mt.[Ship-to House_Apartment No_]," +
                         "0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],st.[Currency Code] AS [StCur],'' AS [POS Terminal No_],0 AS [SType],mt.[Requested Delivery Date] AS [ReqDelDate] " +
                         "FROM [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
@@ -289,7 +289,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "UNION " +
                         "SELECT DISTINCT '' AS [Document ID],mt.[Store No_] AS [StCreate],mt.[Store No_] AS [Store],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [Date],(do.[Date Created]+CAST((CONVERT(time,do.[Time Created])) AS DATETIME)) AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Original Receipt No_] AS [Refund]," +
                         ((LSCVersion >= new Version("21.2")) ? "fab.[External ID]" : "'' AS [External ID]") + ",mt.[Member Card No_],mt.[Customer No_],2 AS Posted,mt.[Receipt No_],0 AS [CAC]," +
-                        "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
+                        "do.[Name],do.[Address],do.[Address 2],do.[City],'' AS [County],'' AS [Post Code],'' AS [Country_Region Code],'' AS [Territory Code],do.[Phone No_],'' AS [Email],'' AS [House_Apartment No_],'' AS [Mobile Phone No_],'' AS [Daytime Phone No_]," +
                         ((LSCVersion >= new Version("21.2")) ? "fab.[Client Name] AS [Ship-to Name],fab.[Client Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],fab.[Client Phone No_] AS [Ship-to Phone No_],fab.[Client E-mail] AS [Ship-to Email]," :
                         "do.[Name] AS [Ship-to Name],do.[Address] AS [Ship-to Address],do.[Address 2] AS [Ship-to Address 2],do.[City] AS [Ship-to City],'' AS [Ship-to County],'' AS [Ship-to Post Code],'' AS [Ship-to Country_Region Code],do.[Phone No_] AS [Ship-to Phone No_],'' AS [Ship-to Email],") +
                         "'' AS [Ship-to House_Apartment No_],0 AS [Quantity],0 AS [Lines],0 AS [Net Amount],0 AS [Gross Amount],0 AS [Discount Amount],st.[Name] AS [StName],mt.[Trans_ Currency Code] AS [StCur],mt.[POS Terminal No_],0 AS [SType],do.[Contact Pickup Time] AS [ReqDelDate] " +
@@ -666,7 +666,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Address2 = SQLHelper.GetString(reader["Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    County = SQLHelper.GetString(reader["County"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Territory Code"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
@@ -802,7 +803,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Address2 = SQLHelper.GetString(reader["Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    County = SQLHelper.GetString(reader["County"]),
+                    StateProvinceRegion = SQLHelper.GetString(reader["Territory Code"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
@@ -818,7 +820,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["Ship-to City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    County = SQLHelper.GetString(reader["Ship-to County"]),
                     PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
                     Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
