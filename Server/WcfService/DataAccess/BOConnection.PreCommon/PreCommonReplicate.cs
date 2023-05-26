@@ -1321,7 +1321,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rep.ReplicateDataTranslation(table);
         }
 
-        public virtual List<ReplDataTranslation> ReplicateHtmlTranslation(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
+        public virtual List<ReplDataTranslation> ReplicateItemHtmlTranslation(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             if (LSCVersion >= new Version("20.4"))
             {
@@ -1329,6 +1329,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetItemHTML(storeId, batchSize, fullRepl, lastKey, lastEntry);
+                logger.Trace(config.LSKey.Key, ret);
+                return map.GetReplHtml(ret, ref lastKey, ref recordsRemaining);
+            }
+
+            throw new NotImplementedException();
+        }
+
+        public virtual List<ReplDataTranslation> ReplicateDealHtmlTranslation(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
+        {
+            if (LSCVersion >= new Version("20.4"))
+            {
+                ItemJMapping map = new ItemJMapping(config.IsJson, LSCVersion);
+
+                map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
+                string ret = odataWS.GetOfferHTML(string.Empty, batchSize, fullRepl, lastKey, lastEntry);
                 logger.Trace(config.LSKey.Key, ret);
                 return map.GetReplHtml(ret, ref lastKey, ref recordsRemaining);
             }

@@ -428,7 +428,7 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
-        public virtual ReplDataTranslationResponse ReplEcommHtmlTranslation(ReplRequest replRequest)
+        public virtual ReplDataTranslationResponse ReplEcommItemHtmlTranslation(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;
             string maxkey = replRequest.MaxKey;
@@ -437,7 +437,25 @@ namespace LSOmni.BLL.Loyalty
 
             ReplDataTranslationResponse rs = new ReplDataTranslationResponse()
             {
-                Texts = BOLoyConnection.ReplEcommHtmlTranslation(replRequest.AppId, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                Texts = BOLoyConnection.ReplEcommItemHtmlTranslation(replRequest.AppId, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Texts.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
+        public virtual ReplDataTranslationResponse ReplEcommDealHtmlTranslation(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
+
+            ReplDataTranslationResponse rs = new ReplDataTranslationResponse()
+            {
+                Texts = BOLoyConnection.ReplEcommDealHtmlTranslation(replRequest.AppId, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
                 RecordsRemaining = recordsRemaining,
                 LastKey = lastkey,
                 MaxKey = maxkey

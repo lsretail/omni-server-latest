@@ -471,7 +471,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
                 orderId = string.Empty;
-                return NavWSBase.ScanPayGoSuspend(request);
+                return NavWSBase.ScanPayGoSuspend(request, out orderId);
             }
 
             return NavWSBase.OrderCreate(request, out orderId);
@@ -655,7 +655,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDataTranslation> ReplEcommItemHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual List<ReplDataTranslation> ReplEcommDealHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             throw new NotImplementedException();
         }

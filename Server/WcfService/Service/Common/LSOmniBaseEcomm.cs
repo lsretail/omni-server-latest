@@ -365,7 +365,22 @@ namespace LSOmni.Service
             {
                 logger.Debug(config, LogJson(replRequest));
                 ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
-                return bll.ReplEcommHtmlTranslation(replRequest);
+                return bll.ReplEcommItemHtmlTranslation(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
+        public virtual ReplDataTranslationResponse ReplEcommDealHtmlTranslation(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommDealHtmlTranslation(replRequest);
             }
             catch (Exception ex)
             {

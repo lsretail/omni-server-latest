@@ -16,6 +16,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string ExtOrderStatus { get; set; }
         [DataMember]
+        public string OrderKOTStatus { get; set; }
+        [DataMember]
         public string MsgSubject { get; set; }
         [DataMember]
         public string MsgDetail { get; set; }

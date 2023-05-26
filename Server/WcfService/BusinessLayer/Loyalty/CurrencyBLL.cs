@@ -1,9 +1,8 @@
-﻿using LSOmni.Common.Util;
+﻿using System.Collections.Generic;
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
-using System.Collections.Generic;
-using System;
 
 namespace LSOmni.BLL.Loyalty
 {

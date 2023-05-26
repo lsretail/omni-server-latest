@@ -129,7 +129,12 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public bool AllowAnonymousUser { get; set; }
         public string AllowShopHome { get; set; }
         public string ApplePayMerchantName { get; set; }
-        public bool AudkenniLoginEnabled { get; set; }
+
+        public bool AudkenniLoginEnabled { get; set; } = default;
+        public bool AudkenniTestUserEnabled { get; set; } = default;
+        public string AudkenniTestUser { get; set; } = default;
+        public string AudkenniTestCardId { get; set; } = default;
+
         public bool GoogleLoginEnabled { get; set; }
         public string GoogleIosClientId { get; set; }
         public bool FacebookLoginEnabled { get; set; }

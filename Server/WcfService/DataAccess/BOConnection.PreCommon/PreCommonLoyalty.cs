@@ -746,26 +746,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public MemberContact ContactCreate(MemberContact contact, Statistics stat)
         {
-            if (contact == null)
-                throw new LSOmniException(StatusCode.ContactIdNotFound, "Contact can not be null");
-
             logger.StatisticStartSub(true, ref stat, out int index);
-
-            //must have a deviceId, otherwise no "Member Login Card" entry is made in nav
-            if (contact.LoggedOnToDevice == null)
-            {
-                contact.LoggedOnToDevice = new Device(GetDefaultDeviceId(contact.UserName));
-            }
-            if (string.IsNullOrWhiteSpace(contact.LoggedOnToDevice.Id))
-            {
-                contact.LoggedOnToDevice.Id = GetDefaultDeviceId(contact.UserName);
-            }
-            if (contact.Profiles == null)
-            {
-                contact.Profiles = new List<Profile>();
-            }
-            if (string.IsNullOrWhiteSpace(contact.LoggedOnToDevice.DeviceFriendlyName))
-                contact.LoggedOnToDevice.DeviceFriendlyName = "Web application";
 
             string respCode = string.Empty;
             string errorText = string.Empty;
@@ -811,9 +792,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public void ContactUpdate(MemberContact contact, string accountId, Statistics stat)
         {
-            if (contact == null)
-                throw new LSOmniException(StatusCode.ContactIdNotFound, "ContactRq can not be null");
-
             logger.StatisticStartSub(true, ref stat, out int index);
 
             if (contact.Profiles == null)
@@ -1529,9 +1507,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public string HospOrderCreate(OrderHosp request, Statistics stat)
         {
-            if (request == null)
-                throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
-
             logger.StatisticStartSub(true, ref stat, out int index);
 
             if (string.IsNullOrWhiteSpace(request.Id))
@@ -1964,8 +1939,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 loyCur = "LOY";
 
             LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request, loyCur);
+            logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
             centralWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
-            HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index);
+            string ret = HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index, new string[] { "1000" });
+            if (string.IsNullOrEmpty(ret) == false)     // ExtId Exists
+                logger.Warn(config.LSKey.Key, "Error:{0} >> Ignore Error and return External ID (assume Order exist)", errorText);
             logger.StatisticEndSub(ref stat, index);
             return request.Id;
         }
@@ -2014,7 +1992,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             string ret = SendToOData("GetMemberContSalesHistory_GetMemberContactSalesHistory", data);
             OrderJMapping omap = new OrderJMapping(config.IsJson);
-            List<SalesEntry> list = omap.GetSalesEntry(ret);
+            List<SalesEntry> list;
+            if (LSCVersion >= new Version("22.0"))
+                list = omap.GetSalesEntry2(ret);
+            else
+                list = omap.GetSalesEntry(ret);
             logger.StatisticEndSub(ref stat, index);
             return list;
         }
@@ -2344,24 +2326,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region ScanPayGo
 
-        public string ScanPayGoSuspend(Order request, Statistics stat)
+        public string ScanPayGoSuspend(Order request, out string orderId, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             TransactionMapping map = new TransactionMapping(LSCVersion, config.IsJson);
+            orderId = string.Empty;
             string respCode = string.Empty;
             string errorText = string.Empty;
-            string receiptNo = string.Empty;
             LSCentral.RootMobileTransaction root = map.MapFromOrderToRoot(request);
             root.MobileTransaction[0].TerminalId = config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal);
             root.MobileTransaction[0].StaffId = config.SettingsGetByKey(ConfigKey.ScanPayGo_Staff);
 
             logger.Debug(config.LSKey.Key, "MobilePosSuspendV2 Request - " + Serialization.ToXml(root, true));
-            centralWS.MobilePosSuspendV2(ref respCode, ref errorText, root, ref receiptNo);
+            centralWS.MobilePosSuspendV2(ref respCode, ref errorText, root, ref orderId);
             HandleWS2ResponseCode("MobilePosSuspendV2", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "MobilePosSuspendV2 Response - " + Serialization.ToXml(root, true));
             logger.StatisticEndSub(ref stat, index);
-            return receiptNo;
+            return request.Id;
         }
 
         public ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
@@ -2561,9 +2543,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
             else
             {
-                List<LSCentral.Token1> tokens = new List<LSCentral.Token1>()
+                List<LSCentral.Token> tokens = new List<LSCentral.Token>()
                 {
-                    new LSCentral.Token1()
+                    new LSCentral.Token()
                     {
                         AccountNo = XMLHelper.GetString(token.AccountNo),
                         CardMask = XMLHelper.GetString(token.CardMask),
@@ -2573,7 +2555,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         DefaultToken = token.DefaultToken,
                         EntryNo = token.EntryNo,
                         PSPID = XMLHelper.GetString(token.pSPID),
-                        Token = XMLHelper.GetString(token.Token),
+                        Token1 = XMLHelper.GetString(token.Token),
                         TokenId = XMLHelper.GetString(token.TokenId),
                         TokenType = XMLHelper.GetString(token.Type),
                     }
@@ -2634,7 +2616,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 logger.Debug(config.LSKey.Key, $"GetMemberCardToken Response: {Serialization.ToXml(root, true)}");
                 if (root.Token != null)
                 {
-                    foreach (LSCentral.Token token in root.Token)
+                    foreach (LSCentral.Token1 token in root.Token)
                     {
                         tokens.Add(new ClientToken()
                         {

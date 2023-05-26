@@ -103,7 +103,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
-                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
+                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
                         "co.[External ID] AS [COExtId],co.[Created at Store]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
@@ -321,10 +321,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        private void POSTransLinesGetTotals(string reciptNo, out int itemCount, out int lineCount, out decimal totalAmount, out decimal totalNetAmount, out decimal totalDiscount)
+        private void POSTransLinesGetTotals(string reciptNo, out int itemCount, out decimal qty, out int lineCount, out decimal totalAmount, out decimal totalNetAmount, out decimal totalDiscount)
         {
             itemCount = 0;
             lineCount = 0;
+            qty = 0;
             totalAmount = 0;
             totalNetAmount = 0;
             totalDiscount = 0;
@@ -342,6 +343,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         if (reader.Read())
                         {
                             itemCount = SQLHelper.GetInt32(reader["Cnt"]);
+                            qty = SQLHelper.GetDecimal(reader["Cnt"]);
                             totalAmount = SQLHelper.GetDecimal(reader, "Amt");
                             totalNetAmount = SQLHelper.GetDecimal(reader, "NAmt");
                             totalDiscount = SQLHelper.GetDecimal(reader, "Disc");
@@ -642,6 +644,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
                 TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
                 TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
+                CreateTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["CrDate"]), config.IsJson),
                 DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 CreateAtStoreId = SQLHelper.GetString(reader["Created at Store"]),
@@ -688,6 +691,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
                 }
             };
+
+            if (string.IsNullOrEmpty(entry.CustomerOrderNo))
+            {
+                entry.CreateTime = entry.DocumentRegTime;
+                entry.CreateAtStoreId = entry.StoreId;
+            }
 
             if (LSCVersion >= new Version("21.2"))
             {
@@ -762,9 +771,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
 
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
-            POSTransLinesGetTotals(entry.Id, out int cnt, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
+            POSTransLinesGetTotals(entry.Id, out int cnt, out decimal qty, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
             entry.LineItemCount = cnt;
             entry.LineCount = lcnt;
+            entry.Quantity = qty;
             entry.TotalAmount = amt;
             entry.TotalNetAmount = namt;
             entry.TotalDiscount = disc;
@@ -833,6 +843,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             int cnt;
             int lcnt;
+            decimal qty;
             decimal amt;
             decimal namt;
             decimal disc;
@@ -843,6 +854,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     entry.CustomerOrderNo = SQLHelper.GetString(reader["Document ID"]);
                     entry.TerminalId = SQLHelper.GetString(reader["POS Terminal No_"]);
                     cnt = SQLHelper.GetInt32(reader["Quantity"]);
+                    qty = SQLHelper.GetDecimal(reader["Quantity"]);
                     lcnt = SQLHelper.GetInt32(reader["Lines"]);
                     namt = SQLHelper.GetDecimal(reader, "Net Amount", true);
                     amt = SQLHelper.GetDecimal(reader, "Gross Amount", true);
@@ -855,6 +867,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                     entry.PointsRewarded = rewarded;
                     entry.PointsUsedInOrder = used;
+
+                    if (string.IsNullOrEmpty(entry.CustomerOrderNo))
+                    {
+                        entry.CreateTime = entry.DocumentRegTime;
+                        entry.CreateAtStoreId = entry.StoreId;
+                    }
                     break;
                 case 2:
                     entry.Id = SQLHelper.GetString(reader["Receipt No_"]);
@@ -864,7 +882,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     entry.ShippingStatus = ShippingStatus.ShippigNotRequired;
                     entry.Posted = false;
 
-                    POSTransLinesGetTotals(entry.Id, out cnt, out lcnt, out amt, out namt, out disc);
+                    POSTransLinesGetTotals(entry.Id, out cnt, out qty, out lcnt, out amt, out namt, out disc);
                     break;
                 case 3:
                     entry.Id = SQLHelper.GetString(reader["Document ID"]);
@@ -874,7 +892,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     entry.ShippingStatus = ShippingStatus.ShippigNotRequired;
                     entry.Posted = false;
 
-                    orep.OrderLinesGetTotals(entry.Id, out cnt, out lcnt, out amt, out namt, out disc);
+                    orep.OrderLinesGetTotals(entry.Id, out cnt, out qty, out lcnt, out amt, out namt, out disc);
                     break;
                 default:
                     entry.Id = SQLHelper.GetString(reader["Document ID"]);
@@ -884,12 +902,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
                     entry.Posted = false;
 
-                    orep.OrderLinesGetTotals(entry.Id, out cnt, out lcnt, out amt, out namt, out disc);
+                    orep.OrderLinesGetTotals(entry.Id, out cnt, out qty, out lcnt, out amt, out namt, out disc);
                     break;
             }
 
             entry.LineCount = lcnt;
             entry.LineItemCount = cnt;
+            entry.Quantity = qty;
             entry.TotalAmount = amt;
             entry.TotalNetAmount = namt;
             entry.TotalDiscount = disc;

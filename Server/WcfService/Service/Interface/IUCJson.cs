@@ -671,10 +671,11 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="request"></param>
+        /// <param name="returnOrderIdOnly">Only return Order Id back, not full order object</param>
         /// <returns>SalesEntry object for order if order creation was successful</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        SalesEntry OrderCreate(Order request);
+        SalesEntry OrderCreate(Order request, bool returnOrderIdOnly);
 
         /// <summary>
         /// Create a Hospitality Order
@@ -2466,6 +2467,26 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ReplDataTranslationResponse ReplEcommHtmlTranslation(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Translation text for Deal HTML table
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 10001410 - LSC Deal HTML ML
+        /// LS Central WS4 : GetDealHTML
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to Commerce Service for LS Central, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of texts</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplDataTranslationResponse ReplEcommDealHtmlTranslation(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Translation Language Codes

@@ -48,8 +48,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         GiftCard_DataEntryType = 700,
 
         //server only
-        PDF_Save_FolderName = 1000,
-
         Currency_Code = 1021,
         Currency_Culture = 1022,
         Currency_LoyCode = 1023,

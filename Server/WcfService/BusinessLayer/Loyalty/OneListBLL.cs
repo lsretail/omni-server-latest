@@ -107,25 +107,6 @@ namespace LSOmni.BLL.Loyalty
                     }
                 }
             }
-
-            foreach (OrderLine line in order.OrderLines)
-            {
-                if (string.IsNullOrEmpty(line.ItemImageId) == false)
-                    continue;   // load any missing images if not coming from NAV
-
-                if (string.IsNullOrEmpty(line.VariantId))
-                {
-                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item", line.ItemId, string.Empty, string.Empty, 1, false, stat);
-                    if (img != null && img.Count > 0)
-                        line.ItemImageId = img[0].Id;
-                }
-                else
-                {
-                    List<ImageView> img = BOLoyConnection.ImagesGetByKey("Item Variant", line.ItemId, line.VariantId, string.Empty, 1, false, stat);
-                    if (img != null && img.Count > 0)
-                        line.ItemImageId = img[0].Id;
-                }
-            }
             return order;
         }
 

@@ -527,6 +527,24 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetOfferHTML">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetOfferHTML_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetPOSTerminal">
         <complexType>
           <sequence>
@@ -1150,6 +1168,12 @@
   <message name="GetItemVariant_Result">
     <part name="parameters" element="tns:GetItemVariant_Result" />
   </message>
+  <message name="GetOfferHTML">
+    <part name="parameters" element="tns:GetOfferHTML" />
+  </message>
+  <message name="GetOfferHTML_Result">
+    <part name="parameters" element="tns:GetOfferHTML_Result" />
+  </message>
   <message name="GetPOSTerminal">
     <part name="parameters" element="tns:GetPOSTerminal" />
   </message>
@@ -1420,6 +1444,10 @@
     <operation name="GetItemVariant">
       <input name="GetItemVariant" message="tns:GetItemVariant" />
       <output name="GetItemVariant_Result" message="tns:GetItemVariant_Result" />
+    </operation>
+    <operation name="GetOfferHTML">
+      <input name="GetOfferHTML" message="tns:GetOfferHTML" />
+      <output name="GetOfferHTML_Result" message="tns:GetOfferHTML_Result" />
     </operation>
     <operation name="GetPOSTerminal">
       <input name="GetPOSTerminal" message="tns:GetPOSTerminal" />
@@ -1791,6 +1819,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetItemVariant_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetOfferHTML">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetOfferHTML" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetOfferHTML">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetOfferHTML_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

@@ -82,6 +82,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Replication
         /// </summary>
         [DataMember]
         public string Text { get; set; }
+        [DataMember]
+        public string URL { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]

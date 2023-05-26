@@ -135,6 +135,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public int LineCount { get; set; }
         [DataMember]
         public int LineItemCount { get; set; }
+        [DataMember]
+        public decimal Quantity { get; set; }
 
         /// <summary>
         /// True if SalesEntry has already been Posted in Accounting

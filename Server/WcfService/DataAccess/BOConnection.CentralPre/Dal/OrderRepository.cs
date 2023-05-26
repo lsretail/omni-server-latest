@@ -164,10 +164,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public void OrderLinesGetTotals(string orderId, out int itemCount, out int lineCount, out decimal totalAmount, out decimal totalNetAmount, out decimal totalDiscount)
+        public void OrderLinesGetTotals(string orderId, out int itemCount, out decimal qty, out int lineCount, out decimal totalAmount, out decimal totalNetAmount, out decimal totalDiscount)
         {
             itemCount = 0;
             lineCount = 0;
+            qty = 0;
             totalAmount = 0;
             totalNetAmount = 0;
             totalDiscount = 0;
@@ -190,6 +191,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         if (reader.Read())
                         {
                             itemCount = SQLHelper.GetInt32(reader["Cnt"]);
+                            qty = SQLHelper.GetDecimal(reader["Cnt"]);
                             totalAmount = SQLHelper.GetDecimal(reader, "Amt");
                             totalNetAmount = SQLHelper.GetDecimal(reader, "NAmt");
                             totalDiscount = SQLHelper.GetDecimal(reader, "Disc");
@@ -355,9 +357,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
             entry.CustomerOrderNo = entry.Id;
 
-            OrderLinesGetTotals(entry.Id, out int cnt, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
+            OrderLinesGetTotals(entry.Id, out int cnt, out decimal qty, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
             entry.LineItemCount = cnt;
             entry.LineCount = lcnt;
+            entry.Quantity = qty;
             entry.TotalAmount = amt;
             entry.TotalNetAmount = namt;
             entry.TotalDiscount = disc;

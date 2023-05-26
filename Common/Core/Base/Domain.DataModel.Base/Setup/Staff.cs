@@ -31,7 +31,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             return FirstName + " " + LastName;
         }
 
-        [DataMember]
+        [DataMember]    
         public string FirstName { get; set; }
         [DataMember]
         public string LastName { get; set; }
@@ -39,7 +39,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public string Password { get; set; }
         [DataMember]
         public bool InventoryActive { get; set; }
-        [DataMember]
+        [DataMember]    
         public string InventoryMainMenuId { get; set; }
         [DataMember]
         public Store Store { get; set; }

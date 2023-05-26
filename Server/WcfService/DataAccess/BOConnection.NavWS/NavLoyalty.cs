@@ -788,11 +788,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
-                orderId = string.Empty;
                 if (NAVVersion < new Version("17.5"))
-                    return NavWSBase.ScanPayGoSuspend(request);
+                    return NavWSBase.ScanPayGoSuspend(request, out orderId);
 
-                return LSCWSBase.ScanPayGoSuspend(request, stat);
+                return LSCWSBase.ScanPayGoSuspend(request, out orderId, stat);
             }
 
             if (NAVVersion < new Version("17.5"))
@@ -977,12 +976,20 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ReplicateDataTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDataTranslation> ReplEcommItemHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
                 throw new NotImplementedException();
 
-            return LSCWSBase.ReplicateHtmlTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+            return LSCWSBase.ReplicateItemHtmlTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDataTranslation> ReplEcommDealHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ReplicateDealHtmlTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

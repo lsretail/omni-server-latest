@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
-                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
+                        "(mt.[Date]+CAST((CONVERT(time,mt.[Time])) AS DATETIME)) AS [Date],co.[Created] AS [CrDate],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
                         "co.[External ID] AS [External ID],co.[Created at Store]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
@@ -623,6 +623,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 TotalNetAmount = SQLHelper.GetDecimal(reader, "Net Amount", true),
                 TotalAmount = SQLHelper.GetDecimal(reader, "Gross Amount", true),
                 TotalDiscount = SQLHelper.GetDecimal(reader, "Discount Amount", false),
+                CreateTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["CrDate"]), config.IsJson),
                 DocumentRegTime = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date"]), config.IsJson),
                 StoreId = SQLHelper.GetString(reader["Store No_"]),
                 CreateAtStoreId = SQLHelper.GetString(reader["Created at Store"]),
@@ -671,6 +672,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
+            if (string.IsNullOrEmpty(entry.CustomerOrderNo))
+            {
+                entry.CreateTime = entry.DocumentRegTime;
+                entry.CreateAtStoreId = entry.StoreId;
+            }
 
             SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
             entry.PointsRewarded = rewarded;
@@ -806,6 +812,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
                     entry.PointsRewarded = rewarded;
                     entry.PointsUsedInOrder = used;
+
+                    if (string.IsNullOrEmpty(entry.CustomerOrderNo))
+                    {
+                        entry.CreateTime = entry.DocumentRegTime;
+                        entry.CreateAtStoreId = entry.StoreId;
+                    }
                     break;
                 case 2:
                     entry.Id = SQLHelper.GetString(reader["Receipt No_"]);

@@ -538,7 +538,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
                 orderId = string.Empty;
-                return LSCentralWSBase.ScanPayGoSuspend(request, stat);
+                return LSCentralWSBase.ScanPayGoSuspend(request, out orderId, stat);
             }
 
             return LSCentralWSBase.OrderCreate(request, out orderId, stat);
@@ -747,10 +747,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return rep.ReplicateEcommDataTranslation(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplDataTranslation> ReplEcommHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplDataTranslation> ReplEcommItemHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             DataTranslationRepository rep = new DataTranslationRepository(config);
-            return rep.ReplicateEcommHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+            return rep.ReplicateEcommItemHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDataTranslation> ReplEcommDealHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            DataTranslationRepository rep = new DataTranslationRepository(config);
+            return rep.ReplicateEcommDealHtmlTranslation(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslationLangCode> ReplicateEcommDataTranslationLangCode(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

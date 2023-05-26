@@ -1714,16 +1714,16 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual SalesEntry OrderCreate(Order request)
+        public virtual SalesEntry OrderCreate(Order request, bool returnOrderIdOnly)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, LogJson(request));
+                logger.Debug(config.LSKey.Key, "returOrderIdOnly:{0} > {1}", returnOrderIdOnly, LogJson(request));
 
                 OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
-                SalesEntry data = bll.OrderCreate(request, stat);
+                SalesEntry data = bll.OrderCreate(request, returnOrderIdOnly, stat);
                 if (config.IsJson && logger.IsDebugEnabled)
                     Serialization.TestJsonSerialize(typeof(SalesEntry), data);
                 return data;

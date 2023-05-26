@@ -43,7 +43,7 @@ namespace LSOmni.BLL.Loyalty
             BOLoyConnection.OrderCancel(orderId, storeId, userId, lineNo, stat);
         }
 
-        public virtual SalesEntry OrderCreate(Order request, Statistics stat)
+        public virtual SalesEntry OrderCreate(Order request, bool returnOrderIdOnly, Statistics stat)
         {
             //validation
             if (request == null)
@@ -80,9 +80,12 @@ namespace LSOmni.BLL.Loyalty
 
             string extId = BOLoyConnection.OrderCreate(request, out string orderId, stat);
 
-            if (request.OrderType == OrderType.ScanPayGoSuspend)
+            if (request.OrderType == OrderType.ScanPayGoSuspend || (returnOrderIdOnly && string.IsNullOrEmpty(orderId) == false))
             {
-                return new SalesEntry(extId);
+                return new SalesEntry(orderId)
+                {
+                    ExternalId = extId
+                };
             }
 
             TransactionBLL tBLL = new TransactionBLL(config, timeoutInSeconds);

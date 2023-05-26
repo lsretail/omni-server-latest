@@ -149,6 +149,15 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "AUDKENNI LOGIN ENABLED":
                     flagName = FeatureFlagName.AudkenniLoginEnabled;
                     break;
+                case "AUDKENNI TEST USER ENABLED":
+                    flagName = FeatureFlagName.AudkenniTestUserEnabled;
+                    break;
+                case "AUDKENNI TEST USER":
+                    flagName = FeatureFlagName.AudkenniTestUser;
+                    break;
+                case "AUDKENNI TEST USER CARDID":
+                    flagName = FeatureFlagName.AudkenniTestCardId;
+                    break;
                 case "FACEBOOK LOGIN ENABLED":
                     flagName = FeatureFlagName.FacebookLoginEnabled;
                     break;
@@ -321,6 +330,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         AudkenniSecret = 403,
         AudkenniMessageToUser = 404,
         AudkenniLoginEnabled = 405,
+
+        AudkenniTestUserEnabled = 406,
+        AudkenniTestUser = 407,
+        AudkenniTestCardId = 408,
 
         //Google
         GoogleLoginEnabled = 410,
