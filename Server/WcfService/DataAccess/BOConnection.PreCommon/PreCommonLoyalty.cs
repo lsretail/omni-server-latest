@@ -1982,7 +1982,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public List<SalesEntry> SalesEntryGetByCardId(string cardId, int maxRecs, Statistics stat)
+        public List<SalesEntry> SalesEntryGetByCardId(string cardId, int maxRecs, string storeNo, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -1994,11 +1994,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             OrderJMapping omap = new OrderJMapping(config.IsJson);
             List<SalesEntry> list;
             if (LSCVersion >= new Version("22.0"))
-                list = omap.GetSalesEntry2(ret);
+                list = omap.GetSalesEntryHistory2(ret);
             else
-                list = omap.GetSalesEntry(ret);
+                list = omap.GetSalesEntryHistory(ret);
+
+            list = list.OrderByDescending(o => o.DocumentRegTime).ToList();
+
             logger.StatisticEndSub(ref stat, index);
             return list;
+        }
+
+        public SalesEntry SalesEntryGetById(string docId, DocumentIdType type, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            int dtype = 0;
+            if (type == DocumentIdType.Order)
+                dtype = 1;
+            if (type == DocumentIdType.HospOrder)
+                dtype = 2;
+
+            // GetSelectedSalesDoc(DocumentSourceType: Enum "LSC member Sales Source Type"; DocumentID: Code[20]): Text
+            string data = "{ \"documentSourceType\": \"" + dtype.ToString() + "\", " +
+                            "\"documentID\": \"" + docId + "\" }";
+
+            string ret = SendToOData("GetSelectedSalesDoc_GetSelectedSalesDoc", data);
+            OrderJMapping omap = new OrderJMapping(config.IsJson);
+            SalesEntry entry = omap.GetSalesEntry(ret);
+            if (dtype == 2 && entry == null)
+            {
+                dtype = 0;  // no pos trans, get normal trans
+                data = "{ \"documentSourceType\": \"" + dtype.ToString() + "\", " +
+                                "\"documentID\": \"" + docId + "\" }";
+                ret = SendToOData("GetSelectedSalesDoc_GetSelectedSalesDoc", data);
+                entry = omap.GetSalesEntry(ret);
+            }
+
+            logger.StatisticEndSub(ref stat, index);
+            return entry;
         }
 
         public SalesEntry TransactionGet(string receiptNo, string storeId, string terminalId, int transId, Statistics stat)

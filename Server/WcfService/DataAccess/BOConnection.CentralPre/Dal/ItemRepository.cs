@@ -558,7 +558,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (string.IsNullOrWhiteSpace(bcode.VariantId) == false)
             {
                 item.VariantsRegistration.Clear();
-                ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository(config);
+                ItemVariantRegistrationRepository vreop = new ItemVariantRegistrationRepository(config, LSCVersion);
                 VariantRegistration variantReg = vreop.VariantRegGetById(bcode.VariantId, item.Id, stat);
                 if (variantReg != null)
                 {
@@ -732,7 +732,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 item.AllowedToSell = false;
             }
 
-            ImageRepository imgrep = new ImageRepository(config);
+            ImageRepository imgrep = new ImageRepository(config, LSCVersion);
             item.Images = imgrep.ImageGetByKey("Item", item.Id, string.Empty, string.Empty, 0, false);
             timestamp = (hastimestamp) ? ByteArrayToString(reader["timestamp"] as byte[]) : string.Empty;
 
@@ -748,7 +748,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             ItemUOMRepository uomrep = new ItemUOMRepository(config);
             item.UnitOfMeasures = uomrep.ItemUOMGetByItemId(item.Id, stat);
 
-            ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config);
+            ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config, LSCVersion);
             item.VariantsRegistration = varrep.VariantRegGetByItemId(item.Id, stat);
 
             ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config);

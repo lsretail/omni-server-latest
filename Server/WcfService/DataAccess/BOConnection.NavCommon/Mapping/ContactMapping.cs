@@ -48,8 +48,8 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
                     LoginID = contact.UserName.ToLower(),
-                    Password = contact.Password,
                     DeviceID = contact.LoggedOnToDevice.Id,
+                    Password = contact.Password,
                     DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
 
                     ExternalSystem = string.Empty

@@ -37,7 +37,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                          "(SELECT TOP(1) sl.[Block Purchase Return] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Block Purchase Return]=1) AS BlockPurRet";
 
-            if (navVersion > new Version("16.2.0.0"))
+            if (NavVersion >= new Version("16.3"))
             {
                 sqlcolumns += ",(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                               "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
@@ -679,7 +679,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 MustKeyInComment = 0
             };
 
-            if (NavVersion > new Version("16.2.0.0"))
+            if (NavVersion >= new Version("16.3"))
             {
                 item.BlockedOnECom = SQLHelper.GetInt32(reader["BlockEcom"]);
             }

@@ -13,20 +13,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
     {
         private string sqlimgfrom = string.Empty;
 
-        private string sqllinkfrom = string.Empty;
-        private string sqllinkfields = string.Empty;
-
         const int IMAGE_TABLEID = 99009063;
         const int LINK_TABLEID = 99009064;
 
-        public ImageRepository(BOConfiguration config) : base(config)
+        public ImageRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlimgfrom = " FROM [" + navCompanyName + "LSC Retail Image$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
-
-            sqllinkfields = "mt.[Image Id],mt.[Display Order],mt.[TableName],mt.[KeyValue],mt.[Description]";
-            sqllinkfrom = " FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
-
 
         public ImageView ImageGetById(string id, bool includeBlob)
         {
@@ -306,7 +299,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqllinkfrom + GetWhereStatement(true, keys, false);
+                sql = "SELECT COUNT(*) FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" + GetWhereStatement(true, keys, false);
             }
             recordsRemaining = GetRecordCount(LINK_TABLEID, lastKey, sql, keys, ref maxKey);
 
@@ -314,7 +307,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             List<ReplImageLink> list = new List<ReplImageLink>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + sqllinkfields + sqllinkfrom + GetWhereStatement(fullReplication, keys, true);
+            sql = GetSQL(fullReplication, batchSize) + 
+                "mt.[Image Id],mt.[Display Order],mt.[TableName],mt.[KeyValue],mt.[Description]" +
+                ((LSCVersion >= new Version("22.2")) ? ",mt.[Image Description]" : "") +
+                " FROM [" + navCompanyName + "LSC Retail Image Link$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" + 
+                GetWhereStatement(fullReplication, keys, true);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -395,7 +392,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplImageLink
+            ReplImageLink link = new ReplImageLink()
             {
                 DisplayOrder = SQLHelper.GetInt32(reader["Display Order"]),
                 ImageId = SQLHelper.GetString(reader["Image Id"]),
@@ -403,6 +400,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 TableName = SQLHelper.GetString(reader["TableName"]),
                 Description = SQLHelper.GetString(reader["Description"])
             };
+
+            if (LSCVersion >= new Version("22.2"))
+                link.ImageDescription = SQLHelper.GetString(reader["Image Description"]);
+
+            return link;
         }
     }
 }

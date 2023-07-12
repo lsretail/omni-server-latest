@@ -21,7 +21,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public CustomerRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt2.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[Territory Code]," +
-                         "mt.[E-Mail],mt.[Home Page],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
+                         "mt.[E-Mail],mt.[Home Page],mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
 
             sqlcolumns += (navVersion.Major > 16) ? ",mt.[Mobile Phone No_]" : ",mt2.[Mobile Phone No_]";
 

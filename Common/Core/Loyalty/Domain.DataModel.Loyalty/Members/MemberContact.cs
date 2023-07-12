@@ -70,6 +70,15 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         //Due to circular reference
         [DataMember]
         public Device LoggedOnToDevice { get; set; }
+        [DataMember]
+        public bool Blocked { get; set; }
+        [DataMember(IsRequired = false, EmitDefaultValue = false)]
+        public DateTime? DateBlocked { get; set; }
+        [DataMember]
+        public string BlockedBy { get; set; }
+        [DataMember]
+        public string BlockedReason { get; set; }
+
 
         [DataMember]
         public string Name

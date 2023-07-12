@@ -775,16 +775,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (includeDetails == false)
                 return contact;
 
-            xmlRequest = xml.GetGeneralWebRequestXML("Member Login", "Login ID", contact.UserName.ToLower(), 1);
-            xmlResponse = RunOperation(xmlRequest);
-            HandleResponseCode(ref xmlResponse);
-            table = xml.GetGeneralWebResponseXML(xmlResponse);
-            if (table != null && table.NumberOfValues > 0)
-            {
-                field = table.FieldList.Find(f => f.FieldName.Equals("Password"));
-                contact.Password = field.Values[0];
-            }
-
             NavWS.RootGetDirectMarketingInfo rootMarket = new NavWS.RootGetDirectMarketingInfo();
             logger.Debug(config.LSKey.Key, "GetDirectMarketingInfo - CardId: {0}", card);
             navWS.GetDirectMarketingInfo(ref respCode, ref errorText, card, string.Empty, string.Empty, ref rootMarket);

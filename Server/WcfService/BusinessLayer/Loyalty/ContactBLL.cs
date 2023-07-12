@@ -59,6 +59,9 @@ namespace LSOmni.BLL.Loyalty
             if (contact == null)
                 throw new LSOmniException(StatusCode.ContactIdNotFound, string.Format("Contact with card {0} Not found", cardId));
 
+            if (contact.Blocked)
+                return contact;
+
             contact.LoggedOnToDevice = new Device();
             contact.LoggedOnToDevice.SecurityToken = config.SecurityToken;
 
@@ -220,6 +223,9 @@ namespace LSOmni.BLL.Loyalty
                 if (contact == null)
                     throw new LSOmniServiceException(StatusCode.UserNameNotFound, "Cannot login user " + userName);
             }
+
+            if (contact.Blocked)
+                return contact;
 
             if (contact.Cards.Count == 0)
                 throw new LSOmniServiceException(StatusCode.MemberCardNotFound, "cardId not found during login for user: " + userName);

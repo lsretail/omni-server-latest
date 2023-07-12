@@ -39,12 +39,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
         [DataMember]
         public bool Blocked { get; set; }
         [DataMember]
-        public string BlockedBy;
-        [DataMember]
-        public string BlockedReason;
-        [DataMember(IsRequired = false, EmitDefaultValue = false)]
-        public DateTime BlockedDate;
-        [DataMember]
         public long PointBalance { get; set; }
         [DataMember]
         public string CustomerId { get; set; }

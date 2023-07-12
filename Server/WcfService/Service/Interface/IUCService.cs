@@ -449,6 +449,7 @@ namespace LSOmni.Service
         ///           <ns1:TotalDiscount>0</ns1:TotalDiscount>
         ///           <ns1:TotalNetAmount>128</ns1:TotalNetAmount>
         ///        </ser:request>
+        ///        <ser:returnOrderIdOnly>?</ser:returnOrderIdOnly>
         ///     </ser:OrderCreate>
         ///  </soapenv:Body>
         /// </soapenv:Envelope>
@@ -493,6 +494,7 @@ namespace LSOmni.Service
         ///           <ns1:TotalDiscount>0</ns1:TotalDiscount>
         ///           <ns1:TotalNetAmount>128</ns1:TotalNetAmount>
         ///        </ser:request>
+        ///        <ser:returnOrderIdOnly>?</ser:returnOrderIdOnly>
         ///     </ser:OrderCreate>
         ///  </soapenv:Body>
         /// </soapenv:Envelope>
@@ -684,6 +686,7 @@ namespace LSOmni.Service
         ///         <ns1:TotalDiscount>0.00</ns1:TotalDiscount>
         ///         <ns1:TotalNetAmount>6.82</ns1:TotalNetAmount>
         ///      </ser:request>
+        ///      <ser:returnOrderIdOnly>?</ser:returnOrderIdOnly>
         ///    </ser:OrderHospCreate>
         ///  </soapenv:Body>
         ///</soapenv:Envelope>
@@ -691,9 +694,10 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="request"></param>
+        /// <param name="returnOrderIdOnly">Only return Order Id back, not full order object</param>
         /// <returns></returns>
         [OperationContract]
-        SalesEntry OrderHospCreate(OrderHosp request);
+        SalesEntry OrderHospCreate(OrderHosp request, bool returnOrderIdOnly);
 
         /// <summary>
         /// Cancel hospitality order

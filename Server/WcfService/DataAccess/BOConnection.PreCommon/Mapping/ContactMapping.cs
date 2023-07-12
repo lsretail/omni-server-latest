@@ -172,7 +172,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
                 BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
-                Account = new Account(contact.AccountNo)
+                Account = new Account(contact.AccountNo),
+                Blocked = contact.Blocked,
+                BlockedBy = contact.Blockedby,
+                BlockedReason = contact.ReasonBlocked,
+                DateBlocked = ConvertTo.SafeJsonDate(contact.DateBlocked, IsJson)
             };
 
             if (LSCVersion >= new Version("20.2"))
@@ -253,7 +257,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
+                Blocked = contact.Blocked,
+                BlockedBy = contact.Blockedby,
+                BlockedReason = contact.ReasonBlocked,
+                DateBlocked = ConvertTo.SafeJsonDate(contact.DateBlocked, IsJson)
             };
 
             if (LSCVersion >= new Version("20.2"))
@@ -347,7 +355,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 LastName = contact.Surname,
                 Gender = (Gender)Convert.ToInt32(contact.Gender),
                 MaritalStatus = (MaritalStatus)Convert.ToInt32(contact.MaritalStatus),
-                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson)
+                BirthDay = ConvertTo.SafeJsonDate(contact.DateofBirth, IsJson),
+                Blocked = contact.Blocked,
+                BlockedBy = contact.Blockedby,
+                BlockedReason = contact.ReasonBlocked,
+                DateBlocked = ConvertTo.SafeJsonDate(contact.DateBlocked, IsJson)
             };
 
             if (LSCVersion >= new Version("20.2"))
@@ -355,21 +367,23 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 memberContact.SendReceiptByEMail = (SendEmail)Convert.ToInt32(contact.SendReceiptbyEmail);
             }
 
-            memberContact.Addresses = new List<Address>();
-            memberContact.Addresses.Add(new Address()
+            memberContact.Addresses = new List<Address>()
             {
-                Type = AddressType.Residential,
-                Address1 = contact.Address,
-                Address2 = contact.Address2,
-                HouseNo = contact.HouseApartmentNo,
-                City = contact.City,
-                PostCode = contact.PostCode,
-                StateProvinceRegion = contact.TerritoryCode,
-                County = contact.County,
-                Country = contact.Country,
-                PhoneNumber = contact.PhoneNo,
-                CellPhoneNumber = contact.MobilePhoneNo
-            });
+                new Address()
+                {
+                    Type = AddressType.Residential,
+                    Address1 = contact.Address,
+                    Address2 = contact.Address2,
+                    HouseNo = contact.HouseApartmentNo,
+                    City = contact.City,
+                    PostCode = contact.PostCode,
+                    StateProvinceRegion = contact.TerritoryCode,
+                    County = contact.County,
+                    Country = contact.Country,
+                    PhoneNumber = contact.PhoneNo,
+                    CellPhoneNumber = contact.MobilePhoneNo
+                }
+            };
 
             memberContact.Account = new Account(contact.AccountNo);
             memberContact.Account.PointBalance = (long)pointBalance;

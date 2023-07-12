@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ItemCategoryRepository(BOConfiguration config) : base(config)
+        public ItemCategoryRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Code],mt.[Description]";
 
@@ -247,10 +247,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Description = SQLHelper.GetString(reader["Description"])
             };
 
-            ProductGroupRepository prdrep = new ProductGroupRepository(config);
+            ProductGroupRepository prdrep = new ProductGroupRepository(config, LSCVersion);
             itemcategory.ProductGroups = prdrep.ProductGroupGetByItemCategoryId(itemcategory.Id, culture, false, false, stat);
 
-            ImageRepository imgrep = new ImageRepository(config);
+            ImageRepository imgrep = new ImageRepository(config, LSCVersion);
             itemcategory.Images = imgrep.ImageGetByKey("Item Category", itemcategory.Id, string.Empty, string.Empty, 0, false);
 
             return itemcategory;

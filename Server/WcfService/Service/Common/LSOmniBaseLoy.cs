@@ -1739,7 +1739,7 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual SalesEntry OrderHospCreate(OrderHosp request)
+        public virtual SalesEntry OrderHospCreate(OrderHosp request, bool returnOrderIdOnly)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
@@ -1748,7 +1748,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, LogJson(request));
 
                 OrderBLL hostBLL = new OrderBLL(config, clientTimeOutInSeconds);
-                SalesEntry data = hostBLL.OrderHospCreate(request, stat);
+                SalesEntry data = hostBLL.OrderHospCreate(request, returnOrderIdOnly, stat);
                 if (config.IsJson && logger.IsDebugEnabled)
                     Serialization.TestJsonSerialize(typeof(SalesEntry), data);
                 return data;

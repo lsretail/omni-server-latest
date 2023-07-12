@@ -95,15 +95,22 @@ namespace LSOmni.BLL.Loyalty
             return tBLL.SalesEntryGet(orderId, DocumentIdType.Order, stat);
         }
 
-        public virtual SalesEntry OrderHospCreate(OrderHosp request, Statistics stat)
+        public virtual SalesEntry OrderHospCreate(OrderHosp request, bool returnOrderIdOnly, Statistics stat)
         {
             if (request == null)
                 throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
 
-            string extId = BOLoyConnection.HospOrderCreate(request, stat);
+            string orderId = BOLoyConnection.HospOrderCreate(request, stat);
+            if (returnOrderIdOnly && string.IsNullOrEmpty(orderId) == false)
+            {
+                return new SalesEntry(orderId)
+                {
+                    ExternalId = request.Id
+                };
+            }
 
             TransactionBLL tBLL = new TransactionBLL(config, timeoutInSeconds);
-            return tBLL.SalesEntryGet(extId, DocumentIdType.HospOrder, stat);
+            return tBLL.SalesEntryGet(orderId, DocumentIdType.HospOrder, stat);
         }
 
         public virtual void HospOrderCancel(string storeId, string orderId, Statistics stat)

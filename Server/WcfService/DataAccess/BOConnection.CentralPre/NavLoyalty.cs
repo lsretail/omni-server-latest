@@ -241,13 +241,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ItemCategory> ItemCategorySearch(string search, Statistics stat)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, LSCVersion);
             return rep.ItemCategorySearch(search, stat);
         }
 
         public virtual List<ProductGroup> ProductGroupSearch(string search, Statistics stat)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, LSCVersion);
             return rep.ProductGroupSearch(search, stat);
         }
 
@@ -425,25 +425,25 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ItemCategory> ItemCategoriesGet(string storeId, string culture, Statistics stat)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, LSCVersion);
             return rep.ItemCategoriesGetAll(storeId, culture, stat);
         }
 
         public virtual ItemCategory ItemCategoriesGetById(string id, Statistics stat)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, LSCVersion);
             return rep.ItemCategoryGetById(id, stat);
         }
 
         public virtual List<ProductGroup> ProductGroupGetByItemCategoryId(string itemcategoryId, string culture, bool includeChildren, bool includeItems, Statistics stat)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, LSCVersion);
             return rep.ProductGroupGetByItemCategoryId(itemcategoryId, culture, includeChildren, includeItems, stat);
         }
 
         public virtual ProductGroup ProductGroupGetById(string id, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, LSCVersion);
             return rep.ProductGroupGetById(id, culture, includeItems, includeItemDetail, stat);
         }
 
@@ -625,7 +625,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual ImageView ImageGetById(string imageId, bool includeBlob, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, LSCVersion);
             ImageView img = rep.ImageGetById(imageId, includeBlob);
             logger.StatisticEndSub(ref stat, index);
             return img;
@@ -634,7 +634,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual ImageView ImageGetByMediaId(string mediaId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, LSCVersion);
             ImageView data = rep.ImageMediaGetById(mediaId);
             logger.StatisticEndSub(ref stat, index);
             return data;
@@ -643,7 +643,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<ImageView> ImagesGetByKey(string tableName, string key1, string key2, string key3, int imgCount, bool includeBlob, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, LSCVersion);
             List<ImageView> list = rep.ImageGetByKey(tableName, key1, key2, key3, imgCount, includeBlob);
             logger.StatisticEndSub(ref stat, index);
             return list;
@@ -707,13 +707,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplImageLink> ReplEcommImageLinks(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, LSCVersion);
             return rep.ReplEcommImageLink(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplImage> ReplEcommImages(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ImageRepository rep = new ImageRepository(config);
+            ImageRepository rep = new ImageRepository(config, LSCVersion);
             return rep.ReplEcommImage(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

@@ -61,30 +61,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public ReplTerminal TerminalGetById(string id)
-        {
-            ReplTerminal posTerminal = null;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = sqltext + sqlfrom + " WHERE mt.[No_]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            posTerminal = ReaderToTerminal(reader);
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            return posTerminal;
-        }
-
         public string TerminalGetLicense(string terminalId, string appid)
         {
             string lic = string.Empty;
@@ -138,6 +114,30 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
         }
 
+        public Terminal TerminalGetById(string id)
+        {
+            Terminal posTerminal = null;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = sqltext + sqlfrom + " WHERE mt.[No_]=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            posTerminal = ReaderToTerminalBase(reader);
+                        }
+                    }
+                    connection.Close();
+                }
+            }
+            return posTerminal;
+        }
+
         private ReplTerminal ReaderToTerminal(SqlDataReader reader)
         {
             ReplTerminal term = new ReplTerminal()
@@ -162,30 +162,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             term.Features.AddFlag(FeatureFlagName.AutoLogOffAfterMin, SQLHelper.GetString(reader["AutoLogoff After (Min_)"]));
             term.Features.AddFlag(FeatureFlagName.ShowNumberPad, SQLHelper.GetString(reader["Show Numberpad"]));
             return term;
-        }
-
-        public Terminal TerminalBaseGetById(string id)
-        {
-            Terminal posTerminal = null;
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = sqltext + sqlfrom + " WHERE mt.[No_]=@id";
-                    command.Parameters.AddWithValue("@id", id);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        if (reader.Read())
-                        {
-                            posTerminal = ReaderToTerminalBase(reader);
-                        }
-                    }
-                    connection.Close();
-                }
-            }
-            return posTerminal;
         }
 
         private Terminal ReaderToTerminalBase(SqlDataReader reader)

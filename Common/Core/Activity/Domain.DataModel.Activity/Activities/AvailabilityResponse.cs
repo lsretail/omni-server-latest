@@ -16,6 +16,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
             OptionalResourceName = string.Empty;
             PriceCurrency = string.Empty;
             Comment = string.Empty;
+            TimeZone = string.Empty;
         }
 
         public void Dispose()
@@ -55,5 +56,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public string PriceCurrency { set; get; }
         [DataMember]
         public string Comment { set; get; }
+        [DataMember]
+        public string TimeZone { set; get; }
     }
 }

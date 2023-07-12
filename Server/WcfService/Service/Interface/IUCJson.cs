@@ -479,7 +479,8 @@ namespace LSOmni.Service
         /// 		"TotalAmount": "160.0",
         /// 		"TotalDiscount": "0",
         /// 		"TotalNetAmount": "128.0"
-        /// 	}
+        /// 	},
+        /// 	"returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -546,7 +547,8 @@ namespace LSOmni.Service
         /// 		"TotalAmount": "144.0",
         /// 		"TotalDiscount": "16.0",
         /// 		"TotalNetAmount": "115.20"
-        /// 	}
+        /// 	},
+        /// 	"returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -623,7 +625,8 @@ namespace LSOmni.Service
         /// 		"TotalAmount": "160.0",
         /// 		"TotalDiscount": "0",
         /// 		"TotalNetAmount": "128.0"
-        /// 	}
+        /// 	},
+        /// 	"returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -665,7 +668,8 @@ namespace LSOmni.Service
         /// 		"TotalAmount": "160.0",
         /// 		"TotalDiscount": "0",
         /// 		"TotalNetAmount": "128.0"
-        /// 	}
+        /// 	},
+        /// 	"returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -848,16 +852,18 @@ namespace LSOmni.Service
         ///     "TotalAmount": 7.50,
         ///     "TotalDiscount": 0.00,
         ///     "TotalNetAmount": 6.82
-        ///   }
+        ///   },
+        ///   "returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
         /// </example>
         /// <param name="request"></param>
+        /// <param name="returnOrderIdOnly">Only return Order Id back, not full order object</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        SalesEntry OrderHospCreate(OrderHosp request);
+        SalesEntry OrderHospCreate(OrderHosp request, bool returnOrderIdOnly);
 
         /// <summary>
         /// Cancel hospitality order

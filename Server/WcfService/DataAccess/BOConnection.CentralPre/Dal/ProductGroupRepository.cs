@@ -17,7 +17,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ProductGroupRepository(BOConfiguration config) : base(config)
+        public ProductGroupRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Code],mt.[Description],mt.[Item Category Code]";
 
@@ -239,7 +239,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private ProductGroup ReaderToLoyProductGroups(SqlDataReader reader, string culture, bool includeItems, bool includeItemDetail, Statistics stat)
         {
-            ImageRepository imgrepo = new ImageRepository(config);
+            ImageRepository imgrepo = new ImageRepository(config, LSCVersion);
 
             ProductGroup prgr = new ProductGroup()
             {
@@ -254,7 +254,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 ItemRepository itrep = new ItemRepository(config, LSCVersion);
                 prgr.Items = itrep.ItemsGetByProductGroupId(prgr.Id, culture, includeItemDetail, stat);
-                ImageRepository imrep = new ImageRepository(config);
+                ImageRepository imrep = new ImageRepository(config, LSCVersion);
                 prgr.Images = imrep.ImageGetByKey("LSC Retail Product Group", prgr.ItemCategoryId, prgr.Id, string.Empty, 0, false);
             }
             else

@@ -45,6 +45,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback ConfirmActivityV5OperationCompleted;
         
+        private System.Threading.SendOrPostCallback ConfirmActivityV6OperationCompleted;
+        
         private System.Threading.SendOrPostCallback ConfirmActivityOperationCompleted;
         
         private System.Threading.SendOrPostCallback ConfirmGroupActivityV2OperationCompleted;
@@ -84,6 +86,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback InsertMemberDepositOperationCompleted;
         
         private System.Threading.SendOrPostCallback InsertReservationOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback PaymentDepositOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback PaymentRefundOperationCompleted;
         
         private System.Threading.SendOrPostCallback PreSellActivityProductOperationCompleted;
         
@@ -202,6 +208,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event ConfirmActivityV5CompletedEventHandler ConfirmActivityV5Completed;
         
         /// <remarks/>
+        public event ConfirmActivityV6CompletedEventHandler ConfirmActivityV6Completed;
+        
+        /// <remarks/>
         public event ConfirmActivityCompletedEventHandler ConfirmActivityCompleted;
         
         /// <remarks/>
@@ -260,6 +269,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event InsertReservationCompletedEventHandler InsertReservationCompleted;
+        
+        /// <remarks/>
+        public event PaymentDepositCompletedEventHandler PaymentDepositCompleted;
+        
+        /// <remarks/>
+        public event PaymentRefundCompletedEventHandler PaymentRefundCompleted;
         
         /// <remarks/>
         public event PreSellActivityProductCompletedEventHandler PreSellActivityProductCompleted;
@@ -1105,6 +1120,169 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.ConfirmActivityV5Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ConfirmActivityV5Completed(this, new ConfirmActivityV5CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivityV6", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ConfirmActivityV6_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool ConfirmActivityV6(
+                    string locationNo, 
+                    string productNo, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, 
+                    int activityTimeHour, 
+                    int activityTimeMinute, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    ref string returnActivityNo, 
+                    ref string errorString, 
+                    ref decimal returnUnitPrice, 
+                    ref decimal returnLineDiscount, 
+                    ref decimal returnTotalAmount, 
+                    ref string returnCurrency, 
+                    ref string returnBookingRef, 
+                    ref string reservationNo, 
+                    ref string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token) {
+            object[] results = this.Invoke("ConfirmActivityV6", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTimeHour,
+                        activityTimeMinute,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        promoCode,
+                        clientName,
+                        email,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo,
+                        token});
+            returnActivityNo = ((string)(results[1]));
+            errorString = ((string)(results[2]));
+            returnUnitPrice = ((decimal)(results[3]));
+            returnLineDiscount = ((decimal)(results[4]));
+            returnTotalAmount = ((decimal)(results[5]));
+            returnCurrency = ((string)(results[6]));
+            returnBookingRef = ((string)(results[7]));
+            reservationNo = ((string)(results[8]));
+            returnRetailItem = ((string)(results[9]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void ConfirmActivityV6Async(
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    int activityTimeHour, 
+                    int activityTimeMinute, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token) {
+            this.ConfirmActivityV6Async(locationNo, productNo, activityDate, activityTimeHour, activityTimeMinute, clientNo, optionalResource, optionalComment, setQuantity, setNoOfPeople, paid, promoCode, clientName, email, returnActivityNo, errorString, returnUnitPrice, returnLineDiscount, returnTotalAmount, returnCurrency, returnBookingRef, reservationNo, returnRetailItem, customerAccountNo, token, null);
+        }
+        
+        /// <remarks/>
+        public void ConfirmActivityV6Async(
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    int activityTimeHour, 
+                    int activityTimeMinute, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    object userState) {
+            if ((this.ConfirmActivityV6OperationCompleted == null)) {
+                this.ConfirmActivityV6OperationCompleted = new System.Threading.SendOrPostCallback(this.OnConfirmActivityV6OperationCompleted);
+            }
+            this.InvokeAsync("ConfirmActivityV6", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTimeHour,
+                        activityTimeMinute,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        promoCode,
+                        clientName,
+                        email,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo,
+                        token}, this.ConfirmActivityV6OperationCompleted, userState);
+        }
+        
+        private void OnConfirmActivityV6OperationCompleted(object arg) {
+            if ((this.ConfirmActivityV6Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ConfirmActivityV6Completed(this, new ConfirmActivityV6CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2446,6 +2624,228 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.InsertReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.InsertReservationCompleted(this, new InsertReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:PaymentDeposit", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="PaymentDeposit_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool PaymentDeposit(
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime scheduleDate, 
+                    string reservationNo, 
+                    string paymentType, 
+                    string tenderTypeCode, 
+                    string currency, 
+                    decimal currencyFactor, 
+                    string cardType, 
+                    string cardTransType, 
+                    System.DateTime cardTransDateTime, 
+                    string cardAuthCode, 
+                    string cardAuthID, 
+                    string cardHolderName, 
+                    string cardMaskedNumber, 
+                    string tokenNo, 
+                    ref string returnReceiptNo, 
+                    ref string errorString) {
+            object[] results = this.Invoke("PaymentDeposit", new object[] {
+                        scheduleDate,
+                        reservationNo,
+                        paymentType,
+                        tenderTypeCode,
+                        currency,
+                        currencyFactor,
+                        cardType,
+                        cardTransType,
+                        cardTransDateTime,
+                        cardAuthCode,
+                        cardAuthID,
+                        cardHolderName,
+                        cardMaskedNumber,
+                        tokenNo,
+                        returnReceiptNo,
+                        errorString});
+            returnReceiptNo = ((string)(results[1]));
+            errorString = ((string)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void PaymentDepositAsync(
+                    System.DateTime scheduleDate, 
+                    string reservationNo, 
+                    string paymentType, 
+                    string tenderTypeCode, 
+                    string currency, 
+                    decimal currencyFactor, 
+                    string cardType, 
+                    string cardTransType, 
+                    System.DateTime cardTransDateTime, 
+                    string cardAuthCode, 
+                    string cardAuthID, 
+                    string cardHolderName, 
+                    string cardMaskedNumber, 
+                    string tokenNo, 
+                    string returnReceiptNo, 
+                    string errorString) {
+            this.PaymentDepositAsync(scheduleDate, reservationNo, paymentType, tenderTypeCode, currency, currencyFactor, cardType, cardTransType, cardTransDateTime, cardAuthCode, cardAuthID, cardHolderName, cardMaskedNumber, tokenNo, returnReceiptNo, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void PaymentDepositAsync(
+                    System.DateTime scheduleDate, 
+                    string reservationNo, 
+                    string paymentType, 
+                    string tenderTypeCode, 
+                    string currency, 
+                    decimal currencyFactor, 
+                    string cardType, 
+                    string cardTransType, 
+                    System.DateTime cardTransDateTime, 
+                    string cardAuthCode, 
+                    string cardAuthID, 
+                    string cardHolderName, 
+                    string cardMaskedNumber, 
+                    string tokenNo, 
+                    string returnReceiptNo, 
+                    string errorString, 
+                    object userState) {
+            if ((this.PaymentDepositOperationCompleted == null)) {
+                this.PaymentDepositOperationCompleted = new System.Threading.SendOrPostCallback(this.OnPaymentDepositOperationCompleted);
+            }
+            this.InvokeAsync("PaymentDeposit", new object[] {
+                        scheduleDate,
+                        reservationNo,
+                        paymentType,
+                        tenderTypeCode,
+                        currency,
+                        currencyFactor,
+                        cardType,
+                        cardTransType,
+                        cardTransDateTime,
+                        cardAuthCode,
+                        cardAuthID,
+                        cardHolderName,
+                        cardMaskedNumber,
+                        tokenNo,
+                        returnReceiptNo,
+                        errorString}, this.PaymentDepositOperationCompleted, userState);
+        }
+        
+        private void OnPaymentDepositOperationCompleted(object arg) {
+            if ((this.PaymentDepositCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.PaymentDepositCompleted(this, new PaymentDepositCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:PaymentRefund", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="PaymentRefund_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool PaymentRefund(
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime scheduleDate, 
+                    string reservationNo, 
+                    string paymentType, 
+                    string tenderTypeCode, 
+                    string currency, 
+                    decimal currencyFactor, 
+                    string cardType, 
+                    string cardTransType, 
+                    System.DateTime cardTransDateTime, 
+                    string cardAuthCode, 
+                    string cardAuthID, 
+                    string cardHolderName, 
+                    string cardMaskedNumber, 
+                    string tokenNo, 
+                    ref string returnReceiptNo, 
+                    ref string errorString) {
+            object[] results = this.Invoke("PaymentRefund", new object[] {
+                        scheduleDate,
+                        reservationNo,
+                        paymentType,
+                        tenderTypeCode,
+                        currency,
+                        currencyFactor,
+                        cardType,
+                        cardTransType,
+                        cardTransDateTime,
+                        cardAuthCode,
+                        cardAuthID,
+                        cardHolderName,
+                        cardMaskedNumber,
+                        tokenNo,
+                        returnReceiptNo,
+                        errorString});
+            returnReceiptNo = ((string)(results[1]));
+            errorString = ((string)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void PaymentRefundAsync(
+                    System.DateTime scheduleDate, 
+                    string reservationNo, 
+                    string paymentType, 
+                    string tenderTypeCode, 
+                    string currency, 
+                    decimal currencyFactor, 
+                    string cardType, 
+                    string cardTransType, 
+                    System.DateTime cardTransDateTime, 
+                    string cardAuthCode, 
+                    string cardAuthID, 
+                    string cardHolderName, 
+                    string cardMaskedNumber, 
+                    string tokenNo, 
+                    string returnReceiptNo, 
+                    string errorString) {
+            this.PaymentRefundAsync(scheduleDate, reservationNo, paymentType, tenderTypeCode, currency, currencyFactor, cardType, cardTransType, cardTransDateTime, cardAuthCode, cardAuthID, cardHolderName, cardMaskedNumber, tokenNo, returnReceiptNo, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void PaymentRefundAsync(
+                    System.DateTime scheduleDate, 
+                    string reservationNo, 
+                    string paymentType, 
+                    string tenderTypeCode, 
+                    string currency, 
+                    decimal currencyFactor, 
+                    string cardType, 
+                    string cardTransType, 
+                    System.DateTime cardTransDateTime, 
+                    string cardAuthCode, 
+                    string cardAuthID, 
+                    string cardHolderName, 
+                    string cardMaskedNumber, 
+                    string tokenNo, 
+                    string returnReceiptNo, 
+                    string errorString, 
+                    object userState) {
+            if ((this.PaymentRefundOperationCompleted == null)) {
+                this.PaymentRefundOperationCompleted = new System.Threading.SendOrPostCallback(this.OnPaymentRefundOperationCompleted);
+            }
+            this.InvokeAsync("PaymentRefund", new object[] {
+                        scheduleDate,
+                        reservationNo,
+                        paymentType,
+                        tenderTypeCode,
+                        currency,
+                        currencyFactor,
+                        cardType,
+                        cardTransType,
+                        cardTransDateTime,
+                        cardAuthCode,
+                        cardAuthID,
+                        cardHolderName,
+                        cardMaskedNumber,
+                        tokenNo,
+                        returnReceiptNo,
+                        errorString}, this.PaymentRefundOperationCompleted, userState);
+        }
+        
+        private void OnPaymentRefundOperationCompleted(object arg) {
+            if ((this.PaymentRefundCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.PaymentRefundCompleted(this, new PaymentRefundCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -7011,6 +7411,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private string commentField;
         
+        private string timeZoneField;
+        
         public AvailabilityWork() {
             this.availDateField = new System.DateTime(0);
             this.availTimeField = new System.DateTime(0);
@@ -7140,6 +7542,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             }
             set {
                 this.commentField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TimeZone {
+            get {
+                return this.timeZoneField;
+            }
+            set {
+                this.timeZoneField = value;
             }
         }
     }
@@ -7976,6 +8388,104 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal ConfirmActivityV5CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnActivityNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnUnitPrice {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnLineDiscount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnTotalAmount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnCurrency {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[6]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnBookingRef {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[7]));
+            }
+        }
+        
+        /// <remarks/>
+        public string reservationNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[8]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnRetailItem {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[9]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void ConfirmActivityV6CompletedEventHandler(object sender, ConfirmActivityV6CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ConfirmActivityV6CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal ConfirmActivityV6CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -8966,6 +9476,90 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public string setReservationNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void PaymentDepositCompletedEventHandler(object sender, PaymentDepositCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class PaymentDepositCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal PaymentDepositCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnReceiptNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void PaymentRefundCompletedEventHandler(object sender, PaymentRefundCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class PaymentRefundCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal PaymentRefundCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnReceiptNo {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[1]));

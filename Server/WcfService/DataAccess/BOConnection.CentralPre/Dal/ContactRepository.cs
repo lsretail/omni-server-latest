@@ -11,6 +11,7 @@ using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base;
+using System.Drawing;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -24,7 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public ContactRepository(BOConfiguration config, Version version) : base(config, version)
         {
-            sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked]," +
+            sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked],mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
                          "mt.[Address],mt.[Address 2],mt.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[County],mt.[Country_Region Code]";
 
@@ -420,8 +421,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[No_],mt.[Scheme Code],mt.[Linked To Customer No_],mt.[Status],mt.[Account Type]," +
-                                          "mt.[Blocked],mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked By]," +
+                    command.CommandText = "SELECT mt.[No_],mt.[Scheme Code],mt.[Linked To Customer No_],mt.[Status],mt.[Account Type],mt.[Blocked]," +
                                           "(SELECT SUM([Remaining Points]) FROM [" + navCompanyName + "LSC Member Point Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
                                           "WHERE [Account No_]=@id AND [Open]=1) AS Sum1," +
                                           "(SELECT SUM([Points in Transaction]) FROM [" + navCompanyName + "LSC Member Process Order Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
@@ -761,7 +761,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Email = SQLHelper.GetString(reader["E-Mail"]),
                 BirthDay = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date of Birth"]), config.IsJson),
                 Gender = (Gender)SQLHelper.GetInt32(reader["Gender"]),
-                MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"])
+                MaritalStatus = (MaritalStatus)SQLHelper.GetInt32(reader["Marital Status"]),
+                Blocked = SQLHelper.GetBool(reader["Blocked"]),
+                BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
+                DateBlocked = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
+                BlockedBy = SQLHelper.GetString(reader["Blocked by"])
             };
 
             if (LSCVersion >= new Version("19.2"))
@@ -805,9 +809,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Status = (AccountStatus)SQLHelper.GetInt32(reader["Status"]),
                 Type = (AccountType)SQLHelper.GetInt32(reader["Account Type"]),
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
-                BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
-                BlockedBy = SQLHelper.GetString(reader["Blocked By"]),
-                BlockedDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
                 Scheme = SchemeGetById(SQLHelper.GetString(reader["Scheme Code"])),
                 PointBalance = (long)(sum1 + sum2)
             };

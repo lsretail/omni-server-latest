@@ -356,6 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             entry.ShippingStatus = (entry.ClickAndCollectOrder) ? ShippingStatus.ShippigNotRequired : ShippingStatus.NotYetShipped;
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
             entry.CustomerOrderNo = entry.Id;
+            entry.CreateTime = entry.DocumentRegTime;
 
             OrderLinesGetTotals(entry.Id, out int cnt, out decimal qty, out int lcnt, out decimal amt, out decimal namt, out decimal disc);
             entry.LineItemCount = cnt;
@@ -387,7 +388,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     entry.StoreCurrency = storeCurCode;
                 }
 
-                ImageRepository imgrep = new ImageRepository(config);
+                ImageRepository imgrep = new ImageRepository(config, LSCVersion);
                 List<SalesEntryLine> list = new List<SalesEntryLine>();
                 foreach (SalesEntryLine line in entry.Lines)
                 {

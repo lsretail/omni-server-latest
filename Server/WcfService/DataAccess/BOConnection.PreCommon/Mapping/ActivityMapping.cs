@@ -413,7 +413,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     OptionalResourceName = ConvertTo.SafeString(rec.OptionalResourceName),
                     OptionalResourceNo = rec.OptionalResourceNo,
                     PriceCurrency = ConvertTo.SafeString(rec.PriceCurrency),
-                    Comment = rec.Comment
+                    Comment = rec.Comment,
+                    TimeZone = rec.TimeZone
                 });
             }
             return list;

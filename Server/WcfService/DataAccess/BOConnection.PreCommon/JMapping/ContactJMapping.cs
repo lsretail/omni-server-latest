@@ -40,8 +40,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             foreach (MemberContact cont in list)
             {
                 cont.Cards = cards.FindAll(x => x.ContactId == cont.Id);
+                foreach (Card card in cont.Cards)
+                {
+                    card.LoginId = LoadOneValue(result.GetDataSet(99009049), "Card No.", card.Id, "Login ID");
+                }
                 cont.UserName = LoadOneValue(result.GetDataSet(99009049), "Card No.", cont.Cards.FirstOrDefault().Id, "Login ID");
-                cont.Password = LoadOneValue(result.GetDataSet(99009045), "Login ID", cont.UserName, "Password");
                 cont.Account = accounts.Find(x => x.Id == cont.Account.Id);
                 cont.Account.Scheme = schemes.Find(x => x.Id == cont.Account.SchemeCode);
                 cont.Account.Scheme.Club = clubs.Find(x => x.Id == cont.Account.Scheme.ClubCode);
@@ -95,6 +98,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 18: rec.Addresses[0].CellPhoneNumber = col.FieldValue; break;
                         case 19: rec.Addresses[0].StateProvinceRegion = col.FieldValue; break;
                         case 20: rec.SendReceiptByEMail = (SendEmail)ConvertTo.SafeInt(col.FieldValue); break;
+                        case 21: rec.Blocked = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case 22: rec.BlockedReason = col.FieldValue; break;
+                        case 23: rec.DateBlocked = ConvertTo.SafeDateTime(col.FieldValue); break;
+                        case 24: rec.BlockedBy = col.FieldValue; break;
                     }
                 }
                 list.Add(rec);
@@ -152,10 +159,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     switch (fld.FieldIndex)
                     {
                         case 1: rec.Id = col.FieldValue; break;
-                        case 2: rec.BlockedBy = col.FieldValue; break;
-                        case 3: rec.BlockedReason = col.FieldValue; break;
-                        case 4: rec.BlockedDate = ConvertTo.SafeDateTime(col.FieldValue); break;
-                        case 5: rec.BlockedBy = col.FieldValue; break;
+                        case 2: rec.Blocked =  ConvertTo.SafeBoolean(col.FieldValue); break;
                         case 6: rec.CustomerId = col.FieldValue; break;
                         case 7: rec.ClubCode = col.FieldValue; break;
                         case 8: rec.SchemeCode = col.FieldValue; break;

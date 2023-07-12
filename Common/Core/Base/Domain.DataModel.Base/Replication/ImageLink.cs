@@ -54,6 +54,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             TableName = string.Empty;
             KeyValue = string.Empty;
             Description = string.Empty;
+            ImageDescription = string.Empty;
         }
 
         public void Dispose()
@@ -79,6 +80,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string KeyValue { get; set; }
         [DataMember]
         public string Description { get; set; }
+        [DataMember]
+        public string ImageDescription { get; set; }
         [DataMember]
         public int DisplayOrder { get; set; }
     }

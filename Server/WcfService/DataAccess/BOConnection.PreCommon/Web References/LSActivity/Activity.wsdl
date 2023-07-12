@@ -96,6 +96,7 @@
           <element minOccurs="1" maxOccurs="unbounded" name="OptionalResourceName" type="string" />
           <element minOccurs="1" maxOccurs="unbounded" name="PriceCurrency" type="string" />
           <element minOccurs="1" maxOccurs="1" name="Comment" type="string" />
+          <element minOccurs="1" maxOccurs="1" name="TimeZone" type="string" />
         </sequence>
       </complexType>
       <complexType name="ActivityAvailabilityResponse" mixed="true">
@@ -710,6 +711,53 @@
           </sequence>
         </complexType>
       </element>
+      <element name="ConfirmActivityV6">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="locationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="productNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="activityDate" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="activityTimeHour" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="activityTimeMinute" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="clientNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="optionalResource" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="optionalComment" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="setQuantity" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="setNoOfPeople" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="paid" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="promoCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="clientName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="email" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnActivityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnUnitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnLineDiscount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnTotalAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnCurrency" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnRetailItem" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="customerAccountNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="token" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ConfirmActivityV6_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="returnActivityNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnUnitPrice" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnLineDiscount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnTotalAmount" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="returnCurrency" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnBookingRef" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnRetailItem" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="ConfirmActivity">
         <complexType>
           <sequence>
@@ -1215,6 +1263,68 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="setReservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PaymentDeposit">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="scheduleDate" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="paymentType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="tenderTypeCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="currency" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="currencyFactor" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="cardType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardTransType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardTransDateTime" type="dateTime" />
+            <element minOccurs="1" maxOccurs="1" name="cardAuthCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardAuthID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardHolderName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardMaskedNumber" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="tokenNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnReceiptNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PaymentDeposit_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="returnReceiptNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PaymentRefund">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="scheduleDate" type="date" />
+            <element minOccurs="1" maxOccurs="1" name="reservationNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="paymentType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="tenderTypeCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="currency" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="currencyFactor" type="decimal" />
+            <element minOccurs="1" maxOccurs="1" name="cardType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardTransType" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardTransDateTime" type="dateTime" />
+            <element minOccurs="1" maxOccurs="1" name="cardAuthCode" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardAuthID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardHolderName" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="cardMaskedNumber" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="tokenNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="returnReceiptNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="PaymentRefund_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="returnReceiptNo" type="string" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
           </sequence>
         </complexType>
@@ -1772,6 +1882,12 @@
   <message name="ConfirmActivityV5_Result">
     <part name="parameters" element="tns:ConfirmActivityV5_Result" />
   </message>
+  <message name="ConfirmActivityV6">
+    <part name="parameters" element="tns:ConfirmActivityV6" />
+  </message>
+  <message name="ConfirmActivityV6_Result">
+    <part name="parameters" element="tns:ConfirmActivityV6_Result" />
+  </message>
   <message name="ConfirmActivity">
     <part name="parameters" element="tns:ConfirmActivity" />
   </message>
@@ -1891,6 +2007,18 @@
   </message>
   <message name="InsertReservation_Result">
     <part name="parameters" element="tns:InsertReservation_Result" />
+  </message>
+  <message name="PaymentDeposit">
+    <part name="parameters" element="tns:PaymentDeposit" />
+  </message>
+  <message name="PaymentDeposit_Result">
+    <part name="parameters" element="tns:PaymentDeposit_Result" />
+  </message>
+  <message name="PaymentRefund">
+    <part name="parameters" element="tns:PaymentRefund" />
+  </message>
+  <message name="PaymentRefund_Result">
+    <part name="parameters" element="tns:PaymentRefund_Result" />
   </message>
   <message name="PreSellActivityProduct">
     <part name="parameters" element="tns:PreSellActivityProduct" />
@@ -2087,6 +2215,10 @@
       <input name="ConfirmActivityV5" message="tns:ConfirmActivityV5" />
       <output name="ConfirmActivityV5_Result" message="tns:ConfirmActivityV5_Result" />
     </operation>
+    <operation name="ConfirmActivityV6">
+      <input name="ConfirmActivityV6" message="tns:ConfirmActivityV6" />
+      <output name="ConfirmActivityV6_Result" message="tns:ConfirmActivityV6_Result" />
+    </operation>
     <operation name="ConfirmActivity">
       <input name="ConfirmActivity" message="tns:ConfirmActivity" />
       <output name="ConfirmActivity_Result" message="tns:ConfirmActivity_Result" />
@@ -2166,6 +2298,14 @@
     <operation name="InsertReservation">
       <input name="InsertReservation" message="tns:InsertReservation" />
       <output name="InsertReservation_Result" message="tns:InsertReservation_Result" />
+    </operation>
+    <operation name="PaymentDeposit">
+      <input name="PaymentDeposit" message="tns:PaymentDeposit" />
+      <output name="PaymentDeposit_Result" message="tns:PaymentDeposit_Result" />
+    </operation>
+    <operation name="PaymentRefund">
+      <input name="PaymentRefund" message="tns:PaymentRefund" />
+      <output name="PaymentRefund_Result" message="tns:PaymentRefund_Result" />
     </operation>
     <operation name="PreSellActivityProduct">
       <input name="PreSellActivityProduct" message="tns:PreSellActivityProduct" />
@@ -2350,6 +2490,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="ConfirmActivityV6">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivityV6" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ConfirmActivityV6">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ConfirmActivityV6_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="ConfirmActivity">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivity" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="ConfirmActivity">
@@ -2527,6 +2676,24 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="InsertReservation_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="PaymentDeposit">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:PaymentDeposit" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="PaymentDeposit">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="PaymentDeposit_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="PaymentRefund">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:PaymentRefund" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="PaymentRefund">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="PaymentRefund_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -2776,7 +2943,7 @@
   </binding>
   <service name="Activity">
     <port name="Activity_Port" binding="tns:Activity_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMaster/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSCentralMasterPwd/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

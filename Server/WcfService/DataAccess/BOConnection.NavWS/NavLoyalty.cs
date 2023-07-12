@@ -613,7 +613,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             }
             else if (NAVVersion >= new Version("21.3"))
             {
-                list = LSCWSBase.SalesEntryGetByCardId(cardId, maxNumberOfEntries, stat);
+                list = LSCWSBase.SalesEntryGetByCardId(cardId, maxNumberOfEntries, storeId, stat);
                 return list;
             }
             else
@@ -666,24 +666,31 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type, Statistics stat)
         {
+            SalesEntry entry;
+
             if (NAVVersion < new Version("17.5"))
             {
                 if (type == DocumentIdType.Receipt)
                     return NavWSBase.TransactionGet(docId, storeId, terminalId, transId);
-                return NavWSBase.OrderGet(docId);
+                entry = NavWSBase.OrderGet(docId);
             }
-
-            SalesEntry entry;
-            if (type == DocumentIdType.Receipt || type == DocumentIdType.HospOrder)
-                entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId, stat);
-            else
-                entry = LSCWSBase.OrderGet(docId, stat);
-
-            if (entry.Payments != null)
+            else if (NAVVersion >= new Version("22.2"))
             {
-                foreach (SalesEntryPayment line in entry.Payments)
+                entry = LSCWSBase.SalesEntryGetById(docId, type, stat);
+            }
+            else
+            {
+                if (type == DocumentIdType.Receipt || type == DocumentIdType.HospOrder)
+                    entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId, stat);
+                else
+                    entry = LSCWSBase.OrderGet(docId, stat);
+
+                if (entry.Payments != null)
                 {
-                    line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, true); //map tender type between LSOmni and NAV
+                    foreach (SalesEntryPayment line in entry.Payments)
+                    {
+                        line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, true); //map tender type between LSOmni and NAV
+                    }
                 }
             }
             return entry;

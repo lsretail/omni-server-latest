@@ -485,6 +485,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 20: line.TableName = data.FieldValue; break;
                         case 21: line.KeyValue = data.FieldValue; break;
                         case 22: line.Description = data.FieldValue; break;
+                        case 31: line.ImageDescription = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

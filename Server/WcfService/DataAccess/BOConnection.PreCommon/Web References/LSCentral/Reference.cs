@@ -29,8 +29,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     [System.Web.Services.WebServiceBindingAttribute(Name="OmniWrapper_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper")]
     public partial class OmniWrapper : MySoapHttpClientProtocol {
         
-        private System.Threading.SendOrPostCallback MobilePosRefundOperationCompleted;
-        
         private System.Threading.SendOrPostCallback MobilePosRetSaveOperationCompleted;
         
         private System.Threading.SendOrPostCallback MobilePosRetSuspendedOperationCompleted;
@@ -245,6 +243,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private System.Threading.SendOrPostCallback MobilePosPrintOperationCompleted;
         
+        private System.Threading.SendOrPostCallback MobilePosRefundOperationCompleted;
+        
         private bool useDefaultCredentialsSetExplicitly;
         
         /// <remarks/>
@@ -282,9 +282,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.useDefaultCredentialsSetExplicitly = true;
             }
         }
-        
-        /// <remarks/>
-        public event MobilePosRefundCompletedEventHandler MobilePosRefundCompleted;
         
         /// <remarks/>
         public event MobilePosRetSaveCompletedEventHandler MobilePosRetSaveCompleted;
@@ -608,39 +605,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         public event MobilePosPrintCompletedEventHandler MobilePosPrintCompleted;
         
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRefund", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosRefund_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public void MobilePosRefund(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
-            object[] results = this.Invoke("MobilePosRefund", new object[] {
-                        responseCode,
-                        errorText,
-                        mobileTransactionXML});
-            responseCode = ((string)(results[0]));
-            errorText = ((string)(results[1]));
-            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
-        }
-        
-        /// <remarks/>
-        public void MobilePosRefundAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
-            this.MobilePosRefundAsync(responseCode, errorText, mobileTransactionXML, null);
-        }
-        
-        /// <remarks/>
-        public void MobilePosRefundAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
-            if ((this.MobilePosRefundOperationCompleted == null)) {
-                this.MobilePosRefundOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosRefundOperationCompleted);
-            }
-            this.InvokeAsync("MobilePosRefund", new object[] {
-                        responseCode,
-                        errorText,
-                        mobileTransactionXML}, this.MobilePosRefundOperationCompleted, userState);
-        }
-        
-        private void OnMobilePosRefundOperationCompleted(object arg) {
-            if ((this.MobilePosRefundCompleted != null)) {
-                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.MobilePosRefundCompleted(this, new MobilePosRefundCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
-            }
-        }
+        public event MobilePosRefundCompletedEventHandler MobilePosRefundCompleted;
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRetSave", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosRetSave_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -4949,6 +4914,41 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             if ((this.MobilePosPrintCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.MobilePosPrintCompleted(this, new MobilePosPrintCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/OmniWrapper:MobilePosRefund", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", ResponseElementName="MobilePosRefund_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/OmniWrapper", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void MobilePosRefund(ref string responseCode, ref string errorText, ref RootMobileTransaction mobileTransactionXML) {
+            object[] results = this.Invoke("MobilePosRefund", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML});
+            responseCode = ((string)(results[0]));
+            errorText = ((string)(results[1]));
+            mobileTransactionXML = ((RootMobileTransaction)(results[2]));
+        }
+        
+        /// <remarks/>
+        public void MobilePosRefundAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML) {
+            this.MobilePosRefundAsync(responseCode, errorText, mobileTransactionXML, null);
+        }
+        
+        /// <remarks/>
+        public void MobilePosRefundAsync(string responseCode, string errorText, RootMobileTransaction mobileTransactionXML, object userState) {
+            if ((this.MobilePosRefundOperationCompleted == null)) {
+                this.MobilePosRefundOperationCompleted = new System.Threading.SendOrPostCallback(this.OnMobilePosRefundOperationCompleted);
+            }
+            this.InvokeAsync("MobilePosRefund", new object[] {
+                        responseCode,
+                        errorText,
+                        mobileTransactionXML}, this.MobilePosRefundOperationCompleted, userState);
+        }
+        
+        private void OnMobilePosRefundOperationCompleted(object arg) {
+            if ((this.MobilePosRefundCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.MobilePosRefundCompleted(this, new MobilePosRefundCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -34279,11 +34279,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string salesPersonCodeField;
         
+        private string taxAreaCodeField;
+        
+        private bool taxLiableField;
+        
+        private string taxExemptionNoField;
+        
         public CustomerOrderCreateCOHeaderV5() {
             this.shipOrderField = false;
             this.requestedDeliveryDateField = new System.DateTime(0);
             this.scanPaygoField = false;
             this.roundingAmountField = ((decimal)(0m));
+            this.taxLiableField = false;
         }
         
         /// <remarks/>
@@ -34648,6 +34655,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.salesPersonCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxAreaCode {
+            get {
+                return this.taxAreaCodeField;
+            }
+            set {
+                this.taxAreaCodeField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
+        public bool TaxLiable {
+            get {
+                return this.taxLiableField;
+            }
+            set {
+                this.taxLiableField = value;
+            }
+        }
+        
+        /// <remarks/>
+        public string TaxExemptionNo {
+            get {
+                return this.taxExemptionNoField;
+            }
+            set {
+                this.taxExemptionNoField = value;
             }
         }
     }
@@ -59149,48 +59187,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    public delegate void MobilePosRefundCompletedEventHandler(object sender, MobilePosRefundCompletedEventArgs e);
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class MobilePosRefundCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
-        
-        private object[] results;
-        
-        internal MobilePosRefundCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
-                base(exception, cancelled, userState) {
-            this.results = results;
-        }
-        
-        /// <remarks/>
-        public string responseCode {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[0]));
-            }
-        }
-        
-        /// <remarks/>
-        public string errorText {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((string)(this.results[1]));
-            }
-        }
-        
-        /// <remarks/>
-        public RootMobileTransaction mobileTransactionXML {
-            get {
-                this.RaiseExceptionIfNecessary();
-                return ((RootMobileTransaction)(this.results[2]));
-            }
-        }
-    }
-    
-    /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void MobilePosRetSaveCompletedEventHandler(object sender, MobilePosRetSaveCompletedEventArgs e);
     
     /// <remarks/>
@@ -63887,6 +63883,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((RootMobilePosPrint)(this.results[5]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void MobilePosRefundCompletedEventHandler(object sender, MobilePosRefundCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class MobilePosRefundCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal MobilePosRefundCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string responseCode {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorText {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public RootMobileTransaction mobileTransactionXML {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((RootMobileTransaction)(this.results[2]));
             }
         }
     }

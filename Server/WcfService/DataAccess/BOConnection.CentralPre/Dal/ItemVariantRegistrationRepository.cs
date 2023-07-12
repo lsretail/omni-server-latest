@@ -20,7 +20,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlorgcolumns = string.Empty;
         private string sqlorgfrom = string.Empty;
 
-        public ItemVariantRegistrationRepository(BOConfiguration config) : base(config)
+        public ItemVariantRegistrationRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Item No_],mt.[Framework Code],mt.[Variant],mt.[Variant Dimension 1],mt.[Variant Dimension 2]," +
                          "mt.[Variant Dimension 3],mt.[Variant Dimension 4],mt.[Variant Dimension 5],mt.[Variant Dimension 6]," +
@@ -366,7 +366,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Dimension6 = SQLHelper.GetString(reader["Variant Dimension 6"])
             };
 
-            ImageRepository imgrepo = new ImageRepository(config);
+            ImageRepository imgrepo = new ImageRepository(config, LSCVersion);
             var.Images = imgrepo.ImageGetByKey("Item Variant", itemid, var.Id, string.Empty, 0, false);
             return var;
         }

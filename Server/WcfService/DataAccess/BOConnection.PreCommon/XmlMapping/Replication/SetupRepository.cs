@@ -249,6 +249,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     case "Inventory Main Menu": rec.MainMenu = field.Values[0]; break;
                     case "Item Filtering Method": rec.ItemFilterMethod = ConvertTo.SafeInt(field.Values[0]); break;
                     case "Device Type": rec.DeviceType = ConvertTo.SafeInt(field.Values[0]); break;
+                    case "ASN Quantity Method": rec.AsnQuantityMethod = (AsnQuantityMethod)ConvertTo.SafeInt(field.Values[0]); break;
+
+                    case "Exit After Each Trans.": rec.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, field.Values[0]); break;
+                    case "AutoLogoff After (Min.)": rec.Features.AddFlag(FeatureFlagName.AutoLogOffAfterMin, field.Values[0]); break;
                     case "Show Numberpad": rec.Features.AddFlag(FeatureFlagName.ShowNumberPad, field.Values[0]); break;
                 }
             }

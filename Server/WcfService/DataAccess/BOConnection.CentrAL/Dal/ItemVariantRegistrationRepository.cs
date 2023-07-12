@@ -25,10 +25,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             sqlcolumns = "mt.[Item No_],mt.[Framework Code],mt.[Variant],mt.[Variant Dimension 1],mt.[Variant Dimension 2]," +
                          "mt.[Variant Dimension 3],mt.[Variant Dimension 4],mt.[Variant Dimension 5],mt.[Variant Dimension 6]," +
                          "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
-                         "(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
-                         "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
+                         "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos";
 
+            if (NavVersion >= new Version("16.3"))
+            {
+                sqlcolumns += ",(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
+                              "WHERE sl.[Item No_]=mt.[Item No_] AND (sl.[Variant Code]=mt.[Variant] OR sl.[Variant Dimension 1 Code]=mt.[Variant Dimension 1]) AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
+
+            }
             sqlfrom = " FROM [" + navCompanyName + "Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
 
             sqlorgcolumns = "mt.[Item No_],mt.[Code],mt.[Description],mt.[Description 2]";
@@ -318,7 +322,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplItemVariantRegistration()
+            ReplItemVariantRegistration registration = new ReplItemVariantRegistration()
             {
                 ItemId = SQLHelper.GetString(reader["Item No_"]),
                 VariantId = SQLHelper.GetString(reader["Variant"]),
@@ -329,9 +333,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 VariantDimension4 = SQLHelper.GetString(reader["Variant Dimension 4"]),
                 VariantDimension5 = SQLHelper.GetString(reader["Variant Dimension 5"]),
                 VariantDimension6 = SQLHelper.GetString(reader["Variant Dimension 6"]),
-                BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"]),
-                BlockedOnECom = SQLHelper.GetInt32(reader["BlockEcom"])
+                BlockedOnPos = SQLHelper.GetInt32(reader["BlockOnPos"])
             };
+
+            if (NavVersion >= new Version("16.3"))
+            {
+                registration.BlockedOnECom = SQLHelper.GetInt32(reader["BlockEcom"]);
+            }
+            return registration;
         }
 
         private ReplItemVariant ReaderToItemVariant(SqlDataReader reader, out string timestamp)

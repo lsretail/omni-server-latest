@@ -259,7 +259,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string vid = SQLHelper.GetString(reader["Variant Code"]);
             if (string.IsNullOrEmpty(vid) == false)
             {
-                ItemVariantRegistrationRepository vrepo = new ItemVariantRegistrationRepository(config);
+                ItemVariantRegistrationRepository vrepo = new ItemVariantRegistrationRepository(config, LSCVersion);
                 ritem.SelectedVariant = vrepo.VariantRegGetById(vid, ritem.Id, stat);
             }
 

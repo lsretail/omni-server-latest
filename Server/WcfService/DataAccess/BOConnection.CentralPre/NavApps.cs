@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             TerminalRepository rep = new TerminalRepository(config);
-            Terminal data = rep.TerminalBaseGetById(terminalId);
+            Terminal data = rep.TerminalGetById(terminalId);
             logger.StatisticEndSub(ref stat, index);
             return data;
         }
@@ -56,7 +56,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, LSCVersion);
             return rep.VariantRegGetById(id, itemId, stat);
         }
 
@@ -144,13 +144,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, bool fullReplication,ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, LSCVersion);
             return rep.ReplicateItemVariantRegistration(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplItemVariant> ReplicateItemVariant(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
+            ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config, LSCVersion);
             return rep.ReplicateItemVariant(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -198,7 +198,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplItemCategory> ReplicateItemCategory(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ItemCategoryRepository rep = new ItemCategoryRepository(config);
+            ItemCategoryRepository rep = new ItemCategoryRepository(config, LSCVersion);
             return rep.ReplicateItemCategory(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
@@ -225,7 +225,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public List<ReplProductGroup> ReplicateProductGroups(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ProductGroupRepository rep = new ProductGroupRepository(config);
+            ProductGroupRepository rep = new ProductGroupRepository(config, LSCVersion);
             return rep.ReplicateProductGroups(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
