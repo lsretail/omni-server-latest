@@ -751,7 +751,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             ItemVariantRegistrationRepository varrep = new ItemVariantRegistrationRepository(config, LSCVersion);
             item.VariantsRegistration = varrep.VariantRegGetByItemId(item.Id, stat);
 
-            ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config);
+            ExtendedVariantValuesRepository extvarrep = new ExtendedVariantValuesRepository(config, LSCVersion);
             item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id, stat);
             
             AttributeValueRepository attrrep = new AttributeValueRepository(config);

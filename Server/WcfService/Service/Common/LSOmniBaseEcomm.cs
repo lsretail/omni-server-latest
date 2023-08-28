@@ -614,6 +614,21 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual ReplCustomerResponse ReplEcommCustomer(ReplRequest replRequest)
+        {
+            try
+            {
+                logger.Debug(config, LogJson(replRequest));
+                ReplicationBLL bll = new ReplicationBLL(config, clientTimeOutInSeconds);
+                return bll.ReplEcommCustomer(replRequest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "replRequest:{0}", replRequest.ToString());
+                return null; //never gets here
+            }
+        }
+
         public virtual ReplShippingAgentResponse ReplEcommShippingAgent(ReplRequest replRequest)
         {
             try

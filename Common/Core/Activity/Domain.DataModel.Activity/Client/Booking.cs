@@ -22,6 +22,10 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             PriceCurrency = string.Empty;
             CancelPolicy = string.Empty;
             CancelPolicyDescription = string.Empty;
+            DateFrom = DateTime.MinValue.ToUniversalTime();
+            DateTo = DateTime.MinValue.ToUniversalTime();
+            TimeFrom = DateTime.MinValue.ToUniversalTime();
+            TimeTo = DateTime.MinValue.ToUniversalTime();
         }
 
         public Booking() : this(string.Empty)

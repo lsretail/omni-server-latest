@@ -140,6 +140,23 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetContact2">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetContact2_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetContact">
         <complexType>
           <sequence>
@@ -1036,6 +1053,12 @@
   <message name="GetCollection_Result">
     <part name="parameters" element="tns:GetCollection_Result" />
   </message>
+  <message name="GetContact2">
+    <part name="parameters" element="tns:GetContact2" />
+  </message>
+  <message name="GetContact2_Result">
+    <part name="parameters" element="tns:GetContact2_Result" />
+  </message>
   <message name="GetContact">
     <part name="parameters" element="tns:GetContact" />
   </message>
@@ -1357,6 +1380,10 @@
       <input name="GetCollection" message="tns:GetCollection" />
       <output name="GetCollection_Result" message="tns:GetCollection_Result" />
     </operation>
+    <operation name="GetContact2">
+      <input name="GetContact2" message="tns:GetContact2" />
+      <output name="GetContact2_Result" message="tns:GetContact2_Result" />
+    </operation>
     <operation name="GetContact">
       <input name="GetContact" message="tns:GetContact" />
       <output name="GetContact_Result" message="tns:GetContact_Result" />
@@ -1621,6 +1648,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetCollection_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetContact2">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetContact2" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetContact2">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetContact2_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>

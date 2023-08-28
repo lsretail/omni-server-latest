@@ -37,6 +37,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         private string audkenniBaseUrl;
         private string audkenniRedirectUrl;
         private string audkenniMessageToUser;
+        private string currencyCode;
 
         public ScanPayGoCatalogType CatalogType { get; set; }
 
@@ -152,5 +153,11 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public string ApplePayConnectionId { get; set; }
         public string GooglePayConnectionId { get; set; }
         public bool UseOnlineSearch { get; set; } = default;
+
+        public string CurrencyCode
+        {
+            get => currencyCode?.Trim();
+            set => currencyCode = value;
+        }
     }
 }

@@ -14,6 +14,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             ValidLocation = string.Empty;
             ClientNo = string.Empty;
             ClientName = string.Empty;
+            DateIssued = DateTime.MinValue.ToUniversalTime();
+            ExpiryDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public Allowance() : this(string.Empty)

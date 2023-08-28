@@ -1500,6 +1500,28 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual Currency CurrencyGet(string code)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, $"code:{code}");
+
+                CurrencyBLL bll = new CurrencyBLL(config, clientTimeOutInSeconds);
+                return bll.CurrencyGet(code, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, $"code:{code}");
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         #endregion store location
 
         #region transactions

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Pos.Replication;
@@ -1456,12 +1457,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 5056: line.LastName = data.FieldValue; break;
                     }
                 }
-
-                /*
-                line.Cards = CardsGetByContactId(cust.Id, out string username);
-                line.UserName = username;
-                */
-
                 list.Add(line);
             }
 
@@ -1486,6 +1481,81 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     {
                         case 1: line.AccountNumber = data.FieldValue; break;
                         case 5: line.Id = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
+        public List<ReplCustomer> GetReplMember2(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplCustomer> list = new List<ReplCustomer>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplCustomer line = new ReplCustomer();
+                line.Cards = new List<Card>();
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: line.AccountNumber = data.FieldValue; break;
+                        case 2: line.ClubCode = data.FieldValue; break;
+                        case 3: line.SchemeCode = data.FieldValue; break;
+                        case 4: line.Id = data.FieldValue; break;
+                        case 6: line.Name = data.FieldValue; break;
+                        case 9: line.Street = data.FieldValue; break;
+                        case 11: line.City = data.FieldValue; break;
+                        case 13: line.ZipCode = data.FieldValue; break;
+                        case 14: line.Email = data.FieldValue; break;
+                        case 15: line.URL = data.FieldValue; break;
+                        case 16: line.PhoneLocal = data.FieldValue; break;
+                        case 17: line.CellularPhone = data.FieldValue; break;
+                        case 18: line.State = data.FieldValue; break;
+                        case 20: line.County = data.FieldValue; break;
+                        case 21: line.Country = data.FieldValue; break;
+                        case 28: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 40: line.FirstName = data.FieldValue; break;
+                        case 41: line.MiddleName = data.FieldValue; break;
+                        case 42: line.LastName = data.FieldValue; break;
+                        case 53: line.Cards.Add(new Card(data.FieldValue)); break;
+                        case 54: line.UserName = data.FieldValue; break;
+                    };
+                }
+                list.Add(line);
+            }
+
+            if (result.DataSet.DataSetDel == null || result.DataSet.DataSetDel.DynDataSet == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetDel.DynDataSet.DataSetRows)
+            {
+                ReplCustomer line = new ReplCustomer()
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: line.AccountNumber = data.FieldValue; break;
+                        case 4: line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

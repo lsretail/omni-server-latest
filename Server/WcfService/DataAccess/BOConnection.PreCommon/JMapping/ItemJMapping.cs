@@ -1042,7 +1042,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 10: line.Dimensions = data.FieldValue; break;
                         case 11: line.Value = data.FieldValue; break;
                         case 16: line.LogicalOrder = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 23: line.ValueDescription = data.FieldValue; break;
                         case 40: line.DimensionLogicalOrder = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 41: line.CodeDescription = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

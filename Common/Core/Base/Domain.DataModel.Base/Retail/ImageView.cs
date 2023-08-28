@@ -85,6 +85,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             Format = string.Empty; // JPEG, PNG
             AvgColor = string.Empty;
             ImgBytes = null;  // used on server only, not on client
+            ModifiedTime = DateTime.MinValue.ToUniversalTime();
         }
 
         public ImageView() : this(string.Empty)

@@ -19,9 +19,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
             DeviceModel = string.Empty;
             IPAddress = string.Empty;
             State = string.Empty; //U, I, P  unprocessed, inprocess, processed
-            StateChanged = DateTime.MinValue;
+            StateChanged = DateTime.MinValue.ToUniversalTime();
             ProcessId = string.Empty;
-            Created = DateTime.MinValue;
+            Created = DateTime.MinValue.ToUniversalTime();
         }
 
         public LicenseActivityLog()

@@ -89,7 +89,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             LoyaltySchemeCode = string.Empty;
             FromDate = new DateTime((isJson) ? 1970 : 1900, 1, 1);
             ToDate = new DateTime((isJson) ? 1970 : 1900, 1, 1);
-            ModifyDate = DateTime.Now;
+            ModifyDate = DateTime.Now.ToUniversalTime();
             UnitOfMeasureId = string.Empty;
             MinimumQuantity = 0M;
             CurrencyCode = string.Empty;

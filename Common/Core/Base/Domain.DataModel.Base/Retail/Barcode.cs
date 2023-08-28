@@ -25,4 +25,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
             Blocked = false;
         }
     }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2023")]
+    public enum BarcodeTypes
+    {
+        Unknown = 0,
+        Barcode = 1,
+        QrCode = 2,
+    }
 }

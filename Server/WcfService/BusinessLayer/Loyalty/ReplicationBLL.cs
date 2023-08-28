@@ -608,6 +608,24 @@ namespace LSOmni.BLL.Loyalty
             return rs;
         }
 
+        public virtual ReplCustomerResponse ReplEcommCustomer(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
+
+            ReplCustomerResponse rs = new ReplCustomerResponse()
+            {
+                Customers = BOAppConnection.ReplicateCustomer(replRequest.AppId, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Customers.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
         public virtual ReplCountryCodeResponse ReplEcommCountryCode(ReplRequest replRequest)
         {
             string lastkey = replRequest.LastKey;

@@ -1883,6 +1883,7 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<Store> StoresGetAll();
 
         /// <summary>
@@ -1955,6 +1956,15 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1);
+
+        /// <summary>
+        /// Get Currency by Code
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        Currency CurrencyGet(string code);
 
         #endregion
 
@@ -2795,6 +2805,26 @@ namespace LSOmni.Service
         ReplCustomerResponse ReplEcommMember(ReplRequest replRequest);
 
         /// <summary>
+        /// Replicate Customers
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 18 - Customer
+        /// LS Central WS4 : GetCustomer
+        /// <p/><p/>
+        /// Most ReplEcommXX web methods work the same way.
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to Commerce Service for LS Central, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of Customers</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplCustomerResponse ReplEcommCustomer(ReplRequest replRequest);
+
+        /// <summary>
         /// Replicate all Country Codes
         /// </summary>
         /// <remarks>
@@ -2995,10 +3025,11 @@ namespace LSOmni.Service
         /// <param name="promoCode"></param>
         /// <param name="activityNo"></param>
         /// <param name="noOfPersons"></param>
+        /// <param name="guestType"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string contactAccount, string optionalResource, string promoCode, string activityNo, int noOfPersons);
+        List<AvailabilityResponse> ActivityAvailabilityGet(string locationNo, string productNo, DateTime activityDate, string contactNo, string contactAccount, string optionalResource, string promoCode, string activityNo, int noOfPersons, string guestType);
 
         /// <summary>
         /// Returns list with the required or optional additional charges for the Activity as applied automatically according to the product

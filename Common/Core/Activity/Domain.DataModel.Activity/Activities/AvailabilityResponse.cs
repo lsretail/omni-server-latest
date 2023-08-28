@@ -17,6 +17,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
             PriceCurrency = string.Empty;
             Comment = string.Empty;
             TimeZone = string.Empty;
+            AvailDate = DateTime.MinValue.ToUniversalTime();
+            AvailTime = DateTime.MinValue.ToUniversalTime();
         }
 
         public void Dispose()

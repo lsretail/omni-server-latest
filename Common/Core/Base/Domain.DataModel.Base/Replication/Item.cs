@@ -69,6 +69,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             ItemFamilyCode = string.Empty;
             ItemTrackingCode = string.Empty;
             MustKeyInComment = 0;
+            DateBlocked = DateTime.MinValue.ToUniversalTime();
+            DateToActivateItem = DateTime.MinValue.ToUniversalTime();
         }
 
         public ReplItem() : this(string.Empty)

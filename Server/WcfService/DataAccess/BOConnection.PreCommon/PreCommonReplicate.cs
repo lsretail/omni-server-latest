@@ -1388,9 +1388,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 SetupJMapping map = new SetupJMapping(config.IsJson);
 
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
-                string ret = odataWS.GetContact(batchSize, fullRepl, lastKey, lastEntry);
-                logger.Trace(config.LSKey.Key, ret);
-                return map.GetReplMember(ret, ref lastKey, ref recordsRemaining);
+                if (LSCVersion >= new Version("22.3"))
+                {
+                    string ret = odataWS.GetContact2(batchSize, fullRepl, lastKey, lastEntry);
+                    logger.Trace(config.LSKey.Key, ret);
+                    return map.GetReplMember2(ret, ref lastKey, ref recordsRemaining);
+                }
+                else
+                {
+                    string ret = odataWS.GetContact(batchSize, fullRepl, lastKey, lastEntry);
+                    logger.Trace(config.LSKey.Key, ret);
+                    return map.GetReplMember(ret, ref lastKey, ref recordsRemaining);
+                }
             }
 
             XMLTableData table = DoReplication(99009002, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);

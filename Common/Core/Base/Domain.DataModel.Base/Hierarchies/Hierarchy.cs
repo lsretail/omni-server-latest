@@ -10,6 +10,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Hierarchies
     {
         public Hierarchy()
         {
+            Description = String.Empty;
+            SalesType = String.Empty;
+            ValidationScheduleId = String.Empty;
+            StartDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public Hierarchy(string id) : base(id)

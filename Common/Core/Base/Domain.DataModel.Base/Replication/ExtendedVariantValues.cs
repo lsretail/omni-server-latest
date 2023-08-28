@@ -49,7 +49,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             Timestamp = string.Empty;
             Dimensions = string.Empty;
             Code = string.Empty;
+            CodeDescription = string.Empty;
             Value = string.Empty;
+            ValueDescription = string.Empty;
             FrameworkCode = string.Empty;
         }
 
@@ -77,7 +79,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string Code { get; set; }
         [DataMember]
+        public string CodeDescription { get; set; }
+        [DataMember]
         public string Value { get; set; }
+        [DataMember]
+        public string ValueDescription { get; set; }
         [DataMember]
         public int LogicalOrder { get; set; }
         [DataMember]

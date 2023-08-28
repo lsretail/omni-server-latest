@@ -23,6 +23,16 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             ChargeToName = string.Empty;
             StatusCode = string.Empty;
             PaymentMethodCode = string.Empty;
+            DateIssued = DateTime.MinValue.ToUniversalTime();
+            DateCreated = DateTime.MinValue.ToUniversalTime();
+            DateExpires = DateTime.MinValue.ToUniversalTime();
+            DateLastProcessed = DateTime.MinValue.ToUniversalTime();
+            CommitmentDate = DateTime.MinValue.ToUniversalTime();
+            OnHoldUntil = DateTime.MinValue.ToUniversalTime();
+            StatusDate = DateTime.MinValue.ToUniversalTime();
+            PriceCommitmentExpires = DateTime.MinValue.ToUniversalTime();
+            AccessFrom = DateTime.MinValue.ToUniversalTime();
+            AccessUntil = DateTime.MinValue.ToUniversalTime();
         }
 
         public Membership() : this(string.Empty)

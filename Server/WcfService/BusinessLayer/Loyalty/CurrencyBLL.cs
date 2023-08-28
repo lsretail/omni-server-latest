@@ -20,6 +20,12 @@ namespace LSOmni.BLL.Loyalty
             return BOAppConnection.CurrencyGetById(id, culture, stat);
         }
 
+        public virtual Currency CurrencyGet(string code, Statistics stat)
+        {
+            string culture = config.SettingsGetByKey(ConfigKey.Currency_Culture);
+            return BOAppConnection.CurrencyGetById(code, culture, stat);
+        }
+
         public virtual decimal GetPointRate(string currency, Statistics stat)
         {
             return this.BOLoyConnection.GetPointRate(currency, stat);

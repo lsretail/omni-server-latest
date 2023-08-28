@@ -17,9 +17,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         private string sqlcolumns = string.Empty;
         private string sqlfrom = string.Empty;
 
-        public ExtendedVariantValuesRepository(BOConfiguration config) : base(config)
+        public ExtendedVariantValuesRepository(BOConfiguration config, Version version) : base(config, version)
         {
             sqlcolumns = "mt.[Framework Code],mt.[Item No_],mt.[Dimension],mt.[Code],mt.[Value],mt.[Logical Order]";
+            if (LSCVersion >= new Version("21.0"))
+                sqlcolumns += ",mt.[Value Description]";
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Extd_ Variant Values$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
@@ -36,6 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             // get records remaining
             string sql = string.Empty;
             string col = sqlcolumns;
+            string tbl = sqlfrom;
 
             if (fullReplication)
             {
@@ -59,10 +62,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
                     if (hascol)
                     {
-                        col += ",(SELECT vd.[Logical Order] FROM [" + navCompanyName + "LSC Extd_ Variant Dimensions$5ecfc871-5d82-43f1-9c54-59685e82318d] vd " +
-                                      "WHERE vd.[Framework Code]=mt.[Framework Code] AND vd.[Dimension No_]=mt.[Dimension] AND vd.[Item]='') AS DOrder";
+                        col += ",vd1.[Logical Order] AS [DOrder]";
+                        tbl += " JOIN [" + navCompanyName + "LSC Extd_ Variant Dimensions$5ecfc871-5d82-43f1-9c54-59685e82318d] vd1 ON" +
+                               " vd1.[Framework Code]=mt.[Framework Code] AND vd1.[Dimension No_]=mt.[Dimension] AND vd1.[Item]=''";
+
+                        if (LSCVersion >= new Version("22.3"))
+                        {
+                            col += ",vd2.[Description] AS [CDesc]";
+                            tbl += " JOIN [" + navCompanyName + "LSC Extd_ Variant Dimensions$5ecfc871-5d82-43f1-9c54-59685e82318d] vd2 ON" +
+                                   " vd2.[Framework Code]=mt.[Framework Code] AND vd2.[Dimension No_]=mt.[Dimension] AND vd2.[Item]=mt.[Item No_]";
+                        }
                     }
-                    command.CommandText = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true);
+                    command.CommandText = GetSQL(fullReplication, batchSize) + col + tbl + GetWhereStatementWithStoreDist(fullReplication, keys, whereaddon, "mt.[Item No_]", storeId, true);
 
                     if (fullReplication)
                     {
@@ -234,8 +245,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 LogicalOrder = SQLHelper.GetInt32(reader["Logical Order"])
             };
 
+            if (LSCVersion >= new Version("21.0"))
+                extvar.ValueDescription = SQLHelper.GetString(reader["Value Description"]);
+
             if (dorder)
+            {
                 extvar.DimensionLogicalOrder = SQLHelper.GetInt32(reader["DOrder"]);
+                if (LSCVersion >= new Version("22.3"))
+                    extvar.CodeDescription = SQLHelper.GetString(reader["CDesc"]);
+            }
 
             return extvar;
         }

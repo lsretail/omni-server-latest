@@ -17,6 +17,10 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             Location = string.Empty;
             ProductName = string.Empty;
             PriceCurrency = string.Empty;
+            DateFrom = DateTime.MinValue.ToUniversalTime();
+            DateTo = DateTime.MinValue.ToUniversalTime();
+            TimeFrom = DateTime.MinValue.ToUniversalTime();
+            TimeTo = DateTime.MinValue.ToUniversalTime();
         }
 
         public Promotion() : this(string.Empty)

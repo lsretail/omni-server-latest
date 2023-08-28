@@ -20,6 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Utils
             RV = 0; // version returned
             AdType = AdvertisementType.None;
             AdValue = string.Empty;
+            ExpirationDate = DateTime.MinValue.ToUniversalTime();
         } 
 
         public Advertisement()  : this(string.Empty)

@@ -28,6 +28,10 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             MobileNo = string.Empty;
             Language = string.Empty;
             GroupNo = string.Empty;
+            DateFrom = DateTime.MinValue.ToUniversalTime();
+            DateTo = DateTime.MinValue.ToUniversalTime();
+            TimeFrom = DateTime.MinValue.ToUniversalTime();
+            TimeTo = DateTime.MinValue.ToUniversalTime();
         }
 
         public ResHeader() : this(string.Empty)

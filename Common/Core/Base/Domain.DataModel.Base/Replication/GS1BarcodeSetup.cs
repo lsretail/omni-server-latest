@@ -42,7 +42,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         {
             Identifier = string.Empty;
             Value = string.Empty;
-            ValueDate = DateTime.MinValue;
+            ValueDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public void Dispose()

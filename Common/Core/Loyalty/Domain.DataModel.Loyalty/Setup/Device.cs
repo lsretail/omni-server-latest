@@ -17,7 +17,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Setup
             Manufacturer = string.Empty;
             Model = string.Empty;
             SecurityToken = string.Empty;
-            BlockedDate = DateTime.MinValue;
+            BlockedDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public Device() : this(string.Empty)

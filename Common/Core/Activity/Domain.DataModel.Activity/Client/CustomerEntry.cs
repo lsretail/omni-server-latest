@@ -16,6 +16,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             Currency = string.Empty;
             ExternalRef = string.Empty;
             ContactNo = string.Empty;
+            PostingDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public CustomerEntry() : this(string.Empty)

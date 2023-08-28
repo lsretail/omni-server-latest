@@ -17,6 +17,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             Type = string.Empty;
             Name = string.Empty;
             MembershipNo = string.Empty;
+            EntryTime = DateTime.MinValue.ToUniversalTime();
         }
 
         public AdmissionEntry() : this(string.Empty)

@@ -728,7 +728,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             root.MobileTransactionLine = transLines.ToArray();
             root.MobileReceiptInfo = new List<LSCentral.MobileReceiptInfo>().ToArray();
             root.MobileTransactionSubLine = new List<LSCentral.MobileTransactionSubLine>().ToArray();
-            List<LSCentral.MobileTransDiscountLine> discLines = new List<LSCentral.MobileTransDiscountLine>();
+            root.MobileTransDiscountLine = new List<LSCentral.MobileTransDiscountLine>().ToArray();
             return root;
         }
 

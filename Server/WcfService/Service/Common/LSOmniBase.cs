@@ -188,7 +188,7 @@ namespace LSOmni.Service
                 logger.Error(config.LSKey.Key, ex, navDb);
             }
 
-            string omniver = string.Format(" Commerce Service for LS Central:{0}", Version());
+            string omniver = string.Format(" CS:{0}", Version());
 
             //any errors ?
             string msg = "";
@@ -200,7 +200,7 @@ namespace LSOmni.Service
                 if (navDb.Length == 0)
                     msg += navDBRet.Equals("SaaS") ? " [SaaS Mode]" : " [Successfully connected to LS Central DB]";
                 if (navWs.Length == 0)
-                    msg += " [Successfully connected to LS Central WS] " + tenVer + " (" + ver + ")";
+                    msg += " [Successfully connected to LS Central WS] LS:" + tenVer + " (" + ver + ")";
 
                 //collect the failure
                 if (omniDb.Length > 0)
@@ -215,9 +215,9 @@ namespace LSOmni.Service
             }
             else
             {
-                msg = "Successfully connected to [Commerce Service for LS Central DB] & " + (navDBRet.Equals("SaaS") ? "[LS SaaS]" : "[LS Central DB]") + " & [LS Central WS] " + tenVer + " (" + ver + ")" + omniver;
-                logger.Debug(config.LSKey.Key, "PONG OK {0} ", msg);
-                return string.Format("PONG OK> {0} ", msg);
+                msg = "Successfully connected to [Commerce Service for LS Central DB] & " + (navDBRet.Equals("SaaS") ? "[LS SaaS]" : "[LS Central DB]") + " & [LS Central WS] LS:" + tenVer + " (" + ver + ")" + omniver;
+                logger.Debug(config.LSKey.Key, "PONG OK {0}", msg);
+                return string.Format("PONG OK> {0}", msg);
             }
         }
 

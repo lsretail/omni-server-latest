@@ -23,7 +23,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Web.Services.WebServiceBindingAttribute(Name="Activity_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/Activity")]
@@ -47,9 +47,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback ConfirmActivityV6OperationCompleted;
         
+        private System.Threading.SendOrPostCallback ConfirmActivityV7OperationCompleted;
+        
         private System.Threading.SendOrPostCallback ConfirmActivityOperationCompleted;
         
         private System.Threading.SendOrPostCallback ConfirmGroupActivityV2OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback ConfirmGroupActivityV3OperationCompleted;
         
         private System.Threading.SendOrPostCallback ConfirmGroupActivityOperationCompleted;
         
@@ -70,6 +74,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback GetAvailabilityV3OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetAvailabilityV4OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetAvailabilityV5OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetAvailabilityOperationCompleted;
         
@@ -211,10 +217,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event ConfirmActivityV6CompletedEventHandler ConfirmActivityV6Completed;
         
         /// <remarks/>
+        public event ConfirmActivityV7CompletedEventHandler ConfirmActivityV7Completed;
+        
+        /// <remarks/>
         public event ConfirmActivityCompletedEventHandler ConfirmActivityCompleted;
         
         /// <remarks/>
         public event ConfirmGroupActivityV2CompletedEventHandler ConfirmGroupActivityV2Completed;
+        
+        /// <remarks/>
+        public event ConfirmGroupActivityV3CompletedEventHandler ConfirmGroupActivityV3Completed;
         
         /// <remarks/>
         public event ConfirmGroupActivityCompletedEventHandler ConfirmGroupActivityCompleted;
@@ -245,6 +257,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event GetAvailabilityV4CompletedEventHandler GetAvailabilityV4Completed;
+        
+        /// <remarks/>
+        public event GetAvailabilityV5CompletedEventHandler GetAvailabilityV5Completed;
         
         /// <remarks/>
         public event GetAvailabilityCompletedEventHandler GetAvailabilityCompleted;
@@ -1287,6 +1302,174 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivityV7", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ConfirmActivityV7_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool ConfirmActivityV7(
+                    string locationNo, 
+                    string productNo, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, 
+                    int activityTimeHour, 
+                    int activityTimeMinute, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    ref string returnActivityNo, 
+                    ref string errorString, 
+                    ref decimal returnUnitPrice, 
+                    ref decimal returnLineDiscount, 
+                    ref decimal returnTotalAmount, 
+                    ref string returnCurrency, 
+                    ref string returnBookingRef, 
+                    ref string reservationNo, 
+                    ref string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    string guestType) {
+            object[] results = this.Invoke("ConfirmActivityV7", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTimeHour,
+                        activityTimeMinute,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        promoCode,
+                        clientName,
+                        email,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo,
+                        token,
+                        guestType});
+            returnActivityNo = ((string)(results[1]));
+            errorString = ((string)(results[2]));
+            returnUnitPrice = ((decimal)(results[3]));
+            returnLineDiscount = ((decimal)(results[4]));
+            returnTotalAmount = ((decimal)(results[5]));
+            returnCurrency = ((string)(results[6]));
+            returnBookingRef = ((string)(results[7]));
+            reservationNo = ((string)(results[8]));
+            returnRetailItem = ((string)(results[9]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void ConfirmActivityV7Async(
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    int activityTimeHour, 
+                    int activityTimeMinute, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    string guestType) {
+            this.ConfirmActivityV7Async(locationNo, productNo, activityDate, activityTimeHour, activityTimeMinute, clientNo, optionalResource, optionalComment, setQuantity, setNoOfPeople, paid, promoCode, clientName, email, returnActivityNo, errorString, returnUnitPrice, returnLineDiscount, returnTotalAmount, returnCurrency, returnBookingRef, reservationNo, returnRetailItem, customerAccountNo, token, guestType, null);
+        }
+        
+        /// <remarks/>
+        public void ConfirmActivityV7Async(
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    int activityTimeHour, 
+                    int activityTimeMinute, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    string guestType, 
+                    object userState) {
+            if ((this.ConfirmActivityV7OperationCompleted == null)) {
+                this.ConfirmActivityV7OperationCompleted = new System.Threading.SendOrPostCallback(this.OnConfirmActivityV7OperationCompleted);
+            }
+            this.InvokeAsync("ConfirmActivityV7", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTimeHour,
+                        activityTimeMinute,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        promoCode,
+                        clientName,
+                        email,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo,
+                        token,
+                        guestType}, this.ConfirmActivityV7OperationCompleted, userState);
+        }
+        
+        private void OnConfirmActivityV7OperationCompleted(object arg) {
+            if ((this.ConfirmActivityV7Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ConfirmActivityV7Completed(this, new ConfirmActivityV7CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmActivity", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ConfirmActivity_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool ConfirmActivity(
@@ -1588,6 +1771,195 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.ConfirmGroupActivityV2Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.ConfirmGroupActivityV2Completed(this, new ConfirmGroupActivityV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ConfirmGroupActivityV3", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ConfirmGroupActivityV3_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool ConfirmGroupActivityV3(
+                    string groupNo, 
+                    string locationNo, 
+                    string productNo, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="time")] System.DateTime activityTime, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string setGroupReservation, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    decimal unitPrice, 
+                    ref int returnGroupLineNo, 
+                    ref string returnActivityNo, 
+                    ref string errorString, 
+                    ref decimal returnUnitPrice, 
+                    ref decimal returnLineDiscount, 
+                    ref decimal returnTotalAmount, 
+                    ref string returnCurrency, 
+                    ref string returnBookingRef, 
+                    ref string reservationNo, 
+                    ref string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    bool setGroupHeaderStatus, 
+                    string guestType) {
+            object[] results = this.Invoke("ConfirmGroupActivityV3", new object[] {
+                        groupNo,
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTime,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        setGroupReservation,
+                        promoCode,
+                        clientName,
+                        email,
+                        unitPrice,
+                        returnGroupLineNo,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo,
+                        token,
+                        setGroupHeaderStatus,
+                        guestType});
+            returnGroupLineNo = ((int)(results[1]));
+            returnActivityNo = ((string)(results[2]));
+            errorString = ((string)(results[3]));
+            returnUnitPrice = ((decimal)(results[4]));
+            returnLineDiscount = ((decimal)(results[5]));
+            returnTotalAmount = ((decimal)(results[6]));
+            returnCurrency = ((string)(results[7]));
+            returnBookingRef = ((string)(results[8]));
+            reservationNo = ((string)(results[9]));
+            returnRetailItem = ((string)(results[10]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void ConfirmGroupActivityV3Async(
+                    string groupNo, 
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    System.DateTime activityTime, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string setGroupReservation, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    decimal unitPrice, 
+                    int returnGroupLineNo, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    bool setGroupHeaderStatus, 
+                    string guestType) {
+            this.ConfirmGroupActivityV3Async(groupNo, locationNo, productNo, activityDate, activityTime, clientNo, optionalResource, optionalComment, setQuantity, setNoOfPeople, paid, setGroupReservation, promoCode, clientName, email, unitPrice, returnGroupLineNo, returnActivityNo, errorString, returnUnitPrice, returnLineDiscount, returnTotalAmount, returnCurrency, returnBookingRef, reservationNo, returnRetailItem, customerAccountNo, token, setGroupHeaderStatus, guestType, null);
+        }
+        
+        /// <remarks/>
+        public void ConfirmGroupActivityV3Async(
+                    string groupNo, 
+                    string locationNo, 
+                    string productNo, 
+                    System.DateTime activityDate, 
+                    System.DateTime activityTime, 
+                    string clientNo, 
+                    string optionalResource, 
+                    string optionalComment, 
+                    decimal setQuantity, 
+                    decimal setNoOfPeople, 
+                    bool paid, 
+                    string setGroupReservation, 
+                    string promoCode, 
+                    string clientName, 
+                    string email, 
+                    decimal unitPrice, 
+                    int returnGroupLineNo, 
+                    string returnActivityNo, 
+                    string errorString, 
+                    decimal returnUnitPrice, 
+                    decimal returnLineDiscount, 
+                    decimal returnTotalAmount, 
+                    string returnCurrency, 
+                    string returnBookingRef, 
+                    string reservationNo, 
+                    string returnRetailItem, 
+                    string customerAccountNo, 
+                    string token, 
+                    bool setGroupHeaderStatus, 
+                    string guestType, 
+                    object userState) {
+            if ((this.ConfirmGroupActivityV3OperationCompleted == null)) {
+                this.ConfirmGroupActivityV3OperationCompleted = new System.Threading.SendOrPostCallback(this.OnConfirmGroupActivityV3OperationCompleted);
+            }
+            this.InvokeAsync("ConfirmGroupActivityV3", new object[] {
+                        groupNo,
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        activityTime,
+                        clientNo,
+                        optionalResource,
+                        optionalComment,
+                        setQuantity,
+                        setNoOfPeople,
+                        paid,
+                        setGroupReservation,
+                        promoCode,
+                        clientName,
+                        email,
+                        unitPrice,
+                        returnGroupLineNo,
+                        returnActivityNo,
+                        errorString,
+                        returnUnitPrice,
+                        returnLineDiscount,
+                        returnTotalAmount,
+                        returnCurrency,
+                        returnBookingRef,
+                        reservationNo,
+                        returnRetailItem,
+                        customerAccountNo,
+                        token,
+                        setGroupHeaderStatus,
+                        guestType}, this.ConfirmGroupActivityV3OperationCompleted, userState);
+        }
+        
+        private void OnConfirmGroupActivityV3OperationCompleted(object arg) {
+            if ((this.ConfirmGroupActivityV3Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ConfirmGroupActivityV3Completed(this, new ConfirmGroupActivityV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2134,6 +2506,60 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.GetAvailabilityV4Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetAvailabilityV4Completed(this, new GetAvailabilityV4CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetAvailabilityV5", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetAvailabilityV5_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool GetAvailabilityV5(string locationNo, string productNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string customerAccountNo, string guestType, ref string errorString, ref ActivityAvailabilityResponse getAvailabilityResponse) {
+            object[] results = this.Invoke("GetAvailabilityV5", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        clientNo,
+                        optionalResource,
+                        promoCode,
+                        activityNo,
+                        noOfPersons,
+                        customerAccountNo,
+                        guestType,
+                        errorString,
+                        getAvailabilityResponse});
+            errorString = ((string)(results[1]));
+            getAvailabilityResponse = ((ActivityAvailabilityResponse)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetAvailabilityV5Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string customerAccountNo, string guestType, string errorString, ActivityAvailabilityResponse getAvailabilityResponse) {
+            this.GetAvailabilityV5Async(locationNo, productNo, activityDate, clientNo, optionalResource, promoCode, activityNo, noOfPersons, customerAccountNo, guestType, errorString, getAvailabilityResponse, null);
+        }
+        
+        /// <remarks/>
+        public void GetAvailabilityV5Async(string locationNo, string productNo, System.DateTime activityDate, string clientNo, string optionalResource, string promoCode, string activityNo, int noOfPersons, string customerAccountNo, string guestType, string errorString, ActivityAvailabilityResponse getAvailabilityResponse, object userState) {
+            if ((this.GetAvailabilityV5OperationCompleted == null)) {
+                this.GetAvailabilityV5OperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetAvailabilityV5OperationCompleted);
+            }
+            this.InvokeAsync("GetAvailabilityV5", new object[] {
+                        locationNo,
+                        productNo,
+                        activityDate,
+                        clientNo,
+                        optionalResource,
+                        promoCode,
+                        activityNo,
+                        noOfPersons,
+                        customerAccountNo,
+                        guestType,
+                        errorString,
+                        getAvailabilityResponse}, this.GetAvailabilityV5OperationCompleted, userState);
+        }
+        
+        private void OnGetAvailabilityV5OperationCompleted(object arg) {
+            if ((this.GetAvailabilityV5Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetAvailabilityV5Completed(this, new GetAvailabilityV5CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -4001,7 +4427,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4036,7 +4462,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4396,7 +4822,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4562,7 +4988,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4597,7 +5023,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4779,7 +5205,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -4814,7 +5240,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5032,7 +5458,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5067,7 +5493,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5344,7 +5770,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5379,7 +5805,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5777,7 +6203,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -5812,7 +6238,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6008,7 +6434,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6043,7 +6469,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6193,7 +6619,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6228,7 +6654,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6596,7 +7022,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6631,7 +7057,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6782,7 +7208,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6817,7 +7243,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6850,7 +7276,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6885,7 +7311,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -6966,7 +7392,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7001,7 +7427,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7265,7 +7691,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7300,7 +7726,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7345,7 +7771,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7380,7 +7806,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7557,7 +7983,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7592,7 +8018,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7665,7 +8091,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7700,7 +8126,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7863,7 +8289,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Xml", "4.8.9037.0")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
@@ -7898,11 +8324,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void CancelActivityCompletedEventHandler(object sender, CancelActivityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CancelActivityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -7988,11 +8414,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void CancelMembershipCompletedEventHandler(object sender, CancelMembershipCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CancelMembershipCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8022,11 +8448,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void CancelReservationCompletedEventHandler(object sender, CancelReservationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CancelReservationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8056,11 +8482,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void CheckAccessCompletedEventHandler(object sender, CheckAccessCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class CheckAccessCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8090,11 +8516,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmActivityV2CompletedEventHandler(object sender, ConfirmActivityV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmActivityV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8180,11 +8606,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmActivityV3CompletedEventHandler(object sender, ConfirmActivityV3CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmActivityV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8278,11 +8704,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmActivityV4CompletedEventHandler(object sender, ConfirmActivityV4CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmActivityV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8376,11 +8802,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmActivityV5CompletedEventHandler(object sender, ConfirmActivityV5CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmActivityV5CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8474,11 +8900,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmActivityV6CompletedEventHandler(object sender, ConfirmActivityV6CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmActivityV6CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8572,11 +8998,109 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
+    public delegate void ConfirmActivityV7CompletedEventHandler(object sender, ConfirmActivityV7CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ConfirmActivityV7CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal ConfirmActivityV7CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnActivityNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnUnitPrice {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnLineDiscount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnTotalAmount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnCurrency {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[6]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnBookingRef {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[7]));
+            }
+        }
+        
+        /// <remarks/>
+        public string reservationNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[8]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnRetailItem {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[9]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmActivityCompletedEventHandler(object sender, ConfirmActivityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmActivityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8654,11 +9178,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmGroupActivityV2CompletedEventHandler(object sender, ConfirmGroupActivityV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmGroupActivityV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8760,11 +9284,117 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
+    public delegate void ConfirmGroupActivityV3CompletedEventHandler(object sender, ConfirmGroupActivityV3CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ConfirmGroupActivityV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal ConfirmGroupActivityV3CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public int returnGroupLineNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnActivityNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnUnitPrice {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[4]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnLineDiscount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[5]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal returnTotalAmount {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[6]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnCurrency {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[7]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnBookingRef {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[8]));
+            }
+        }
+        
+        /// <remarks/>
+        public string reservationNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[9]));
+            }
+        }
+        
+        /// <remarks/>
+        public string returnRetailItem {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[10]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmGroupActivityCompletedEventHandler(object sender, ConfirmGroupActivityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmGroupActivityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8866,11 +9496,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void ConfirmReservationCompletedEventHandler(object sender, ConfirmReservationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class ConfirmReservationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8900,11 +9530,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void DeleteGroupActivityCompletedEventHandler(object sender, DeleteGroupActivityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class DeleteGroupActivityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8934,11 +9564,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetActReservationsCompletedEventHandler(object sender, GetActReservationsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetActReservationsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8960,11 +9590,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAdditionalChargesCompletedEventHandler(object sender, GetAdditionalChargesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAdditionalChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -8986,11 +9616,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAttributesCompletedEventHandler(object sender, GetAttributesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAttributesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9012,11 +9642,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAvailabilityTokenCompletedEventHandler(object sender, GetAvailabilityTokenCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAvailabilityTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9054,11 +9684,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAvailabilityV2CompletedEventHandler(object sender, GetAvailabilityV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAvailabilityV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9096,11 +9726,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAvailabilityV3CompletedEventHandler(object sender, GetAvailabilityV3CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAvailabilityV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9138,11 +9768,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAvailabilityV4CompletedEventHandler(object sender, GetAvailabilityV4CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAvailabilityV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9180,11 +9810,53 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
+    public delegate void GetAvailabilityV5CompletedEventHandler(object sender, GetAvailabilityV5CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetAvailabilityV5CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetAvailabilityV5CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public ActivityAvailabilityResponse getAvailabilityResponse {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityAvailabilityResponse)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetAvailabilityCompletedEventHandler(object sender, GetAvailabilityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetAvailabilityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9222,11 +9894,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetProductChargesV2CompletedEventHandler(object sender, GetProductChargesV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetProductChargesV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9248,11 +9920,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetProductChargesCompletedEventHandler(object sender, GetProductChargesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetProductChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9274,11 +9946,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetResourceAvailabilityCompletedEventHandler(object sender, GetResourceAvailabilityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetResourceAvailabilityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9316,11 +9988,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void GetResourceGroupAvailabilityCompletedEventHandler(object sender, GetResourceGroupAvailabilityCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class GetResourceGroupAvailabilityCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9358,11 +10030,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void InsertGroupReservationCompletedEventHandler(object sender, InsertGroupReservationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class InsertGroupReservationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9400,11 +10072,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void InsertMemberDepositCompletedEventHandler(object sender, InsertMemberDepositCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class InsertMemberDepositCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9450,11 +10122,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void InsertReservationCompletedEventHandler(object sender, InsertReservationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class InsertReservationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9492,11 +10164,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void PaymentDepositCompletedEventHandler(object sender, PaymentDepositCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class PaymentDepositCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9534,11 +10206,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void PaymentRefundCompletedEventHandler(object sender, PaymentRefundCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class PaymentRefundCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9576,11 +10248,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void PreSellActivityProductCompletedEventHandler(object sender, PreSellActivityProductCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class PreSellActivityProductCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9634,11 +10306,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void SellMembershipV2CompletedEventHandler(object sender, SellMembershipV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SellMembershipV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9716,11 +10388,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void SellMembershipCompletedEventHandler(object sender, SellMembershipCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SellMembershipCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9790,11 +10462,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void SetAdditionalChargesV2CompletedEventHandler(object sender, SetAdditionalChargesV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SetAdditionalChargesV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9824,11 +10496,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void SetAdditionalChargesCompletedEventHandler(object sender, SetAdditionalChargesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SetAdditionalChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9858,11 +10530,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void SetAttributeCompletedEventHandler(object sender, SetAttributeCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class SetAttributeCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9900,11 +10572,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UpdateActivityStatusCompletedEventHandler(object sender, UpdateActivityStatusCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UpdateActivityStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9934,11 +10606,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UpdateGroupHeaderStatusCompletedEventHandler(object sender, UpdateGroupHeaderStatusCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UpdateGroupHeaderStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -9968,11 +10640,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UpdateGroupReservationCompletedEventHandler(object sender, UpdateGroupReservationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UpdateGroupReservationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10002,11 +10674,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UpdateReservationStatusCompletedEventHandler(object sender, UpdateReservationStatusCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UpdateReservationStatusCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10036,11 +10708,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UpdateReservationCompletedEventHandler(object sender, UpdateReservationCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UpdateReservationCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10070,11 +10742,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadActivityLocationsCompletedEventHandler(object sender, UploadActivityLocationsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadActivityLocationsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10096,11 +10768,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadActivityProductsCompletedEventHandler(object sender, UploadActivityProductsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadActivityProductsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10122,11 +10794,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadActivityResourcesCompletedEventHandler(object sender, UploadActivityResourcesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadActivityResourcesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10148,11 +10820,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadActivityTypesCompletedEventHandler(object sender, UploadActivityTypesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadActivityTypesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10174,11 +10846,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadAdmissionEntriesCompletedEventHandler(object sender, UploadAdmissionEntriesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadAdmissionEntriesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10200,11 +10872,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadClientBookingsV2CompletedEventHandler(object sender, UploadClientBookingsV2CompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadClientBookingsV2CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10226,11 +10898,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadClientBookingsCompletedEventHandler(object sender, UploadClientBookingsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadClientBookingsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10252,11 +10924,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadCustomerEntriesCompletedEventHandler(object sender, UploadCustomerEntriesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadCustomerEntriesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10278,11 +10950,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadMemberDetailsCompletedEventHandler(object sender, UploadMemberDetailsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadMemberDetailsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10304,11 +10976,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadMembershipEntriesCompletedEventHandler(object sender, UploadMembershipEntriesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadMembershipEntriesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10330,11 +11002,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadMembershipProductsCompletedEventHandler(object sender, UploadMembershipProductsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadMembershipProductsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10356,11 +11028,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadMembershipSubscriptionChargesCompletedEventHandler(object sender, UploadMembershipSubscriptionChargesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadMembershipSubscriptionChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10382,11 +11054,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadPromotionsCompletedEventHandler(object sender, UploadPromotionsCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadPromotionsCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10408,11 +11080,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadPurchasedAllowancesCompletedEventHandler(object sender, UploadPurchasedAllowancesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadPurchasedAllowancesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10434,11 +11106,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadReservationActivitiesCompletedEventHandler(object sender, UploadReservationActivitiesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadReservationActivitiesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
@@ -10460,11 +11132,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     }
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     public delegate void UploadResourceActivitiesCompletedEventHandler(object sender, UploadResourceActivitiesCompletedEventArgs e);
     
     /// <remarks/>
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9037.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     public partial class UploadResourceActivitiesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {

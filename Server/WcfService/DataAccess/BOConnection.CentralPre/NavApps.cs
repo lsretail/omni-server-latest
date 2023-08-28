@@ -132,7 +132,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         public virtual List<ReplExtendedVariantValue> ReplicateExtendedVariantValues(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            ExtendedVariantValuesRepository rep = new ExtendedVariantValuesRepository(config);
+            ExtendedVariantValuesRepository rep = new ExtendedVariantValuesRepository(config, LSCVersion);
             return rep.ReplicateExtendedVariantValues(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 

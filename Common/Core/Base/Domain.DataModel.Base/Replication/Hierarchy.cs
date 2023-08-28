@@ -51,6 +51,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             Id = string.Empty;
             SalesType = string.Empty;
             ValidationScheduleId = string.Empty;
+            StartDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public void Dispose()

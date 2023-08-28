@@ -20,6 +20,10 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
             Location = string.Empty;
             SalesPerson = string.Empty;
             Status = string.Empty;
+            ResDateFrom = DateTime.MinValue.ToUniversalTime();
+            ResDateTo = DateTime.MinValue.ToUniversalTime();
+            ResTimeFrom = DateTime.MinValue.ToUniversalTime();
+            ResTimeTo = DateTime.MinValue.ToUniversalTime();
         }
 
         public Reservation() : this(string.Empty)

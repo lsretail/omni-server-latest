@@ -12,11 +12,18 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
             Location = string.Empty;
             ProductNo = string.Empty;
             ContactNo = string.Empty;
+            ContactAccount = string.Empty;
+            ContactName = string.Empty;
             OptionalResource = string.Empty;
             OptionalComment = string.Empty;
+            GroupNo = string.Empty;
+            SetGroupReservation = string.Empty;
             PromoCode = string.Empty;
-            ContactName = string.Empty;
             Email = string.Empty;
+            Token = string.Empty;
+            GuestType = string.Empty;
+
+            ActivityTime = DateTime.MinValue.ToUniversalTime();
         }
 
         public void Dispose()
@@ -70,5 +77,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public decimal UnitPrice { get; set; }
         [DataMember]
         public bool SetGroupHeaderStatus { get; set; }
+        [DataMember]
+        public string GuestType { get; set; }
     }
 }

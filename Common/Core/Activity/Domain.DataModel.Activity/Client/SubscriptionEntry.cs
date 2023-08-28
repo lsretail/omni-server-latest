@@ -17,6 +17,9 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             InvoiceNo = string.Empty;
             MembershipNo = string.Empty;
             MembershipType = string.Empty;
+            PostingDate = DateTime.MinValue.ToUniversalTime();
+            PeriodFrom = DateTime.MinValue.ToUniversalTime();
+            PeriodTo = DateTime.MinValue.ToUniversalTime();
         }
 
         public SubscriptionEntry() : this(string.Empty)

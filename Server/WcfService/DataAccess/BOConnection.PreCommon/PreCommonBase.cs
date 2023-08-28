@@ -369,7 +369,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 {
                     LSCVersion = new Version(version);
                     logger.Debug(config.LSKey.Key, "LSNAV.Version Value {0} from TenantConfig is being used", version);
-                    return string.Format("LS:{0} [conf]", version);
+                    return string.Format("{0} [conf]", version);
                 }
 
                 string navver = string.Empty;
@@ -404,18 +404,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     {
                         string vv1 = retailVersion.Substring(11, retailVersion.Length - 11);
                         LSCVersion = new Version(vv1);
-                        navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
+                        navver = string.Format("{0} [{1}]", vv1, appBuild);
                     }
                     else
                     {
-                        navver = string.Format("LS:{0} [{1}]", LSCVersion, appBuild);
+                        navver = string.Format("{0} [{1}]", LSCVersion, appBuild);
                     }
                 }
                 else
                 {
                     string vv1 = retailVersion.Substring(st + 1, ed - st - 1);
                     LSCVersion = new Version(vv1);
-                    navver = string.Format("LS:{0} [{1}]", vv1, appBuild);
+                    navver = string.Format("{0} [{1}]", vv1, appBuild);
                 }
 
                 string asm = ConfigSetting.GetString("BOConnection.AssemblyName").ToLower();

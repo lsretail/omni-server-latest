@@ -129,6 +129,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "USE ONLINE SEARCH":
                     flagName = FeatureFlagName.UseOnlineSearch;
                     break;
+                case "CURRENCY CODE":
+                    flagName = FeatureFlagName.CurrencyCode;
+                    break;
 
                 //AUDKENNI SPG
                 case "AUDKENNI BASE URL":
@@ -312,6 +315,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         HideAddCreditCard = 222,
         HideShoppingScreen = 223,
         UseOnlineSearch = 224,
+        CurrencyCode = 225,
 
         //ScanPayGoPaymentFlags
         EnablePlatformPayment = 300,

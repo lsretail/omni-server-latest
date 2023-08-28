@@ -23,6 +23,8 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Client
             MemberClub = string.Empty;
             PricingUpdate = string.Empty;
             PriceCommitmentPeriod = string.Empty;
+            FixedIssueDate = DateTime.MinValue.ToUniversalTime();
+            FixedEndDate = DateTime.MinValue.ToUniversalTime();
         }
 
         public MemberProduct() : this(string.Empty)

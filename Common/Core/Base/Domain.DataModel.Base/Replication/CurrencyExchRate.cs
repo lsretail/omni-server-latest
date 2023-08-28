@@ -46,7 +46,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public ReplCurrencyExchRate()
         {
             IsDeleted = false;
-            StartingDate = DateTime.Now;
+            StartingDate = DateTime.Now.ToUniversalTime();
             CurrencyCode = string.Empty;
             RelationalCurrencyCode = string.Empty;
         }
