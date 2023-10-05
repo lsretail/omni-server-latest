@@ -261,10 +261,10 @@ namespace LSOmni.DataAccess.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "IF EXISTS(SELECT[Username] FROM [UserLogin] WHERE UPPER([Username])= UPPER(@usr)) " +
-                            "BEGIN UPDATE [UserLogin] SET [DateModified]=GETDATE(), [Token]=UPPER(@tok) WHERE UPPER([Username])=UPPER(@usr) END " +
+                            "BEGIN UPDATE [UserLogin] SET [DateModified]=GETUTCDATE(), [Token]=UPPER(@tok) WHERE UPPER([Username])=UPPER(@usr) END " +
                             "ELSE " +
                             "BEGIN INSERT INTO [UserLogin] ([Username], [Token], [DateModified]) " +
-                            "VALUES (@usr, @tok, GETDATE()) END";
+                            "VALUES (@usr, @tok, GETUTCDATE()) END";
                     command.Parameters.AddWithValue("@usr", username);
                     command.Parameters.AddWithValue("@tok", GuidHelper.NewGuidString());
                     TraceSqlCommand(command);
@@ -394,7 +394,7 @@ namespace LSOmni.DataAccess.Dal
                         modified = (DateTime)dt;
 
                     command.CommandText = "IF EXISTS (SELECT [DateModified] FROM [UserLogin] WHERE UPPER([Token])=UPPER(@tok))" +
-                        "BEGIN UPDATE [UserLogin] SET [DateModified]=GETDATE() WHERE UPPER([Token])=UPPER(@tok) END";
+                        "BEGIN UPDATE [UserLogin] SET [DateModified]=GETUTCDATE() WHERE UPPER([Token])=UPPER(@tok) END";
                     command.Parameters.Clear();
                     command.Parameters.AddWithValue("@tok", token);
                     TraceSqlCommand(command);
@@ -414,7 +414,7 @@ namespace LSOmni.DataAccess.Dal
                     connection.Open();
 
                     command.CommandText = "IF EXISTS(SELECT [Token] FROM [UserLogin] WHERE UPPER([Token]) = UPPER(@tok)) " +
-                            "BEGIN UPDATE [UserLogin] SET [DateModified]=GETDATE(), [Token]='' WHERE UPPER([Token])=UPPER(@tok) END ";
+                            "BEGIN UPDATE [UserLogin] SET [DateModified]=GETUTCDATE(), [Token]='' WHERE UPPER([Token])=UPPER(@tok) END ";
                     command.Parameters.AddWithValue("@tok", token);
                     TraceSqlCommand(command);
                     command.ExecuteNonQuery();

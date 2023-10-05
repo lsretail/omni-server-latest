@@ -2095,7 +2095,7 @@
   </binding>
   <service name="ODataRequest">
     <port name="ODataRequest_Port" binding="tns:ODataRequest_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMasterPwd/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSCentralMasterWS/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

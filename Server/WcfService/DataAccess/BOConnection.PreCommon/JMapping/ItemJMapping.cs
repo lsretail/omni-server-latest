@@ -44,6 +44,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 41: line.GrossWeight = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case 43: line.UnitsPerParcel = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case 44: line.UnitVolume = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 47: line.TariffNo = data.FieldValue; break;
                         case 54: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 95: line.CountryOfOrigin = data.FieldValue; break;
                         case 99: line.TaxItemGroupId = data.FieldValue; break;
@@ -52,6 +53,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 5702: line.ItemCategoryCode = data.FieldValue; break;
                         case 10000703: line.ProductGroupId = data.FieldValue; break;
                         case 10001401: line.SeasonCode = data.FieldValue; break;
+                        case 99001463: line.ItemFamilyCode = data.FieldValue; break;
+                        case 99001480: line.ZeroPriceValId = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 99001484: line.NoDiscountAllowed = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 99001487: line.KeyingInPrice = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 99001490: line.ScaleItem = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 99001491: line.KeyingInQty = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 10012860: line.Details = ConvertTo.Base64Decode(data.FieldValue); break;
                         case 10012861: line.BlockedOnPos = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 10012862: line.BlockPurchaseReturn = XMLHelper.GetWebBoolInt(data.FieldValue); break;
@@ -60,12 +67,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 10012865: line.BlockManualPriceChange = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 10012866: line.BlockNegativeAdjustment = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 10012867: line.BlockPositiveAdjustment = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 99001463: line.ItemFamilyCode = data.FieldValue; break;
-                        case 99001480: line.ZeroPriceValId = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 99001484: line.NoDiscountAllowed = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 99001487: line.KeyingInPrice = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 99001490: line.ScaleItem = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 99001491: line.KeyingInQty = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                     }
                 }
                 list.Add(line);

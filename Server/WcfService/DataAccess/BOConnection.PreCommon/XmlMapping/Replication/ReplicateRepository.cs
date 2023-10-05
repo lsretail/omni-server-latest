@@ -1166,6 +1166,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
+        public void ReplicateFeatureFlags(XMLTableData table, FeatureFlags flags)
+        {
+            if (table == null)
+                return;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                string name = string.Empty;
+                string value = string.Empty;
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Feature Flag": name = field.Values[i]; break;
+                        case "Value": value = field.Values[i]; break;
+                    }
+                }
+                flags.AddFlag(name, value);
+            }
+        }
+
         public List<ReplDiscountValidation> ReplicateDiscountValidations(XMLTableData table)
         {
             List<ReplDiscountValidation> list = new List<ReplDiscountValidation>();

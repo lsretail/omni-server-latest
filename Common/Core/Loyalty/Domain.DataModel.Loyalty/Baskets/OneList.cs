@@ -133,6 +133,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public string ShipToCountryCode { get; set; }
         [DataMember]
         public string Currency { get; set; }
+        [DataMember]
+        public decimal CurrencyFactor { get; set; }
 
         [DataMember]
         public ObservableCollection<OneListItem> Items

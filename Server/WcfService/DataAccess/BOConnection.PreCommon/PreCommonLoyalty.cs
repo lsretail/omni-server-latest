@@ -1210,8 +1210,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
+            string loyCur = currency;
+            if (string.IsNullOrEmpty(currency))
+            {
+                loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+                if (string.IsNullOrEmpty(loyCur))
+                    loyCur = "LOY";
+            }
+
             NAVWebXml xml = new NAVWebXml();
-            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", "LOY", 1, true);
+            string xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", loyCur.ToUpper(), 1, true);
             string xmlResponse = RunOperation(xmlRequest);
             HandleResponseCode(ref xmlResponse);
             XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
@@ -1221,16 +1229,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             if (string.IsNullOrEmpty(currency) == false)
             {
-                xmlRequest = xml.GetGeneralWebRequestXML("Currency Exchange Rate", "Currency Code", currency.ToUpper(), 1, true);
-                xmlResponse = RunOperation(xmlRequest);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-                decimal baserate = rep.GetPointRate(table);
-                if (baserate > 0)
-                {
-                    rate = rate * baserate;
-                }
+                rate = 1 / rate;
             }
 
             logger.StatisticEndSub(ref stat, index);

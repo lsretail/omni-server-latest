@@ -251,11 +251,13 @@ namespace LSOmni.Service
             string tenVer = string.Empty;
             string navDBRet = string.Empty;
             BOConfiguration config = GetConfig(lskey);
-            
+            ConfigBLL bll = null;
+
+
             try
             {
                 logger.Debug(config.LSKey.Key, "Ping");
-                ConfigBLL bll = new ConfigBLL(config);
+                bll = new ConfigBLL(config);
                 bll.PingOmniDB();
             }
             catch (Exception ex)
@@ -266,13 +268,15 @@ namespace LSOmni.Service
 
             try
             {
-                ConfigBLL bll = new ConfigBLL(config);
                 // Nav returns version number, Ax returns "AX"
+                CheckToken(config);
                 ver = bll.PingWs(out string centralVer);
 
                 tenVer = config.SettingsGetByKey(ConfigKey.LSNAV_Version);
                 if (string.IsNullOrEmpty(tenVer))
                 {
+                    logger.Debug(config.LSKey.Key, "Save Retail Version {0} to LSNAV.Version in TenantConfig", centralVer);
+                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSNAV_Version, centralVer, "string", true, "LS Central Version to use");
                     tenVer = centralVer;
                 }
             }
@@ -287,7 +291,6 @@ namespace LSOmni.Service
 
             try
             {
-                ConfigBLL bll = new ConfigBLL(config);
                 navDBRet = bll.PingNavDb();
             }
             catch (Exception ex)

@@ -118,7 +118,7 @@ namespace LSOmni.Service
                     HEADER_TOKEN, config.SecurityToken, serverUri, port, clientIPAddress, userAgent, Version(), version, deviceId, clientTimeOutInSeconds);
 
                 config = GetConfig(config);
-                CheckToken();
+                CheckToken(config);
             }
             catch (Exception ex)
             {
@@ -141,11 +141,12 @@ namespace LSOmni.Service
             string ver = string.Empty;
             string tenVer = string.Empty;
             string navDBRet = string.Empty;
+            ConfigBLL bll = null;
 
             try
             {
                 logger.Debug(config.LSKey.Key, "Ping");
-                ConfigBLL bll = new ConfigBLL(config);
+                bll = new ConfigBLL(config);
                 bll.PingOmniDB();
             }
             catch (Exception ex)
@@ -156,7 +157,6 @@ namespace LSOmni.Service
 
             try
             {
-                ConfigBLL bll = new ConfigBLL(config);
                 // Nav returns version number, Ax returns "AX"
                 ver = bll.PingWs(out string centralVer);
 
@@ -179,7 +179,6 @@ namespace LSOmni.Service
 
             try
             {
-                ConfigBLL bll = new ConfigBLL(config);
                 navDBRet = bll.PingNavDb();
             }
             catch (Exception ex)
@@ -245,32 +244,35 @@ namespace LSOmni.Service
             }
         }
 
-        private string CheckToken()
+        private string CheckToken(BOConfiguration myconfig)
         {
-            if (config == null)
+            if (myconfig == null)
                 return string.Empty;
 
-            string protocol = config.SettingsGetByKey(ConfigKey.BOProtocol);
+            string protocol = myconfig.SettingsGetByKey(ConfigKey.BOProtocol);
             if (protocol.ToUpper().Equals("S2S") == false)
                 return string.Empty;
 
-            string token = config.SettingsGetByKey(ConfigKey.Central_Token);
+            string token = myconfig.SettingsGetByKey(ConfigKey.Central_Token);
             if (string.IsNullOrEmpty(token) == false)
             {
                 DateTime regtime = DateTime.MinValue;
-                string reg = config.SettingsGetByKey(ConfigKey.Central_TokenTime);
+                string reg = myconfig.SettingsGetByKey(ConfigKey.Central_TokenTime);
                 if (string.IsNullOrEmpty(reg) == false)
                     regtime = Convert.ToDateTime(reg);
 
-                if (regtime > DateTime.Now)
+                if (regtime > DateTime.UtcNow)
                 {
                     return token;
                 }
             }
 
-            string clientId = config.SettingsGetByKey(ConfigKey.BOUser);
-            string clientSecret = config.SettingsGetByKey(ConfigKey.BOPassword);
-            string tenant = config.SettingsGetByKey(ConfigKey.BOTenant);
+            string clientId = myconfig.SettingsGetByKey(ConfigKey.BOUser);
+            string clientSecret = myconfig.SettingsGetByKey(ConfigKey.BOPassword);
+            string tenant = myconfig.SettingsGetByKey(ConfigKey.BOTenant);
+
+            if (string.IsNullOrEmpty(clientId))
+                return string.Empty;
 
             //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
             if (DecryptConfigValue.IsEncryptedPwd(clientSecret))
@@ -288,7 +290,7 @@ namespace LSOmni.Service
                 HttpWebRequest httpWebRequest = (HttpWebRequest)System.Net.WebRequest.Create(posturl);
                 httpWebRequest.Method = "POST";
 
-                logger.Debug(config.LSKey.Key, "Send Token request for LS Central to:{0} Message:{1}", posturl.AbsoluteUri, body);
+                logger.Debug(myconfig.LSKey.Key, "Send Token request for LS Central to:{0} Message:{1}", posturl.AbsoluteUri, body);
                 byte[] byteArray = Encoding.UTF8.GetBytes(body); //json
 
                 httpWebRequest.Accept = "application/json";
@@ -305,21 +307,21 @@ namespace LSOmni.Service
                 using (StreamReader streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
                     string result = streamReader.ReadToEnd();
-                    logger.Debug(config.LSKey.Key, "ECOM Result:[{0}]", result);
+                    logger.Debug(myconfig.LSKey.Key, "Token Result:[{0}]", result.Substring(0, 100));
 
                     TokenS2S data = Serialization.Deserialize<TokenS2S>(result);
                     token = data.token_type + " " + data.access_token;
 
                     ConfigBLL bll = new ConfigBLL();
-                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.Central_Token, token, "string", true, "Active token");
-                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.Central_TokenTime, DateTime.Now.AddSeconds(data.expires_in - 90).ToString(), "string", true, "Token Reg");
-                    config.SettingsUpdateByKey(ConfigKey.Central_Token, token);
+                    bll.ConfigSetByKey(myconfig.LSKey.Key, ConfigKey.Central_Token, token, "string", true, "Active token");
+                    bll.ConfigSetByKey(myconfig.LSKey.Key, ConfigKey.Central_TokenTime, DateTime.UtcNow.AddSeconds(data.expires_in - 90).ToString(), "string", true, "Token Reg");
+                    myconfig.SettingsUpdateByKey(ConfigKey.Central_Token, token);
                 }
                 return token;
             }
             catch (Exception ex)
             {
-                logger.Error(config.LSKey.Key, ex);
+                logger.Error(myconfig.LSKey.Key, ex);
                 throw new LSOmniServiceException(StatusCode.SecurityTokenInvalid, "Error getting token", ex);
             }
         }

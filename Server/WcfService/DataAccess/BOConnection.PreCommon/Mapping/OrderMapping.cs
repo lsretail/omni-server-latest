@@ -498,6 +498,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
         {
             LSCentral.RootMobileTransaction root = new LSCentral.RootMobileTransaction();
 
+            if (list.CurrencyFactor == 0)
+                list.CurrencyFactor = 1;
+
             //MobileTrans
             List<LSCentral.MobileTransaction> trans = new List<LSCentral.MobileTransaction>();
             LSCentral.MobileTransaction head = new LSCentral.MobileTransaction()
@@ -509,12 +512,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 MemberCardNo = XMLHelper.GetString(list.CardId),
                 TransDate = DateTime.Now,
                 PointsUsedInBasket = list.PointAmount,
+                CurrencyFactor = list.CurrencyFactor,
 
                 // fill out null fields
                 CustomerId = string.Empty,
                 BusinessTAXCode = string.Empty,
-                CurrencyCode = string.Empty,
                 CustDiscGroup = string.Empty,
+                CurrencyCode = string.Empty,
                 DiningTblDescription = string.Empty,
                 MemberPriceGroupCode = string.Empty,
                 PriceGroupCode = string.Empty,
@@ -560,9 +564,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     TransDate = DateTime.Now,
 
                     Barcode = string.Empty,
+                    CurrencyCode = string.Empty,
                     CardOrCustNo = string.Empty,
                     CouponCode = string.Empty,
-                    CurrencyCode = string.Empty,
                     EFTAuthCode = string.Empty,
                     EFTCardName = string.Empty,
                     EFTCardNumber = string.Empty,
@@ -606,8 +610,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         VariantCode = string.Empty,
                         UomId = string.Empty,
                         CardOrCustNo = string.Empty,
-                        CouponCode = string.Empty,
                         CurrencyCode = string.Empty,
+                        CouponCode = string.Empty,
                         EFTAuthCode = string.Empty,
                         EFTCardName = string.Empty,
                         EFTCardNumber = string.Empty,

@@ -3854,6 +3854,8 @@
           <element minOccurs="1" maxOccurs="1" default="false" name="Continue_on_TS_errors" type="boolean" />
           <element minOccurs="1" maxOccurs="1" name="Last_Z-Report" type="string" />
           <element minOccurs="1" maxOccurs="1" name="POS_Interface_Profile" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSStyleProfile" type="string" />
+          <element minOccurs="0" maxOccurs="1" name="POSMenuProfile" type="string" />
           <element minOccurs="1" maxOccurs="1" name="Language" type="string" />
           <element minOccurs="1" maxOccurs="1" name="Create_Customers" type="string" />
           <element minOccurs="1" maxOccurs="1" name="View_Sales_history" type="string" />
@@ -9523,7 +9525,7 @@
   </binding>
   <service name="OmniWrapper">
     <port name="OmniWrapper_Port" binding="tns:OmniWrapper_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMasterPwd/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSCentralMasterWS/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

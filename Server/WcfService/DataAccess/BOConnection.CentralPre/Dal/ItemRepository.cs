@@ -44,6 +44,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
                       " JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] ";
 
+            if (LSCVersion >= new Version("22.2"))
+            {
+                sqlcolumns += ",mt.[Tariff No_]";
+            }
+
             if (LSCVersion >= new Version("19.2"))
             {
                 sqlfrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_] AND ih.[Language]=''";
@@ -457,6 +462,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             "mt2.[LSC Retail Product Code],mt2.[LSC Scale Item],mt.[Item Tracking Code]," +
             "mt.[Blocked],mt.[Gross Weight],mt2.[LSC Season Code],mt.[Item Category Code],mt2.[LSC Item Family Code],mt.[Units per Parcel],mt.[Unit Volume],ih.[Html]," +
             " ROW_NUMBER() OVER(ORDER BY mt.[Description]) AS RowNumber, " +
+            ((LSCVersion >= new Version("22.2")) ? "mt.[Tariff No_]," : string.Empty) +
             "(SELECT TOP(1) sl.[Block Sale on POS] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND [Starting Date]<GETDATE() AND sl.[Block Sale on POS]=1) AS BlockOnPos, " +
             "(SELECT TOP(1) sl.[Block Discount] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
@@ -477,6 +483,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sql += GetSQLStoreDist("mt.[No_]", storeId, true);
             sql += ") SELECT [No_],[Description],[Sales Unit of Measure],[Html],[RowNumber],[BlockOnPos],";
             sql += "[LSC Retail Product Code],[LSC Scale Item],[Item Tracking Code],";
+            sql += (LSCVersion >= new Version("22.2")) ? "[Tariff No_]," : string.Empty;
             sql += "[Blocked],[Gross Weight],[LSC Season Code],[Item Category Code],[LSC Item Family Code],[Units per Parcel],";
             sql += "[Unit Volume],[BlockDiscount],[BlockPrice]" +
                   " FROM o WHERE RowNumber BETWEEN " + ((pageNumber - 1) * pageSize + 1) +
@@ -654,7 +661,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         {
             timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
 
-            return new ReplItem()
+            ReplItem rec = new ReplItem()
             {
                 Id = SQLHelper.GetString(reader["No_"]),
                 Description = SQLHelper.GetString(reader["Description"]),
@@ -697,6 +704,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
                 MustKeyInComment = 0
             };
+
+            if (LSCVersion >= new Version("22.2"))
+            {
+                rec.TariffNo = SQLHelper.GetString(reader["Tariff No_"]);
+            }
+            return rec;
         }
 
         private LoyItem ReaderToLoyItem(SqlDataReader reader, string storeId , string culture, bool incldetails, bool hastimestamp, out string timestamp, Statistics stat)
@@ -722,6 +735,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 UnitVolume = SQLHelper.GetDecimal(reader, "Unit Volume"),
                 QtyNotInDecimal = true
             };
+
+            if (LSCVersion >= new Version("22.2"))
+            {
+                item.TariffNo = SQLHelper.GetString(reader["Tariff No_"]);
+            }
 
             try
             {

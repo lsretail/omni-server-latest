@@ -98,6 +98,7 @@ begin
       0: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup]';
       1: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]';
       2: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$LSC Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]';
+      3: ADOCommand.CommandText := 'SELECT [Local Store No_] FROM [' + company + '$LSC Retail Setup$5ecfc871-5d82-43f1-9c54-59685e82318d]';
     end;      
 
     ADOCommand.CommandType := adCmdText;
@@ -256,7 +257,8 @@ begin
     Style := csDropDownList;
     Items.Add('LS Nav 14 & earlier');
     Items.Add('LS Central 15-17.4');
-    Items.Add('LS Central 17.5 and later');
+    Items.Add('LS Central 17.5-22.5');
+    Items.Add('LS Central 23.0 and later');
   end;
   
   { lblAuthType }

@@ -120,7 +120,7 @@ namespace LSOmni.DataAccess.Dal
                             bool advanced = SQLHelper.GetBool(reader["Advanced"]);
                             bool isDefault = false;
 
-                            if (string.IsNullOrEmpty(value))
+                            if (string.IsNullOrEmpty(value) && key.Equals("LSNAV_Version") == false)
                             {
                                 value = defaultValue;
                                 isDefault = true;

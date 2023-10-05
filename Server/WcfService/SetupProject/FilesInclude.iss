@@ -21,6 +21,7 @@ Source: "..\Service\Xsl\notification.xsl"; DestDir: "{app}\{code:WcfDir}\Xsl\"; 
 Source: "..\Service\Xml\navdata.xml"; DestDir: "{app}\{code:WcfDir}\Xml\"; Flags: ignoreversion
 
 ; Configs Files
+Source: "..\Service\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBindings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebBehaviors.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\WebServices.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
@@ -28,7 +29,6 @@ Source: "..\Service\WebServices_SSL.config"; DestDir: "{app}\{code:WcfDir}"; Fla
 Source: "..\Service\WebServices_Basic.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "..\Service\NLog.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion
 Source: "Default\AppSettings.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
-Source: "Default\Web.config"; DestDir: "{app}\{code:WcfDir}"; Flags: ignoreversion; Check: UpdAppSettings
 
 [Dirs]
 Name: "{app}\{code:WcfDir}\logs"; Permissions: everyone-modify

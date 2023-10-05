@@ -127,6 +127,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         [DataMember]
         public string SeasonCode { get; set; }
         [DataMember]
+        public string TariffNo { get; set;}
+        [DataMember]
         public string ItemCategoryCode { get; set; }
         [DataMember]
         public string ItemFamilyCode { get; set; }

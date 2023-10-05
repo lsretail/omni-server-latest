@@ -300,22 +300,26 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
             logger.StatisticStartSub(false, ref stat, out int index);
 
+            decimal rate = 0;
             CurrencyExchRateRepository rep = new CurrencyExchRateRepository(config);
-            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
-            if (string.IsNullOrEmpty(loyCur))
-                loyCur = "LOY";
 
-            ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById(loyCur);
-            if (exchrate == null)
-                return 0;
-
-            decimal rate = exchrate.CurrencyFactor;
             if (string.IsNullOrEmpty(currency) == false)
             {
                 ReplCurrencyExchRate baseExchrate = rep.CurrencyExchRateGetById(currency);
                 if (baseExchrate != null)
-                    rate = exchrate.CurrencyFactor * baseExchrate.CurrencyFactor;
+                    rate = 1 / baseExchrate.CurrencyFactor;
             }
+            else
+            {
+                string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+                if (string.IsNullOrEmpty(loyCur))
+                    loyCur = "LOY";
+
+                ReplCurrencyExchRate exchrate = rep.CurrencyExchRateGetById(loyCur);
+                if (exchrate != null)
+                    rate = exchrate.CurrencyFactor;
+            }
+
             logger.StatisticEndSub(ref stat, index);
             return rate;
         }

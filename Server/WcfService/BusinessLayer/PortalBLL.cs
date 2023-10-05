@@ -184,8 +184,9 @@ namespace LSOmni.BLL
         {
             int timeout = ConfigSetting.GetInt("Portal.Token.Timeout");
             DateTime date = iUserRepository.GetTokenDate(config.SecurityToken);
-            if(DateTime.Now > date.AddMinutes(timeout))
+            if(DateTime.UtcNow > date.AddMinutes(timeout))
             {
+                Logout();
                 throw new LSOmniServiceException(StatusCode.SecurityTokenInvalid, "Login session has expired, please log in again");
             }
             return iUserRepository.GetUsernameByToken(config.SecurityToken);

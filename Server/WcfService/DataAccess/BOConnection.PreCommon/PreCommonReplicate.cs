@@ -1481,6 +1481,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         public virtual List<ReplTerminal> ReplicateTerminals(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
+            ReplicateRepository rep = new ReplicateRepository(config);
+            XMLTableData table = null;
             if (LSCVersion >= new Version("19.3"))
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
@@ -1488,12 +1490,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 map.SetKeys(fullRepl, ref lastKey, out int lastEntry);
                 string ret = odataWS.GetPOSTerminal(batchSize, fullRepl, lastKey, lastEntry);
                 logger.Trace(config.LSKey.Key, ret);
-                return map.GetReplTerminal(ret, ref lastKey, ref recordsRemaining);
+                List<ReplTerminal> list = map.GetReplTerminal(ret, ref lastKey, ref recordsRemaining);
+
+                List<ReplTerminal> stores = new List<ReplTerminal>();
+                NAVWebXml xml = new NAVWebXml();
+                foreach (ReplTerminal terminal in list) 
+                {
+                    if (string.IsNullOrEmpty(storeId) == false && terminal.StoreId.Equals(storeId))
+                    {
+                        string xmlRequest = xml.GetGeneralWebRequestXML("LSC Feature Flags Setup", "POS Terminal", $"''|{terminal.Id}", "Store No.", $"''|{storeId}");
+                        string xmlResponse = RunOperation(xmlRequest, true);
+                        HandleResponseCode(ref xmlResponse);
+                        table = xml.GetGeneralWebResponseXML(xmlResponse);
+                        rep.ReplicateFeatureFlags(table, terminal.Features);
+                        stores.Add(terminal);
+                    }
+                }
+                return stores;
             }
 
-            XMLTableData table = DoReplication(99001471, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
-
-            ReplicateRepository rep = new ReplicateRepository(config);
+            table = DoReplication(99001471, storeId, appId, appType, batchSize, ref lastKey, out recordsRemaining);
             return rep.ReplicateTerminals(table);
         }
 

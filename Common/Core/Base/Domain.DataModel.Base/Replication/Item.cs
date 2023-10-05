@@ -65,6 +65,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             VendorId = string.Empty;
             VendorItemId = string.Empty;
             SeasonCode = string.Empty;
+            TariffNo = string.Empty;
             ItemCategoryCode = string.Empty;
             ItemFamilyCode = string.Empty;
             ItemTrackingCode = string.Empty;
@@ -181,6 +182,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public decimal GrossWeight { get; set; }
         [DataMember]
         public string SeasonCode { get; set; }
+        [DataMember]
+        public string TariffNo { get; set;}
         [DataMember]
         public string ItemCategoryCode { get; set; }
         [DataMember]

@@ -154,7 +154,6 @@
     <Content Include="AppSettings.config" />
     <Content Include="LSIcon.ico" />
     <Content Include="NLog.config" />
-    <Content Include="Log.config" />
     <None Include="packages.config" />
     <Content Include="UCJson.svc" />
     <Content Include="UCService.svc" />
@@ -168,8 +167,6 @@
     <Content Include="WebBehaviors.config" />
     <Content Include="WebBindings.config" />
     <Content Include="WebServices.config" />
-    <Content Include="WebServices_SSL_NonSSL.config" />
-    <Content Include="WebServices_SSL_Only.config" />
     <Content Include="WebServices_Basic.config" />
   </ItemGroup>
   <ItemGroup>
