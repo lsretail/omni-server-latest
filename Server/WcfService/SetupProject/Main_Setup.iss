@@ -282,6 +282,7 @@ begin
         0: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.NavSQL.dll', ExpandConstant('{app}\{code:WcfDir}'));
         1: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentrAL.dll', ExpandConstant('{app}\{code:WcfDir}'));
         2: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentralPre.dll', ExpandConstant('{app}\{code:WcfDir}'));
+        3: UpdateAppSettingsConfig('BOConnection.AssemblyName','LSOmni.DataAccess.BOConnection.CentralExt.dll', ExpandConstant('{app}\{code:WcfDir}'));
       end;
     end;
 
