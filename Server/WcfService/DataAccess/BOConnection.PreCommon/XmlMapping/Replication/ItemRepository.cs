@@ -125,12 +125,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                 {
                     case "No.": rec.Id = field.Values[0]; break;
                     case "Description": rec.Description = field.Values[0]; break;
-                    case "Retail Product Code": rec.ProductGroupId = field.Values[0]; break;
+                    case "LSC Retail Product Code": rec.ProductGroupId = field.Values[0]; break;
                     case "Product Group Code": rec.ProductGroupId = (string.IsNullOrEmpty(rec.ProductGroupId)) ? field.Values[0] : string.Empty; break;
                     case "Item Category Code": rec.ItemCategoryCode = field.Values[0]; break;
                     case "Sales Unit of Measure": rec.SalesUomId = field.Values[0]; break;
-                    case "Season Code": rec.SeasonCode = field.Values[0]; break;
-                    case "Item Family Code": rec.ItemFamilyCode = field.Values[0]; break;
+                    case "Item Tracking Code": rec.ItemTrackingCode = field.Values[0]; break;
+                    case "LSC Season Code": rec.SeasonCode = field.Values[0]; break;
+                    case "LSC Item Family Code": rec.ItemFamilyCode = field.Values[0]; break;
+                    case "Blocked": rec.Blocked = ConvertTo.SafeBoolean(field.Values[0]); break;
+                    case "LSC Scale Item": rec.ScaleItem = ConvertTo.SafeBoolean(field.Values[0]); break;
+                    case "Gross Weight": rec.GrossWeight = ConvertTo.SafeDecimal(field.Values[0]); break;
+                    case "Unit Volume": rec.UnitVolume = ConvertTo.SafeDecimal(field.Values[0]); break;
+                    case "Units per Parcel": rec.UnitsPerParcel = ConvertTo.SafeDecimal(field.Values[0]); break;
                 }
             }
             return rec;
@@ -151,13 +157,17 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     {
                         case "No.": rec.Id = field.Values[i]; break;
                         case "Description": rec.Description = field.Values[i]; break;
-                        case "Retail Product Code": rec.ProductGroupId = field.Values[i]; break;
+                        case "LSC Retail Product Code": rec.ProductGroupId = field.Values[i]; break;
                         case "Product Group Code": rec.ProductGroupId = field.Values[i]; break;
                         case "Item Category Code": rec.ItemCategoryCode = field.Values[i]; break;
                         case "Sales Unit of Measure": rec.SalesUomId = field.Values[i]; break;
+                        case "LSC Season Code": rec.SeasonCode = field.Values[i]; break;
+                        case "LSC Item Family Code": rec.ItemFamilyCode = field.Values[i]; break;
                         case "Blocked": rec.Blocked = ConvertTo.SafeBoolean(field.Values[i]); break;
-                        case "Season Code": rec.SeasonCode = field.Values[i]; break;
-                        case "Item Family Code": rec.ItemFamilyCode = field.Values[i]; break;
+                        case "LSC Scale Item": rec.ScaleItem = ConvertTo.SafeBoolean(field.Values[i]); break;
+                        case "Gross Weight": rec.GrossWeight = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Unit Volume": rec.UnitVolume = ConvertTo.SafeDecimal(field.Values[i]); break;
+                        case "Units per Parcel": rec.UnitsPerParcel = ConvertTo.SafeDecimal(field.Values[i]); break;
                     }
                 }
                 list.Add(rec);

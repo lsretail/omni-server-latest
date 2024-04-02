@@ -59,6 +59,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         private System.Threading.SendOrPostCallback GetDataTranslationOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetDiscountSetupOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetExtdVariantValuesOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetHierarchyDealLineOperationCompleted;
@@ -100,6 +102,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private System.Threading.SendOrPostCallback GetProductGroupOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetSalesPriceOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetStaffPermissionOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetStaffOperationCompleted;
         
@@ -227,6 +231,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         public event GetDataTranslationCompletedEventHandler GetDataTranslationCompleted;
         
         /// <remarks/>
+        public event GetDiscountSetupCompletedEventHandler GetDiscountSetupCompleted;
+        
+        /// <remarks/>
         public event GetExtdVariantValuesCompletedEventHandler GetExtdVariantValuesCompleted;
         
         /// <remarks/>
@@ -288,6 +295,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         
         /// <remarks/>
         public event GetSalesPriceCompletedEventHandler GetSalesPriceCompleted;
+        
+        /// <remarks/>
+        public event GetStaffPermissionCompletedEventHandler GetStaffPermissionCompleted;
         
         /// <remarks/>
         public event GetStaffCompletedEventHandler GetStaffCompleted;
@@ -893,6 +903,42 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetDataTranslationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetDataTranslationCompleted(this, new GetDataTranslationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDiscountSetup", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetDiscountSetup_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetDiscountSetup(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetDiscountSetup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetDiscountSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetDiscountSetupAsync(batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetDiscountSetupAsync(int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetDiscountSetupOperationCompleted == null)) {
+                this.GetDiscountSetupOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetDiscountSetupOperationCompleted);
+            }
+            this.InvokeAsync("GetDiscountSetup", new object[] {
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetDiscountSetupOperationCompleted, userState);
+        }
+        
+        private void OnGetDiscountSetupOperationCompleted(object arg) {
+            if ((this.GetDiscountSetupCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetDiscountSetupCompleted(this, new GetDiscountSetupCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -1681,6 +1727,44 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
             if ((this.GetSalesPriceCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetSalesPriceCompleted(this, new GetSalesPriceCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaffPermission", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", ResponseElementName="GetStaffPermission_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/ODataRequest", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public string GetStaffPermission(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            object[] results = this.Invoke("GetStaffPermission", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo});
+            return ((string)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetStaffPermissionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo) {
+            this.GetStaffPermissionAsync(storeNo, batchSize, fullRepl, lastKey, lastEntryNo, null);
+        }
+        
+        /// <remarks/>
+        public void GetStaffPermissionAsync(string storeNo, int batchSize, bool fullRepl, string lastKey, int lastEntryNo, object userState) {
+            if ((this.GetStaffPermissionOperationCompleted == null)) {
+                this.GetStaffPermissionOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetStaffPermissionOperationCompleted);
+            }
+            this.InvokeAsync("GetStaffPermission", new object[] {
+                        storeNo,
+                        batchSize,
+                        fullRepl,
+                        lastKey,
+                        lastEntryNo}, this.GetStaffPermissionOperationCompleted, userState);
+        }
+        
+        private void OnGetStaffPermissionOperationCompleted(object arg) {
+            if ((this.GetStaffPermissionCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetStaffPermissionCompleted(this, new GetStaffPermissionCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2879,6 +2963,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetDiscountSetupCompletedEventHandler(object sender, GetDiscountSetupCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetDiscountSetupCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetDiscountSetupCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetExtdVariantValuesCompletedEventHandler(object sender, GetExtdVariantValuesCompletedEventArgs e);
     
     /// <remarks/>
@@ -3410,6 +3520,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSOData {
         private object[] results;
         
         internal GetSalesPriceCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public string Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetStaffPermissionCompletedEventHandler(object sender, GetStaffPermissionCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetStaffPermissionCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetStaffPermissionCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

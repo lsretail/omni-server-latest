@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 using LSOmni.Common.Util;
+using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
@@ -13,18 +14,18 @@ namespace LSOmni.BLL.Loyalty
 {
     public class ScanPayGoBLL : BaseLoyBLL
     {
+        private readonly IDeviceRepository iRepository;
+        private static readonly Object rodLock = new Object();
+
         public ScanPayGoBLL(BOConfiguration config, int timeoutInSeconds)
             : base(config, timeoutInSeconds)
         {
+            this.iRepository = GetDbRepository<IDeviceRepository>(config);
         }
 
         public virtual ClientToken PaymentClientTokenGet(string customerId)
         {
-            return new ClientToken()
-            {
-                CustomerId = customerId,
-                Token = String.Empty
-            };
+            return new ClientToken();
         }
 
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
@@ -67,18 +68,33 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.TokenEntryGet(accountNo, hotelToken, stat);
         }
 
+        public virtual bool SpgUnlockRodDevice(string storeId, string cardId)
+        {
+            lock (rodLock)
+            {
+                return iRepository.SpgUnlockRodDevice(storeId, cardId);
+            }
+        }
+
+        public virtual string SpgUnlockRodDeviceCheck(string storeId)
+        {
+            lock (rodLock)
+            {
+                return iRepository.SpgUnlockRodDeviceCheck(storeId);
+            }
+        }
+
         public virtual async Task<bool> GetAuthPaymentCodeAsync(string authorizationCode, Statistics stat)
         {
-            //use empty string for store to get defaul profile
+            //use empty string for store to get default profile
             ScanPayGoProfile profile = ScanPayGoProfileGet(string.Empty, string.Empty, stat);
 
             logger.Debug(config.LSKey.Key, $"Check payment Auth:[{authorizationCode}], PayMeth:{profile.Flags.GetFlagInt(FeatureFlagName.CardPaymentMethod, 0)} LSPayService:{profile.Flags.GetFlagString(FeatureFlagName.LsPayServiceIpAddress, string.Empty)} Port:{profile.Flags.GetFlagString(FeatureFlagName.LsPayServicePort, string.Empty)}");
-
+            /*
             if ((ScanPayGoCardPaymentMethod)profile.Flags.GetFlagInt(FeatureFlagName.CardPaymentMethod, 0) == ScanPayGoCardPaymentMethod.LsPay)
             {
                 try
                 {
-                    /*
                     LSPayClient client = new LSPayClient(profile.Flags.GetFlagString(FeatureFlagName.LsPayServiceIpAddress, string.Empty), profile.Flags.GetFlagString(FeatureFlagName.LsPayServicePort, string.Empty));
                     await client.SelectAsync(profile.Flags.GetFlagString(FeatureFlagName.LsPayPluginId, string.Empty));
 
@@ -101,7 +117,6 @@ namespace LSOmni.BLL.Loyalty
                     {
                         return false;
                     }
-                    */
                 }
                 //catch any exception so the correct status code goes to the app
                 catch (Exception)
@@ -109,8 +124,8 @@ namespace LSOmni.BLL.Loyalty
                     return false;
                 }
             }
-
-            //if flag isnt set to LS Pay, approve
+            */
+            //if flag isn't set to LS Pay, approve
             return true;
         }
     }

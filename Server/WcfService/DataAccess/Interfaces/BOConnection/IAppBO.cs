@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 
-using LSRetail.Omni.DiscountEngine.DataModels;
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
-using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.Interface.BOConnection
 {
@@ -21,7 +20,9 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<InventoryResponse> ItemInStockGet(string itemId, string variantId, int arrivingInStockInDays, List<string> locationIds, bool skipUnAvailableStores, Statistics stat);
         List<InventoryResponse> ItemsInStoreGet(List<InventoryRequest> items, string storeId, string locationId, bool useSourcingLocation, Statistics stat);
         string ItemDetailsGetById(string itemId, Statistics stat);
-        List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat);
+        List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat);
+        DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat);
+        void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat);
 
         #region Replication
 
@@ -67,6 +68,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<ReplCustomer> ReplicateCustomer(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplDiscount> ReplicateDiscounts(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplDiscount> ReplicateMixAndMatch(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
+        List<ReplDiscountSetup> ReplicateDiscountSetup(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplStoreTenderType> ReplicateStoreTenderType(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);
         List<ReplTaxSetup> ReplicateTaxSetup(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining);

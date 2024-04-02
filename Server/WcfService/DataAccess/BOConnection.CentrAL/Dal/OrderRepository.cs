@@ -318,7 +318,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     Address2 = SQLHelper.GetString(reader["Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["County"]),
+                    County = SQLHelper.GetString(reader["County"]),
                     PostCode = SQLHelper.GetString(reader["Post Code"]),
                     Country = SQLHelper.GetString(reader["Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Phone No_"]),
@@ -333,7 +333,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                     Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["Ship-to City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    County = SQLHelper.GetString(reader["Ship-to County"]),
                     PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
                     Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])

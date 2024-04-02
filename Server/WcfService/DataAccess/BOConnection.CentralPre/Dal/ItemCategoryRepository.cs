@@ -229,7 +229,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private ReplItemCategory ReaderToItemCategory(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplItemCategory()
             {

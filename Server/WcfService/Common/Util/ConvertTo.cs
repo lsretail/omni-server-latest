@@ -212,6 +212,27 @@ namespace LSOmni.Common.Util
             return string.Concat(value);
         }
 
+        public static DateTime GetDateTimeFromNav(string date)
+        {
+            // NAV NULL Date: 1753-01-01 00:00:00.000
+
+            if (date.Length != 8)
+                return new DateTime(1753, 1, 1);
+
+            string day = date.Substring(0, 2);
+            string mon = date.Substring(2, 2);
+            string year = date.Substring(4, 4);
+            return new DateTime(Convert.ToInt32(year), Convert.ToInt32(mon), Convert.ToInt32(day));
+        }
+
+        public static string ByteArrayToString(byte[] ba)
+        {
+            StringBuilder hex = new StringBuilder(ba.Length * 2);
+            foreach (byte b in ba)
+                hex.AppendFormat("{0:x2}", b);
+            return hex.ToString();
+        }
+
         public static string Base64Encode(string plainText)
         {
             byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);

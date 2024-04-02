@@ -420,28 +420,31 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             return list;
         }
 
-        public AdditionalCharge MapRootToAdditionalCharge(LSActivity.ActivityChargeRespond root)
+        public List<AdditionalCharge> MapRootToAdditionalCharge(LSActivity.ActivityChargeRespond root)
         {
             if (root.ChargeLines == null || root.ChargeLines.Length == 0)
-                return new AdditionalCharge();
+                return new List<AdditionalCharge>();
 
-            LSActivity.ChargeLines rec = root.ChargeLines[0];
-
-            return new AdditionalCharge()
+            List<AdditionalCharge> list = new List<AdditionalCharge>();
+            foreach (LSActivity.ChargeLines rec in root.ChargeLines)
             {
-                ActivityNo = ConvertTo.SafeString(rec.ActivityNo),
-                LineNo = rec.LineNo,
-                ItemNo = rec.ItemNo,
-                Description = rec.Description,
-                Quantity = rec.Qty,
-                Price = rec.Price,
-                DiscountPercentage = rec.DiscountPercentage,
-                TotalAmount = rec.Total,
-                Optional = rec.Optional,
-                UnitOfMeasure = rec.Uom,
-                InvoiceReference = ConvertTo.SafeString(rec.InvoiceReference),
-                ProductType = (rec.ProductType.Equals("Item")) ? ProductChargeType.Item : ProductChargeType.Deal
-            };
+                list.Add(new AdditionalCharge()
+                {
+                    ActivityNo = ConvertTo.SafeString(rec.ActivityNo),
+                    LineNo = rec.LineNo,
+                    ItemNo = rec.ItemNo,
+                    Description = rec.Description,
+                    Quantity = rec.Qty,
+                    Price = rec.Price,
+                    DiscountPercentage = rec.DiscountPercentage,
+                    TotalAmount = rec.Total,
+                    Optional = rec.Optional,
+                    UnitOfMeasure = rec.Uom,
+                    InvoiceReference = ConvertTo.SafeString(rec.InvoiceReference),
+                    ProductType = (ProductChargeType)ConvertTo.SafeInt(rec.ProductType)
+                });
+            }
+            return list;
         }
 
         public List<AttributeResponse> MapRootToAttributeResponse(LSActivity.ActivityAttributeRespond root)

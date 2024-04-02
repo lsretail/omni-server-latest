@@ -31,12 +31,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, contactAccount, optionalResource, promoCode, activityNo, noOfPersons);
         }
 
-        public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
+        public virtual List<AdditionalCharge> ActivityAdditionalChargesGet(string activityNo)
         {
             return NavWSBase.ActivityAdditionalChargesGet(activityNo);
         }
 
-        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        public virtual List<AdditionalCharge> ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
         {
             return NavWSBase.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
         }
@@ -101,7 +101,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             throw new NotImplementedException("Only available in Central Pre");
         }
 
-        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activityTime, string optionalResource, int quantity)
         {
             throw new NotImplementedException("Only available in Central Pre");
         }

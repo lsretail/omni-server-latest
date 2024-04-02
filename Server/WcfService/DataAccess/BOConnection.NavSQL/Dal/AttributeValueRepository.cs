@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
@@ -123,7 +123,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return list;
         }
 
-        public List<RetailAttribute> AttributesGetByItemId(string itemId)
+        /// <summary>
+        /// Get Attributes by type and value
+        /// </summary>
+        /// <param name="value">Link Field 1</param>
+        /// <param name="type">Link Type</param>
+        /// <returns></returns>
+        public List<RetailAttribute> AttributesGet(string value, AttributeLinkType type)
         {
             List<RetailAttribute> list = new List<RetailAttribute>();
 
@@ -134,8 +140,9 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connection.Open();
 
                     command.CommandText = "SELECT " + sqlcolumns + ",a.[Description],a.[Value Type],a.[Default Value]" + sqlfrom +
-                        " LEFT JOIN [" + navCompanyName + "Attribute] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id";
-                    command.Parameters.AddWithValue("@id", itemId);
+                        " LEFT JOIN [" + navCompanyName + "Attribute] a ON a.[Code]=mt.[Attribute Code]" + " WHERE mt.[Link Field 1]=@id AND mt.[Link Type]=@type" ;
+                    command.Parameters.AddWithValue("@id", value);
+                    command.Parameters.AddWithValue("@type", (int)type);
 
                     TraceSqlCommand(command);
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -158,7 +165,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             {
                 Code = SQLHelper.GetString(reader["Attribute Code"]),
                 Value = SQLHelper.GetString(reader["Attribute Value"]),
-                NumbericValue = SQLHelper.GetInt32(reader["Numeric Value"]),
+                NumericValue = SQLHelper.GetInt32(reader["Numeric Value"]),
                 LinkType = (AttributeLinkType)SQLHelper.GetInt32(reader["Link Type"]),
                 LinkField1 = SQLHelper.GetString(reader["Link Field 1"]),
                 LinkField2 = SQLHelper.GetString(reader["Link Field 2"]),
@@ -176,7 +183,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplAttributeValue ReaderToEcommAttributeValue(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplAttributeValue()
             {

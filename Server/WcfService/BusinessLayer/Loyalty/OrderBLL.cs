@@ -2,13 +2,14 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
-using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -38,16 +39,18 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.OrderStatusCheck(orderId, stat);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat)
         {
-            BOLoyConnection.OrderCancel(orderId, storeId, userId, lineNo, stat);
+            BOLoyConnection.OrderCancel(orderId, storeId, userId, lines, stat);
         }
 
-        public virtual SalesEntry OrderCreate(Order request, bool returnOrderIdOnly, Statistics stat)
+        private void ValidateOrder(Order request, Statistics stat)
         {
-            //validation
             if (request == null)
-                throw new LSOmniException(StatusCode.ObjectMissing, "OrderCreate() request is empty");
+                throw new LSOmniException(StatusCode.ObjectMissing, "Order request is empty");
+
+            if (string.IsNullOrWhiteSpace(request.Id))
+                request.Id = GuidHelper.NewGuidString();
 
             if (string.IsNullOrEmpty(request.CardId) == false)
             {
@@ -60,11 +63,55 @@ namespace LSOmni.BLL.Loyalty
                     request.Email = contact.Email;
                 if (string.IsNullOrEmpty(request.ContactName))
                     request.ContactName = contact.Name;
-                if (request.ContactAddress == null && contact.Addresses.Count > 0)
+
+                if (contact.Addresses.Count > 0 && ((request.ContactAddress == null) || (string.IsNullOrEmpty(request.ContactAddress.Address1))))
                 {
                     request.ContactAddress = contact.Addresses[0];
                 }
             }
+
+            if ((request.ShipToAddress == null) || (string.IsNullOrEmpty(request.ShipToAddress.Address1)))
+            {
+                if (request.OrderType != OrderType.Sale && request.ShipOrder == false)
+                {
+                    request.ShipToAddress = new Address();
+                }
+                else
+                {
+                    throw new LSOmniException(StatusCode.AddressIsEmpty, "ShipToAddress can not be null if ClickAndCollectOrder is false");
+                }
+            }
+
+            if ((request.ContactAddress == null) || (string.IsNullOrEmpty(request.ContactAddress.Address1)))
+            {
+                if (request.OrderType == OrderType.ClickAndCollect)
+                {
+                    request.ContactAddress = new Address();
+                }
+                else
+                {
+                    request.ContactAddress = request.ShipToAddress;
+                }
+            }
+
+            // need to map the TenderType enum coming from devices to TenderTypeId that NAV knows
+            if (request.OrderPayments == null)
+                request.OrderPayments = new List<OrderPayment>();
+
+            int lineNo = 1;
+            foreach (OrderPayment line in request.OrderPayments)
+            {
+                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
+                if (line.LineNumber == 0)
+                    line.LineNumber = lineNo++;
+                else
+                    lineNo = line.LineNumber;
+            }
+        }
+
+        public virtual SalesEntry OrderCreate(Order request, bool returnOrderIdOnly, Statistics stat)
+        {
+            ValidateOrder(request, stat);
 
             if (request.OrderType == OrderType.ScanPayGo && config.SettingsBoolGetByKey(ConfigKey.ScanPayGo_CheckPayAuth))
             {
@@ -81,6 +128,26 @@ namespace LSOmni.BLL.Loyalty
             string extId = BOLoyConnection.OrderCreate(request, out string orderId, stat);
 
             if (request.OrderType == OrderType.ScanPayGoSuspend || (returnOrderIdOnly && string.IsNullOrEmpty(orderId) == false))
+            {
+                return new SalesEntry(orderId)
+                {
+                    ExternalId = extId
+                };
+            }
+
+            TransactionBLL tBLL = new TransactionBLL(config, timeoutInSeconds);
+            if (string.IsNullOrEmpty(orderId))
+                return tBLL.SalesEntryGet(extId, DocumentIdType.External, stat);
+
+            return tBLL.SalesEntryGet(orderId, DocumentIdType.Order, stat);
+        }
+
+        public virtual SalesEntry OrderEdit(Order request, string orderId, OrderEditType editType, bool returnOrderIdOnly, Statistics stat)
+        {
+            ValidateOrder(request, stat);
+
+            string extId = BOLoyConnection.OrderEdit(request, ref orderId, editType, stat);
+            if (returnOrderIdOnly && (string.IsNullOrEmpty(orderId) == false))
             {
                 return new SalesEntry(orderId)
                 {

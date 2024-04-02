@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LSRetail.Omni.Domain.DataModel.Base.Retail;
+using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
@@ -154,6 +155,192 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string Details { get; set; }
         [DataMember]
         public int ValidationPeriodId { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public class ReplDiscountSetupResponse : IDisposable
+    {
+        public ReplDiscountSetupResponse()
+        {
+            LastKey = string.Empty;
+            MaxKey = string.Empty;
+            RecordsRemaining = 0;
+            Discounts = new List<ReplDiscountSetup>();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (Discounts != null)
+                    Discounts.Clear();
+            }
+        }
+
+        [DataMember]
+        public string LastKey { get; set; }
+        [DataMember]
+        public string MaxKey { get; set; }
+        [DataMember]
+        public int RecordsRemaining { get; set; }
+        [DataMember]
+        public List<ReplDiscountSetup> Discounts { get; set; }
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public class ReplDiscountSetup : IDisposable
+    {
+        public ReplDiscountSetup(bool isJson)
+        {
+            IsDeleted = false;
+            PriorityNo = 0;
+            DiscountValue = 0M;
+            OfferNo = string.Empty;
+            Description = string.Empty;
+            Details = string.Empty;
+            PriceGroup = string.Empty;
+            CouponCode = string.Empty;
+            CustomerDiscountGroup = string.Empty;
+            LoyaltySchemeCode = string.Empty;
+            MemberAttribute = string.Empty;
+            TenderTypeCode = string.Empty;
+            TenderTypeValue = string.Empty;
+            Type = ReplDiscountType.Unknown; //Disc. Offer, Multibuy
+            Number = string.Empty;
+            VariantId = string.Empty;
+            UnitOfMeasureId = string.Empty;
+            CurrencyCode = string.Empty;
+            LinePriceGroup = string.Empty;
+            ProductItemCategory = string.Empty;
+            ValidFromBeforeExpDate = string.Empty;
+            ValidToBeforeExpDate = string.Empty;
+            LineGroup = string.Empty;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+            }
+        }
+
+        [DataMember]
+        public bool IsDeleted { get; set; }
+        [DataMember]
+        public string OfferNo { get; set; }
+        [DataMember]
+        public string Description { get; set; }
+        [DataMember]
+        public string Details { get; set; }
+        [DataMember]
+        public bool Enabled { get; set; }
+        [DataMember]
+        public ReplDiscountType Type { get; set; }
+        [DataMember]
+        public int PriorityNo { get; set; }
+        [DataMember]
+        public int ValidationPeriodId { get; set; }
+        [DataMember]
+        public DiscountValueType DiscountValueType { get; set; }
+        [DataMember]
+        public decimal DealPriceValue { get; set; }
+        [DataMember]
+        public decimal DiscountValue { get; set; }
+        [DataMember]
+        public decimal DiscountAmountValue { get; set; }
+        [DataMember]
+        public string CustomerDiscountGroup { get; set; }
+        [DataMember]
+        public decimal AmountToTrigger { get; set; }
+        [DataMember]
+        public string LoyaltySchemeCode { get; set; }
+        [DataMember]
+        public string CouponCode { get; set; }
+        [DataMember]
+        public decimal CouponQtyNeeded { get; set; }
+        [DataMember]
+        public string PriceGroup { get; set; }
+        [DataMember]
+        public ReplDiscMemberType MemberType { get; set; }
+        [DataMember]
+        public string MemberAttribute { get; set; }
+        [DataMember]
+        public decimal MaxDiscountAmount { get; set; }
+        [DataMember]
+        public string TenderTypeCode { get; set; }
+        [DataMember]
+        public string TenderTypeValue { get; set; }
+        [DataMember]
+        public bool PromptForAction { get; set; }
+        [DataMember]
+        public decimal TenderOffer { get; set; }
+        [DataMember]
+        public decimal TenderOfferAmount { get; set; }
+        [DataMember]
+        public decimal MemberPoints { get; set; }
+
+        [DataMember]
+        public int LineNumber { get; set; }
+        [DataMember]
+        public ReplDiscountLineType LineType { get; set; }
+        [DataMember]
+        public string Number { get; set; }
+        [DataMember]
+        public string VariantId { get; set; }
+        [DataMember]
+        public decimal StandardPriceInclVAT { get; set; }
+        [DataMember]
+        public decimal StandardPrice { get; set; }
+        [DataMember]
+        public decimal SplitDealPriceDiscount { get; set; }
+        [DataMember]
+        public decimal DealPriceDiscount { get; set; }
+        [DataMember]
+        public string LinePriceGroup { get; set; }
+        [DataMember]
+        public string CurrencyCode { get; set; }
+        [DataMember]
+        public string UnitOfMeasureId { get; set; }
+        [DataMember]
+        public string ProductItemCategory { get; set; }
+        [DataMember]
+        public string ValidFromBeforeExpDate { get; set; }
+        [DataMember]
+        public string ValidToBeforeExpDate { get; set; }
+        [DataMember]
+        public string LineGroup { get; set; }
+        [DataMember]
+        public int NumberOfItemNeeded { get; set; }
+        [DataMember]
+        public bool IsPercentage { get; set; }
+        [DataMember]
+        public decimal LineDiscountAmount { get; set; }
+        [DataMember]
+        public decimal LineDiscountAmountInclVAT { get; set; }
+        [DataMember]
+        public decimal OfferPrice { get; set; }
+        [DataMember]
+        public decimal OfferPriceInclVAT { get; set; }
+        [DataMember]
+        public bool TriggerPopUp { get; set; }
+        [DataMember]
+        public int VariantType { get; set; }
+        [DataMember]
+        public bool Exclude { get; set; }
+        [DataMember]
+        public decimal LineMemberPoints { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -355,6 +542,34 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [EnumMember]
         Percent = 1,
         [EnumMember]
-        Amount = 2
+        Amount = 2,
+        [EnumMember]
+        LeastExpensive = 3,
+        [EnumMember]
+        LineSpec = 4
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum ReplDiscMemberType
+    {
+        [EnumMember]
+        Scheme = 0,
+        [EnumMember]
+        Club = 1
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum ReplDiscountLineType
+    {
+        [EnumMember]
+        Item = 0,
+        [EnumMember]
+        ProductGroup = 1,
+        [EnumMember]
+        ItemCategory = 2,
+        [EnumMember]
+        All = 3,
+        [EnumMember]
+        SpecialGroup = 4
     }
 }

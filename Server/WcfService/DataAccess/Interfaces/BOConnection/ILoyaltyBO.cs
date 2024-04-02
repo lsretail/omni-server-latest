@@ -76,9 +76,9 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         Card CardGetById(string id, Statistics stat);
         long MemberCardGetPoints(string cardId, Statistics stat);
         decimal GetPointRate(string currency, Statistics stat);
-        GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat);
-        List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat);
-        List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat);
+        GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat);
+        List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat);
+        List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat);
 
         #endregion
 
@@ -104,7 +104,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat);
         SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat);
         List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat);
-        List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId, Statistics stat);
+        SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat);
         string FormatAmount(decimal amount, string culture);
         List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, Statistics stat);
 
@@ -113,7 +113,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         #region Offer and Advertisement
 
         List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat);
-        List<Advertisement> AdvertisementsGetById(string id, Statistics stat);
 
         #endregion
 
@@ -127,7 +126,6 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Store
 
-        List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat);
         Store StoreGetById(string id, Statistics stat);
         List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, Statistics stat);
         List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat);
@@ -146,10 +144,12 @@ namespace LSOmni.DataAccess.Interface.BOConnection
 
         #region Order
 
+        bool CompressCOActive(Statistics stat);
         OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat);
         OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder, Statistics stat);
-        void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat);
+        void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat);
         string OrderCreate(Order request, out string orderId, Statistics stat);
+        string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat);
         Order BasketCalcToOrder(OneList list, Statistics stat);
 
         #endregion

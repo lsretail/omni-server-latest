@@ -1,17 +1,17 @@
 ﻿using System;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL
 {
     public class ConfigBLL : BaseBLL
     {
-        private IConfigRepository iConfigRepository;
-        private ILoyaltyBO BOLoyConnection = null;
+        private readonly IConfigRepository iConfigRepository;
+        private readonly ILoyaltyBO BOLoyConnection = null;
 
         public ConfigBLL(BOConfiguration config) : base(config)
         {

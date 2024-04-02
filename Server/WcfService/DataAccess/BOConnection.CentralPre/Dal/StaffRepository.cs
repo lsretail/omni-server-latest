@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 
-using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -138,7 +138,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             };
 
             staff.Name = staff.FirstName + " " + staff.LastName;
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return staff;
         }
     }

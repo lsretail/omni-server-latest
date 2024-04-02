@@ -320,7 +320,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplItemVariantRegistration ReaderToItemVariantRegistration(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplItemVariantRegistration registration = new ReplItemVariantRegistration()
             {
@@ -345,7 +345,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplItemVariant ReaderToItemVariant(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplItemVariant()
             {

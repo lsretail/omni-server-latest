@@ -39,7 +39,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, contactAccount, optionalResource, promoCode, activityNo, noOfPersons, guestType);
         }
 
-        public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
+        public virtual List<AdditionalCharge> ActivityAdditionalChargesGet(string activityNo)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ActivityAdditionalChargesGet(activityNo);
@@ -47,7 +47,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityAdditionalChargesGet(activityNo);
         }
 
-        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        public virtual List<AdditionalCharge> ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
@@ -151,12 +151,12 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
         }
 
-        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activityTime, string optionalResource, int quantity)
         {
             if (NAVVersion < new Version("17.5"))
                 throw new NotImplementedException();
 
-            return LSCWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
+            return LSCWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
         }
 
         public virtual string ActivityInsertGroupReservation(Reservation request)

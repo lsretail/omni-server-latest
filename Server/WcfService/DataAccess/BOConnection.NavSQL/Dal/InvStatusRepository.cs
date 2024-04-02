@@ -77,7 +77,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         while (reader.Read())
                         {
                             if (fullReplication)
-                                lastKey = ByteArrayToString(reader["timestamp"] as byte[]);
+                                lastKey = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
                             else
                                 lastKey = SQLHelper.GetString(reader["Replication Counter"]);
 
@@ -151,7 +151,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         int cnt = 0;
                         while (reader.Read())
                         {
-                            lastKey = ByteArrayToString(reader["timestamp"] as byte[]);
+                            lastKey = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
                             list.Add(new ReplInvStatus()
                             {

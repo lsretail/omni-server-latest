@@ -5,6 +5,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSOmni.Common.Util;
+using System.Security.AccessControl;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -510,6 +511,24 @@ namespace LSOmni.BLL.Loyalty
             ReplMixMatchResponse rs = new ReplMixMatchResponse()
             {
                 Discounts = BOAppConnection.ReplicateMixAndMatch(replRequest.AppId, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
+                RecordsRemaining = recordsRemaining,
+                LastKey = lastkey,
+                MaxKey = maxkey
+            };
+            logger.Debug(config.LSKey.Key, "Result > Records:{0} LastKey:{1} RecRemain:{2}", rs.Discounts.Count, rs.LastKey, rs.RecordsRemaining);
+            return rs;
+        }
+
+        public virtual ReplDiscountSetupResponse ReplEcommDiscountSetup(ReplRequest replRequest)
+        {
+            string lastkey = replRequest.LastKey;
+            string maxkey = replRequest.MaxKey;
+            int recordsRemaining = 0;
+            config.AppId = replRequest.AppId;
+
+            ReplDiscountSetupResponse rs = new ReplDiscountSetupResponse()
+            {
+                Discounts = BOAppConnection.ReplicateDiscountSetup(replRequest.AppId, string.Empty, replRequest.StoreId, replRequest.BatchSize, replRequest.FullReplication, ref lastkey, ref maxkey, ref recordsRemaining),
                 RecordsRemaining = recordsRemaining,
                 LastKey = lastkey,
                 MaxKey = maxkey

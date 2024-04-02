@@ -237,7 +237,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.XmlMapping.Loyalty
                     new XElement("Mobile_Phone_No.", header.ContactAddress.CellPhoneNumber),
                     new XElement("E-Mail", header.Email),
                     new XElement("Shipping_Agent_Code", ""),  //empty
-                    new XElement("Shipment_Method_Code", (int)header.ShippingStatus), // ISP (instore pickup), esp
                     new XElement("Price_Include_VAT", 0),
                     new XElement("Basket_Price", ConvertTo.SafeStringDecimal(header.TotalAmount)),
                     new XElement("WINCOrderId", string.Empty),  //WINCOrderId is orderId in NOP

@@ -55,19 +55,19 @@ namespace LSOmni.BLL.Loyalty
             {
                 if (list.IsHospitality)
                 {
-                    list = CalcuateHospList(list, stat);
+                    list = CalculateHospList(list, stat);
                 }
                 else
                 {
-                    list = CalcuateList(list, stat);
+                    list = CalculateList(list, stat);
                 }
             }
 
             if (string.IsNullOrEmpty(list.Name))
             {
-                MemberContact cont = BOLoyConnection.ContactGet(ContactSearchType.CardId, list.CardId, stat);
-                if (cont != null)
-                    list.Name = cont.Name;
+                MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.CardId, list.CardId, stat);
+                if (contact != null)
+                    list.Name = contact.Name;
             }
 
             iRepository.OneListSave(list,list.Name, calculate, stat);
@@ -85,25 +85,26 @@ namespace LSOmni.BLL.Loyalty
             CheckItemSetup(list);
 
             Order order = BOLoyConnection.BasketCalcToOrder(list, stat);
-            foreach (OneListItem olditem in list.Items)
+            foreach (OneListItem oldItem in list.Items)
             {
-                OrderLine oline = order.OrderLines.Find(l => l.ItemId == olditem.ItemId && l.LineNumber == olditem.LineNumber);
+                OrderLine oline = order.OrderLines.Find(l => l.ItemId == oldItem.ItemId && l.LineNumber == oldItem.LineNumber);
                 if (oline != null)
                 {
-                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    oline.Id = oldItem.Id;
+                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
                     {
-                        oline.VariantId = olditem.VariantId;
-                        oline.VariantDescription = olditem.VariantDescription;
+                        oline.VariantId = oldItem.VariantId;
+                        oline.VariantDescription = oldItem.VariantDescription;
                     }
 
-                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
                     {
-                        oline.UomId = olditem.UnitOfMeasureId;
+                        oline.UomId = oldItem.UnitOfMeasureId;
                     }
 
-                    if (string.IsNullOrEmpty(oline.ItemImageId) && (olditem.Image != null))
+                    if (string.IsNullOrEmpty(oline.ItemImageId) && (oldItem.Image != null))
                     {
-                        oline.ItemImageId = olditem.Image.Id;
+                        oline.ItemImageId = oldItem.Image.Id;
                     }
                 }
             }
@@ -119,25 +120,25 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.NoLinesToPost, "No Lines to calculate");
 
             OrderHosp order = BOLoyConnection.HospOrderCalculate(list, stat);
-            foreach (OneListItem olditem in list.Items)
+            foreach (OneListItem oldItem in list.Items)
             {
-                OrderHospLine oline = order.OrderLines.Find(l => l.ItemId == olditem.ItemId && l.LineNumber == olditem.LineNumber);
+                OrderHospLine oline = order.OrderLines.Find(l => l.ItemId == oldItem.ItemId && l.LineNumber == oldItem.LineNumber);
                 if (oline != null)
                 {
-                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
                     {
-                        oline.VariantId = olditem.VariantId;
-                        oline.VariantDescription = olditem.VariantDescription;
+                        oline.VariantId = oldItem.VariantId;
+                        oline.VariantDescription = oldItem.VariantDescription;
                     }
 
-                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
                     {
-                        oline.UomId = olditem.UnitOfMeasureId;
+                        oline.UomId = oldItem.UnitOfMeasureId;
                     }
 
-                    if (string.IsNullOrEmpty(oline.ItemImageId) && (olditem.Image != null))
+                    if (string.IsNullOrEmpty(oline.ItemImageId) && (oldItem.Image != null))
                     {
-                        oline.ItemImageId = olditem.Image.Id;
+                        oline.ItemImageId = oldItem.Image.Id;
                     }
                 }
             }
@@ -170,7 +171,6 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual void OneListDeleteByCardId(string cardId, Statistics stat)
         {
-            iRepository.OneListRemoveLinking(cardId, stat);
             List<OneList> list = iRepository.OneListGetByCardId(cardId, false, stat);
             foreach (OneList oneList in list)
             {
@@ -178,11 +178,11 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate, Statistics stat)
+        public virtual OneList OneListItemModify(string oneListId, OneListItem item, bool remove, bool calculate, Statistics stat)
         {
-            OneList list = iRepository.OneListGetById(onelistId, true, stat);
+            OneList list = iRepository.OneListGetById(oneListId, true, stat);
 
-            bool notfound = true;
+            bool notFound = true;
             if (remove)
             {
                 for (int i = 0; i < list.Items.Count; i++)
@@ -190,12 +190,12 @@ namespace LSOmni.BLL.Loyalty
                     if (list.Items[i].Id == item.Id)
                     {
                         list.Items.RemoveAt(i);
-                        notfound = false;
+                        notFound = false;
                         break;
                     }
                 }
 
-                if (notfound)
+                if (notFound)
                     throw new LSOmniException(StatusCode.OneListNotFound, string.Format("OneList Item {0} not found", item.Id));
             }
             else
@@ -210,12 +210,12 @@ namespace LSOmni.BLL.Loyalty
                     if (list.Items[i].ItemId == item.ItemId && list.Items[i].VariantId == (item.VariantId ?? string.Empty) && list.Items[i].UnitOfMeasureId == (item.UnitOfMeasureId ?? string.Empty))
                     {
                         list.Items[i].Quantity += item.Quantity;
-                        notfound = false;
+                        notFound = false;
                         break;
                     }
                 }
 
-                if (notfound)
+                if (notFound)
                 {
                     list.Items.Add(item);
                 }
@@ -256,11 +256,11 @@ namespace LSOmni.BLL.Loyalty
                 }
                 else
                 {
-                    MemberContact cont = cBll.ContactGet(ContactSearchType.CardId, cardId, stat);
-                    if (cont == null)
+                    MemberContact contact = cBll.ContactGet(ContactSearchType.CardId, cardId, stat);
+                    if (contact == null)
                         throw new LSOmniException(StatusCode.MemberAccountNotFound);
 
-                    name = cont.Name;
+                    name = contact.Name;
                 }
             }
             iRepository.OneListLinking(oneListId, cardId, name, status, stat);
@@ -282,7 +282,7 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private OneList CalcuateList(OneList list, Statistics stat)
+        private OneList CalculateList(OneList list, Statistics stat)
         {
             if (list.Items.Count == 0)
                 return list;
@@ -300,7 +300,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalDiscAmount = calcResp.TotalDiscount;
             list.Currency = calcResp.Currency;
 
-            ObservableCollection<OneListItem> newitems = new ObservableCollection<OneListItem>();
+            ObservableCollection<OneListItem> newItems = new ObservableCollection<OneListItem>();
             foreach (OrderLine line in calcResp.OrderLines)
             {
                 OneListItem item = new OneListItem()
@@ -326,49 +326,50 @@ namespace LSOmni.BLL.Loyalty
                     OnelistItemDiscounts = new List<OneListItemDiscount>()
                 };
 
-                OneListItem olditem = list.Items.ToList().Find(i => i.ItemId == line.ItemId && i.LineNumber == line.LineNumber);
-                if (olditem != null)
+                OneListItem oldItem = list.Items.ToList().Find(i => i.ItemId == line.ItemId && i.LineNumber == line.LineNumber);
+                if (oldItem != null)
                 {
                     if (string.IsNullOrEmpty(line.ItemImageId))
-                        item.Image = olditem.Image;
+                        item.Image = oldItem.Image;
 
-                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                    if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
                     {
-                        item.VariantId = olditem.VariantId;
-                        item.VariantDescription = olditem.VariantDescription;
+                        item.VariantId = oldItem.VariantId;
+                        item.VariantDescription = oldItem.VariantDescription;
                     }
 
-                    if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                    if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
                     {
-                        item.UnitOfMeasureId = olditem.UnitOfMeasureId;
-                        item.UnitOfMeasureDescription = olditem.UnitOfMeasureDescription;
+                        item.UnitOfMeasureId = oldItem.UnitOfMeasureId;
+                        item.UnitOfMeasureDescription = oldItem.UnitOfMeasureDescription;
                     }
 
-                    item.BarcodeId = olditem.BarcodeId;
-                    item.ProductGroup = olditem.ProductGroup;
-                    item.ItemCategory = olditem.ItemCategory;
-                    item.Immutable = olditem.Immutable;
+                    item.BarcodeId = oldItem.BarcodeId;
+                    item.ProductGroup = oldItem.ProductGroup;
+                    item.ItemCategory = oldItem.ItemCategory;
+                    item.Immutable = oldItem.Immutable;
+                    item.Id = oldItem.Id;
                 }
-                newitems.Add(item);
+                newItems.Add(item);
             }
 
             list.Items.Clear();
-            list.Items = newitems;
+            list.Items = newItems;
 
-            List<OneListItemDiscount> newdisclines = new List<OneListItemDiscount>();
+            List<OneListItemDiscount> newDiscLines = new List<OneListItemDiscount>();
             foreach (OrderDiscountLine disc in calcResp.OrderDiscountLines)
             {
-                int lineno = disc.LineNumber;
+                int lineNo = disc.LineNumber;
                 foreach (OrderLine oline in calcResp.OrderLines)
                 {
                     if (oline.DiscountLineNumbers.Contains(disc.LineNumber))
                     {
-                        lineno = oline.LineNumber;
+                        lineNo = oline.LineNumber;
                         break;
                     }
                 }
 
-                OneListItem line = list.Items.ToList().Find(i => i.LineNumber == lineno);
+                OneListItem line = list.Items.ToList().Find(i => i.LineNumber == lineNo);
                 if (line != null)
                 {
                     OneListItemDiscount discount = new OneListItemDiscount()
@@ -391,7 +392,7 @@ namespace LSOmni.BLL.Loyalty
             return list;
         }
 
-        private OneList CalcuateHospList(OneList list, Statistics stat)
+        private OneList CalculateHospList(OneList list, Statistics stat)
         {
             if (list.Items.Count == 0)
                 return list;
@@ -409,7 +410,7 @@ namespace LSOmni.BLL.Loyalty
             list.TotalDiscAmount = calcResp.TotalDiscount;
             list.Currency = calcResp.Currency;
 
-            ObservableCollection<OneListItem> newitems = new ObservableCollection<OneListItem>();
+            ObservableCollection<OneListItem> newItems = new ObservableCollection<OneListItem>();
             foreach (OrderHospLine line in calcResp.OrderLines)
             {
                 OneListItem item = new OneListItem()
@@ -434,55 +435,56 @@ namespace LSOmni.BLL.Loyalty
                     DiscountPercent = line.DiscountPercent
                 };
 
-                foreach (OneListItem olditem in list.Items)
+                foreach (OneListItem oldItem in list.Items)
                 {
-                    if (olditem.ItemId == line.ItemId && olditem.LineNumber == line.LineNumber)
+                    if (oldItem.ItemId == line.ItemId && oldItem.LineNumber == line.LineNumber)
                     {
                         if (string.IsNullOrEmpty(line.ItemImageId))
-                            item.Image = olditem.Image;
+                            item.Image = oldItem.Image;
 
-                        if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(olditem.VariantId) == false)
+                        if (string.IsNullOrEmpty(item.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
                         {
-                            item.VariantId = olditem.VariantId;
-                            item.VariantDescription = olditem.VariantDescription;
+                            item.VariantId = oldItem.VariantId;
+                            item.VariantDescription = oldItem.VariantDescription;
                         }
 
-                        if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(olditem.UnitOfMeasureId) == false)
+                        if (string.IsNullOrEmpty(item.UnitOfMeasureId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
                         {
-                            item.UnitOfMeasureId = olditem.UnitOfMeasureId;
-                            item.UnitOfMeasureDescription = olditem.UnitOfMeasureDescription;
+                            item.UnitOfMeasureId = oldItem.UnitOfMeasureId;
+                            item.UnitOfMeasureDescription = oldItem.UnitOfMeasureDescription;
                         }
 
-                        item.BarcodeId = olditem.BarcodeId;
-                        item.ProductGroup = olditem.ProductGroup;
-                        item.ItemCategory = olditem.ItemCategory;
+                        item.BarcodeId = oldItem.BarcodeId;
+                        item.ProductGroup = oldItem.ProductGroup;
+                        item.ItemCategory = oldItem.ItemCategory;
+                        item.Id = oldItem.Id;
                     }
                 }
 
                 item.OnelistSubLines = new List<OneListItemSubLine>();
-                foreach (OrderHospSubLine sline in line.SubLines)
+                foreach (OrderHospSubLine sLine in line.SubLines)
                 {
                     item.OnelistSubLines.Add(new OneListItemSubLine()
                     {
-                        LineNumber = sline.LineNumber,
-                        DealLineId = Convert.ToInt32(sline.DealLineId),
-                        DealModLineId = Convert.ToInt32(sline.DealModifierLineId),
-                        Description = sline.Description,
-                        ItemId = sline.ItemId,
-                        ModifierGroupCode = sline.ModifierGroupCode,
-                        ModifierSubCode = sline.ModifierSubCode,
-                        Quantity = sline.Quantity,
-                        Type = sline.Type,
-                        Uom = sline.Uom,
-                        VariantDescription = sline.VariantDescription,
-                        VariantId = sline.VariantId
+                        LineNumber = sLine.LineNumber,
+                        DealLineId = Convert.ToInt32(sLine.DealLineId),
+                        DealModLineId = Convert.ToInt32(sLine.DealModifierLineId),
+                        Description = sLine.Description,
+                        ItemId = sLine.ItemId,
+                        ModifierGroupCode = sLine.ModifierGroupCode,
+                        ModifierSubCode = sLine.ModifierSubCode,
+                        Quantity = sLine.Quantity,
+                        Type = sLine.Type,
+                        Uom = sLine.Uom,
+                        VariantDescription = sLine.VariantDescription,
+                        VariantId = sLine.VariantId
                     });
                 }
-                newitems.Add(item);
+                newItems.Add(item);
             }
 
             list.Items.Clear();
-            list.Items = newitems;
+            list.Items = newItems;
             return list;
         }
     }

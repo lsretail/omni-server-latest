@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -10,13 +9,11 @@ using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication;
 using LSOmni.DataAccess.BOConnection.PreCommon.Mapping;
 using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
 
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
@@ -51,6 +48,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
             ItemRepository rep = new ItemRepository(config);
             LoyItem item = rep.ItemGet(table);
+
+            xmlRequest = xml.GetGeneralWebRequestXML("LSC Item HTML ML", "Item No.", item.Id);
+            xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table != null && table.NumberOfValues > 0)
+            {
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Html"));
+                item.Details = ConvertTo.Base64Decode(field.Values[0]);
+            }
+
+            item.Images = ImagesGetByLink("Item", item.Id, string.Empty, string.Empty, false, stat);
 
             xmlRequest = xml.GetGeneralWebRequestXML("Item Unit of Measure", "Item No.", item.Id);
             xmlResponse = RunOperation(xmlRequest, true);
@@ -349,6 +358,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
+            if (page < 1)
+                page = 1;
+
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC MobilePlu", "StoreId", storeId, "PageId", page.ToString());
             string xmlResponse = RunOperation(xmlRequest, true);
@@ -586,7 +598,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
+        public List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -597,147 +609,151 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
             SetupRepository rep = new SetupRepository(config);
 
-            foreach (string id in itemIds)
+            xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Discounts", "Store No.", storeId, "Item No.", itemId);
+            xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            list.AddRange(rep.GetDiscount(table));
+
+            xmlRequest = xml.GetGeneralWebRequestXML(tbname, "Store No.", storeId, "Item No.", itemId);
+            xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            table = xml.GetGeneralWebResponseXML(xmlResponse);
+            list.AddRange(rep.GetDiscount(table));
+
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
+        {
+            return new DiscountValidation()
             {
-                xmlRequest = xml.GetGeneralWebRequestXML("LSC WI Discounts", "Store No.", storeId, "Item No.", id);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-                list.AddRange(rep.GetDiscount(table));
+                TimeWithinBounds = true,
+                StartDate = DateTime.MinValue,
+                EndDate = DateTime.MinValue
+            };
+        }
 
-                xmlRequest = xml.GetGeneralWebRequestXML(tbname, "Store No.", storeId, "Item No.", id);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                table = xml.GetGeneralWebResponseXML(xmlResponse);
-                list.AddRange(rep.GetDiscount(table));
-            }
+        public void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
 
-            List<ProactiveDiscount> tmp = new List<ProactiveDiscount>();
-            foreach (ProactiveDiscount d in list)
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest;
+            string xmlResponse;
+
+            string tbname = (LSCVersion >= new Version("21.5")) ? "LSC WI Mix & Match Offer Ext" : "LSC WI Mix & Match Offer";
+            SetupRepository rep = new SetupRepository(config);
+            xmlRequest = xml.GetGeneralWebRequestXML("LSC Periodic Discount", "No.", disc.Id);
+            xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            rep.SetDiscountInfo(table, disc);
+
+            if (disc.Type == ProactiveDiscountType.MixMatch)
             {
-                if (d.LoyaltySchemeCode == string.Empty)
-                    tmp.Add(d);
-
-                if (string.IsNullOrEmpty(loyaltySchemeCode) == false)
+                List<string> fields = new List<string>()
                 {
-                    if (d.LoyaltySchemeCode.Equals(loyaltySchemeCode, StringComparison.InvariantCultureIgnoreCase))
-                        tmp.Add(d);
-                }
-            }
-            list = tmp;
+                    "Item No."
+                };
 
-            foreach (ProactiveDiscount disc in list)
-            {
-                xmlRequest = xml.GetGeneralWebRequestXML("LSC Periodic Discount", "No.", disc.Id);
-                xmlResponse = RunOperation(xmlRequest, true);
-                HandleResponseCode(ref xmlResponse);
-                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
-                rep.SetDiscountInfo(table, disc);
-
-                if (disc.Type == ProactiveDiscountType.MixMatch)
+                List<XMLFieldData> filter = new List<XMLFieldData>()
                 {
-                    List<string> fields = new List<string>()
+                    new XMLFieldData()
                     {
-                        "Item No."
-                    };
-
-                    List<XMLFieldData> filter = new List<XMLFieldData>()
+                        FieldName = "Offer No.",
+                        Values = new List<string>() { disc.Id }
+                    },
+                    new XMLFieldData()
                     {
-                        new XMLFieldData()
-                        {
-                            FieldName = "Offer No.",
-                            Values = new List<string>() { disc.Id }
-                        },
-                        new XMLFieldData()
-                        {
-                            FieldName = "Store No.",
-                            Values = new List<string>() { storeId }
-                        },
-                        new XMLFieldData()
-                        {
-                            FieldName = "Loyalty Scheme Code",
-                            Values = new List<string>() { "", loyaltySchemeCode }
-                        }
-                    };
-
-                    try
+                        FieldName = "Store No.",
+                        Values = new List<string>() { storeId }
+                    },
+                    new XMLFieldData()
                     {
-                        xmlRequest = xml.GetBatchWebRequestXML(tbname, fields, filter, string.Empty);
-                        xmlResponse = RunOperation(xmlRequest, true);
-                        HandleResponseCode(ref xmlResponse);
-                        table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-                        disc.ItemIds = new List<string>();
-                        XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Item No.");
-                        for (int i = 0; i < table.NumberOfValues; i++)
-                        {
-                            disc.ItemIds.Add(fld.Values[i]);
-                        }
-                        disc.ItemIds.Remove(disc.ItemId);
+                        FieldName = "Loyalty Scheme Code",
+                        Values = new List<string>() { "", loyaltySchemeCode }
                     }
-                    catch (Exception ex)
-                    {
-                        logger.Warn(ex, "Failed to get Mix&Match items");
-                    }
+                };
 
-                    xmlRequest = xml.GetGeneralWebRequestXML("LSC Periodic Discount Benefits", "Offer No.", disc.Id);
+                try
+                {
+                    xmlRequest = xml.GetBatchWebRequestXML(tbname, fields, filter, string.Empty);
                     xmlResponse = RunOperation(xmlRequest, true);
                     HandleResponseCode(ref xmlResponse);
                     table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-                    disc.BenefitItemIds = new List<string>();
-                    XMLFieldData fld2 = table.FieldList.Find(f => f.FieldName == "No.");
+                    disc.ItemIds = new List<string>();
+                    XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Item No.");
                     for (int i = 0; i < table.NumberOfValues; i++)
                     {
-                        disc.BenefitItemIds.Add(fld2.Values[i]);
+                        disc.ItemIds.Add(fld.Values[i]);
                     }
+                    disc.ItemIds.Remove(disc.ItemId);
                 }
-                else if (disc.Type == ProactiveDiscountType.DiscOffer)
+                catch (Exception ex)
                 {
-                    List<string> fields = new List<string>()
-                    {
-                        "Unit Price"
-                    };
+                    logger.Warn(ex, "Failed to get Mix&Match items");
+                }
 
-                    List<XMLFieldData> filter = new List<XMLFieldData>()
-                    {
-                        new XMLFieldData()
-                        {
-                            FieldName = "Store No.",
-                            Values = new List<string>() { storeId }
-                        },
-                        new XMLFieldData()
-                        {
-                            FieldName = "Item No.",
-                            Values = new List<string>() { disc.ItemId }
-                        },
-                        new XMLFieldData()
-                        {
-                            FieldName = "Variant Code",
-                            Values = new List<string>() { disc.VariantId }
-                        }
-                    };
+                xmlRequest = xml.GetGeneralWebRequestXML("LSC Periodic Discount Benefits", "Offer No.", disc.Id);
+                xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-                    try
-                    {
-                        xmlRequest = xml.GetBatchWebRequestXML("LSC WI Price", fields, filter, string.Empty);
-                        xmlResponse = RunOperation(xmlRequest, true);
-                        HandleResponseCode(ref xmlResponse);
-                        table = xml.GetGeneralWebResponseXML(xmlResponse);
-
-                        disc.ItemIds = new List<string>();
-                        XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Unit Price");
-                        disc.Price = ConvertTo.SafeDecimal(fld.Values[0]);
-                        disc.PriceWithDiscount = disc.Price * (1 - disc.Percentage / 100);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.Warn(ex, "Failed to get Mix&Match items");
-                    }
+                disc.BenefitItemIds = new List<string>();
+                XMLFieldData fld2 = table.FieldList.Find(f => f.FieldName == "No.");
+                for (int i = 0; i < table.NumberOfValues; i++)
+                {
+                    disc.BenefitItemIds.Add(fld2.Values[i]);
                 }
             }
+            else if (disc.Type == ProactiveDiscountType.DiscOffer)
+            {
+                List<string> fields = new List<string>()
+                {
+                    "Unit Price"
+                };
+
+                List<XMLFieldData> filter = new List<XMLFieldData>()
+                {
+                    new XMLFieldData()
+                    {
+                        FieldName = "Store No.",
+                        Values = new List<string>() { storeId }
+                    },
+                    new XMLFieldData()
+                    {
+                        FieldName = "Item No.",
+                        Values = new List<string>() { disc.ItemId }
+                    },
+                    new XMLFieldData()
+                    {
+                        FieldName = "Variant Code",
+                        Values = new List<string>() { disc.VariantId }
+                    }
+                };
+
+                try
+                {
+                    xmlRequest = xml.GetBatchWebRequestXML("LSC WI Price", fields, filter, string.Empty);
+                    xmlResponse = RunOperation(xmlRequest, true);
+                    HandleResponseCode(ref xmlResponse);
+                    table = xml.GetGeneralWebResponseXML(xmlResponse);
+
+                    disc.ItemIds = new List<string>();
+                    XMLFieldData fld = table.FieldList.Find(f => f.FieldName == "Unit Price");
+                    disc.Price = ConvertTo.SafeDecimal(fld.Values[0]);
+                    disc.PriceWithDiscount = disc.Price * (1 - disc.Percentage / 100);
+                }
+                catch (Exception ex)
+                {
+                    logger.Warn(ex, "Failed to get Mix&Match items");
+                }
+            }
+
             logger.StatisticEndSub(ref stat, index);
-            return list;
         }
 
         #endregion
@@ -850,7 +866,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 "\"searchText\": \"" + searchValue + "\"," +
                                 "\"searchMethod\": \"0\",\"maxResultContacts\": 0 }";
 
-                string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data);
+                string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data, false);
                 ContactJMapping cmap = new ContactJMapping(config.IsJson);
                 List<MemberContact> list = cmap.GetMemberContact(ret);
                 logger.StatisticEndSub(ref stat, index);
@@ -1162,44 +1178,84 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return Convert.ToInt64(Math.Floor(remainingPoints));
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
-            LSCentral.RootGetDataEntryBalance root = new LSCentral.RootGetDataEntryBalance();
-            logger.Debug(config.LSKey.Key, "GetDataEntryBalance - GiftCardNo: {0}", cardNo);
-            centralWS.GetDataEntryBalance(ref respCode, ref errorText, XMLHelper.GetString(entryType), cardNo, ref root);
-            HandleWS2ResponseCode("GetDataEntryBalance", respCode, errorText, ref stat, index);
-            if (root.POSDataEntry == null)
-            {
-                throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift card not found");
-            }
 
-            LSCentral.POSDataEntry entry = root.POSDataEntry.First();
-            logger.Debug(config.LSKey.Key, "GetDataEntryBalance response - Balance:{0} Expire:{1}", entry.Balance, entry.ExpiryDate);
-            logger.StatisticEndSub(ref stat, index);
-            return new GiftCard(cardNo)
+            if (LSCVersion >= new Version("24.0"))
             {
-                EntryType = entryType,
-                Balance = entry.Balance,
-                ExpireDate = entry.ExpiryDate,
-                CurrencyCode = entry.CurrencyCode
-            };
+                LSCentral.RootGetDataEntryBalance root = new LSCentral.RootGetDataEntryBalance();
+                logger.Debug(config.LSKey.Key, "GetDataEntryBalanceV2 - GiftCardNo: {0}", cardNo);
+                centralWS.GetDataEntryBalanceV2(ref respCode, ref errorText, XMLHelper.GetString(entryType), cardNo, pin, ref root);
+                HandleWS2ResponseCode("GetDataEntryBalanceV2", respCode, errorText, ref stat, index);
+                if (root.POSDataEntry == null)
+                {
+                    throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift card not found");
+                }
+
+                LSCentral.POSDataEntry entry = root.POSDataEntry.First();
+                logger.Debug(config.LSKey.Key, "GetDataEntryBalanceV2 response - Balance:{0} Expire:{1}", entry.Balance, entry.ExpiryDate);
+                logger.StatisticEndSub(ref stat, index);
+                return new GiftCard(cardNo)
+                {
+                    Pin = entry.PIN,
+                    EntryType = entryType,
+                    Balance = entry.Balance,
+                    ExpireDate = entry.ExpiryDate,
+                    CurrencyCode = entry.CurrencyCode
+                };
+            }
+            else
+            {
+                LSCentral.RootGetDataEntryBalance1 root = new LSCentral.RootGetDataEntryBalance1();
+                logger.Debug(config.LSKey.Key, "GetDataEntryBalance - GiftCardNo: {0}", cardNo);
+                centralWS.GetDataEntryBalance(ref respCode, ref errorText, XMLHelper.GetString(entryType), cardNo, ref root);
+                HandleWS2ResponseCode("GetDataEntryBalance", respCode, errorText, ref stat, index);
+                if (root.POSDataEntry == null)
+                {
+                    throw new LSOmniServiceException(StatusCode.GiftCardNotFound, "Gift card not found");
+                }
+
+                LSCentral.POSDataEntry1 entry = root.POSDataEntry.First();
+                logger.Debug(config.LSKey.Key, "GetDataEntryBalance response - Balance:{0} Expire:{1}", entry.Balance, entry.ExpiryDate);
+                logger.StatisticEndSub(ref stat, index);
+                return new GiftCard(cardNo)
+                {
+                    Pin = entry.PIN,
+                    EntryType = entryType,
+                    Balance = entry.Balance,
+                    ExpireDate = entry.ExpiryDate,
+                    CurrencyCode = entry.CurrencyCode
+                };
+            }
         }
 
-        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
             string respCode = string.Empty;
             string errorText = string.Empty;
             LSCentral.RootGetVoucherEntries root = new LSCentral.RootGetVoucherEntries();
-            logger.Debug(config.LSKey.Key, "GetVoucherEntries - GiftCardNo: {0}", cardNo);
-            centralWS.GetVoucherEntries(ref respCode, ref errorText, cardNo, ref root);
-            HandleWS2ResponseCode("GetVoucherEntries", respCode, errorText, ref stat, index);
-            logger.Debug(config.LSKey.Key, "GetVoucherEntries Response - " + Serialization.ToXml(root, true));
+
+            if (LSCVersion >= new Version("24.0"))
+            {
+                logger.Debug(config.LSKey.Key, "GetVoucherEntriesV2 - GiftCardNo: {0}", cardNo);
+                centralWS.GetVoucherEntriesV2(ref respCode, ref errorText, cardNo, pin, ref root);
+                HandleWS2ResponseCode("GetVoucherEntriesV2", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, "GetVoucherEntriesV2 Response - " + Serialization.ToXml(root, true));
+            }
+            else
+            {
+                logger.Debug(config.LSKey.Key, "GetVoucherEntries - GiftCardNo: {0}", cardNo);
+                centralWS.GetVoucherEntries(ref respCode, ref errorText, cardNo, ref root);
+                HandleWS2ResponseCode("GetVoucherEntries", respCode, errorText, ref stat, index);
+                logger.Debug(config.LSKey.Key, "GetVoucherEntries Response - " + Serialization.ToXml(root, true));
+            }
+
             StoreMapping map = new StoreMapping();
             List<GiftCardEntry> list = map.MapFromRootToGiftCardEntry(root);
             logger.StatisticEndSub(ref stat, index);
@@ -1236,7 +1292,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return rate;
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
+        public virtual List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
@@ -1306,10 +1362,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 string data = "{ \"contactSearchType\": \"" + ((int)searchType).ToString() + "\"," +
                                 "\"searchText\": \"" + search + "\"," +
                                 "\"searchMethod\": \"" + ((exact) ? "0" : "1") + "\"," +
-                                "\"maxResultContacts\": " + maxNumberOfRowsReturned.ToString() + 
+                                "\"maxResultContacts\": " + maxNumberOfRowsReturned.ToString() +
                                 " }";
 
-                string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data);
+                string ret = SendToOData("GetMemberContactInfo_GetMemberContactInfo", data, false);
                 ContactJMapping cmap = new ContactJMapping(config.IsJson);
                 return cmap.GetMemberContact(ret);
             }
@@ -1582,6 +1638,74 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         #region Order
 
+        public string OrderCreate(Order request, out string orderId, Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            orderId = string.Empty;
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+            if (string.IsNullOrEmpty(loyCur))
+                loyCur = "LOY";
+
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request, loyCur);
+            logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
+            centralWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
+            string ret = HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index, new string[] { "1000" });
+            if (string.IsNullOrEmpty(ret) == false)     // ExtId Exists
+                logger.Warn(config.LSKey.Key, "Error:{0} >> Ignore Error and return External ID (assume Order exist)", errorText);
+            logger.StatisticEndSub(ref stat, index);
+            return request.Id;
+        }
+
+        public string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
+        {
+            if (editType == OrderEditType.None)
+                return request.Id;
+
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            string respCode = string.Empty;
+            string errorText = string.Empty;
+            string coEditType = string.Empty;
+            if (editType != OrderEditType.None)
+                coEditType = ((int)editType).ToString();
+            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
+            if (string.IsNullOrEmpty(loyCur))
+                loyCur = "LOY";
+
+            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
+            LSCentral.RootCustomerOrderEdit root = map.MapFromOrderEditToRoot(request, orderId, editType, loyCur);
+            logger.Debug(config.LSKey.Key, "CustomerOrderEdit Request - " + Serialization.ToXml(root, true));
+            centralWS.CustomerOrderEdit(ref respCode, ref errorText, root, ref orderId, coEditType);
+            HandleWS2ResponseCode("CustomerOrderEdit", respCode, errorText, ref stat, index);
+            logger.StatisticEndSub(ref stat, index);
+            return request.Id;
+        }
+
+        public bool CompressCOActive(Statistics stat)
+        {
+            logger.StatisticStartSub(true, ref stat, out int index);
+
+            bool isActive = false;
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Customer Order Setup");
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+            if (table != null && table.NumberOfValues > 0)
+            {
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Compressed Lines Active"));
+                if (field != null)
+                    isActive = ConvertTo.SafeBoolean(field.Values[0]);
+            }
+            logger.Debug(config.LSKey.Key, $"CO Compress Status: {isActive}");
+            logger.StatisticEndSub(ref stat, index);
+            return isActive;
+        }
+
         public Order BasketCalcToOrder(OneList list, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
@@ -1605,52 +1729,54 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
             string respCode = string.Empty;
             string errorText = string.Empty;
+
             LSCentral.RootMobileTransaction root = map.MapFromRetailTransactionToRoot(list);
-
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Request - " + Serialization.ToXml(root, true));
-
             centralQryWS.EcomCalculateBasket(ref respCode, ref errorText, ref root);
             HandleWS2ResponseCode("EcomCalculateBasket", respCode, errorText, ref stat, index);
             logger.Debug(config.LSKey.Key, "EcomCalculateBasket Response - " + Serialization.ToXml(root, true));
             Order order = map.MapFromRootTransactionToOrder(root);
 
-            List<OrderLine> lines = new List<OrderLine>();
-            foreach (OrderLine line in order.OrderLines)
+            if (CompressCOActive(stat) == false)
             {
-                OrderLine oline = lines.Find(l =>
-                        l.ItemId == line.ItemId &&
-                        l.VariantId == line.VariantId &&
-                        l.UomId == line.UomId &&
-                        l.LineType == line.LineType);
+                List<OrderLine> lines = new List<OrderLine>();
+                foreach (OrderLine line in order.OrderLines)
+                {
+                    OrderLine oline = lines.Find(l =>
+                            l.ItemId == line.ItemId &&
+                            l.VariantId == line.VariantId &&
+                            l.UomId == line.UomId &&
+                            l.LineType == line.LineType);
 
-                if (oline == null)
-                {
-                    lines.Add(line);
-                }
-                else
-                {
-                    OneListItem item = list.Items.ToList().Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId && i.UnitOfMeasureId == line.UomId);
-                    if (item != null && item.Immutable)
+                    if (oline == null)
                     {
                         lines.Add(line);
-                        continue;
                     }
-
-                    if ((oline.DiscountLineNumbers.Count() > 0 && line.DiscountLineNumbers.Count() == 0) ||
-                        (oline.DiscountLineNumbers.Count() == 0 && line.DiscountLineNumbers.Count() > 0))
+                    else
                     {
-                        lines.Add(line);
-                        continue;
-                    }
+                        OneListItem item = list.Items.ToList().Find(i => i.ItemId == line.ItemId && i.VariantId == line.VariantId && i.UnitOfMeasureId == line.UomId);
+                        if (item != null && item.Immutable)
+                        {
+                            lines.Add(line);
+                            continue;
+                        }
 
-                    oline.DiscountAmount += line.DiscountAmount;
-                    oline.NetAmount += line.NetAmount;
-                    oline.Quantity += line.Quantity;
-                    oline.TaxAmount += line.TaxAmount;
-                    oline.Amount += line.Amount;
+                        if ((oline.DiscountLineNumbers.Count() > 0 && line.DiscountLineNumbers.Count() == 0) ||
+                            (oline.DiscountLineNumbers.Count() == 0 && line.DiscountLineNumbers.Count() > 0))
+                        {
+                            lines.Add(line);
+                            continue;
+                        }
+
+                        oline.DiscountAmount += line.DiscountAmount;
+                        oline.NetAmount += line.NetAmount;
+                        oline.Quantity += line.Quantity;
+                        oline.TaxAmount += line.TaxAmount;
+                        oline.Amount += line.Amount;
+                    }
                 }
+                order.OrderLines = lines;
             }
-            order.OrderLines = lines;
             logger.StatisticEndSub(ref stat, index);
             return order;
         }
@@ -1721,7 +1847,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
         }
 
-        public void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
+        public void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat)
         {
             if (string.IsNullOrWhiteSpace(orderId))
                 throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderStatusCheck orderId can not be empty");
@@ -1744,20 +1870,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             };
             root.CustomerOrderStatusLog = log.ToArray();
 
-            if (lineNo != null && lineNo.Count > 0)
+            if (lines != null && lines.Count > 0)
             {
-                List<LSCentral.CustomerOrderCancelCOLine> lines = new List<LSCentral.CustomerOrderCancelCOLine>();
-                foreach (int no in lineNo)
+                List<LSCentral.CustomerOrderCancelCOLine> clines = new List<LSCentral.CustomerOrderCancelCOLine>();
+                foreach (OrderCancelLine line in lines)
                 {
-                    lines.Add(new LSCentral.CustomerOrderCancelCOLine()
+                    LSCentral.CustomerOrderCancelCOLine ln = new LSCentral.CustomerOrderCancelCOLine()
                     {
                         DocumentID = orderId,
-                        LineNo = no
-                    });
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNo)
+                    };
+                    if (LSCVersion >= new Version("24.0"))
+                    {
+                        ln.Quantity = line.Quantity;
+                    }
+                    clines.Add(ln);
                 }
-                root.CustomerOrderCancelCOLine = lines.ToArray();
+                root.CustomerOrderCancelCOLine = clines.ToArray();
             }
 
+            logger.Debug(config.LSKey.Key, "CustomerOrderCancel Request - " + Serialization.ToXml(root, true));
             centralWS.CustomerOrderCancel(ref respCode, ref errorText, orderId, 0, root);
             HandleWS2ResponseCode("CustomerOrderCancel", respCode, errorText, ref stat, index);
             logger.StatisticEndSub(ref stat, index);
@@ -1787,11 +1919,13 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             order.StoreName = store.Description;
             order.StoreCurrency = store.Currency.Id;
 
+            bool compress = CompressCOActive(stat);
+
             List<SalesEntryLine> list = new List<SalesEntryLine>();
             foreach (SalesEntryLine line in order.Lines)
             {
                 SalesEntryLine exline = list.Find(l => l.Id.Equals(line.Id) && l.ItemId.Equals(line.ItemId) && l.VariantId.Equals(line.VariantId) && l.UomId.Equals(line.UomId));
-                if (exline == null)
+                if (exline == null || compress)
                 {
                     if (string.IsNullOrEmpty(line.VariantId))
                     {
@@ -1884,69 +2018,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return data;
         }
 
-        public string OrderCreate(Order request, out string orderId, Statistics stat)
-        {
-            if (request == null)
-                throw new LSOmniException(StatusCode.OrderIdNotFound, "OrderCreate request can not be null");
-
-            logger.StatisticStartSub(true, ref stat, out int index);
-
-            orderId = string.Empty;
-            if (string.IsNullOrWhiteSpace(request.Id))
-                request.Id = GuidHelper.NewGuidWithoutDashes(20);
-
-            // need to map the TenderType enum coming from devices to TenderTypeId that NAV knows
-            if (request.OrderPayments == null)
-                request.OrderPayments = new List<OrderPayment>();
-
-            int lineno = 1;
-            foreach (OrderPayment line in request.OrderPayments)
-            {
-                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
-                line.LineNumber = lineno++;
-            }
-
-            if (request.ShipToAddress == null)
-            {
-                if (request.OrderType == OrderType.ClickAndCollect)
-                {
-                    request.ShipToAddress = new Address();
-                }
-                else
-                {
-                    throw new LSOmniException(StatusCode.AddressIsEmpty, "ShipToAddress can not be null if ClickAndCollectOrder is false");
-                }
-            }
-
-            if (request.ContactAddress == null)
-            {
-                if (request.OrderType == OrderType.ClickAndCollect)
-                {
-                    request.ContactAddress = new Address();
-                }
-                else
-                {
-                    request.ContactAddress = request.ShipToAddress;
-                }
-            }
-
-            OrderMapping map = new OrderMapping(LSCVersion, config.IsJson);
-            string respCode = string.Empty;
-            string errorText = string.Empty;
-            string loyCur = config.SettingsGetByKey(ConfigKey.Currency_LoyCode);
-            if (string.IsNullOrEmpty(loyCur))
-                loyCur = "LOY";
-
-            LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request, loyCur);
-            logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
-            centralWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
-            string ret = HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index, new string[] { "1000" });
-            if (string.IsNullOrEmpty(ret) == false)     // ExtId Exists
-                logger.Warn(config.LSKey.Key, "Error:{0} >> Ignore Error and return External ID (assume Order exist)", errorText);
-            logger.StatisticEndSub(ref stat, index);
-            return request.Id;
-        }
-
         #endregion
 
         #region SalesEntry
@@ -1989,14 +2060,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             string data = "{ \"memberCardNo\": \"" + cardId + "\"," +
                             "\"maxResultContacts\": " + maxRecs.ToString() + " }";
 
-            string ret = SendToOData("GetMemberContSalesHistory_GetMemberContactSalesHistory", data);
+            string ret = SendToOData("GetMemberContSalesHistory_GetMemberContactSalesHistory", data, false);
             OrderJMapping omap = new OrderJMapping(config.IsJson);
             List<SalesEntry> list;
-            if (LSCVersion >= new Version("22.0"))
-                list = omap.GetSalesEntryHistory2(ret);
-            else
-                list = omap.GetSalesEntryHistory(ret);
-
+            list = omap.GetSalesEntryHistory(ret);
             list = list.OrderByDescending(o => o.DocumentRegTime).ToList();
 
             logger.StatisticEndSub(ref stat, index);
@@ -2012,12 +2079,26 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 dtype = 1;
             if (type == DocumentIdType.HospOrder)
                 dtype = 2;
+            if (type == DocumentIdType.External)
+            {
+                NAVWebXml xml = new NAVWebXml();
+                string xmlRequest = xml.GetGeneralWebRequestXML("LSC Customer Order Header", "External ID", docId);
+                string xmlResponse = RunOperation(xmlRequest, true);
+                HandleResponseCode(ref xmlResponse);
+                XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
+                if (table == null || table.NumberOfValues == 0)
+                    return null;
+
+                XMLFieldData field = table.FieldList.Find(f => f.FieldName.Equals("Document ID"));
+                docId = field.Values[table.NumberOfValues - 1];
+                dtype = 1;
+            }
 
             // GetSelectedSalesDoc(DocumentSourceType: Enum "LSC member Sales Source Type"; DocumentID: Code[20]): Text
             string data = "{ \"documentSourceType\": \"" + dtype.ToString() + "\", " +
                             "\"documentID\": \"" + docId + "\" }";
 
-            string ret = SendToOData("GetSelectedSalesDoc_GetSelectedSalesDoc", data);
+            string ret = SendToOData("GetSelectedSalesDoc_GetSelectedSalesDoc", data, false);
             OrderJMapping omap = new OrderJMapping(config.IsJson);
             SalesEntry entry = omap.GetSalesEntry(ret);
             if (dtype == 2 && entry == null)
@@ -2025,7 +2106,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 dtype = 0;  // no pos trans, get normal trans
                 data = "{ \"documentSourceType\": \"" + dtype.ToString() + "\", " +
                                 "\"documentID\": \"" + docId + "\" }";
-                ret = SendToOData("GetSelectedSalesDoc_GetSelectedSalesDoc", data);
+                ret = SendToOData("GetSelectedSalesDoc_GetSelectedSalesDoc", data, false);
                 entry = omap.GetSalesEntry(ret);
             }
 
@@ -2265,28 +2346,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat)
+        public List<RetailAttribute> AttributeGet(string value, AttributeLinkType type, Statistics stat)
         {
             logger.StatisticStartSub(true, ref stat, out int index);
 
-            List<StoreServices> serviceListFound = new List<StoreServices>();
-            string fullFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xml", "navdata_StoreFeatures.xml");
-            if (File.Exists(fullFileName) == false)
-            {
-                logger.StatisticEndSub(ref stat, index);
-                return serviceListFound;
-            }
+            List<RetailAttribute> list = new List<RetailAttribute>();
+            NAVWebXml xml = new NAVWebXml();
+            string xmlRequest = xml.GetGeneralWebRequestXML("LSC Attribute Value", "Link Field 1", value, "Link Type", ((int)type).ToString());
+            string xmlResponse = RunOperation(xmlRequest, true);
+            HandleResponseCode(ref xmlResponse);
+            XMLTableData table = xml.GetGeneralWebResponseXML(xmlResponse);
 
-            string xml = File.ReadAllText(fullFileName);
-            StoreServicesXml xmlParse = new StoreServicesXml(xml);
-            List<StoreServices> serviceList = xmlParse.ParseXml();
-            foreach (StoreServices serv in serviceList)
-            {
-                if (serv.StoreId.ToLowerInvariant() == storeId.ToLowerInvariant())
-                    serviceListFound.Add(serv);
-            }
+            SetupRepository rep = new SetupRepository(config);
+            list = rep.GetAttribute(table);
+
             logger.StatisticEndSub(ref stat, index);
-            return serviceListFound;
+            return list;
         }
 
         #endregion
@@ -2589,7 +2664,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         PSPID = XMLHelper.GetString(token.pSPID),
                         Token1 = XMLHelper.GetString(token.Token),
                         TokenId = XMLHelper.GetString(token.TokenId),
+                        TokenIDExternal = XMLHelper.GetString(token.TokenIDExternal),
                         TokenType = XMLHelper.GetString(token.Type),
+                        Initiator = XMLHelper.GetString(token.Initiator),
+                        InitiatorReason = XMLHelper.GetString(token.InitiatorReason)
                     }
                 };
 
@@ -2654,13 +2732,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         {
                             Token = token.TokenValue,
                             TokenId = token.TokenId,
+                            TokenIDExternal = token.TokenIDExternal,
                             Type = token.TokenType,
                             AccountNo = token.AccountNo,
                             pSPID = token.PSPID,
                             CardMask = token.CardMask,
                             Created = token.CreatedDateTime,
                             ExpiryDate = token.ExpiryDate,
-                            DefaultToken = token.DefaultToken
+                            DefaultToken = token.DefaultToken,
+                            Initiator = token.Initiator,
+                            InitiatorReason = token.InitiatorReason
                         });
                     }
                 }
@@ -2965,25 +3046,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             return list;
         }
 
-        public List<Advertisement> AdvertisementsGetById(string id, Statistics stat)
-        {
-            List<Advertisement> ads = new List<Advertisement>();
-            string fullFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xml", "navdata_ads.xml");
-            if (File.Exists(fullFileName) == false)
-                return ads;
-
-            logger.StatisticStartSub(true, ref stat, out int index);
-
-            string xml = File.ReadAllText(fullFileName);
-            AdvertisementXml xmlParse = new AdvertisementXml(xml);
-            ads = xmlParse.ParseXml(id);
-            logger.StatisticEndSub(ref stat, index);
-            return ads;
-        }
-
         public MobileMenu MenuGet(string storeId, string salesType, Currency currency)
         {
-            throw new NotImplementedException();
+            logger.Warn(config.LSKey.Key, "Not supported by LS Central version for SaaS");
+            return new MobileMenu();
         }
 
         #endregion

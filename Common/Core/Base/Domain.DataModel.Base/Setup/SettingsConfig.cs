@@ -69,6 +69,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private bool showHardwareOverlay;
         private bool openDevTools;
         private bool toggleFullScreen;
+        private bool hardwareOverlayToLog;
+        private int hardwareMinutes;
+        private bool consoleLogToLog;
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";
@@ -83,10 +86,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public const string IsFullScreen = "IsFullScreen";
         public const string AllowToggleFullScreen = "AllowToggleFullScreen";
 
-
+        
         public const string ShowHardwareOverlayKey = "ShowHardwareOverlayKey";
         public const string OpenDevToolsKey = "OpenDevToolsKey";
         public const string FontSizeKey = "FontSizeKey";
+        public const string HardwareOverlayToLogKey = "HardwareOverlayToLogKey";
+        public const string ConsoleLogToLogKey = "ConsoleLogToLogKey";
+        public const string HardwareMinutesKey = "HardwareMinutesKey";
 
         [System.Xml.Serialization.XmlElementAttribute("AutoUpdate")]
         public bool AutoUpdate
@@ -181,6 +187,28 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("HardwareOverlayToLog")]
+        public bool HardwareOverlayToLog
+        {
+            get => hardwareOverlayToLog;
+            set
+            {
+                hardwareOverlayToLog = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("ConsoleLogToLog")]
+        public bool ConsoleLogToLog
+        {
+            get => consoleLogToLog;
+            set
+            {
+                consoleLogToLog = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         [System.Xml.Serialization.XmlElementAttribute("FixedSizeGridRows")]
         public int FixedSizeGridRows
         {
@@ -199,6 +227,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             set
             {
                 fontSize = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("HardwareMinutes")]
+        public int HardwareMinutes
+        {
+            get => hardwareMinutes;
+            set
+            {
+                hardwareMinutes = value;
                 NotifyPropertyChanged();
             }
         }
@@ -274,6 +313,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private string webServiceInstance;
         private string page;
         private string company;
+        private bool isSaas;
         private string tenant;
         private SettingsConfigUrlType urlType;
         private string userName;
@@ -711,6 +751,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         }
 
         [System.Xml.Serialization.XmlElementAttribute("Tenant")]
+        public bool IsSaas
+        {
+            get => isSaas;
+            set
+            {
+                isSaas = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("UrlToUse");
+            }
+        }
+
+        [System.Xml.Serialization.XmlElementAttribute("Tenant")]
         public string Tenant
         {
             get => tenant;
@@ -1058,6 +1110,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                         url += ":" + port;
                     }
 
+                    if (isSaas && !string.IsNullOrEmpty(tenant))
+                    {
+                        url += "/" + tenant;
+                    }
+
                     url += "/" + webServiceInstance;
 
                     if (TabletMode)
@@ -1075,7 +1132,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                         urlParameters += $"page={page}&";
                     }
 
-                    if (!string.IsNullOrEmpty(tenant))
+                    if (!isSaas && !string.IsNullOrEmpty(tenant))
                     {
                         urlParameters += $"tenant={tenant}&";
                     }
@@ -1186,6 +1243,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 }
             }
         }
+
+        public string UsernameToUse => Environment.ExpandEnvironmentVariables(userName);
 
         public SettingsConfig ShallowCopy()
         {

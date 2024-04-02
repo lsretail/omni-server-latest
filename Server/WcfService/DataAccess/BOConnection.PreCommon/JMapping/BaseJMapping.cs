@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -43,7 +42,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 return null;
             }
 
-            lastKey = (string.IsNullOrEmpty(result.LastKey)) ? result.LastEntryNo.ToString() : result.LastKey;
+            lastKey = (result.LastEntryNo == 0) ? result.LastKey : result.LastEntryNo.ToString();
             recordsRemaining = (result.EndOfTable) ? 0 : 1;
             return result;
         }
@@ -87,7 +86,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                 return null;
             }
 
-            lastKey = (string.IsNullOrEmpty(result.LastKey)) ? result.LastEntryNo.ToString() : result.LastKey;
+            lastKey = (result.LastEntryNo == 0) ? result.LastKey : result.LastEntryNo.ToString();
             recordsRemaining = (result.EndOfTable) ? 0 : 1;
             return result;
         }

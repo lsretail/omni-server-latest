@@ -16,6 +16,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         Pos = 1,
         Card = 2,
         Loyalty = 4,
+        CustomerAccount = 8,
     }
 
     public enum ScanPayGoCardPaymentMethod

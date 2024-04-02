@@ -220,7 +220,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplExtendedVariantValue ReaderToExtendedVariantValue(SqlDataReader reader, bool dorder, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplExtendedVariantValue extvar = new ReplExtendedVariantValue()
             {

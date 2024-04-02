@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace LSRetail.Omni.DiscountEngine.DataModels
+namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/DiscountEngine/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class ProactiveDiscount
     {
         [DataMember]
@@ -38,5 +38,26 @@ namespace LSRetail.Omni.DiscountEngine.DataModels
         public string PopUpLine1 { get; set; }
         [DataMember]
         public string PopUpLine2 { get; set; }
+    }
+
+    /// <summary>
+    /// NAV "Periodic Discount" type mapping: 0 - Multibuy, 1 - Mix and Match, 2 - Disc. Offer.
+    /// This enum maps perfectly to PeriodicDiscType
+    /// </summary>
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
+    public enum ProactiveDiscountType
+    {
+        [EnumMember]
+        Unknown = 0,
+        [EnumMember]
+        Multibuy = 1,
+        [EnumMember]
+        MixMatch = 2,
+        [EnumMember]
+        DiscOffer = 3,
+        [EnumMember]
+        ItemPoint = 4,
+        [EnumMember]
+        LineDiscount = 5,
     }
 }

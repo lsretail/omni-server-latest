@@ -57,7 +57,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual ScanPayGoProfile ScanPayGoProfileGet(string profileId, string storeNo, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new ScanPayGoProfile();
+            }
 
             return LSCWSBase.ScanPayGoProfileGet(profileId, storeNo, stat);
         }
@@ -73,7 +76,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual bool SecurityCheckLogResponse(string orderNo, string validationError, bool validationSuccessful, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
                 return false;
+            }
 
             return LSCWSBase.SecurityCheckLogResponse(orderNo, validationError, validationSuccessful, stat);
         }
@@ -81,7 +87,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual ScanPayGoSecurityLog SecurityCheckLog(string orderNo, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
                 return new ScanPayGoSecurityLog();
+            }
 
             return LSCWSBase.SecurityCheckLog(orderNo, stat);
         }
@@ -90,7 +99,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             if (NAVVersion < new Version("17.5"))
             {
-                return "Not Supported";
+                return "Not supported by LS Central version < 17.5 for SaaS";
             }
 
             return LSCWSBase.OpenGate(qrCode, storeNo, devLocation, memberAccount, exitWithoutShopping, isEntering, stat);
@@ -99,23 +108,32 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual OrderCheck ScanPayGoOrderCheck(string documentId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new OrderCheck();
+            }
 
             return LSCWSBase.ScanPayGoOrderCheck(documentId, stat);
         }
 
         public virtual bool TokenEntrySet(ClientToken token, bool deleteToken, Statistics stat)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("20.3"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 20.3 for SaaS");
+                return false;
+            }
 
             return LSCWSBase.TokenEntrySet(token, deleteToken, stat);
         }
 
         public virtual List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken, Statistics stat)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("20.3"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 20.3 for SaaS");
+                return new List<ClientToken>();
+            }
 
             return LSCWSBase.TokenEntryGet(accountNo, hotelToken, stat);
         }
@@ -190,7 +208,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotSupportedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return;
+            }
 
             LSCWSBase.ConatctBlock(accountId, cardId, stat);
         }
@@ -206,7 +227,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual MemberContact SocialLogon(string authenticator, string authenticationId, string deviceID, string deviceName, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new MemberContact();
+            }
 
             return LSCWSBase.SocialLogon(authenticator, authenticationId, deviceID, deviceName, stat);
         }
@@ -352,7 +376,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                         else
                         {
                             list = tmplist;
-                        }    
+                        }
                     }
                     break;
             }
@@ -401,7 +425,8 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<SalesEntry> SalesEntrySearch(string search, string cardId, int maxNumberOfTransactions, Statistics stat)
         {
-            throw new NotImplementedException();
+            logger.Warn(config.LSKey.Key, "Not supported by LS Central version for SaaS");
+            return new List<SalesEntry>();
         }
 
         #endregion
@@ -429,28 +454,31 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.GetPointRate(currency, stat);
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
+        public virtual List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.PointEntiesGet(cardNo, dateFrom);
+                return NavWSBase.PointEntriesGet(cardNo, dateFrom);
 
-            return LSCWSBase.PointEntiesGet(cardNo, dateFrom, stat);
+            return LSCWSBase.PointEntriesGet(cardNo, dateFrom, stat);
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.GiftCardGetBalance(cardNo, entryType);
 
-            return LSCWSBase.GiftCardGetBalance(cardNo, entryType, stat);
+            return LSCWSBase.GiftCardGetBalance(cardNo, pin, entryType, stat);
         }
 
-        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new List<GiftCardEntry>();
+            }
 
-            return LSCWSBase.GiftCardGetHistory(cardNo, entryType, stat);
+            return LSCWSBase.GiftCardGetHistory(cardNo, pin, entryType, stat);
         }
 
         #endregion
@@ -496,7 +524,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<LoyItem> ItemsGetByPublishedOfferId(string pubOfferId, int numberOfItems, Statistics stat)
         {
             List<LoyItem> list = new List<LoyItem>();
-            
+
             List<LoyItem> tmplist;
             if (NAVVersion < new Version("17.5"))
                 tmplist = NavWSBase.ItemsGetByPublishedOfferId(pubOfferId, numberOfItems);
@@ -583,7 +611,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<Hierarchy> HierarchyGet(string storeId, Statistics stat)
         {
             if (NAVVersion.Major < 10)
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 10.0 for SaaS");
+                return new List<Hierarchy>();
+            }
 
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.HierarchyGet(storeId);
@@ -656,12 +687,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<SalesEntryId> SalesEntryGetReturnSales(string receiptNo, Statistics stat)
         {
-            throw new NotImplementedException();
+            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
+            return new List<SalesEntryId>();
         }
 
-        public virtual List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
+        public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
-            throw new NotImplementedException();
+            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
+            return new SalesEntryList();
         }
 
         public virtual SalesEntry SalesEntryGet(string docId, int transId, string storeId, string terminalId, DocumentIdType type, Statistics stat)
@@ -684,14 +717,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     entry = LSCWSBase.TransactionGet(docId, storeId, terminalId, transId, stat);
                 else
                     entry = LSCWSBase.OrderGet(docId, stat);
+            }
 
-                if (entry.Payments != null)
-                {
-                    foreach (SalesEntryPayment line in entry.Payments)
-                    {
-                        line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, true); //map tender type between LSOmni and NAV
-                    }
-                }
+            if (entry == null || entry.Payments == null)
+                return entry;
+
+            foreach (SalesEntryPayment line in entry.Payments)
+            {
+                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, true); //map tender type between LSOmni and NAV
             }
             return entry;
         }
@@ -761,10 +794,21 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         #region Order
 
+        public bool CompressCOActive(Statistics stat)
+        {
+            if (NAVVersion < new Version("24.0"))
+                return false;
+
+            return LSCWSBase.CompressCOActive(stat);
+        }
+
         public virtual OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat)
         {
             if (NAVVersion < new Version("13.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 13.5 for SaaS");
+                return new OrderStatusResponse();
+            }
 
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.OrderStatusCheck(orderId);
@@ -772,7 +816,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.OrderStatusCheck(orderId, stat);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat)
         {
             if (NAVVersion < new Version("13.5"))
                 return;
@@ -780,7 +824,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 NavWSBase.OrderCancel(orderId, storeId, userId);
 
-            LSCWSBase.OrderCancel(orderId, storeId, userId, lineNo, stat);
+            LSCWSBase.OrderCancel(orderId, storeId, userId, lines, stat);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder, Statistics stat)
@@ -807,6 +851,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.OrderCreate(request, out orderId, stat);
         }
 
+        public virtual string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
+        {
+            return LSCWSBase.OrderEdit(request, ref orderId, editType, stat);
+        }
+
         #endregion
 
         #region Offer and Advertisement
@@ -817,14 +866,6 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                 return NavWSBase.PublishedOffersGet(cardId, itemId, storeId);
 
             return LSCWSBase.PublishedOffersGet(cardId, itemId, storeId, stat);
-        }
-
-        public virtual List<Advertisement> AdvertisementsGetById(string id, Statistics stat)
-        {
-            if (NAVVersion < new Version("17.5"))
-                return NavWSBase.AdvertisementsGetById(id);
-
-            return LSCWSBase.AdvertisementsGetById(id, stat);
         }
 
         #endregion
@@ -842,7 +883,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual ImageView ImageGetByMediaId(string mediaId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new ImageView();
+            }
 
             return LSCWSBase.ImageGetByMediaId(mediaId, stat);
         }
@@ -862,7 +906,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual Store StoreGetById(string id, Statistics stat)
         {
             int offset = config.SettingsIntGetByKey(ConfigKey.Timezone_HoursOffset);
-            
+
             Store store;
             if (NAVVersion < new Version("17.5"))
             {
@@ -873,6 +917,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             {
                 store = LSCWSBase.StoreGetById(id, stat);
                 store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(id, offset, stat);
+                store.Attributes = LSCWSBase.AttributeGet(id, AttributeLinkType.Store, stat);
             }
             return store;
         }
@@ -901,18 +946,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
                     foreach (Store store in stores)
                     {
                         store.StoreHours = LSCWSBase.StoreHoursGetByStoreId(store.Id, offset, stat);
+                        store.Attributes = LSCWSBase.AttributeGet(store.Id, AttributeLinkType.Store, stat);
                     }
                 }
             }
             return stores;
-        }
-
-        public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat)
-        {
-            if (NAVVersion < new Version("17.5"))
-                return NavWSBase.StoreServicesGetByStoreId(storeId);
-
-            return LSCWSBase.StoreServicesGetByStoreId(storeId, stat);
         }
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat)
@@ -985,16 +1023,22 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplDataTranslation> ReplEcommItemHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("20.4"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 20.4 for SaaS");
+                return new List<ReplDataTranslation>();
+            }
 
             return LSCWSBase.ReplicateItemHtmlTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDataTranslation> ReplEcommDealHtmlTranslation(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("20.4"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 20.4 for SaaS");
+                return new List<ReplDataTranslation>();
+            }
 
             return LSCWSBase.ReplicateDealHtmlTranslation(appId, string.Empty, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
@@ -1035,14 +1079,14 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         {
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ReplEcommInventoryStatus(appId, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
-            
+
             return LSCWSBase.ReplicateInventoryStatus(appId, string.Empty, storeId, fullReplication, batchSize, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<LoyItem> ReplEcommFullItem(string appId, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            // Avensia special request
-            throw new NotImplementedException("Not supported in WS Mode");
+            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
+            return new List<LoyItem>();
         }
 
         #endregion

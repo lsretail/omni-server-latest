@@ -20,6 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
             Location = string.Empty;
             SalesPerson = string.Empty;
             Status = string.Empty;
+            EventNo = string.Empty;
             ResDateFrom = DateTime.MinValue.ToUniversalTime();
             ResDateTo = DateTime.MinValue.ToUniversalTime();
             ResTimeFrom = DateTime.MinValue.ToUniversalTime();
@@ -77,5 +78,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public int NoOfPerson { set; get; }
         [DataMember]
         public string Status { set; get; }
+        [DataMember]
+        public string EventNo { set; get; }
     }
 }

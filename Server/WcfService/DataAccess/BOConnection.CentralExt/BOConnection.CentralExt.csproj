@@ -38,8 +38,8 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data.SqlClient, Version=4.6.1.5, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Data.SqlClient.4.8.5\lib\net461\System.Data.SqlClient.dll</HintPath>
+    <Reference Include="System.Data.SqlClient, Version=4.6.1.6, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Data.SqlClient.4.8.6\lib\net461\System.Data.SqlClient.dll</HintPath>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
@@ -73,6 +73,7 @@
     <Compile Include="Dal\CustomerRepository.cs" />
     <Compile Include="Dal\DataTranslationRepository.cs" />
     <Compile Include="Dal\DiscountOfferRepository.cs" />
+    <Compile Include="Dal\DiscountRepository.cs" />
     <Compile Include="Dal\ExtendedVariantValuesRepository.cs" />
     <Compile Include="Dal\HierarchyHospLeafRepository.cs" />
     <Compile Include="Dal\HierarchyNodeRepository.cs" />
@@ -124,17 +125,9 @@
       <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
       <Name>Domain.DataModel.Activity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
-      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
-      <Name>DiscountEngine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\Core\Inventory\Domain.DataModel.Inventory\Domain.DataModel.Inventory.csproj">
-      <Project>{4f47a1e3-4edd-4a96-8e30-af6797217591}</Project>
-      <Name>Domain.DataModel.Inventory</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Loyalty\Domain.DataModel.Loyalty\Domain.DataModel.Loyalty.csproj">
       <Project>{36a6fdfb-59d3-4618-92dd-0deb8b6ab501}</Project>

@@ -138,7 +138,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             };
 
             staff.Name = staff.FirstName + " " + staff.LastName;
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return staff;
         }
     }

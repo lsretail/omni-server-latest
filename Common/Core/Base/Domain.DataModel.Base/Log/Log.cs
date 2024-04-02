@@ -16,6 +16,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         Debug = 3,
         [EnumMember]
         Trace = 4,
+        [EnumMember]
+        ConsoleLog = 5,
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -27,6 +29,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
         ExternalAccessory = 1,
         [EnumMember]
         Pos = 2,
+        [EnumMember]
+        ConsoleLog = 3,
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]

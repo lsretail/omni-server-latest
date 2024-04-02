@@ -174,10 +174,6 @@
       <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
       <Name>Domain.DataModel.Activity</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
-      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
-      <Name>DiscountEngine</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>
       <Name>Domain.DataModel.Base</Name>

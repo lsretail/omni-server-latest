@@ -11,6 +11,16 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
     public class Order : Entity, IDisposable
     {
+        public enum OrderTenderType
+        {
+            Cash = 0,
+            Card = 1,
+            Coupons = 2,
+            Member = 3,
+            GiftCard = 4,
+            Customer = 5
+        }
+
         public Order(string id) : base(id)
         {
             StoreId = string.Empty;
@@ -29,8 +39,6 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             ShippingAgentServiceCode = string.Empty;
             TransId = string.Empty;
             TransTerminal = string.Empty;
-
-            ShippingStatus = ShippingStatus.ShippigNotRequired;
 
             OrderLines = new List<OrderLine>();
             OrderDiscountLines = new List<OrderDiscountLine>();
@@ -79,8 +87,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string Currency { get; set; }
 
+        /// <summary>
+        /// Ship Order, can also be used with Click And Collect order to be shipped from CAC Store
+        /// </summary>
         [DataMember]
-        public ShippingStatus ShippingStatus { get; set; }
+        public bool ShipOrder { get; set; }
 
         [DataMember]
         public decimal TotalNetAmount { get; set; }
@@ -208,6 +219,17 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [EnumMember]
         ScanPayGoSuspend
+    }
+
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    public enum OrderEditType
+    {
+        [EnumMember]
+        None = 0,
+        [EnumMember]
+        General = 1,
+        [EnumMember]
+        Header = 2
     }
 }
 

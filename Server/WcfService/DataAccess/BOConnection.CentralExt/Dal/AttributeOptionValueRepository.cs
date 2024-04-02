@@ -4,7 +4,7 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
@@ -159,7 +159,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
         private ReplAttributeOptionValue ReaderToEcommAttributeOptionValue(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplAttributeOptionValue()
             {

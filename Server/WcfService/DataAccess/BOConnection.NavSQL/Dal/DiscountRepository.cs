@@ -1,39 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Common;
 using System.Data.SqlClient;
-using LSRetail.Omni.DiscountEngine.DataModels;
-using LSRetail.Omni.DiscountEngine.Interfaces;
-using LSRetail.Omni.DiscountEngine.Utils;
 
-namespace LSRetail.Omni.DiscountEngine.Repositories
+using LSOmni.Common.Util;
+using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
+
+namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
     /// <summary>
     /// Implements all repository interfaces for NAV 
     /// </summary>
-    public class Nav15Repository : IDiscountRepository
+    public class DiscountRepository : BaseRepository
     {
-        private string connectionString = string.Empty;
-        private string navCompanyName = string.Empty;
-
-        public Nav15Repository(string SqlConnectionString)
+        public DiscountRepository(BOConfiguration config) : base(config)
         {
-            connectionString = SqlConnectionString;
-
-            DbConnectionStringBuilder builder = new DbConnectionStringBuilder();
-            builder.ConnectionString = connectionString;
-            navCompanyName = "";
-            if (builder.ContainsKey("NAVCompanyName"))
-            {
-                navCompanyName = builder["NAVCompanyName"] as string; //get the 
-                navCompanyName = navCompanyName.Trim();
-                //NAV company name must end with a $
-                if (navCompanyName.EndsWith("$") == false)
-                    navCompanyName += "$";
-            }
-
-            builder.Remove("NAVCompanyName");
-            connectionString = builder.ConnectionString;
         }
 
         public List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId)
@@ -41,15 +22,15 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             string sqlcolumns = "p.[No_], p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],mt.[Store No_],mt.[Item No_]," +
                                 "mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code],mt.[Discount _],mt.[Minimum Quantity],mt.[Unit of Measure Code]";
 
-            string sqlfrom = " FROM [" + navCompanyName + "WI Discounts$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                             " INNER JOIN [" + navCompanyName + "Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
+            string sqlfrom = " FROM [" + navCompanyName + "WI Discounts] mt" +
+                             " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
             string sqlMMcolumns = "p.[No_],p.[Type],p.[Priority],p.[Description],p.[Pop-up Line 1],p.[Pop-up Line 2],p.[Discount _ Value] AS [Discount _]," +
                                   "mt.[Store No_],mt.[Item No_],mt.[Variant Code],mt.[Customer Disc_ Group],mt.[Loyalty Scheme Code], 0 AS [Minimum Quantity]," +
                                   "'' AS [Unit of Measure Code]";
 
-            string sqlMMfrom = " FROM [" + navCompanyName + "WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
-                               " INNER JOIN [" + navCompanyName + "Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] p ON p.[No_]=mt.[Offer No_]";
+            string sqlMMfrom = " FROM [" + navCompanyName + "WI Mix & Match Offer] mt" +
+                               " INNER JOIN [" + navCompanyName + "Periodic Discount] p ON p.[No_]=mt.[Offer No_]";
 
             List<ProactiveDiscount> list = new List<ProactiveDiscount>();
 
@@ -85,6 +66,21 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             return list;
         }
 
+        public void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode)
+        {
+            if (disc.Type == ProactiveDiscountType.MixMatch)
+            {
+                disc.ItemIds = GetItemIdsByMixAndMatchOffer(storeId, disc.Id, loyaltySchemeCode);
+                disc.ItemIds.Remove(disc.ItemId);
+                disc.BenefitItemIds = GetBenefitItemIds(disc.Id);
+            }
+            else if (disc.Type == ProactiveDiscountType.DiscOffer)
+            {
+                disc.Price = PriceGetByItem(storeId, disc.ItemId, disc.VariantId);
+                disc.PriceWithDiscount = disc.Price * (1 - disc.Percentage / 100);
+            }
+        }
+
         public DiscountValidation GetDiscountValidationByOfferId(string offerId)
         {
             DiscountValidation discval = null;
@@ -92,8 +88,8 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT * FROM [" + navCompanyName + "Validation Period$5ecfc871-5d82-43f1-9c54-59685e82318d] mt WHERE [ID]=(" +
-                                          "SELECT [Validation Period ID] FROM [" + navCompanyName + "Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [No_]=@id)";
+                    command.CommandText = "SELECT * FROM [" + navCompanyName + "Validation Period] mt WHERE [ID]=(" +
+                                          "SELECT [Validation Period ID] FROM [" + navCompanyName + "Periodic Discount] WHERE [No_]=@id)";
 
                     command.Parameters.AddWithValue("@id", offerId);
                     connection.Open();
@@ -111,14 +107,14 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             return discval;
         }
 
-        public List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId, string scheme)
+        private List<string> GetItemIdsByMixAndMatchOffer(string storeId, string offerId, string scheme)
         {
             List<string> ids = new List<string>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + "WI Mix & Match Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
+                    command.CommandText = "SELECT [Item No_] FROM [" + navCompanyName + "WI Mix & Match Offer] " +
                                           "WHERE [Offer No_]=@id AND [Store No_]=@sid AND ([Loyalty Scheme Code]=@sc OR [Loyalty Scheme Code]='')";
                     command.Parameters.AddWithValue("@id", offerId);
                     command.Parameters.AddWithValue("@sid", storeId);
@@ -138,14 +134,14 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             return ids;
         }
 
-        public List<string> GetBenefitItemIds(string offerId)
+        private List<string> GetBenefitItemIds(string offerId)
         {
             List<string> ids = new List<string>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Periodic Discount Benefits$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Offer No_]=@id";
+                    command.CommandText = "SELECT [No_] FROM [" + navCompanyName + "Periodic Discount Benefits] WHERE [Offer No_]=@id";
                     command.Parameters.AddWithValue("@id", offerId);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -236,10 +232,10 @@ namespace LSRetail.Omni.DiscountEngine.Repositories
             return ProactiveDiscountType.Unknown;
         }
 
-        public decimal PriceGetByItem(string storeId, string itemId, string variantId)
+        private decimal PriceGetByItem(string storeId, string itemId, string variantId)
         {
             string sqlMcolumns = "mt.[Unit Price] ";
-            string sqlMfrom = " FROM [" + navCompanyName + "WI Price$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
+            string sqlMfrom = " FROM [" + navCompanyName + "WI Price] mt";
 
             decimal price = 0m;
             using (SqlConnection connection = new SqlConnection(connectionString))

@@ -492,7 +492,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(store.Currency))
                 store.Currency = SQLHelper.GetString(reader["LCYCode"]);
 
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return store;
         }
 

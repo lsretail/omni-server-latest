@@ -100,10 +100,8 @@
       <DependentUpon>Reference.map</DependentUpon>
     </Compile>
     <Compile Include="XmlMapping\BaseXml.cs" />
-    <Compile Include="XmlMapping\Loyalty\AdvertisementXml.cs" />
     <Compile Include="XmlMapping\Loyalty\NavXml.cs" />
     <Compile Include="XmlMapping\Loyalty\PublishedOfferXml.cs" />
-    <Compile Include="XmlMapping\Loyalty\StoreServicesXml.cs" />
     <Compile Include="XmlMapping\NAVWebXml.cs" />
     <Compile Include="XmlMapping\Replication\BaseRepository.cs" />
     <Compile Include="XmlMapping\Replication\ContactRepository.cs" />
@@ -515,10 +513,6 @@
     <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">
       <Project>{1AF34587-BDC0-43DF-B407-0A568B4506C3}</Project>
       <Name>Domain.DataModel.Activity</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\..\Common\Core\Base\DiscountEngine\DiscountEngine.csproj">
-      <Project>{4D540BA5-6854-4324-9D4B-75FA22C5A137}</Project>
-      <Name>DiscountEngine</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\..\Common\Core\Base\Domain.DataModel.Base\Domain.DataModel.Base.csproj">
       <Project>{7bcac03e-3b65-4cf4-9ebb-4ef353276d1c}</Project>

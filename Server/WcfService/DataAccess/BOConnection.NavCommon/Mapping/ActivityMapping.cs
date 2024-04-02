@@ -490,28 +490,31 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             return list;
         }
 
-        public AdditionalCharge MapRootToAdditionalCharge(LSActivity15.ActivityChargeRespond root)
+        public List<AdditionalCharge> MapRootToAdditionalCharge(LSActivity15.ActivityChargeRespond root)
         {
             if (root.ChargeLines == null || root.ChargeLines.Length == 0)
-                return new AdditionalCharge();
+                return new List<AdditionalCharge>();
 
-            LSActivity15.ChargeLines rec = root.ChargeLines[0];
-
-            return new AdditionalCharge()
+            List<AdditionalCharge> list = new List<AdditionalCharge>();
+            foreach (LSActivity15.ChargeLines rec in root.ChargeLines)
             {
-                ActivityNo = string.Concat(rec.ActivityNo),
-                LineNo = rec.LineNo,
-                ItemNo = rec.ItemNo,
-                Description = rec.Description,
-                Quantity = rec.Qty,
-                Price = rec.Price,
-                DiscountPercentage = rec.DiscountPercentage,
-                TotalAmount = rec.Total,
-                Optional = rec.Optional,
-                UnitOfMeasure = rec.Uom,
-                InvoiceReference = string.Concat(rec.InvoiceReference),
-                ProductType = (rec.ProductType.Equals("Item")) ? ProductChargeType.Item : ProductChargeType.Deal
-            };
+                list.Add(new AdditionalCharge()
+                {
+                    ActivityNo = string.Concat(rec.ActivityNo),
+                    LineNo = rec.LineNo,
+                    ItemNo = rec.ItemNo,
+                    Description = rec.Description,
+                    Quantity = rec.Qty,
+                    Price = rec.Price,
+                    DiscountPercentage = rec.DiscountPercentage,
+                    TotalAmount = rec.Total,
+                    Optional = rec.Optional,
+                    UnitOfMeasure = rec.Uom,
+                    InvoiceReference = string.Concat(rec.InvoiceReference),
+                    ProductType = (rec.ProductType.Equals("Item")) ? ProductChargeType.Item : ProductChargeType.Deal
+                });
+            }
+            return list;
         }
 
         public List<AttributeResponse> MapRootToAttributeResponse(LSActivity15.ActivityAttributeRespond root)

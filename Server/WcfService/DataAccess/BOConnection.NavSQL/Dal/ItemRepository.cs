@@ -637,7 +637,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplItem ReaderToItem(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplItem()
             {
@@ -716,7 +716,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
             ImageRepository imgrep = new ImageRepository(config);
             item.Images = imgrep.ImageGetByKey("Item", item.Id, string.Empty, string.Empty, 0, false);
-            timestamp = (hastimestamp) ? ByteArrayToString(reader["timestamp"] as byte[]) : string.Empty;
+            timestamp = (hastimestamp) ? ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]) : string.Empty;
 
             if (incldetails == false)
                 return item;
@@ -737,7 +737,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id);
             
             AttributeValueRepository attrrep = new AttributeValueRepository(config);
-            item.ItemAttributes = attrrep.AttributesGetByItemId(item.Id);
+            item.ItemAttributes = attrrep.AttributesGet(item.Id, AttributeLinkType.Item);
 
             ItemRecipeRepository recrep = new ItemRecipeRepository(config);
             item.Recipes = recrep.RecipeGetByItemId(item.Id);

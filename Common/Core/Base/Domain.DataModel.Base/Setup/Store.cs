@@ -19,15 +19,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             Description = string.Empty;
             Phone = string.Empty;
             TaxGroupId = string.Empty;
-            Address = new Address();
-            Images = new List<ImageView>();
             Latitude = 0.0;
             Longitude = 0.0;
             Distance = 0.0;
+            Address = new Address();
             Currency = new UnknownCurrency();
+            Images = new List<ImageView>();
             StoreHours = new List<StoreHours>();
             StoreServices = new List<StoreServices>();
+            SourcingLocations = new List<SourcingLocation>();
             HospSalesTypes = new List<SalesType>();
+            Attributes = new List<RetailAttribute>();
         }
 
         public Store()
@@ -45,14 +47,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         {
             if (disposing)
             {
-                if (Address != null)
-                    Address.Dispose();
-                if (Images != null)
-                    Images.Clear();
-                if (StoreHours != null)
-                    StoreHours.Clear();
-                if (StoreServices != null)
-                    StoreServices.Clear();
+                Address?.Dispose();
+                Images?.Clear();
+                StoreHours?.Clear();
+                StoreServices?.Clear();
+                SourcingLocations?.Clear();
+                Attributes?.Clear();
+                HospSalesTypes?.Clear();
             }
         }
 
@@ -105,6 +106,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public List<StoreHours> StoreHours { get; set; }
         [DataMember]
         public List<StoreServices> StoreServices { get; set; }
+        [DataMember]
+        public List<RetailAttribute> Attributes { get; set; }
 
         public string FormatAddress
         {
@@ -216,7 +219,6 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 return storeHours.TrimEnd(Environment.NewLine.ToCharArray());
             }
         }
-
 
         public ImageView DefaultImage
         {

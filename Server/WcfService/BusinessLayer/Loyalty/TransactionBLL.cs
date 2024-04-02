@@ -27,6 +27,8 @@ namespace LSOmni.BLL.Loyalty
             if (entry == null)
                 return null;
 
+            bool compress = BOLoyConnection.CompressCOActive(stat);
+
             List<SalesEntryLine> lines = new List<SalesEntryLine>();
             foreach (SalesEntryLine line in entry.Lines)
             {
@@ -34,18 +36,25 @@ namespace LSOmni.BLL.Loyalty
                     line.ParentLine = 0;
 
                 List<SalesEntryLine> sublines = lines.FindAll(s => s.ParentLine == line.LineNumber);
-                SalesEntryLine linefound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType && ((line.ParentLine > 0 && l.ParentLine == line.ParentLine) || (line.ParentLine == 0 && sublines.Count == 0)));
-                if (linefound == null)
+                SalesEntryLine lineFound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType && ((line.ParentLine > 0 && l.ParentLine == line.ParentLine) || (line.ParentLine == 0 && sublines.Count == 0)));
+                if (lineFound == null || string.IsNullOrEmpty(line.ExtraInformation) == false || compress)
                 {
                     lines.Add(line);
                     continue;
                 }
 
-                linefound.Quantity += line.Quantity;
-                linefound.Amount += line.Amount;
-                linefound.NetAmount += line.NetAmount;
-                linefound.TaxAmount += line.TaxAmount;
-                linefound.DiscountAmount += line.DiscountAmount;
+                SalesEntryDiscountLine dLine = entry.DiscountLines.Find(l => l.LineNumber >= line.LineNumber && l.LineNumber < line.LineNumber + 10000);
+                if (dLine != null)
+                {
+                    // update discount line number to match existing record, as we will sum up the orderlines
+                    dLine.LineNumber = lineFound.LineNumber + dLine.LineNumber / 100;
+                }
+
+                lineFound.Quantity += line.Quantity;
+                lineFound.Amount += line.Amount;
+                lineFound.NetAmount += line.NetAmount;
+                lineFound.TaxAmount += line.TaxAmount;
+                lineFound.DiscountAmount += line.DiscountAmount;
             }
             entry.Lines = lines;
             return entry;
@@ -72,13 +81,16 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrEmpty(orderId))
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "orderId can not be empty");
 
-            List<SalesEntry> result = new List<SalesEntry>();
-            List<SalesEntryId> list = BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
-            foreach (SalesEntryId line in list)
-            {
-                result.Add(SalesEntryGet(line.ReceiptId, DocumentIdType.Receipt, stat));
-            }
-            return result;
+            SalesEntryList data = BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
+            return data.SalesEntries;
+        }
+
+        public virtual SalesEntryList SalesEntryGetSalesExtByOrderId(string orderId, Statistics stat)
+        {
+            if (string.IsNullOrEmpty(orderId))
+                throw new LSOmniException(StatusCode.TransacitionIdMissing, "orderId can not be empty");
+
+            return BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
         }
     }
 }

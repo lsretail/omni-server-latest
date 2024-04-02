@@ -4,14 +4,14 @@ using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Setup;
+using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions;
 using LSRetail.Omni.Domain.DataModel.Pos.Payments;
 using LSRetail.Omni.Domain.DataModel.Pos.TenderTypes;
 using LSRetail.Omni.Domain.DataModel.Pos.Items;
-using LSRetail.Omni.Domain.DataModel.Base.Setup;
-using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Pos.Transactions.Discounts;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {

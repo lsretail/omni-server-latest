@@ -657,9 +657,34 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
+        private string GetSpecialGroup(string id)
+        {
+            string groups = string.Empty;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Special Group Code] FROM [" + navCompanyName + "LSC Item_Special Group Link$5ecfc871-5d82-43f1-9c54-59685e82318d] WHERE [Item No_]=@id";
+                    command.Parameters.AddWithValue("@id", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            groups += SQLHelper.GetString(reader["Special Group Code"]) + ";";
+                        }
+                        reader.Close();
+                    }
+                    connection.Close();
+                }
+            }
+            return groups;
+        }
+
         private ReplItem ReaderToItem(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplItem rec = new ReplItem()
             {
@@ -704,6 +729,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
                 MustKeyInComment = 0
             };
+
+            rec.SpecialGroups = GetSpecialGroup(rec.Id);
 
             if (LSCVersion >= new Version("22.2"))
             {
@@ -752,7 +779,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
             ImageRepository imgrep = new ImageRepository(config, LSCVersion);
             item.Images = imgrep.ImageGetByKey("Item", item.Id, string.Empty, string.Empty, 0, false);
-            timestamp = (hastimestamp) ? ByteArrayToString(reader["timestamp"] as byte[]) : string.Empty;
+            timestamp = (hastimestamp) ? ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]) : string.Empty;
+            item.SpecialGroups = GetSpecialGroup(item.Id);
 
             if (incldetails == false)
                 return item;
@@ -773,7 +801,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             item.VariantsExt = extvarrep.VariantRegGetByItemId(item.Id, stat);
             
             AttributeValueRepository attrrep = new AttributeValueRepository(config);
-            item.ItemAttributes = attrrep.AttributesGetByItemId(item.Id, stat);
+            item.ItemAttributes = attrrep.AttributesGet(item.Id, AttributeLinkType.Item, stat);
 
             ItemRecipeRepository recrep = new ItemRecipeRepository(config);
             item.Recipes = recrep.RecipeGetByItemId(item.Id, stat);

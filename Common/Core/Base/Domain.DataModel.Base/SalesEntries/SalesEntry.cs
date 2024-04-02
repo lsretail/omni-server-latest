@@ -202,11 +202,5 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
             return s;
         }
     }
-
-    public class SalesEntryId
-    {
-        public string ReceiptId { get; set; }
-        public string OrderId { get; set; }
-    }
 }
 

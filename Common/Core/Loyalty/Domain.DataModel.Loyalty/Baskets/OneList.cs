@@ -125,14 +125,23 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
         public DateTime CreateDate { get; set; }
         [DataMember(IsRequired = true)]
         public ListType ListType { get; set; }
+        /// <summary>
+        /// Use Hospitaly calculator
+        /// </summary>
         [DataMember]
         public bool IsHospitality { get; set; }
         [DataMember]
         public string SalesType { get; set; }
         [DataMember]
         public string ShipToCountryCode { get; set; }
+        /// <summary>
+        /// Set currency if it is different from Ledger Entry Currency
+        /// </summary>
         [DataMember]
         public string Currency { get; set; }
+        /// <summary>
+        /// Currency factor rate used against default Currency
+        /// </summary>
         [DataMember]
         public decimal CurrencyFactor { get; set; }
 

@@ -205,6 +205,9 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Baskets
 
         [DataMember]
         public bool IsManualItem { get; set; }
+        /// <summary>
+        /// Set to true when lines should not be combined together with same item/variant/uom
+        /// </summary>
         [DataMember]
         public bool Immutable { get; set; }
         /// <summary>

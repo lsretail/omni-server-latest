@@ -31,9 +31,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 SchemeID = XMLHelper.GetString(contact.Account?.Scheme?.Id),
                 ExternalID = XMLHelper.GetString(contact.AlternateId),
 
-                FirstName = contact.FirstName,
+                FirstName = XMLHelper.GetString(contact.FirstName),
                 MiddleName = XMLHelper.GetString(contact.MiddleName),
-                LastName = contact.LastName,
+                LastName = XMLHelper.GetString(contact.LastName),
                 DateOfBirth = contact.BirthDay,
                 Email = contact.Email.ToLower(),
                 Gender = ((int)contact.Gender).ToString(),
@@ -50,18 +50,18 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 Phone = XMLHelper.GetString(addr.PhoneNumber),
                 MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
-                LoginID = contact.UserName.ToLower(),
-                Password = contact.Password,
-                AuthenticationId = contact.AuthenticationId,
-                Authenticator = contact.Authenticator,
-                DeviceID = contact.LoggedOnToDevice.Id,
-                DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
+                LoginID = XMLHelper.GetString(contact.UserName.ToLower()),
+                Password = XMLHelper.GetString(contact.Password),
+                DeviceID = XMLHelper.GetString(contact.LoggedOnToDevice.Id),
+                DeviceFriendlyName = XMLHelper.GetString(contact.LoggedOnToDevice.DeviceFriendlyName),
 
                 ExternalSystem = string.Empty
             };
 
             if (LSCVersion >= new Version("19.2"))
             {
+                mem.AuthenticationId = XMLHelper.GetString(contact.AuthenticationId);
+                mem.Authenticator = XMLHelper.GetString(contact.Authenticator);
                 mem.SendReceiptbyEmail = ((int)contact.SendReceiptByEMail).ToString();
             }
 
@@ -103,11 +103,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 AccountID = XMLHelper.GetString(accountId),
                 ExternalID = XMLHelper.GetString(contact.AlternateId),
 
-                FirstName = contact.FirstName,
+                FirstName = XMLHelper.GetString(contact.FirstName),
                 MiddleName = XMLHelper.GetString(contact.MiddleName),
-                LastName = contact.LastName,
+                LastName = XMLHelper.GetString(contact.LastName),
                 DateOfBirth = contact.BirthDay,
-                Email = contact.Email,
+                Email = XMLHelper.GetString(contact.Email),
                 Gender = ((int)contact.Gender).ToString(),
 
                 Address1 = XMLHelper.GetString(addr.Address1),
@@ -126,9 +126,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             };
 
             if (LSCVersion >= new Version("19.2"))
-            {
                 mem.SendReceiptbyEmail = ((int)contact.SendReceiptByEMail).ToString();
-            }
 
             List<LSCentral.MemberAttributeValue1> attr = new List<LSCentral.MemberAttributeValue1>();
             if (contact.Profiles != null)

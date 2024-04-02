@@ -24,6 +24,14 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         [DataMember]
         public string TaxGroup { get; set; }
         [DataMember]
+        public string PriceGroup { get; set; }
+        [DataMember]
+        public string DiscountGroup { get; set; }
+        [DataMember]
+        public string PaymentTerms { get; set; }
+        [DataMember]
+        public string ShippingLocation { get; set; }
+        [DataMember]
         public int ReceiptOption { get; set; }
         [DataMember]
         public string ReceiptEmail { get; set; }

@@ -1,6 +1,6 @@
-﻿using LSRetail.Omni.Domain.DataModel.Base;
-using System;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
+
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {

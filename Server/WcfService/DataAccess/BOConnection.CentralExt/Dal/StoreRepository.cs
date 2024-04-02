@@ -530,7 +530,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 store.UseSourcingLocation = SQLHelper.GetBool(reader["Calc Inv for Sourcing Location"]);
             }
 
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return store;
         }
 

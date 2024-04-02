@@ -357,15 +357,4 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         [EnumMember]
         Widowed = 4,
     }
-
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/POS/2014/10")]
-    public enum SendEmail
-    {
-        [EnumMember]
-        Default = 0,
-        [EnumMember]
-        Yes = 1,
-        [EnumMember]
-        No = 2
-    }
 }

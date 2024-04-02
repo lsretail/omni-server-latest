@@ -336,7 +336,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplHierarchyNode ReaderToHierarchyNode(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplHierarchyNode()
             {
@@ -353,7 +353,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplHierarchyLeaf ReaderToHierarchyNodeLink(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplHierarchyLeaf()
             {

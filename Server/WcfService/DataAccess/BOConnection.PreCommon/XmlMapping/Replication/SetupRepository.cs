@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using LSOmni.Common.Util;
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
@@ -166,6 +165,34 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     case "Discount % Value": rec.Percentage = (rec.Percentage == 0) ? ConvertTo.SafeDecimal(field.Values[0]) : rec.Percentage; break;
                 }
             }
+        }
+
+        public List<RetailAttribute> GetAttribute(XMLTableData table)
+        {
+            List<RetailAttribute> list = new List<RetailAttribute>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                RetailAttribute rec = new RetailAttribute();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Attribute Code": rec.Code = field.Values[i]; break;
+                        case "Attribute Value": rec.Value = field.Values[i]; break;
+                        case "Numeric Value": rec.NumericValue = ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Link Type": rec.LinkType = (AttributeLinkType)ConvertTo.SafeInt(field.Values[i]); break;
+                        case "Link Field 1": rec.LinkField1 = field.Values[i]; break;
+                        case "Link Field 2": rec.LinkField2 = field.Values[i]; break;
+                        case "Link Field 3": rec.LinkField3 = field.Values[i]; break;
+                        case "Sequence": rec.Sequence = ConvertTo.SafeInt(field.Values[i]); break;
+                    }
+                }
+                list.Add(rec);
+            }
+            return list;
         }
 
         public decimal GetPointRate(XMLTableData table)

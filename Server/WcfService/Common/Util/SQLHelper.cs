@@ -17,6 +17,45 @@ namespace LSOmni.Common.Util
             return value.ToString();
         }
 
+        static public string GetDateFormula(object value)
+        {
+            if (value == null || value == DBNull.Value)
+                return string.Empty;
+
+            string dformula = string.Empty;
+            foreach (char c in value.ToString())
+            {
+                switch (c)
+                {
+                    case '\u0001':
+                        dformula += "C";
+                        break;
+                    case '\u0002':
+                        dformula += "D";
+                        break;
+                    case '\u0003':
+                        dformula += "WD";
+                        break;
+                    case '\u0004':
+                        dformula += "W";
+                        break;
+                    case '\u0005':
+                        dformula += "M";
+                        break;
+                    case '\u0006':
+                        dformula += "Q";
+                        break;
+                    case '\a':
+                        dformula += "Y";
+                        break;
+                    default:
+                        dformula += c;
+                        break;
+                }
+            }
+            return dformula;
+        }
+
         /// <summary>
         /// Get Database String Value
         /// </summary>

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
@@ -84,12 +83,12 @@ namespace LSOmni.Service
         /// Get discounts for items. Send in empty string for loyaltySchemeCode if getting anonymously.
         /// </summary>
         /// <param name="storeId">Store Id</param>
-        /// <param name="itemiIds">List of item ids to check for discounts</param>
+        /// <param name="itemIds">List of item ids to check for discounts</param>
         /// <param name="loyaltySchemeCode">[OPTIONAL] Loyalty scheme code for a user</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemiIds, string loyaltySchemeCode);
+        List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode);
 
         /// <summary>
         /// Get balance of a gift card.
@@ -98,21 +97,23 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetDataEntryBalance<p/><p/>
         /// </remarks>
         /// <param name="cardNo">Gift card number</param>
+        /// <param name="pin">Gift card pin number</param>
         /// <param name="entryType">Gift card Entry type. If empty, GiftCard_DataEntryType from TenantConfig is used</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        GiftCard GiftCardGetBalance(string cardNo, string entryType);
+        GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType);
 
         /// <summary>
         /// Get activity history for Gift Card
         /// </summary>
         /// <param name="cardNo">Gift card number</param>
+        /// <param name="pin">Gift card pin number</param>
         /// <param name="entryType">Gift card Entry type. If empty, GiftCard_DataEntryType from TenantConfig is used</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType);
+        List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType);
 
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
@@ -190,7 +191,7 @@ namespace LSOmni.Service
         /// For Anonymous User, keep CardId empty and OneListSave will return OneList Id back that should be store with the session for the Anonymous user, 
         /// as Commerce Service for LS Central does not store any information for Anonymous Users.<p/>
         /// Used OneListGetById to get the OneList back.<p/>
-        /// NOTE: If no Name is provided with Onelist, system will look up contact to pull the name, this can slow the process.
+        /// NOTE: If no Name is provided with OneList, system will look up contact to pull the name, this can slow the process.
         /// </remarks>
         /// <example>
         /// Sample request including minimum data needed to be able to process the request in LS Commerce
@@ -201,7 +202,7 @@ namespace LSOmni.Service
         ///         "CardId": "10021",
         ///         "Items": [{
         ///             "Image": {
-        ///                 "Id": "40020"
+        ///                "Id": "40020"
         ///             },
         ///             "ItemDescription": "Skirt Linda Professional Wear",
         ///             "ItemId": "40020",
@@ -242,7 +243,7 @@ namespace LSOmni.Service
         /// <![CDATA[
         /// {
         ///     "oneList": {
-        /// 		"CardId": "10021",
+        ///         "CardId": "10021",
         ///         "Items": [{
         ///             "Image": {
         ///                 "Id": "40020"
@@ -253,10 +254,10 @@ namespace LSOmni.Service
         ///             "VariantDescription": "YELLOW/38",
         ///             "VariantId": "002"
         ///         }],
-        /// 		"ListType": 0,
-        /// 		"StoreId": "S0001"
-        /// 	},
-        /// 	"calculate": true
+        ///         "ListType": 0,
+        ///         "StoreId": "S0001"
+        ///     },
+        ///     "calculate": true
         /// }
         /// ]]>
         /// </code>
@@ -264,8 +265,8 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"oneList": {
-        /// 		"CardId": "10021",
+        ///     "oneList": {
+        ///         "CardId": "10021",
         ///         "Items": [{
         ///             "Image": {
         ///                 "Id": "40020"
@@ -276,14 +277,14 @@ namespace LSOmni.Service
         ///             "VariantDescription": "YELLOW/38",
         ///             "VariantId": "002"
         ///         }],
-        /// 		"PublishedOffers": [{
-        /// 			"Id": "XMAS",
-        /// 			"Type": "9",
+        ///         "PublishedOffers": [{
+        ///             "Id": "XMAS",
+        ///             "Type": "9",
         ///         }],
-        /// 		"ListType": 0,
-        /// 		"StoreId": "S0001"
-        /// 	},
-        /// 	"calculate": true
+        ///         "ListType": 0,
+        ///         "StoreId": "S0001"
+        ///     },
+        ///     "calculate": true
         /// }
         /// ]]>
         /// </code>
@@ -333,12 +334,10 @@ namespace LSOmni.Service
         ///             "Quantity": 1,
         ///             "Type": 1,
         ///             "Uom": "REG"
-        ///           }
-        ///         ],
+        ///           }],
         ///         "Quantity": 1,
         ///         "UnitOfMeasureId": null
-        ///       }
-        ///     ],
+        ///       }],
         ///     "ListType": 0,
         ///     "SalesType": "TAKEAWAY",
         ///     "StoreId": "S0017"
@@ -363,26 +362,26 @@ namespace LSOmni.Service
         /// {
         ///     "onelistId":"1117AC57-10BD-4F7C-974D-FA19B1B027FB",
         ///     "item": {
-        /// 	    "ItemDescription": "T-shirt Linda Wear",
-        /// 	    "ItemId": "40045",
+        ///         "ItemDescription": "T-shirt Linda Wear",
+        ///         "ItemId": "40045",
         ///         "Quantity": 1,
         ///         "VariantDescription": "BLACK/40",
-        /// 	    "VariantId": "015"
+        ///         "VariantId": "015"
         ///     },
-        /// 	"remove": false,
-        /// 	"calculate": true
+        ///     "remove": false,
+        ///     "calculate": true
         /// }
         /// ]]>
         /// </code>
         /// </example>
-        /// <param name="onelistId">OneList Id</param>
+        /// <param name="oneListId">OneList Id</param>
         /// <param name="item">OneList Item to add or remove</param>
         /// <param name="remove">true if remove item, else false</param>
         /// <param name="calculate">Recalculate OneList</param>
         /// <returns>Updated OneList</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate);
+        OneList OneListItemModify(string oneListId, OneListItem item, bool remove, bool calculate);
 
         /// <summary>
         /// Link or remove a Member to/from existing OneList
@@ -426,61 +425,56 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"request": {
-        /// 		"CardId": "10021",
-        /// 		"LineItemCount": "1",
-        /// 		"OrderDiscountLines": [],
-        /// 		"OrderLines": [{
-        /// 			"Amount": "160.0",
-        /// 			"DiscountAmount": "0",
-        /// 			"DiscountPercent": "0",
-        /// 			"ItemId": "40020",
-        /// 			"LineNumber": "1",
-        /// 			"LineType": "0",
-        /// 			"NetAmount": "128.00",
-        /// 			"NetPrice": "64.0",
-        /// 			"Price": "80.0",
-        /// 			"Quantity": "2",
-        /// 			"QuantityOutstanding": "0",
-        /// 			"QuantityToInvoice": "2.0",
-        /// 			"QuantityToShip": "0",
-        /// 			"TaxAmount": "32.0",
-        /// 			"VariantId": "002"
+        ///     "request": {
+        ///         "CardId": "10021",
+        ///         "OrderDiscountLines": [],
+        ///         "OrderLines": [{
+        ///             "Amount": "160.0",
+        ///             "DiscountAmount": "0",
+        ///             "DiscountPercent": "0",
+        ///             "ItemId": "40020",
+        ///             "LineNumber": "1",
+        ///             "LineType": "0",
+        ///             "NetAmount": "128.00",
+        ///             "NetPrice": "64.0",
+        ///             "Price": "80.0",
+        ///             "Quantity": "2",
+        ///             "TaxAmount": "32.0",
+        ///             "VariantId": "002"
         ///         }],
-        /// 		"OrderPayments": [{
-        /// 			"Amount": "160.0",
-        /// 			"AuthorisationCode": "123456",
-        /// 			"CardNumber": "10xx xxxx xxxx 1475",
-        /// 			"CardType": "VISA",
-        /// 			"CurrencyCode": "GBP",
-        /// 			"CurrencyFactor": 1,
-        /// 			"ExternalReference": "MyRef123",
-        /// 			"LineNumber": 1,
-        /// 			"PaymentType": "2",
-        /// 			"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
-        /// 			"TenderType": "1",
-        /// 			"TokenNumber": "123456"
+        ///         "OrderPayments": [{
+        ///             "Amount": "160.0",
+        ///             "AuthorizationCode": "123456",
+        ///             "CardNumber": "10xx xxxx xxxx 1475",
+        ///             "CardType": "VISA",
+        ///             "CurrencyCode": "GBP",
+        ///             "CurrencyFactor": 1,
+        ///             "ExternalReference": "MyRef123",
+        ///             "LineNumber": 1,
+        ///             "PaymentType": "2",
+        ///             "PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
+        ///             "TenderType": "1",
+        ///             "TokenNumber": "123456"
         ///         }],
-        /// 		"OrderType": "0",
-        /// 		"PaymentStatus": "10",
-        /// 		"ShipToAddress": {
-        /// 			"Address1": "600 Lue Via",
-        /// 			"Address2": "None",
-        /// 			"City": "North Viola",
-        /// 			"Country": "Belgium",
-        /// 			"PhoneNumber": "555-555-5555",
-        /// 			"PostCode": "88391-4289",
-        /// 			"StateProvinceRegion": "None",
-        /// 			"Type": "0"
-        /// 		},
-        /// 		"ShippingStatus": "20",
-        /// 		"SourceType": "2",
-        /// 		"StoreId": "S0013",
-        /// 		"TotalAmount": "160.0",
-        /// 		"TotalDiscount": "0",
-        /// 		"TotalNetAmount": "128.0"
-        /// 	},
-        /// 	"returnOrderIdOnly": 0
+        ///         "OrderType": "0",
+        ///         "PaymentStatus": "10",
+        ///         "ShipOrder": "1",
+        ///         "ShipToAddress": {
+        ///             "Address1": "600 Lue Via",
+        ///             "Address2": "None",
+        ///             "City": "North Viola",
+        ///             "Country": "Belgium",
+        ///             "PhoneNumber": "555-555-5555",
+        ///             "PostCode": "88391-4289",
+        ///             "StateProvinceRegion": "None",
+        ///             "Type": "0"
+        ///         },
+        ///         "StoreId": "S0013",
+        ///         "TotalAmount": "160.0",
+        ///         "TotalDiscount": "0",
+        ///         "TotalNetAmount": "128.0"
+        ///     },
+        ///     "returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -488,67 +482,62 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"request": {
-        /// 		"CardId": "10021",
-        /// 		"LineItemCount": "1",
-        /// 		"OrderDiscountLines": [{
-        /// 			"DiscountAmount": "16.0",
-        /// 			"DiscountPercent": "10.0",
-        /// 			"DiscountType": "4",
-        /// 			"LineNumber": "1",
-        /// 			"No": "10000"
+        ///     "request": {
+        ///         "CardId": "10021",
+        ///         "OrderDiscountLines": [{
+        ///             "DiscountAmount": "16.0",
+        ///             "DiscountPercent": "10.0",
+        ///             "DiscountType": "4",
+        ///             "LineNumber": "1",
+        ///             "No": "10000"
         ///         }],
-        /// 		"OrderLines": [{
-        /// 			"Amount": "144.0",
-        /// 			"DiscountAmount": "16.3",
-        /// 			"DiscountPercent": "10.0",
-        /// 			"ItemId": "40020",
-        /// 			"LineNumber": "1",
-        /// 			"LineType": "0",
-        /// 			"NetAmount": "115.20",
-        /// 			"NetPrice": "64.0",
-        /// 			"Price": "80.0",
-        /// 			"Quantity": "2",
-        /// 			"QuantityOutstanding": "0",
-        /// 			"QuantityToInvoice": "2.0",
-        /// 			"QuantityToShip": "0",
-        /// 			"TaxAmount": "28.0",
-        /// 			"VariantId": "002"
+        ///         "OrderLines": [{
+        ///             "Amount": "144.0",
+        ///             "DiscountAmount": "16.3",
+        ///             "DiscountPercent": "10.0",
+        ///             "ItemId": "40020",
+        ///             "LineNumber": "1",
+        ///             "LineType": "0",
+        ///             "NetAmount": "115.20",
+        ///             "NetPrice": "64.0",
+        ///             "Price": "80.0",
+        ///             "Quantity": "2",
+        ///             "TaxAmount": "28.0",
+        ///             "VariantId": "002"
         ///         }],
-        /// 		"OrderPayments": [{
-        /// 			"Amount": "160.0",
-        /// 			"AuthorisationCode": "123456",
-        /// 			"CardNumber": "10xx xxxx xxxx 1475",
-        /// 			"CardType": "VISA",
-        /// 			"CurrencyCode": "GBP",
-        /// 			"CurrencyFactor": 1,
-        /// 			"ExternalReference": "MyRef123",
-        /// 			"LineNumber": 1,
-        /// 			"PaymentType": "2",
-        /// 			"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
-        /// 			"TenderType": "1",
-        /// 			"TokenNumber": "123456"
+        ///         "OrderPayments": [{
+        ///             "Amount": "160.0",
+        ///             "AuthorizationCode": "123456",
+        ///             "CardNumber": "10xx xxxx xxxx 1475",
+        ///             "CardType": "VISA",
+        ///             "CurrencyCode": "GBP",
+        ///             "CurrencyFactor": 1,
+        ///             "ExternalReference": "MyRef123",
+        ///             "LineNumber": 1,
+        ///             "PaymentType": "2",
+        ///             "PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
+        ///             "TenderType": "1",
+        ///             "TokenNumber": "123456"
         ///         }],
-        /// 		"OrderType": "0",
-        /// 		"PaymentStatus": "10",
-        /// 		"ShipToAddress": {
-        /// 			"Address1": "600 Lue Via",
-        /// 			"Address2": "None",
-        /// 			"City": "North Viola",
-        /// 			"Country": "Belgium",
-        /// 			"PhoneNumber": "555-555-5555",
-        /// 			"PostCode": "88391-4289",
-        /// 			"StateProvinceRegion": "None",
-        /// 			"Type": "0"
-        /// 		},
-        /// 		"ShippingStatus": "20",
-        /// 		"SourceType": "2",
-        /// 		"StoreId": "S0013",
-        /// 		"TotalAmount": "144.0",
-        /// 		"TotalDiscount": "16.0",
-        /// 		"TotalNetAmount": "115.20"
-        /// 	},
-        /// 	"returnOrderIdOnly": 0
+        ///         "OrderType": "0",
+        ///         "PaymentStatus": "10",
+        ///         "ShipOrder": "1",
+        ///         "ShipToAddress": {
+        ///             "Address1": "600 Lue Via",
+        ///             "Address2": "None",
+        ///             "City": "North Viola",
+        ///             "Country": "Belgium",
+        ///             "PhoneNumber": "555-555-5555",
+        ///             "PostCode": "88391-4289",
+        ///             "StateProvinceRegion": "None",
+        ///             "Type": "0"
+        ///         },
+        ///         "StoreId": "S0013",
+        ///         "TotalAmount": "144.0",
+        ///         "TotalDiscount": "16.0",
+        ///         "TotalNetAmount": "115.20"
+        ///     },
+        ///     "returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -556,77 +545,73 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"request": {
-        /// 		"CardId": "10021",
-        /// 		"LineItemCount": "1",
-        /// 		"OrderDiscountLines": [],
-        /// 		"OrderLines": [{
-        /// 			"Amount": "160.0",
-        /// 			"DiscountAmount": "0",
-        /// 			"DiscountPercent": "0",
-        /// 			"ItemId": "40020",
-        /// 			"LineNumber": "1",
-        /// 			"LineType": "0",
-        /// 			"NetAmount": "128.00",
-        /// 			"NetPrice": "64.0",
-        /// 			"Price": "80.0",
-        /// 			"Quantity": "2",
-        /// 			"QuantityOutstanding": "0",
-        /// 			"QuantityToInvoice": "2.0",
-        /// 			"QuantityToShip": "0",
-        /// 			"TaxAmount": "32.0",
-        /// 			"VariantId": "002"
+        ///     "request": {
+        ///         "CardId": "10021",
+        ///         "OrderDiscountLines": [],
+        ///         "OrderLines": [{
+        ///             "Amount": "160.0",
+        ///             "DiscountAmount": "0",
+        ///             "DiscountPercent": "0",
+        ///             "ItemId": "40020",
+        ///             "LineNumber": "1",
+        ///             "LineType": "0",
+        ///             "NetAmount": "128.00",
+        ///             "NetPrice": "64.0",
+        ///             "Price": "80.0",
+        ///             "Quantity": "2",
+        ///             "TaxAmount": "32.0",
+        ///             "VariantId": "002"
         ///         }],
-        ///        	"OrderPayments": [{
-        /// 			"Amount": "160.0",
-        /// 			"AuthorisationCode": "123456",
-        /// 			"CardNumber": "10xx xxxx xxxx 1475",
-        /// 			"CardType": "VISA",
-        /// 			"CurrencyCode": "GBP",
-        /// 			"CurrencyFactor": 1,
-        /// 			"ExternalReference": "MyRef123",
-        /// 			"LineNumber": 1,
-        /// 			"PaymentType": "2",
-        /// 			"PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
-        /// 			"TenderType": "1",
-        /// 			"TokenNumber": "123456"
+        ///         "OrderPayments": [{
+        ///             "Amount": "160.0",
+        ///             "AuthorizationCode": "123456",
+        ///             "CardNumber": "10xx xxxx xxxx 1475",
+        ///             "CardType": "VISA",
+        ///             "CurrencyCode": "GBP",
+        ///             "CurrencyFactor": 1,
+        ///             "ExternalReference": "MyRef123",
+        ///             "LineNumber": 1,
+        ///             "PaymentType": "2",
+        ///             "PreApprovedValidDate": "\/Date(1892160000000+1000)\/",
+        ///             "TenderType": "1",
+        ///             "TokenNumber": "123456"
         ///         },
         ///         {
-        ///        		"Amount": "200.0",
-        ///        		"CardNumber": "10021",
-        ///        		"CurrencyCode": "LOY",
-        ///        		"CurrencyFactor": "0.1",
-        ///        		"LineNumber": 2,
-        ///       		"TenderType": "3"
+        ///             "Amount": "200.0",
+        ///             "CardNumber": "10021",
+        ///             "CurrencyCode": "LOY",
+        ///             "CurrencyFactor": "0.1",
+        ///             "LineNumber": 2,
+        ///             "TenderType": "3"
         ///         },
         ///         {
-        ///        		"Amount": "20.0",
-        ///        		"CardNumber": "123456",
-        ///        		"CurrencyCode": "GBP",
-        ///        		"CurrencyFactor": "1.0",
-        ///        		"LineNumber": 3,
-        ///       		"TenderType": "4"
+        ///             "Amount": "20.0",
+        ///             "AuthorizationCode": 9999,
+        ///             "CardNumber": "1000",
+        ///             "CurrencyCode": "GBP",
+        ///             "CurrencyFactor": "1.0",
+        ///             "LineNumber": 3,
+        ///             "TenderType": "4"
         ///         }],
-        /// 		"OrderType": "0",
-        /// 		"PaymentStatus": "10",
-        /// 		"ShipToAddress": {
-        /// 			"Address1": "600 Lue Via",
-        /// 			"Address2": "None",
-        /// 			"City": "North Viola",
-        /// 			"Country": "Belgium",
-        /// 			"PhoneNumber": "555-555-5555",
-        /// 			"PostCode": "88391-4289",
-        /// 			"StateProvinceRegion": "None",
-        /// 			"Type": "0"
-        /// 		},
-        /// 		"ShippingStatus": "20",
-        /// 		"SourceType": "2",
-        /// 		"StoreId": "S0013",
-        /// 		"TotalAmount": "160.0",
-        /// 		"TotalDiscount": "0",
-        /// 		"TotalNetAmount": "128.0"
-        /// 	},
-        /// 	"returnOrderIdOnly": 0
+        ///         "OrderType": "0",
+        ///         "PaymentStatus": "10",
+        ///         "ShipOrder": "1",
+        ///         "ShipToAddress": {
+        ///             "Address1": "600 Lue Via",
+        ///             "Address2": "None",
+        ///             "City": "North Viola",
+        ///             "Country": "Belgium",
+        ///             "PhoneNumber": "555-555-5555",
+        ///             "PostCode": "88391-4289",
+        ///             "StateProvinceRegion": "None",
+        ///             "Type": "0"
+        ///         },
+        ///         "StoreId": "S0013",
+        ///         "TotalAmount": "160.0",
+        ///         "TotalDiscount": "0",
+        ///         "TotalNetAmount": "128.0"
+        ///     },
+        ///     "returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -634,42 +619,37 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"request": {
-        /// 		"CardId": "10021",
-        /// 		"CollectLocation": "S0001",
-        /// 		"LineItemCount": "1",
-        /// 		"OrderDiscountLines": [],
-        /// 		"OrderLines": [{
-        /// 			"Amount": "160.0",
-        /// 			"ClickAndCollectLine": "1",
-        /// 			"DiscountAmount": "0",
-        /// 			"DiscountPercent": "0",
-        /// 			"ItemId": "40020",
-        /// 			"LineNumber": "1",
-        /// 			"LineType": "0",
-        /// 			"NetAmount": "128.00",
-        /// 			"NetPrice": "64.0",
-        /// 			"Price": "80.0",
-        /// 			"Quantity": "2",
-        /// 			"QuantityOutstanding": "0",
-        /// 			"QuantityToInvoice": "2.0",
-        /// 			"QuantityToShip": "0",
-        /// 			"StoreId": "S0001",
-        /// 			"TaxAmount": "32.0",
-        /// 			"VariantId": "002"
+        ///     "request": {
+        ///         "CardId": "10021",
+        ///         "CollectLocation": "S0001",
+        ///         "OrderDiscountLines": [],
+        ///         "OrderLines": [{
+        ///             "Amount": "160.0",
+        ///             "ClickAndCollectLine": "1",
+        ///             "DiscountAmount": "0",
+        ///             "DiscountPercent": "0",
+        ///             "ItemId": "40020",
+        ///             "LineNumber": "1",
+        ///             "LineType": "0",
+        ///             "NetAmount": "128.00",
+        ///             "NetPrice": "64.0",
+        ///             "Price": "80.0",
+        ///             "Quantity": "2",
+        ///             "StoreId": "S0001",
+        ///             "TaxAmount": "32.0",
+        ///             "VariantId": "002"
         ///         }],
-        /// 		"OrderPayments": [],
-        /// 		"OrderType": "1",
-        /// 		"PaymentStatus": "0",
-        /// 		"ShipToAddress": {},
-        /// 		"ShippingStatus": "10",
-        /// 		"SourceType": "2",
-        /// 		"StoreId": "S0013",
-        /// 		"TotalAmount": "160.0",
-        /// 		"TotalDiscount": "0",
-        /// 		"TotalNetAmount": "128.0"
-        /// 	},
-        /// 	"returnOrderIdOnly": 0
+        ///         "OrderPayments": [],
+        ///         "OrderType": "1",
+        ///         "PaymentStatus": "0",
+        ///         "ShipOrder": "0",
+        ///         "ShipToAddress": {},
+        ///         "StoreId": "S0013",
+        ///         "TotalAmount": "160.0",
+        ///         "TotalDiscount": "0",
+        ///         "TotalNetAmount": "128.0"
+        ///     },
+        ///     "returnOrderIdOnly": 0
         /// }
         /// ]]>
         /// </code>
@@ -680,6 +660,18 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         SalesEntry OrderCreate(Order request, bool returnOrderIdOnly);
+
+        /// <summary>
+        /// Edit Customer Order
+        /// </summary>
+        /// <param name="request">Updated Order object</param>
+        /// <param name="orderId">Order Id to edit</param>
+        /// <param name="editType">Type of Order Edit</param>
+        /// <param name="returnOrderIdOnly"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        SalesEntry OrderEdit(Order request, string orderId, OrderEditType editType, bool returnOrderIdOnly);
 
         /// <summary>
         /// Create a Hospitality Order
@@ -693,168 +685,172 @@ namespace LSOmni.Service
         /// Based on OneListHospCalculate result.
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
-        /// {
-        ///   "request": {
-        ///     "Id": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
-        ///     "BillToName": "",
-        ///     "CardId": "10021",
-        ///     "Comment": "",
-        ///     "DeliveryType": 0,
-        ///     "Directions": "",
-        ///     "Email": "tom@xyz.com",
-        ///     "LineItemCount": 1,
-        ///     "Name": "Tom Tomsson",
-        ///     "OrderDiscountLines": [{
-        ///         "Description": "Deal",
-        ///         "DiscountAmount": 0.00,
-        ///         "DiscountPercent": 0.00,
-        ///         "DiscountType": 6,
-        ///         "LineNumber": 9750,
-        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
-        ///         "OfferNumber": "S10025",
-        ///         "OrderId": "",
-        ///         "PeriodicDiscGroup": "",
-        ///         "PeriodicDiscType": 0
-        ///       }, {
-        ///         "Description": "Deal",
-        ///         "DiscountAmount": 0.00,
-        ///         "DiscountPercent": 0.00,
-        ///         "DiscountType": 6,
-        ///         "LineNumber": 10000,
-        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
-        ///         "OfferNumber": "S10025",
-        ///         "OrderId": "",
-        ///         "PeriodicDiscGroup": "",
-        ///         "PeriodicDiscType": 0
-        ///       }, {
-        ///     "Description": "Deal",
-        ///         "DiscountAmount": 0.00,
-        ///         "DiscountPercent": 0.00,
-        ///         "DiscountType": 6,
-        ///         "LineNumber": 20000,
-        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
-        ///         "OfferNumber": "S10025",
-        ///         "OrderId": "",
-        ///         "PeriodicDiscGroup": "",
-        ///         "PeriodicDiscType": 0
-        ///       }, {
-        ///     "Description": "Deal",
-        ///         "DiscountAmount": 0.00,
-        ///         "DiscountPercent": 0.00,
-        ///         "DiscountType": 6,
-        ///         "LineNumber": 30000,
-        ///         "No": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
-        ///         "OfferNumber": "S10025",
-        ///         "OrderId": "",
-        ///         "PeriodicDiscGroup": "",
-        ///         "PeriodicDiscType": 0
-        ///       }
-        ///     ],
-        ///     "OrderLines": [{
-        ///         "Id": "{16A05A22-4D3B-49DA-8895-8C9C7A0091BB}",
-        ///         "Amount": 7.50,
-        ///         "DiscountAmount": 0.00,
-        ///         "DiscountPercent": 0.00,
-        ///         "IsADeal": true,
-        ///         "ItemDescription": "Cheese Burger Meal",
-        ///         "ItemId": "S10025",
-        ///         "ItemImageId": null,
-        ///         "LineNumber": 9750,
-        ///         "LineType": 0,
-        ///         "NetAmount": 6.82,
-        ///         "NetPrice": 6.82,
-        ///         "OrderId": "",
-        ///         "Price": 7.50,
-        ///         "PriceModified": false,
-        ///         "Quantity": 1.00,
-        ///         "SubLines": [{
-        ///             "Amount": 5.32,
-        ///             "DealCode": "S10025",
-        ///             "DealLineId": 10000,
-        ///             "DealModifierLineId": 0,
-        ///             "Description": "Cheese Burger",
-        ///             "DiscountAmount": 0.00,
-        ///             "DiscountPercent": 0.00,
-        ///             "ItemId": "R0024",
-        ///             "LineNumber": 10000,
-        ///             "ManualDiscountAmount": 0.0,
-        ///             "ManualDiscountPercent": 0.0,
-        ///             "ModifierGroupCode": "",
-        ///             "ModifierSubCode": "",
-        ///             "NetAmount": 4.84,
-        ///             "NetPrice": 4.84,
-        ///             "ParentSubLineId": 0,
-        ///             "Price": 5.32,
-        ///             "PriceReductionOnExclusion": false,
-        ///             "Quantity": 1.00,
-        ///             "TAXAmount": 0.48,
-        ///             "Type": 1,
-        ///             "Uom": ""
-        ///           }, {
-        ///             "Amount": 1.28,
-        ///             "DealCode": "S10025",
-        ///             "DealLineId": 20000,
-        ///             "DealModifierLineId": 70000,
-        ///             "Description": "Jalapeno Popper",
-        ///             "DiscountAmount": 0.00,
-        ///             "DiscountPercent": 0.00,
-        ///             "ItemId": "33430",
-        ///             "LineNumber": 20000,
-        ///             "ManualDiscountAmount": 0.0,
-        ///             "ManualDiscountPercent": 0.0,
-        ///             "ModifierGroupCode": "",
-        ///             "ModifierSubCode": "",
-        ///             "NetAmount": 1.16,
-        ///             "NetPrice": 1.16,
-        ///             "ParentSubLineId": 0,
-        ///             "Price": 1.28,
-        ///             "PriceReductionOnExclusion": false,
-        ///             "Quantity": 1.00,
-        ///             "TAXAmount": 0.12,
-        ///             "Type": 1,
-        ///             "Uom": ""
-        ///           }, {
-        ///             "Amount": 0.90,
-        ///             "DealCode": "S10025",
-        ///             "DealLineId": 30000,
-        ///             "DealModifierLineId": 70000,
-        ///             "Description": "Orange Soda",
-        ///             "DiscountAmount": 0.00,
-        ///             "DiscountPercent": 0.00,
-        ///             "ItemId": "30520",
-        ///             "LineNumber": 30000,
-        ///             "ManualDiscountAmount": 0.0,
-        ///             "ManualDiscountPercent": 0.0,
-        ///             "ModifierGroupCode": "",
-        ///             "ModifierSubCode": "",
-        ///             "NetAmount": 0.82,
-        ///             "NetPrice": 0.82,
-        ///             "ParentSubLineId": 0,
-        ///             "Price": 0.90,
-        ///             "PriceReductionOnExclusion": false,
-        ///             "Quantity": 1.00,
-        ///             "TAXAmount": 0.08,
-        ///             "Type": 1,
-        ///             "Uom": ""
-        ///           }
-        ///         ],
-        ///         "TaxAmount": 0.68,
-        ///         "UomId": "",
-        ///         "VariantDescription": "",
-        ///         "VariantId": ""
-        ///       }
-        ///     ],
-        ///     "OrderPayments": [],
-        ///     "PickupTime": "\/Date(1654574400000+0800)\/",
-        ///     "RestaurantNo": "S0017",
-        ///     "SalesType": "TAKEAWAY",
-        ///     "StoreId": "S0017",
-        ///     "TotalAmount": 7.50,
-        ///     "TotalDiscount": 0.00,
-        ///     "TotalNetAmount": 6.82
-        ///   },
-        ///   "returnOrderIdOnly": 0
-        /// }
+        ///{
+        ///    "request": {
+        ///        "Address": {
+        ///            "Address1": "Somestreet 109",
+        ///            "CellPhoneNumber": "555-1234",
+        ///            "City": "Kopavogur",
+        ///            "PhoneNumber": "555-3214",
+        ///            "PostCode": "200",
+        ///            "Type": 1
+        ///        },
+        ///        "BillToName": "Tom Tomsson",
+        ///        "CardId": "10021",
+        ///        "Comment": "Make it fast",
+        ///        "DeliveryType": 0,
+        ///        "Directions": "",
+        ///        "Email": "tom@xyz.com",
+        ///        "ExternalId": "MYID123",
+        ///        "Name": "Tom Tomsson",
+        ///        "OrderDiscountLines": [{
+        ///              "Description": "Deal",
+        ///              "DiscountAmount": 0.00,
+        ///              "DiscountPercent": 0.00,
+        ///              "DiscountType": 6,
+        ///              "LineNumber": 9750,
+        ///              "OfferNumber": "S10025",
+        ///              "PeriodicDiscGroup": "",
+        ///              "PeriodicDiscType": 0
+        ///          }, {
+        ///              "Description": "Deal",
+        ///              "DiscountAmount": 0.00,
+        ///              "DiscountPercent": 0.00,
+        ///              "DiscountType": 6,
+        ///              "LineNumber": 10000,
+        ///              "OfferNumber": "S10025",
+        ///              "PeriodicDiscGroup": "",
+        ///              "PeriodicDiscType": 0
+        ///          }, {
+        ///              "Description": "Deal",
+        ///              "DiscountAmount": 0.00,
+        ///              "DiscountPercent": 0.00,
+        ///              "DiscountType": 6,
+        ///              "LineNumber": 20000,
+        ///              "OfferNumber": "S10025",
+        ///              "PeriodicDiscGroup": "",
+        ///              "PeriodicDiscType": 0
+        ///          }, {
+        ///              "Description": "Deal",
+        ///              "DiscountAmount": 0.00,
+        ///              "DiscountPercent": 0.00,
+        ///              "DiscountType": 6,
+        ///              "LineNumber": 30000,
+        ///              "OfferNumber": "S10025",
+        ///              "PeriodicDiscGroup": "",
+        ///              "PeriodicDiscType": 0
+        ///          }],
+        ///        "OrderLines": [{
+        ///            "Amount": 7.50,
+        ///            "DiscountAmount": 0.00,
+        ///            "DiscountPercent": 0.00,
+        ///            "IsADeal": true,
+        ///            "ItemDescription": "Cheese Burger Meal",
+        ///            "ItemId": "S10025",
+        ///            "ItemImageId": null,
+        ///            "LineNumber": 9750,
+        ///            "LineType": 0,
+        ///            "NetAmount": 6.82,
+        ///            "NetPrice": 6.82,
+        ///            "Price": 7.50,
+        ///            "PriceModified": false,
+        ///            "Quantity": 1.00,
+        ///            "SubLines": [{
+        ///                  "Amount": 5.32,
+        ///                 "DealCode": "S10025",
+        ///                 "DealLineId": 10000,
+        ///                 "DealModifierLineId": 0,
+        ///                 "Description": "Cheese Burger",
+        ///                 "DiscountAmount": 0.00,
+        ///                 "DiscountPercent": 0.00,
+        ///                 "ItemId": "R0024",
+        ///                 "LineNumber": 10000,
+        ///                 "ManualDiscountAmount": 0.0,
+        ///                 "ManualDiscountPercent": 0.0,
+        ///                 "ModifierGroupCode": "",
+        ///                 "ModifierSubCode": "",
+        ///                 "NetAmount": 4.84,
+        ///                 "NetPrice": 4.84,
+        ///                 "ParentSubLineId": 0,
+        ///                 "Price": 5.32,
+        ///                 "Quantity": 1.00,
+        ///                 "TAXAmount": 0.48,
+        ///                 "Type": 1,
+        ///                 "Uom": ""
+        ///             }, {
+        ///                 "Amount": 1.28,
+        ///                 "DealCode": "S10025",
+        ///                 "DealLineId": 20000,
+        ///                 "DealModifierLineId": 70000,
+        ///                 "Description": "Jalapeno Popper",
+        ///                 "DiscountAmount": 0.00,
+        ///                 "DiscountPercent": 0.00,
+        ///                 "ItemId": "33430",
+        ///                 "LineNumber": 20000,
+        ///                 "ManualDiscountAmount": 0.0,
+        ///                 "ManualDiscountPercent": 0.0,
+        ///                 "ModifierGroupCode": "",
+        ///                 "ModifierSubCode": "",
+        ///                 "NetAmount": 1.16,
+        ///                 "NetPrice": 1.16,
+        ///                 "ParentSubLineId": 0,
+        ///                 "Price": 1.28,
+        ///                 "Quantity": 1.00,
+        ///                 "TAXAmount": 0.12,
+        ///                 "Type": 1,
+        ///                 "Uom": ""
+        ///             }, {
+        ///                 "Amount": 0.90,
+        ///                 "DealCode": "S10025",
+        ///                 "DealLineId": 30000,
+        ///                 "DealModifierLineId": 70000,
+        ///                 "Description": "Orange Soda",
+        ///                 "DiscountAmount": 0.00,
+        ///                 "DiscountPercent": 0.00,
+        ///                 "ItemId": "30520",
+        ///                 "LineNumber": 30000,
+        ///                 "ManualDiscountAmount": 0.0,
+        ///                 "ManualDiscountPercent": 0.0,
+        ///                 "ModifierGroupCode": "",
+        ///                 "ModifierSubCode": "",
+        ///                 "NetAmount": 0.82,
+        ///                 "NetPrice": 0.82,
+        ///                 "ParentSubLineId": 0,
+        ///                 "Price": 0.90,
+        ///                 "Quantity": 1.00,
+        ///                 "TAXAmount": 0.08,
+        ///                 "Type": 1,
+        ///                 "Uom": ""
+        ///            }]
+        ///            "TaxAmount": 0.68,
+        ///            "UomId": "",
+        ///            "VariantDescription": "",
+        ///            "VariantId": ""
+        ///          }],
+        ///        "OrderPayments": [{
+        ///            "Amount": 7.50,
+        ///            "AuthorizationCode": "123456",
+        ///            "CardNumber": "10xx xxxx xxxx 1475",
+        ///            "CardType": "VISA",
+        ///            "CurrencyCode": "GBP",
+        ///            "CurrencyFactor": 1,
+        ///            "ExternalReference": "MyRef123",
+        ///            "LineNumber": 1,
+        ///            "PaymentType": "2",
+        ///            "PreApprovedValidDate": "\/Date(1704111120000)\/",
+        ///            "TenderType": "1",
+        ///            "TokenNumber": "123456"
+        ///         }],
+        ///        "PickupTime": "\/Date(1704111120000)\/",
+        ///        "RestaurantNo": "S0017",
+        ///        "SalesType": "TAKEAWAY",
+        ///        "StoreId": "S0017",
+        ///        "TotalAmount": 7.50,
+        ///        "TotalDiscount": 0.00,
+        ///        "TotalNetAmount": 6.82
+        ///    },
+        ///    "returnOrderIdOnly": 0
+        ///}
         /// ]]>
         /// </code>
         /// </example>
@@ -911,11 +907,26 @@ namespace LSOmni.Service
         /// <param name="orderId">Customer Order Id</param>
         /// <param name="storeId">Web Store Id</param>
         /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
-        /// <param name="lineNo">list of Order Line numbers to cancel, if empty whole order will be canceled</param>
+        /// <param name="lineNo">List of Order Line numbers to cancel, if empty whole order will be canceled</param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool OrderCancel(string orderId, string storeId, string userId, List<int> lineNo);
+
+        /// <summary>
+        /// Cancel Customer Order with lineNo and quantity to cancel items from individual lines
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : CustomerOrderCancel<p/><p/>
+        /// </remarks>
+        /// <param name="orderId">Customer Order Id</param>
+        /// <param name="storeId">Web Store Id</param>
+        /// <param name="userId">User who cancels the order, use Contact ID for logged in user</param>
+        /// <param name="lines">List of Order Lines to cancel from, if empty whole order will be canceled</param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool OrderCancelEx(string orderId, string storeId, string userId, List<OrderCancelLine> lines);
 
         /// <summary>
         /// Get All Sales Entries (Transactions and Orders) by card Id
@@ -1006,6 +1017,15 @@ namespace LSOmni.Service
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<SalesEntry> SalesEntryGetSalesByOrderId(string orderId);
 
+        /// <summary>
+        /// Get Transaction, Sales Invoices and Shipments for Customer order
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        SalesEntryList SalesEntryGetSalesExtByOrderId(string orderId);
+
         #endregion
 
         #region Contact
@@ -1027,38 +1047,38 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"contact": {
-        /// 		"Id": "",
-        /// 		"Account": {
-        /// 			"Id": "",
-        /// 			"Scheme": {
-        /// 				"Id": "",
-        /// 				"Club": {
-        /// 					"Id": "CRONUS"
-        /// 				}
-        /// 			}
-        /// 		},
-        /// 		"Addresses": [{
-        /// 			"Address1": "Santa Monica",
+        ///     "contact": {
+        ///         "Id": "",
+        ///         "Account": {
+        ///             "Id": "",
+        ///             "Scheme": {
+        ///                 "Id": "",
+        ///                 "Club": {
+        ///                     "Id": "CRONUS"
+        ///                 }
+        ///             }
+        ///         },
+        ///         "Addresses": [{
+        ///             "Address1": "Santa Monica",
         ///             "CellPhoneNumber": "555-5551",
-        /// 			"City": "Hollywood",
-        /// 			"Country": "US",
+        ///             "City": "Hollywood",
+        ///             "Country": "US",
         ///             "PhoneNumber": "666-6661",
-        /// 			"PostCode": "1001",
-        /// 			"StateProvinceRegion": "",
-        /// 			"Type": "0"
+        ///             "PostCode": "1001",
+        ///             "StateProvinceRegion": "",
+        ///             "Type": "0"
         ///         }],
-        /// 		"Email": "Sarah@Hollywood.com",
-        /// 		"FirstName": "Sarah",
-        /// 		"Gender": "2",
-        /// 		"Initials": "Ms",
-        /// 		"LastName": "Parker",
-        /// 		"MaritalStatus": "0",
-        /// 		"MiddleName": "",
-        /// 		"Name": "Sarah Parker",
-        /// 		"Password": "SxxInTheCity",
-        /// 		"UserName": "sarah"
-        /// 	}
+        ///         "Email": "Sarah@Hollywood.com",
+        ///         "FirstName": "Sarah",
+        ///         "Gender": "2",
+        ///         "Initials": "Ms",
+        ///         "LastName": "Parker",
+        ///         "MaritalStatus": "0",
+        ///         "MiddleName": "",
+        ///         "Name": "Sarah Parker",
+        ///         "Password": "SxxInTheCity",
+        ///         "UserName": "sarah"
+        ///     }
         /// }
         /// ]]>
         /// </code>
@@ -1128,7 +1148,7 @@ namespace LSOmni.Service
         ///       "Type": "0"
         ///     }],
         ///     "Cards": [{
-        ///	      "Id": "10033"
+        ///       "Id": "10033"
         ///     }],
         ///     "Email": "Sarah@Hollywood.com",
         ///     "FirstName": "Sarah",
@@ -1146,7 +1166,7 @@ namespace LSOmni.Service
         /// </code>
         /// </example>
         /// <param name="contact">contact</param>
-        /// <param name="getContact">Return conatact object filled out after Update</param>
+        /// <param name="getContact">Return contact object filled out after Update</param>
         /// <returns>Contact</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -1181,7 +1201,7 @@ namespace LSOmni.Service
         MemberContact ContactUpdate(MemberContact contact, bool getContact);
 
         /// <summary>
-        /// Get Member Contact by card Id. This function returns all informations about the Member contact, 
+        /// Get Member Contact by card Id. This function returns all information about the Member contact, 
         /// including Profiles, Offers, Sales history, Onelist baskets and notifications.
         /// To get basic information, use ContactGet.
         /// </summary>
@@ -1223,6 +1243,18 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetMemberContact2<p/><p/>
         /// LS Central WS4 : GetMemberContactInfo<p/><p/>
         /// </remarks>
+        /// <example>
+        /// Sample request to search by Name
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///    "searchType": 4,
+        ///    "search": "Sarah",
+        ///    "maxNumberOfRowsReturned": 10,
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="searchType">Field to search by</param>
         /// <param name="search">Search value</param>
         /// <param name="maxNumberOfRowsReturned">Max number of record, if set to 1 the exact search will be performed</param>
@@ -1238,6 +1270,17 @@ namespace LSOmni.Service
         /// LS Central WS2 : GetMemberContact2<p/><p/>
         /// LS Central WS4 : GetMemberContactInfo<p/><p/>
         /// </remarks>
+        /// <example>
+        /// Sample request to get Contact by Name
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///    "searchType": 4,
+        ///    "search": "Sarah Parker",
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <param name="searchType">Field to search by</param>
         /// <param name="search">Search value</param>
         /// <returns></returns>
@@ -1267,7 +1310,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        bool ConatctBlock(string accountId, string cardId);
+        bool ContactBlock(string accountId, string cardId);
 
         /// <summary>
         /// Get Point balance for Member Card
@@ -1289,7 +1332,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        List<PointEntry> CardGetPointEnties(string cardId, DateTime dateFrom);
+        List<PointEntry> CardGetPointEntries(string cardId, DateTime dateFrom);
 
         /// <summary>
         /// Gets Rate value for points (f.ex. 1 point = 0.01 Kr)
@@ -1306,6 +1349,7 @@ namespace LSOmni.Service
 
         /// <summary>
         /// Change password
+        /// <p/>NOTE: Its recommended to use PasswordReset and PasswordChange instead
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberPasswordChange<p/><p/>
@@ -1343,11 +1387,13 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
+        [Obsolete("Its recommended to use PasswordReset and PasswordChange instead")]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool ChangePassword(string userName, string newPassword, string oldPassword);
 
         /// <summary>
         /// Request a ResetCode to use in Email to send to Member Contact
+        /// <p/>NOTE: Its recommended to use PasswordReset and PasswordChange instead
         /// </summary>
         /// <remarks>
         /// Settings for this function are found in Commerce Service for LS Central Database - TenantConfig table
@@ -1368,11 +1414,13 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
+        [Obsolete("Its recommended to use PasswordReset and PasswordChange instead")]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string ForgotPassword(string userNameOrEmail);
 
         /// <summary>
         /// Send in Reset Password request for Member Contact
+        /// <p/>NOTE: Its recommended to use PasswordReset and PasswordChange instead
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberPasswordReset<p/><p/>
@@ -1408,6 +1456,7 @@ namespace LSOmni.Service
         /// </list>
         /// </exception>
         [OperationContract]
+        [Obsolete("Its recommended to use PasswordReset and PasswordChange instead")]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool ResetPassword(string userName, string resetCode, string newPassword);
 
@@ -1507,7 +1556,7 @@ namespace LSOmni.Service
         MemberContact Login(string userName, string password, string deviceId);
 
         /// <summary>
-        /// Soical authentication login
+        /// Social authentication login
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : MemberAuthenticatorLogin<p/><p/>
@@ -1600,11 +1649,11 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"items": [{
-        /// 		"ItemId": "40020",
-        /// 		"VariantId": "010"
+        ///     "items": [{
+        ///         "ItemId": "40020",
+        ///         "VariantId": "010"
         ///     }],
-        /// 	"storeId": "S0001"
+        ///     "storeId": "S0001"
         /// }
         /// ]]>
         /// </code>
@@ -1629,13 +1678,13 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        /// 	"items": [{
-        /// 		"ItemId": "40020",
-        /// 		"VariantId": "010"
+        ///     "items": [{
+        ///         "ItemId": "40020",
+        ///         "VariantId": "010"
         ///     }],
         ///     "locationId": "W0001",
-        /// 	"storeId": "S0001",
-        /// 	"useSourcingLocation": 0
+        ///     "storeId": "S0001",
+        ///     "useSourcingLocation": 0
         /// }
         /// ]]>
         /// </code>
@@ -1698,7 +1747,7 @@ namespace LSOmni.Service
         ProductGroup ProductGroupGetById(string productGroupId, bool includeDetails);
 
         /// <summary>
-        /// Gets Hierarchy setup for a Store with all Leafs and Nodes
+        /// Gets Hierarchy setup for a Store with all Leaves and Nodes
         /// </summary>
         /// <remarks>
         /// LS Central WS2 : GetHierarchy, GetHierarchyNode<p/><p/>
@@ -1838,6 +1887,18 @@ namespace LSOmni.Service
         /// <remarks>
         /// Data for Store Hours needs to be generated in LS Central by running COMMERCE_XXXX Scheduler Jobs
         /// </remarks>
+        /// <example>
+        /// Sample request to get all Click and Collect Stores
+        /// <code language="xml" title="REST Sample Request">
+        /// <![CDATA[
+        /// {
+        ///    "storeType": 1,
+        ///    "includeDetails": 1,
+        ///    "includeImages": 0
+        /// }
+        /// ]]>
+        /// </code>
+        /// </example>
         /// <returns>List of stores</returns>
         /// <exception cref="LSOmniServiceException">StatusCodes returned:
         /// <list type="bullet">
@@ -2576,7 +2637,7 @@ namespace LSOmni.Service
         ReplHierarchyNodeResponse ReplEcommHierarchyNode(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Hierarchy Node Leafs
+        /// Replicate Hierarchy Node Leaves
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 10000922 - LSC Hierar. Node Link
@@ -2590,13 +2651,13 @@ namespace LSOmni.Service
         /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
         /// </remarks>
         /// <param name="replRequest">Replication request object</param>
-        /// <returns>Replication result object with List of hierarchy node leafs</returns>
+        /// <returns>Replication result object with List of hierarchy node leaves</returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ReplHierarchyLeafResponse ReplEcommHierarchyLeaf(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
+        /// Replicate Hierarchy Hospitality Deals for Node Leaf
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001503 - LSC Offer Line
@@ -2616,7 +2677,7 @@ namespace LSOmni.Service
         ReplHierarchyHospDealResponse ReplEcommHierarchyHospDeal(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Hierarchy Hospitality Deal lines for Node Leafs
+        /// Replicate Hierarchy Hospitality Deal lines for Deal
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001651 - LSC Deal Modifier Item
@@ -2636,7 +2697,7 @@ namespace LSOmni.Service
         ReplHierarchyHospDealLineResponse ReplEcommHierarchyHospDealLine(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Hierarchy Hospitality Recipe lines for Node Leafs
+        /// Replicate Hierarchy Hospitality Recipe lines for Node Leaf
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 90 - BOM Component
@@ -2656,7 +2717,7 @@ namespace LSOmni.Service
         ReplItemRecipeResponse ReplEcommItemRecipe(ReplRequest replRequest);
 
         /// <summary>
-        /// Replicate Hierarchy Hospitality Modifier lines for Node Leafs
+        /// Replicate Hierarchy Hospitality Modifier lines for Node Leaf
         /// </summary>
         /// <remarks>
         /// LS Central Main Table data: 99001483 - LSC Information Subcode
@@ -2742,6 +2803,25 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         ReplMixMatchResponse ReplEcommMixAndMatch(ReplRequest replRequest);
+
+        /// <summary>
+        /// Replicate Discount Setup from Central<p/>
+        /// Only Multibuy, Discount, Total and Tender discounts are replicated
+        /// </summary>
+        /// <remarks>
+        /// LS Central Main Table data: 99001453 - LSC Periodic Discount
+        /// <p/><p/>
+        /// For full replication of all data, set FullReplication to true and LastKey and MaxKey to 0.
+        /// For delta (or updated data) replication, set FullReplication to false and LastKey and MaxKey to the last value returned from previous call. 
+        /// The BatchSize is how many records are to be returned in each batch.<p/><p/>
+        /// NOTE: LastKey and MaxKey from each ReplEcommXX call needs to be stored between all calls to Commerce Service for LS Central, both during full or delta replication.
+        /// To reset replication and get all delta data again, set LastKey and MaxKey to 0 and perform a full replication.
+        /// </remarks>
+        /// <param name="replRequest">Replication request object</param>
+        /// <returns>Replication result object with List of Periodic Discounts</returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        ReplDiscountSetupResponse ReplEcommDiscountSetup(ReplRequest replRequest);
 
         /// <summary>
         /// Replicate Validation Periods for Discounts<p/>
@@ -2917,20 +2997,22 @@ namespace LSOmni.Service
 
         /// <summary>
         /// Checks if LS Recommend is active in Commerce Service for LS Central
+        /// <p/>NOTE: Not supported anymore
         /// </summary>
         /// <returns></returns>
-        [Obsolete("Not available anymore")]
         [OperationContract]
+        [Obsolete("Not supported anymore", true)]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool RecommendedActive();
 
         /// <summary>
         /// Get Recommended Items based of list of items
+        /// <p/>NOTE: Not supported anymore
         /// </summary>
         /// <param name="items"></param>
         /// <returns></returns>
-        [Obsolete("Not available anymore")]
         [OperationContract]
+        [Obsolete("Not supported anymore", true)]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<RecommendedItem> RecommendedItemsGet(List<string> items);
 
@@ -2956,20 +3038,20 @@ namespace LSOmni.Service
         ///{
         ///   "request": {
         ///      "ActivityTime": "\/Date(1576011600000)\/",
-        ///	     "ContactAccount": "",
+        ///      "ContactAccount": "",
         ///      "ContactName": "Tom",
         ///      "ContactNo": "MO000008",
-        ///	     "Email": "tom@comp.com",
+        ///      "Email": "tom@comp.com",
         ///      "Location": "CAMBRIDGE",
         ///      "NoOfPeople": "1",
-        ///	     "OptionalResource": "",
-        ///	     "OptionalComment": "",
+        ///      "OptionalResource": "",
+        ///      "OptionalComment": "",
         ///      "Paid": "false",
         ///      "ProductNo": "MASSAGE30",
-        ///	     "PromoCode": "",
+        ///      "PromoCode": "",
         ///      "Quantity": "1",
         ///      "ReservationNo": "RES0045",
-        ///	     "Token": "",
+        ///      "Token": "",
         ///   }
         ///}        
         ///]]>
@@ -3041,7 +3123,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        AdditionalCharge ActivityAdditionalChargesGet(string activityNo);
+        List<AdditionalCharge> ActivityAdditionalChargesGet(string activityNo);
 
         /// <summary>
         /// Returns list of charges for products
@@ -3055,7 +3137,7 @@ namespace LSOmni.Service
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking);
+        List<AdditionalCharge> ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking);
 
         /// <summary>
         /// Change or insert additional charges to Activity
@@ -3068,17 +3150,22 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        ///	  "request": {
+        ///   "request": {
         ///     "ActivityNo": "ACT0035",
         ///     "DiscountPercentage": "0.0",
+        ///     "InvoiceReference": "",
         ///     "ItemNo": "40020",
-        ///     "LineNo": "1",
-        ///     "Price": "110.0",
+        ///     "LineNo": 1,
+        ///     "Optional": "",
+        ///     "OptionalComment", "",
+        ///     "ParentLine": 0,
+        ///     "Price": 110.0,
         ///     "ProductType": "0",
-        ///     "Quantity": "1",
-        ///     "TotalAmount": "110.0",
-        ///     "UnitOfMeasure": ""
-        ///	  }
+        ///     "Quantity": 1,
+        ///     "TotalAmount": 110.0,
+        ///     "UnitOfMeasure": "",
+        ///     "VariantCode": ""
+        ///   }
         /// }
         /// ]]>
         /// </code>
@@ -3128,21 +3215,22 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        ///	  "request": {
-        ///	    "ClientName": "Tom",
-        ///	    "ContactNo": "MO000008",
-        ///	    "Description": "",
-        ///	    "Email": "tom@xxx.com",
-        ///	    "Internalstatus": "0",
-        ///	    "Location": "CAMBRIDGE",
-        ///	    "ResDateFrom": "\/Date(1570737600000)\/",
-        ///	    "ResDateTo": "\/Date(1570741200000)\/",
-        ///	    "ResTimeFrom": "\/Date(1570737600000)\/",
-        ///	    "ResTimeTo": "\/Date(1570741200000)\/",
-        ///	    "ReservationType": "SPA",
-        ///	    "SalesPerson": "AH",
-        ///	    "Status": ""
-        ///	  }
+        ///     "request": {
+        ///        "ClientName": "Tom",
+        ///        "ContactNo": "MO000008",
+        ///        "Description": "",
+        ///        "Email": "tom@xxx.com",
+        ///        "EventNo": "",
+        ///        "Internalstatus": "0",
+        ///        "Location": "CAMBRIDGE",
+        ///        "ResDateFrom": "\/Date(1570737600000)\/",
+        ///        "ResDateTo": "\/Date(1570741200000)\/",
+        ///        "ResTimeFrom": "\/Date(1570737600000)\/",
+        ///        "ResTimeTo": "\/Date(1570741200000)\/",
+        ///        "ReservationType": "SPA",
+        ///        "SalesPerson": "AH",
+        ///        "Status": ""
+        ///     }
         /// }
         /// ]]>
         /// </code>
@@ -3275,13 +3363,13 @@ namespace LSOmni.Service
         /// </remarks>
         /// <param name="locationNo"></param>
         /// <param name="productNo"></param>
-        /// <param name="activiyTime"></param>
+        /// <param name="activityTime"></param>
         /// <param name="optionalResource"></param>
         /// <param name="quantity"></param>
         /// <returns></returns>
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
-        string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity);
+        string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activityTime, string optionalResource, int quantity);
 
         /// <summary>
         /// Create Group Reservation
@@ -3294,22 +3382,23 @@ namespace LSOmni.Service
         /// <code language="xml" title="REST Sample Request">
         /// <![CDATA[
         /// {
-        ///	  "request": {
-        ///	    "ClientName": "Tom",
-        ///	    "ContactNo": "MO000008",
-        ///	    "Description": "",
-        ///	    "Email": "tom@xxx.com",
-        ///	    "Internalstatus": "0",
-        ///	    "Location": "CAMBRIDGE",
-        ///	    "NoOfPerson": 2,
-        ///	    "ResDateFrom": "\/Date(1570737600000)\/",
-        ///	    "ResDateTo": "\/Date(1570741200000)\/",
-        ///	    "ResTimeFrom": "\/Date(1570737600000)\/",
-        ///	    "ResTimeTo": "\/Date(1570741200000)\/",
-        ///	    "ReservationType": "SPA",
-        ///	    "SalesPerson": "AH",
-        ///	    "Status": ""
-        ///	  }
+        ///      "request": {
+        ///        "ClientName": "Tom",
+        ///        "ContactNo": "MO000008",
+        ///        "Description": "",
+        ///        "Email": "tom@xxx.com",
+        ///        "EventNo": "",
+        ///        "Internalstatus": "0",
+        ///        "Location": "CAMBRIDGE",
+        ///        "NoOfPerson": 2,
+        ///        "ResDateFrom": "\/Date(1570737600000)\/",
+        ///        "ResDateTo": "\/Date(1570741200000)\/",
+        ///        "ResTimeFrom": "\/Date(1570737600000)\/",
+        ///        "ResTimeTo": "\/Date(1570741200000)\/",
+        ///        "ReservationType": "SPA",
+        ///        "SalesPerson": "AH",
+        ///        "Status": ""
+        ///      }
         /// }
         /// ]]>
         /// </code>
@@ -3350,23 +3439,23 @@ namespace LSOmni.Service
         ///{
         ///   "request": {
         ///      "ActivityTime": "\/Date(1576011600000)\/",
-        ///	     "ContactAccount": "",
+        ///      "ContactAccount": "",
         ///      "ContactName": "Tom",
         ///      "ContactNo": "MO000008",
-        ///	     "Email": "tom@comp.com",
-        ///	     "GroupNo": "",
+        ///      "Email": "tom@comp.com",
+        ///      "GroupNo": "",
         ///      "Location": "CAMBRIDGE",
         ///      "NoOfPeople": "1",
-        ///	     "OptionalResource": "",
-        ///	     "OptionalComment": "",
+        ///      "OptionalResource": "",
+        ///      "OptionalComment": "",
         ///      "Paid": "false",
         ///      "ProductNo": "MASSAGE30",
-        ///	     "PromoCode": "",
+        ///      "PromoCode": "",
         ///      "Quantity": "1",
         ///      "ReservationNo": "RES0045",
-        ///	     "SetGroupReservation": "",
-        ///	     "Token": "",
-        ///	     "UnitPrice": 0.0
+        ///      "SetGroupReservation": "",
+        ///      "Token": "",
+        ///      "UnitPrice": 0.0
         ///   }
         ///}        
         /// ]]>
@@ -3673,6 +3762,25 @@ namespace LSOmni.Service
         [OperationContract]
         [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         List<ClientToken> TokenEntryGet(string accountNo, bool hotelToken);
+
+        /// <summary>
+        /// Request to unlock Rod Device
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <param name="cardId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        bool SpgUnlockRodDevice(string storeId, string cardId);
+
+        /// <summary>
+        /// Used by Rod Device to check if there is request to unlock a device
+        /// </summary>
+        /// <param name="storeId"></param>
+        /// <returns></returns>
+        [OperationContract]
+        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
+        string SpgUnlockRodDeviceCheck(string storeId);
 
         #endregion
 

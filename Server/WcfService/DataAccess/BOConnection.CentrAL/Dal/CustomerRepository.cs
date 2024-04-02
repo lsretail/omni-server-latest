@@ -21,7 +21,8 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public CustomerRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[No_],mt.[Name],mt.[Address],mt.[Address 2],mt2.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[County],mt.[Country_Region Code],mt.[Territory Code]," +
-                         "mt.[E-Mail],mt.[Home Page],mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]";
+                         "mt.[E-Mail],mt.[Home Page],mt.[Phone No_],mt.[Currency Code],mt.[VAT Bus_ Posting Group],mt.[Blocked],mt.[Prices Including VAT]," +
+                         "mt.[Customer Price Group],mt.[Customer Disc_ Group],mt.[Payment Terms Code],mt.[Location Code]";
 
             sqlcolumns += (navVersion.Major > 16) ? ",mt.[Mobile Phone No_]" : ",mt2.[Mobile Phone No_]";
 
@@ -121,7 +122,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplCustomer ReaderToCustomer(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplCustomer()
             {
@@ -139,6 +140,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 PhoneLocal = SQLHelper.GetString(reader["Phone No_"]),
                 Currency = SQLHelper.GetString(reader["Currency Code"]),
                 TaxGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Group"]),
+                PriceGroup = SQLHelper.GetString(reader["Customer Price Group"]),
+                DiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
+                PaymentTerms = SQLHelper.GetString(reader["Payment Terms Code"]),
+                ShippingLocation = SQLHelper.GetString(reader["Location Code"]),
                 Blocked = SQLHelper.GetInt32(reader["Blocked"]),
                 IncludeTax = SQLHelper.GetInt32(reader["Prices Including VAT"])
             };
@@ -153,6 +158,10 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Url = SQLHelper.GetString(reader["Home Page"]),
                 Email = SQLHelper.GetString(reader["E-Mail"]),
                 TaxGroup = SQLHelper.GetString(reader["VAT Bus_ Posting Group"]),
+                PriceGroup = SQLHelper.GetString(reader["Customer Price Group"]),
+                DiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
+                PaymentTerms = SQLHelper.GetString(reader["Payment Terms Code"]),
+                ShippingLocation = SQLHelper.GetString(reader["Location Code"]),
                 IsBlocked = SQLHelper.GetBool(reader["Blocked"]),
                 InclTax = SQLHelper.GetInt32(reader["Prices Including VAT"]),
 

@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
-using LSRetail.Omni.Domain.DataModel.Base.Replication;
-using LSRetail.Omni.DiscountEngine.DataModels;
-using LSRetail.Omni.DiscountEngine;
-using LSRetail.Omni.DiscountEngine.Repositories;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 {
@@ -285,12 +282,181 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public List<ReplDiscountSetup> ReplicateDiscountSetup(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (string.IsNullOrWhiteSpace(lastKey))
+                lastKey = "0";
+
+            List<JscKey> keys = GetPrimaryKeys("LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d");
+
+            string tmplastkey = lastKey;
+            string mainlastkey = lastKey;
+
+            string sql = string.Empty;
+            // only take Multibuy, Discount, Total and Tender discounts
+            string where = " AND mt.[Type] IN (0,2,3,4)";
+            List<JscActions> actions = new List<JscActions>();
+
+            if (fullReplication)
+            {
+                sql = "SELECT COUNT(*) FROM [" + navCompanyName + "LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] mt" +
+                    GetWhereStatement(true, keys, where, false);
+                recordsRemaining = GetRecordCount(99001453, lastKey, sql, keys, ref maxKey);
+            }
+            else
+            {
+                recordsRemaining = GetRecordCount(99001453, lastKey, sql, keys, ref maxKey);
+                actions = LoadActions(fullReplication, 99001453, batchSize, ref mainlastkey, ref recordsRemaining);
+
+                recordsRemaining += GetRecordCount(99001454, tmplastkey, string.Empty, keys, ref maxKey);
+                List<JscActions> extraAct = LoadActions(fullReplication, 99001454, batchSize, ref tmplastkey, ref recordsRemaining);
+                if (Convert.ToInt32(tmplastkey) > Convert.ToInt32(mainlastkey))
+                    mainlastkey = tmplastkey;
+
+                lastKey = (recordsRemaining == 0) ? mainlastkey : tmplastkey;
+                foreach (JscActions act in extraAct)
+                {
+                    string[] parvalues = act.ParamValue.Split(';');
+                    JscActions newact = null;
+                    JscActions findme = null;
+                    if (act.Type == DDStatementType.Delete)
+                    {
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = DDStatementType.Delete,
+                            ParamValue = act.ParamValue
+                        };
+                    }
+                    else
+                    {
+                        newact = new JscActions()
+                        {
+                            id = act.id,
+                            TableId = act.TableId,
+                            Type = DDStatementType.Insert,
+                            ParamValue = (parvalues.Length == 1) ? act.ParamValue : parvalues[0]
+                        };
+
+                        findme = actions.Find(x => x.ParamValue.Equals(newact.ParamValue));
+                    }
+                    if (findme == null)
+                    {
+                        actions.Add(newact);
+                    }
+                }
+            }
+
+            // get records
+            sql = GetSQL(fullReplication, batchSize) +
+                "mt.[No_],mt.[Description],mt.[Status],mt.[Type],mt.[Price Group],mt.[Priority],mt.[Validation Period ID]," +
+                "mt.[Discount Type],mt.[Deal Price Value],mt.[Discount _ Value],mt.[Discount Amount Value]," +
+                "mt.[Customer Disc_ Group],mt.[Amount to Trigger],mt.[Member Value]," +
+                "mt.[Pop-up Line 1],mt.[Pop-up Line 2],mt.[Pop-up Line 3],mt.[Coupon Code],mt.[Coupon Qty Needed]," +
+                "mt.[Member Type],mt.[Member Attribute],mt.[Maximum Discount Amount],mt.[Tender Type Code]," +
+                "mt.[Tender Type Value],mt.[Prompt for Action],mt.[Tender Offer _],mt.[Tender Offer Amount],mt.[Member Points]," +
+                "ml.[Line No_],ml.[Type] AS [LType],ml.[No_] AS [LNo],ml.[Variant Code],ml.[Standard Price Including VAT],ml.[Standard Price]," +
+                "ml.[Split Deal Price_Disc_ _],ml.[Deal Price_Disc_ _],ml.[Price Group] AS [LPriceGr],ml.[Currency Code]," +
+                "ml.[Unit of Measure],ml.[Prod_ Group Category],ml.[Valid From Before Exp_ Date],ml.[Valid To Before Exp_ Date]," +
+                "ml.[Line Group],ml.[No_ of Items Needed],ml.[Disc_ Type],ml.[Discount Amount],ml.[Offer Price]," +
+                "ml.[Offer Price Including VAT],ml.[Discount Amount Including VAT],ml.[Trigger Pop-up on POS]," +
+                "ml.[Variant Type],ml.[Exclude],ml.[Member Points] AS [LMemPoint] " +
+                "FROM [" + navCompanyName + "LSC Periodic Discount Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                "JOIN [" + navCompanyName + "LSC Periodic Discount$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[No_]=ml.[Offer No_]" +
+                GetWhereStatement(fullReplication, keys, where, false);
+
+            List<ReplDiscountSetup> list = new List<ReplDiscountSetup>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    connection.Open();
+                    command.CommandText = sql;
+
+                    if (fullReplication)
+                    {
+                        JscActions act = new JscActions(lastKey);
+                        SetWhereValues(command, act, keys, true, true);
+                        TraceSqlCommand(command);
+                        using (SqlDataReader reader = command.ExecuteReader())
+                        {
+                            int cnt = 0;
+                            while (reader.Read())
+                            {
+                                list.Add(ReaderToDiscountSetup(reader, out lastKey));
+                                cnt++;
+                            }
+                            reader.Close();
+                            recordsRemaining -= cnt;
+                        }
+                        if (recordsRemaining <= 0)
+                            lastKey = maxKey;   // this should be the highest PreAction id;
+                    }
+                    else
+                    {
+                        bool first = true;
+                        foreach (JscActions act in actions)
+                        {
+                            if (act.Type == DDStatementType.Delete)
+                            {
+                                if (act.TableId == 99001454)
+                                {
+                                    string[] par = act.ParamValue.Split(';');
+                                    if (par.Length < 2)
+                                        continue;
+                                    list.Add(new ReplDiscountSetup(false)
+                                    {
+                                        OfferNo = par[0],
+                                        LineNumber = Convert.ToInt32(par[1]),
+                                        IsDeleted = true
+                                    });
+                                }
+                                else
+                                {
+                                    list.Add(new ReplDiscountSetup(false)
+                                    {
+                                        OfferNo = act.ParamValue,
+                                        IsDeleted = true
+                                    });
+                                }
+                                continue;
+                            }
+
+                            if (SetWhereValues(command, act, keys, first) == false)
+                                continue;
+
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(ReaderToDiscountSetup(reader, out string ts));
+                                }
+                                reader.Close();
+                            }
+                            first = false;
+                        }
+                        if (string.IsNullOrEmpty(maxKey))
+                            maxKey = lastKey;
+                    }
+                    connection.Close();
+                }
+            }
+
+            // just in case something goes too far
+            if (recordsRemaining < 0)
+                recordsRemaining = 0;
+
+            return list;
+        }
+
         public List<ReplDiscountValidation> ReplicateDiscountValidations(int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            List<JscKey> keys = GetPrimaryKeys("Validation Period");
+            List<JscKey> keys = GetPrimaryKeys("LSC Validation Period$5ecfc871-5d82-43f1-9c54-59685e82318d");
 
             // get records remaining
             string sql = string.Empty;
@@ -375,41 +541,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
-        public List<ReplDiscount> DiscountGetByStore(string storeid, string itemid)
-        {
-            List<ReplDiscount> list = new List<ReplDiscount>();
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                using (SqlCommand command = connection.CreateCommand())
-                {
-                    command.CommandText = GetSQL(false, 0) + sqlcolumns + sqlfrom + " WHERE mt.[Store No_]=@sid AND mt.[Item No_]=@iid";
-                    command.Parameters.AddWithValue("@sid", storeid);
-                    command.Parameters.AddWithValue("@iid", itemid);
-                    TraceSqlCommand(command);
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(ReaderToDiscount(reader, out string ts));
-                        }
-                        reader.Close();
-                    }
-                    connection.Close();
-                }
-            }
-            return list;
-        }
-
-        public List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode)
-        {
-            DiscountEngine engine = new DiscountEngine(new PreFixRepository(navConnectionString, LSCVersion));
-            return engine.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
-        }
-
         private ReplDiscount ReaderToDiscount(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplDiscount disc = new ReplDiscount(config.IsJson)
             {
@@ -441,7 +575,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (string.IsNullOrEmpty(tx3) == false)
                 disc.Details += "\r\n" + tx3;
 
-            decimal amt = SQLHelper.GetDecimal(reader ,"Discount Amount Value");
+            decimal amt = SQLHelper.GetDecimal(reader, "Discount Amount Value");
             if (amt > 0 && disc.Type == ReplDiscountType.DiscOffer)
             {
                 disc.DiscountValueType = DiscountValueType.Amount;
@@ -452,7 +586,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
         private ReplDiscount ReaderToMixMatch(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplDiscount disc = new ReplDiscount(config.IsJson)
             {
@@ -483,9 +617,79 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return disc;
         }
 
+        private ReplDiscountSetup ReaderToDiscountSetup(SqlDataReader reader, out string timestamp)
+        {
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
+            ReplDiscountSetup disc = new ReplDiscountSetup(config.IsJson)
+            {
+                OfferNo = SQLHelper.GetString(reader["No_"]),
+                Description = SQLHelper.GetString(reader["Description"]),
+                Enabled = SQLHelper.GetBool(reader["Status"]),
+                PromptForAction = SQLHelper.GetBool(reader["Prompt for Action"]),
+                PriorityNo = SQLHelper.GetInt32(reader["Priority"]),
+                MemberType = (ReplDiscMemberType)SQLHelper.GetInt32(reader["Member Type"]),
+                PriceGroup = SQLHelper.GetString(reader["Price Group"]),
+                DiscountValue = SQLHelper.GetDecimal(reader, "Discount _ Value"),
+                DiscountValueType = (DiscountValueType)SQLHelper.GetInt32(reader["Discount Type"]),
+                CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
+                LoyaltySchemeCode = SQLHelper.GetString(reader["Member Value"]),
+                Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),
+                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"]),
+                CouponCode = SQLHelper.GetString(reader["Coupon Code"]),
+                MemberAttribute = SQLHelper.GetString(reader["Member Attribute"]),
+                TenderTypeCode = SQLHelper.GetString(reader["Tender Type Code"]),
+                TenderTypeValue = SQLHelper.GetString(reader["Tender Type Value"]),
+                DealPriceValue = SQLHelper.GetDecimal(reader["Deal Price Value"]),
+                DiscountAmountValue = SQLHelper.GetDecimal(reader["Discount Amount Value"]),
+                AmountToTrigger = SQLHelper.GetDecimal(reader["Amount to Trigger"]),
+                CouponQtyNeeded = SQLHelper.GetDecimal(reader["Coupon Qty Needed"]),
+                MaxDiscountAmount = SQLHelper.GetDecimal(reader["Maximum Discount Amount"]),
+                TenderOffer = SQLHelper.GetDecimal(reader["Tender Offer _"]),
+                TenderOfferAmount = SQLHelper.GetDecimal(reader["Tender Offer Amount"]),
+                MemberPoints = SQLHelper.GetDecimal(reader["Member Points"]),
+
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                LineType = (ReplDiscountLineType)SQLHelper.GetInt32(reader["LType"]),
+                Number = SQLHelper.GetString(reader["LNo"]),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                StandardPriceInclVAT = SQLHelper.GetDecimal(reader["Standard Price Including VAT"]),
+                StandardPrice = SQLHelper.GetDecimal(reader["Standard Price"]),
+                SplitDealPriceDiscount = SQLHelper.GetDecimal(reader["Split Deal Price_Disc_ _"]),
+                DealPriceDiscount = SQLHelper.GetDecimal(reader["Deal Price_Disc_ _"]),
+                LinePriceGroup = SQLHelper.GetString(reader["LPriceGr"]),
+                CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
+                UnitOfMeasureId = SQLHelper.GetString(reader["Unit of Measure"]),
+                ProductItemCategory = SQLHelper.GetString(reader["Prod_ Group Category"]),
+                ValidFromBeforeExpDate = SQLHelper.GetDateFormula(reader["Valid From Before Exp_ Date"]),
+                ValidToBeforeExpDate = SQLHelper.GetDateFormula(reader["Valid To Before Exp_ Date"]),
+                LineGroup = SQLHelper.GetString(reader["Line Group"]),
+                NumberOfItemNeeded = SQLHelper.GetInt32(reader["No_ of Items Needed"]),
+                IsPercentage = SQLHelper.GetBool(reader["Disc_ Type"]),
+                LineDiscountAmount = SQLHelper.GetDecimal(reader["Discount Amount"]),
+                LineDiscountAmountInclVAT = SQLHelper.GetDecimal(reader["Discount Amount Including VAT"]),
+                OfferPrice = SQLHelper.GetDecimal(reader["Offer Price"]),
+                OfferPriceInclVAT = SQLHelper.GetDecimal(reader["Offer Price Including VAT"]),
+                TriggerPopUp = SQLHelper.GetBool(reader["Trigger Pop-up on POS"]),
+                VariantType = SQLHelper.GetInt32(reader["Variant Type"]),
+                Exclude = SQLHelper.GetBool(reader["Exclude"]),
+                LineMemberPoints = SQLHelper.GetDecimal(reader["LMemPoint"])
+            };
+
+            string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
+            string tx2 = SQLHelper.GetString(reader["Pop-up Line 2"]);
+            string tx3 = SQLHelper.GetString(reader["Pop-up Line 3"]);
+            disc.Details = tx1;
+            if (string.IsNullOrEmpty(tx2) == false)
+                disc.Details += "\r\n" + tx2;
+            if (string.IsNullOrEmpty(tx3) == false)
+                disc.Details += "\r\n" + tx3;
+
+            return disc;
+        }
+
         private ReplDiscountValidation ReaderToDiscountValidation(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplDiscountValidation(config.IsJson)
             {
@@ -529,4 +733,3 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
         }
     }
 }
- 

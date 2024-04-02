@@ -1,9 +1,9 @@
-﻿using LSOmni.Common.Util;
+﻿using System;
+using System.Collections.Generic;
+using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
-using System;
-using System.Collections.Generic;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 {
@@ -51,7 +51,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 5425: line.SalseUnitOfMeasure = data.FieldValue; break;
                         case 5426: line.PurchUnitOfMeasure = data.FieldValue; break;
                         case 5702: line.ItemCategoryCode = data.FieldValue; break;
+                        case 6500: line.ItemTrackingCode = data.FieldValue; break;
                         case 10000703: line.ProductGroupId = data.FieldValue; break;
+                        case 10000704: line.SpecialGroups = data.FieldValue; break;
                         case 10001401: line.SeasonCode = data.FieldValue; break;
                         case 99001463: line.ItemFamilyCode = data.FieldValue; break;
                         case 99001480: line.ZeroPriceValId = XMLHelper.GetWebBoolInt(data.FieldValue); break;
@@ -294,7 +296,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     line.DiscountValue = amt;
                 }
 
-                list.Add(line);
+                if (string.IsNullOrEmpty(line.OfferNo) == false)
+                    list.Add(line);
             }
 
             if (result.TableData.TableDataDel == null || result.TableData.TableDataDel.RecRefJson == null)
@@ -316,10 +319,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
 
                     switch (fld.FieldNo)
                     {
-                        case 1: line.ItemId = data.FieldValue; break;
+                        case 23: line.OfferNo = data.FieldValue; break;
                     }
                 }
-                list.Add(line);
+                if (string.IsNullOrEmpty(line.OfferNo) == false)
+                    list.Add(line);
             }
             return list;
         }
@@ -395,6 +399,118 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     switch (fld.FieldNo)
                     {
                         case 1: line.ItemId = data.FieldValue; break;
+                    }
+                }
+                list.Add(line);
+            }
+            return list;
+        }
+
+        public List<ReplDiscountSetup> GetReplDiscountSetup(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplDiscountSetup> list = new List<ReplDiscountSetup>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplDiscountSetup line = new ReplDiscountSetup(IsJson);
+                string pop1 = string.Empty;
+                string pop2 = string.Empty;
+                string pop3 = string.Empty;
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Offer No.": line.OfferNo = data.FieldValue; break;
+                        case "Line No.": line.LineNumber = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Type": line.Type = (ReplDiscountType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "No.": line.Number = data.FieldValue; break;
+                        case "Variant Code": line.VariantId = data.FieldValue; break;
+                        case "Description": line.Description = data.FieldValue; break;
+                        case "Standard Price Including VAT": line.StandardPriceInclVAT = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Standard Price": line.StandardPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Split Deal Price/Disc. %": line.SplitDealPriceDiscount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Deal Price/Disc. %": line.DealPriceDiscount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Price Group": line.LinePriceGroup = data.FieldValue; break;
+                        case "Currency Code": line.CurrencyCode = data.FieldValue; break;
+                        case "Unit of Measure": line.UnitOfMeasureId = data.FieldValue; break;
+                        case "Prod. Group Category": line.ProductItemCategory = data.FieldValue; break;
+                        case "Valid From Before Exp. Date": line.ValidFromBeforeExpDate = data.FieldValue; break;
+                        case "Valid To Before Exp. Date": line.ValidToBeforeExpDate = data.FieldValue; break;
+                        case "Line Group": line.LineGroup = data.FieldValue; break;
+                        case "No. of Items Needed": line.NumberOfItemNeeded = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Disc. Type": line.IsPercentage = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Discount Amount": line.LineDiscountAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Offer Price": line.OfferPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Offer Price Including VAT": line.OfferPriceInclVAT = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Discount Amount Including VAT": line.LineDiscountAmountInclVAT = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Trigger Pop-up on POS": line.TriggerPopUp = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Exclude": line.Exclude = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Status": line.Enabled = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Priority": line.PriorityNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Validation Period ID": line.ValidationPeriodId = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Discount Type": line.DiscountValueType = (DiscountValueType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Deal Price Value": line.DealPriceValue = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Discount % Value": line.DiscountValue = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Discount Amount Value": line.DiscountAmountValue = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Customer Disc. Group": line.CustomerDiscountGroup = data.FieldValue; break;
+                        case "Amount to Trigger": line.AmountToTrigger = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Member Value": line.LoyaltySchemeCode = data.FieldValue; break;
+                        case "Pop-up Line 1": pop1 = data.FieldValue; break;
+                        case "Pop-up Line 2": pop2 = data.FieldValue; break;
+                        case "Pop-up Line 3": pop3 = data.FieldValue; break;
+                        case "Coupon Code": line.CouponCode = data.FieldValue; break;
+                        case "Coupon Qty Needed": line.CouponQtyNeeded = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Member Type": line.MemberType = (ReplDiscMemberType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Member Attribute": line.MemberAttribute = data.FieldValue; break;
+                        case "Maximum Discount Amount": line.MaxDiscountAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Tender Type Code": line.TenderTypeCode = data.FieldValue; break;
+                        case "Tender Type Value": line.TenderTypeValue = data.FieldValue; break;
+                        case "Prompt for Action": line.PromptForAction = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Tender Offer %": line.TenderOffer = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Tender Offer Amount": line.TenderOfferAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Member Points": line.MemberPoints = ConvertTo.SafeDecimal(data.FieldValue); break;
+                    }
+                }
+
+                line.Details = pop1;
+                if (string.IsNullOrEmpty(pop2) == false)
+                    line.Details += "\r\n" + pop2;
+                if (string.IsNullOrEmpty(pop3) == false)
+                    line.Details += "\r\n" + pop3;
+
+                list.Add(line);
+            }
+
+            if (result.DataSet.DataSetDel == null || result.DataSet.DataSetDel.DynDataSet == null)
+                return list;
+
+            // Deleted Action Records
+            foreach (ReplODataRecord rec in result.DataSet.DataSetDel.DynDataSet.DataSetRows)
+            {
+                ReplDiscountSetup line = new ReplDiscountSetup(IsJson)
+                {
+                    IsDeleted = true
+                };
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetDel.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldName)
+                    {
+                        case "Offer No.": line.OfferNo = data.FieldValue; break;
+                        case "Line No.": line.LineNumber = ConvertTo.SafeInt(data.FieldValue); break;
                     }
                 }
                 list.Add(line);
@@ -797,19 +913,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.ItemId = data.FieldValue; break;
-                        case 2: line.FrameworkCode = data.FieldValue; break;
-                        case 3: line.VariantDimension1 = data.FieldValue; break;
-                        case 4: line.VariantDimension2 = data.FieldValue; break;
-                        case 5: line.VariantDimension3 = data.FieldValue; break;
-                        case 6: line.VariantDimension4 = data.FieldValue; break;
-                        case 7: line.VariantDimension5 = data.FieldValue; break;
-                        case 8: line.VariantDimension6 = data.FieldValue; break;
-                        case 9: line.VariantId = data.FieldValue; break;
-                        case 25: line.BlockedOnPos = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 26: line.BlockedOnECom = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Item No.": line.ItemId = data.FieldValue; break;
+                        case "Framework Code": line.FrameworkCode = data.FieldValue; break;
+                        case "Variant Dimension 1": line.VariantDimension1 = data.FieldValue; break;
+                        case "Variant Dimension 2": line.VariantDimension2 = data.FieldValue; break;
+                        case "Variant Dimension 3": line.VariantDimension3 = data.FieldValue; break;
+                        case "Variant Dimension 4": line.VariantDimension4 = data.FieldValue; break;
+                        case "Variant Dimension 5": line.VariantDimension5 = data.FieldValue; break;
+                        case "Variant Dimension 6": line.VariantDimension6 = data.FieldValue; break;
+                        case "Variant": line.VariantId = data.FieldValue; break;
+                        case "Block Sale on POS": line.BlockedOnPos = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "Blocked on eCommerce": line.BlockedOnECom = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                     }
                 }
                 list.Add(line);
@@ -832,15 +948,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.ItemId = data.FieldValue; break;
-                        case 3: line.VariantDimension1 = data.FieldValue; break;
-                        case 4: line.VariantDimension2 = data.FieldValue; break;
-                        case 5: line.VariantDimension3 = data.FieldValue; break;
-                        case 6: line.VariantDimension4 = data.FieldValue; break;
-                        case 7: line.VariantDimension5 = data.FieldValue; break;
-                        case 8: line.VariantDimension6 = data.FieldValue; break;
+                        case "Item No.": line.ItemId = data.FieldValue; break;
+                        case "Variant Dimension 1": line.VariantDimension1 = data.FieldValue; break;
+                        case "Variant Dimension 2": line.VariantDimension2 = data.FieldValue; break;
+                        case "Variant Dimension 3": line.VariantDimension3 = data.FieldValue; break;
+                        case "Variant Dimension 4": line.VariantDimension4 = data.FieldValue; break;
+                        case "Variant Dimension 5": line.VariantDimension5 = data.FieldValue; break;
+                        case "Variant Dimension 6": line.VariantDimension6 = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -925,11 +1041,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.NavProductId = data.FieldValue; break;
-                        case 2: line.NavManufacturerId = data.FieldValue; break;
-                        case 3: line.NavManufacturerItemId = data.FieldValue; break;
+                        case "ItemNo": line.NavProductId = data.FieldValue; break;
+                        case "VendorNo": line.NavManufacturerId = data.FieldValue; break;
+                        case "VendorItemNo": line.NavManufacturerItemId = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -952,10 +1068,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.NavProductId = data.FieldValue; break;
-                        case 2: line.NavManufacturerId = data.FieldValue; break;
+                        case "ItemNo": line.NavProductId = data.FieldValue; break;
+                        case "VendorNo": line.NavManufacturerId = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -1162,32 +1278,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    if (LSCVersion >= new Version("20.3"))
+                    switch (fld.FieldName)
                     {
-                        switch (fld.FieldIndex)
-                        {
-                            case 1: line.ItemId = data.FieldValue; break;
-                            case 2: line.Code = data.FieldValue; break;
-                            case 3: line.QtyPrUOM = ConvertTo.SafeDecimal(data.FieldValue); break;
-                            case 13: line.CountAsOne = ConvertTo.SafeBoolean(data.FieldValue); break;
-                            case 14: line.Selection = ConvertTo.SafeInt(data.FieldValue); break;
-                            case 15: line.Order = ConvertTo.SafeInt(data.FieldValue); break;
-                            case 16: line.EComSelection = ConvertTo.SafeInt(data.FieldValue); break;
-                            case 22: line.Description = data.FieldValue; break;
-                        }
-                    }
-                    else
-                    {
-                        switch (fld.FieldIndex)
-                        {
-                            case 1: line.ItemId = data.FieldValue; break;
-                            case 2: line.Code = data.FieldValue; break;
-                            case 3: line.QtyPrUOM = ConvertTo.SafeDecimal(data.FieldValue); break;
-                            case 13: line.CountAsOne = ConvertTo.SafeBoolean(data.FieldValue); break;
-                            case 14: line.Selection = ConvertTo.SafeInt(data.FieldValue); break;
-                            case 15: line.Order = ConvertTo.SafeInt(data.FieldValue); break;
-                            case 21: line.Description = data.FieldValue; break;
-                        }
+                        case "Item No.": line.ItemId = data.FieldValue; break;
+                        case "Code": line.Code = data.FieldValue; break;
+                        case "Qty. per Unit of Measure": line.QtyPrUOM = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "LSC Count as 1 on Receipt": line.CountAsOne = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "LSC POS Selection": line.Selection = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "LSC Order": line.Order = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "LSC Ecom Selection": line.EComSelection = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Description": line.Description = data.FieldValue; break;
                     }
                 }
                 line.ShortDescription = line.Code;
@@ -1211,10 +1311,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.ItemId = data.FieldValue; break;
-                        case 2: line.Code = data.FieldValue; break;
+                        case "Item No.": line.ItemId = data.FieldValue; break;
+                        case "Code": line.Code = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

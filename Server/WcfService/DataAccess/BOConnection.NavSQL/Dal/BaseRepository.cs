@@ -6,12 +6,11 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
-using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Base.Setup;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 {
-
     public abstract class BaseRepository 
     {
         protected static string connectionString = null;
@@ -135,71 +134,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 // add the prefix and postfix to the string  e.g. $
                 return string.Format("{0}{1} {2}", CurrencyLocalUnit.Prefix, amt, CurrencyLocalUnit.Postfix).Trim();
             }
-        }
-
-        internal static T CastTo<T>(object value) where T : struct
-        {
-            if (typeof(T) == typeof(DateTime) && ((DateTime)value).Year < 1970)
-            {
-                value = new DateTime(1970, 1, 1); //1970 is a safe json year
-            }
-            return value != DBNull.Value ? (T)value : default(T);
-        }
-
-        internal static DateTime GetDateTimeFromNav(string date)
-        {
-            // NAV NULL Date: 1753-01-01 00:00:00.000
-
-            if (date.Length != 8)
-                return new DateTime(1753, 1, 1);
-
-            string day = date.Substring(0, 2);
-            string mon = date.Substring(2, 2);
-            string year = date.Substring(4, 4);
-            return new DateTime(Convert.ToInt32(year), Convert.ToInt32(mon), Convert.ToInt32(day));
-        }
-
-        internal static string GetSQLNAVDate(DateTime date)
-        {
-            if (date == DateTime.MinValue)
-                return "1753-1-1";      // this is NULL Date for NAV
-
-            return string.Format("{0}-{1}-{2}", date.Year, date.Month, date.Day);
-        }
-
-        internal static string GetNAVDateFormula(string data)
-        {
-            string retstring = string.Empty;
-            for (int i = 0; i < data.Length; i++)
-            {
-                switch (data[i])
-                {
-                    case '\u0001':
-                        retstring += 'C';
-                        break;
-
-                    case '\u0002':
-                        retstring += 'D';
-                        break;
-
-                    case '\u0004':
-                        retstring += 'W';
-                        break;
-
-                    case '\u0005':
-                        retstring += 'M';
-                        break;
-
-                    case '\a':
-                        retstring += 'Y';
-                        break;
-
-                    default:
-                        retstring += data[i];
-                        break;
-                }
-            }
-            return retstring;
         }
 
         protected string GetDbCICollation()
@@ -550,14 +484,14 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             if (string.IsNullOrEmpty(value))
             {
                 if (fieldtype == "datetime")
-                    return GetDateTimeFromNav(value);
+                    return ConvertTo.GetDateTimeFromNav(value);
                 return string.Empty;
             }
 
             switch (fieldtype)
             {
                 case "datetime":
-                    return GetDateTimeFromNav(value);
+                    return ConvertTo.GetDateTimeFromNav(value);
 
                 case "int":
                     return Convert.ToInt32(value);
@@ -636,14 +570,6 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             return true;
         }
 
-        public static string ByteArrayToString(byte[] ba)
-        {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
-                hex.AppendFormat("{0:x2}", b);
-            return hex.ToString();
-        }
-
         public static byte[] StringToByteArray(String hex)
         {
             try
@@ -659,46 +585,5 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 throw new LSOmniServiceException(StatusCode.Error, "Invalid LastKey for Full Replication");
             }
         }
-    }
-
-    /// <summary>
-    /// Action Types for Replication Actions
-    /// </summary>
-    public enum DDStatementType
-    {
-        Invalid = -1,
-        Insert = 0,
-        Update = 1,
-        Delete = 2,
-        Insert_Update = 3
-    }
-
-    /// <summary>
-    /// Action Records to be replicated
-    /// </summary>
-    public class JscActions
-    {
-        public Int64 id;
-        public DDStatementType Type;
-        public string ParamValue = string.Empty;
-        public int TableId = 0;
-
-        public JscActions()
-        {
-            Type = DDStatementType.Invalid;
-            ParamValue = string.Empty;
-        }
-
-        public JscActions(string param)
-        {
-            Type = DDStatementType.Invalid;
-            ParamValue = param;
-        }
-    }
-
-    public class JscKey
-    {
-        public string FieldName = string.Empty;
-        public string FieldType = string.Empty;
     }
 }

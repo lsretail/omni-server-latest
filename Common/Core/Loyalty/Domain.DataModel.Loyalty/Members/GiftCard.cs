@@ -26,6 +26,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         }
 
         [DataMember]
+        public int Pin { get; set; }
+        [DataMember]
         public string EntryType { get; set; }
         [DataMember]
         public decimal Balance { get; set; }

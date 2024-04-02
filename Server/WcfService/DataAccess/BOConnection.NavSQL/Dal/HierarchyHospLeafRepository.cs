@@ -339,7 +339,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplHierarchyHospDeal ReaderToHierarchyDeal(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplHierarchyHospDeal()
             {
@@ -362,7 +362,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplHierarchyHospDealLine ReaderToHierarchyDealLine(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplHierarchyHospDealLine()
             {

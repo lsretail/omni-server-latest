@@ -217,7 +217,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                                     ItemId = par[0],
                                     SaleType = Convert.ToInt32(par[1]),
                                     SaleCode = par[2],
-                                    StartingDate = GetDateTimeFromNav(par[3]),
+                                    StartingDate = ConvertTo.GetDateTimeFromNav(par[3]),
                                     CurrencyCode = par[4],
                                     VariantId = par[5],
                                     UnitOfMeasure = par[6],
@@ -354,13 +354,13 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(storeid) == false)
                 price.StoreId = storeid;
 
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return price;
         }
 
         private ReplPrice ReaderToWIPrice(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplPrice price = new ReplPrice()
             {

@@ -45,5 +45,13 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string CardNo { get; set; }
         [DataMember]
         public string CardType { get; set; }
+        [DataMember]
+        public string AuthorizationCode { get; set; }
+        [DataMember]
+        public string TokenNumber { get; set; }
+        [DataMember]
+        public string ExternalReference { get; set; }
+
+
     }
 }

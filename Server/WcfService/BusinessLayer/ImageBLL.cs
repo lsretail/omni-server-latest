@@ -14,7 +14,7 @@ namespace LSOmni.BLL
 {
     public class ImageBLL : BaseBLL
     {
-        private IImageCacheRepository iImageCacheRepository;
+        private readonly IImageCacheRepository iImageCacheRepository;
 
         #region BOConnection
 

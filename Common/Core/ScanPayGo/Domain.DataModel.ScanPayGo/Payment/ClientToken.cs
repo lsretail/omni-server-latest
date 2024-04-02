@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Runtime.Serialization;
 
 namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment
@@ -12,6 +13,8 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment
         public string Token { get; set; }
         [DataMember]
         public string TokenId { get; set; }
+        [DataMember]
+        public string TokenIDExternal { get; set; }
         [DataMember]
         public bool DefaultToken { get; set; }
         [DataMember]
@@ -33,6 +36,10 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment
         public string ContactNo { get; set; }
         [DataMember]
         public string ContactType { get; set; }
+        [DataMember]
+        public string Initiator {  get; set; }
+        [DataMember]
+        public string InitiatorReason { get; set; }
         [DataMember]
         public string CardNo { get; set; }
         [DataMember(IsRequired = false, EmitDefaultValue = false)]

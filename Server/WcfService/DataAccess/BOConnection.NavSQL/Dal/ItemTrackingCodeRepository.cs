@@ -128,13 +128,13 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplItemTrackingCode ReaderToCode(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplItemTrackingCode()
             {
                 Code = SQLHelper.GetString(reader["Code"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                WarrantyDateFormula = SQLHelper.GetString(reader["Warranty Date Formula"]),
+                WarrantyDateFormula = SQLHelper.GetDateFormula(reader["Warranty Date Formula"]),
                 ManWarrantyDateEntryReqired = SQLHelper.GetBool(reader["Man_ Warranty Date Entry Reqd_"]),
                 ManExpirationDateEntryReqired = SQLHelper.GetBool(reader["Man_ Expir_ Date Entry Reqd_"]),
                 StrictExpirationPosting = SQLHelper.GetBool(reader["Strict Expiration Posting"]),

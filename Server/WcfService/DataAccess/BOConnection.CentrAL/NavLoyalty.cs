@@ -23,6 +23,7 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
+using System.Diagnostics;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL
 {
@@ -283,22 +284,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return rate;
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
+        public virtual List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
-            return rep.PointEntiesGet(cardNo, dateFrom);
+            return rep.PointEntriesGet(cardNo, dateFrom);
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)
         {
             ContactRepository rep = new ContactRepository(config, NAVVersion);
             return rep.GetGiftCartBalance(cardNo, entryType);
-
-            //NAV WS does not work as for now
-            //return NavWSBase.GiftCardGetBalance(cardNo, entryType);
         }
 
-        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat)
         {
             throw new NotImplementedException();
         }
@@ -450,13 +448,18 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
 
         #region Order
 
+        public bool CompressCOActive(Statistics stat)
+        {
+            return false;
+        }
+
         public virtual OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat)
         {
             OrderRepository repo = new OrderRepository(config, NAVVersion);
             return repo.OrderStatusGet(orderId);
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat)
         {
             NavWSBase.OrderCancel(orderId, storeId, userId);
         }
@@ -475,6 +478,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             }
 
             return NavWSBase.OrderCreate(request, out orderId);
+        }
+
+        public virtual string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
+        {
+            throw new NotImplementedException();
         }
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
@@ -516,10 +524,16 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return repo.SalesEntryGetReturnSales(receiptNo);
         }
 
-        public virtual List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
+        public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
             SalesEntryRepository repo = new SalesEntryRepository(config, NAVVersion);
-            return repo.SalesEntryGetSalesByOrderId(orderId);
+            SalesEntryList data = new SalesEntryList();
+            List<SalesEntryId> list = repo.SalesEntryGetSalesByOrderId(orderId);
+            foreach (SalesEntryId item in list)
+            {
+                data.SalesEntries.Add(SalesEntryGet(item.ReceiptId, DocumentIdType.Receipt, stat));
+            }
+            return data;
         }
 
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat)
@@ -535,11 +549,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
         {
             return NavWSBase.PublishedOffersGet(cardId, itemId, storeId);
-        }
-
-        public virtual List<Advertisement> AdvertisementsGetById(string id, Statistics stat)
-        {
-            return NavWSBase.AdvertisementsGetById(id);
         }
 
         #endregion
@@ -577,30 +586,30 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         public virtual Store StoreGetById(string id, Statistics stat)
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
+            AttributeValueRepository arep = new AttributeValueRepository(config);
             Store store = rep.StoreLoyGetById(id);
             if (store != null)
+            {
                 store.StoreHours = StoreHoursGetByStoreId(id);
+                store.Attributes = arep.AttributesGet(id, AttributeLinkType.Store);
+            }
             return store;
         }
 
         public virtual List<Store> StoresGetAll(StoreGetType storeType, bool inclDetails, Statistics stat)
         {
             StoreRepository rep = new StoreRepository(config, NAVVersion);
+            AttributeValueRepository arep = new AttributeValueRepository(config);
             List<Store> stores = rep.StoreLoyGetAll(storeType);
             if (inclDetails)
             {
                 foreach (Store store in stores)
                 {
                     store.StoreHours = StoreHoursGetByStoreId(store.Id);
-                    store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
+                    store.Attributes = arep.AttributesGet(store.Id, AttributeLinkType.Store);
                 }
             }
             return stores;
-        }
-
-        public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat)
-        {
-            return NavWSBase.StoreServicesGetByStoreId(storeId);
         }
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat)

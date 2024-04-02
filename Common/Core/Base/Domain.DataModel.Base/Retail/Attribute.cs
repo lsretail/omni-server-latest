@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
+namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class RetailAttribute : IDisposable
     {
         public RetailAttribute()
@@ -45,7 +45,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         [DataMember]
         public string Value { get; set; }
         [DataMember]
-        public decimal NumbericValue { get; set; }
+        public decimal NumericValue { get; set; }
 
         [DataMember]
         public List<AttributeOptionValue> OptionValues { get; set; }
@@ -53,11 +53,11 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public override string ToString()
         {
             return string.Format(@"LinkF1:{0} LinkF2:{1} LinkF3:{2} LinkType:{3} Seq:{4} Code:{5} Desc:{6} Value:{7} #Value:{8}",
-                LinkField1, LinkField2, LinkField3, LinkType, Sequence, Code, Description, Value, NumbericValue);
+                LinkField1, LinkField2, LinkField3, LinkType, Sequence, Code, Description, Value, NumericValue);
         }
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class AttributeOptionValue : IDisposable
     {
         public AttributeOptionValue()
@@ -91,7 +91,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
     }
 
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum AttributeLinkType
     {
         [EnumMember]
@@ -107,10 +107,12 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         [EnumMember]
         Deal = 5,
         [EnumMember]
+        Reservation = 6,
+        [EnumMember]
         Unknown = 100
     }
 
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Loy/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public enum AttributeValueType
     {
 

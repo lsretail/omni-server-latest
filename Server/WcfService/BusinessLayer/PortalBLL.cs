@@ -10,8 +10,8 @@ namespace LSOmni.BLL
 {
     public class PortalBLL : BaseBLL
     {
-        private IUserRepository iUserRepository;
-        private IConfigRepository iConfigRepository;
+        private readonly IUserRepository iUserRepository;
+        private readonly IConfigRepository iConfigRepository;
 
         public PortalBLL(BOConfiguration config) : base(config)
         {

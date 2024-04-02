@@ -35,9 +35,9 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.MemberCardGetPoints(cardId, stat);
         }
 
-        public virtual List<PointEntry> CardGetPointEnties(string cardNo, DateTime dateFrom, Statistics stat)
+        public virtual List<PointEntry> CardGetPointEntries(string cardNo, DateTime dateFrom, Statistics stat)
         {
-            return BOLoyConnection.PointEntiesGet(cardNo, dateFrom, stat);
+            return BOLoyConnection.PointEntriesGet(cardNo, dateFrom, stat);
         }
 
         public virtual List<MemberContact> ContactSearch(ContactSearchType searchType, string search, int maxNumberOfRowsReturned, Statistics stat)
@@ -140,16 +140,16 @@ namespace LSOmni.BLL.Loyalty
             if (contact.Profiles == null)
                 contact.Profiles = new List<Profile>();
 
-            MemberContact newcontact = BOLoyConnection.ContactCreate(contact, stat);
+            MemberContact newContact = BOLoyConnection.ContactCreate(contact, stat);
             if (doLogin)
             {
                 if (string.IsNullOrWhiteSpace(contact.Authenticator))
-                    newcontact = Login(contact.UserName, contact.Password, true, contact.LoggedOnToDevice.Id, stat);
+                    newContact = Login(contact.UserName, contact.Password, true, contact.LoggedOnToDevice.Id, stat);
                 else
-                    newcontact = SocialLogon(contact.Authenticator, contact.AuthenticationId, contact.LoggedOnToDevice.Id, string.Empty, true, stat);
+                    newContact = SocialLogon(contact.Authenticator, contact.AuthenticationId, contact.LoggedOnToDevice.Id, string.Empty, true, stat);
             }
             base.SecurityCheck();
-            return newcontact;
+            return newContact;
         }
 
         public virtual double ContactAddCard(string contactId, string cardId, string accountId, Statistics stat)
@@ -157,7 +157,7 @@ namespace LSOmni.BLL.Loyalty
             return BOLoyConnection.ContactAddCard(contactId, accountId, cardId, stat);
         }
 
-        public virtual void ConatctBlock(string accountId, string cardId, Statistics stat)
+        public virtual void ContactBlock(string accountId, string cardId, Statistics stat)
         {
             OneListBLL oBll = new OneListBLL(config, timeoutInSeconds);
             oBll.OneListDeleteByCardId(cardId, stat);
@@ -320,14 +320,14 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.PasswordOldInvalid, "Validation of old password failed");
 
             //CALL NAV web service - it validates the if old pwd is ok or not
-            bool oldmethod = false;
-            BOLoyConnection.ChangePassword(userName, string.Empty, newPassword, oldPassword, ref oldmethod, stat);
+            bool oldMethod = false;
+            BOLoyConnection.ChangePassword(userName, string.Empty, newPassword, oldPassword, ref oldMethod, stat);
         }
 
-        //if anything fails in resetpwd, simply ask the user to go through the forgotpassword again..
+        //if anything fails in ResetPassword, simply ask the user to go through the ForgotPassword again..
         //StatusCode.PasswordInvalid   ask user for better pwd
-        //StatusCode.ParameterInvalid, ask user for correct username since it does not match resetcode
-        //  all other errors should as the user to go through the forgotPassword flow again
+        //StatusCode.ParameterInvalid, ask user for correct username since it does not match resetCode
+        //  all other errors should as the user to go through the ForgotPassword flow again
         public virtual void ResetPassword(string userNameOrEmail, string resetCode, string newPassword, Statistics stat)
         {
             //minor validation before sending it to NAV web service
@@ -367,10 +367,8 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniServiceException(StatusCode.ResetPasswordCodeExpired, "Reset code has expired for reset password");
 
             //CALL NAV web service 
-            bool oldmethod = true;
-            BOLoyConnection.ResetPassword(userNameOrEmail, string.Empty, newPassword, ref oldmethod, stat);
-
-            //delete security token and resetpasswordDelete failure is 
+            bool oldMethod = true;
+            BOLoyConnection.ResetPassword(userNameOrEmail, string.Empty, newPassword, ref oldMethod, stat);
             iResetPasswordRepository.ResetPasswordDelete(resetCode);
         }
 
@@ -410,8 +408,8 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual string PasswordReset(string userName, string email, Statistics stat)
         {
-            bool oldmethod = false;
-            string token = BOLoyConnection.ResetPassword(userName, email, string.Empty, ref oldmethod, stat);
+            bool oldMethod = false;
+            string token = BOLoyConnection.ResetPassword(userName, email, string.Empty, ref oldMethod, stat);
 
             if (config.SettingsBoolGetByKey(ConfigKey.forgotpassword_code_encrypted))
             {
@@ -426,7 +424,7 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
 
-            if (oldmethod)
+            if (oldMethod)
             {
                 MemberContact contact = BOLoyConnection.ContactGet(ContactSearchType.UserName, userName, stat);
                 if (contact == null)
@@ -462,10 +460,9 @@ namespace LSOmni.BLL.Loyalty
                 }
             }
 
-            bool oldmethod = false;
-            BOLoyConnection.ChangePassword(userName, token, newPassword, oldPassword, ref oldmethod, stat);
-
-            if (oldmethod)
+            bool oldMethod = false;
+            BOLoyConnection.ChangePassword(userName, token, newPassword, oldPassword, ref oldMethod, stat);
+            if (oldMethod)
             {
                 ResetPassword(userName, token, newPassword, stat);
             }

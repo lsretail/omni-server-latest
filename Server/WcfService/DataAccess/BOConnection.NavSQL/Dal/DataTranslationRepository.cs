@@ -148,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplDataTranslation ReaderToDataTranslation(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplDataTranslation()
             {

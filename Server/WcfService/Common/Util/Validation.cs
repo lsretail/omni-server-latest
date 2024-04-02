@@ -101,5 +101,14 @@ namespace LSOmni.Common.Util
 
             return true;
         }
+
+        public static bool IsMinDate(DateTime date)
+        {
+            if (date == null || date == DateTime.MinValue)
+                return true;
+            if ((date.Year == 1754 || date.Year == 1753 || date.Year == 1900) && date.Month == 1 && date.Day == 1)
+                return true;
+            return false;
+        }
     }
 }

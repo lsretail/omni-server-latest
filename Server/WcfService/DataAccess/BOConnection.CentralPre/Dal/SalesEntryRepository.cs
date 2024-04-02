@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 
@@ -6,7 +7,6 @@ using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
-using System.Linq;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -38,7 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         command.Parameters.AddWithValue("@dt", new DateTime(date.Year, date.Month, date.Day, 0, 0, 0));
                     }
 
-                    command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : string.Empty) + "* FROM (" +
+                    command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : string.Empty) + " * FROM (" +
                         "SELECT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],mt.[$systemCreatedAt] AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
@@ -94,7 +94,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public SalesEntry SalesEntryGetById(string entryId, Statistics stat)
+        public SalesEntry SalesEntryGetById(string entryId, string storeNo, string termNo, int transNo, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntry entry = null;
@@ -103,7 +103,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT mt.[Member Card No_],mt.[Customer No_],mt.[No_ of Items] AS [Quantity],mt.[Net Amount],mt.[Gross Amount],mt.[Discount Amount]," +
-                        "mt.[$systemCreatedAt] AS [Date],co.[Created] AS [CrDate],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_]," +
+                        "mt.[$systemCreatedAt] AS [Date],co.[Created] AS [CrDate],mt.[Store No_],st.[Name] AS [StName],mt.[Trans_ Currency],mt.[POS Terminal No_],mt.[Transaction No_]," +
                         "co.[External ID] AS [COExtId],co.[Created at Store]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
                         "co.[Ship-to Name],co.[Ship-to Address],co.[Ship-to Address 2],co.[Ship-to City],co.[Ship-to County],co.[Ship-to Post Code],co.[Ship-to Country_Region Code],co.[Ship-to Phone No_],co.[Ship-to Email],co.[Ship-to House_Apartment No_]," +
@@ -113,9 +113,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         ((LSCVersion >= new Version("21.2")) ? "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " : " ") +
-                        "WHERE mt.[Receipt No_]=@id";
+                        "WHERE " + ((string.IsNullOrEmpty(entryId)) ? "mt.[Store No_]=@sid AND mt.[POS Terminal No_]=@tid AND mt.[Transaction No_]=@id" : "mt.[Receipt No_]=@id");
 
-                    command.Parameters.AddWithValue("@id", entryId);
+                    if (string.IsNullOrEmpty(entryId))
+                    {
+                        command.Parameters.AddWithValue("@sid", storeNo);
+                        command.Parameters.AddWithValue("@tid", termNo);
+                        command.Parameters.AddWithValue("@id", transNo);
+                    }
+                    else
+                    {
+                        command.Parameters.AddWithValue("@id", entryId);
+                    }
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -167,14 +176,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId)
+        public List<SalesEntry> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
-            List<SalesEntryId> list = new List<SalesEntryId>();
+            logger.StatisticStartSub(false, ref stat, out int index);
+
+            List<SalesEntry> list = new List<SalesEntry>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT [Receipt No_] " +
+                    command.CommandText = "SELECT [Receipt No_],[Store No_],[POS Terminal No_],[Transaction No_] " +
                                           "FROM [" + navCompanyName + "LSC Transaction Header$5ecfc871-5d82-43f1-9c54-59685e82318d] " +
                                           "WHERE [Customer Order ID]=@no";
                     command.Parameters.AddWithValue("@no", orderId);
@@ -184,11 +195,71 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         while (reader.Read())
                         {
-                            list.Add(new SalesEntryId()
-                            {
-                                ReceiptId = SQLHelper.GetString(reader["Receipt No_"]),
-                                OrderId = orderId
-                            });
+                            list.Add(SalesEntryGetById(string.Empty, SQLHelper.GetString(reader["Store No_"]), SQLHelper.GetString(reader["POS Terminal No_"]), SQLHelper.GetInt32(reader["Transaction No_"]), stat));
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public List<SalesEntryShipment> SalesEntryShipmentGet(string orderId, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
+
+            List<SalesEntryShipment> list = new List<SalesEntryShipment>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[No_],mt.[Your Reference],mt.[Shipment Date],mt.[Shipment Method Code],mt.[Order No_]," +
+                                          "mt.[Ship-to Name],mt.[Ship-to Address],mt.[Ship-to Address 2],mt.[Ship-to City],mt.[Ship-to Contact]," +
+                                          "mt.[Ship-to Post Code],mt.[Ship-to County],mt.[Ship-to Country_Region Code]," +
+                                          "mt.[External Document No_],mt.[Shipping Agent Code],mt.[Shipping Agent Service Code],mt.[Package Tracking No_] " +
+                                          "FROM [" + navCompanyName + "Sales Shipment Header$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
+                                          "JOIN [" + navCompanyName + "Sales Shipment Header$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] " +
+                                          "WHERE mt2.[LSC Customer Order ID]=@no";
+                    command.Parameters.AddWithValue("@no", orderId);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToShipment(reader));
+                        }
+                        reader.Close();
+                    }
+                }
+                connection.Close();
+            }
+
+            logger.StatisticEndSub(ref stat, index);
+            return list;
+        }
+
+        public List<SalesEntryShipmentLine> SalesEntryShipmentLineGet(string id)
+        {
+            List<SalesEntryShipmentLine> list = new List<SalesEntryShipmentLine>();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT mt.[Line No_],mt.[Type],mt.[No_],mt.[Description],mt.[Variant Code],mt.[Unit of Measure Code],mt.[Quantity] " +
+                                          "FROM [" + navCompanyName + "Sales Shipment Line$437dbf0e-84ff-417a-965d-ed2bb9650972] mt " +
+                                          "WHERE mt.[Quantity]>0 AND mt.[Document No_]=@no";
+                    command.Parameters.AddWithValue("@no", id);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(ReaderToShipmentLine(reader));
                         }
                         reader.Close();
                     }
@@ -378,7 +449,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
         }
 
-        public List<SalesEntryLine> TransSalesEntryLinesGet(string receiptId, Statistics stat)
+        public List<SalesEntryLine> TransSalesEntryLinesGet(string orderId, string storeNo, string termNo, int transNo, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             List<SalesEntryLine> list = new List<SalesEntryLine>();
@@ -387,30 +458,36 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Store No_],st.[Name],ml.[POS Terminal No_],ml.[Transaction No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure],ml.[Deal Modifier Line No_],ml.[Deal Header Line No_]," +
+                                "ml.[Store No_],st.[Name],ml.[Transaction No_],ml.[Item No_],ml.[Variant Code],ml.[Unit of Measure],ml.[Deal Modifier Line No_],ml.[Deal Header Line No_]," +
                                 "ml.[Quantity],ml.[UOM Quantity],ml.[Price],ml.[Net Price],ml.[Net Amount],ml.[Discount Amount],ml.[VAT Amount],ml.[Refund Qty_],ml.[Line No_],i.[Description],ml.[Parent Line No_]," +
                                 "v.[Variant Dimension 1],v.[Variant Dimension 2],v.[Variant Dimension 3],v.[Variant Dimension 4],v.[Variant Dimension 5]" +
                                 " FROM [" + navCompanyName + "LSC Trans_ Sales Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
                                 " JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] i ON i.[No_]=ml.[Item No_]" +
                                 " JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=ml.[Store No_]" +
                                 " LEFT JOIN [" + navCompanyName + "LSC Item Variant Registration$5ecfc871-5d82-43f1-9c54-59685e82318d] v ON v.[Item No_]=ml.[Item No_] AND v.[Variant]=ml.[Variant Code]" +
-                                " WHERE ml.[Receipt No_]=@id ";
+                                " WHERE ml.[Store No_]=@sid AND ml.[POS Terminal No_]=@tid AND ml.[Transaction No_]=@id";
 
-                    int transNo = 0;
-                    string termNo = string.Empty;
-
-                    command.Parameters.AddWithValue("@id", receiptId);
+                    command.Parameters.AddWithValue("@sid", storeNo);
+                    command.Parameters.AddWithValue("@tid", termNo);
+                    command.Parameters.AddWithValue("@id", transNo);
                     TraceSqlCommand(command);
                     connection.Open();
+
+                    OrderRepository repo = new OrderRepository(config, LSCVersion);
+
+                    transNo = 0;
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(ReaderToSalesEntryLine(reader, out int trans, out string term));
+                            SalesEntryLine line = ReaderToSalesEntryLine(reader, out int trans);
+                            if (LSCVersion >= new Version("23.0"))
+                                line.ExtraInformation = repo.OrderLinesDataEntryGet(orderId, line.LineNumber, true, stat);
+                            list.Add(line);
+
                             if (trans > 0)
                             {
                                 transNo = trans;
-                                termNo = term;
                             }
                         }
                         reader.Close();
@@ -422,13 +499,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                     "ml.[Line No_],ml.[Deal No_],ml.[Deal Header Line No_],ml.[Quantity],ml.[Amount],ml.[Price],ml.[Line Discount Amt_],o.[Description]" +
                                     " FROM [" + navCompanyName + "LSC Trans_ Deal Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml" +
                                     " JOIN [" + navCompanyName + "LSC Offer$5ecfc871-5d82-43f1-9c54-59685e82318d] o ON o.[No_]=ml.[Deal No_]" +
-                                    " WHERE ml.[Store No_]=@sid AND ml.[POS Terminal No_]=@pid AND ml.[Transaction No_]=@tid";
+                                    " WHERE ml.[Store No_]=@sid AND ml.[POS Terminal No_]=@tid AND ml.[Transaction No_]=@id";
 
                         SalesEntryLine firstline = list.First();
 
-                        command.Parameters.AddWithValue("@sid", firstline.StoreId);
-                        command.Parameters.AddWithValue("@pid", termNo);
-                        command.Parameters.AddWithValue("@tid", transNo);
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@sid", storeNo);
+                        command.Parameters.AddWithValue("@tid", termNo);
+                        command.Parameters.AddWithValue("@id", transNo);
                         TraceSqlCommand(command);
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
@@ -526,7 +604,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS Amt,ml.[Exchange Rate] AS Rate,ml.[Card or Account] AS No " +
+                                "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS [Amt],ml.[Exchange Rate] AS [Rate],ml.[Card or Account] AS [No],ml.[Card No_] AS [Card] " +
                                 "FROM [" + navCompanyName + "LSC Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
                                 "WHERE ml.[Receipt No_]=@id ORDER BY ml.[Line No_]";
                     command.Parameters.AddWithValue("@id", receiptNo);
@@ -546,7 +624,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     {
                         // did not find any finalized payments lines, so look for pre approved lines
                         command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS Amt,ml.[Currency Factor] AS Rate,ml.[Card or Customer No_] AS No " +
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS [Amt],ml.[Currency Factor] AS [Rate],ml.[Card or Customer No_] AS [No],ml.[Card Type] AS [Card] " +
                                     "FROM [" + navCompanyName + "LSC Posted CO Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
                                     "WHERE ml.[Document ID]=@id AND [Type]=1 ORDER BY ml.[Line No_]";
                         TraceSqlCommand(command);
@@ -698,7 +776,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
                     HouseNo = SQLHelper.GetString(reader["Ship-to House_Apartment No_"]),
                     City = SQLHelper.GetString(reader["Ship-to City"]),
-                    StateProvinceRegion = SQLHelper.GetString(reader["Ship-to County"]),
+                    County = SQLHelper.GetString(reader["Ship-to County"]),
                     PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
                     Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"]),
                     PhoneNumber = SQLHelper.GetString(reader["Ship-to Phone No_"])
@@ -736,13 +814,15 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 }
             }
 
+            int transNo = SQLHelper.GetInt32(reader["Transaction No_"]);
+
             entry.AnonymousOrder = string.IsNullOrEmpty(entry.CardId);
 
             SalesEntryPointsGetTotal(entry.Id, entry.CustomerOrderNo, out decimal rewarded, out decimal used);
             entry.PointsRewarded = rewarded;
             entry.PointsUsedInOrder = used;
 
-            entry.Lines = TransSalesEntryLinesGet(entry.Id, stat);
+            entry.Lines = TransSalesEntryLinesGet(entry.CustomerOrderNo, entry.StoreId, entry.TerminalId, transNo, stat);
             entry.DiscountLines = DiscountLineGet(entry.Id, stat);
             entry.Payments = TransSalesEntryPaymentGet(entry.Id, entry.CustomerOrderNo, stat);
             entry.LineCount = entry.Lines.Count;
@@ -932,12 +1012,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return entry;
         }
 
-        private SalesEntryLine ReaderToSalesEntryLine(SqlDataReader reader, out int transNo, out string termNo)
+        private SalesEntryLine ReaderToSalesEntryLine(SqlDataReader reader, out int transNo)
         {
             transNo = 0;
-            termNo = string.Empty;
-            decimal uomqty = 0;
-
             SalesEntryLine line = new SalesEntryLine()
             {
                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
@@ -957,7 +1034,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 StoreName = SQLHelper.GetString(reader["Name"])
             };
 
-            uomqty = SQLHelper.GetDecimal(reader["UOM Quantity"], true);
+            decimal uomqty = SQLHelper.GetDecimal(reader["UOM Quantity"], true);
             if (uomqty != 0)
                 line.Quantity = uomqty;
 
@@ -999,7 +1076,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (SQLHelper.GetInt32(reader["Deal Modifier Line No_"]) > 0)
             {
                 transNo = SQLHelper.GetInt32(reader["Transaction No_"]);
-                termNo = SQLHelper.GetString(reader["POS Terminal No_"]);
             }
             return line;
         }
@@ -1024,6 +1100,48 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 line.ItemImageId = img[0].Id;
 
             return line;
+        }
+
+        private SalesEntryShipment ReaderToShipment(SqlDataReader reader)
+        {
+            SalesEntryShipment ship = new SalesEntryShipment(SQLHelper.GetString(reader["No_"]))
+            {
+                DocumentId = SQLHelper.GetString(reader["Order No_"]),
+                YourReference = SQLHelper.GetString(reader["Your Reference"]),
+                Name = SQLHelper.GetString(reader["Ship-to Name"]),
+                Contact = SQLHelper.GetString(reader["Ship-to Contact"]),
+                ShipmentDate = SQLHelper.GetDateTime(reader["Shipment Date"]),
+                ShipmentMethodCode = SQLHelper.GetString(reader["Shipment Method Code"]),
+                ExternalId = SQLHelper.GetString(reader["External Document No_"]),
+                TrackingID = SQLHelper.GetString(reader["Package Tracking No_"]),
+                AgentCode = SQLHelper.GetString(reader["Shipping Agent Code"]),
+                AgentServiceCode = SQLHelper.GetString(reader["Shipping Agent Service Code"]),
+                Address = new Address()
+                {
+                    Address1 = SQLHelper.GetString(reader["Ship-to Address"]),
+                    Address2 = SQLHelper.GetString(reader["Ship-to Address 2"]),
+                    City = SQLHelper.GetString(reader["Ship-to City"]),
+                    PostCode = SQLHelper.GetString(reader["Ship-to Post Code"]),
+                    County = SQLHelper.GetString(reader["Ship-to County"]),
+                    Country = SQLHelper.GetString(reader["Ship-to Country_Region Code"])
+                }
+            };
+
+            ship.Lines = SalesEntryShipmentLineGet(ship.Id);
+            return ship;
+        }
+
+        private SalesEntryShipmentLine ReaderToShipmentLine(SqlDataReader reader)
+        {
+            return new SalesEntryShipmentLine()
+            {
+                LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                ItemId = SQLHelper.GetString(reader["No_"]),
+                ItemDescription = SQLHelper.GetString(reader["Description"]),
+                VariantId = SQLHelper.GetString(reader["Variant Code"]),
+                UomId = SQLHelper.GetString(reader["Unit of Measure Code"]),
+                Quantity = SQLHelper.GetDecimal(reader["Quantity"])
+            };
         }
 
         private SalesEntryLine POSTransToSalesEntryLine(SqlDataReader reader)
@@ -1123,6 +1241,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 Amount = SQLHelper.GetDecimal(reader, "Amt", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "Rate", false),
                 CardNo = SQLHelper.GetString(reader["No"]),
+                CardType = SQLHelper.GetString(reader["Card"]),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"])
             };
         }

@@ -69,9 +69,9 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
-        private void Init(string securitytoken)
+        private void Init(string securityToken)
         {
-            this.config.SecurityToken = securitytoken;
+            this.config.SecurityToken = securityToken;
             base.DeviceId = string.Empty;
             this.contactId = string.Empty;
             this.securityTokenStatusCode = StatusCode.OK;
@@ -80,7 +80,7 @@ namespace LSOmni.BLL.Loyalty
 
         protected void SecurityCheck()
         {
-            //security_validatetoken  true/false  key can be added to bypass the security token validation. Appsettings table
+            //security_validatetoken  true/false  key can be added to bypass the security token validation. AppSettings table
             SecurityTokenCheck();
 
             //always validate security token and if device is blocked etc.  Will get deviceId and contactId back
@@ -92,7 +92,7 @@ namespace LSOmni.BLL.Loyalty
                 if (securityTokenStatusCode != StatusCode.OK)
                 {
                     string msg = string.Empty;
-                    config.SecurityToken = ""; //dont want to send the token back in error message
+                    config.SecurityToken = ""; //don't want to send the token back in error message
                     if (securityTokenStatusCode == StatusCode.DeviceIsBlocked)
                         msg = string.Format("Device has been blocked from usage: {0}", base.DeviceId);
                     else if (securityTokenStatusCode == StatusCode.SecurityTokenInvalid)

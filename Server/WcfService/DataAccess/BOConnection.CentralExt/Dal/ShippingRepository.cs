@@ -138,7 +138,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return new ShippingAgentService(SQLHelper.GetString(reader["Code"]))
             {
                 Description = SQLHelper.GetString(reader["Description"]),
-                ShippingTime = GetNAVDateFormula(SQLHelper.GetString(reader["Shipping Time"]))
+                ShippingTime = SQLHelper.GetDateFormula(reader["Shipping Time"])
             };
         }
 

@@ -77,31 +77,31 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: rec.Account = new Account(col.FieldValue); break;
-                        case 2: rec.Id = col.FieldValue; break;
-                        case 3: rec.Name = col.FieldValue; break;
-                        case 4: rec.FirstName = col.FieldValue; break;
-                        case 5: rec.MiddleName = col.FieldValue; break;
-                        case 6: rec.LastName = col.FieldValue; break;
-                        case 7: rec.Gender = (Gender)ConvertTo.SafeInt(col.FieldValue); break;
-                        case 9: rec.Email = col.FieldValue; break;
-                        case 10: rec.BirthDay = ConvertTo.SafeDateTime(col.FieldValue); break;
-                        case 11: rec.MaritalStatus = (MaritalStatus)ConvertTo.SafeInt(col.FieldValue); break;
-                        case 12: rec.Addresses[0].Address1 = col.FieldValue; break;
-                        case 13: rec.Addresses[0].Address2 = col.FieldValue; break;
-                        case 14: rec.Addresses[0].PostCode = col.FieldValue; break;
-                        case 15: rec.Addresses[0].City = col.FieldValue; break;
-                        case 16: rec.Addresses[0].Country = col.FieldValue; break;
-                        case 17: rec.Addresses[0].PhoneNumber = col.FieldValue; break;
-                        case 18: rec.Addresses[0].CellPhoneNumber = col.FieldValue; break;
-                        case 19: rec.Addresses[0].StateProvinceRegion = col.FieldValue; break;
-                        case 20: rec.SendReceiptByEMail = (SendEmail)ConvertTo.SafeInt(col.FieldValue); break;
-                        case 21: rec.Blocked = ConvertTo.SafeBoolean(col.FieldValue); break;
-                        case 22: rec.BlockedReason = col.FieldValue; break;
-                        case 23: rec.DateBlocked = ConvertTo.SafeDateTime(col.FieldValue); break;
-                        case 24: rec.BlockedBy = col.FieldValue; break;
+                        case "Account No.": rec.Account = new Account(col.FieldValue); break;
+                        case "Contact No.": rec.Id = col.FieldValue; break;
+                        case "Name": rec.Name = col.FieldValue; break;
+                        case "First Name": rec.FirstName = col.FieldValue; break;
+                        case "Middle Name": rec.MiddleName = col.FieldValue; break;
+                        case "Surname": rec.LastName = col.FieldValue; break;
+                        case "Gender": rec.Gender = (Gender)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "E-Mail": rec.Email = col.FieldValue; break;
+                        case "Date of Birth": rec.BirthDay = ConvertTo.SafeDateTime(col.FieldValue); break;
+                        case "Marital Status": rec.MaritalStatus = (MaritalStatus)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Address": rec.Addresses[0].Address1 = col.FieldValue; break;
+                        case "Address 2": rec.Addresses[0].Address2 = col.FieldValue; break;
+                        case "Post Code": rec.Addresses[0].PostCode = col.FieldValue; break;
+                        case "City": rec.Addresses[0].City = col.FieldValue; break;
+                        case "Country/Region Code": rec.Addresses[0].Country = col.FieldValue; break;
+                        case "Phone No.": rec.Addresses[0].PhoneNumber = col.FieldValue; break;
+                        case "Mobile Phone No.": rec.Addresses[0].CellPhoneNumber = col.FieldValue; break;
+                        case "Territory Code": rec.Addresses[0].StateProvinceRegion = col.FieldValue; break;
+                        case "Send Receipt by E-mail": rec.SendReceiptByEMail = (SendEmail)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Blocked": rec.Blocked = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Reason Blocked": rec.BlockedReason = col.FieldValue; break;
+                        case "Date Blocked": rec.DateBlocked = ConvertTo.SafeDateTime(col.FieldValue); break;
+                        case "Blocked by": rec.BlockedBy = col.FieldValue; break;
                     }
                 }
                 list.Add(rec);
@@ -124,16 +124,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: rec.Id = col.FieldValue; break;
-                        case 2: rec.BlockedBy = col.FieldValue; break;
-                        case 3: rec.BlockedReason = col.FieldValue; break;
-                        case 4: rec.ClubId = col.FieldValue; break;
-                        case 5: rec.ContactId = col.FieldValue; break;
-                        case 6: rec.DateBlocked = ConvertTo.SafeDateTime(col.FieldValue); break;
-                        case 7: rec.LinkedToAccount = ConvertTo.SafeBoolean(col.FieldValue); break;
-                        case 8: rec.Status = (CardStatus)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Card No.": rec.Id = col.FieldValue; break;
+                        case "Blocked by": rec.BlockedBy = col.FieldValue; break;
+                        case "Reason Blocked": rec.BlockedReason = col.FieldValue; break;
+                        case "Club Code": rec.ClubId = col.FieldValue; break;
+                        case "Contact No.": rec.ContactId = col.FieldValue; break;
+                        case "Date Blocked": rec.DateBlocked = ConvertTo.SafeDateTime(col.FieldValue); break;
+                        case "Linked to Account": rec.LinkedToAccount = ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Status": rec.Status = (CardStatus)ConvertTo.SafeInt(col.FieldValue); break;
                     }
                 }
                 list.Add(rec);
@@ -156,15 +156,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: rec.Id = col.FieldValue; break;
-                        case 2: rec.Blocked =  ConvertTo.SafeBoolean(col.FieldValue); break;
-                        case 6: rec.CustomerId = col.FieldValue; break;
-                        case 7: rec.ClubCode = col.FieldValue; break;
-                        case 8: rec.SchemeCode = col.FieldValue; break;
-                        case 9: rec.Status = (AccountStatus)ConvertTo.SafeInt(col.FieldValue); break;
-                        case 10: rec.Type = (AccountType)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "No.": rec.Id = col.FieldValue; break;
+                        case "Blocked": rec.Blocked =  ConvertTo.SafeBoolean(col.FieldValue); break;
+                        case "Linked To Customer No.": rec.CustomerId = col.FieldValue; break;
+                        case "Club Code": rec.ClubCode = col.FieldValue; break;
+                        case "Scheme Code": rec.SchemeCode = col.FieldValue; break;
+                        case "Status": rec.Status = (AccountStatus)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Account Type": rec.Type = (AccountType)ConvertTo.SafeInt(col.FieldValue); break;
                     }
                 }
                 list.Add(rec);
@@ -187,15 +187,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: rec.Id = col.FieldValue; break;
-                        case 2: rec.Description = col.FieldValue; break;
-                        case 3: rec.ClubCode = col.FieldValue; break;
-                        case 4: rec.NextSchemeCode = col.FieldValue; break;
-                        case 5: rec.Perks = col.FieldValue; break;
-                        case 6: rec.UpdateSequence = ConvertTo.SafeInt(col.FieldValue); break;
-                        case 7: rec.PointsNeeded = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Code": rec.Id = col.FieldValue; break;
+                        case "Description": rec.Description = col.FieldValue; break;
+                        case "Club Code": rec.ClubCode = col.FieldValue; break;
+                        case "Next Scheme": rec.NextSchemeCode = col.FieldValue; break;
+                        case "Next Scheme Benefits": rec.Perks = col.FieldValue; break;
+                        case "Update Sequence": rec.UpdateSequence = ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Min. Point for Upgrade": rec.PointsNeeded = ConvertTo.SafeInt(col.FieldValue); break;
                     }
                 }
                 list.Add(rec);
@@ -218,10 +218,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: rec.Id = col.FieldValue; break;
-                        case 2: rec.Name = col.FieldValue; break;
+                        case "Code": rec.Id = col.FieldValue; break;
+                        case "Description": rec.Name = col.FieldValue; break;
                     }
                 }
                 list.Add(rec);
@@ -244,14 +244,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: rec.AccountNo = col.FieldValue; break;
-                        case 2: rec.ContactNo = col.FieldValue; break;
-                        case 3: rec.Id = col.FieldValue; break;
-                        case 4: rec.DataType = (ProfileDataType)ConvertTo.SafeInt(col.FieldValue); break;
-                        case 5: rec.Description = col.FieldValue; break;
-                        case 6: rec.TextValue = col.FieldValue; break;
+                        case "Account No.": rec.AccountNo = col.FieldValue; break;
+                        case "Contact No.": rec.ContactNo = col.FieldValue; break;
+                        case "Code": rec.Id = col.FieldValue; break;
+                        case "Type": rec.DataType = (ProfileDataType)ConvertTo.SafeInt(col.FieldValue); break;
+                        case "Description": rec.Description = col.FieldValue; break;
+                        case "Value": rec.TextValue = col.FieldValue; break;
                     }
                 }
                 list.Add(rec);

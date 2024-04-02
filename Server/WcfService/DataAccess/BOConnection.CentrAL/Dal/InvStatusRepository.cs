@@ -21,9 +21,12 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             string sqlfrom = " FROM [" + navCompanyName + "Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
 
             SQLHelper.CheckForSQLInjection(storeId);
-            string sqlwhere = string.IsNullOrEmpty(storeId) ? string.Empty : $" AND mt.[Store No_]='{storeId}'";
+            string sqlwhere = " WHERE ";
+            if (fullReplication)
+                sqlwhere += "mt.[timestamp]>@cnt";
+            else
+                sqlwhere += "mt.[Replication Counter]>@cnt";
 
-            List<JscKey> keys = GetPrimaryKeys("Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d");
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
@@ -33,36 +36,33 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-
-                    if (string.IsNullOrEmpty(maxKey) || maxKey == "0")
-                    {
-                        // get max value
-                        command.CommandText = "SELECT MAX([Replication Counter])" + sqlfrom;
-                        var ret = command.ExecuteScalar();
-                        maxKey = (ret == DBNull.Value) ? "0" : ret.ToString();
-                    }
-
-                    // get records remaining
+                    command.CommandText = "SELECT COUNT(*),Max([Replication Counter])" + sqlfrom + sqlwhere + GetSQLStoreDist("mt.[Item No_]", storeId, fullReplication, true);
                     if (fullReplication)
                     {
-                        string sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, sqlwhere, "mt.[Item No_]", storeId, false);
-                        recordsRemaining = GetRecordCount(0, lastKey, sql, keys, ref maxKey);
-
-                        command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + GetWhereStatementWithStoreDist(true, keys, sqlwhere, "mt.[Item No_]", storeId, true);
-                        JscActions act = new JscActions(lastKey);
-                        SetWhereValues(command, act, keys, true, true);
+                        SqlParameter par = new SqlParameter("@cnt", SqlDbType.Timestamp);
+                        if (lastKey == "0")
+                            par.Value = new byte[] { 0 };
+                        else
+                            par.Value = StringToByteArray(lastKey);
+                        command.Parameters.Add(par);
                     }
                     else
-                    {
-                        command.CommandText = "SELECT COUNT(*)" + sqlfrom + " WHERE mt.[Replication Counter]>@cnt" + sqlwhere;
                         command.Parameters.AddWithValue("@cnt", lastKey);
-                        TraceSqlCommand(command);
-                        recordsRemaining = (int)command.ExecuteScalar();
 
-                        command.CommandText = GetSQL(false, batchSize) + sqlcolumns + sqlfrom + " WHERE mt.[Replication Counter]>@cnt" + sqlwhere + " ORDER BY mt.[Replication Counter]";
+                    TraceSqlCommand(command);
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            recordsRemaining = SQLHelper.GetInt32(reader[0]);
+                            if (reader[1] != DBNull.Value)
+                                maxKey = SQLHelper.GetString(reader[1]);
+                        }
+                        reader.Close();
                     }
 
                     // get data
+                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + sqlwhere + GetSQLStoreDist("mt.[Item No_]", storeId, fullReplication, true) + " ORDER BY mt.[Replication Counter]";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         int cnt = 0;
@@ -70,17 +70,19 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         {
                             list.Add(ReaderToStatus(reader, fullReplication, ref lastKey));
                             cnt++;
+
+                            if (batchSize > 0 && cnt >= batchSize)
+                                break;
                         }
                         reader.Close();
                         recordsRemaining -= cnt;
                     }
-
-                    if (recordsRemaining <= 0)
-                        lastKey = maxKey;   // this should be the highest PreAction id;
-
                     connection.Close();
                 }
             }
+
+            if (fullReplication && recordsRemaining <= 0)
+                lastKey = maxKey;
 
             // just in case something goes too far
             if (recordsRemaining < 0)
@@ -160,7 +162,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         private ReplInvStatus ReaderToStatus(SqlDataReader reader, bool fullRepl, ref string lastKey)
         {
             if (fullRepl)
-                lastKey = ByteArrayToString(reader["timestamp"] as byte[]);
+                lastKey = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             else
                 lastKey = SQLHelper.GetString(reader["Replication Counter"]);
 

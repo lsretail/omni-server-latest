@@ -42,12 +42,12 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityAvailabilityGet(locationNo, productNo, activityDate, contactNo, contactAccount, optionalResource, promoCode, activityNo, noOfPersons, guestType);
         }
 
-        public virtual AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
+        public virtual List<AdditionalCharge> ActivityAdditionalChargesGet(string activityNo)
         {
             return BOActConnection.ActivityAdditionalChargesGet(activityNo);
         }
 
-        public virtual AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        public virtual List<AdditionalCharge> ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
         {
             return BOActConnection.ActivityProductChargesGet(locationNo, productNo, dateOfBooking);
         }
@@ -112,9 +112,9 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityCheckAccess(searchReference, locationNo, gateNo, registerAccessEntry, checkType, out messageString);
         }
 
-        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activiyTime, string optionalResource, int quantity)
+        public virtual string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activityTime, string optionalResource, int quantity)
         {
-            return BOActConnection.ActivityGetAvailabilityToken(locationNo, productNo, activiyTime, optionalResource, quantity);
+            return BOActConnection.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
         }
 
         public virtual string ActivityInsertGroupReservation(Reservation request)

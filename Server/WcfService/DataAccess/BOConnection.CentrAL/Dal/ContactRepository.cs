@@ -630,7 +630,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             return list;
         }
 
-        public List<PointEntry> PointEntiesGet(string cardId, DateTime dateFrom)
+        public List<PointEntry> PointEntriesGet(string cardId, DateTime dateFrom)
         {
             List<PointEntry> list = new List<PointEntry>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -708,7 +708,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplCustomer ReaderToCustomer(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplCustomer cust = new ReplCustomer()
             {

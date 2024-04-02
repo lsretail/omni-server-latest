@@ -115,7 +115,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplBarcodeMask ReaderToBarcodeMask(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplBarcodeMask()
             {

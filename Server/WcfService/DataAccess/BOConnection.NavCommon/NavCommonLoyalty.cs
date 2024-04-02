@@ -24,7 +24,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
-using LSRetail.Omni.DiscountEngine.DataModels;
 
 namespace LSOmni.DataAccess.BOConnection.NavCommon
 {
@@ -1120,7 +1119,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return rep.GetPointRate(table);
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom)
+        public virtual List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("LSC Member Point Entry", "Card No.", cardNo);
@@ -1666,13 +1665,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             if (request.OrderPayments == null)
                 request.OrderPayments = new List<OrderPayment>();
 
-            int lineno = 1;
-            foreach (OrderPayment line in request.OrderPayments)
-            {
-                line.TenderType = ConfigSetting.TenderTypeMapping(config.SettingsGetByKey(ConfigKey.TenderType_Mapping), line.TenderType, false); //map tender type between LSOmni and Nav
-                line.LineNumber = lineno++;
-            }
-
             if (request.ShipToAddress == null)
             {
                 if (request.OrderType == OrderType.ClickAndCollect)
@@ -1980,24 +1972,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return map.MapFromRootToOpeningHours(root, offset);
         }
 
-        public List<StoreServices> StoreServicesGetByStoreId(string storeId)
-        {
-            List<StoreServices> serviceListFound = new List<StoreServices>();
-            string fullFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xml", "navdata_StoreFeatures.xml");
-            if (File.Exists(fullFileName) == false)
-                return serviceListFound;
-
-            string xml = File.ReadAllText(fullFileName);
-            StoreServicesXml xmlParse = new StoreServicesXml(xml);
-            List<StoreServices> serviceList = xmlParse.ParseXml();
-            foreach (StoreServices serv in serviceList)
-            {
-                if (serv.StoreId.ToLowerInvariant() == storeId.ToLowerInvariant())
-                    serviceListFound.Add(serv);
-            }
-            return serviceListFound;
-        }
-
         #endregion
 
         #region Device
@@ -2230,19 +2204,6 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
 
             logger.Debug(config.LSKey.Key, "GetReturnPolicy Response - " + Serialization.ToXml(root, true));
             return map.MapFromRootToReturnPolicy(root);
-        }
-
-        public List<Advertisement> AdvertisementsGetById(string id)
-        {
-            List<Advertisement> ads = new List<Advertisement>();
-            string fullFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xml", "navdata_ads.xml");
-            if (File.Exists(fullFileName) == false)
-                return ads;
-
-            string xml = File.ReadAllText(fullFileName);
-            AdvertisementXml xmlParse = new AdvertisementXml(xml);
-            ads = xmlParse.ParseXml(id);
-            return ads;
         }
 
         public MobileMenu MenuGet(string storeId, string salesType, Currency currency)

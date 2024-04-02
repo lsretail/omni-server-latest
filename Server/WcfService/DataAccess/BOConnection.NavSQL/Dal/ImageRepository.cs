@@ -254,7 +254,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             else
                 img.Image64 = Convert.ToBase64String(imgbyte);
 
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return img;
         }
 
@@ -356,7 +356,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplImageLink ReaderToImageLink(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplImageLink
             {

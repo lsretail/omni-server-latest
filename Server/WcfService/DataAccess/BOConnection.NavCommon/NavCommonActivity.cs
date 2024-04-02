@@ -115,7 +115,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return map.MapRootToAvailabilityResponse(root);
         }
 
-        public AdditionalCharge ActivityAdditionalChargesGet(string activityNo)
+        public List<AdditionalCharge> ActivityAdditionalChargesGet(string activityNo)
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityAdditionalChargesGet: activityNo:{0}", activityNo));
 
@@ -127,7 +127,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return map.MapRootToAdditionalCharge(root);
         }
 
-        public AdditionalCharge ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
+        public List<AdditionalCharge> ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking)
         {
             logger.Debug(config.LSKey.Key, string.Format("ActivityProductChargesGet: productNo:{0}", productNo));
 

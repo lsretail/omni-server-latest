@@ -122,7 +122,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
         private ReplGS1BarcodeSetup ReaderToBarcodeSetup(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplGS1BarcodeSetup()
             {

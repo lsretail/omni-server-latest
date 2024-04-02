@@ -236,7 +236,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private ReplUnitOfMeasure ReaderToUnitOfMeasure(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplUnitOfMeasure()
             {
@@ -248,7 +248,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private ReplCollection ReaderToCollection(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplCollection()
             {

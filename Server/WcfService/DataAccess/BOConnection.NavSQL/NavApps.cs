@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSOmni.DataAccess.BOConnection.NavSQL.Dal;
-
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
-using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.NavSQL
 {
-    
+
     //Navision back office connection
     public class NavApps : NavBase, IAppBO
     {
@@ -27,10 +25,22 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
+        public virtual List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
         {
-            DiscountOfferRepository rep = new DiscountOfferRepository(config);
-            return rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+            DiscountRepository rep = new DiscountRepository(config);
+            return rep.DiscountsGetByStoreAndItem(storeId, itemId);
+        }
+
+        public virtual DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
+        {
+            DiscountRepository rep = new DiscountRepository(config);
+            return rep.GetDiscountValidationByOfferId(offerId);
+        }
+
+        public virtual void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
+        {
+            DiscountRepository rep = new DiscountRepository(config);
+            rep.LoadDiscountDetails(disc, storeId, loyaltySchemeCode);
         }
 
         public virtual Terminal TerminalGetById(string terminalId, Statistics stat)
@@ -124,7 +134,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateItemUOM(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
-        public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, bool fullReplication,ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        public virtual List<ReplItemVariantRegistration> ReplicateItemVariantRegistration(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             ItemVariantRegistrationRepository rep = new ItemVariantRegistrationRepository(config);
             return rep.ReplicateItemVariantRegistration(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
@@ -244,6 +254,11 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             return rep.ReplicateMixAndMatch(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplDiscountSetup> ReplicateDiscountSetup(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            return new List<ReplDiscountSetup>();
+        }
+
         public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config);
@@ -328,4 +343,3 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
         #endregion
     }
 }
- 

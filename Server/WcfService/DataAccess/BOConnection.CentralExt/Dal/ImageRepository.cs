@@ -284,7 +284,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 img.Size = new ImageSize(SQLHelper.GetInt32(reader["Width"]), SQLHelper.GetInt32(reader["Height"]));
             }
 
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return img;
         }
 
@@ -390,7 +390,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
         private ReplImageLink ReaderToImageLink(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplImageLink link = new ReplImageLink()
             {

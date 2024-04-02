@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
-using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -33,17 +32,43 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.TerminalGetById(terminalId, stat);
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
+        public virtual List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new List<ProactiveDiscount>();
+            }
 
-            return LSCWSBase.DiscountsGet(storeId, itemIds, loyaltySchemeCode, stat);
+            return LSCWSBase.DiscountsGetByStoreAndItem(storeId, itemId, stat);
+        }
+
+        public virtual DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new DiscountValidation();
+            }
+
+            return LSCWSBase.GetDiscountValidationByOfferId(offerId, stat);
+        }
+
+        public virtual void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
+        {
+            if (NAVVersion < new Version("17.5"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return;
+            }
+
+            LSCWSBase.LoadDiscountDetails(disc, storeId, loyaltySchemeCode, stat);
         }
 
         public virtual UnitOfMeasure UnitOfMeasureGetById(string id, Statistics stat)
         {
-            return null;
+            logger.Warn(config.LSKey.Key, "Not supported by LS central version for SaaS");
+            return new UnitOfMeasure();
         }
 
         public virtual VariantRegistration VariantRegGetById(string id, string itemId, Statistics stat)
@@ -157,7 +182,10 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<ReplItemVariant> ReplicateItemVariant(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 17.5 for SaaS");
+                return new List<ReplItemVariant>();
+            }
 
             return LSCWSBase.ReplicateItemVariant(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
@@ -172,7 +200,13 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplStaffPermission> ReplicateStaffPermission(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            return new List<ReplStaffPermission>();
+            if (NAVVersion < new Version("24.0"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 24.0 for SaaS");
+                return new List<ReplStaffPermission>();
+            }
+
+            return LSCWSBase.ReplicateStaffPermission(storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplVendor> ReplicateVendors(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
@@ -233,8 +267,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplPrice> ReplicateBasePrice(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("20.4"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 20.4 for SaaS");
+                return new List<ReplPrice>();
+            }
 
             return LSCWSBase.ReplicateBasePrice(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
@@ -295,6 +332,17 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ReplicateMixAndMatch(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
+        public virtual List<ReplDiscountSetup> ReplicateDiscountSetup(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            if (NAVVersion < new Version("24.0"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 24.0 for SaaS");
+                return new List<ReplDiscountSetup>();
+            }
+
+            return LSCWSBase.ReplicateDiscountSetup(batchSize, fullReplication, ref lastKey, ref recordsRemaining);
+        }
+
         public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
             if (NAVVersion < new Version("17.5"))
@@ -353,32 +401,44 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
 
         public virtual List<ReplHierarchyHospDeal> ReplicateHierarchyHospDeal(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("19.3"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 19.3 for SaaS");
+                return new List<ReplHierarchyHospDeal>();
+            }
 
             return LSCWSBase.ReplicateHierarchyDeal(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplHierarchyHospDealLine> ReplicateHierarchyHospDealLine(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("19.3"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 19.3 for SaaS");
+                return new List<ReplHierarchyHospDealLine>();
+            }
 
             return LSCWSBase.ReplicateHierarchyDealLine(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplItemRecipe> ReplicateItemRecipe(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("19.3"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 19.3 for SaaS");
+                return new List<ReplItemRecipe>();
+            }
 
             return LSCWSBase.ReplicateItemRecipe(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }
 
         public virtual List<ReplItemModifier> ReplicateItemModifier(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
         {
-            if (NAVVersion < new Version("17.5"))
-                throw new NotImplementedException();
+            if (NAVVersion < new Version("19.3"))
+            {
+                logger.Warn(config.LSKey.Key, "Not supported by LS Central version < 19.3 for SaaS");
+                return new List<ReplItemModifier>();
+            }
 
             return LSCWSBase.ReplicateItemModifier(appId, appType, storeId, batchSize, fullReplication, ref lastKey, ref recordsRemaining);
         }

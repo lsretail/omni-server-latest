@@ -212,14 +212,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             NavVersionToUse(false, out string cVer);
         }
 
-        public string SendToOData(string command, string data)
+        public string SendToOData(string command, string data, bool sendget)
         {
             try
             {
                 Uri url = new Uri(string.Format("{0}/{1}?company={2}", config.SettingsGetByKey(ConfigKey.BOODataUrl), command, NavCompany));
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
                 httpWebRequest.ContentType = "application/json";
-                httpWebRequest.Method = "POST";
+                httpWebRequest.Method = (sendget) ? "GET" : "POST";
                 httpWebRequest.PreAuthenticate = true;
                 httpWebRequest.AllowAutoRedirect = true;
 
@@ -351,7 +351,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse(bool force, out string centralVersion)
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("21.0");
+                LSCVersion = new Version("24.0");
 
             centralVersion = LSCVersion.ToString();
             if (centralWS == null)
@@ -428,7 +428,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     if (string.IsNullOrEmpty(ourl))
                         throw new LSOmniServiceException(StatusCode.NavODataError, "9002", "BOConnection.Nav.ODataUrl is empty in Appsettings file");
 
-                    string ret = SendToOData("GetMemberContactInfo_GetRequestDef", "{ }");
+                    string ret = SendToOData("GetMemberContactInfo_GetRequestDef", "{ }", false);
                     logger.Debug(config.LSKey.Key, "Central OData Response > " + ret);
                     if (ret.StartsWith("ERROR:"))
                         throw new LSOmniServiceException(StatusCode.NavODataError, "9003", ret);
@@ -746,7 +746,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         protected string HandleWS2ResponseCode(string funcName, string respCode, string errText, ref Statistics stat, int statIndex, string[] codesToHandle = null)
         {
-            if (respCode == "0000")
+            if (respCode == "0000" || respCode == "")
                 return string.Empty;
 
             logger.StatisticEndSub(ref stat, statIndex);

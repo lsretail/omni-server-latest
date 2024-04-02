@@ -84,7 +84,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                                 list.Add(new ReplCurrencyExchRate()
                                 {
                                     CurrencyCode = par[0],
-                                    StartingDate = GetDateTimeFromNav(par[1]),
+                                    StartingDate = ConvertTo.GetDateTimeFromNav(par[1]),
                                     IsDeleted = true
                                 });
                                 continue;
@@ -178,7 +178,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
             };
 
             if (getTS)
-                timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+                timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             else
                 timestamp = "0";
 

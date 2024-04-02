@@ -69,6 +69,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             ItemCategoryCode = string.Empty;
             ItemFamilyCode = string.Empty;
             ItemTrackingCode = string.Empty;
+            SpecialGroups = string.Empty;
             MustKeyInComment = 0;
             DateBlocked = DateTime.MinValue.ToUniversalTime();
             DateToActivateItem = DateTime.MinValue.ToUniversalTime();
@@ -190,6 +191,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string ItemFamilyCode { get; set; }
         [DataMember]
         public string ItemTrackingCode { get; set; }
+        [DataMember]
+        public string SpecialGroups { get; set; }
         [DataMember]
         public decimal UnitsPerParcel { get; set; }
         [DataMember]

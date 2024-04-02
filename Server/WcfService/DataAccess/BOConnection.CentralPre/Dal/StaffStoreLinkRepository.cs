@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Data.SqlClient;
 
-using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSRetail.Omni.Domain.DataModel.Pos.Replication;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {

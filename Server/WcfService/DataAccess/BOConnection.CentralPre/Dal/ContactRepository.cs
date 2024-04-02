@@ -4,14 +4,13 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 
 using LSOmni.Common.Util;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
-using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
+using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
-using LSRetail.Omni.Domain.DataModel.Base;
-using System.Drawing;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Setup;
+using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 
 namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 {
@@ -28,6 +27,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked],mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by]," +
                          "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
                          "mt.[Address],mt.[Address 2],mt.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[County],mt.[Country_Region Code]";
+
+            if (LSCVersion >= new Version("19.2"))
+                sqlcolumns += ",mt.[Send Receipt by E-mail]";
 
             sqlfrom = " FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
@@ -148,9 +150,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string order = string.Empty;
             string like = (exact) ? "=" : " LIKE ";
 
-            if (LSCVersion >= new Version("19.2"))
-                col += ",mt.[Send Receipt by E-mail]";
-
             switch (searchType)
             {
                 case ContactSearchType.ContactNumber:
@@ -228,9 +227,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string col = sqlcolumns;
             string from = sqlfrom;
             string where = string.Empty;
-
-            if (LSCVersion >= new Version("19.2"))
-                col += ",mt.[Send Receipt by E-mail]";
 
             switch (searchType)
             {
@@ -647,7 +643,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             return list;
         }
 
-        public List<PointEntry> PointEntiesGet(string cardId, DateTime dateFrom)
+        public List<PointEntry> PointEntriesGet(string cardId, DateTime dateFrom)
         {
             List<PointEntry> list = new List<PointEntry>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -721,7 +717,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         private ReplCustomer ReaderToCustomer(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             ReplCustomer cust = new ReplCustomer()
             {
@@ -745,6 +741,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 ClubCode = SQLHelper.GetString(reader["Club Code"]),
                 SchemeCode = SQLHelper.GetString(reader["Scheme Code"])
             };
+
+            if (LSCVersion >= new Version("19.2"))
+                cust.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
+
             cust.Cards = CardsGetByContactId(cust.Id, out string username, new Statistics());
             cust.UserName = username;
             return cust;

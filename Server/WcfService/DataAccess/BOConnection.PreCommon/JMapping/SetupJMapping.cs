@@ -584,23 +584,23 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.Id = data.FieldValue; break;
-                        case 2: line.Name = data.FieldValue; break;
-                        case 3: line.Street = data.FieldValue; break;
-                        case 5: line.ZipCode = data.FieldValue; break;
-                        case 6: line.City = data.FieldValue; break;
-                        case 7: line.County = data.FieldValue; break;
-                        case 8: line.Country = data.FieldValue; break;
-                        case 9: line.Latitute = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 10: line.Longitude = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 11: line.Phone = data.FieldValue; break;
-                        case 12: line.Currency = data.FieldValue; break;
-                        case 13: line.FunctionalityProfile = data.FieldValue; break;
-                        case 14: line.TaxGroup = data.FieldValue; break;
-                        case 15: line.ClickAndCollect = ConvertTo.SafeBoolean(data.FieldValue); break;
-                        case 21: lcy = data.FieldValue; break;
+                        case "No.": line.Id = data.FieldValue; break;
+                        case "Name": line.Name = data.FieldValue; break;
+                        case "Address": line.Street = data.FieldValue; break;
+                        case "Post Code": line.ZipCode = data.FieldValue; break;
+                        case "City": line.City = data.FieldValue; break;
+                        case "County": line.County = data.FieldValue; break;
+                        case "Country Code": line.Country = data.FieldValue; break;
+                        case "Latitude": line.Latitute = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Longitude": line.Longitude = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Phone No.": line.Phone = data.FieldValue; break;
+                        case "Currency Code": line.Currency = data.FieldValue; break;
+                        case "Functionality Profile": line.FunctionalityProfile = data.FieldValue; break;
+                        case "Store VAT Bus. Post. Gr.": line.TaxGroup = data.FieldValue; break;
+                        case "Click and Collect": line.ClickAndCollect = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "LCY Code": lcy = data.FieldValue; break;
                     }
                 }
 
@@ -627,12 +627,187 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 5: line.Id = data.FieldValue; break;
+                        case "No.": line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
+            }
+            return list;
+        }
+
+        public List<ReplStaffPermission> GetReplStaffPermission(string ret, ref string lastKey, ref int recordsRemaining)
+        {
+            List<ReplStaffPermission> list = new List<ReplStaffPermission>();
+            ReplODataSet result = JsonToDataSet(ret, ref lastKey, ref recordsRemaining);
+            if (result == null)
+                return list;
+
+            // Insert update records
+            recordsRemaining = 0;
+            foreach (ReplODataRecord rec in result.DataSet.DataSetUpd.DynDataSet.DataSetRows)
+            {
+                ReplStaffPermission line = null;
+                string staff = string.Empty;
+
+                foreach (ReplODataField data in rec.Fields)
+                {
+                    ReplODataSetField fld = result.DataSet.DataSetUpd.DynDataSet.DataSetFields.Find(f => f.FieldIndex == data.FieldIndex);
+                    if (fld == null)
+                        continue;
+
+                    switch (fld.FieldIndex)
+                    {
+                        case 1: staff = data.FieldValue; break;
+                        case 2:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.ManagerPrivileges,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 3:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.VoidTransaction,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 4:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.XZYReport,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 5:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.TenderDeclaration,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 6:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.FloatingDeclaration,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 7:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.PriceOverRide,
+                                StaffId = staff,
+                                Type = PermissionType.List,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 8:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.SuspendTransaction,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 9:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.ReturnInTransaction,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 10:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.VoidLine,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 11:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.AddPayment,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 12:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.CreateCustomer,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 13:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.ViewSalesHistory,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 14:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.CustomerComments,
+                                StaffId = staff,
+                                Type = PermissionType.List,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 15:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.UpdateCustomer,
+                                StaffId = staff,
+                                Type = PermissionType.Boolean,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 16:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.MaxDiscountToGiveAmount,
+                                StaffId = staff,
+                                Type = PermissionType.Decimal,
+                                Value = data.FieldValue
+                            };
+                            break;
+                        case 17:
+                            line = new ReplStaffPermission()
+                            {
+                                Id = PermissionEntry.MaxTotalDiscountPercent,
+                                StaffId = staff,
+                                Type = PermissionType.Decimal,
+                                Value = data.FieldValue
+                            };
+                            break;
+                    }
+                    if (fld.FieldIndex > 1)
+                        list.Add(line);
+                }
             }
             return list;
         }
@@ -648,6 +823,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
             foreach (ReplODataRecord rec in result.TableData.TableDataUpd.RecRefJson.Records)
             {
                 ReplTerminal line = new ReplTerminal();
+                line.Features.AddFlag(FeatureFlagName.ExitAfterEachTransaction, 0);
+                line.Features.AddFlag(FeatureFlagName.AutoLogOffAfterMin, 0);
+                line.Features.AddFlag(FeatureFlagName.ShowNumberPad, 0);
+
                 foreach (ReplODataField data in rec.Fields)
                 {
                     ReplODataRecordField fld = result.TableData.TableDataUpd.RecRefJson.RecordFields.Find(f => f.FieldIndex == data.FieldIndex);
@@ -724,12 +903,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.Code = data.FieldValue; break;
-                        case 2: line.Name = data.FieldValue; break;
-                        case 13: line.CustomerNo = data.FieldValue; break;
-                        case 19: line.TaxPostGroup = data.FieldValue; break;
+                        case "Code": line.Code = data.FieldValue; break;
+                        case "Name": line.Name = data.FieldValue; break;
+                        case "LSC Web Store Customer No.": line.CustomerNo = data.FieldValue; break;
+                        case "TaxPostGroup": line.TaxPostGroup = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -752,9 +931,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.Code = data.FieldValue; break;
+                        case "Code": line.Code = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -779,15 +958,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.Id = data.FieldValue; break;
-                        case 2: line.Description = data.FieldValue; break;
-                        case 3: line.Type = (HierarchyType)ConvertTo.SafeInt(data.FieldValue); break;
-                        case 4: line.StartDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
-                        case 5: line.Priority = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 6: line.SalesType = data.FieldValue; break;
-                        case 7: line.ValidationScheduleId = data.FieldValue; break;
+                        case "Hierarchy Code": line.Id = data.FieldValue; break;
+                        case "Description": line.Description = data.FieldValue; break;
+                        case "Type": line.Type = (HierarchyType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Start Date": line.StartDate = ConvertTo.SafeJsonDate(ConvertTo.SafeDateTime(data.FieldValue), IsJson); break;
+                        case "Priority": line.Priority = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Sales Type Filter": line.SalesType = data.FieldValue; break;
+                        case "Validation Schedule ID": line.ValidationScheduleId = data.FieldValue; break;
                     };
                 }
                 list.Add(line);
@@ -810,9 +989,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.Id = data.FieldValue; break;
+                        case "Hierarchy Code": line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -837,16 +1016,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.HierarchyCode = data.FieldValue; break;
-                        case 2: line.Id = data.FieldValue; break;
-                        case 3: line.ParentNode = data.FieldValue; break;
-                        case 4: line.Description = data.FieldValue; break;
-                        case 5: line.ChildrenOrder = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 6: line.Indentation = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 7: line.PresentationOrder = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 8: line.ImageId = data.FieldValue; break;
+                        case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
+                        case "Node ID": line.Id = data.FieldValue; break;
+                        case "Parent Node ID": line.ParentNode = data.FieldValue; break;
+                        case "Description": line.Description = data.FieldValue; break;
+                        case "Children Order": line.ChildrenOrder = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Indentation": line.Indentation = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Presentation Order": line.PresentationOrder = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Retail Image ID": line.ImageId = data.FieldValue; break;
                     };
                 }
                 list.Add(line);
@@ -869,10 +1048,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.HierarchyCode = data.FieldValue; break;
-                        case 2: line.Id = data.FieldValue; break;
+                        case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
+                        case "Node ID": line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -897,21 +1076,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.HierarchyCode = data.FieldValue; break;
-                        case 2: line.NodeId = data.FieldValue; break;
-                        case 3: line.Type = (HierarchyLeafType)ConvertTo.SafeInt(data.FieldValue); break;
-                        case 4: line.Id = data.FieldValue; break;
-                        case 5: line.Description = data.FieldValue; break;
-                        case 6: line.ItemUOM = data.FieldValue; break;
-                        case 7: line.SortOrder = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 8: line.ImageId = data.FieldValue; break;
-                        case 9: line.IsMemberClub = ConvertTo.SafeBoolean(data.FieldValue); break;
-                        case 10: line.MemberValue = data.FieldValue; break;
-                        case 11: line.DealPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 12: line.ValidationPeriod = data.FieldValue; break;
-                        case 13: line.IsActive = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
+                        case "Node ID": line.NodeId = data.FieldValue; break;
+                        case "Type": line.Type = (HierarchyLeafType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "No.": line.Id = data.FieldValue; break;
+                        case "Description": line.Description = data.FieldValue; break;
+                        case "Item Unit of Measure": line.ItemUOM = data.FieldValue; break;
+                        case "Sort Order": line.SortOrder = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Retail Image ID": line.ImageId = data.FieldValue; break;
+                        case "Member Type": line.IsMemberClub = ConvertTo.SafeBoolean(data.FieldValue); break;
+                        case "Member Value": line.MemberValue = data.FieldValue; break;
+                        case "Deal Price": line.DealPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Validation Period ID": line.ValidationPeriod = data.FieldValue; break;
+                        case "Status": line.IsActive = ConvertTo.SafeBoolean(data.FieldValue); break;
                     };
                 }
                 list.Add(line);
@@ -934,10 +1113,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.HierarchyCode = data.FieldValue; break;
-                        case 2: line.Id = data.FieldValue; break;
+                        case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
+                        case "Node ID": line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);
@@ -962,22 +1141,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.HierarchyCode = data.FieldValue; break;
-                        case 2: line.ParentNode = data.FieldValue; break;
-                        case 3: line.DealNo = data.FieldValue; break;
-                        case 4: line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 5: line.Type = (HierarchyDealType)ConvertTo.SafeInt(data.FieldValue); break;
-                        case 6: line.No = data.FieldValue; break;
-                        case 7: line.Description = data.FieldValue; break;
-                        case 8: line.VariantCode = data.FieldValue; break;
-                        case 9: line.UnitOfMeasure = data.FieldValue; break;
-                        case 10: line.MinSelection = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 11: line.MaxSelection = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 12: line.AddedAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 13: line.DealModSizeGroupIndex = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 14: line.ImageId = data.FieldValue; break;
+                        case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
+                        case "Node ID": line.ParentNode = data.FieldValue; break;
+                        case "No.": line.No = data.FieldValue; break;
+                        case "Description": line.Description = data.FieldValue; break;
+                        case "Offer No.": line.DealNo = data.FieldValue; break;
+                        case "Line No.": line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Type": line.Type = (HierarchyDealType)ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Variant Code": line.VariantCode = data.FieldValue; break;
+                        case "Unit of Measure": line.UnitOfMeasure = data.FieldValue; break;
+                        case "Min. Selection": line.MinSelection = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Max. Selection": line.MaxSelection = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Modifier Added Amount": line.AddedAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Deal Mod. Size Gr. Index": line.DealModSizeGroupIndex = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Retail Image ID": line.ImageId = data.FieldValue; break;
                     };
                 }
                 list.Add(line);
@@ -1000,10 +1179,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 3: line.DealNo = data.FieldValue; break;
-                        case 4: line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Offer No.": line.DealNo = data.FieldValue; break;
+                        case "Line No.": line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
                     }
                 }
                 list.Add(line);
@@ -1028,22 +1207,22 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.HierarchyCode = data.FieldValue; break;
-                        case 2: line.ParentNode = data.FieldValue; break;
-                        case 3: line.DealNo = data.FieldValue; break;
-                        case 4: line.DealLineNo = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 5: line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 6: line.DealLineCode = data.FieldValue; break;
-                        case 7: line.ItemNo = data.FieldValue; break;
-                        case 8: line.Description = data.FieldValue; break;
-                        case 9: line.VariantCode = data.FieldValue; break;
-                        case 10: line.UnitOfMeasure = data.FieldValue; break;
-                        case 11: line.MinSelection = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 12: line.MaxSelection = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 13: line.AddedAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 14: line.ImageId = data.FieldValue; break;
+                        case "Hierarchy Code": line.HierarchyCode = data.FieldValue; break;
+                        case "Node ID": line.ParentNode = data.FieldValue; break;
+                        case "Offer No.": line.DealNo = data.FieldValue; break;
+                        case "Offer Line No.": line.DealLineNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Deal Modifier Line No.": line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Deal Modifier Code": line.DealLineCode = data.FieldValue; break;
+                        case "Item No.": line.ItemNo = data.FieldValue; break;
+                        case "Description": line.Description = data.FieldValue; break;
+                        case "Variant Code": line.VariantCode = data.FieldValue; break;
+                        case "Unit of Measure": line.UnitOfMeasure = data.FieldValue; break;
+                        case "Min. Selection": line.MinSelection = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Max. Item Selection": line.MaxSelection = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Added Amount": line.AddedAmount = ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case "Retail Image ID": line.ImageId = data.FieldValue; break;
                     };
                 }
                 list.Add(line);
@@ -1066,11 +1245,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 3: line.DealNo = data.FieldValue; break;
-                        case 4: line.DealLineNo = ConvertTo.SafeInt(data.FieldValue); break;
-                        case 5: line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Offer No.": line.DealNo = data.FieldValue; break;
+                        case "Offer Line No.": line.DealLineNo = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Deal Modifier Line No.": line.LineNo = ConvertTo.SafeInt(data.FieldValue); break;
                     }
                 }
                 list.Add(line);
@@ -1375,10 +1554,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 5: line.Street = data.FieldValue; break;
                         case 7: line.City = data.FieldValue; break;
                         case 9: line.PhoneLocal = data.FieldValue; break;
+                        case 15: line.State = data.FieldValue; break;
                         case 22: line.Currency = data.FieldValue; break;
+                        case 23: line.PriceGroup = data.FieldValue; break;
+                        case 27: line.PaymentTerms = data.FieldValue; break;
+                        case 34: line.DiscountGroup = data.FieldValue; break;
                         case 35: line.Country = data.FieldValue; break;
                         case 39: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
                         case 82: line.IncludeTax = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case 83: line.ShippingLocation = data.FieldValue; break;
                         case 91: line.ZipCode = data.FieldValue; break;
                         case 92: line.County = data.FieldValue; break;
                         case 102: line.Email = data.FieldValue; break;
@@ -1507,29 +1691,30 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.AccountNumber = data.FieldValue; break;
-                        case 2: line.ClubCode = data.FieldValue; break;
-                        case 3: line.SchemeCode = data.FieldValue; break;
-                        case 4: line.Id = data.FieldValue; break;
-                        case 6: line.Name = data.FieldValue; break;
-                        case 9: line.Street = data.FieldValue; break;
-                        case 11: line.City = data.FieldValue; break;
-                        case 13: line.ZipCode = data.FieldValue; break;
-                        case 14: line.Email = data.FieldValue; break;
-                        case 15: line.URL = data.FieldValue; break;
-                        case 16: line.PhoneLocal = data.FieldValue; break;
-                        case 17: line.CellularPhone = data.FieldValue; break;
-                        case 18: line.State = data.FieldValue; break;
-                        case 20: line.County = data.FieldValue; break;
-                        case 21: line.Country = data.FieldValue; break;
-                        case 28: line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
-                        case 40: line.FirstName = data.FieldValue; break;
-                        case 41: line.MiddleName = data.FieldValue; break;
-                        case 42: line.LastName = data.FieldValue; break;
-                        case 53: line.Cards.Add(new Card(data.FieldValue)); break;
-                        case 54: line.UserName = data.FieldValue; break;
+                        case "Account No.": line.AccountNumber = data.FieldValue; break;
+                        case "Club Code": line.ClubCode = data.FieldValue; break;
+                        case "Scheme Code": line.SchemeCode = data.FieldValue; break;
+                        case "Contact No.": line.Id = data.FieldValue; break;
+                        case "Name": line.Name = data.FieldValue; break;
+                        case "Address": line.Street = data.FieldValue; break;
+                        case "City": line.City = data.FieldValue; break;
+                        case "Post Code": line.ZipCode = data.FieldValue; break;
+                        case "E-Mail": line.Email = data.FieldValue; break;
+                        case "Home Page": line.URL = data.FieldValue; break;
+                        case "Phone No.": line.PhoneLocal = data.FieldValue; break;
+                        case "Mobile Phone No.": line.CellularPhone = data.FieldValue; break;
+                        case "Territory Code": line.State = data.FieldValue; break;
+                        case "County": line.County = data.FieldValue; break;
+                        case "Country/Region Code": line.Country = data.FieldValue; break;
+                        case "Blocked": line.Blocked = XMLHelper.GetWebBoolInt(data.FieldValue); break;
+                        case "First Name": line.FirstName = data.FieldValue; break;
+                        case "Middle Name": line.MiddleName = data.FieldValue; break;
+                        case "Surname": line.LastName = data.FieldValue; break;
+                        case "CardNo": line.Cards.Add(new Card(data.FieldValue)); break;
+                        case "LoginId": line.UserName = data.FieldValue; break;
+                        case "Send Receipt by E-mail": line.SendReceiptByEMail = (SendEmail)ConvertTo.SafeInt(data.FieldValue); break;
                     };
                 }
                 list.Add(line);
@@ -1552,10 +1737,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                     if (fld == null)
                         continue;
 
-                    switch (fld.FieldIndex)
+                    switch (fld.FieldName)
                     {
-                        case 1: line.AccountNumber = data.FieldValue; break;
-                        case 4: line.Id = data.FieldValue; break;
+                        case "Account No.": line.AccountNumber = data.FieldValue; break;
+                        case "Contact No.": line.Id = data.FieldValue; break;
                     }
                 }
                 list.Add(line);

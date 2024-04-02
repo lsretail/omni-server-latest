@@ -23,6 +23,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
             SeasonCode = string.Empty;
             Price = string.Empty;
             SalesUomId = string.Empty;
+            SpecialGroups = string.Empty;
             AllowedToSell = false;
 
             Prices = new List<Price>();
@@ -134,6 +135,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Items
         public string ItemFamilyCode { get; set; }
         [DataMember]
         public string ItemTrackingCode { get; set; }
+        [DataMember]
+        public string SpecialGroups { get; set; }
         [DataMember]
         public decimal UnitsPerParcel { get; set; }
         [DataMember]

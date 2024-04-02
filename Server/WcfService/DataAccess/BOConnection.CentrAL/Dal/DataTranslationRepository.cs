@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
-using Microsoft.SqlServer.Server;
 
 namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 {
@@ -149,7 +148,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
 
         private ReplDataTranslation ReaderToDataTranslation(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplDataTranslation()
             {

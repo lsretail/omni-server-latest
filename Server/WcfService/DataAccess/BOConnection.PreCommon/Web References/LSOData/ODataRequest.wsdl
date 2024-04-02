@@ -259,6 +259,23 @@
           </sequence>
         </complexType>
       </element>
+      <element name="GetDiscountSetup">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetDiscountSetup_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="GetExtdVariantValues">
         <complexType>
           <sequence>
@@ -626,6 +643,24 @@
         </complexType>
       </element>
       <element name="GetSalesPrice_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStaffPermission">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="storeNo" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="batchSize" type="int" />
+            <element minOccurs="1" maxOccurs="1" name="fullRepl" type="boolean" />
+            <element minOccurs="1" maxOccurs="1" name="lastKey" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="lastEntryNo" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="GetStaffPermission_Result">
         <complexType>
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="string" />
@@ -1095,6 +1130,12 @@
   <message name="GetDataTranslation_Result">
     <part name="parameters" element="tns:GetDataTranslation_Result" />
   </message>
+  <message name="GetDiscountSetup">
+    <part name="parameters" element="tns:GetDiscountSetup" />
+  </message>
+  <message name="GetDiscountSetup_Result">
+    <part name="parameters" element="tns:GetDiscountSetup_Result" />
+  </message>
   <message name="GetExtdVariantValues">
     <part name="parameters" element="tns:GetExtdVariantValues" />
   </message>
@@ -1220,6 +1261,12 @@
   </message>
   <message name="GetSalesPrice_Result">
     <part name="parameters" element="tns:GetSalesPrice_Result" />
+  </message>
+  <message name="GetStaffPermission">
+    <part name="parameters" element="tns:GetStaffPermission" />
+  </message>
+  <message name="GetStaffPermission_Result">
+    <part name="parameters" element="tns:GetStaffPermission_Result" />
   </message>
   <message name="GetStaff">
     <part name="parameters" element="tns:GetStaff" />
@@ -1408,6 +1455,10 @@
       <input name="GetDataTranslation" message="tns:GetDataTranslation" />
       <output name="GetDataTranslation_Result" message="tns:GetDataTranslation_Result" />
     </operation>
+    <operation name="GetDiscountSetup">
+      <input name="GetDiscountSetup" message="tns:GetDiscountSetup" />
+      <output name="GetDiscountSetup_Result" message="tns:GetDiscountSetup_Result" />
+    </operation>
     <operation name="GetExtdVariantValues">
       <input name="GetExtdVariantValues" message="tns:GetExtdVariantValues" />
       <output name="GetExtdVariantValues_Result" message="tns:GetExtdVariantValues_Result" />
@@ -1491,6 +1542,10 @@
     <operation name="GetSalesPrice">
       <input name="GetSalesPrice" message="tns:GetSalesPrice" />
       <output name="GetSalesPrice_Result" message="tns:GetSalesPrice_Result" />
+    </operation>
+    <operation name="GetStaffPermission">
+      <input name="GetStaffPermission" message="tns:GetStaffPermission" />
+      <output name="GetStaffPermission_Result" message="tns:GetStaffPermission_Result" />
     </operation>
     <operation name="GetStaff">
       <input name="GetStaff" message="tns:GetStaff" />
@@ -1714,6 +1769,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="GetDiscountSetup">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetDiscountSetup" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetDiscountSetup">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetDiscountSetup_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="GetExtdVariantValues">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetExtdVariantValues" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="GetExtdVariantValues">
@@ -1900,6 +1964,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="GetSalesPrice_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="GetStaffPermission">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/ODataRequest:GetStaffPermission" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="GetStaffPermission">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="GetStaffPermission_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -2095,7 +2168,7 @@
   </binding>
   <service name="ODataRequest">
     <port name="ODataRequest_Port" binding="tns:ODataRequest_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralMasterWS/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/ODataRequest" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

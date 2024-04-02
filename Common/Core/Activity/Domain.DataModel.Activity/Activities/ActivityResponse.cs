@@ -49,5 +49,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public string ItemNo { get; set; }
         [DataMember]
         public int GroupLineNo { get; set; }
+        [DataMember]
+        public int NoOfActivities { get; set; }
     }
 }

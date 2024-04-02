@@ -132,7 +132,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     command.CommandText = "SELECT DISTINCT " + sqlcolumns + sqlfrom + 
                             " WHERE EXISTS(" +
                             " SELECT 1 FROM [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg " +
-                            " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] i ON i.[LSC Retail Product Code]=pg.[Code] " +
+                            " INNER JOIN [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972$ext] i ON i.[LSC Retail Product Code$5ecfc871-5d82-43f1-9c54-59685e82318d]=pg.[Code] " +
                             " WHERE mt.[Code]=pg.[Item Category Code])" +
                             GetSQLStoreDist("it.[No_]", storeId, true) +
                             " ORDER BY mt.[Description]";
@@ -229,7 +229,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 
         private ReplItemCategory ReaderToItemCategory(SqlDataReader reader, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             return new ReplItemCategory()
             {

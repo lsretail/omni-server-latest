@@ -130,7 +130,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
 
         private ReplStoreTenderType ReaderToStoreTenderType(SqlDataReader reader, string tenderMap, out string timestamp)
         {
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
 
             string navId = SQLHelper.GetString(reader["Code"]);
             string omniId = ConfigSetting.TenderTypeMapping(tenderMap, navId, true);

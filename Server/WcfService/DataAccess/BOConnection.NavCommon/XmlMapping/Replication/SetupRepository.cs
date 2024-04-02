@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using LSOmni.Common.Util;
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;

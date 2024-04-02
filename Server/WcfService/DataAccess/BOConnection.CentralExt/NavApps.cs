@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSOmni.DataAccess.BOConnection.CentralExt.Dal;
 
-using LSRetail.Omni.DiscountEngine.DataModels;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
-using LSOmni.Common.Util;
 
 namespace LSOmni.DataAccess.BOConnection.CentralExt
 {
@@ -27,13 +26,30 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         {
         }
 
-        public virtual List<ProactiveDiscount> DiscountsGet(string storeId, List<string> itemIds, string loyaltySchemeCode, Statistics stat)
+        public virtual List<ProactiveDiscount> DiscountsGetByStoreAndItem(string storeId, string itemId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
-            DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
-            List<ProactiveDiscount> list = rep.DiscountsGet(storeId, itemIds, loyaltySchemeCode);
+            DiscountRepository rep = new DiscountRepository(config, LSCVersion);
+            List<ProactiveDiscount> list = rep.DiscountsGetByStoreAndItem(storeId, itemId);
             logger.StatisticEndSub(ref stat, index);
             return list;
+        }
+
+        public virtual DiscountValidation GetDiscountValidationByOfferId(string offerId, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
+            DiscountRepository rep = new DiscountRepository(config, LSCVersion);
+            DiscountValidation valid = rep.GetDiscountValidationByOfferId(offerId);
+            logger.StatisticEndSub(ref stat, index);
+            return valid;
+        }
+
+        public virtual void LoadDiscountDetails(ProactiveDiscount disc, string storeId, string loyaltySchemeCode, Statistics stat)
+        {
+            logger.StatisticStartSub(false, ref stat, out int index);
+            DiscountRepository rep = new DiscountRepository(config, LSCVersion);
+            rep.LoadDiscountDetails(disc, storeId, loyaltySchemeCode);
+            logger.StatisticEndSub(ref stat, index);
         }
 
         public virtual Terminal TerminalGetById(string terminalId, Statistics stat)
@@ -263,6 +279,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         {
             DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
             return rep.ReplicateMixAndMatch(storeId, batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
+        }
+
+        public virtual List<ReplDiscountSetup> ReplicateDiscountSetup(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)
+        {
+            DiscountOfferRepository rep = new DiscountOfferRepository(config, LSCVersion);
+            return rep.ReplicateDiscountSetup(batchSize, fullReplication, ref lastKey, ref maxKey, ref recordsRemaining);
         }
 
         public virtual List<ReplDiscountValidation> ReplicateDiscountValidations(string appId, string appType, string storeId, int batchSize, bool fullReplication, ref string lastKey, ref string maxKey, ref int recordsRemaining)

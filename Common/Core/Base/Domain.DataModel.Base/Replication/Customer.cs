@@ -53,6 +53,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             UserName = string.Empty;
             ClubCode = string.Empty;
             SchemeCode = string.Empty;
+            PriceGroup = string.Empty;
+            DiscountGroup = string.Empty;
+            ShippingLocation = string.Empty;
+            PaymentTerms = string.Empty;
 
             Street = string.Empty;
             City = string.Empty;
@@ -125,6 +129,10 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string TaxGroup { get; set; }
         [DataMember]
+        public string PriceGroup { get; set; }
+        [DataMember]
+        public string DiscountGroup { get; set; }
+        [DataMember]
         public string FirstName { get; set; }
         [DataMember]
         public string MiddleName { get; set; }
@@ -143,11 +151,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int IncludeTax { get; set; }
         [DataMember]
+        public string PaymentTerms { get; set; }
+        [DataMember]
+        public string ShippingLocation { get; set; }
+        [DataMember]
         public string UserName { get; set; }
         [DataMember]
         public string ClubCode { get; set; }
         [DataMember]
         public string SchemeCode { get; set; }
+        [DataMember]
+        public SendEmail SendReceiptByEMail { get; set; }
 
         [DataMember]
         public List<Card> Cards { get; set; }

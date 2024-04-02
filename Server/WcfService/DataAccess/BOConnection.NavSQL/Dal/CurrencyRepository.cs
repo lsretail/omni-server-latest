@@ -171,7 +171,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 currency.CurrencyPrefix = currency.Symbol;
                 currency.CurrencySuffix = string.Empty;
             }
-            timestamp = ByteArrayToString(reader["timestamp"] as byte[]);
+            timestamp = ConvertTo.ByteArrayToString(reader["timestamp"] as byte[]);
             return currency;
         }
 

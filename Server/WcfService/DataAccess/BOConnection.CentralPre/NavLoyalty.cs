@@ -324,19 +324,19 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return rate;
         }
 
-        public virtual List<PointEntry> PointEntiesGet(string cardNo, DateTime dateFrom, Statistics stat)
+        public virtual List<PointEntry> PointEntriesGet(string cardNo, DateTime dateFrom, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
-            List<PointEntry> list = rep.PointEntiesGet(cardNo, dateFrom);
+            List<PointEntry> list = rep.PointEntriesGet(cardNo, dateFrom);
             logger.StatisticEndSub(ref stat, index);
             return list;
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)
         {
             if (LSCVersion >= new Version("21.1"))
-                return LSCentralWSBase.GiftCardGetBalance(cardNo, entryType, stat);
+                return LSCentralWSBase.GiftCardGetBalance(cardNo, pin, entryType, stat);
 
             logger.StatisticStartSub(false, ref stat, out int index);
             ContactRepository rep = new ContactRepository(config, LSCVersion);
@@ -345,9 +345,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return data;
         }
 
-        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat)
         {
-            return LSCentralWSBase.GiftCardGetHistory(cardNo, entryType, stat);
+            return LSCentralWSBase.GiftCardGetHistory(cardNo, pin, entryType, stat);
         }
 
         #endregion
@@ -518,6 +518,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
 
         #region Order
 
+        public bool CompressCOActive(Statistics stat)
+        {
+            return false;
+        }
+
         public virtual OrderStatusResponse OrderStatusCheck(string orderId, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
@@ -527,9 +532,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return data;
         }
 
-        public virtual void OrderCancel(string orderId, string storeId, string userId, List<int> lineNo, Statistics stat)
+        public virtual void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat)
         {
-            LSCentralWSBase.OrderCancel(orderId, storeId, userId, lineNo, stat);
+            LSCentralWSBase.OrderCancel(orderId, storeId, userId, lines, stat);
         }
 
         public virtual OrderAvailabilityResponse OrderAvailabilityCheck(OneList request, bool shippingOrder, Statistics stat)
@@ -548,20 +553,25 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.OrderCreate(request, out orderId, stat);
         }
 
+        public virtual string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
+        {
+            return LSCentralWSBase.OrderEdit(request, ref orderId, editType, stat);
+        }
+
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
         {
             SalesEntry entry;
             if (type == DocumentIdType.Receipt)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config, LSCVersion);
-                entry = trepo.SalesEntryGetById(entryId, stat);
+                entry = trepo.SalesEntryGetById(entryId, string.Empty, string.Empty, 0, stat);
             }
             else if (type == DocumentIdType.HospOrder)
             {
                 SalesEntryRepository trepo = new SalesEntryRepository(config, LSCVersion);
                 entry = trepo.POSTransactionGetById(entryId, stat);
                 if (entry == null)
-                    entry = trepo.SalesEntryGetById(entryId, stat);
+                    entry = trepo.SalesEntryGetById(entryId, string.Empty, string.Empty, 0, stat);
             }
             else
             {
@@ -590,13 +600,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return list;
         }
 
-        public virtual List<SalesEntryId> SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
+        public virtual SalesEntryList SalesEntryGetSalesByOrderId(string orderId, Statistics stat)
         {
-            logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntryRepository repo = new SalesEntryRepository(config, LSCVersion);
-            List<SalesEntryId> list = repo.SalesEntryGetSalesByOrderId(orderId);
-            logger.StatisticEndSub(ref stat, index);
-            return list;
+            OrderRepository orepo = new OrderRepository(config, LSCVersion);
+            SalesEntryList data = new SalesEntryList();
+            data.OrderId = orderId;
+            SalesEntry order = orepo.OrderGetById(orderId, false, false, stat);
+            data.CardId = order.CardId;
+            data.SalesEntries = repo.SalesEntryGetSalesByOrderId(orderId, stat);
+            data.Shipments = repo.SalesEntryShipmentGet(orderId, stat);
+            return data;
         }
 
         public virtual List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat)
@@ -615,11 +629,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         public virtual List<PublishedOffer> PublishedOffersGet(string cardId, string itemId, string storeId, Statistics stat)
         {
             return LSCentralWSBase.PublishedOffersGet(cardId, itemId, storeId, stat);
-        }
-
-        public virtual List<Advertisement> AdvertisementsGetById(string id, Statistics stat)
-        {
-            return LSCentralWSBase.AdvertisementsGetById(id, stat);
         }
 
         #endregion
@@ -667,9 +676,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
+            AttributeValueRepository arep = new AttributeValueRepository(config);
             Store store = rep.StoreLoyGetById(id, true);
             if (store != null)
+            {
                 store.StoreHours = StoreHoursGetByStoreId(id, stat);
+                store.Attributes = arep.AttributesGet(id, AttributeLinkType.Store, stat);
+            }
             logger.StatisticEndSub(ref stat, index);
             return store;
         }
@@ -678,22 +691,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
         {
             logger.StatisticStartSub(false, ref stat, out int index);
             StoreRepository rep = new StoreRepository(config, LSCVersion);
+            AttributeValueRepository arep = new AttributeValueRepository(config);
             List<Store> stores = rep.StoreLoyGetAll(storeType, inclDetails);
             if (inclDetails)
             {
                 foreach (Store store in stores)
                 {
                     store.StoreHours = StoreHoursGetByStoreId(store.Id, stat);
-                    store.StoreServices = StoreServicesGetByStoreId(store.Id, stat);
+                    store.Attributes = arep.AttributesGet(store.Id, AttributeLinkType.Store, stat);
                 }
             }
             logger.StatisticEndSub(ref stat, index);
             return stores;
-        }
-
-        public virtual List<StoreServices> StoreServicesGetByStoreId(string storeId, Statistics stat)
-        {
-            return LSCentralWSBase.StoreServicesGetByStoreId(storeId, stat);
         }
 
         public virtual List<ReturnPolicy> ReturnPolicyGet(string storeId, string storeGroupCode, string itemCategory, string productGroup, string itemId, string variantCode, string variantDim1, Statistics stat)

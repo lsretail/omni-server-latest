@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace LSRetail.Omni.DiscountEngine.DataModels
+namespace LSRetail.Omni.Domain.DataModel.Base.Retail
 {
-    [DataContract(Namespace = "http://lsretail.com/LSOmniService/DiscountEngine/2017")]
+    [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
     public class DiscountValidation
     {
         public DiscountValidation()

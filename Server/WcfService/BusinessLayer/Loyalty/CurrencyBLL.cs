@@ -31,16 +31,16 @@ namespace LSOmni.BLL.Loyalty
             return this.BOLoyConnection.GetPointRate(currency, stat);
         }
 
-        public virtual GiftCard GiftCardGetBalance(string cardNo, string entryType, Statistics stat)
+        public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)
         {
-            string etype = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
-            return BOLoyConnection.GiftCardGetBalance(cardNo, etype, stat);
+            string eType = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
+            return BOLoyConnection.GiftCardGetBalance(cardNo, pin, eType, stat);
         }
 
-        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, string entryType, Statistics stat)
+        public virtual List<GiftCardEntry> GiftCardGetHistory(string cardNo, int pin, string entryType, Statistics stat)
         {
-            string etype = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
-            return BOLoyConnection.GiftCardGetHistory(cardNo, etype, stat);
+            string eType = (string.IsNullOrEmpty(entryType) ? config.SettingsGetByKey(ConfigKey.GiftCard_DataEntryType) : entryType);
+            return BOLoyConnection.GiftCardGetHistory(cardNo, pin, eType, stat);
         }
     }
 }
