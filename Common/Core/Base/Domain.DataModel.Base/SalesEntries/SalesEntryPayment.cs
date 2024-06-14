@@ -29,6 +29,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public decimal Amount { get; set; }
         [DataMember]
+        public decimal AmountLCY { get; set; }
+        [DataMember]
         public PaymentType Type { get; set; }
         /// <summary>
         /// Omni TenderType.<p/>

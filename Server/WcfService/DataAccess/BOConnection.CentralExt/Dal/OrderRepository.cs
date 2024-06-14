@@ -73,17 +73,33 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT mt.[Line No_],mt.[Status Code]," +
-                                          "ln.[Number] AS COItem,ln.[Variant Code] AS COVar,ln.[Unit of Measure Code] AS COUom,ln.[Quantity] AS COQty," +
-                                          "pln.[Number] AS PCOItem,pln.[Variant Code] AS PCOVar,pln.[Unit of Measure Code] AS PCOUom,pln.[Quantity] AS PCOQty," +
-                                          "s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed]" +
-                                          (LSCVersion >= new Version("18.2") ? ",s0.[External Code] AS Ext0,s1.[External Code] AS Ext1" : string.Empty) +
-                                          " FROM [" + navCompanyName + "LSC CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
-                                          "LEFT JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
-                                          "LEFT JOIN [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
-                                          "LEFT JOIN [" + navCompanyName + "LSC CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
-                                          "LEFT JOIN [" + navCompanyName + "LSC CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
-                                          "WHERE mt.[Document ID]=@id ORDER BY mt.[Line No_]";
+                    if (LSCVersion >= new Version("23.1"))
+                    {
+                        command.CommandText = "SELECT mt.[Item Line No_] AS [LineNo],mt.[Status Code]," +
+                                              "ln.[Number] AS COItem,ln.[Variant Code] AS COVar,ln.[Unit of Measure Code] AS COUom,ln.[Quantity] AS COQty," +
+                                              "pln.[Number] AS PCOItem,pln.[Variant Code] AS PCOVar,pln.[Unit of Measure Code] AS PCOUom,pln.[Quantity] AS PCOQty," +
+                                              "s0.[Description] AS Desc0,s0.[External Code] AS Ext0,s1.[External Code] AS Ext1,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed]" +
+                                              " FROM [" + navCompanyName + "LSC Customer Order Status Log$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Item Line No_] " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Item Line No_] " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
+                                              "WHERE mt.[Document ID]=@id ORDER BY mt.[Entry No_] DESC";
+                    }
+                    else
+                    {
+                        command.CommandText = "SELECT mt.[Line No_] AS [LineNo],mt.[Status Code]," +
+                                              "ln.[Number] AS COItem,ln.[Variant Code] AS COVar,ln.[Unit of Measure Code] AS COUom,ln.[Quantity] AS COQty," +
+                                              "pln.[Number] AS PCOItem,pln.[Variant Code] AS PCOVar,pln.[Unit of Measure Code] AS PCOUom,pln.[Quantity] AS PCOQty," +
+                                              "s0.[Description] AS Desc0,s1.[Description] AS Desc1,s1.[Cancel Allowed],s1.[Modify Allowed]" +
+                                              (LSCVersion >= new Version("18.2") ? ",s0.[External Code] AS Ext0,s1.[External Code] AS Ext1" : string.Empty) +
+                                              " FROM [" + navCompanyName + "LSC CO Status$5ecfc871-5d82-43f1-9c54-59685e82318d] mt " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] ln ON ln.[Document ID]=mt.[Document ID] AND ln.[Line No_]=mt.[Line No_] " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC Posted Customer Order Line$5ecfc871-5d82-43f1-9c54-59685e82318d] pln ON pln.[Document ID]=mt.[Document ID] AND pln.[Line No_]=mt.[Line No_] " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC CO Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s0 ON s0.[Code]=mt.[Status Code] " +
+                                              "LEFT JOIN [" + navCompanyName + "LSC CO Line Status Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] s1 ON s1.[Code]=mt.[Status Code] " +
+                                              "WHERE mt.[Document ID]=@id ORDER BY mt.[Line No_]";
+                    }
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -91,9 +107,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     {
                         while (reader.Read())
                         {
-                            int lineno = SQLHelper.GetInt32(reader["Line No_"]);
+                            int lineno = SQLHelper.GetInt32(reader["LineNo"]);
                             if (lineno == 0)
                             {
+                                if (string.IsNullOrEmpty(status.DocumentNo) == false)
+                                    continue;
+
                                 status.DocumentNo = id;
                                 status.OrderStatus = SQLHelper.GetString(reader["Status Code"]);
                                 status.Description = SQLHelper.GetString(reader["Desc0"]);
@@ -102,13 +121,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                             }
                             else
                             {
+                                OrderLineStatus sline = status.Lines.Find(l => l.LineNumber == lineno);
+                                if (sline != null)
+                                    continue;
+
                                 bool posted = reader["COItem"] == DBNull.Value;
                                 status.Lines.Add(new OrderLineStatus()
                                 {
                                     LineStatus = SQLHelper.GetString(reader["Status Code"]),
                                     ExtCode = (LSCVersion >= new Version("18.2")) ? SQLHelper.GetString(reader["Ext1"]) : string.Empty,
                                     Description = SQLHelper.GetString(reader["Desc1"]),
-                                    LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                                    LineNumber = lineno,
                                     ItemId = SQLHelper.GetString(posted ? reader["PCOItem"] : reader["COItem"]),
                                     VariantId = SQLHelper.GetString(posted ? reader["PCOVar"] : reader["COVar"]),
                                     UnitOfMeasureId = SQLHelper.GetString(posted ? reader["PCOUom"] : reader["COUom"]),
@@ -284,7 +307,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
+                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Pre Approved Amount LCY],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
                                 "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Pre Approved Valid Date]," +
                                 "ml.[Card or Customer No_],ml.[Document ID],ml.[Token No_],ml.[EFT Authorization Code],ml.[External Reference]";
 
@@ -305,6 +328,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                             SalesEntryPayment pay = new SalesEntryPayment()
                             {
                                 Amount = SQLHelper.GetDecimal(reader, "Pre Approved Amount"),
+                                AmountLCY = SQLHelper.GetDecimal(reader, "Pre Approved Amount LCY"),
                                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                                 Type = (PaymentType)SQLHelper.GetInt32(reader["Type"]),
                                 TenderType = SQLHelper.GetString(reader["Tender Type"]),

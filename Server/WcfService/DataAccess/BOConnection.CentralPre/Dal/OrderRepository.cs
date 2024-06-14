@@ -94,6 +94,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             int lineno = SQLHelper.GetInt32(reader["Line No_"]);
                             if (lineno == 0)
                             {
+                                if (string.IsNullOrEmpty(status.DocumentNo) == false)
+                                    continue;
+
                                 status.DocumentNo = id;
                                 status.OrderStatus = SQLHelper.GetString(reader["Status Code"]);
                                 status.Description = SQLHelper.GetString(reader["Desc0"]);
@@ -102,13 +105,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             }
                             else
                             {
+                                OrderLineStatus sline = status.Lines.Find(l => l.LineNumber == lineno);
+                                if (sline != null)
+                                    continue;
+
                                 bool posted = reader["COItem"] == DBNull.Value;
                                 status.Lines.Add(new OrderLineStatus()
                                 {
                                     LineStatus = SQLHelper.GetString(reader["Status Code"]),
                                     ExtCode = (LSCVersion >= new Version("18.2")) ? SQLHelper.GetString(reader["Ext1"]) : string.Empty,
                                     Description = SQLHelper.GetString(reader["Desc1"]),
-                                    LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
+                                    LineNumber = lineno,
                                     ItemId = SQLHelper.GetString(posted ? reader["PCOItem"] : reader["COItem"]),
                                     VariantId = SQLHelper.GetString(posted ? reader["PCOVar"] : reader["COVar"]),
                                     UnitOfMeasureId = SQLHelper.GetString(posted ? reader["PCOUom"] : reader["COUom"]),
@@ -284,7 +291,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             List<SalesEntryPayment> list = new List<SalesEntryPayment>();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
+                string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Pre Approved Amount LCY],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
                                 "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Pre Approved Valid Date]," +
                                 "ml.[Card or Customer No_],ml.[Document ID],ml.[Token No_],ml.[External Reference]";
 
@@ -310,6 +317,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             SalesEntryPayment pay = new SalesEntryPayment()
                             {
                                 Amount = SQLHelper.GetDecimal(reader, "Pre Approved Amount"),
+                                AmountLCY = SQLHelper.GetDecimal(reader, "Pre Approved Amount LCY"),
                                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                                 Type = (PaymentType)SQLHelper.GetInt32(reader["Type"]),
                                 TenderType = SQLHelper.GetString(reader["Tender Type"]),

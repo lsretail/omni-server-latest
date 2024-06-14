@@ -28,8 +28,10 @@ namespace LSOmni.Service
         private const string LSRETAIL_TIMEOUT = "LSRETAIL-TIMEOUT";     // timeout set by client
 
         private const int maxNumberReturned = 1000;
-        private static LSLogger logger = new LSLogger();
         private const HttpStatusCode exStatusCode = System.Net.HttpStatusCode.RequestedRangeNotSatisfiable; //code=416
+
+        private static LSLogger logger = new LSLogger();
+        private static DateTime lastVersionCheck = DateTime.MinValue;
 
         private string version = string.Empty;
         private string deviceId = string.Empty;
@@ -157,6 +159,15 @@ namespace LSOmni.Service
 
             try
             {
+                double minutes = (double)config.SettingsDecimalGetByKey(ConfigKey.LSNAV_Timeout);
+                if (DateTime.Now > lastVersionCheck.AddMinutes(minutes))
+                {
+                    //reset version in Tenant config once a day
+                    lastVersionCheck = DateTime.Now;
+                    logger.Debug(config.LSKey.Key, "Reset LSNAV.Version in TenantConfig");
+                    bll.ConfigSetByKey(config.LSKey.Key, ConfigKey.LSNAV_Version, string.Empty, "string", true, "LS Central Version to use");
+                }
+
                 // Nav returns version number, Ax returns "AX"
                 ver = bll.PingWs(out string centralVer);
 
@@ -187,14 +198,14 @@ namespace LSOmni.Service
                 logger.Error(config.LSKey.Key, ex, navDb);
             }
 
-            string omniver = string.Format(" CS:{0}", Version());
+            string omniVer = string.Format(" CS:{0}", Version());
 
             //any errors ?
             string msg = "";
             if (omniDb.Length > 0 || navWs.Length > 0 || navDb.Length > 0)
             {
                 if (omniDb.Length == 0)
-                    msg += " [Successfully connected to Commerce Service for LS Central DB]" + omniver;
+                    msg += " [Successfully connected to Commerce Service for LS Central DB]" + omniVer;
 
                 if (navDb.Length == 0)
                     msg += navDBRet.Equals("SaaS") ? " [SaaS Mode]" : " [Successfully connected to LS Central DB]";
@@ -214,7 +225,7 @@ namespace LSOmni.Service
             }
             else
             {
-                msg = "Successfully connected to [Commerce Service for LS Central DB] & " + (navDBRet.Equals("SaaS") ? "[LS SaaS]" : "[LS Central DB]") + " & [LS Central WS] LS:" + tenVer + " (" + ver + ")" + omniver;
+                msg = "Successfully connected to [Commerce Service for LS Central DB] & " + (navDBRet.Equals("SaaS") ? "[LS SaaS]" : "[LS Central DB]") + " & [LS Central WS] LS:" + tenVer + " (" + ver + ")" + omniVer;
                 logger.Debug(config.LSKey.Key, "PONG OK {0}", msg);
                 return string.Format("PONG OK> {0}", msg);
             }

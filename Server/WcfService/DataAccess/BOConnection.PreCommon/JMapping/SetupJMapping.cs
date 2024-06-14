@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
 using LSRetail.Omni.Domain.DataModel.Base.Replication;
@@ -15,6 +16,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
         public SetupJMapping(bool json)
         {
             IsJson = json;
+        }
+
+        public bool GetTestConnection(string ret, out string appVersion, out string retailVersion, out string appBuild, out string copyRight, out bool licenseActive, out bool ecomLicense, out string errorText, out string errorCode)
+        {
+            appVersion = string.Empty;
+            retailVersion = string.Empty;
+            appBuild = string.Empty;
+            copyRight = string.Empty;
+            errorText = string.Empty;
+            errorCode = string.Empty;
+
+            try
+            {
+                JObject parsed = JObject.Parse(ret);
+                var token = parsed.SelectToken("value");
+                parsed = JObject.Parse(token.ToString());
+                errorCode = parsed.SelectToken("ResponseCode").Value<string>();
+                errorText = parsed.SelectToken("ErrorText").Value<string>();
+                token = parsed.SelectToken("TestConnectionResponse");
+                parsed = JObject.Parse(token.ToString());
+                retailVersion = parsed.SelectToken("LSRetailVersion").Value<string>();
+                appVersion = parsed.SelectToken("ApplicationVersion").Value<string>();
+                appBuild = parsed.SelectToken("ApplicationBuild").Value<string>();
+                copyRight = parsed.SelectToken("LSRetailCopyright").Value<string>();
+                licenseActive = parsed.SelectToken("LSRetailLicenseKeyActive").Value<bool>();
+                ecomLicense = parsed.SelectToken("LSRetailLicenseUnitEcom").Value<bool>();
+            }
+            catch (Exception)
+            {
+                throw new Exception("OData4 Error:" + ret);
+            }
+            return true;
         }
 
         public List<ReplCurrency> GetReplCurrency(string ret, ref string lastKey, ref int recordsRemaining)

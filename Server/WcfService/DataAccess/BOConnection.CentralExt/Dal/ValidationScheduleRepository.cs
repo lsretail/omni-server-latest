@@ -159,13 +159,13 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                                 Id = id,
                                 Description = SQLHelper.GetString(reader["Description"]),
                                 Mondays = SQLHelper.GetBool(reader["Mondays"]),
-                                Tuesdays = SQLHelper.GetBool(reader["Mondays"]),
-                                Wednesdays = SQLHelper.GetBool(reader["Mondays"]),
-                                Thursdays = SQLHelper.GetBool(reader["Mondays"]),
-                                Fridays = SQLHelper.GetBool(reader["Mondays"]),
-                                Saturdays = SQLHelper.GetBool(reader["Mondays"]),
-                                Sundays = SQLHelper.GetBool(reader["Mondays"]),
-                                ValidAllWeekdays = SQLHelper.GetBool(reader["Mondays"])
+                                Tuesdays = SQLHelper.GetBool(reader["Tuesdays"]),
+                                Wednesdays = SQLHelper.GetBool(reader["Wednesdays"]),
+                                Thursdays = SQLHelper.GetBool(reader["Thursdays"]),
+                                Fridays = SQLHelper.GetBool(reader["Fridays"]),
+                                Saturdays = SQLHelper.GetBool(reader["Saturdays"]),
+                                Sundays = SQLHelper.GetBool(reader["Sundays"]),
+                                ValidAllWeekdays = SQLHelper.GetBool(reader["Valid All Weekdays"])
                             };
                             rec.Lines = GetDateScheduleLines(id);
                             return rec;

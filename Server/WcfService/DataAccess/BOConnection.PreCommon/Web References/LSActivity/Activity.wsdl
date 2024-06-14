@@ -519,6 +519,20 @@
           </sequence>
         </complexType>
       </element>
+      <element name="CancelToken">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="tokenID" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="CancelToken_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
+          </sequence>
+        </complexType>
+      </element>
       <element name="CheckAccess">
         <complexType>
           <sequence>
@@ -1089,6 +1103,21 @@
           <sequence>
             <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
             <element minOccurs="1" maxOccurs="1" name="errorString" type="string" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ExtendToken">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="tokenID" type="string" />
+            <element minOccurs="1" maxOccurs="1" name="seconds" type="int" />
+          </sequence>
+        </complexType>
+      </element>
+      <element name="ExtendToken_Result">
+        <complexType>
+          <sequence>
+            <element minOccurs="1" maxOccurs="1" name="return_value" type="boolean" />
           </sequence>
         </complexType>
       </element>
@@ -2203,6 +2232,12 @@
   <message name="CancelReservation_Result">
     <part name="parameters" element="tns:CancelReservation_Result" />
   </message>
+  <message name="CancelToken">
+    <part name="parameters" element="tns:CancelToken" />
+  </message>
+  <message name="CancelToken_Result">
+    <part name="parameters" element="tns:CancelToken_Result" />
+  </message>
   <message name="CheckAccess">
     <part name="parameters" element="tns:CheckAccess" />
   </message>
@@ -2286,6 +2321,12 @@
   </message>
   <message name="DeleteGroupActivity_Result">
     <part name="parameters" element="tns:DeleteGroupActivity_Result" />
+  </message>
+  <message name="ExtendToken">
+    <part name="parameters" element="tns:ExtendToken" />
+  </message>
+  <message name="ExtendToken_Result">
+    <part name="parameters" element="tns:ExtendToken_Result" />
   </message>
   <message name="GetActReservations">
     <part name="parameters" element="tns:GetActReservations" />
@@ -2600,6 +2641,10 @@
       <input name="CancelReservation" message="tns:CancelReservation" />
       <output name="CancelReservation_Result" message="tns:CancelReservation_Result" />
     </operation>
+    <operation name="CancelToken">
+      <input name="CancelToken" message="tns:CancelToken" />
+      <output name="CancelToken_Result" message="tns:CancelToken_Result" />
+    </operation>
     <operation name="CheckAccess">
       <input name="CheckAccess" message="tns:CheckAccess" />
       <output name="CheckAccess_Result" message="tns:CheckAccess_Result" />
@@ -2655,6 +2700,10 @@
     <operation name="DeleteGroupActivity">
       <input name="DeleteGroupActivity" message="tns:DeleteGroupActivity" />
       <output name="DeleteGroupActivity_Result" message="tns:DeleteGroupActivity_Result" />
+    </operation>
+    <operation name="ExtendToken">
+      <input name="ExtendToken" message="tns:ExtendToken" />
+      <output name="ExtendToken_Result" message="tns:ExtendToken_Result" />
     </operation>
     <operation name="GetActReservations">
       <input name="GetActReservations" message="tns:GetActReservations" />
@@ -2886,6 +2935,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
+    <operation name="CancelToken">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:CancelToken" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="CancelToken">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="CancelToken_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
     <operation name="CheckAccess">
       <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:CheckAccess" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       <input name="CheckAccess">
@@ -3009,6 +3067,15 @@
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </input>
       <output name="DeleteGroupActivity_Result">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </output>
+    </operation>
+    <operation name="ExtendToken">
+      <operation soapAction="urn:microsoft-dynamics-schemas/codeunit/Activity:ExtendToken" style="document" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <input name="ExtendToken">
+        <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      </input>
+      <output name="ExtendToken_Result">
         <body use="literal" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
       </output>
     </operation>
@@ -3465,7 +3532,7 @@
   </binding>
   <service name="Activity">
     <port name="Activity_Port" binding="tns:Activity_Binding">
-      <address location="http://dhqsrvomni001:9047/LscRelease/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni001:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/Activity" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

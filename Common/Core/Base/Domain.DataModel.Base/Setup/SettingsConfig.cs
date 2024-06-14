@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Serialization;
@@ -72,6 +73,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private bool hardwareOverlayToLog;
         private int hardwareMinutes;
         private bool consoleLogToLog;
+
+        private bool ignoreCertificateErrors;
+
         public const string AutoUpdateKey = "AutoUpdateKey";
         public const string AutoUpdatePathKey = "AutoUpdatePathKey";
         public const string ServiceUpdateTimerKey = "ServiceUpdateTimerKey";
@@ -93,6 +97,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         public const string HardwareOverlayToLogKey = "HardwareOverlayToLogKey";
         public const string ConsoleLogToLogKey = "ConsoleLogToLogKey";
         public const string HardwareMinutesKey = "HardwareMinutesKey";
+
+        public const string IgnoreCertificateErrorsKey = "IgnoreCertificateErrorsKey";
 
         [System.Xml.Serialization.XmlElementAttribute("AutoUpdate")]
         public bool AutoUpdate
@@ -286,6 +292,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlElementAttribute("IgnoreCertificateErrors")]
+        public bool IgnoreCertificateErrors
+        {
+            get => ignoreCertificateErrors;
+            set
+            {
+                ignoreCertificateErrors = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         public AppSettings ShallowCopy()
         {
             return (AppSettings) MemberwiseClone();
@@ -346,6 +363,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         private int gridColumn;
 
         private static SettingsConfig emptyConfig;
+        private string otherParameters;
 
         public SettingsConfig(string id) : base(id)
         {
@@ -750,7 +768,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
-        [System.Xml.Serialization.XmlElementAttribute("Tenant")]
+        [System.Xml.Serialization.XmlElementAttribute("IsSaas")]
         public bool IsSaas
         {
             get => isSaas;
@@ -761,6 +779,18 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 NotifyPropertyChanged("UrlToUse");
             }
         }
+
+        public string OtherParameters
+        {
+            get => otherParameters;
+            set
+            {
+                otherParameters = value;
+                NotifyPropertyChanged();
+                NotifyPropertyChanged("UrlToUse");
+            }
+        }
+
 
         [System.Xml.Serialization.XmlElementAttribute("Tenant")]
         public string Tenant
@@ -965,7 +995,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             get => serviceStatus;
             set
             {
-                serviceStatus = value;
+                serviceStatus = value; 
+                NotifyPropertyChanged("IsEnabled");
                 NotifyPropertyChanged();
             }
         }
@@ -1073,6 +1104,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         [System.Xml.Serialization.XmlElementAttribute("OpenInNewWindow")]
         public bool OpenInNewWindow { get; set; }
 
+        [System.Xml.Serialization.XmlElementAttribute("DisableWhenOffline")]
+        public bool DisableWhenOffline { get; set; }
+
+        [System.Xml.Serialization.XmlElementAttribute("EnableCache")]
+        public bool EnableCache { get; set; }
+
         [System.Xml.Serialization.XmlIgnore]
         public int Level
         {
@@ -1084,6 +1121,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             }
         }
 
+        [System.Xml.Serialization.XmlIgnore]
+        public bool IsEnabled
+        {
+            get => !DisableWhenOffline || ServiceStatus == SettingsConfigServiceStatus.Online;
+        }
+
 
         public string UrlToUse
         {
@@ -1091,61 +1134,27 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
             {
                 if (urlType == SettingsConfigUrlType.Simplified)
                 {
-                    var url = string.Empty;
-                    var urlParameters = "?";
+                    var baseUrl = $"{(securityStandard == SettingsConfigSecurityStandard.Http ? "http://" : "https://")}{computerName}{(string.IsNullOrEmpty(port) ? "" : $":{port}")}";
+                    var path = $"{(isSaas && !string.IsNullOrEmpty(tenant) ? $"/{tenant}" : "")}/{webServiceInstance}{(TabletMode ? "/tablet.aspx" : "")}";
+                    var queryParameters = new List<string>();
 
-                    if (securityStandard == SettingsConfigSecurityStandard.Http)
-                    {
-                        url = "http://";
-                    }
-                    else
-                    {
-                        url = "https://";
-                    }
+                    if (!string.IsNullOrEmpty(company)) queryParameters.Add($"company={company}");
+                    if (!string.IsNullOrEmpty(page)) queryParameters.Add($"page={page}");
+                    if (!isSaas && !string.IsNullOrEmpty(tenant)) queryParameters.Add($"tenant={tenant}");
+                    if (allowLegacyEdge) queryParameters.Add("AllowLegacyEdge=1");
 
-                    url += computerName;
+                    // Add OtherParameters if they exist
+                    if (!string.IsNullOrEmpty(OtherParameters)) queryParameters.Add(OtherParameters);
 
-                    if (!string.IsNullOrEmpty(port))
-                    {
-                        url += ":" + port;
-                    }
+                    var queryString = string.Join("&", queryParameters);
+                    var fullUrl = $"{baseUrl}{path}{(queryParameters.Any() ? "?" + queryString : "")}";
 
-                    if (isSaas && !string.IsNullOrEmpty(tenant))
-                    {
-                        url += "/" + tenant;
-                    }
-
-                    url += "/" + webServiceInstance;
-
-                    if (TabletMode)
-                    {
-                        url += "/tablet.aspx";
-                    }
-
-                    if (!string.IsNullOrEmpty(company))
-                    {
-                        urlParameters += $"company={company}&";
-                    }
-
-                    if (!string.IsNullOrEmpty(page))
-                    {
-                        urlParameters += $"page={page}&";
-                    }
-
-                    if (!isSaas && !string.IsNullOrEmpty(tenant))
-                    {
-                        urlParameters += $"tenant={tenant}&";
-                    }
-
-                    if (allowLegacyEdge)
-                    {
-                        urlParameters += $"AllowLegacyEdge=1&";
-                    }
-
-                    return url + urlParameters.TrimEnd('&', '?');
+                    Url = fullUrl;
+                    return fullUrl;
                 }
                 else
                 {
+                    Url = url;
                     return url;
                 }
             }
@@ -1220,7 +1229,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                     {
                         urlParameters += $"AllowLegacyEdge=1&";
                     }
-
+                    
+                    Url = url + urlParameters.TrimEnd('&', '?');
                     return url + urlParameters.TrimEnd('&', '?');
                 }
                 else
@@ -1238,7 +1248,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                             url = url.Insert(8, $"{userNameWithDomain}:{password}@");
                         }
                     }
-                    
+                    Url = url;
                     return url;
                 }
             }

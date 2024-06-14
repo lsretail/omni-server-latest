@@ -78,6 +78,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         public string BlockedBy { get; set; }
         [DataMember]
         public string BlockedReason { get; set; }
+        [DataMember]
+        public string GuestType { get; set; }
 
 
         [DataMember]

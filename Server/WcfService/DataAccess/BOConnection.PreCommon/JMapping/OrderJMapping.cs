@@ -151,6 +151,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         rec.Payments.Add(new SalesEntryPayment()
                         {
                             Amount = recLine.Amount,
+                            AmountLCY = recLine.Amount,
                             LineNumber = recLine.LineNumber,
                             TenderType = recLine.ItemId,
                             CardNo = cardNo,

@@ -20,7 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Base
 
         protected Entity(string id)
         {
-            Id = (id == null) ? NewKey() : id;
+            Id = id == null ? NewKey() : id;
         }
 
         protected string NewKey()

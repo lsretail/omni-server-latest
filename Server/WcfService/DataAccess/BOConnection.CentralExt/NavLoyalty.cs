@@ -40,7 +40,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
 
         public virtual string Ping(out string centralVersion)
         {
-            string ver = LSCentralWSBase.NavVersionToUse(true, out centralVersion);
+            string ver = LSCentralWSBase.NavVersionToUse(out centralVersion);
             if (ver.Contains("ERROR"))
                 throw new ApplicationException(ver);
 
@@ -610,8 +610,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             OrderRepository orepo = new OrderRepository(config, LSCVersion);
             SalesEntryList data = new SalesEntryList();
             data.OrderId = orderId;
-            SalesEntry order = orepo.OrderGetById(orderId, false, false, stat);
-            data.CardId = order.CardId;
+            data.Order = orepo.OrderGetById(orderId, true, false, stat);
+            if (data.Order == null)
+                throw new LSOmniException(StatusCode.OrderIdNotFound, $"Order Id:{orderId} not found");
+
+            data.CardId = data.Order.CardId;
             data.SalesEntries = repo.SalesEntryGetSalesByOrderId(orderId, stat);
             data.Shipments = repo.SalesEntryShipmentGet(orderId, stat);
             return data;
@@ -622,8 +625,21 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
             logger.StatisticStartSub(false, ref stat, out int index);
             SalesEntryRepository repo = new SalesEntryRepository(config, LSCVersion);
             List<SalesEntry> data = repo.SalesEntriesByCardId(cardId, storeId, date, dateGreaterThan, maxNumberOfEntries);
+            
+            // we get extra transaction entries with empty data for some orders, just payment, so lets remove those if found
+            List<SalesEntry> list = new List<SalesEntry>();
+            foreach (SalesEntry entry in data)
+            {
+                if (entry.IdType == DocumentIdType.Receipt && entry.TotalAmount == 0 && entry.Quantity == 0)
+                {
+                    SalesEntry order = data.Find(e => e.CustomerOrderNo == entry.CustomerOrderNo && e.Quantity > 0);
+                    if (order != null)
+                        continue;
+                }
+                list.Add(entry);
+            }
             logger.StatisticEndSub(ref stat, index);
-            return data;
+            return list;
         }
 
         #endregion

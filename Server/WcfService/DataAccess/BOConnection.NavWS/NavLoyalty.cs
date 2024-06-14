@@ -22,7 +22,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Checkout;
 using LSRetail.Omni.Domain.DataModel.ScanPayGo.Payment;
-using System.Reflection;
 
 namespace LSOmni.DataAccess.BOConnection.NavWS
 {
@@ -44,7 +43,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 ver = NavWSBase.NavVersionToUse(true, true, out centralVersion);
             else
-                ver = LSCWSBase.NavVersionToUse(true, out centralVersion);
+                ver = LSCWSBase.NavVersionToUse(out centralVersion);
 
             if (ver.Contains("ERROR"))
                 throw new ApplicationException(ver);

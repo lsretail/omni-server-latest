@@ -25,6 +25,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public string CardId { get; set; }
         [DataMember]
+        public SalesEntry Order { get; set; }
+        [DataMember]
         public List<SalesEntry> SalesEntries { get; set; }
         [DataMember]
         public List<SalesEntryShipment> Shipments { get; set; }

@@ -46,7 +46,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual OneList OneListSave(OneList list, bool calculate, Statistics stat)
         {
-            if (list.Items == null)
+            if (list == null || list.Items == null)
                 return list;
 
             CheckItemSetup(list);
@@ -85,29 +85,55 @@ namespace LSOmni.BLL.Loyalty
             CheckItemSetup(list);
 
             Order order = BOLoyConnection.BasketCalcToOrder(list, stat);
+            List<OrderLine> lines = new List<OrderLine>();
             foreach (OneListItem oldItem in list.Items)
             {
-                OrderLine oline = order.OrderLines.Find(l => l.ItemId == oldItem.ItemId && l.LineNumber == oldItem.LineNumber);
-                if (oline != null)
+                // what we are doing here is check if Central has splited up orignal order lines, and if so then lets merge those together again
+                List<OrderLine> olines = order.OrderLines.FindAll(l => l.ItemId == oldItem.ItemId && l.VariantId == oldItem.VariantId && l.UomId == oldItem.UnitOfMeasureId && l.Quantity == oldItem.Quantity);
+                if (olines == null || olines.Count == 0)
+                    olines = order.OrderLines.FindAll(l => l.ItemId == oldItem.ItemId && l.VariantId == oldItem.VariantId && l.UomId == oldItem.UnitOfMeasureId);
+
+                if (olines != null && olines.Count > 0)
                 {
-                    oline.Id = oldItem.Id;
-                    if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
+                    bool firstLine = true;
+                    OrderLine nline = new OrderLine();
+                    foreach (OrderLine oline in olines)
                     {
-                        oline.VariantId = oldItem.VariantId;
-                        oline.VariantDescription = oldItem.VariantDescription;
-                    }
+                        oline.Id = oldItem.Id;
+                        if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
+                        {
+                            oline.VariantId = oldItem.VariantId;
+                            oline.VariantDescription = oldItem.VariantDescription;
+                        }
 
-                    if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
-                    {
-                        oline.UomId = oldItem.UnitOfMeasureId;
-                    }
+                        if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
+                        {
+                            oline.UomId = oldItem.UnitOfMeasureId;
+                        }
 
-                    if (string.IsNullOrEmpty(oline.ItemImageId) && (oldItem.Image != null))
-                    {
-                        oline.ItemImageId = oldItem.Image.Id;
+                        if (string.IsNullOrEmpty(oline.ItemImageId) && (oldItem.Image != null))
+                        {
+                            oline.ItemImageId = oldItem.Image.Id;
+                        }
+
+                        if (firstLine)
+                        {
+                            firstLine = false;
+                            nline = oline;
+                        }
+                        else
+                        {
+                            nline.Quantity += oline.Quantity;
+                            nline.Amount += oline.Amount;
+                            nline.NetAmount += oline.NetAmount;
+                            nline.TaxAmount += oline.TaxAmount;
+                            nline.DiscountAmount += oline.DiscountAmount;
+                        }
                     }
+                    lines.Add(nline);
                 }
             }
+            order.OrderLines = lines;
             return order;
         }
 
@@ -120,11 +146,13 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.NoLinesToPost, "No Lines to calculate");
 
             OrderHosp order = BOLoyConnection.HospOrderCalculate(list, stat);
-            foreach (OneListItem oldItem in list.Items)
+            for (int i = 0; i < list.Items.Count; i++)
             {
-                OrderHospLine oline = order.OrderLines.Find(l => l.ItemId == oldItem.ItemId && l.LineNumber == oldItem.LineNumber);
+                OneListItem oldItem = list.Items[i];
+                OrderHospLine oline = order.OrderLines[i];
                 if (oline != null)
                 {
+                    oline.Id = oldItem.Id;
                     if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
                     {
                         oline.VariantId = oldItem.VariantId;

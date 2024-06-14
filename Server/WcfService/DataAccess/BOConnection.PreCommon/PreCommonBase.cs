@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -209,7 +210,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 activityWS.Proxy = GetWebProxy();
                 odataWS.Proxy = GetWebProxy();
             }
-            NavVersionToUse(false, out string cVer);
+            NavVersionToUse(out string cVer);
         }
 
         public string SendToOData(string command, string data, bool sendget)
@@ -348,7 +349,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         }
 
 
-        public string NavVersionToUse(bool force, out string centralVersion)
+        public string NavVersionToUse(out string centralVersion)
         {
             if (LSCVersion == null)
                 LSCVersion = new Version("24.0");
@@ -365,7 +366,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 //  <add key="LSNAV.Version" value="8.0"/>    or "7.0"  "7.1"
                 //can overwrite what comes from NAV by adding key LSNAV.Version to the appConfig FILE not table.. LSNAV_Version
                 string version = config.SettingsGetByKey(ConfigKey.LSNAV_Version);
-                if (force == false && string.IsNullOrEmpty(version) == false)
+                if (string.IsNullOrEmpty(version) == false)
                 {
                     LSCVersion = new Version(version);
                     logger.Debug(config.LSKey.Key, "LSNAV.Version Value {0} from TenantConfig is being used", version);
@@ -419,19 +420,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
 
                 string asm = ConfigSetting.GetString("BOConnection.AssemblyName").ToLower();
-                if (asm.Contains("navws") && LSCVersion >= new Version("21.3"))
+                if (LSCVersion >= new Version("21.3"))
                 {
                     if (config.SettingsKeyExists(ConfigKey.BOODataUrl) == false)
-                        throw new LSOmniServiceException(StatusCode.NavODataError, "9001", "BOConnection.Nav.ODataUrl is missing from Appsettings file");
+                        throw new LSOmniServiceException(StatusCode.NavODataError, "9001", "BOConnection.Nav.ODataUrl is missing from AppSettings file");
 
                     string ourl = config.SettingsGetByKey(ConfigKey.BOODataUrl);
                     if (string.IsNullOrEmpty(ourl))
-                        throw new LSOmniServiceException(StatusCode.NavODataError, "9002", "BOConnection.Nav.ODataUrl is empty in Appsettings file");
+                        throw new LSOmniServiceException(StatusCode.NavODataError, "9002", "BOConnection.Nav.ODataUrl is empty in AppSettings file");
 
-                    string ret = SendToOData("GetMemberContactInfo_GetRequestDef", "{ }", false);
-                    logger.Debug(config.LSKey.Key, "Central OData Response > " + ret);
-                    if (ret.StartsWith("ERROR:"))
-                        throw new LSOmniServiceException(StatusCode.NavODataError, "9003", ret);
+                    if (LSCVersion >= new Version("25.0"))
+                    {
+                        Statistics stat = new Statistics();
+                        string ret = SendToOData("TestConnectionOData_TestConnection", "{ }", false);
+                        logger.Debug(config.LSKey.Key, "Central OData TestConnection Response > " + ret);
+                        SetupJMapping map = new SetupJMapping(config.IsJson);
+                        map.GetTestConnection(ret, out appVersion, out retailVersion, out appBuild, out retailCopyright, out bool licActive, out bool ecomLic, out errorText, out respCode);
+                        HandleWS2ResponseCode("TestConnectionOData", respCode, errorText, ref stat, 0);
+                        navver += $" CL:{licActive} EL:{ecomLic}";
+                    }
+                    else
+                    {
+                        string ret = SendToOData("GetMemberContactInfo_GetRequestDef", "{ }", false);
+                        logger.Debug(config.LSKey.Key, "Central OData Response > " + ret);
+                        if (ret.StartsWith("ERROR:"))
+                            throw new LSOmniServiceException(StatusCode.NavODataError, "9003", ret);
+                    }
                 }
 
                 logger.Debug(config.LSKey.Key, "appVer:{0} appBuild:{1} retailVer:{2} retailCopyright:{3} NavVersionToUse:{4}",
@@ -749,8 +763,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             if (respCode == "0000" || respCode == "")
                 return string.Empty;
 
-            logger.StatisticEndSub(ref stat, statIndex);
-
             StatusCode statusCode = MapResponseToStatusCode(funcName, respCode);
             logger.Error(config.LSKey.Key, "LS Central [{0}] Error: [{1}]:{2} [OmniCode:{3}]", funcName, respCode, errText, statusCode);
 
@@ -763,6 +775,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         return code;
                 }
             }
+            logger.StatisticEndSub(ref stat, statIndex);
             throw new LSOmniServiceException(statusCode, respCode, errText);
         }
 

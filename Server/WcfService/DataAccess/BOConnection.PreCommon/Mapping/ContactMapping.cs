@@ -65,6 +65,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 mem.SendReceiptbyEmail = ((int)contact.SendReceiptByEMail).ToString();
             }
 
+            if (LSCVersion >= new Version("25.0"))
+                mem.GuestType = XMLHelper.GetString(contact.GuestType);
+
             LSCentral.RootMemberContactCreate root = new LSCentral.RootMemberContactCreate();
             members.Add(mem);
             root.ContactCreateParameters = members.ToArray();
@@ -127,6 +130,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             if (LSCVersion >= new Version("19.2"))
                 mem.SendReceiptbyEmail = ((int)contact.SendReceiptByEMail).ToString();
+
+            if (LSCVersion >= new Version("25.0"))
+                mem.GuestType = XMLHelper.GetString(contact.GuestType);
 
             List<LSCentral.MemberAttributeValue1> attr = new List<LSCentral.MemberAttributeValue1>();
             if (contact.Profiles != null)

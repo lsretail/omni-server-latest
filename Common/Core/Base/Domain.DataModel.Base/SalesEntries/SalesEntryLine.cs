@@ -93,6 +93,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public decimal DiscountAmount { get; set; }
         [DataMember]
         public decimal DiscountPercent { get; set; }
+        /// <summary>
+        /// User for Gift Card information. Format Code:12345 Type:GIFTCARD Pin:1234
+        /// </summary>
         [DataMember]
         public string ExtraInformation { get; set; }
 
@@ -110,6 +113,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         [DataMember]
         public decimal Amount { get; set; }
 
+        [IgnoreDataMember]
+        public decimal OrgQuantity { get; set; }
         [IgnoreDataMember]
         public ImageView Image
         {

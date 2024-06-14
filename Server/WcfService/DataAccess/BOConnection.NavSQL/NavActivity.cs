@@ -106,6 +106,16 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL
             throw new NotImplementedException("Only available in Central Pre");
         }
 
+        public virtual bool ActivityExtendToken(string tokenId, int seconds)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityCancelToken(string tokenId)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
         public virtual string ActivityInsertGroupReservation(Reservation request)
         {
             throw new NotImplementedException("Only available in Central Pre");

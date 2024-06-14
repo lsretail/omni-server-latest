@@ -29,16 +29,24 @@ namespace LSOmni.BLL.Loyalty
 
             bool compress = BOLoyConnection.CompressCOActive(stat);
 
+            entry.TotalAmount = 0;
+            entry.TotalDiscount = 0;
+            entry.TotalNetAmount = 0;
             List<SalesEntryLine> lines = new List<SalesEntryLine>();
             foreach (SalesEntryLine line in entry.Lines)
             {
                 if (line.LineNumber == line.ParentLine)
                     line.ParentLine = 0;
 
+                entry.TotalAmount += line.Amount;
+                entry.TotalDiscount += line.DiscountAmount;
+                entry.TotalNetAmount += line.NetAmount;
+
                 List<SalesEntryLine> sublines = lines.FindAll(s => s.ParentLine == line.LineNumber);
-                SalesEntryLine lineFound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && l.LineType == line.LineType && ((line.ParentLine > 0 && l.ParentLine == line.ParentLine) || (line.ParentLine == 0 && sublines.Count == 0)));
+                SalesEntryLine lineFound = lines.Find(l => l.ItemId == line.ItemId && l.VariantId == line.VariantId && l.UomId == line.UomId && (l.Price == line.Price && l.OrgQuantity == line.Quantity) && l.LineType == line.LineType && ((line.ParentLine > 0 && l.ParentLine == line.ParentLine) || (line.ParentLine == 0 && sublines.Count == 0)));
                 if (lineFound == null || string.IsNullOrEmpty(line.ExtraInformation) == false || compress)
                 {
+                    line.OrgQuantity = line.Quantity;
                     lines.Add(line);
                     continue;
                 }
@@ -82,6 +90,21 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "orderId can not be empty");
 
             SalesEntryList data = BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
+            if (data.SalesEntries == null)
+                return new List<SalesEntry>();
+
+            foreach (SalesEntry entry in data.SalesEntries)
+            {
+                entry.TotalAmount = 0;
+                entry.TotalDiscount = 0;
+                entry.TotalNetAmount = 0;
+                foreach (SalesEntryLine line in entry.Lines)
+                {
+                    entry.TotalAmount += line.Amount;
+                    entry.TotalDiscount += line.DiscountAmount;
+                    entry.TotalNetAmount += line.NetAmount;
+                }
+            }
             return data.SalesEntries;
         }
 
@@ -90,7 +113,27 @@ namespace LSOmni.BLL.Loyalty
             if (string.IsNullOrEmpty(orderId))
                 throw new LSOmniException(StatusCode.TransacitionIdMissing, "orderId can not be empty");
 
-            return BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
+            SalesEntryList data = BOLoyConnection.SalesEntryGetSalesByOrderId(orderId, stat);
+
+            List<SalesEntry> list = new List<SalesEntry>();
+            foreach (SalesEntry entry in data.SalesEntries)
+            {
+                if (entry.Quantity == 0)    
+                    continue;
+
+                entry.TotalAmount = 0;
+                entry.TotalDiscount = 0;
+                entry.TotalNetAmount = 0;
+                foreach (SalesEntryLine line in entry.Lines)
+                {
+                    entry.TotalAmount += line.Amount;
+                    entry.TotalDiscount += line.DiscountAmount;
+                    entry.TotalNetAmount += line.NetAmount;
+                }
+                list.Add(entry);
+            }
+            //data.SalesEntries = list;
+            return data;
         }
     }
 }

@@ -303,6 +303,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     {
                         LineNumber = line.LineNo,
                         Amount = (line.FinalisedAmount > 0) ? line.FinalisedAmount : line.PreApprovedAmount,
+                        AmountLCY = (line.FinalisedAmountLCY > 0) ? line.FinalisedAmountLCY : line.PreApprovedAmountLCY,
                         CurrencyCode = line.CurrencyCode,
                         TenderType = line.TenderType
                     };

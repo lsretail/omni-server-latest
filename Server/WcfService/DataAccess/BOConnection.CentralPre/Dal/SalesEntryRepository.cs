@@ -38,7 +38,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                         command.Parameters.AddWithValue("@dt", new DateTime(date.Year, date.Month, date.Day, 0, 0, 0));
                     }
 
-                    command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : string.Empty) + " * FROM (" +
+                    command.CommandText = "SELECT " + ((maxNrOfEntries > 0) ? "TOP " + maxNrOfEntries : string.Empty) + "* FROM (" +
                         "SELECT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],mt.[$systemCreatedAt] AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
@@ -604,11 +604,10 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     command.CommandText = "SELECT " +
-                                "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS [Amt],ml.[Exchange Rate] AS [Rate],ml.[Card or Account] AS [No],ml.[Card No_] AS [Card] " +
+                                "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS [Amt],ml.[Amount Tendered] AS [TAmt],ml.[Exchange Rate] AS [Rate],ml.[Card or Account] AS [No],ml.[Card No_] AS [Card] " +
                                 "FROM [" + navCompanyName + "LSC Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
                                 "WHERE ml.[Receipt No_]=@id ORDER BY ml.[Line No_]";
                     command.Parameters.AddWithValue("@id", receiptNo);
-
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -622,13 +621,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
                     if (string.IsNullOrEmpty(custOrderNo) == false && list.Count == 0)
                     {
-                        // did not find any finalized payments lines, so look for pre approved lines
                         command.CommandText = "SELECT " +
-                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS [Amt],ml.[Currency Factor] AS [Rate],ml.[Card or Customer No_] AS [No],ml.[Card Type] AS [Card] " +
-                                    "FROM [" + navCompanyName + "LSC Posted CO Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
-                                    "WHERE ml.[Document ID]=@id AND [Type]=1 ORDER BY ml.[Line No_]";
+                                    "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Amount in Currency] AS [Amt],ml.[Amount Tendered] AS [TAmt],ml.[Exchange Rate] AS [Rate],ml.[Card or Account] AS [No],ml.[Card No_] AS [Card] " +
+                                    "FROM [" + navCompanyName + "LSC Trans_ Payment Entry$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                    "WHERE ml.[Order No_]=@id ORDER BY ml.[Line No_]";
+                        command.Parameters.Clear();
+                        command.Parameters.AddWithValue("@id", custOrderNo);
                         TraceSqlCommand(command);
-
+                        connection.Open();
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())
@@ -637,8 +637,27 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                             }
                             reader.Close();
                         }
-                    }
 
+                        if (list.Count == 0)
+                        {
+                            // did not find any finalized payments lines, so look for pre approved lines
+                            command.CommandText = "SELECT " +
+                                        "ml.[Line No_],ml.[Tender Type],ml.[Currency Code],ml.[Pre Approved Amount] AS [Amt],ml.[Pre Approved Amount LCY] AS [TAmt],ml.[Currency Factor] AS [Rate],ml.[Card or Customer No_] AS [No],ml.[Card Type] AS [Card] " +
+                                        "FROM [" + navCompanyName + "LSC Posted CO Payment$5ecfc871-5d82-43f1-9c54-59685e82318d] ml " +
+                                        "WHERE ml.[Document ID]=@id AND [Type]=1 ORDER BY ml.[Line No_]";
+                            command.Parameters.Clear();
+                            command.Parameters.AddWithValue("@id", custOrderNo);
+                            TraceSqlCommand(command);
+                            using (SqlDataReader reader = command.ExecuteReader())
+                            {
+                                while (reader.Read())
+                                {
+                                    list.Add(TransToSalesEntryPayment(reader));
+                                }
+                                reader.Close();
+                            }
+                        }
+                    }
                     connection.Close();
                 }
             }
@@ -1209,6 +1228,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 LineNumber = SQLHelper.GetInt32(reader["Line No_"]),
                 Amount = SQLHelper.GetDecimal(reader, "Amount", false),
+                AmountLCY = SQLHelper.GetDecimal(reader, "Amount", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "CurrencyFactor", false),
                 CurrencyCode = SQLHelper.GetString(reader["Currency Code"]),
                 TenderType = SQLHelper.GetString(reader["Number"]),
@@ -1239,6 +1259,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 TenderType = SQLHelper.GetString(reader["Tender Type"]),
                 Type = PaymentType.Payment,
                 Amount = SQLHelper.GetDecimal(reader, "Amt", false),
+                AmountLCY = SQLHelper.GetDecimal(reader, "TAmt", false),
                 CurrencyFactor = SQLHelper.GetDecimal(reader, "Rate", false),
                 CardNo = SQLHelper.GetString(reader["No"]),
                 CardType = SQLHelper.GetString(reader["Card"]),

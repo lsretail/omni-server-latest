@@ -35,6 +35,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback CancelReservationOperationCompleted;
         
+        private System.Threading.SendOrPostCallback CancelTokenOperationCompleted;
+        
         private System.Threading.SendOrPostCallback CheckAccessOperationCompleted;
         
         private System.Threading.SendOrPostCallback ConfirmActivityV2OperationCompleted;
@@ -62,6 +64,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private System.Threading.SendOrPostCallback ConfirmReservationOperationCompleted;
         
         private System.Threading.SendOrPostCallback DeleteGroupActivityOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback ExtendTokenOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetActReservationsOperationCompleted;
         
@@ -211,6 +215,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event CancelReservationCompletedEventHandler CancelReservationCompleted;
         
         /// <remarks/>
+        public event CancelTokenCompletedEventHandler CancelTokenCompleted;
+        
+        /// <remarks/>
         public event CheckAccessCompletedEventHandler CheckAccessCompleted;
         
         /// <remarks/>
@@ -251,6 +258,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event DeleteGroupActivityCompletedEventHandler DeleteGroupActivityCompleted;
+        
+        /// <remarks/>
+        public event ExtendTokenCompletedEventHandler ExtendTokenCompleted;
         
         /// <remarks/>
         public event GetActReservationsCompletedEventHandler GetActReservationsCompleted;
@@ -523,6 +533,36 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.CancelReservationCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.CancelReservationCompleted(this, new CancelReservationCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:CancelToken", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="CancelToken_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool CancelToken(string tokenID) {
+            object[] results = this.Invoke("CancelToken", new object[] {
+                        tokenID});
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void CancelTokenAsync(string tokenID) {
+            this.CancelTokenAsync(tokenID, null);
+        }
+        
+        /// <remarks/>
+        public void CancelTokenAsync(string tokenID, object userState) {
+            if ((this.CancelTokenOperationCompleted == null)) {
+                this.CancelTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnCancelTokenOperationCompleted);
+            }
+            this.InvokeAsync("CancelToken", new object[] {
+                        tokenID}, this.CancelTokenOperationCompleted, userState);
+        }
+        
+        private void OnCancelTokenOperationCompleted(object arg) {
+            if ((this.CancelTokenCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.CancelTokenCompleted(this, new CancelTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -2432,6 +2472,38 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.DeleteGroupActivityCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.DeleteGroupActivityCompleted(this, new DeleteGroupActivityCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:ExtendToken", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="ExtendToken_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool ExtendToken(string tokenID, int seconds) {
+            object[] results = this.Invoke("ExtendToken", new object[] {
+                        tokenID,
+                        seconds});
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void ExtendTokenAsync(string tokenID, int seconds) {
+            this.ExtendTokenAsync(tokenID, seconds, null);
+        }
+        
+        /// <remarks/>
+        public void ExtendTokenAsync(string tokenID, int seconds, object userState) {
+            if ((this.ExtendTokenOperationCompleted == null)) {
+                this.ExtendTokenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnExtendTokenOperationCompleted);
+            }
+            this.InvokeAsync("ExtendToken", new object[] {
+                        tokenID,
+                        seconds}, this.ExtendTokenOperationCompleted, userState);
+        }
+        
+        private void OnExtendTokenOperationCompleted(object arg) {
+            if ((this.ExtendTokenCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.ExtendTokenCompleted(this, new ExtendTokenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -9338,6 +9410,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void CancelTokenCompletedEventHandler(object sender, CancelTokenCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class CancelTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal CancelTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void CheckAccessCompletedEventHandler(object sender, CheckAccessCompletedEventArgs e);
     
     /// <remarks/>
@@ -10528,6 +10626,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void ExtendTokenCompletedEventHandler(object sender, ExtendTokenCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class ExtendTokenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal ExtendTokenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
             }
         }
     }

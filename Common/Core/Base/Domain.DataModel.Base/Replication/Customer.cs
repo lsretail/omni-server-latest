@@ -162,6 +162,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         public string SchemeCode { get; set; }
         [DataMember]
         public SendEmail SendReceiptByEMail { get; set; }
+        [DataMember]
+        public string GuestType { get; set; }
 
         [DataMember]
         public List<Card> Cards { get; set; }

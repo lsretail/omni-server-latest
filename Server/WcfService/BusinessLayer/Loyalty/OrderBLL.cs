@@ -50,7 +50,7 @@ namespace LSOmni.BLL.Loyalty
                 throw new LSOmniException(StatusCode.ObjectMissing, "Order request is empty");
 
             if (string.IsNullOrWhiteSpace(request.Id))
-                request.Id = GuidHelper.NewGuidString();
+                request.Id = GuidHelper.NewGuidWithoutDashes(20);
 
             if (string.IsNullOrEmpty(request.CardId) == false)
             {

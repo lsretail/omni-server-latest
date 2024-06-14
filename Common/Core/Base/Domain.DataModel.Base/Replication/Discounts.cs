@@ -99,6 +99,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             StoreId = string.Empty;
             Description = string.Empty;
             Details = string.Empty;
+            ValidationPeriodId = string.Empty;
             Type = ReplDiscountType.Unknown; //Disc. Offer, Multibuy
         }
 
@@ -154,7 +155,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public string Details { get; set; }
         [DataMember]
-        public int ValidationPeriodId { get; set; }
+        public string ValidationPeriodId { get; set; }
     }
 
     [DataContract(Namespace = "http://lsretail.com/LSOmniService/Base/2017")]
@@ -220,6 +221,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
             ProductItemCategory = string.Empty;
             ValidFromBeforeExpDate = string.Empty;
             ValidToBeforeExpDate = string.Empty;
+            ValidationPeriodId = string.Empty;
             LineGroup = string.Empty;
         }
 
@@ -251,7 +253,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Replication
         [DataMember]
         public int PriorityNo { get; set; }
         [DataMember]
-        public int ValidationPeriodId { get; set; }
+        public string ValidationPeriodId { get; set; }
         [DataMember]
         public DiscountValueType DiscountValueType { get; set; }
         [DataMember]

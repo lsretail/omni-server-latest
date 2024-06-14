@@ -768,7 +768,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                                 it.Details += (string.IsNullOrEmpty(it.Details) ? string.Empty : "\r\n") + field.Values[0];
                             break;
                         case "Validation Period ID":
-                            it.ValidationPeriodId = ConvertTo.SafeInt(field.Values[0]);
+                            it.ValidationPeriodId = field.Values[0];
                             break;
                         case "Discount Amount Value":
                             amt = ConvertTo.SafeDecimal(field.Values[0]);
@@ -894,7 +894,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                             break;
                         case "Validation Period ID":
                             if (it != null)
-                                it.ValidationPeriodId = ConvertTo.SafeInt(field.Values[0]);
+                                it.ValidationPeriodId = field.Values[0];
                             break;
                         case "Discount Amount Value":
                             if (it != null)

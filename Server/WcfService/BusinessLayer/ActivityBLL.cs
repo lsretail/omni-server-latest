@@ -117,6 +117,16 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
         }
 
+        public virtual bool ActivityExtendToken(string tokenId, int seconds)
+        {
+            return BOActConnection.ActivityExtendToken(tokenId, seconds);
+        }
+
+        public virtual bool ActivityCancelToken(string tokenId)
+        {
+            return BOActConnection.ActivityCancelToken(tokenId);
+        }
+
         public virtual string ActivityInsertGroupReservation(Reservation request)
         {
             return BOActConnection.ActivityInsertGroupReservation(request);

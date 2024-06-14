@@ -279,7 +279,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 43: p1 = data.FieldValue; break;
                         case 44: p2 = data.FieldValue; break;
                         case 45: p3 = data.FieldValue; break;
-                        case 46: line.ValidationPeriodId = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 46: line.ValidationPeriodId = data.FieldValue; break;
                         case 47: amt = ConvertTo.SafeDecimal(data.FieldValue); break;
                     }
                 }
@@ -366,7 +366,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 43: p1 = data.FieldValue; break;
                         case 44: p2 = data.FieldValue; break;
                         case 45: p3 = data.FieldValue; break;
-                        case 46: line.ValidationPeriodId = ConvertTo.SafeInt(data.FieldValue); break;
+                        case 46: line.ValidationPeriodId = data.FieldValue; break;
                     }
                 }
 
@@ -432,8 +432,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Offer No.": line.OfferNo = data.FieldValue; break;
                         case "Line No.": line.LineNumber = ConvertTo.SafeInt(data.FieldValue); break;
                         case "Type": line.Type = (ReplDiscountType)ConvertTo.SafeInt(data.FieldValue); break;
-                        case "No.": line.Number = data.FieldValue; break;
+                        case "No.": line.Number = string.IsNullOrEmpty(line.Number) ? data.FieldValue : line.Number; break;
                         case "Variant Code": line.VariantId = data.FieldValue; break;
+                        case "Variant Type": line.VariantType = ConvertTo.SafeInt(data.FieldValue); break;
                         case "Description": line.Description = data.FieldValue; break;
                         case "Standard Price Including VAT": line.StandardPriceInclVAT = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case "Standard Price": line.StandardPrice = ConvertTo.SafeDecimal(data.FieldValue); break;
@@ -456,7 +457,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Exclude": line.Exclude = ConvertTo.SafeBoolean(data.FieldValue); break;
                         case "Status": line.Enabled = ConvertTo.SafeBoolean(data.FieldValue); break;
                         case "Priority": line.PriorityNo = ConvertTo.SafeInt(data.FieldValue); break;
-                        case "Validation Period ID": line.ValidationPeriodId = ConvertTo.SafeInt(data.FieldValue); break;
+                        case "Validation Period ID": line.ValidationPeriodId = data.FieldValue; break;
                         case "Discount Type": line.DiscountValueType = (DiscountValueType)ConvertTo.SafeInt(data.FieldValue); break;
                         case "Deal Price Value": line.DealPriceValue = ConvertTo.SafeDecimal(data.FieldValue); break;
                         case "Discount % Value": line.DiscountValue = ConvertTo.SafeDecimal(data.FieldValue); break;

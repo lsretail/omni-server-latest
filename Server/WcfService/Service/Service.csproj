@@ -32,7 +32,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WCFSERVER</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WCFSERVER;Swagger4WCF</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\LSOmni.Service.xml </DocumentationFile>
@@ -168,6 +168,7 @@
     <Content Include="WebBindings.config" />
     <Content Include="WebServices.config" />
     <Content Include="WebServices_Basic.config" />
+    <Content Include="WebServices_SSL.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">

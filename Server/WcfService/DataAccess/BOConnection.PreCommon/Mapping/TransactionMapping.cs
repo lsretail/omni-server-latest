@@ -251,7 +251,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
         public SalesEntry MapFromRootToRetailTransaction(LSCentral.RootGetTransaction root)
         {
-            LSCentral.TransactionHeader2 header = root.TransactionHeader.FirstOrDefault();
+            LSCentral.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
 
             SalesEntry transaction = new SalesEntry()
             {
@@ -276,7 +276,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             transaction.DiscountLines = new List<SalesEntryDiscountLine>();
             if (root.TransDiscountEntry != null)
             {
-                foreach (LSCentral.TransDiscountEntry1 mobileTransDisc in root.TransDiscountEntry)
+                foreach (LSCentral.TransDiscountEntry mobileTransDisc in root.TransDiscountEntry)
                 {
                     transaction.DiscountLines.Add(new SalesEntryDiscountLine()
                     {
@@ -292,7 +292,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             transaction.Lines = new List<SalesEntryLine>();
             if (root.TransSalesEntry != null)
             {
-                foreach (LSCentral.TransSalesEntry1 mobileTransLine in root.TransSalesEntry)
+                foreach (LSCentral.TransSalesEntry mobileTransLine in root.TransSalesEntry)
                 {
                     transaction.Lines.Add(new SalesEntryLine()
                     {
@@ -725,7 +725,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
         public RetailTransaction MapFromRootToLoyTransaction(LSCentral.RootGetTransaction root)
         {
-            LSCentral.TransactionHeader2 header = root.TransactionHeader.FirstOrDefault();
+            LSCentral.TransactionHeader header = root.TransactionHeader.FirstOrDefault();
             UnknownCurrency transactionCurrency = new UnknownCurrency(header.TransCurrency);
 
             RetailTransaction transaction = new RetailTransaction()
@@ -741,7 +741,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
 
             if (root.TransSalesEntry != null)
             {
-                foreach (LSCentral.TransSalesEntry1 entry in root.TransSalesEntry)
+                foreach (LSCentral.TransSalesEntry entry in root.TransSalesEntry)
                 {
                     transaction.SaleLines.Add(new SaleLine()
                     {
@@ -758,7 +758,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
             if (root.TransPaymentEntry != null)
             {
                 int lineno = 1;
-                foreach (LSCentral.TransPaymentEntry1 pay in root.TransPaymentEntry)
+                foreach (LSCentral.TransPaymentEntry pay in root.TransPaymentEntry)
                 {
                     Payment payment = new Payment()
                     {

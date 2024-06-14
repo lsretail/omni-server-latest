@@ -385,7 +385,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
+                ValidationPeriodId = SQLHelper.GetString(reader["Validation Period ID"])
             };
 
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
@@ -424,7 +424,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 Type = (ReplDiscountType)(SQLHelper.GetInt32(reader["Type"])),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
+                ValidationPeriodId = SQLHelper.GetString(reader["Validation Period ID"])
             };
 
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);

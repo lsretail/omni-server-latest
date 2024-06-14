@@ -9,6 +9,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Retail
         Unknown = 0,
         Barcode = 1,
         QrCode = 2,
+        Nfc = 3,
     }
 
     public class BarcodeScan

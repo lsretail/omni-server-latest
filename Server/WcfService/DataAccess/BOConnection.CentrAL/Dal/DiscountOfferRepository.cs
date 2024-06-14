@@ -554,7 +554,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
+                ValidationPeriodId = SQLHelper.GetString(reader["Validation Period ID"])
             };
 
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
@@ -593,7 +593,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 ModifyDate = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Last Modify Date"]), config.IsJson),
                 Type = (ReplDiscountType)(SQLHelper.GetInt32(reader["Type"])),
                 Description = SQLHelper.GetString(reader["Description"]),
-                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"])
+                ValidationPeriodId = SQLHelper.GetString(reader["Validation Period ID"])
             };
 
             string tx1 = SQLHelper.GetString(reader["Pop-up Line 1"]);
@@ -625,7 +625,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 CustomerDiscountGroup = SQLHelper.GetString(reader["Customer Disc_ Group"]),
                 LoyaltySchemeCode = SQLHelper.GetString(reader["Member Value"]),
                 Type = (ReplDiscountType)SQLHelper.GetInt32(reader["Type"]),
-                ValidationPeriodId = SQLHelper.GetInt32(reader["Validation Period ID"]),
+                ValidationPeriodId = SQLHelper.GetString(reader["Validation Period ID"]),
                 CouponCode = SQLHelper.GetString(reader["Coupon Code"]),
                 MemberAttribute = SQLHelper.GetString(reader["Member Attribute"]),
                 TenderTypeCode = SQLHelper.GetString(reader["Tender Type Code"]),

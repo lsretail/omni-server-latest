@@ -31,6 +31,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (LSCVersion >= new Version("19.2"))
                 sqlcolumns += ",mt.[Send Receipt by E-mail]";
 
+            if (LSCVersion >= new Version("24.0"))
+                sqlcolumns += ",mt.[Guest Type]";
+
             sqlfrom = " FROM [" + navCompanyName + "LSC Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
         }
 
@@ -745,6 +748,9 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (LSCVersion >= new Version("19.2"))
                 cust.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
 
+            if (LSCVersion >= new Version("24.0"))
+                cust.GuestType = SQLHelper.GetString(reader["Guest Type"]);
+
             cust.Cards = CardsGetByContactId(cust.Id, out string username, new Statistics());
             cust.UserName = username;
             return cust;
@@ -765,11 +771,14 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 DateBlocked = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
-                BlockedBy = SQLHelper.GetString(reader["Blocked by"])
+                BlockedBy = SQLHelper.GetString(reader["Blocked by"]),
             };
 
             if (LSCVersion >= new Version("19.2"))
                 cont.SendReceiptByEMail = (SendEmail)SQLHelper.GetInt32(reader["Send Receipt by E-mail"]);
+
+            if (LSCVersion >= new Version("24.0"))
+                cont.GuestType = SQLHelper.GetString(reader["Guest Type"]);
 
             cont.Cards = CardsGetByContactId(cont.Id, out string username, stat);
             cont.UserName = username;

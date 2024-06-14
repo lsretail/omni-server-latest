@@ -53,6 +53,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         Currency_LoyCode = 1023,
 
         LSNAV_Version = 1100,  //used to change LS Central version and fast load so no need to check every time
+        LSNAV_Timeout = 12,
         Demo_Print_Enabled = 1110,
         Timezone_HoursOffset = 1111,
         Allow_Dublicate_Email = 1150,

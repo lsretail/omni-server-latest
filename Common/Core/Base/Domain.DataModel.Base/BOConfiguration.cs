@@ -54,7 +54,11 @@ namespace LSRetail.Omni.Domain.DataModel.Base
 
         public decimal SettingsDecimalGetByKey(ConfigKey key)
         {
-            return Convert.ToDecimal(SettingsGetByKey(key));
+            string val = SettingsGetByKey(key);
+            if (string.IsNullOrEmpty(val))
+                return 0;
+
+            return Convert.ToDecimal(val);
         }
 
         public bool SettingsKeyExists(ConfigKey key)

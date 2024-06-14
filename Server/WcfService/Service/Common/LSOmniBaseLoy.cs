@@ -1308,20 +1308,20 @@ namespace LSOmni.Service
             }
         }
 
-        public virtual OneList OneListItemModify(string onelistId, OneListItem item, bool remove, bool calculate)
+        public virtual OneList OneListItemModify(string oneListId, OneListItem item, bool remove, bool calculate)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
 
             try
             {
-                logger.Debug(config.LSKey.Key, "OneListItem.Id:{0} OneList.Id", item.Id, item.OneListId);
+                logger.Debug(config.LSKey.Key, $"OneListItem.Id:{item.Id} OneList.Id {oneListId}");
 
                 OneListBLL listBLL = new OneListBLL(config, clientTimeOutInSeconds);
-                return listBLL.OneListItemModify(onelistId, item, remove, calculate, stat);
+                return listBLL.OneListItemModify(oneListId, item, remove, calculate, stat);
             }
             catch (Exception ex)
             {
-                HandleExceptions(ex, "OneListItem.Id:{0} OneListId:{1}", item.Id, item.OneListId);
+                HandleExceptions(ex, "OneListItem.Id:{0} OneListId:{1}", item.Id, oneListId);
                 return null; //never gets here
             }
             finally
@@ -1902,6 +1902,8 @@ namespace LSOmni.Service
         /// <returns>List of ImageViews</returns>
         public virtual ImageView ImageGetById(string id, ImageSize imageSize)
         {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
             if (imageSize == null)
                 imageSize = new ImageSize();
 
@@ -1910,7 +1912,7 @@ namespace LSOmni.Service
                 logger.Debug(config.LSKey.Key, "Id: {0}  imageSize: {1}", id, imageSize.ToString());
 
                 ImageBLL bll = new ImageBLL(config);
-                ImageView imgView = bll.ImageSizeGetById(id, imageSize, new Statistics());
+                ImageView imgView = bll.ImageSizeGetById(id, imageSize, stat);
                 if (imgView != null)
                 {
                     // http://localhost/LSOmniService/json.svc/ImageStreamGetById?width=255&height=455&id=66
@@ -1922,6 +1924,10 @@ namespace LSOmni.Service
             {
                 HandleExceptions(ex, "Failed: ImageGetById() id:{0} imageSize:{1}", id, imageSize);
                 return null; // never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
             }
         }
 

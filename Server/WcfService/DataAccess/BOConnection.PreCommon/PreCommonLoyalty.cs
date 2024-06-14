@@ -1653,9 +1653,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             LSCentral.RootCustomerOrderCreateV5 root = map.MapFromOrderV5ToRoot(request, loyCur);
             logger.Debug(config.LSKey.Key, "CustomerOrderCreateV5 Request - " + Serialization.ToXml(root, true));
             centralWS.CustomerOrderCreateV5(ref respCode, ref errorText, root, ref orderId);
-            string ret = HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index, new string[] { "1000" });
-            if (string.IsNullOrEmpty(ret) == false)     // ExtId Exists
+            if (errorText.StartsWith("External ID") && errorText.Contains("already exists"))     // ExtId Exists
                 logger.Warn(config.LSKey.Key, "Error:{0} >> Ignore Error and return External ID (assume Order exist)", errorText);
+            else
+                HandleWS2ResponseCode("CustomerOrderCreateV5", respCode, errorText, ref stat, index);
             logger.StatisticEndSub(ref stat, index);
             return request.Id;
         }
@@ -1862,12 +1863,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             {
                 new LSCentral.CustomerOrderStatusLog()
                 {
-                    StoreNo = storeId,
-                    UserID = userId,
+                    StoreNo = XMLHelper.GetString(storeId),
+                    UserID = XMLHelper.GetString(userId),
                     StaffID = string.Empty,
                     TerminalNo = string.Empty
                 }
             };
+            if (LSCVersion >= new Version("25.0"))
+                log[0].ReceiptNo = orderId;
+
             root.CustomerOrderStatusLog = log.ToArray();
 
             if (lines != null && lines.Count > 0)
@@ -2650,9 +2654,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
             else
             {
-                List<LSCentral.Token> tokens = new List<LSCentral.Token>()
+                List<LSCentral.Token1> tokens = new List<LSCentral.Token1>()
                 {
-                    new LSCentral.Token()
+                    new LSCentral.Token1()
                     {
                         AccountNo = XMLHelper.GetString(token.AccountNo),
                         CardMask = XMLHelper.GetString(token.CardMask),
@@ -2662,7 +2666,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                         DefaultToken = token.DefaultToken,
                         EntryNo = token.EntryNo,
                         PSPID = XMLHelper.GetString(token.pSPID),
-                        Token1 = XMLHelper.GetString(token.Token),
+                        Token = XMLHelper.GetString(token.Token),
                         TokenId = XMLHelper.GetString(token.TokenId),
                         TokenIDExternal = XMLHelper.GetString(token.TokenIDExternal),
                         TokenType = XMLHelper.GetString(token.Type),
@@ -2726,7 +2730,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 logger.Debug(config.LSKey.Key, $"GetMemberCardToken Response: {Serialization.ToXml(root, true)}");
                 if (root.Token != null)
                 {
-                    foreach (LSCentral.Token1 token in root.Token)
+                    foreach (LSCentral.Token token in root.Token)
                     {
                         tokens.Add(new ClientToken()
                         {

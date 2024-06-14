@@ -26,7 +26,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             string sqlfrom = " FROM [" + navCompanyName + "LSC Inventory Lookup Table$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
 
             SQLHelper.CheckForSQLInjection(storeId);
-            string sqlwhere = " WHERE ";
+            string sqlwhere = " WHERE " + ((string.IsNullOrEmpty(storeId)) ? string.Empty : "mt.[Store No_]='" + storeId + "' AND ");
             if (fullReplication)
                 sqlwhere += "mt.[timestamp]>@cnt";
             else
@@ -41,7 +41,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 using (SqlCommand command = connection.CreateCommand())
                 {
                     connection.Open();
-                    command.CommandText = "SELECT COUNT(*),Max([Replication Counter])" + sqlfrom + sqlwhere + GetSQLStoreDist("mt.[Item No_]", storeId, fullReplication, true);
+                    command.CommandText = "SELECT COUNT(*),Max(mt.[Replication Counter])" + sqlfrom + sqlwhere;
                     if (fullReplication)
                     {
                         SqlParameter par = new SqlParameter("@cnt", SqlDbType.Timestamp);
@@ -67,7 +67,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                     }
 
                     // get data
-                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + sqlwhere + GetSQLStoreDist("mt.[Item No_]", storeId, fullReplication, true) + " ORDER BY mt.[Replication Counter]";
+                    command.CommandText = GetSQL(fullReplication, batchSize) + sqlcolumns + sqlfrom + sqlwhere;
+                    if (fullReplication)
+                        command.CommandText += " ORDER BY mt.[timestamp]";
+                    else
+                        command.CommandText += " ORDER BY mt.[Replication Counter]";
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         int cnt = 0;

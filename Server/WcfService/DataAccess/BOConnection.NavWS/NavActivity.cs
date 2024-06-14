@@ -159,6 +159,22 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
         }
 
+        public virtual bool ActivityExtendToken(string tokenId, int seconds)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityExtendToken(tokenId, seconds);
+        }
+
+        public virtual bool ActivityCancelToken(string tokenId)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityCancelToken(tokenId);
+        }
+
         public virtual string ActivityInsertGroupReservation(Reservation request)
         {
             if (NAVVersion < new Version("17.5"))

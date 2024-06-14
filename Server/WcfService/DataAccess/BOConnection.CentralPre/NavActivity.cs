@@ -106,6 +106,16 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityGetAvailabilityToken(locationNo, productNo, activityTime, optionalResource, quantity);
         }
 
+        public virtual bool ActivityExtendToken(string tokenId, int seconds)
+        {
+            return LSCentralWSBase.ActivityExtendToken(tokenId, seconds);
+        }
+
+        public virtual bool ActivityCancelToken(string tokenId)
+        {
+            return LSCentralWSBase.ActivityCancelToken(tokenId);
+        }
+
         public virtual string ActivityInsertGroupReservation(Reservation request)
         { 
             return LSCentralWSBase.ActivityInsertGroupReservation(request); 

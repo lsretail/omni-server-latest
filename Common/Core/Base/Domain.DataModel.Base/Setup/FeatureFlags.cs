@@ -180,6 +180,9 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
                 case "AUDKENNI TEST USER CARDID":
                     flagName = FeatureFlagName.AudkenniTestCardId;
                     break;
+                case "AUDKENNI TEXT TO MAKE HASH":
+                    flagName = FeatureFlagName.AudkenniTextToMakeAHash;
+                    break;
                 case "FACEBOOK LOGIN ENABLED":
                     flagName = FeatureFlagName.FacebookLoginEnabled;
                     break;
@@ -367,6 +370,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Setup
         AudkenniTestUserEnabled = 406,
         AudkenniTestUser = 407,
         AudkenniTestCardId = 408,
+        AudkenniTextToMakeAHash= 409,
 
         //Google
         GoogleLoginEnabled = 410,

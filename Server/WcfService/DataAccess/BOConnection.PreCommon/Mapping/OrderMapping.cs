@@ -292,6 +292,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     {
                         LineNumber = line.LineNo,
                         Amount = (line.FinalizedAmount > 0) ? line.FinalizedAmount : line.PreApprovedAmount,
+                        AmountLCY = (line.FinalizedAmountLCY > 0) ? line.FinalizedAmountLCY : line.PreApprovedAmountLCY,
                         CurrencyCode = line.CurrencyCode,
                         TenderType = line.TenderType,
                         CardType = line.CardType
@@ -412,6 +413,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     VariantCode = XMLHelper.GetString(line.VariantId),
                     UnitofMeasureCode = XMLHelper.GetString(line.UomId),
                     OrderReference = XMLHelper.GetString(line.OrderId),
+                    StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
+                    ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
                     Quantity = line.Quantity,
                     DiscountAmount = line.DiscountAmount,
                     DiscountPercent = line.DiscountPercent,
@@ -426,18 +429,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     PurchaseOrderNo = string.Empty,
                     SourcingLocation = string.Empty,
                     SourcingLocation1 = string.Empty,
+                    TerminalNo = string.Empty,
                     InventoryTransfer = false,
                     InventoryTransfer1 = false,
                     VendorSourcing = false,
                     VendorSourcing1 = false,
-                    ShipOrder = false,
-                    StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
-                    ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
-                    TerminalNo = string.Empty
+                    ShipOrder = false
                 };
 
                 if (LSCVersion >= new Version("18.2"))
                     ln.ValidateTaxParameter = line.ValidateTax;
+
+                if (LSCVersion >= new Version("24.0"))
+                    ln.CreatedByReceiptNo = string.Empty;
 
                 orderLines.Add(ln);
             }
