@@ -22,6 +22,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         [DataMember]
         public string MsgDetail { get; set; }
         [DataMember]
+        public string QueueCounter { get; set; }
+        [DataMember]
         public List<OrderMessageStatusLine> Lines { get; set; }
     }
 

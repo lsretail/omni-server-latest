@@ -15,6 +15,7 @@ namespace LSOmni.BLL.Loyalty
 
         public List<SalesEntry> SalesEntriesGetByCardId(string cardId, string storeId, DateTime date, bool dateGreaterThan, int maxNumberOfEntries, Statistics stat)
         {
+            SecurityCardCheck(cardId);
             return BOLoyConnection.SalesEntriesGetByCardId(cardId, storeId, date, dateGreaterThan , maxNumberOfEntries, stat);
         }
 
@@ -78,6 +79,9 @@ namespace LSOmni.BLL.Loyalty
             foreach (SalesEntryId line in list)
             {
                 SalesEntry en = SalesEntryGet(line.ReceiptId, DocumentIdType.Receipt, stat);
+                if (en == null)
+                    continue;
+
                 en.CustomerOrderNo = line.OrderId;
                 result.Add(en);
             }

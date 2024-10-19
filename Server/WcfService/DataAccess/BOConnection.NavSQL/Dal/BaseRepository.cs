@@ -45,7 +45,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                     connectionString = config.SettingsGetByKey(ConfigKey.BOSql);
                     if (DecryptConfigValue.IsEncryptedPwd(connectionString))
                     {
-                        connectionString = DecryptConfigValue.DecryptString(connectionString);
+                        connectionString = DecryptConfigValue.DecryptString(connectionString, config.SettingsGetByKey(ConfigKey.EncrCode));
                     }
 
                     navConnectionString = connectionString;
@@ -62,7 +62,7 @@ namespace LSOmni.DataAccess.BOConnection.NavSQL.Dal
                         if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
                         {
                             //decrypt the pwd
-                            builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd);
+                            builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd, config.SettingsGetByKey(ConfigKey.EncrCode));
                         }
                     }
 

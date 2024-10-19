@@ -170,6 +170,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Members
         [DataMember]
         public string AlternateId { get; set; }
         [DataMember]
+        public string ExternalSystem { get; set; }
+        [DataMember]
         public List<Card> Cards { get; set; }
         [DataMember]
         public Account Account { get; set; }

@@ -349,9 +349,9 @@ namespace LSOmni.DataAccess.Dal
                     command.CommandText = "SELECT DISTINCT " + ((maxNumberOfLists > 0) ? "TOP(" + maxNumberOfLists + ") " : "") +
                                           sqlcol + sqlfrom +
                                           " INNER JOIN [OneListItem] oli ON oli.[OneListId]=mt.[Id]" +
-                                          " WHERE oll.[CardId]=@0 AND UPPER(oli.[ItemDescription]) LIKE UPPER('%'+@1+'%') OR mt.[Description] LIKE UPPER('%'+@1+'%')";
+                                          " WHERE oll.[CardId]=@0 AND UPPER(oli.[ItemDescription]) LIKE UPPER(@1) OR  UPPER(mt.[Description]) LIKE UPPER(@1)";
                     command.Parameters.AddWithValue("@0", cardId);
-                    command.Parameters.AddWithValue("@1", search);
+                    command.Parameters.AddWithValue("@1", $"%{search}%");
 
                     TraceSqlCommand(command);
                     connection.Open();

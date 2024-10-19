@@ -6,7 +6,6 @@ using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Hierarchies;
@@ -501,14 +500,15 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             if (NAVVersion < new Version("17.5"))
                 return NavWSBase.ItemGetByBarcode(code);
 
-            LoyItem item = LSCWSBase.ItemGetByBarcode(code, stat);
+            LoyItem item = LSCWSBase.ItemGetByBarcode(code, storeId, stat);
             if (item != null)
                 return item;
 
             LoyItem bitem = LSCWSBase.ItemFindByBarcode(code, storeId, config.SettingsGetByKey(ConfigKey.ScanPayGo_Terminal), stat);
             item = ItemGetById(bitem.Id, storeId, string.Empty, true, stat);
             item.GrossWeight = bitem.GrossWeight;
-            item.Price = bitem.Price;
+            if (string.IsNullOrEmpty(bitem.Price) == false && bitem.Price != "0")
+                item.Price = bitem.Price;
             return item;
         }
 
@@ -540,7 +540,7 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual List<LoyItem> ItemsPage(int pageSize, int pageNumber, string itemCategoryId, string productGroupId, string search, string storeId, bool includeDetails, Statistics stat)
         {
             if (NAVVersion < new Version("17.5"))
-                return NavWSBase.ItemPage(storeId, pageNumber, includeDetails);
+                return NavWSBase.ItemPage(storeId, pageNumber);
 
             return LSCWSBase.ItemPage(storeId, pageNumber, includeDetails, stat);
         }
@@ -853,6 +853,11 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
         public virtual string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
         {
             return LSCWSBase.OrderEdit(request, ref orderId, editType, stat);
+        }
+
+        public virtual bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat)
+        {
+            return LSCWSBase.OrderUpdatePayment(orderId, storeId, payment, stat);
         }
 
         #endregion

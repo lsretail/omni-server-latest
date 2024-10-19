@@ -15,6 +15,12 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         List<AdditionalCharge> ActivityAdditionalChargesGet(string activityNo);
         List<AdditionalCharge> ActivityProductChargesGet(string locationNo, string productNo, DateTime dateOfBooking);
         bool ActivityAdditionalChargesSet(AdditionalCharge request);
+        List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo);
+        bool ActivityGroupAdditionalChargesSet(AdditionalCharge req);
+        List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo);
+        bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment);
+        bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo);
+        bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo);
         List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo);
         int ActivityAttributeSet(AttributeType type, string linkNo, string attributeCode, string attributeValue);
         string ActivityReservationInsert(Reservation request);

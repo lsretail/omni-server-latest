@@ -27673,8 +27673,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         
         private string sendReceiptbyEmailField;
         
-        private string guestTypeField;
-        
         public ContactCreateParameters1() {
             this.dateOfBirthField = new System.DateTime(0);
         }
@@ -27890,16 +27888,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
                 this.sendReceiptbyEmailField = value;
             }
         }
-        
-        /// <remarks/>
-        public string GuestType {
-            get {
-                return this.guestTypeField;
-            }
-            set {
-                this.guestTypeField = value;
-            }
-        }
     }
     
     /// <remarks/>
@@ -28048,8 +28036,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
         private string authenticatorField;
         
         private string authenticationIdField;
-        
-        private string guestTypeField;
         
         public ContactCreateParameters() {
             this.dateOfBirthField = new System.DateTime(0);
@@ -28344,16 +28330,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSCentral {
             }
             set {
                 this.authenticationIdField = value;
-            }
-        }
-        
-        /// <remarks/>
-        public string GuestType {
-            get {
-                return this.guestTypeField;
-            }
-            set {
-                this.guestTypeField = value;
             }
         }
     }

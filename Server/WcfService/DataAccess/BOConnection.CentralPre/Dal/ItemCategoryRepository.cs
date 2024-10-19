@@ -187,29 +187,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                 return list;
 
             logger.StatisticStartSub(false, ref stat, out int index);
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string sqlwhere = string.Empty;
-            foreach (string si in searchitems)
-            {
-                if (string.IsNullOrEmpty(sqlwhere))
-                {
-                    sqlwhere = string.Format(" WHERE mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-                else
-                {
-                    sqlwhere += string.Format(" AND mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-            }
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" + sqlwhere;
+                    string sqlWhere = SQLHelper.SetSearchParameters(command, search, GetDbCICollation());
+                    command.CommandText = "SELECT " + sqlcolumns + " FROM [" + navCompanyName + "Item Category$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" + sqlWhere;
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

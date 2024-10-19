@@ -42,22 +42,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
-        public string GetContactNo(XMLTableData table)
-        {
-            if (table == null)
-                return string.Empty;
-
-            Scheme rec = new Scheme();
-            foreach (XMLFieldData field in table.FieldList)
-            {
-                switch (field.FieldName)
-                {
-                    case "Contact No_": return field.Values[0];
-                }
-            }
-            return string.Empty;
-        }
-
         public List<MemberContact> ContactGet(XMLTableData table)
         {
             List<MemberContact> list = new List<MemberContact>();
@@ -89,33 +73,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                 }
                 rec.Addresses = new List<Address>();
                 rec.Addresses.Add(add);
-                list.Add(rec);
-            }
-            return list;
-        }
-
-        public List<Card> CardGet(XMLTableData table)
-        {
-            List<Card> list = new List<Card>();
-            if (table == null)
-                return list;
-
-            for (int i = 0; i < table.NumberOfValues; i++)
-            {
-                Card rec = new Card();
-                foreach (XMLFieldData field in table.FieldList)
-                {
-                    switch (field.FieldName)
-                    {
-                        case "Card No.": rec.Id = field.Values[i]; break;
-                        case "Contact No.": rec.ContactId = field.Values[i]; break;
-                        case "Club Code": rec.ClubId = field.Values[i]; break;
-                        case "Status": rec.Status = (CardStatus)ConvertTo.SafeInt(field.Values[i]); break;
-                        case "Reason Blocked": rec.BlockedReason = field.Values[i]; break;
-                        case "Date Blocked": rec.DateBlocked = ConvertTo.SafeJsonDate(XMLHelper.GetWebDateTime(field.Values[i]), config.IsJson); break;
-                        case "Blocked by": rec.BlockedBy = field.Values[i]; break;
-                    }
-                }
                 list.Add(rec);
             }
             return list;

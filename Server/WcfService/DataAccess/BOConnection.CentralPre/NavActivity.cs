@@ -46,6 +46,36 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.ActivityAdditionalChargesSet(request);
         }
 
+        public virtual List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo)
+        {
+            return LSCentralWSBase.ActivityReservationAdditionalCharges(reservationNo);
+        }
+
+        public virtual bool ActivityGroupAdditionalChargesSet(AdditionalCharge req)
+        {
+            return LSCentralWSBase.ActivityGroupAdditionalChargesSet(req);
+        }
+
+        public virtual List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo)
+        {
+            return LSCentralWSBase.ActivityGroupReservationAdditionalChargesGet(reservationNo, memberNo);
+        }
+
+        public virtual bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment)
+        {
+            return LSCentralWSBase.ActivityGroupMemberSet(reservationNo, memberSequence, contact, name, email, phone, guestType, optionalComment);
+        }
+
+        public virtual bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo)
+        {
+            return LSCentralWSBase.ActivityGroupMemberAssign(reservationNo, memberSequence, lineNo);
+        }
+
+        public virtual bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo)
+        {
+            return LSCentralWSBase.ActivityGroupMemberRemove(reservationNo, memberSequence, lineNo);
+        }
+
         public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             return LSCentralWSBase.ActivityAttributesGet(type, linkNo);

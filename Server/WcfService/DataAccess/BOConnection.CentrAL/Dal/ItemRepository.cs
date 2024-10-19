@@ -592,30 +592,14 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string sqlwhere = string.Empty;
-            foreach (string si in searchitems)
-            {
-                if (string.IsNullOrEmpty(sqlwhere))
-                {
-                    sqlwhere = string.Format(" WHERE mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-                else
-                {
-                    sqlwhere += string.Format(" AND mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-            }
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = GetSQL(true, maxResult) + sqlcolumns + sqlfrom + sqlwhere +
-                                            GetSQLStoreDist("mt.[No_]", storeId, true) + " ORDER BY mt.[Description]";
+                    string sqlWhere = SQLHelper.SetSearchParameters(command, search, GetDbCICollation());
+                    command.CommandText = GetSQL(true, maxResult) + sqlcolumns + sqlfrom + sqlWhere +
+                                          GetSQLStoreDist("mt.[No_]", storeId, true) + " ORDER BY mt.[Description]";
+
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

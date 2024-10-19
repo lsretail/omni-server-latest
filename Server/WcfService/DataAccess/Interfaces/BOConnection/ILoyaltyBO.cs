@@ -7,7 +7,6 @@ using LSRetail.Omni.Domain.DataModel.Base.Replication;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.SalesEntries;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
@@ -150,6 +149,7 @@ namespace LSOmni.DataAccess.Interface.BOConnection
         void OrderCancel(string orderId, string storeId, string userId, List<OrderCancelLine> lines, Statistics stat);
         string OrderCreate(Order request, out string orderId, Statistics stat);
         string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat);
+        bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat);
         Order BasketCalcToOrder(OneList list, Statistics stat);
 
         #endregion

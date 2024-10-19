@@ -16,6 +16,7 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         BOODataUrl = 8,
 
         forgotpassword_code_encrypted = 10,
+        EncrCode = 11,
 
         //Optional
         BOSql = 100,
@@ -57,6 +58,12 @@ namespace LSRetail.Omni.Domain.DataModel.Base
         Demo_Print_Enabled = 1110,
         Timezone_HoursOffset = 1111,
         Allow_Dublicate_Email = 1150,
+
+        AudkenniBaseUrl = 1161,
+        AudkenniRedirectUrl = 1162,
+        AudkenniClientID = 1163,
+        AudkenniSecret = 1164,
+        AudkenniAppHashText = 1165,
 
         Hosp_Terminal = 1171,
         Hosp_Staff = 1172,

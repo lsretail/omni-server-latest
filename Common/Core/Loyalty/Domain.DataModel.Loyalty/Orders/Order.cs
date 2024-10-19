@@ -177,6 +177,14 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string TransId { get; set; }
         public string TransTerminal { get; set; }
 
+        public int LineCount
+        {
+            get
+            {
+                return OrderLines == null ? 0 : OrderLines.Count;
+            }
+        }
+
         public override string ToString()
         {
             string req = string.Empty, osldreq = string.Empty;

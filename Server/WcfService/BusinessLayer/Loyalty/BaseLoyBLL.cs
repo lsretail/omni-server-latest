@@ -4,9 +4,9 @@ using System.IO;
 using System.Web.Script.Serialization;
 
 using LSOmni.Common.Util;
-using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSOmni.DataAccess.Interface.BOConnection;
 using LSRetail.Omni.Domain.DataModel.Base;
+using LSOmni.DataAccess.Interface.Repository.Loyalty;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -15,14 +15,14 @@ namespace LSOmni.BLL.Loyalty
         protected int timeoutInSeconds = 0;
 
         //ALL  security related code is done in base class
-        protected IValidationRepository iValidationRepository;
+        protected IDeviceRepository iDevRepo;
 
-        private string contactId;
+        private string cardId;
         private StatusCode securityTokenStatusCode;
         private readonly string localCulture = null;
 
         public virtual string SecurityToken { get { return config.SecurityToken; } }
-        public virtual string ContactId { get { return contactId; } }
+        public virtual string ContactId { get { return cardId; } }
 
         #region BOConnection
 
@@ -73,9 +73,23 @@ namespace LSOmni.BLL.Loyalty
         {
             this.config.SecurityToken = securityToken;
             base.DeviceId = string.Empty;
-            this.contactId = string.Empty;
+            this.cardId = string.Empty;
             this.securityTokenStatusCode = StatusCode.OK;
-            this.iValidationRepository = GetDbRepository<IValidationRepository>(config);
+            this.iDevRepo = GetDbRepository<IDeviceRepository>(config);
+        }
+
+        protected void SecurityCardCheck(string cardIdToCheck)
+        {
+            if (string.IsNullOrEmpty(cardIdToCheck))
+                return;
+
+            //always validate security token and if device is blocked etc.  Will get deviceId and contactId back
+            securityTokenStatusCode = iDevRepo.ValidateSecurityToken(config.SecurityToken, out string deviceId, out cardId);
+            if (config.SecurityCheck == false)
+                return;
+
+            if (cardIdToCheck != cardId)
+                throw new LSOmniServiceException(StatusCode.AccessNotAllowed, "Not allowed to view this data");
         }
 
         protected void SecurityCheck()
@@ -84,25 +98,24 @@ namespace LSOmni.BLL.Loyalty
             SecurityTokenCheck();
 
             //always validate security token and if device is blocked etc.  Will get deviceId and contactId back
-            securityTokenStatusCode = iValidationRepository.ValidateSecurityToken(config.SecurityToken, out string deviceId, out contactId);
+            securityTokenStatusCode = iDevRepo.ValidateSecurityToken(config.SecurityToken, out string deviceId, out cardId);
             base.DeviceId = deviceId;
-            if (config.SecurityCheck)
-            {
-                // 
-                if (securityTokenStatusCode != StatusCode.OK)
-                {
-                    string msg = string.Empty;
-                    config.SecurityToken = ""; //don't want to send the token back in error message
-                    if (securityTokenStatusCode == StatusCode.DeviceIsBlocked)
-                        msg = string.Format("Device has been blocked from usage: {0}", base.DeviceId);
-                    else if (securityTokenStatusCode == StatusCode.SecurityTokenInvalid)
-                        msg = string.Format("Security token not valid: {0}", config.SecurityToken);
-                    else if (securityTokenStatusCode == StatusCode.UserNotLoggedIn)
-                        msg = string.Format("User is not logged in: {0}", config.SecurityToken);
+            if (config.SecurityCheck == false)
+                return;
 
-                    throw new LSOmniServiceException(securityTokenStatusCode, msg);
-                }
-            }
+            if (securityTokenStatusCode == StatusCode.OK)
+                return;
+
+            string msg = string.Empty;
+            config.SecurityToken = ""; //don't want to send the token back in error message
+            if (securityTokenStatusCode == StatusCode.DeviceIsBlocked)
+                msg = string.Format("Device has been blocked from usage: {0}", base.DeviceId);
+            else if (securityTokenStatusCode == StatusCode.SecurityTokenInvalid)
+                msg = string.Format("Security token not valid: {0}", config.SecurityToken);
+            else if (securityTokenStatusCode == StatusCode.UserNotLoggedIn)
+                msg = string.Format("User is not logged in: {0}", config.SecurityToken);
+
+            throw new LSOmniServiceException(securityTokenStatusCode, msg);
         }
 
         protected string SendToEcom(string command, object obj)

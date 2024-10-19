@@ -20,6 +20,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
             UomId = string.Empty;
             ItemImageId = string.Empty;
             StoreId = string.Empty;
+            SourcingLocation = string.Empty;
 
             LineType = LineType.Item; //never change this unless you know what you are doing !
 
@@ -75,6 +76,18 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         /// </summary>
         [DataMember]
         public string StoreId { get; set; }
+        /// <summary>
+        /// If item is supposed to be shipped from other location than default web store
+        /// </summary>
+        [DataMember]
+        public string SourcingLocation { get; set; }
+        /// <summary>
+        /// Create Inventory transfer
+        /// </summary>
+        [DataMember]
+        public bool InventoryTransfer { get; set; }
+        [DataMember]
+        public bool VendorSourcing { get; set; }
         /// <summary>
         /// Click and Collect this line at Store Id set in the line
         /// </summary>

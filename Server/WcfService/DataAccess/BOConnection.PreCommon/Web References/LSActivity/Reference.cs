@@ -29,6 +29,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     [System.Web.Services.WebServiceBindingAttribute(Name="Activity_Binding", Namespace="urn:microsoft-dynamics-schemas/codeunit/Activity")]
     public partial class Activity : MySoapHttpClientProtocol {
         
+        private System.Threading.SendOrPostCallback AssignGroupMemberOperationCompleted;
+        
         private System.Threading.SendOrPostCallback CancelActivityOperationCompleted;
         
         private System.Threading.SendOrPostCallback CancelMembershipOperationCompleted;
@@ -85,15 +87,21 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback GetAvailabilityOperationCompleted;
         
+        private System.Threading.SendOrPostCallback GetGroupReservationAdditionalChargesOperationCompleted;
+        
         private System.Threading.SendOrPostCallback GetProductChargesV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback GetProductChargesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback GetReservationAdditionalChargesOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetResourceAvailabilityOperationCompleted;
         
         private System.Threading.SendOrPostCallback GetResourceGroupAvailabilityOperationCompleted;
         
         private System.Threading.SendOrPostCallback InsertGroupReservationV2OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback InsertGroupReservationV3OperationCompleted;
         
         private System.Threading.SendOrPostCallback InsertGroupReservationOperationCompleted;
         
@@ -109,6 +117,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback PreSellActivityProductOperationCompleted;
         
+        private System.Threading.SendOrPostCallback RemoveGroupMemberOperationCompleted;
+        
         private System.Threading.SendOrPostCallback SellMembershipV2OperationCompleted;
         
         private System.Threading.SendOrPostCallback SellMembershipOperationCompleted;
@@ -117,15 +127,23 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private System.Threading.SendOrPostCallback SetAdditionalChargesV3OperationCompleted;
         
+        private System.Threading.SendOrPostCallback SetAdditionalChargesV4OperationCompleted;
+        
         private System.Threading.SendOrPostCallback SetAdditionalChargesOperationCompleted;
         
         private System.Threading.SendOrPostCallback SetAttributeOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SetGroupAdditionalChargesOperationCompleted;
+        
+        private System.Threading.SendOrPostCallback SetGroupMembersOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateActivityStatusOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateGroupHeaderStatusOperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateGroupReservationV2OperationCompleted;
+        
+        private System.Threading.SendOrPostCallback UpdateGroupReservationV3OperationCompleted;
         
         private System.Threading.SendOrPostCallback UpdateGroupReservationOperationCompleted;
         
@@ -204,6 +222,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
                 this.useDefaultCredentialsSetExplicitly = true;
             }
         }
+        
+        /// <remarks/>
+        public event AssignGroupMemberCompletedEventHandler AssignGroupMemberCompleted;
         
         /// <remarks/>
         public event CancelActivityCompletedEventHandler CancelActivityCompleted;
@@ -290,10 +311,16 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event GetAvailabilityCompletedEventHandler GetAvailabilityCompleted;
         
         /// <remarks/>
+        public event GetGroupReservationAdditionalChargesCompletedEventHandler GetGroupReservationAdditionalChargesCompleted;
+        
+        /// <remarks/>
         public event GetProductChargesV2CompletedEventHandler GetProductChargesV2Completed;
         
         /// <remarks/>
         public event GetProductChargesCompletedEventHandler GetProductChargesCompleted;
+        
+        /// <remarks/>
+        public event GetReservationAdditionalChargesCompletedEventHandler GetReservationAdditionalChargesCompleted;
         
         /// <remarks/>
         public event GetResourceAvailabilityCompletedEventHandler GetResourceAvailabilityCompleted;
@@ -303,6 +330,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event InsertGroupReservationV2CompletedEventHandler InsertGroupReservationV2Completed;
+        
+        /// <remarks/>
+        public event InsertGroupReservationV3CompletedEventHandler InsertGroupReservationV3Completed;
         
         /// <remarks/>
         public event InsertGroupReservationCompletedEventHandler InsertGroupReservationCompleted;
@@ -326,6 +356,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event PreSellActivityProductCompletedEventHandler PreSellActivityProductCompleted;
         
         /// <remarks/>
+        public event RemoveGroupMemberCompletedEventHandler RemoveGroupMemberCompleted;
+        
+        /// <remarks/>
         public event SellMembershipV2CompletedEventHandler SellMembershipV2Completed;
         
         /// <remarks/>
@@ -338,10 +371,19 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         public event SetAdditionalChargesV3CompletedEventHandler SetAdditionalChargesV3Completed;
         
         /// <remarks/>
+        public event SetAdditionalChargesV4CompletedEventHandler SetAdditionalChargesV4Completed;
+        
+        /// <remarks/>
         public event SetAdditionalChargesCompletedEventHandler SetAdditionalChargesCompleted;
         
         /// <remarks/>
         public event SetAttributeCompletedEventHandler SetAttributeCompleted;
+        
+        /// <remarks/>
+        public event SetGroupAdditionalChargesCompletedEventHandler SetGroupAdditionalChargesCompleted;
+        
+        /// <remarks/>
+        public event SetGroupMembersCompletedEventHandler SetGroupMembersCompleted;
         
         /// <remarks/>
         public event UpdateActivityStatusCompletedEventHandler UpdateActivityStatusCompleted;
@@ -351,6 +393,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event UpdateGroupReservationV2CompletedEventHandler UpdateGroupReservationV2Completed;
+        
+        /// <remarks/>
+        public event UpdateGroupReservationV3CompletedEventHandler UpdateGroupReservationV3Completed;
         
         /// <remarks/>
         public event UpdateGroupReservationCompletedEventHandler UpdateGroupReservationCompleted;
@@ -411,6 +456,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         public event UploadResourceActivitiesCompletedEventHandler UploadResourceActivitiesCompleted;
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:AssignGroupMember", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="AssignGroupMember_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool AssignGroupMember(string groupReservationNo, int groupLineNo, int memberSequence, ref string errorString) {
+            object[] results = this.Invoke("AssignGroupMember", new object[] {
+                        groupReservationNo,
+                        groupLineNo,
+                        memberSequence,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void AssignGroupMemberAsync(string groupReservationNo, int groupLineNo, int memberSequence, string errorString) {
+            this.AssignGroupMemberAsync(groupReservationNo, groupLineNo, memberSequence, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void AssignGroupMemberAsync(string groupReservationNo, int groupLineNo, int memberSequence, string errorString, object userState) {
+            if ((this.AssignGroupMemberOperationCompleted == null)) {
+                this.AssignGroupMemberOperationCompleted = new System.Threading.SendOrPostCallback(this.OnAssignGroupMemberOperationCompleted);
+            }
+            this.InvokeAsync("AssignGroupMember", new object[] {
+                        groupReservationNo,
+                        groupLineNo,
+                        memberSequence,
+                        errorString}, this.AssignGroupMemberOperationCompleted, userState);
+        }
+        
+        private void OnAssignGroupMemberOperationCompleted(object arg) {
+            if ((this.AssignGroupMemberCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.AssignGroupMemberCompleted(this, new AssignGroupMemberCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:CancelActivity", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="CancelActivity_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
@@ -2907,6 +2989,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetGroupReservationAdditionalCha" +
+            "rges", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetGroupReservationAdditionalCharges_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetGroupReservationAdditionalCharges(string groupReservationNo, int groupMemberNo, ref ActivityChargeRespond activityChargeRespond) {
+            object[] results = this.Invoke("GetGroupReservationAdditionalCharges", new object[] {
+                        groupReservationNo,
+                        groupMemberNo,
+                        activityChargeRespond});
+            activityChargeRespond = ((ActivityChargeRespond)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetGroupReservationAdditionalChargesAsync(string groupReservationNo, int groupMemberNo, ActivityChargeRespond activityChargeRespond) {
+            this.GetGroupReservationAdditionalChargesAsync(groupReservationNo, groupMemberNo, activityChargeRespond, null);
+        }
+        
+        /// <remarks/>
+        public void GetGroupReservationAdditionalChargesAsync(string groupReservationNo, int groupMemberNo, ActivityChargeRespond activityChargeRespond, object userState) {
+            if ((this.GetGroupReservationAdditionalChargesOperationCompleted == null)) {
+                this.GetGroupReservationAdditionalChargesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetGroupReservationAdditionalChargesOperationCompleted);
+            }
+            this.InvokeAsync("GetGroupReservationAdditionalCharges", new object[] {
+                        groupReservationNo,
+                        groupMemberNo,
+                        activityChargeRespond}, this.GetGroupReservationAdditionalChargesOperationCompleted, userState);
+        }
+        
+        private void OnGetGroupReservationAdditionalChargesOperationCompleted(object arg) {
+            if ((this.GetGroupReservationAdditionalChargesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetGroupReservationAdditionalChargesCompleted(this, new GetGroupReservationAdditionalChargesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetProductChargesV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetProductChargesV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public void GetProductChargesV2(string productNo, string locationNo, [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime dateOfBooking, ref ActivityChargeRespond activityChargeRespond) {
             object[] results = this.Invoke("GetProductChargesV2", new object[] {
@@ -2971,6 +3087,37 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.GetProductChargesCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetProductChargesCompleted(this, new GetProductChargesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:GetReservationAdditionalCharges", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="GetReservationAdditionalCharges_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public void GetReservationAdditionalCharges(string reservationNo, ref ActivityChargeRespond activityChargeRespond) {
+            object[] results = this.Invoke("GetReservationAdditionalCharges", new object[] {
+                        reservationNo,
+                        activityChargeRespond});
+            activityChargeRespond = ((ActivityChargeRespond)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void GetReservationAdditionalChargesAsync(string reservationNo, ActivityChargeRespond activityChargeRespond) {
+            this.GetReservationAdditionalChargesAsync(reservationNo, activityChargeRespond, null);
+        }
+        
+        /// <remarks/>
+        public void GetReservationAdditionalChargesAsync(string reservationNo, ActivityChargeRespond activityChargeRespond, object userState) {
+            if ((this.GetReservationAdditionalChargesOperationCompleted == null)) {
+                this.GetReservationAdditionalChargesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetReservationAdditionalChargesOperationCompleted);
+            }
+            this.InvokeAsync("GetReservationAdditionalCharges", new object[] {
+                        reservationNo,
+                        activityChargeRespond}, this.GetReservationAdditionalChargesOperationCompleted, userState);
+        }
+        
+        private void OnGetReservationAdditionalChargesOperationCompleted(object arg) {
+            if ((this.GetReservationAdditionalChargesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetReservationAdditionalChargesCompleted(this, new GetReservationAdditionalChargesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -3190,6 +3337,142 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.InsertGroupReservationV2Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.InsertGroupReservationV2Completed(this, new InsertGroupReservationV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:InsertGroupReservationV3", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="InsertGroupReservationV3_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool InsertGroupReservationV3(
+                    ref string setReservationNo, 
+                    string setReservationType, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime setResDateFrom, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="time")] System.DateTime setResTimeFrom, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime setResDateTo, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="time")] System.DateTime setResTimeTo, 
+                    string setCustomerAccount, 
+                    string setDescription, 
+                    string setComment, 
+                    string setReference, 
+                    string setContactNo, 
+                    string setClientName, 
+                    string setEmail, 
+                    string setLocation, 
+                    string setSalesPerson, 
+                    int setInternalstatus, 
+                    string setStatus, 
+                    int setNoOfPersons, 
+                    string setEventNo, 
+                    string setMainGroupMember, 
+                    ref string errorString) {
+            object[] results = this.Invoke("InsertGroupReservationV3", new object[] {
+                        setReservationNo,
+                        setReservationType,
+                        setResDateFrom,
+                        setResTimeFrom,
+                        setResDateTo,
+                        setResTimeTo,
+                        setCustomerAccount,
+                        setDescription,
+                        setComment,
+                        setReference,
+                        setContactNo,
+                        setClientName,
+                        setEmail,
+                        setLocation,
+                        setSalesPerson,
+                        setInternalstatus,
+                        setStatus,
+                        setNoOfPersons,
+                        setEventNo,
+                        setMainGroupMember,
+                        errorString});
+            setReservationNo = ((string)(results[1]));
+            errorString = ((string)(results[2]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void InsertGroupReservationV3Async(
+                    string setReservationNo, 
+                    string setReservationType, 
+                    System.DateTime setResDateFrom, 
+                    System.DateTime setResTimeFrom, 
+                    System.DateTime setResDateTo, 
+                    System.DateTime setResTimeTo, 
+                    string setCustomerAccount, 
+                    string setDescription, 
+                    string setComment, 
+                    string setReference, 
+                    string setContactNo, 
+                    string setClientName, 
+                    string setEmail, 
+                    string setLocation, 
+                    string setSalesPerson, 
+                    int setInternalstatus, 
+                    string setStatus, 
+                    int setNoOfPersons, 
+                    string setEventNo, 
+                    string setMainGroupMember, 
+                    string errorString) {
+            this.InsertGroupReservationV3Async(setReservationNo, setReservationType, setResDateFrom, setResTimeFrom, setResDateTo, setResTimeTo, setCustomerAccount, setDescription, setComment, setReference, setContactNo, setClientName, setEmail, setLocation, setSalesPerson, setInternalstatus, setStatus, setNoOfPersons, setEventNo, setMainGroupMember, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void InsertGroupReservationV3Async(
+                    string setReservationNo, 
+                    string setReservationType, 
+                    System.DateTime setResDateFrom, 
+                    System.DateTime setResTimeFrom, 
+                    System.DateTime setResDateTo, 
+                    System.DateTime setResTimeTo, 
+                    string setCustomerAccount, 
+                    string setDescription, 
+                    string setComment, 
+                    string setReference, 
+                    string setContactNo, 
+                    string setClientName, 
+                    string setEmail, 
+                    string setLocation, 
+                    string setSalesPerson, 
+                    int setInternalstatus, 
+                    string setStatus, 
+                    int setNoOfPersons, 
+                    string setEventNo, 
+                    string setMainGroupMember, 
+                    string errorString, 
+                    object userState) {
+            if ((this.InsertGroupReservationV3OperationCompleted == null)) {
+                this.InsertGroupReservationV3OperationCompleted = new System.Threading.SendOrPostCallback(this.OnInsertGroupReservationV3OperationCompleted);
+            }
+            this.InvokeAsync("InsertGroupReservationV3", new object[] {
+                        setReservationNo,
+                        setReservationType,
+                        setResDateFrom,
+                        setResTimeFrom,
+                        setResDateTo,
+                        setResTimeTo,
+                        setCustomerAccount,
+                        setDescription,
+                        setComment,
+                        setReference,
+                        setContactNo,
+                        setClientName,
+                        setEmail,
+                        setLocation,
+                        setSalesPerson,
+                        setInternalstatus,
+                        setStatus,
+                        setNoOfPersons,
+                        setEventNo,
+                        setMainGroupMember,
+                        errorString}, this.InsertGroupReservationV3OperationCompleted, userState);
+        }
+        
+        private void OnInsertGroupReservationV3OperationCompleted(object arg) {
+            if ((this.InsertGroupReservationV3Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.InsertGroupReservationV3Completed(this, new InsertGroupReservationV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -3880,6 +4163,43 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:RemoveGroupMember", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="RemoveGroupMember_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool RemoveGroupMember(string groupReservationNo, int groupLineNo, int memberSequence, ref string errorString) {
+            object[] results = this.Invoke("RemoveGroupMember", new object[] {
+                        groupReservationNo,
+                        groupLineNo,
+                        memberSequence,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void RemoveGroupMemberAsync(string groupReservationNo, int groupLineNo, int memberSequence, string errorString) {
+            this.RemoveGroupMemberAsync(groupReservationNo, groupLineNo, memberSequence, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void RemoveGroupMemberAsync(string groupReservationNo, int groupLineNo, int memberSequence, string errorString, object userState) {
+            if ((this.RemoveGroupMemberOperationCompleted == null)) {
+                this.RemoveGroupMemberOperationCompleted = new System.Threading.SendOrPostCallback(this.OnRemoveGroupMemberOperationCompleted);
+            }
+            this.InvokeAsync("RemoveGroupMember", new object[] {
+                        groupReservationNo,
+                        groupLineNo,
+                        memberSequence,
+                        errorString}, this.RemoveGroupMemberOperationCompleted, userState);
+        }
+        
+        private void OnRemoveGroupMemberOperationCompleted(object arg) {
+            if ((this.RemoveGroupMemberCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.RemoveGroupMemberCompleted(this, new RemoveGroupMemberCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SellMembershipV2", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SellMembershipV2_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool SellMembershipV2(string clientNo, string membershipType, ref string returnMembershipNo, ref string returnItemNo, ref decimal returnPrice, ref decimal returnQty, ref decimal returnDiscount, ref string returnBookingRef, ref string errorString) {
@@ -4085,6 +4405,63 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SetAdditionalChargesV4", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SetAdditionalChargesV4_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool SetAdditionalChargesV4(string reservationNo, string activityNo, int lineNo, int productType, string productNo, decimal qty, decimal price, decimal discountPercentage, string unitOfMeasure, string variantCode, int parentLine, bool isAllowance, string optionalComment, ref string errorString) {
+            object[] results = this.Invoke("SetAdditionalChargesV4", new object[] {
+                        reservationNo,
+                        activityNo,
+                        lineNo,
+                        productType,
+                        productNo,
+                        qty,
+                        price,
+                        discountPercentage,
+                        unitOfMeasure,
+                        variantCode,
+                        parentLine,
+                        isAllowance,
+                        optionalComment,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void SetAdditionalChargesV4Async(string reservationNo, string activityNo, int lineNo, int productType, string productNo, decimal qty, decimal price, decimal discountPercentage, string unitOfMeasure, string variantCode, int parentLine, bool isAllowance, string optionalComment, string errorString) {
+            this.SetAdditionalChargesV4Async(reservationNo, activityNo, lineNo, productType, productNo, qty, price, discountPercentage, unitOfMeasure, variantCode, parentLine, isAllowance, optionalComment, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void SetAdditionalChargesV4Async(string reservationNo, string activityNo, int lineNo, int productType, string productNo, decimal qty, decimal price, decimal discountPercentage, string unitOfMeasure, string variantCode, int parentLine, bool isAllowance, string optionalComment, string errorString, object userState) {
+            if ((this.SetAdditionalChargesV4OperationCompleted == null)) {
+                this.SetAdditionalChargesV4OperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetAdditionalChargesV4OperationCompleted);
+            }
+            this.InvokeAsync("SetAdditionalChargesV4", new object[] {
+                        reservationNo,
+                        activityNo,
+                        lineNo,
+                        productType,
+                        productNo,
+                        qty,
+                        price,
+                        discountPercentage,
+                        unitOfMeasure,
+                        variantCode,
+                        parentLine,
+                        isAllowance,
+                        optionalComment,
+                        errorString}, this.SetAdditionalChargesV4OperationCompleted, userState);
+        }
+        
+        private void OnSetAdditionalChargesV4OperationCompleted(object arg) {
+            if ((this.SetAdditionalChargesV4Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetAdditionalChargesV4Completed(this, new SetAdditionalChargesV4CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SetAdditionalCharges", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SetAdditionalCharges_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
         public bool SetAdditionalCharges(string activityNo, int lineNo, string itemNo, decimal qty, decimal price, decimal discountPercentage, string unitOfMeasure, ref string errorString) {
@@ -4168,6 +4545,112 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.SetAttributeCompleted != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.SetAttributeCompleted(this, new SetAttributeCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SetGroupAdditionalCharges", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SetGroupAdditionalCharges_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool SetGroupAdditionalCharges(string groupReservationNo, int groupLineNo, int lineNo, int productType, string itemNo, decimal qty, ref decimal price, ref decimal discountPercentage, string uOM, string variantCode, int parentLine, int groupMemberNo, string optionalComment, ref string errorString) {
+            object[] results = this.Invoke("SetGroupAdditionalCharges", new object[] {
+                        groupReservationNo,
+                        groupLineNo,
+                        lineNo,
+                        productType,
+                        itemNo,
+                        qty,
+                        price,
+                        discountPercentage,
+                        uOM,
+                        variantCode,
+                        parentLine,
+                        groupMemberNo,
+                        optionalComment,
+                        errorString});
+            price = ((decimal)(results[1]));
+            discountPercentage = ((decimal)(results[2]));
+            errorString = ((string)(results[3]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void SetGroupAdditionalChargesAsync(string groupReservationNo, int groupLineNo, int lineNo, int productType, string itemNo, decimal qty, decimal price, decimal discountPercentage, string uOM, string variantCode, int parentLine, int groupMemberNo, string optionalComment, string errorString) {
+            this.SetGroupAdditionalChargesAsync(groupReservationNo, groupLineNo, lineNo, productType, itemNo, qty, price, discountPercentage, uOM, variantCode, parentLine, groupMemberNo, optionalComment, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void SetGroupAdditionalChargesAsync(string groupReservationNo, int groupLineNo, int lineNo, int productType, string itemNo, decimal qty, decimal price, decimal discountPercentage, string uOM, string variantCode, int parentLine, int groupMemberNo, string optionalComment, string errorString, object userState) {
+            if ((this.SetGroupAdditionalChargesOperationCompleted == null)) {
+                this.SetGroupAdditionalChargesOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetGroupAdditionalChargesOperationCompleted);
+            }
+            this.InvokeAsync("SetGroupAdditionalCharges", new object[] {
+                        groupReservationNo,
+                        groupLineNo,
+                        lineNo,
+                        productType,
+                        itemNo,
+                        qty,
+                        price,
+                        discountPercentage,
+                        uOM,
+                        variantCode,
+                        parentLine,
+                        groupMemberNo,
+                        optionalComment,
+                        errorString}, this.SetGroupAdditionalChargesOperationCompleted, userState);
+        }
+        
+        private void OnSetGroupAdditionalChargesOperationCompleted(object arg) {
+            if ((this.SetGroupAdditionalChargesCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetGroupAdditionalChargesCompleted(this, new SetGroupAdditionalChargesCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:SetGroupMembers", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="SetGroupMembers_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool SetGroupMembers(string groupReservationNo, int memberSequence, string memberContact, string name, string email, string phone, string guestType, string optionalComment, ref string errorString) {
+            object[] results = this.Invoke("SetGroupMembers", new object[] {
+                        groupReservationNo,
+                        memberSequence,
+                        memberContact,
+                        name,
+                        email,
+                        phone,
+                        guestType,
+                        optionalComment,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void SetGroupMembersAsync(string groupReservationNo, int memberSequence, string memberContact, string name, string email, string phone, string guestType, string optionalComment, string errorString) {
+            this.SetGroupMembersAsync(groupReservationNo, memberSequence, memberContact, name, email, phone, guestType, optionalComment, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void SetGroupMembersAsync(string groupReservationNo, int memberSequence, string memberContact, string name, string email, string phone, string guestType, string optionalComment, string errorString, object userState) {
+            if ((this.SetGroupMembersOperationCompleted == null)) {
+                this.SetGroupMembersOperationCompleted = new System.Threading.SendOrPostCallback(this.OnSetGroupMembersOperationCompleted);
+            }
+            this.InvokeAsync("SetGroupMembers", new object[] {
+                        groupReservationNo,
+                        memberSequence,
+                        memberContact,
+                        name,
+                        email,
+                        phone,
+                        guestType,
+                        optionalComment,
+                        errorString}, this.SetGroupMembersOperationCompleted, userState);
+        }
+        
+        private void OnSetGroupMembersOperationCompleted(object arg) {
+            if ((this.SetGroupMembersCompleted != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.SetGroupMembersCompleted(this, new SetGroupMembersCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -4368,6 +4851,141 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             if ((this.UpdateGroupReservationV2Completed != null)) {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.UpdateGroupReservationV2Completed(this, new UpdateGroupReservationV2CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+        
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("urn:microsoft-dynamics-schemas/codeunit/Activity:UpdateGroupReservationV3", RequestNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", ResponseElementName="UpdateGroupReservationV3_Result", ResponseNamespace="urn:microsoft-dynamics-schemas/codeunit/Activity", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        [return: System.Xml.Serialization.XmlElementAttribute("return_value")]
+        public bool UpdateGroupReservationV3(
+                    string reservationNo, 
+                    string setReservationType, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime setResDateFrom, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="time")] System.DateTime setResTimeFrom, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="date")] System.DateTime setResDateTo, 
+                    [System.Xml.Serialization.XmlElementAttribute(DataType="time")] System.DateTime setResTimeTo, 
+                    string setCustomerAccount, 
+                    string setDescription, 
+                    string setComment, 
+                    string setReference, 
+                    string setContactNo, 
+                    string setClientName, 
+                    string setEmail, 
+                    string setLocation, 
+                    string setSalesPerson, 
+                    int setInternalstatus, 
+                    string setStatus, 
+                    int setNoOfPersons, 
+                    string setEventNo, 
+                    string setMainGroupMember, 
+                    ref string errorString) {
+            object[] results = this.Invoke("UpdateGroupReservationV3", new object[] {
+                        reservationNo,
+                        setReservationType,
+                        setResDateFrom,
+                        setResTimeFrom,
+                        setResDateTo,
+                        setResTimeTo,
+                        setCustomerAccount,
+                        setDescription,
+                        setComment,
+                        setReference,
+                        setContactNo,
+                        setClientName,
+                        setEmail,
+                        setLocation,
+                        setSalesPerson,
+                        setInternalstatus,
+                        setStatus,
+                        setNoOfPersons,
+                        setEventNo,
+                        setMainGroupMember,
+                        errorString});
+            errorString = ((string)(results[1]));
+            return ((bool)(results[0]));
+        }
+        
+        /// <remarks/>
+        public void UpdateGroupReservationV3Async(
+                    string reservationNo, 
+                    string setReservationType, 
+                    System.DateTime setResDateFrom, 
+                    System.DateTime setResTimeFrom, 
+                    System.DateTime setResDateTo, 
+                    System.DateTime setResTimeTo, 
+                    string setCustomerAccount, 
+                    string setDescription, 
+                    string setComment, 
+                    string setReference, 
+                    string setContactNo, 
+                    string setClientName, 
+                    string setEmail, 
+                    string setLocation, 
+                    string setSalesPerson, 
+                    int setInternalstatus, 
+                    string setStatus, 
+                    int setNoOfPersons, 
+                    string setEventNo, 
+                    string setMainGroupMember, 
+                    string errorString) {
+            this.UpdateGroupReservationV3Async(reservationNo, setReservationType, setResDateFrom, setResTimeFrom, setResDateTo, setResTimeTo, setCustomerAccount, setDescription, setComment, setReference, setContactNo, setClientName, setEmail, setLocation, setSalesPerson, setInternalstatus, setStatus, setNoOfPersons, setEventNo, setMainGroupMember, errorString, null);
+        }
+        
+        /// <remarks/>
+        public void UpdateGroupReservationV3Async(
+                    string reservationNo, 
+                    string setReservationType, 
+                    System.DateTime setResDateFrom, 
+                    System.DateTime setResTimeFrom, 
+                    System.DateTime setResDateTo, 
+                    System.DateTime setResTimeTo, 
+                    string setCustomerAccount, 
+                    string setDescription, 
+                    string setComment, 
+                    string setReference, 
+                    string setContactNo, 
+                    string setClientName, 
+                    string setEmail, 
+                    string setLocation, 
+                    string setSalesPerson, 
+                    int setInternalstatus, 
+                    string setStatus, 
+                    int setNoOfPersons, 
+                    string setEventNo, 
+                    string setMainGroupMember, 
+                    string errorString, 
+                    object userState) {
+            if ((this.UpdateGroupReservationV3OperationCompleted == null)) {
+                this.UpdateGroupReservationV3OperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateGroupReservationV3OperationCompleted);
+            }
+            this.InvokeAsync("UpdateGroupReservationV3", new object[] {
+                        reservationNo,
+                        setReservationType,
+                        setResDateFrom,
+                        setResTimeFrom,
+                        setResDateTo,
+                        setResTimeTo,
+                        setCustomerAccount,
+                        setDescription,
+                        setComment,
+                        setReference,
+                        setContactNo,
+                        setClientName,
+                        setEmail,
+                        setLocation,
+                        setSalesPerson,
+                        setInternalstatus,
+                        setStatus,
+                        setNoOfPersons,
+                        setEventNo,
+                        setMainGroupMember,
+                        errorString}, this.UpdateGroupReservationV3OperationCompleted, userState);
+        }
+        
+        private void OnUpdateGroupReservationV3OperationCompleted(object arg) {
+            if ((this.UpdateGroupReservationV3Completed != null)) {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateGroupReservationV3Completed(this, new UpdateGroupReservationV3CompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
         
@@ -5767,6 +6385,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal QtyIssued {
             get {
                 return this.qtyIssuedField;
@@ -5789,6 +6408,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal UnitPrice {
             get {
                 return this.unitPriceField;
@@ -5831,6 +6451,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal QuantityConsumed {
             get {
                 return this.quantityConsumedField;
@@ -5841,6 +6462,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal IssuedTotalAmount {
             get {
                 return this.issuedTotalAmountField;
@@ -6007,6 +6629,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal PriceOrDiscountValue {
             get {
                 return this.priceOrDiscountValueField;
@@ -6165,6 +6788,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Price {
             get {
                 return this.priceField;
@@ -6175,6 +6799,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Discount {
             get {
                 return this.discountField;
@@ -6185,6 +6810,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Qty {
             get {
                 return this.qtyField;
@@ -6195,6 +6821,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Amount {
             get {
                 return this.amountField;
@@ -6277,6 +6904,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal AdditionalCharges {
             get {
                 return this.additionalChargesField;
@@ -6507,6 +7135,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Price {
             get {
                 return this.priceField;
@@ -7370,6 +7999,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int EntryNo {
             get {
                 return this.entryNoField;
@@ -7442,6 +8072,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Amount {
             get {
                 return this.amountField;
@@ -7452,6 +8083,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal AmountLCY {
             get {
                 return this.amountLCYField;
@@ -7651,6 +8283,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime TimeFrom {
             get {
                 return this.timeFromField;
@@ -7672,6 +8305,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Quantity {
             get {
                 return this.quantityField;
@@ -7682,6 +8316,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal UnitPrice {
             get {
                 return this.unitPriceField;
@@ -7692,6 +8327,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal LineDiscountPercentage {
             get {
                 return this.lineDiscountPercentageField;
@@ -7702,6 +8338,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal TotalAmount {
             get {
                 return this.totalAmountField;
@@ -7762,6 +8399,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int NoOfPersons {
             get {
                 return this.noOfPersonsField;
@@ -7772,6 +8410,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal LineDiscountAmount {
             get {
                 return this.lineDiscountAmountField;
@@ -7987,6 +8626,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -8390,6 +9030,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal DefaultQty {
             get {
                 return this.defaultQtyField;
@@ -8410,6 +9051,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AllowQuantityChange {
             get {
                 return this.allowQuantityChangeField;
@@ -8431,6 +9073,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(false)]
         public bool AllowNoOfPersonChange {
             get {
                 return this.allowNoOfPersonChangeField;
@@ -8441,6 +9084,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int MinQty {
             get {
                 return this.minQtyField;
@@ -8451,6 +9095,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int MaxQty {
             get {
                 return this.maxQtyField;
@@ -8461,6 +9106,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int MinPersons {
             get {
                 return this.minPersonsField;
@@ -8471,6 +9117,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int MaxPersons {
             get {
                 return this.maxPersonsField;
@@ -8492,6 +9139,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal DefaultUnitPrice {
             get {
                 return this.defaultUnitPriceField;
@@ -8747,6 +9395,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute(DataType="time")]
+        [System.ComponentModel.DefaultValueAttribute(typeof(System.DateTime), "0001-01-01T00:00:00")]
         public System.DateTime AvailTime {
             get {
                 return this.availTimeField;
@@ -8757,6 +9406,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int Availability {
             get {
                 return this.availabilityField;
@@ -8787,6 +9437,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Price {
             get {
                 return this.priceField;
@@ -8849,6 +9500,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Discount {
             get {
                 return this.discountField;
@@ -8947,6 +9599,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int Sequence {
             get {
                 return this.sequenceField;
@@ -9042,6 +9695,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         
         private int parentSequenceField;
         
+        private int reservationLineNoField;
+        
         public ChargeLines() {
             this.lineNoField = 0;
             this.qtyField = ((decimal)(0m));
@@ -9050,6 +9705,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             this.totalField = ((decimal)(0m));
             this.packageLineField = 0;
             this.parentSequenceField = 0;
+            this.reservationLineNoField = 0;
         }
         
         /// <remarks/>
@@ -9064,6 +9720,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int LineNo {
             get {
                 return this.lineNoField;
@@ -9084,6 +9741,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Qty {
             get {
                 return this.qtyField;
@@ -9094,6 +9752,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Price {
             get {
                 return this.priceField;
@@ -9104,6 +9763,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal DiscountPercentage {
             get {
                 return this.discountPercentageField;
@@ -9114,6 +9774,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(typeof(decimal), "0")]
         public decimal Total {
             get {
                 return this.totalField;
@@ -9195,6 +9856,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int PackageLine {
             get {
                 return this.packageLineField;
@@ -9205,12 +9867,24 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         }
         
         /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
         public int ParentSequence {
             get {
                 return this.parentSequenceField;
             }
             set {
                 this.parentSequenceField = value;
+            }
+        }
+        
+        /// <remarks/>
+        [System.ComponentModel.DefaultValueAttribute(0)]
+        public int ReservationLineNo {
+            get {
+                return this.reservationLineNoField;
+            }
+            set {
+                this.reservationLineNoField = value;
             }
         }
     }
@@ -9246,6 +9920,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             }
             set {
                 this.textField = value;
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void AssignGroupMemberCompletedEventHandler(object sender, AssignGroupMemberCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class AssignGroupMemberCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal AssignGroupMemberCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
             }
         }
     }
@@ -10988,6 +11696,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetGroupReservationAdditionalChargesCompletedEventHandler(object sender, GetGroupReservationAdditionalChargesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetGroupReservationAdditionalChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetGroupReservationAdditionalChargesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityChargeRespond activityChargeRespond {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityChargeRespond)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void GetProductChargesV2CompletedEventHandler(object sender, GetProductChargesV2CompletedEventArgs e);
     
     /// <remarks/>
@@ -11025,6 +11759,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal GetProductChargesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public ActivityChargeRespond activityChargeRespond {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((ActivityChargeRespond)(this.results[0]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void GetReservationAdditionalChargesCompletedEventHandler(object sender, GetReservationAdditionalChargesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetReservationAdditionalChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal GetReservationAdditionalChargesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -11135,6 +11895,48 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal InsertGroupReservationV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string setReservationNo {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void InsertGroupReservationV3CompletedEventHandler(object sender, InsertGroupReservationV3CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class InsertGroupReservationV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal InsertGroupReservationV3CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }
@@ -11484,6 +12286,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void RemoveGroupMemberCompletedEventHandler(object sender, RemoveGroupMemberCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class RemoveGroupMemberCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal RemoveGroupMemberCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void SellMembershipV2CompletedEventHandler(object sender, SellMembershipV2CompletedEventArgs e);
     
     /// <remarks/>
@@ -11708,6 +12544,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
     
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void SetAdditionalChargesV4CompletedEventHandler(object sender, SetAdditionalChargesV4CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetAdditionalChargesV4CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SetAdditionalChargesV4CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
     public delegate void SetAdditionalChargesCompletedEventHandler(object sender, SetAdditionalChargesCompletedEventArgs e);
     
     /// <remarks/>
@@ -11778,6 +12648,90 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
             get {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[2]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void SetGroupAdditionalChargesCompletedEventHandler(object sender, SetGroupAdditionalChargesCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetGroupAdditionalChargesCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SetGroupAdditionalChargesCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal price {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[1]));
+            }
+        }
+        
+        /// <remarks/>
+        public decimal discountPercentage {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((decimal)(this.results[2]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[3]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void SetGroupMembersCompletedEventHandler(object sender, SetGroupMembersCompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class SetGroupMembersCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal SetGroupMembersCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
             }
         }
     }
@@ -11863,6 +12817,40 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.LSActivity {
         private object[] results;
         
         internal UpdateGroupReservationV2CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
+                base(exception, cancelled, userState) {
+            this.results = results;
+        }
+        
+        /// <remarks/>
+        public bool Result {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((bool)(this.results[0]));
+            }
+        }
+        
+        /// <remarks/>
+        public string errorString {
+            get {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[1]));
+            }
+        }
+    }
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    public delegate void UpdateGroupReservationV3CompletedEventHandler(object sender, UpdateGroupReservationV3CompletedEventArgs e);
+    
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Web.Services", "4.8.9032.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdateGroupReservationV3CompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs {
+        
+        private object[] results;
+        
+        internal UpdateGroupReservationV3CompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) : 
                 base(exception, cancelled, userState) {
             this.results = results;
         }

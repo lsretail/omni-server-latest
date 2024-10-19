@@ -3425,7 +3425,6 @@
           <element minOccurs="0" maxOccurs="1" name="SendReceiptbyEmail" type="string" />
           <element minOccurs="0" maxOccurs="1" name="Authenticator" type="string" />
           <element minOccurs="0" maxOccurs="1" name="AuthenticationId" type="string" />
-          <element minOccurs="0" maxOccurs="1" name="GuestType" type="string" />
         </sequence>
       </complexType>
       <complexType name="MemberAttributeValue">
@@ -3466,7 +3465,6 @@
           <element minOccurs="0" maxOccurs="1" name="HouseApartmentNo" type="string" />
           <element minOccurs="0" maxOccurs="1" name="TerritoryCode" type="string" />
           <element minOccurs="0" maxOccurs="1" name="SendReceiptbyEmail" type="string" />
-          <element minOccurs="0" maxOccurs="1" name="GuestType" type="string" />
         </sequence>
       </complexType>
       <complexType name="MemberAttributeValue">
@@ -10004,7 +10002,7 @@
   </binding>
   <service name="OmniWrapper">
     <port name="OmniWrapper_Port" binding="tns:OmniWrapper_Binding">
-      <address location="http://dhqsrvomni001:9047/LSCentralDev/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
+      <address location="http://dhqsrvomni006:7647/BC240/WS/CRONUS%20-%20LS%20Central/Codeunit/OmniWrapper" xmlns="http://schemas.xmlsoap.org/wsdl/soap/" />
     </port>
   </service>
 </definitions>

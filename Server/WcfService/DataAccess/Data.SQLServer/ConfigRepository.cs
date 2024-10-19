@@ -94,7 +94,7 @@ namespace LSOmni.DataAccess.Dal
         public BOConfiguration ConfigGet(string lsKey)
         {
             SQLHelper.CheckForSQLInjection(lsKey);
-            BOConfiguration config = null;
+            BOConfiguration dbconfig = null;
             List<TenantSetting> list = new List<TenantSetting>();
 
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))
@@ -127,7 +127,7 @@ namespace LSOmni.DataAccess.Dal
                             }
 
                             if (DecryptConfigValue.IsEncryptedPwd(value))
-                                value = DecryptConfigValue.DecryptString(value);
+                                value = DecryptConfigValue.DecryptString(value, config.SettingsGetByKey(ConfigKey.EncrCode));
 
                             list.Add(new TenantSetting(key, value, comment, dataType, advanced, isDefault));
                         }
@@ -145,15 +145,15 @@ namespace LSOmni.DataAccess.Dal
                     }
                 }
 
-                config = new BOConfiguration(lsKey);
-                config.Settings = list;
-                config.LSKey.Description = GetDescription(lsKey);
-                config.LSKey.Active = ConfigIsActive(lsKey);
+                dbconfig = new BOConfiguration(lsKey);
+                dbconfig.Settings = list;
+                dbconfig.LSKey.Description = GetDescription(lsKey);
+                dbconfig.LSKey.Active = ConfigIsActive(lsKey);
 
                 connection.Close();
             }
-            config.LSKey.Description = GetDescription(lsKey);
-            return config;
+            dbconfig.LSKey.Description = GetDescription(lsKey);
+            return dbconfig;
         }
 
         public List<BOConfiguration> ConfigGetAll()
@@ -184,13 +184,13 @@ namespace LSOmni.DataAccess.Dal
             List<BOConfiguration> list = new List<BOConfiguration>();
             foreach (LSKey key in lsKeys)
             {
-                BOConfiguration config = ConfigGet(key.Key);
-                list.Add(config);
+                BOConfiguration dbconfig = ConfigGet(key.Key);
+                list.Add(dbconfig);
             }
             return list;
         }
 
-        public void SaveConfig(BOConfiguration config)
+        public void SaveConfig(BOConfiguration dbconfig)
         {
             lock (lockDictionary)
             {
@@ -201,13 +201,13 @@ namespace LSOmni.DataAccess.Dal
                     {
                         try
                         {
-                            Delete(config.LSKey.Key, connection, trans);
-                            if (config.Settings == null)
-                                config.Settings = new List<TenantSetting>();
+                            Delete(dbconfig.LSKey.Key, connection, trans);
+                            if (dbconfig.Settings == null)
+                                dbconfig.Settings = new List<TenantSetting>();
                             using (SqlCommand command = connection.CreateCommand())
                             {
                                 command.Transaction = trans;
-                                foreach (TenantSetting settings in config.Settings)
+                                foreach (TenantSetting settings in dbconfig.Settings)
                                 {
                                     command.CommandText = "IF NOT EXISTS (SELECT [LSKey],[Key] FROM [TenantConfig] " +
                                         "WHERE [LSKey]=@lskey AND [Key]=@key) " +
@@ -219,10 +219,10 @@ namespace LSOmni.DataAccess.Dal
                                         "UPDATE [TenantConfig] SET [Value]=@value WHERE [LSKey]=@lskey AND [Key]=@Key ";
 
                                     command.Parameters.Clear();
-                                    command.Parameters.AddWithValue("@lskey", config.LSKey.Key);
+                                    command.Parameters.AddWithValue("@lskey", dbconfig.LSKey.Key);
                                     command.Parameters.AddWithValue("@key", settings.Key);
                                     if(settings.Key == ConfigKey.BOPassword.ToString() || settings.Key == ConfigKey.BOSql.ToString())
-                                        command.Parameters.AddWithValue("@value", DecryptConfigValue.EncryptString(settings.Value));
+                                        command.Parameters.AddWithValue("@value", DecryptConfigValue.EncryptString(settings.Value, config.SettingsGetByKey(ConfigKey.EncrCode)));
                                     else
                                         command.Parameters.AddWithValue("@value", settings.Value);
                                     TraceSqlCommand(command);
@@ -235,9 +235,9 @@ namespace LSOmni.DataAccess.Dal
                                         "UPDATE [LSKeys] SET [Description]=@desc WHERE [LSKey]=@lskey";
 
                                 command.Parameters.Clear();
-                                command.Parameters.AddWithValue("@lskey", config.LSKey.Key);
-                                command.Parameters.AddWithValue("@desc", config.LSKey.Description);
-                                command.Parameters.AddWithValue("@active", config.LSKey.Active);
+                                command.Parameters.AddWithValue("@lskey", dbconfig.LSKey.Key);
+                                command.Parameters.AddWithValue("@desc", dbconfig.LSKey.Description);
+                                command.Parameters.AddWithValue("@active", dbconfig.LSKey.Active);
                                 TraceSqlCommand(command);
                                 command.ExecuteNonQuery();
                                 trans.Commit();

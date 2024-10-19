@@ -132,6 +132,126 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityReservationAdditionalChargesGet(reservationNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ActivityGroupAdditionalChargesSet(AdditionalCharge reqest)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGroupAdditionalChargesSet(reqest);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGroupReservationAdditionalChargesGet(reservationNo, memberNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
+                return null; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGroupMemberSet(reservationNo, memberSequence, contact, name, email, phone, guestType, optionalComment);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGroupMemberAssign(reservationNo, memberSequence, lineNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
+        public virtual bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                ActivityBLL bll = new ActivityBLL(config);
+                return bll.ActivityGroupMemberRemove(reservationNo, memberSequence, lineNo);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "Failed to get ActivityAdditionalChargesSet");
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);

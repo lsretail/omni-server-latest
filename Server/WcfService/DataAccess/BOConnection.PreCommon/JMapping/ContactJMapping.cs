@@ -103,6 +103,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case "Date Blocked": rec.DateBlocked = ConvertTo.SafeDateTime(col.FieldValue); break;
                         case "Blocked by": rec.BlockedBy = col.FieldValue; break;
                         case "Guest Type": rec.GuestType = col.FieldValue; break;
+                        case "External System": rec.ExternalSystem = col.FieldValue; break;
+                        case "External ID": rec.AlternateId = col.FieldValue; break;
                     }
                 }
                 list.Add(rec);

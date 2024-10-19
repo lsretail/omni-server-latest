@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.SqlClient;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 
@@ -34,6 +35,45 @@ namespace LSOmni.DataAccess.Dal
                 }
                 connection.Close();
             }
+        }
+
+        public StatusCode ValidateSecurityToken(string securityToken, out string deviceId, out string cardId)
+        {
+            deviceId = string.Empty;
+            cardId = string.Empty;
+            StatusCode statusCode = StatusCode.OK;
+
+            if (string.IsNullOrWhiteSpace(securityToken))
+            {
+                return StatusCode.SecurityTokenInvalid;
+            }
+
+            using (SqlConnection connection = new SqlConnection(sqlConnectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [DeviceId],[ContactId] FROM [DeviceSecurity] WHERE [SecurityToken]=@token";
+                    command.Parameters.AddWithValue("@token", securityToken);
+                    TraceSqlCommand(command);
+                    connection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            deviceId = SQLHelper.GetString(reader["DeviceId"]);
+                            cardId = SQLHelper.GetString(reader["ContactId"]);
+                        }
+                        reader.Close();
+                    }
+
+                    if (string.IsNullOrEmpty(deviceId))
+                    {
+                        statusCode = StatusCode.UserNotLoggedIn;
+                    }
+                }
+                connection.Close();
+            }
+            return statusCode;
         }
 
         public bool DoesDeviceIdExist(string deviceId)

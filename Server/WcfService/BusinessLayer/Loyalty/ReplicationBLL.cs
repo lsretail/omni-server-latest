@@ -5,7 +5,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Replication;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Items;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSOmni.Common.Util;
-using System.Security.AccessControl;
 
 namespace LSOmni.BLL.Loyalty
 {

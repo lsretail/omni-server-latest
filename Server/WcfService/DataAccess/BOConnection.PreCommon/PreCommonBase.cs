@@ -12,8 +12,8 @@ using System.Collections.Generic;
 
 using LSOmni.Common.Util;
 using LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping;
-using LSRetail.Omni.Domain.DataModel.Base;
 using LSOmni.DataAccess.BOConnection.PreCommon.JMapping;
+using LSRetail.Omni.Domain.DataModel.Base;
 
 namespace LSOmni.DataAccess.BOConnection.PreCommon
 {
@@ -33,8 +33,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 TimeoutSec = value;
                 if (centralWS != null)
                     centralWS.Timeout = (value - 2) * 1000;
+                if (centralWS25 != null)
+                    centralWS25.Timeout = (value - 2) * 1000;
                 if (centralQryWS != null)
                     centralQryWS.Timeout = (value - 2) * 1000;
+                if (centralQryWS25 != null)
+                    centralQryWS25.Timeout = (value - 2) * 1000;
                 if (activityWS != null)
                     activityWS.Timeout = (value - 2) * 1000;
                 if (odataWS != null)
@@ -44,13 +48,15 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         protected static LSLogger logger = new LSLogger();
 
-        private NavWebReference.RetailWebServices navWebReference = null;
-        private NavWebReference.RetailWebServices navWebQryReference = null;
+        private readonly NavWebReference.RetailWebServices navWebReference = null;
+        private readonly NavWebReference.RetailWebServices navWebQryReference = null;
         public LSCentral.OmniWrapper centralWS = null;
+        public LSCentral25.OmniWrapper centralWS25 = null;
         public LSCentral.OmniWrapper centralQryWS = null;
+        public LSCentral25.OmniWrapper centralQryWS25 = null;
         public LSActivity.Activity activityWS = null;
         public LSOData.ODataRequest odataWS = null;
-        private int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
+        private readonly int base64ConversionMinLength = 1024 * 100; //50KB 75KB  minimum length to base64 conversion
         private static readonly object Locker = new object();
 
         public Version LSCVersion = null; //use this in code to check Nav version
@@ -58,10 +64,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
 
         protected BOConfiguration config = null;
 
-        private string ecomAppId = string.Empty;
-        private string ecomAppType = string.Empty;
+        private readonly string ecomAppId = string.Empty;
+        private readonly string ecomAppType = string.Empty;
         private bool ecomAppRestore = false;
-        private string ecomAppRestoreFileName = string.Empty;
+        private readonly string ecomAppRestoreFileName = string.Empty;
 
         public PreCommonBase(BOConfiguration configuration, bool ping = false)
         {
@@ -106,7 +112,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
             if (DecryptConfigValue.IsEncryptedPwd(password))
             {
-                password = DecryptConfigValue.DecryptString(password);
+                password = DecryptConfigValue.DecryptString(password, config.SettingsGetByKey(ConfigKey.EncrCode));
             }
 
             if (protocol.ToUpper().Equals("S2S") == false)
@@ -136,21 +142,27 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             //TimeoutInSeconds from client can overwrite BOConnection.NavSQL.Timeout
             string timeout = config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOTimeout.ToString()).Value;
 
-            navWebReference = new NavWebReference.RetailWebServices();
-            navWebReference.Url = url;
-            navWebReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
-            navWebReference.PreAuthenticate = true;
-            navWebReference.AllowAutoRedirect = true;
+            navWebReference = new NavWebReference.RetailWebServices()
+            {
+                Url = url,
+                Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000,  //millisecs,  60 seconds
+                PreAuthenticate = true,
+                AllowAutoRedirect = true
+            };
 
             string qryurl = config.SettingsGetByKey(ConfigKey.BOQryUrl);
-            navWebQryReference = new NavWebReference.RetailWebServices();
-            navWebQryReference.Url = string.IsNullOrEmpty(qryurl) ? navWebReference.Url : qryurl;
-            navWebQryReference.Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000;  //millisecs,  60 seconds
-            navWebQryReference.PreAuthenticate = true;
-            navWebQryReference.AllowAutoRedirect = true;
+            navWebQryReference = new NavWebReference.RetailWebServices()
+            {
+                Url = string.IsNullOrEmpty(qryurl) ? navWebReference.Url : qryurl,
+                Timeout = (timeout == null ? 20 : ConvertTo.SafeInt(timeout)) * 1000,  //millisecs,  60 seconds
+                PreAuthenticate = true,
+                AllowAutoRedirect = true
+            };
 
             centralWS = new LSCentral.OmniWrapper();
+            centralWS25 = new LSCentral25.OmniWrapper();
             centralQryWS = new LSCentral.OmniWrapper();
+            centralQryWS25 = new LSCentral25.OmniWrapper();
             activityWS = new LSActivity.Activity();
             odataWS = new LSOData.ODataRequest();
 
@@ -159,10 +171,20 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             centralWS.PreAuthenticate = true;
             centralWS.AllowAutoRedirect = true;
 
+            centralWS25.Url = url.Replace("RetailWebServices", "OmniWrapper");
+            centralWS25.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+            centralWS25.PreAuthenticate = true;
+            centralWS25.AllowAutoRedirect = true;
+
             centralQryWS.Url = string.IsNullOrEmpty(qryurl) ? centralWS.Url : qryurl.Replace("RetailWebServices", "OmniWrapper");
             centralQryWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
             centralQryWS.PreAuthenticate = true;
             centralQryWS.AllowAutoRedirect = true;
+
+            centralQryWS25.Url = string.IsNullOrEmpty(qryurl) ? centralWS.Url : qryurl.Replace("RetailWebServices", "OmniWrapper");
+            centralQryWS25.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
+            centralQryWS25.PreAuthenticate = true;
+            centralQryWS25.AllowAutoRedirect = true;
 
             activityWS.Url = url.Replace("RetailWebServices", "Activity");
             activityWS.Timeout = config.SettingsIntGetByKey(ConfigKey.BOTimeout) * 1000;  //millisecs,  60 seconds
@@ -181,7 +203,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 navWebQryReference.GetType().GetProperty("AuthToken").SetValue(navWebQryReference, token);
 
                 centralWS.GetType().GetProperty("AuthToken").SetValue(centralWS, token);
+                centralWS25.GetType().GetProperty("AuthToken").SetValue(centralWS25, token);
                 centralQryWS.GetType().GetProperty("AuthToken").SetValue(centralQryWS, token);
+                centralQryWS25.GetType().GetProperty("AuthToken").SetValue(centralQryWS25, token);
                 activityWS.GetType().GetProperty("AuthToken").SetValue(activityWS, token);
                 odataWS.GetType().GetProperty("AuthToken").SetValue(odataWS, token);
             }
@@ -194,7 +218,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     navWebQryReference.Credentials = credentials;
 
                     centralWS.Credentials = credentials;
+                    centralWS25.Credentials = credentials;
                     centralQryWS.Credentials = credentials;
+                    centralQryWS25.Credentials = credentials;
                     activityWS.Credentials = credentials;
                     odataWS.Credentials = credentials;
                 }
@@ -206,7 +232,9 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 navWebQryReference.Proxy = GetWebProxy();
 
                 centralWS.Proxy = GetWebProxy();
+                centralWS25.Proxy = GetWebProxy();
                 centralQryWS.Proxy = GetWebProxy();
+                centralQryWS25.Proxy = GetWebProxy();
                 activityWS.Proxy = GetWebProxy();
                 odataWS.Proxy = GetWebProxy();
             }
@@ -239,7 +267,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                     //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
                     if (DecryptConfigValue.IsEncryptedPwd(password))
                     {
-                        password = DecryptConfigValue.DecryptString(password);
+                        password = DecryptConfigValue.DecryptString(password, config.SettingsGetByKey(ConfigKey.EncrCode));
                     }
 
                     //check if domain is part of the config.UserName
@@ -352,7 +380,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public string NavVersionToUse(out string centralVersion)
         {
             if (LSCVersion == null)
-                LSCVersion = new Version("24.0");
+                LSCVersion = new Version("25.0");
 
             centralVersion = LSCVersion.ToString();
             if (centralWS == null)
@@ -772,7 +800,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 {
                     //expected return codes, so don't throw unexpected exception, rather return the known codes to client  
                     if (code.Equals(respCode))
+                    {
+                        logger.Warn(config.LSKey.Key, "LS Central [{0}] Warning: [{1}]:{2} [OmniCode:{3}]", funcName, respCode, errText, statusCode);
                         return code;
+                    }
                 }
             }
             logger.StatisticEndSub(ref stat, statIndex);

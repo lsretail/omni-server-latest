@@ -1,11 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Xml.Linq;
 using System.Collections.Generic;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Requests;
 using LSOmni.Common.Util;
-using System.IO;
-using System.Xml.Linq;
 
 namespace LSOmni.BLL.Loyalty
 {

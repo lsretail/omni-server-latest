@@ -112,7 +112,6 @@ namespace LSOmni.BLL.Loyalty
         public virtual SalesEntry OrderCreate(Order request, bool returnOrderIdOnly, Statistics stat)
         {
             ValidateOrder(request, stat);
-
             if (request.OrderType == OrderType.ScanPayGo && config.SettingsBoolGetByKey(ConfigKey.ScanPayGo_CheckPayAuth))
             {
                 ScanPayGoBLL sBll = new ScanPayGoBLL(config, timeoutInSeconds);
@@ -160,6 +159,11 @@ namespace LSOmni.BLL.Loyalty
                 return tBLL.SalesEntryGet(extId, DocumentIdType.External, stat);
 
             return tBLL.SalesEntryGet(orderId, DocumentIdType.Order, stat);
+        }
+
+        public virtual bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat)
+        {
+            return BOLoyConnection.OrderUpdatePayment(orderId, storeId, payment, stat);
         }
 
         public virtual SalesEntry OrderHospCreate(OrderHosp request, bool returnOrderIdOnly, Statistics stat)

@@ -25,7 +25,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
         public ContactRepository(BOConfiguration config, Version navVersion) : base(config, navVersion)
         {
             sqlcolumns = "mt.[Account No_],mt.[Contact No_],mt.[Name],mt.[E-Mail],mt.[Phone No_],mt.[Mobile Phone No_],mt.[Blocked],mt.[Reason Blocked],mt.[Date Blocked],mt.[Blocked by]," +
-                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page]," +
+                         "mt.[First Name],mt.[Middle Name],mt.[Surname],mt.[Date of Birth],mt.[Gender],mt.[Marital Status],mt.[Home Page],mt.[External ID],mt.[External System]," +
                          "mt.[Address],mt.[Address 2],mt.[House_Apartment No_],mt.[City],mt.[Post Code],mt.[Territory Code],mt.[County],mt.[Country_Region Code]";
 
             sqlfrom = " FROM [" + navCompanyName + "Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mt";
@@ -592,27 +592,17 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string sqlwhere = " WHERE c.[Card No_]=@id";
-            foreach (string si in searchitems)
-            {
-                sqlwhere += string.Format(" AND a.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-            }
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT a.[Code],a.[Description],a.[Attribute Type],a.[Default Value],a.[Mandatory] " +
+                    string sqlWhere = SQLHelper.SetSearchParameters(command, search, GetDbCICollation()) + " AND c.[Card No_]=@id";
+                    command.CommandText = "SELECT mt.[Code],mt.[Description],mt.[Attribute Type],mt.[Default Value],mt.[Mandatory] " +
                                           "FROM [" + navCompanyName + "Member Contact$5ecfc871-5d82-43f1-9c54-59685e82318d] mc " +
                                           "JOIN [" + navCompanyName + "Member Attribute Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] ms ON ms.[Club Code]=mc.[Club Code] " +
-                                          "JOIN [" + navCompanyName + "Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] a ON a.[Code]=ms.[Code] " +
+                                          "JOIN [" + navCompanyName + "Member Attribute$5ecfc871-5d82-43f1-9c54-59685e82318d] mt ON mt.[Code]=ms.[Code] " +
                                           "JOIN [" + navCompanyName + "Membership Card$5ecfc871-5d82-43f1-9c54-59685e82318d] c on c.[Contact No_]=mc.[Contact No_]" +
-                                          "AND a.[Visible Type]=0 AND a.[Lookup Type]=0" + sqlwhere;
+                                          "AND mt.[Visible Type]=0 AND mt.[Lookup Type]=0" + sqlWhere;
                     command.Parameters.AddWithValue("@id", cardId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -752,7 +742,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                 Blocked = SQLHelper.GetBool(reader["Blocked"]),
                 BlockedReason = SQLHelper.GetString(reader["Reason Blocked"]),
                 DateBlocked = ConvertTo.SafeJsonDate(SQLHelper.GetDateTime(reader["Date Blocked"]), config.IsJson),
-                BlockedBy = SQLHelper.GetString(reader["Blocked by"])
+                BlockedBy = SQLHelper.GetString(reader["Blocked by"]),
+                AlternateId = SQLHelper.GetString(reader["External ID"]),
+                ExternalSystem = SQLHelper.GetString(reader["External System"])
             };
 
             cont.Cards = CardsGetByContactId(cont.Id, out string username);

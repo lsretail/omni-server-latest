@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <DiscoveryClientResultsFile xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Results>
-    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://dhqsrvomni001:9047/LscRelease/WS/Codeunit/Activity" filename="Activity.wsdl" />
+    <DiscoveryClientResult referenceType="System.Web.Services.Discovery.ContractReference" url="http://ishqr90q4tqm:9047/LSCentralDev/WS/Codeunit/Activity" filename="Activity.wsdl" />
   </Results>
 </DiscoveryClientResultsFile>

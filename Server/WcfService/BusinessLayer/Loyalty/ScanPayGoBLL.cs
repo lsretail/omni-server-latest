@@ -84,6 +84,11 @@ namespace LSOmni.BLL.Loyalty
             }
         }
 
+        public virtual string GetAuthCodes()
+        {
+            return string.Empty;
+        }
+
         public virtual async Task<bool> GetAuthPaymentCodeAsync(string authorizationCode, Statistics stat)
         {
             //use empty string for store to get default profile

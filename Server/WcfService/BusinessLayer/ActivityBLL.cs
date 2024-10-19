@@ -57,6 +57,36 @@ namespace LSOmni.BLL
             return BOActConnection.ActivityAdditionalChargesSet(request);
         }
 
+        public virtual List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo)
+        {
+            return BOActConnection.ActivityReservationAdditionalChargesGet(reservationNo);
+        }
+
+        public virtual bool ActivityGroupAdditionalChargesSet(AdditionalCharge req)
+        {
+            return BOActConnection.ActivityGroupAdditionalChargesSet(req);
+        }
+
+        public virtual List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo)
+        {
+            return BOActConnection.ActivityGroupReservationAdditionalChargesGet(reservationNo, memberNo);
+        }
+
+        public virtual bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment)
+        {
+            return BOActConnection.ActivityGroupMemberSet(reservationNo, memberSequence, contact, name, email, phone, guestType, optionalComment);
+        }
+
+        public virtual bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo)
+        {
+            return BOActConnection.ActivityGroupMemberAssign(reservationNo, memberSequence, lineNo);
+        }
+
+        public virtual bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo)
+        {
+            return BOActConnection.ActivityGroupMemberRemove(reservationNo, memberSequence, lineNo);
+        }
+
         public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             return BOActConnection.ActivityAttributesGet(type, linkNo);

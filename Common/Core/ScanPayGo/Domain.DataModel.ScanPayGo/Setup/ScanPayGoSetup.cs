@@ -139,7 +139,7 @@ namespace LSRetail.Omni.Domain.DataModel.ScanPayGo.Setup
         public string AllowShopHome { get; set; }
         public string ApplePayMerchantName { get; set; }
 
-        public bool AudkenniLoginEnabled { get; set; } = default;
+        public bool AudkenniLoginEnabled { get; set; }
         public bool AudkenniTestUserEnabled { get; set; } = default;
         public string AudkenniTestUser { get; set; } = default;
         public string AudkenniTestCardId { get; set; } = default;

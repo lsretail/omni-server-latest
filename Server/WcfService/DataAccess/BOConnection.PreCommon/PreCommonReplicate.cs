@@ -64,12 +64,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
                 }
 
                 // filter
-                List<XMLFieldData> filter = new List<XMLFieldData>();
-                filter.Add(new XMLFieldData()
+                List<XMLFieldData> filter = new List<XMLFieldData>()
                 {
-                    FieldName = "Item No.",
-                    Values = values
-                });
+                    new XMLFieldData()
+                    {
+                        FieldName = "Item No.",
+                        Values = values
+                    }
+                };
 
                 // get HTML detail
                 try
@@ -443,12 +445,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             // filter
-            List<XMLFieldData> filter = new List<XMLFieldData>();
-            filter.Add(new XMLFieldData()
+            List<XMLFieldData> filter = new List<XMLFieldData>()
             {
-                FieldName = "Store No.",
-                Values = new List<string>() { storeId }
-            });
+                new XMLFieldData()
+                {
+                    FieldName = "Store No.",
+                    Values = new List<string>() { storeId }
+                }
+            };
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetBatchWebRequestXML("LSC WI Price", null, filter, lastKey, batchSize);
@@ -701,12 +705,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             // filter
-            List<XMLFieldData> filter = new List<XMLFieldData>();
-            filter.Add(new XMLFieldData()
+            List<XMLFieldData> filter = new List<XMLFieldData>()
             {
-                FieldName = "Store No.",
-                Values = new List<string>() { storeId }
-            });
+                new XMLFieldData()
+                {
+                    FieldName = "Store No.",
+                    Values = new List<string>() { storeId }
+                }
+            };
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetBatchWebRequestXML("LSC WI Discounts", null, filter, lastKey, batchSize);
@@ -827,12 +833,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             // filter
-            List<XMLFieldData> filter = new List<XMLFieldData>();
-            filter.Add(new XMLFieldData()
+            List<XMLFieldData> filter = new List<XMLFieldData>()
             {
-                FieldName = "Store No.",
-                Values = new List<string>() { storeId }
-            });
+                new XMLFieldData()
+                {
+                    FieldName = "Store No.",
+                    Values = new List<string>() { storeId }
+                }
+            };
 
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetBatchWebRequestXML("LSC WI Mix & Match Offer", null, filter, lastKey, batchSize);
@@ -1429,7 +1437,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
         public virtual List<ReplTerminal> ReplicateTerminals(string appId, string appType, string storeId, int batchSize, bool fullRepl, ref string lastKey, ref int recordsRemaining)
         {
             ReplicateRepository rep = new ReplicateRepository(config);
-            XMLTableData table = null;
+            XMLTableData table;
             if (LSCVersion >= new Version("19.3"))
             {
                 SetupJMapping map = new SetupJMapping(config.IsJson);
@@ -1572,12 +1580,14 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon
             }
 
             // filter
-            List<XMLFieldData> filter = new List<XMLFieldData>();
-            filter.Add(new XMLFieldData()
+            List<XMLFieldData> filter = new List<XMLFieldData>()
             {
-                FieldName = "Store No.",
-                Values = new List<string>() { storeId }
-            });
+                new XMLFieldData()
+                {
+                    FieldName = "Store No.",
+                    Values = new List<string>() { storeId }
+                }
+            };
 
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";

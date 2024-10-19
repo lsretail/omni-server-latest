@@ -46,6 +46,36 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
             return NavWSBase.ActivityAdditionalChargesSet(request);
         }
 
+        public virtual List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityGroupAdditionalChargesSet(AdditionalCharge req)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
+        public virtual bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo)
+        {
+            throw new NotImplementedException("Only available in Central Pre");
+        }
+
         public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             return NavWSBase.ActivityAttributesGet(type, linkNo);

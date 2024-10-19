@@ -309,7 +309,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             {
                 string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Pre Approved Amount LCY],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
                                 "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Pre Approved Valid Date]," +
-                                "ml.[Card or Customer No_],ml.[Document ID],ml.[Token No_],ml.[EFT Authorization Code],ml.[External Reference]";
+                                "ml.[Card or Customer No_],ml.[Document ID],ml.[Token No_],ml.[EFT Authorization Code],ml.[External Reference],ml.[Authorization Expired]";
 
                 using (SqlCommand command = connection.CreateCommand())
                 {
@@ -338,6 +338,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                                 CardNo = SQLHelper.GetString(reader["Card or Customer No_"]),
                                 TokenNumber = SQLHelper.GetString(reader["Token No_"]),
                                 AuthorizationCode = SQLHelper.GetString(reader["EFT Authorization Code"]),
+                                AuthorizationExpired = SQLHelper.GetBool(reader["Authorization Expired"]),
                                 ExternalReference = SQLHelper.GetString(reader["External Reference"])
                             };
 
@@ -528,7 +529,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (LSCVersion >= new Version("24.0"))
             {
                 decimal cancelQty = SQLHelper.GetDecimal(reader["Qty_ Canceled in Picking"]);
-                line.Quantity = line.Quantity - cancelQty;
+                line.Quantity -= cancelQty;
             }
             return line;
         }

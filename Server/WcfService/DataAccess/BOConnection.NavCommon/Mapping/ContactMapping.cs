@@ -52,7 +52,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Password = contact.Password,
                     DeviceFriendlyName = contact.LoggedOnToDevice.DeviceFriendlyName,
 
-                    ExternalSystem = string.Empty
+                    ExternalSystem = XMLHelper.GetString(contact.ExternalSystem)
                 }
             };
 
@@ -106,7 +106,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
                     Phone = XMLHelper.GetString(addr.PhoneNumber),
                     MobilePhoneNo = XMLHelper.GetString(addr.CellPhoneNumber),
 
-                    ExternalSystem = string.Empty
+                    ExternalSystem = XMLHelper.GetString(contact.ExternalSystem)
                 }
             };
 
@@ -140,6 +140,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 Id = contact.ContactNo,
                 AlternateId = contact.ExternalID,
+                ExternalSystem = contact.ExternalSystem,
                 Email = contact.EMail,
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,
@@ -215,6 +216,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon.Mapping
             {
                 Id = contact.ContactNo,
                 AlternateId = contact.ExternalID,
+                ExternalSystem  = contact.ExternalSystem,
                 Email = contact.EMail,
                 FirstName = contact.FirstName,
                 MiddleName = contact.MiddleName,

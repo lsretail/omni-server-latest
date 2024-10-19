@@ -213,7 +213,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                 Quantity = SQLHelper.GetDecimal(reader, "Net Inventory"),
                 IsDeleted = false
             };
-            if (LSCVersion >= new Version("18.4"))
+            if (LSCVersion >= new Version("18.4") && LSCVersion < new Version("24.1"))
             {
                 rec.Quantity += SQLHelper.GetDecimal(reader, "Sourcing Location Inventory");
             }

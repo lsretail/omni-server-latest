@@ -16,12 +16,12 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         const int TABLEID = 27;
         private int TABLEHTMLID = 10001411;
 
-        private string sqlcolumns = string.Empty;
-        private string sqlfrom = string.Empty;
+        private string sqlColumns = string.Empty;
+        private string sqlFrom = string.Empty;
 
         public ItemRepository(BOConfiguration config, Version version) : base(config, version)
         {
-            sqlcolumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Sales Unit of Measure],mt.[Type]," +
+            sqlColumns = "mt.[No_],mt.[Blocked],mt.[Description],mt.[VAT Prod_ Posting Group],mt.[Base Unit of Measure],mt.[Sales Unit of Measure],mt.[Type]," +
                          "mt.[Purch_ Unit of Measure],mt.[Vendor No_],mt.[Vendor Item No_],mt.[Unit Price],mt.[Gross Weight],mt.[Country_Region of Origin Code]," +
                          "mt.[Item Tracking Code],mt.[Item Category Code],mt.[Units per Parcel],mt.[Unit Volume]," +
                          "mt2.[LSC Zero Price Valid],mt2.[LSC Scale Item],mt2.[LSC Retail Product Code],mt2.[LSC Keying in Price],mt2.[LSC Keying in Quantity]," +
@@ -41,22 +41,22 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                          "(SELECT TOP(1) sl.[Blocked on eCommerce] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
                          "WHERE sl.[Item No_]=mt.[No_] AND sl.[Variant Dimension 1 Code]='' AND sl.[Variant Code]='' AND sl.[Starting Date]<GETDATE() AND sl.[Blocked on eCommerce]=1) AS BlockEcom";
 
-            sqlfrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
+            sqlFrom = " FROM [" + navCompanyName + "Item$437dbf0e-84ff-417a-965d-ed2bb9650972] mt" +
                       " JOIN [" + navCompanyName + "Item$5ecfc871-5d82-43f1-9c54-59685e82318d] mt2 ON mt2.[No_]=mt.[No_] ";
 
             if (LSCVersion >= new Version("22.2"))
             {
-                sqlcolumns += ",mt.[Tariff No_]";
+                sqlColumns += ",mt.[Tariff No_]";
             }
 
             if (LSCVersion >= new Version("19.2"))
             {
-                sqlfrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_] AND ih.[Language]=''";
+                sqlFrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML ML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_] AND ih.[Language]=''";
                 TABLEHTMLID = 10001410;
             }
             else
             {
-                sqlfrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
+                sqlFrom += "LEFT JOIN [" + navCompanyName + "LSC Item HTML$5ecfc871-5d82-43f1-9c54-59685e82318d] ih ON mt.[No_]=ih.[Item No_]";
             }
         }
 
@@ -65,7 +65,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            string col = sqlcolumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
+            string col = sqlColumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
                          "LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] " +
                          "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
@@ -77,7 +77,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
+                sql = "SELECT COUNT(*)" + sqlFrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
             }
             else
@@ -145,7 +145,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             }
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlFrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
             List<ReplItem> list = new List<ReplItem>();
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -229,7 +229,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            string col = sqlcolumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
+            string col = sqlColumns + ",(SELECT TOP(1) id.[Status] FROM [" + navCompanyName + "LSC Store Group Setup$5ecfc871-5d82-43f1-9c54-59685e82318d] sg " +
                          "LEFT JOIN [" + navCompanyName + "LSC Item Distribution$5ecfc871-5d82-43f1-9c54-59685e82318d] id ON id.[Code]=sg.[Store Group] " +
                          "WHERE sg.[Store Code]='" + storeId + "' AND id.[Item No_]=mt.[No_] ORDER BY sg.[Level] DESC) AS DistStatus";
 
@@ -241,7 +241,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             string sql = string.Empty;
             if (fullReplication)
             {
-                sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
+                sql = "SELECT COUNT(*)" + sqlFrom + GetWhereStatementWithStoreDist(true, keys, "mt.[No_]", storeId, false);
                 recordsRemaining = GetRecordCount(TABLEID, lastKey, sql, keys, ref maxKey);
             }
             else
@@ -339,7 +339,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             List<LoyItem> list = new List<LoyItem>();
 
             // get records
-            sql = GetSQL(fullReplication, batchSize) + col + sqlfrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
+            sql = GetSQL(fullReplication, batchSize) + col + sqlFrom + GetWhereStatementWithStoreDist(fullReplication, keys, "mt.[No_]", storeId, true, false);
 
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -426,7 +426,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE [LSC Retail Product Code]=@id";
+                    command.CommandText = "SELECT " + sqlColumns + sqlFrom + " WHERE [LSC Retail Product Code]=@id";
                     command.Parameters.AddWithValue("@id", productGroupId);
                     TraceSqlCommand(command);
                     connection.Open();
@@ -469,7 +469,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Discount]=1) AS BlockDiscount, " +
             "(SELECT TOP(1) sl.[Block Manual Price Change] FROM [" + navCompanyName + "LSC Item Status Link$5ecfc871-5d82-43f1-9c54-59685e82318d] sl " +
             "WHERE sl.[Item No_]=mt.[No_] AND sl.[Starting Date]<GETDATE() AND sl.[Block Manual Price Change]=1) AS BlockPrice " +
-            sqlfrom +
+            sqlFrom +
             " LEFT JOIN [" + navCompanyName + "LSC Retail Product Group$5ecfc871-5d82-43f1-9c54-59685e82318d] pg ON pg.[Code]=mt2.[LSC Retail Product Code]" +
             " WHERE (1=1)";
 
@@ -520,7 +520,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom +
+                    command.CommandText = "SELECT " + sqlColumns + sqlFrom +
                         " WHERE mt.[No_]=@id";
                     command.Parameters.AddWithValue("@id", id);
                     TraceSqlCommand(command);
@@ -613,34 +613,18 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
         public List<LoyItem> ItemLoySearch(string search, string storeId, int maxResult, bool includeDetails, Statistics stat)
         {
             List<LoyItem> list = new List<LoyItem>();
-
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string sqlwhere = string.Empty;
-            foreach (string si in searchitems)
-            {
-                if (string.IsNullOrEmpty(sqlwhere))
-                {
-                    sqlwhere = string.Format(" WHERE mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-                else
-                {
-                    sqlwhere += string.Format(" AND mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-                }
-            }
-
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = GetSQL(true, maxResult) + sqlcolumns + sqlfrom + sqlwhere +
-                                            GetSQLStoreDist("mt.[No_]", storeId, true) + " ORDER BY mt.[Description]";
+                    string sqlWhere = SQLHelper.SetSearchParameters(command, search, GetDbCICollation());
+                    command.CommandText = GetSQL(true, maxResult) + sqlColumns + sqlFrom + sqlWhere +
+                                          GetSQLStoreDist("mt.[No_]", storeId, true) + " ORDER BY mt.[Description]";
+
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -654,6 +638,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                     connection.Close();
                 }
             }
+            logger.StatisticEndSub(ref stat, index);
             return list;
         }
 

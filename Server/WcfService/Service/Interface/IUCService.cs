@@ -520,6 +520,16 @@ namespace LSOmni.Service
         SalesEntry OrderEdit(Order request, string orderId, OrderEditType editType, bool returnOrderIdOnly);
 
         /// <summary>
+        /// Update payments for Customer Order
+        /// </summary>
+        /// <param name="payment"></param>
+        /// <param name="orderId">Customer Order Id</param>
+        /// <param name="storeId"></param>
+        /// <returns>webPreAuthNotAuthorize</returns>
+        [OperationContract]
+        bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment);
+
+        /// <summary>
         /// Create a Hospitality Order
         /// </summary>
         /// <remarks>
@@ -2760,7 +2770,7 @@ namespace LSOmni.Service
         /// Confirm Activity Booking
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : ConfirmActivityV2 or V3<p/><p/>
+        /// LS Central WS2 : ConfirmActivityVx<p/><p/>
         /// If property [Paid] is set, then returns details for the retail basket.<p/>
         /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through Commerce Service for LS Central will update the Activities payment status and assign the sales order document as payment document.<p/> 
         /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
@@ -2814,7 +2824,7 @@ namespace LSOmni.Service
         /// Returns list of available time-slots/prices for a specific location,product and date 
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : GetAvailabilityV2<p/><p/>
+        /// LS Central WS2 : GetAvailabilityVx<p/><p/>
         /// Optional to include required resource (if only specific resource) and contactNo for accurate pricing.
         /// </remarks>
         /// <param name="locationNo"></param>
@@ -2859,7 +2869,7 @@ namespace LSOmni.Service
         /// Change or insert additional charges to Activity
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : SetAdditionalChargesV3
+        /// LS Central WS2 : SetAdditionalChargesVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -2898,6 +2908,84 @@ namespace LSOmni.Service
         bool ActivityAdditionalChargesSet(AdditionalCharge request);
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetReservationAdditionalCharges
+        /// </remarks>
+        /// <param name="reservationNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : SetGroupAdditionalCharges
+        /// </remarks>
+        /// <param name="reqest"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityGroupAdditionalChargesSet(AdditionalCharge reqest);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : GetGroupReservationAdditionalCharges
+        /// </remarks>
+        /// <param name="reservationNo"></param>
+        /// <param name="memberNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : SetGroupMembers
+        /// </remarks>
+        /// <param name="reservationNo"></param>
+        /// <param name="memberSequence"></param>
+        /// <param name="contact"></param>
+        /// <param name="name"></param>
+        /// <param name="email"></param>
+        /// <param name="phone"></param>
+        /// <param name="guestType"></param>
+        /// <param name="optionalComment"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : AssignGroupMember
+        /// </remarks>
+        /// <param name="reservationNo"></param>
+        /// <param name="memberSequence"></param>
+        /// <param name="lineNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : RemoveGroupMember
+        /// </remarks>
+        /// <param name="reservationNo"></param>
+        /// <param name="memberSequence"></param>
+        /// <param name="lineNo"></param>
+        /// <returns></returns>
+        [OperationContract]
+        bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo);
+
+        /// <summary>
         /// Returns list of Attributes which are assigned on a given Activity product, reservation or activity entry
         /// </summary>
         /// <remarks>
@@ -2927,7 +3015,7 @@ namespace LSOmni.Service
         /// Action to create a Reservation header into the LS Reservation table
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : InsertReservation
+        /// LS Central WS2 : InsertReservationVx
         /// </remarks>
         /// <example>
         /// This Sample request can be used in SOAP UI application to send request to LS Commerce.<p/>
@@ -2994,7 +3082,7 @@ namespace LSOmni.Service
         /// Action to force update to a reservation header in the LS Reservation table.  Blank fields will be ignored
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateReservation
+        /// LS Central WS2 : UpdateReservationVx
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -3087,9 +3175,26 @@ namespace LSOmni.Service
         [OperationContract]
         string ActivityGetAvailabilityToken(string locationNo, string productNo, DateTime activityTime, string optionalResource, int quantity);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : ExtendToken
+        /// </remarks>
+        /// <param name="tokenId"></param>
+        /// <param name="seconds"></param>
+        /// <returns></returns>
         [OperationContract]
         bool ActivityExtendToken(string tokenId, int seconds);
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// LS Central WS2 : CancelToken
+        /// </remarks>
+        /// <param name="tokenId"></param>
+        /// <returns></returns>
         [OperationContract]
         bool ActivityCancelToken(string tokenId);
 
@@ -3097,7 +3202,7 @@ namespace LSOmni.Service
         /// Create Group Reservation
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : InsertGroupReservation
+        /// LS Central WS2 : InsertGroupReservationVx
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -3108,7 +3213,7 @@ namespace LSOmni.Service
         /// Update Group reservation header.  Blank fields will be ignored
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : UpdateGroupReservation
+        /// LS Central WS2 : UpdateGroupReservationVx
         /// </remarks>
         /// <param name="request"></param>
         /// <returns></returns>
@@ -3119,7 +3224,7 @@ namespace LSOmni.Service
         /// Confirm Group Activity Booking
         /// </summary>
         /// <remarks>
-        /// LS Central WS2 : ConfirmGroupActivityV4<p/><p/>
+        /// LS Central WS2 : ConfirmGroupActivityVx<p/><p/>
         /// If property [Paid] is set, then returns details for the retail basket.<p/>
         /// [BookingRef] should be assigned to the OrderLine and passed in with Order so retrieved basket payment through Commerce Service for LS Central will update the Activities payment status and assign the sales order document as payment document.<p/> 
         /// If activity type does not require [contactNo] then it is sufficient to provide client name.<p/>
@@ -3425,7 +3530,6 @@ namespace LSOmni.Service
         /// <param name="cardId"></param>
         /// <returns></returns>
         [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         bool SpgUnlockRodDevice(string storeId, string cardId);
 
         /// <summary>
@@ -3434,12 +3538,18 @@ namespace LSOmni.Service
         /// <param name="storeId"></param>
         /// <returns></returns>
         [OperationContract]
-        [WebInvoke(Method = "POST", BodyStyle = WebMessageBodyStyle.Wrapped, ResponseFormat = WebMessageFormat.Json)]
         string SpgUnlockRodDeviceCheck(string storeId);
 
-        #endregion
-
+        /// <summary>
+        /// Get codes
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        string GetAuthCodes();
+		
         [OperationContract]
         string MyCustomFunction(string data);
+
+        #endregion
     }
 }

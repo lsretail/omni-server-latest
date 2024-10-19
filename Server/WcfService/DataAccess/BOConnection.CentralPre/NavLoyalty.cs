@@ -557,6 +557,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre
             return LSCentralWSBase.OrderEdit(request, ref orderId, editType, stat);
         }
 
+        public virtual bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat)
+        {
+            return LSCentralWSBase.OrderUpdatePayment(orderId, storeId, payment, stat);
+        }
+
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)
         {
             SalesEntry entry;

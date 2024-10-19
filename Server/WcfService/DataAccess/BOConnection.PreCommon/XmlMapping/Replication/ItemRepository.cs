@@ -91,6 +91,32 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
             return list;
         }
 
+        public List<Price> GetPrices(XMLTableData table)
+        {
+            List<Price> list = new List<Price>();
+            if (table == null)
+                return list;
+
+            for (int i = 0; i < table.NumberOfValues; i++)
+            {
+                Price rec = new Price();
+                foreach (XMLFieldData field in table.FieldList)
+                {
+                    switch (field.FieldName)
+                    {
+                        case "Store No.": rec.StoreId = field.Values[i]; break;
+                        case "Item No.": rec.ItemId = field.Values[i]; break;
+                        case "Variant Code": rec.VariantId = field.Values[i]; break;
+                        case "Unit of Measure Code": rec.UomId = field.Values[i]; break;
+                        case "Unit Price": rec.Amt = ConvertTo.SafeDecimal(field.Values[i]); break;
+                    }
+                }
+                rec.Amount = rec.Amt.ToString();
+                list.Add(rec);
+            }
+            return list;
+        }
+
         public List<DimValue> GetDimValues(XMLTableData table)
         {
             List<DimValue> list = new List<DimValue>();
@@ -137,6 +163,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.XmlMapping.Replication
                     case "Gross Weight": rec.GrossWeight = ConvertTo.SafeDecimal(field.Values[0]); break;
                     case "Unit Volume": rec.UnitVolume = ConvertTo.SafeDecimal(field.Values[0]); break;
                     case "Units per Parcel": rec.UnitsPerParcel = ConvertTo.SafeDecimal(field.Values[0]); break;
+                    case "Unit Price": rec.Price = field.Values[0]; break;
                 }
             }
             return rec;

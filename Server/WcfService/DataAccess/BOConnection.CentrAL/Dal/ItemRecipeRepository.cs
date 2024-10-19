@@ -33,11 +33,9 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(lastKey))
                 lastKey = "0";
 
-            SQLHelper.CheckForSQLInjection(storeId);
-            List<JscKey> keys = GetPrimaryKeys("BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972");
-
             // get records remaining
             string sql = string.Empty;
+            List<JscKey> keys = GetPrimaryKeys("BOM Component$437dbf0e-84ff-417a-965d-ed2bb9650972");
             if (fullReplication)
             {
                 sql = "SELECT COUNT(*)" + sqlfrom + GetWhereStatementWithStoreDist(true, keys, "mt.[Parent Item No_]", storeId, false);

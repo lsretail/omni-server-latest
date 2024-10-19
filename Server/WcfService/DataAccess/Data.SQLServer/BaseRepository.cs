@@ -38,7 +38,7 @@ namespace LSOmni.DataAccess.Dal
                         if (DecryptConfigValue.IsEncryptedPwd(tmpPwd))
                         {
                             //decrypt the pwd
-                            builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd);
+                            builder["Password"] = DecryptConfigValue.DecryptString(tmpPwd, ConfigSetting.GetEncrCode());
                         }
                     }
                     sqlConnectionString = builder.ConnectionString;
@@ -56,8 +56,8 @@ namespace LSOmni.DataAccess.Dal
             if (string.IsNullOrWhiteSpace(whereClause))
                 whereClause = "";
 
-            whereClause = SQLHelper.CheckForSQLInjection(whereClause);
-            tableName = SQLHelper.CheckForSQLInjection(tableName);
+            whereClause = SQLHelper.CheckForSQLInjection(whereClause, 1);
+            tableName = SQLHelper.CheckForSQLInjection(tableName, 1);
 
             int cnt = 0;
             using (SqlConnection connection = new SqlConnection(sqlConnectionString))

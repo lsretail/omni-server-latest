@@ -415,6 +415,12 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     OrderReference = XMLHelper.GetString(line.OrderId),
                     StoreNo = string.IsNullOrEmpty(line.StoreId) ? storeId : line.StoreId.ToUpper(),
                     ClickAndCollect = (useHeaderCAC) ? (order.OrderType == OrderType.ClickAndCollect) : line.ClickAndCollectLine,
+                    SourcingLocation = XMLHelper.GetString(line.SourcingLocation),
+                    SourcingLocation1 = XMLHelper.GetString(line.SourcingLocation),
+                    InventoryTransfer = line.InventoryTransfer,
+                    InventoryTransfer1 = line.InventoryTransfer,
+                    VendorSourcing = line.VendorSourcing,
+                    VendorSourcing1 = line.VendorSourcing,
                     Quantity = line.Quantity,
                     DiscountAmount = line.DiscountAmount,
                     DiscountPercent = line.DiscountPercent,
@@ -427,13 +433,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     Status = string.Empty,
                     LeadTimeCalculation = string.Empty,
                     PurchaseOrderNo = string.Empty,
-                    SourcingLocation = string.Empty,
-                    SourcingLocation1 = string.Empty,
                     TerminalNo = string.Empty,
-                    InventoryTransfer = false,
-                    InventoryTransfer1 = false,
-                    VendorSourcing = false,
-                    VendorSourcing1 = false,
                     ShipOrder = false
                 };
 
@@ -489,6 +489,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         CurrencyCode = curcode,
                         CurrencyFactor = line.CurrencyFactor,
                         AuthorizationCode = XMLHelper.GetString(line.AuthorizationCode),
+                        AuthorizationExpired = line.AuthorizationExpired,
                         TokenNo = XMLHelper.GetString(line.TokenNumber),
                         ExternalReference = XMLHelper.GetString(line.ExternalReference),
                         PreApprovedValidDate = line.PreApprovedValidDate,
@@ -664,6 +665,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                         CurrencyCode = curCode,
                         CurrencyFactor = line.CurrencyFactor,
                         AuthorizationCode = XMLHelper.GetString(line.AuthorizationCode),
+                        AuthorizationExpired = line.AuthorizationExpired,
                         TokenNo = XMLHelper.GetString(line.TokenNumber),
                         ExternalReference = XMLHelper.GetString(line.ExternalReference),
                         PreApprovedValidDate = line.PreApprovedValidDate,
@@ -706,6 +708,8 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 // fill out null fields
                 CustomerId = string.Empty,
                 BusinessTAXCode = string.Empty,
+                GenBusPostingGroup = string.Empty,
+                VATBusPostingGroup = string.Empty,
                 CustDiscGroup = string.Empty,
                 CurrencyCode = string.Empty,
                 DiningTblDescription = string.Empty,
@@ -719,11 +723,6 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 StaffId = string.Empty,
                 TerminalId = string.Empty
             };
-
-            if (LSCVersion >= new Version("19.0"))
-            {
-                head.ShipToCountryRegionCode = XMLHelper.GetString(list.ShipToCountryCode);
-            }
 
             trans.Add(head);
             root.MobileTransaction = trans.ToArray();
@@ -1044,6 +1043,45 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                 }
             }
             return order;
+        }
+
+        public LSCentral.RootCustomerOrderCancel OrderCancelToRoot(string orderId, string storeId, string userId, List<OrderCancelLine> lines)
+        {
+            LSCentral.RootCustomerOrderCancel root = new LSCentral.RootCustomerOrderCancel();
+            List<LSCentral.CustomerOrderStatusLog> log = new List<LSCentral.CustomerOrderStatusLog>()
+            {
+                new LSCentral.CustomerOrderStatusLog()
+                {
+                    StoreNo = XMLHelper.GetString(storeId),
+                    UserID = XMLHelper.GetString(userId),
+                    StaffID = string.Empty,
+                    TerminalNo = string.Empty
+                }
+            };
+            if (LSCVersion >= new Version("25.0"))
+                log[0].ReceiptNo = orderId;
+
+            root.CustomerOrderStatusLog = log.ToArray();
+
+            if (lines != null && lines.Count > 0)
+            {
+                List<LSCentral.CustomerOrderCancelCOLine> clines = new List<LSCentral.CustomerOrderCancelCOLine>();
+                foreach (OrderCancelLine line in lines)
+                {
+                    LSCentral.CustomerOrderCancelCOLine ln = new LSCentral.CustomerOrderCancelCOLine()
+                    {
+                        DocumentID = orderId,
+                        LineNo = XMLHelper.LineNumberToNav(line.LineNo)
+                    };
+                    if (LSCVersion >= new Version("24.0"))
+                    {
+                        ln.Quantity = line.Quantity;
+                    }
+                    clines.Add(ln);
+                }
+                root.CustomerOrderCancelCOLine = clines.ToArray();
+            }
+            return root;
         }
     }
 }

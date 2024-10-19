@@ -6,7 +6,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
 {
     public class NavWSRepository : BaseRepository
     {
-        private string sqlfrom = string.Empty;
+        private readonly string sqlfrom = string.Empty;
 
         public NavWSRepository(BOConfiguration config) : base(config)
         {

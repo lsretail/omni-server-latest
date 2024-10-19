@@ -270,6 +270,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "userName:{0} deviceId:{1}", userName, deviceId);
 
+                config.SecurityCheck = false;
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds); //not using security token here in login, so no security checks
                 MemberContact contact = contactBLL.Login(userName, password, true, deviceId, stat);
                 contact.Environment.Version = this.Version();
@@ -297,6 +298,7 @@ namespace LSOmni.Service
             {
                 logger.Debug(config.LSKey.Key, "authenticator:{0} deviceId:{1}", authenticator, deviceId);
 
+                config.SecurityCheck = false;
                 ContactBLL contactBLL = new ContactBLL(config, clientTimeOutInSeconds);
                 MemberContact contact = contactBLL.SocialLogon(authenticator, authenticationId, deviceId, deviceName, includeDetails, stat);
                 contact.Environment.Version = this.Version();
@@ -1820,6 +1822,28 @@ namespace LSOmni.Service
             }
         }
 
+        public virtual bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment)
+        {
+            Statistics stat = logger.StatisticStartMain(config, serverUri);
+
+            try
+            {
+                logger.Debug(config.LSKey.Key, LogJson(payment));
+
+                OrderBLL bll = new OrderBLL(config, clientTimeOutInSeconds);
+                return bll.OrderUpdatePayment(orderId, storeId, payment, stat);
+            }
+            catch (Exception ex)
+            {
+                HandleExceptions(ex, "lineNo:{0}", payment.LineNumber);
+                return false; //never gets here
+            }
+            finally
+            {
+                logger.StatisticEndMain(stat);
+            }
+        }
+
         public virtual SalesEntry OrderHospCreate(OrderHosp request, bool returnOrderIdOnly)
         {
             Statistics stat = logger.StatisticStartMain(config, serverUri);
@@ -2474,6 +2498,12 @@ namespace LSOmni.Service
             {
                 logger.StatisticEndMain(stat);
             }
+        }
+
+        public virtual string GetAuthCodes()
+        {
+            ScanPayGoBLL bll = new ScanPayGoBLL(config, clientTimeOutInSeconds);
+            return bll.GetAuthCodes();
         }
 
         #endregion

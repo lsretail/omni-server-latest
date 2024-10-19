@@ -62,5 +62,17 @@ namespace LSRetail.Omni.Domain.DataModel.Base.Log
             Stacktrace = string.Empty;
             TimeStamp = DateTime.Now;
         }
+
+        public override string ToString()
+        {
+            var log = TimeStamp.ToString("G") + " - " + LogLevel + " - " + Message;
+
+            if (!string.IsNullOrEmpty(Stacktrace))
+            {
+                log += Environment.NewLine + Stacktrace;
+            }
+
+            return log;
+        }
     }
 }

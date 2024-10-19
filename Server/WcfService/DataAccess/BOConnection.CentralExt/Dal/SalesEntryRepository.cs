@@ -113,7 +113,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                         "JOIN [" + navCompanyName + "LSC Store$5ecfc871-5d82-43f1-9c54-59685e82318d] st ON st.[No_]=mt.[Store No_] " +
                         "LEFT JOIN [" + navCompanyName + "LSC Posted CO Header$5ecfc871-5d82-43f1-9c54-59685e82318d] co ON co.[Document ID]=mt.[Customer Order ID] " +
                         ((LSCVersion >= new Version("21.2")) ? "LEFT JOIN [" + navCompanyName + "LSC Food & Beverage Order$5ecfc871-5d82-43f1-9c54-59685e82318d] fab ON fab.[Order No_]=mt.[Receipt No_] " : " ") +
-                        "WHERE mt.[No_ of Items] > 0 AND " + ((string.IsNullOrEmpty(entryId)) ? "mt.[Store No_]=@sid AND mt.[POS Terminal No_]=@tid AND mt.[Transaction No_]=@id" : "mt.[Receipt No_]=@id");
+                        "WHERE ((mt.[No_ of Items]>0 AND mt.[Sale Is Return Sale]=0) OR (mt.[Sale Is Return Sale]=1))  AND " + ((string.IsNullOrEmpty(entryId)) ? "mt.[Store No_]=@sid AND mt.[POS Terminal No_]=@tid AND mt.[Transaction No_]=@id" : "mt.[Receipt No_]=@id");
 
                     if (string.IsNullOrEmpty(entryId))
                     {
@@ -331,23 +331,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string searchWords = string.Empty;
-            foreach (string si in searchitems)
-            {
-                searchWords += string.Format("%{0}", si);
-            }
-            searchWords += "%";
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + ((maxNumberOfTransactions > 0) ? "TOP " + maxNumberOfTransactions : string.Empty) + "* FROM (" +
+                    command.CommandText = "SELECT " + ((maxNumberOfTransactions > 0) ? "TOP " + maxNumberOfTransactions : string.Empty) + " * FROM (" +
                         "SELECT DISTINCT mt.[Customer Order ID] AS [Document ID],co.[Created at Store] AS [StCreate],mt.[Store No_] AS [Store],mt.[$systemCreatedAt] AS [Date],co.[Created] AS [CrDate],mt.[Sale Is Return Sale] AS [RT],mt.[Refund Receipt No_] AS [Refund]," +
                         "co.[External ID],mt.[Member Card No_],mt.[Customer No_],1 AS [Posted],mt.[Receipt No_],mt.[Customer Order] AS [CAC]," +
                         "co.[Name],co.[Address],co.[Address 2],co.[City],co.[County],co.[Post Code],co.[Country_Region Code],co.[Territory Code],co.[Phone No_],co.[Email],co.[House_Apartment No_],co.[Mobile Phone No_],co.[Daytime Phone No_]," +
@@ -396,7 +384,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                         "ORDER BY [Date] DESC";
 
                     command.Parameters.AddWithValue("@id", cardId);
-                    command.Parameters.AddWithValue("@search", searchWords);
+                    command.Parameters.AddWithValue("@search", $"%{search}%");
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -635,7 +623,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
                         command.Parameters.Clear();
                         command.Parameters.AddWithValue("@id", custOrderNo);
                         TraceSqlCommand(command);
-                        connection.Open();
                         using (SqlDataReader reader = command.ExecuteReader())
                         {
                             while (reader.Read())

@@ -80,5 +80,7 @@ namespace LSRetail.Omni.Domain.DataModel.Activity.Activities
         public string Status { set; get; }
         [DataMember]
         public string EventNo { set; get; }
+        [DataMember]
+        public string MainGroupMember { set; get; }
     }
 }

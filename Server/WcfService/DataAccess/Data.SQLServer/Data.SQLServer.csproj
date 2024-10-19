@@ -72,7 +72,6 @@
     <Compile Include="PushNotificationRepository.cs" />
     <Compile Include="ResetPasswordRepository.cs" />
     <Compile Include="TaskRepository.cs" />
-    <Compile Include="ValidationRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="SQLScripts\LSCommerceDelete.sql" />

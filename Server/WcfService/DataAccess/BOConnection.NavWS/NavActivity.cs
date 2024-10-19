@@ -63,6 +63,54 @@ namespace LSOmni.DataAccess.BOConnection.NavWS
             return LSCWSBase.ActivityAdditionalChargesSet(request);
         }
 
+        public virtual List<AdditionalCharge> ActivityReservationAdditionalChargesGet(string reservationNo)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityReservationAdditionalCharges(reservationNo);
+        }
+
+        public virtual bool ActivityGroupAdditionalChargesSet(AdditionalCharge req)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityGroupAdditionalChargesSet(req);
+        }
+
+        public virtual List<AdditionalCharge> ActivityGroupReservationAdditionalChargesGet(string reservationNo, int memberNo)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityGroupReservationAdditionalChargesGet(reservationNo, memberNo);
+        }
+
+        public virtual bool ActivityGroupMemberSet(string reservationNo, int memberSequence, string contact, string name, string email, string phone, string guestType, string optionalComment)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityGroupMemberSet(reservationNo, memberSequence, contact, name, email, phone, guestType, optionalComment);
+        }
+
+        public virtual bool ActivityGroupMemberAssign(string reservationNo, int memberSequence, int lineNo)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityGroupMemberAssign(reservationNo, memberSequence, lineNo);
+        }
+
+        public virtual bool ActivityGroupMemberRemove(string reservationNo, int memberSequence, int lineNo)
+        {
+            if (NAVVersion < new Version("17.5"))
+                throw new NotImplementedException();
+
+            return LSCWSBase.ActivityGroupMemberRemove(reservationNo, memberSequence, lineNo);
+        }
+
         public virtual List<AttributeResponse> ActivityAttributesGet(AttributeType type, string linkNo)
         {
             if (NAVVersion < new Version("17.5"))

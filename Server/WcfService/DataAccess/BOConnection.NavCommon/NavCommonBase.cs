@@ -107,7 +107,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
             if (DecryptConfigValue.IsEncryptedPwd(password))
             {
-                password = DecryptConfigValue.DecryptString(password);
+                password = DecryptConfigValue.DecryptString(password, config.SettingsGetByKey(ConfigKey.EncrCode));
             }
 
             if (string.IsNullOrWhiteSpace(username) == false && string.IsNullOrWhiteSpace(password) == false)

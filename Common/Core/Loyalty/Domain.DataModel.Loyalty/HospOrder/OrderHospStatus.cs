@@ -28,6 +28,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp
         [DataMember]
         public string KotNo { get; set; }
         [DataMember]
+        public string QueueCounter { get;set; }
+        [DataMember]
         public int EstimatedTime { get; set; }
         [DataMember]
         public KOTStatus Status { get; set; }

@@ -53,6 +53,8 @@ namespace LSRetail.Omni.Domain.DataModel.Base.SalesEntries
         public string TokenNumber { get; set; }
         [DataMember]
         public string ExternalReference { get; set; }
+        [DataMember]
+        public bool AuthorizationExpired { get; set; }
 
 
     }

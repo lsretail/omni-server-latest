@@ -288,7 +288,7 @@ namespace LSOmni.Service
             //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
             if (DecryptConfigValue.IsEncryptedPwd(clientSecret))
             {
-                clientSecret = DecryptConfigValue.DecryptString(clientSecret);
+                clientSecret = DecryptConfigValue.DecryptString(clientSecret, myconfig.SettingsGetByKey(ConfigKey.EncrCode));
             }
 
             string scope = "https://api.businesscentral.dynamics.com/.default";

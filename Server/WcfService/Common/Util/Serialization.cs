@@ -193,5 +193,11 @@ namespace LSOmni.Common.Util
 			ms.Close();
 			return Encoding.UTF8.GetString(json, 0, json.Length);
 		}
-	}
+
+        public static T DeepCopy<T>(this T self)
+        {
+            string serialized = Serialize<T>(self);
+            return Deserialize<T>(serialized);
+        }
+    }
 }

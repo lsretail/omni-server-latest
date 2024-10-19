@@ -161,7 +161,7 @@ namespace LSOmni.Service
                     //check if the password has been encrypted by our LSOmniPasswordGenerator.exe
                     if (DecryptConfigValue.IsEncryptedPwd(pwd))
                     {
-                        pwd = DecryptConfigValue.DecryptString(pwd);
+                        pwd = DecryptConfigValue.DecryptString(pwd, ConfigSetting.GetEncrCode());
                     }
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.BOPassword.ToString()).Value = pwd;
                 }
@@ -190,6 +190,8 @@ namespace LSOmni.Service
                 if (ConfigSetting.KeyExists("ECom.Url"))
                     config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EComUrl.ToString()).Value = ConfigSetting.GetString("ECom.Url");
 
+                if (ConfigSetting.KeyExists("Security.EncrCode"))
+                    config.Settings.FirstOrDefault(x => x.Key == ConfigKey.EncrCode.ToString()).Value = ConfigSetting.GetEncrCode();
                 if (ConfigSetting.KeyExists("Security.Validatetoken"))
                     config.SecurityCheck = ConfigSetting.GetBoolean("Security.Validatetoken");
             }

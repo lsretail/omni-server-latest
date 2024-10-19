@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
+using LSOmni.Common.Util;
 using LSOmni.DataAccess.Interface.Repository.Loyalty;
 using LSRetail.Omni.Domain.DataModel.Base;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
@@ -10,7 +11,6 @@ using LSRetail.Omni.Domain.DataModel.Loyalty.Baskets;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Members;
 using LSRetail.Omni.Domain.DataModel.Loyalty.OrderHosp;
 using LSRetail.Omni.Domain.DataModel.Loyalty.Orders;
-using LSOmni.Common.Util;
 
 namespace LSOmni.BLL.Loyalty
 {
@@ -26,6 +26,8 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<OneList> OneListGet(MemberContact contact, bool includeLines, Statistics stat)
         {
+            SecurityCardCheck(contact.Cards.FirstOrDefault().Id);
+
             List<OneList> list = new List<OneList>();
             foreach (Card card in contact.Cards)
             {
@@ -36,6 +38,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual List<OneList> OneListGetByCardId(string cardId, ListType listType, bool includeLines, Statistics stat)
         {
+            SecurityCardCheck(cardId);
             return iRepository.OneListGetByCardId(cardId, listType, includeLines, stat);
         }
 
@@ -85,13 +88,19 @@ namespace LSOmni.BLL.Loyalty
             CheckItemSetup(list);
 
             Order order = BOLoyConnection.BasketCalcToOrder(list, stat);
+            bool compress = BOLoyConnection.CompressCOActive(stat);
+
             List<OrderLine> lines = new List<OrderLine>();
             foreach (OneListItem oldItem in list.Items)
             {
                 // what we are doing here is check if Central has splited up orignal order lines, and if so then lets merge those together again
                 List<OrderLine> olines = order.OrderLines.FindAll(l => l.ItemId == oldItem.ItemId && l.VariantId == oldItem.VariantId && l.UomId == oldItem.UnitOfMeasureId && l.Quantity == oldItem.Quantity);
                 if (olines == null || olines.Count == 0)
+                {
                     olines = order.OrderLines.FindAll(l => l.ItemId == oldItem.ItemId && l.VariantId == oldItem.VariantId && l.UomId == oldItem.UnitOfMeasureId);
+                    if (olines == null || olines.Count == 0)
+                        olines = order.OrderLines.FindAll(l => l.ItemId == oldItem.ItemId && l.VariantId == oldItem.VariantId);
+                }
 
                 if (olines != null && olines.Count > 0)
                 {
@@ -99,27 +108,12 @@ namespace LSOmni.BLL.Loyalty
                     OrderLine nline = new OrderLine();
                     foreach (OrderLine oline in olines)
                     {
-                        oline.Id = oldItem.Id;
-                        if (string.IsNullOrEmpty(oline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
-                        {
-                            oline.VariantId = oldItem.VariantId;
-                            oline.VariantDescription = oldItem.VariantDescription;
-                        }
-
-                        if (string.IsNullOrEmpty(oline.UomId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
-                        {
-                            oline.UomId = oldItem.UnitOfMeasureId;
-                        }
-
-                        if (string.IsNullOrEmpty(oline.ItemImageId) && (oldItem.Image != null))
-                        {
-                            oline.ItemImageId = oldItem.Image.Id;
-                        }
-
-                        if (firstLine)
+                        if (firstLine || oldItem.Immutable)
                         {
                             firstLine = false;
-                            nline = oline;
+                            nline = Serialization.DeepCopy(oline);
+                            if (oldItem.Immutable && oline.LineNumber == oldItem.LineNumber)
+                                break;
                         }
                         else
                         {
@@ -130,6 +124,24 @@ namespace LSOmni.BLL.Loyalty
                             nline.DiscountAmount += oline.DiscountAmount;
                         }
                     }
+
+                    nline.Id = oldItem.Id;
+                    if (string.IsNullOrEmpty(nline.VariantId) && string.IsNullOrEmpty(oldItem.VariantId) == false)
+                    {
+                        nline.VariantId = oldItem.VariantId;
+                        nline.VariantDescription = oldItem.VariantDescription;
+                    }
+
+                    if (string.IsNullOrEmpty(nline.UomId) && string.IsNullOrEmpty(oldItem.UnitOfMeasureId) == false)
+                    {
+                        nline.UomId = oldItem.UnitOfMeasureId;
+                    }
+
+                    if (string.IsNullOrEmpty(nline.ItemImageId) && (oldItem.Image != null))
+                    {
+                        nline.ItemImageId = oldItem.Image.Id;
+                    }
+
                     lines.Add(nline);
                 }
             }
@@ -199,6 +211,7 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual void OneListDeleteByCardId(string cardId, Statistics stat)
         {
+            SecurityCardCheck(cardId);
             List<OneList> list = iRepository.OneListGetByCardId(cardId, false, stat);
             foreach (OneList oneList in list)
             {
@@ -253,6 +266,8 @@ namespace LSOmni.BLL.Loyalty
 
         public virtual void OneListLinking(string oneListId, string cardId, string email, string phone, LinkStatus status, Statistics stat)
         {
+            SecurityCardCheck(cardId);
+
             string name = string.Empty;
             if (status == LinkStatus.Requesting)
             {

@@ -293,7 +293,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
             {
                 string select = "SELECT ml.[Store No_],ml.[Line No_],ml.[Pre Approved Amount],ml.[Pre Approved Amount LCY],ml.[Tender Type],ml.[Finalized Amount],ml.[Type]," +
                                 "ml.[Card Type],ml.[Currency Code],ml.[Currency Factor],ml.[Pre Approved Valid Date]," +
-                                "ml.[Card or Customer No_],ml.[Document ID],ml.[Token No_],ml.[External Reference]";
+                                "ml.[Card or Customer No_],ml.[Document ID],ml.[Token No_],ml.[External Reference],ml.[Authorization Expired]";
 
                 if (LSCVersion >= new Version("19.0"))
                     select += ",ml.[EFT Authorization Code]";
@@ -326,7 +326,8 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
                                 CardType = SQLHelper.GetString(reader["Card Type"]),
                                 CardNo = SQLHelper.GetString(reader["Card or Customer No_"]),
                                 TokenNumber = SQLHelper.GetString(reader["Token No_"]),
-                                ExternalReference = SQLHelper.GetString(reader["External Reference"])
+                                ExternalReference = SQLHelper.GetString(reader["External Reference"]),
+                                AuthorizationExpired = SQLHelper.GetBool(reader["Authorization Expired"]),
                             };
 
                             if (LSCVersion >= new Version("19.0"))

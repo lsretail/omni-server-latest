@@ -433,6 +433,7 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     ActivityNo = ConvertTo.SafeString(rec.ActivityNo),
                     LineNo = rec.LineNo,
                     ItemNo = rec.ItemNo,
+                    VariantCode = rec.VariantCode,
                     Description = rec.Description,
                     Quantity = rec.Qty,
                     Price = rec.Price,
@@ -440,6 +441,11 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.Mapping
                     TotalAmount = rec.Total,
                     Optional = rec.Optional,
                     UnitOfMeasure = rec.Uom,
+                    PackageCode = rec.PackageCode,
+                    PackageLine = rec.PackageLine,
+                    ParentLine = rec.PackageLine,
+                    ParentSequence = rec.ParentSequence,
+                    ReservationLineNo = rec.ReservationLineNo,
                     InvoiceReference = ConvertTo.SafeString(rec.InvoiceReference),
                     ProductType = (ProductChargeType)ConvertTo.SafeInt(rec.ProductType)
                 });

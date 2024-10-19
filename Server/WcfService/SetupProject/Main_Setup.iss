@@ -111,7 +111,7 @@ begin
   NavSQLPage_txtUsername.Text := GetCommandLineParamString('-NavUsr', 'CommerceUser');
   NavSQLPage_txtPassword.Text := GetCommandLineParamString('-NavPwd', 'CommerceUser');
   NavSQLPage_chkWindowsAuth.Checked := GetCommandLineParamBoolean('-NavWaun', False);
-  NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 2);
+  NavSQLPage_VerCombBox.ItemIndex := GetCommandLineParamInteger('-NavVer', 3);
 
   CheckPage_SQLCheckBox.Checked := GetCommandLineParamBoolean('-SqlX', True);
   CheckPage_WSCheckBox.Checked := GetCommandLineParamBoolean('-WSX', False);

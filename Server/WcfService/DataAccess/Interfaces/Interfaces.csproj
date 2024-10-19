@@ -63,7 +63,6 @@
     <Compile Include="Repository\Loyalty\IOrderQueueRepository.cs" />
     <Compile Include="Repository\Loyalty\IPushNotificationRepository.cs" />
     <Compile Include="Repository\Loyalty\IResetPasswordRepository.cs" />
-    <Compile Include="Repository\Loyalty\IValidationRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Common\Core\Activity\Domain.DataModel.Activity\Domain.DataModel.Activity.csproj">

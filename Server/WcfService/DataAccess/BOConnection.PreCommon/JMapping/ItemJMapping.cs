@@ -1746,7 +1746,10 @@ namespace LSOmni.DataAccess.BOConnection.PreCommon.JMapping
                         case 15: line.VariantId = data.FieldValue; break;
                         case 25: line.StoreId = data.FieldValue; break;
                         case 120: line.Quantity += ConvertTo.SafeDecimal(data.FieldValue); break;
-                        case 123: line.Quantity += ConvertTo.SafeDecimal(data.FieldValue); break;
+                        case 123: 
+                            if (LSCVersion < new Version("24.1"))
+                                line.Quantity += ConvertTo.SafeDecimal(data.FieldValue); 
+                            break;
                     }
                 }
                 list.Add(line);

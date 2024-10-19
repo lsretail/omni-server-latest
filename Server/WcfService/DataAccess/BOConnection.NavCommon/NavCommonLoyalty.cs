@@ -299,7 +299,7 @@ namespace LSOmni.DataAccess.BOConnection.NavCommon
             return rep.ItemsGet(table);
         }
 
-        public List<LoyItem> ItemPage(string storeId, int page, bool details)
+        public List<LoyItem> ItemPage(string storeId, int page)
         {
             NAVWebXml xml = new NAVWebXml();
             string xmlRequest = xml.GetGeneralWebRequestXML("MobilePlu", "StoreId", storeId, "PageId", page.ToString());

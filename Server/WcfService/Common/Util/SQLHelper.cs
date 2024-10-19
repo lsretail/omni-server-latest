@@ -339,8 +339,26 @@ namespace LSOmni.Common.Util
             return name;
         }
 
+        static public string SetSearchParameters(SqlCommand command, string search, string collation)
+        {
+            int ind = 1;
+            string sqlWhere = " WHERE mt.[Description] LIKE @data1 " + collation;
+
+            string[] searchItems = search.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string si in searchItems)
+            {
+                if (ind > 1)
+                {
+                    sqlWhere += string.Format(" AND mt.[Description] LIKE @data{0} {1}", ind, collation);
+                }
+                command.Parameters.AddWithValue($"@data{ind}", $"%{si}%");
+                ind++;
+            }
+            return sqlWhere;
+        }
+
         //just for internal checks where using old sqlconnection
-        static public string CheckForSQLInjection(string input, bool strict = false)
+        static public string CheckForSQLInjection(string input, int strictLevel = 2)
         {
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -354,7 +372,20 @@ namespace LSOmni.Common.Util
                                  "xp_"
                             };
 
-            string[] sqlCheckListStrict = { "--",
+            string[] sqlCheckList2 = { "--",
+                                ";--",
+                                "/*",
+                                "*/",
+                                "@@",
+                                 "xp_",
+                                 "(",
+                                 ")",
+                                 "[",
+                                 "]",
+                                 ","
+                            };
+
+            string[] sqlCheckList3 = { "--",
                             ";--",
                             ";",
                             "/*",
@@ -389,9 +420,14 @@ namespace LSOmni.Common.Util
                             "xp_"
                         };
 
-            if (strict)
+            switch (strictLevel)
             {
-                sqlCheckList = sqlCheckListStrict;
+                case 2:
+                    sqlCheckList = sqlCheckList2;
+                    break;
+                case 3:
+                    sqlCheckList = sqlCheckList3;
+                    break;
             }
 
             string checkString = input.Replace("'", "''");

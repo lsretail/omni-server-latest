@@ -26,6 +26,12 @@ namespace LSOmni.Common.Util
             }
         }
 
+        public static string GetEncrCode()
+        {
+            string pwd = ConfigSetting.GetString("Security.EncrCode");
+            return DecryptConfigValue.DecryptString(pwd, string.Empty);
+        }
+
         public static void SetString(string key, string value)
         {
             ConfigurationManager.AppSettings[key] = value;

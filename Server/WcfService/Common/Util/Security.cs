@@ -10,12 +10,7 @@ namespace LSOmni.Common.Util
     //class to decrypte passwords in config file
     public static class DecryptConfigValue
     {
-        //strings are encrypted with LSOmni.PasswordGenerator.exe 
-        //const string password = "lsrinvor";
-        //a bit more difficult to find 
-        private static string theWord = new string(new char[] { 'l', 's', 'r', 'i', 'n', 'v', 'o', 'r' });
-
-        public static string DecryptString(string cipherText)
+        public static string DecryptString(string cipherText, string encr)
         {
             //sometimes I label a password string with :encr: so I know it is an encrypted pwd
             if (cipherText.EndsWith(":encr:"))
@@ -23,7 +18,7 @@ namespace LSOmni.Common.Util
                 cipherText = cipherText.Replace(":encr:", "");
             }
 
-            SymmetricAlgorithm algorithm = getAlgorithm();
+            SymmetricAlgorithm algorithm = getAlgorithm(encr);
             byte[] cipherBytes = Convert.FromBase64String(cipherText);
             MemoryStream ms = new MemoryStream();
 
@@ -33,11 +28,11 @@ namespace LSOmni.Common.Util
             return Encoding.Unicode.GetString(ms.ToArray());
         }
 
-        public static string EncryptString(string clearText)
+        public static string EncryptString(string clearText, string encr)
         {
-            SymmetricAlgorithm algorithm = getAlgorithm();
-            byte[] clearBytes = System.Text.Encoding.Unicode.GetBytes(clearText);
-            System.IO.MemoryStream ms = new System.IO.MemoryStream();
+            SymmetricAlgorithm algorithm = getAlgorithm(encr);
+            byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            MemoryStream ms = new MemoryStream();
             CryptoStream cs = new CryptoStream(ms, algorithm.CreateEncryptor(), CryptoStreamMode.Write);
             cs.Write(clearBytes, 0, clearBytes.Length);
             cs.Close();
@@ -65,6 +60,9 @@ namespace LSOmni.Common.Util
             //algorithm.Key = rdb.GetBytes(32);
             //algorithm.IV = rdb.GetBytes(16);
 
+            if (string.IsNullOrEmpty(password))
+                password = "xx";
+
             //works on wince - using our own bytes 
             byte[] byte16 = new byte[] {
             (byte)password[0], (byte)password[1],0x64,0x69,0x75,0x6d,0x20,
@@ -73,36 +71,6 @@ namespace LSOmni.Common.Util
             //
             byte[] byte32 = new byte[] {
             (byte)password[0], (byte)password[1],0x64,0x69,0x75,0x6d,0x20,0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x65,
-            0x53,0x66,0x62,0x69,0x45,0x66,0x78,0x47,0x78,0x6c,0x6f,0x73,0x64,0x67,0x63,0x62,0x61
-            };
-
-            algorithm.Padding = PaddingMode.ISO10126;
-            algorithm.Key = byte32;
-            algorithm.IV = byte16;
-
-            return algorithm;
-        }
-
-        private static SymmetricAlgorithm getAlgorithm()
-        {
-            SymmetricAlgorithm algorithm = Rijndael.Create();
-            //wince does not support Rfc2898DeriveBytes
-            //Rfc2898DeriveBytes rdb = new Rfc2898DeriveBytes(
-            //    password, new byte[] {
-            //0x53,0x6f,0x64,0x69,0x75,0x6d,0x20,             // salty goodness
-            //0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x65});
-            //algorithm.Padding = PaddingMode.ISO10126;
-            //algorithm.Key = rdb.GetBytes(32);
-            //algorithm.IV = rdb.GetBytes(16);
-
-            //works on wince - using our own bytes 
-            byte[] byte16 = new byte[] {
-            (byte)theWord[0], (byte)theWord[1],0x64,0x69,0x75,0x6d,0x20,
-            0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x44,0x34
-            };
-            //
-            byte[] byte32 = new byte[] {
-            (byte)theWord[0], (byte)theWord[1],0x64,0x69,0x75,0x6d,0x20,0x43,0x68,0x6c,0x6f,0x72,0x69,0x64,0x65,
             0x53,0x66,0x62,0x69,0x45,0x66,0x78,0x47,0x78,0x6c,0x6f,0x73,0x64,0x67,0x63,0x62,0x61
             };
 

@@ -234,18 +234,6 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string searchWords = string.Empty;
-            foreach (string si in searchitems)
-            {
-                searchWords += string.Format("%{0}", si);
-            }
-            searchWords += "%";
-
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
@@ -297,7 +285,7 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL.Dal
                         "ORDER BY [Date] DESC";
 
                     command.Parameters.AddWithValue("@id", cardId);
-                    command.Parameters.AddWithValue("@search", searchWords);
+                    command.Parameters.AddWithValue("@search", $"%{search}%");
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

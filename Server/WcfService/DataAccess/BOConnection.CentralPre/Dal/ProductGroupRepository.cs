@@ -154,33 +154,17 @@ namespace LSOmni.DataAccess.BOConnection.CentralPre.Dal
 
         public List<ProductGroup> ProductGroupSearch(string search, Statistics stat)
         {
-            logger.StatisticStartSub(false, ref stat, out int index);
             List<ProductGroup> list = new List<ProductGroup>();
             if (string.IsNullOrWhiteSpace(search))
                 return list;
 
-            SQLHelper.CheckForSQLInjection(search);
-
-            char[] sep = new char[] { ' ' };
-            string[] searchitems = search.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-
-            string sqlwhere = string.Empty;
-            foreach (string si in searchitems)
-            {
-                if (string.IsNullOrEmpty(sqlwhere) == false)
-                {
-                    sqlwhere += " AND";
-                }
-
-                sqlwhere += string.Format(" mt.[Description] LIKE N'%{0}%' {1}", si, GetDbCICollation());
-            }
-
+            logger.StatisticStartSub(false, ref stat, out int index);
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 using (SqlCommand command = connection.CreateCommand())
                 {
-                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + " WHERE" + sqlwhere;
-
+                    string sqlWhere = SQLHelper.SetSearchParameters(command, search, GetDbCICollation());
+                    command.CommandText = "SELECT " + sqlcolumns + sqlfrom + sqlWhere;
                     TraceSqlCommand(command);
                     connection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

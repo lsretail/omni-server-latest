@@ -6,7 +6,6 @@ using LSOmni.DataAccess.BOConnection.CentrAL.Dal;
 using LSOmni.DataAccess.Interface.BOConnection;
 
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
@@ -481,6 +480,11 @@ namespace LSOmni.DataAccess.BOConnection.CentrAL
         }
 
         public virtual string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
+        {
+            throw new NotImplementedException();
+        }
+
+        public virtual bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat)
         {
             throw new NotImplementedException();
         }

@@ -6,7 +6,6 @@ using LSOmni.DataAccess.Interface.BOConnection;
 
 using LSOmni.Common.Util;
 using LSRetail.Omni.Domain.DataModel.Base;
-using LSRetail.Omni.Domain.DataModel.Base.Utils;
 using LSRetail.Omni.Domain.DataModel.Base.Setup;
 using LSRetail.Omni.Domain.DataModel.Base.Retail;
 using LSRetail.Omni.Domain.DataModel.Base.Menu;
@@ -335,7 +334,7 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
 
         public virtual GiftCard GiftCardGetBalance(string cardNo, int pin, string entryType, Statistics stat)
         {
-            if (LSCVersion >= new Version("21.1"))
+            if (LSCVersion >= new Version("24.0"))
                 return LSCentralWSBase.GiftCardGetBalance(cardNo, pin, entryType, stat);
 
             logger.StatisticStartSub(false, ref stat, out int index);
@@ -550,7 +549,6 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         {
             if (request.OrderType == OrderType.ScanPayGoSuspend)
             {
-                orderId = string.Empty;
                 return LSCentralWSBase.ScanPayGoSuspend(request, out orderId, stat);
             }
 
@@ -560,6 +558,11 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt
         public virtual string OrderEdit(Order request, ref string orderId, OrderEditType editType, Statistics stat)
         {
             return LSCentralWSBase.OrderEdit(request, ref orderId, editType, stat);
+        }
+
+        public virtual bool OrderUpdatePayment(string orderId, string storeId, OrderPayment payment, Statistics stat)
+        {
+            return LSCentralWSBase.OrderUpdatePayment(orderId, storeId, payment, stat);
         }
 
         public virtual SalesEntry SalesEntryGet(string entryId, DocumentIdType type, Statistics stat)

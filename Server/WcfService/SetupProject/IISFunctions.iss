@@ -19,6 +19,7 @@ var
   applicationPoolsSection, applicationPoolsCollection: Variant;
   addElement : Variant;
   found : Boolean;
+  lcName, lcPool: string;
 
   siteElement,siteCollection,applicationElement : Variant;
   applicationCollection,virtualDirectoryElement : Variant;
@@ -62,7 +63,8 @@ begin
     begin
       Item := VarToDisp(sitesCollection.Item(i));
       Properties := VarToDisp(Item.Properties);
-      if (Lowercase(VarToDisp(Properties.Item('name')).Value) = Lowercase(webSiteName)) then
+      lcName := VarToDisp(Properties.Item('name')).Value;
+      if Lowercase(lcName) = Lowercase(webSiteName) then
         siteElementPos := i;   //usually Default Web Site = 0 
     end;
   
@@ -73,7 +75,8 @@ begin
     begin
       Item := VarToDisp(siteCollection.Item(i));
       Properties := VarToDisp(Item.Properties);
-      if (Lowercase(VarToDisp(Properties.Item('path')).Value) = Lowercase(webAppName)) then
+      lcName := VarToDisp(Properties.Item('path')).Value;
+      if (Lowercase(lcName) = Lowercase(webAppName)) then
       begin
         siteCollection.DeleteElement(i);
         webAppExists := True;     
@@ -106,7 +109,9 @@ begin
     begin
       Item := VarToDisp(applicationPoolsCollection.Item(i));
       Properties := VarToDisp(Item.Properties);
-      if (Lowercase(VarToDisp(Properties.Item('name')).Value) = Lowercase(appPool)) then
+      lcName := VarToDisp(Properties.Item('name')).Value;
+      lcPool := appPool;
+      if (Lowercase(lcName) = Lowercase(lcPool)) then
       begin
         applicationPoolsCollection.DeleteElement(i);
         found := True;

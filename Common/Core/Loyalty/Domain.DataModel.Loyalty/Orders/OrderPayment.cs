@@ -11,6 +11,7 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         {
             LineNumber = 1;
             AuthorizationCode = string.Empty;
+            AuthorizationExpired = false;
             TenderType = string.Empty;
             CardType = string.Empty;
             CurrencyCode = string.Empty;
@@ -58,6 +59,8 @@ namespace LSRetail.Omni.Domain.DataModel.Loyalty.Orders
         public string TokenNumber { get; set; }
         [DataMember]
         public string ExternalReference { get; set; }
+        [DataMember]
+        public bool AuthorizationExpired { get; set; }
         [DataMember]
         public string CardNumber { get; set; }
         [DataMember]

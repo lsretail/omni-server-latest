@@ -368,6 +368,24 @@ namespace LSOmni.DataAccess.BOConnection.CentralExt.Dal
             return list;
         }
 
+        public bool UsesNewPriceLines()
+        {
+            bool isEnabled = false;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                using (SqlCommand command = connection.CreateCommand())
+                {
+                    command.CommandText = "SELECT [Enabled] FROM [Tenant Feature Key] WHERE [ID]='SalesPrices'";
+                    connection.Open();
+                    TraceSqlCommand(command);
+                    var data = command.ExecuteScalar();
+                    isEnabled = Convert.ToBoolean(data);
+                    connection.Close();
+                }
+            }
+            return isEnabled;
+        }
+
         public List<Price> PricesGetByItemId(string itemId, string storeId, string culture, Statistics stat)
         {
             logger.StatisticStartSub(false, ref stat, out int index);
